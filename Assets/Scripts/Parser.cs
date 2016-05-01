@@ -88,7 +88,7 @@ public class Parser : MonoBehaviour {
 			for (int x = 1; x <= parsedTileInfoStrings.Length; x++)
 			{
 				Vector2 tilePosition = new Vector2(x, unparsedTileInfoStrings.Length - reverseY);
-				Debug.Log(x + ", " + (unparsedTileInfoStrings.Length - reverseY));
+				// Debug.Log(x + ", " + (unparsedTileInfoStrings.Length - reverseY));
 				TileInfo tileInfo = new TileInfo(tilePosition, parsedTileInfoStrings[x-1]);
 				tileInfoList.Add(tileInfo);
 			}

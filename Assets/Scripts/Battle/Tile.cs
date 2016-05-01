@@ -43,10 +43,18 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		return position;
 	}
 
+	public void SetTileInfo(TileForm form, Element element)
+	{
+		string imageName = form.ToString() + "_" + element.ToString();
+		string imagePath = "TileImage/" + imageName;
+		GetComponent<SpriteRenderer>().sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
+		
+		SetTileForm(form);
+		SetTileElement(element);
+	}
+
 	public void SetTileForm(TileForm form)
 	{
-		string imagePath = "TileImage/" + form.ToString();
-		GetComponent<SpriteRenderer>().sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
 		this.form = form;
 	}
 

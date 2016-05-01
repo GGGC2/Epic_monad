@@ -258,8 +258,9 @@ public class TileManager : MonoBehaviour {
 	
 		GameObject tile = Instantiate(tilePrefab, new Vector3(tileWidth * (j+i) * 0.5f, tileHeight * (j-i) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
 		tile.GetComponent<Tile>().SetTilePos(i, j);
-		tile.GetComponent<Tile>().SetTileForm(tileForm);
-		tile.GetComponent<Tile>().SetTileElement(tileElement);
+		tile.GetComponent<Tile>().SetTileInfo(tileForm, tileElement);
+		// tile.GetComponent<Tile>().SetTileForm(tileForm);
+		// tile.GetComponent<Tile>().SetTileElement(tileElement);
 		
 		tiles.Add(new Vector2(i, j), tile);
 	}
