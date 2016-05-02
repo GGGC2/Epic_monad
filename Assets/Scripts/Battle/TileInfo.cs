@@ -15,29 +15,43 @@ public class TileInfo {
 	
 	public TileInfo(Vector2 tilePosition, string tileInfoString)
 	{    
-		char tileInfoChar = tileInfoString[0];    
-		this.tilePosition = tilePosition;
-		
-		if (tileInfoChar == '-')
+		if (tileInfoString[0] == '-')
 		{
 			this.isEmptyTile = true;
 			return;    
 		}
-		else if (tileInfoChar == 'F')
-		{
-			this.isEmptyTile = false;
+		
+		this.isEmptyTile = false;
+		
+		char tileFormChar = tileInfoString[0];    
+		this.tilePosition = tilePosition;
+		
+		if (tileFormChar == 'F')
 			this.tileForm = TileForm.Flatland;
-			this.tileElement = Element.Plant;
-		}
-		else if (tileInfoChar == 'H')
-		{
-			this.isEmptyTile = false;
+		else if (tileFormChar == 'H')
 			this.tileForm = TileForm.Hill;
-			this.tileElement = Element.None;
-		}
 		else
 		{
-			Debug.LogError("Undefined tileInfo: <" + tileInfoChar + ">" + " at " + tilePosition);
+			Debug.LogError("Undefined tileForm: <" + tileFormChar + ">" + " at " + tilePosition);
 		}
+		
+		if (tileInfoString.Length < 2)
+		{
+			this.tileElement = Element.None;
+			return;
+		}
+		
+		char tileElementChar = tileInfoString[1];
+		
+		if (tileElementChar == 'F')
+			this.tileElement = Element.Fire;
+		else if (tileElementChar == 'W')
+			this.tileElement = Element.Water;
+		else if (tileElementChar == 'P')
+			this.tileElement = Element.Plant;
+		else if (tileElementChar == 'M')
+			this.tileElement = Element.Metal;
+		else
+			Debug.LogError("Undefined tileType: <" + tileElement + ">" + " at " + tilePosition);
 	} 
 }
