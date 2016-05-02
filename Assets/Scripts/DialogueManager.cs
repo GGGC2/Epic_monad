@@ -21,6 +21,8 @@ public class DialogueManager : MonoBehaviour {
 	int line;
 	int endLine;
 	bool isWaitingMouseInput;
+	
+	bool isLeftUnitOld;
 
 	void Initialize()
 	{
@@ -42,6 +44,8 @@ public class DialogueManager : MonoBehaviour {
 		line = 0;
 		endLine = dialogueDataList.Count; 
 		
+		isLeftUnitOld = true;
+		
 		StartCoroutine(PrintLine());
 	}
 
@@ -54,6 +58,25 @@ public class DialogueManager : MonoBehaviour {
 			
 			if (!dialogueDataList[line].IsEffect())
 			{
+				if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
+					(dialogueDataList[line].GetNameInCode() != rightUnit) &&
+					(Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
+				{
+					Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+					if (isLeftUnitOld)
+					{
+						leftUnit = dialogueDataList[line].GetNameInCode();
+						leftPortrait.sprite = sprite;
+						isLeftUnitOld = false;
+					}
+					else
+					{
+						rightUnit = dialogueDataList[line].GetNameInCode();
+						rightPortrait.sprite = sprite;
+						isLeftUnitOld = true;
+					}
+				}
+				
 				if (leftUnit == dialogueDataList[line].GetNameInCode())
 					leftPortrait.color = Color.white;
 				else if (rightUnit == dialogueDataList[line].GetNameInCode())
@@ -97,11 +120,13 @@ public class DialogueManager : MonoBehaviour {
 					{
 						leftUnit = null;
 						leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+						isLeftUnitOld = false;
 					}
 					else if (dialogueDataList[line].GetEffectSubType() == "right")
 					{
 						rightUnit = null;
 						rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+						isLeftUnitOld = true;
 					}
 					else 
 					{
