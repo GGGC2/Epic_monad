@@ -112,7 +112,8 @@ public class BattleManager : MonoBehaviour
 		yield return StartCoroutine(FocusToUnit(battleData));
 
 		battleData.uiManager.DisableSelectedUnitViewerUI();
-		battleData.selectedUnitObject.GetComponent<Unit>().SetInactive();
+		if (battleData.selectedUnitObject != null)
+			battleData.selectedUnitObject.GetComponent<Unit>().SetInactive();
 	}
 
 	static void CheckStandbyPossible(BattleData battleData)
@@ -152,10 +153,54 @@ public class BattleManager : MonoBehaviour
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
 
+	List<GameObject> deadUnits = new List<GameObject>();
+
+	static IEnumerator FadeOutEffect(GameObject unitObject, float time)
+	{
+		SpriteRenderer sr = unitObject.GetComponent<SpriteRenderer>();
+		for (int i = 0; i < 10; i++)
+		{
+			sr.color -= new Color(0, 0, 0, 0.1f);
+			yield return new WaitForSeconds(time / 10f);
+		}
+	}
+
+	static IEnumerator DestroyDeadUnits(BattleData battleData)
+	{
+		BattleManager battleManager = battleData.battleManager;
+		
+		// foreach (var deadUnit in battleData.deadUnits);
+		int numberOfDeadUnits = battleData.deadUnits.Count;
+		for (int i = 0; i < numberOfDeadUnits; i++)
+		{	
+			GameObject deadUnit = battleData.deadUnits[i];
+			if (deadUnit == battleData.selectedUnitObject)
+				continue;
+			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
+			battleData.unitManager.DeleteDeadUnit(deadUnit);
+			Debug.Log(deadUnit.GetComponent<Unit>().GetName() + " is dead");
+			Destroy(deadUnit);
+		}
+	}
+
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
 		while (battleData.currentState == CurrentState.FocusToUnit)
 		{
+			BattleManager battleManager = battleData.battleManager;
+			battleData.deadUnits = battleData.unitManager.GetDeadUnits();
+			
+			yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
+			
+			if (battleData.deadUnits.Contains(battleData.selectedUnitObject))
+			{
+				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
+				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnitObject);
+				Debug.Log("SelectedUnit is dead");
+				Destroy(battleData.selectedUnitObject);
+				yield break;
+			}
+			
 			Camera.main.transform.position = new Vector3(
 				battleData.selectedUnitObject.transform.position.x,
 				battleData.selectedUnitObject.transform.position.y,
@@ -168,7 +213,6 @@ public class BattleManager : MonoBehaviour
 			CheckMovePossible(battleData);
 			CheckSkillPossible(battleData);
 
-			BattleManager battleManager = battleData.battleManager;
 			battleData.command = ActionCommand.Waiting;
 			while (battleData.command == ActionCommand.Waiting)
 			{

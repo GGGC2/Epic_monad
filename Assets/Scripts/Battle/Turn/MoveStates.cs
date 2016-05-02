@@ -143,7 +143,7 @@ namespace Battle.Turn
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;
 			BattleManager battleManager = battleData.battleManager;
-			yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
+			// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
 
 			yield return null;
 		}
