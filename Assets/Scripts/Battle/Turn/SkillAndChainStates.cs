@@ -267,7 +267,7 @@ namespace Battle.Turn
 
 						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
 						battleData.currentState = CurrentState.FocusToUnit;
-						yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
+						// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
 					}
 					// 체인이 불가능한 스킬일 경우, 그냥 발동.
 					else
@@ -515,7 +515,7 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = false;
-			yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
+			// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
 		}
 
 		private static IEnumerator ApplySkillEffect(Skill appliedSkill, GameObject unitObject, List<GameObject> selectedTiles)

@@ -2,7 +2,7 @@ owner,requireLevel,name,requireAP,cooldown,powerFactor,skillType,firstRangeForm,
 soldier01,1,근접공격,50,0,1,Point,Cross,0,1,0,FALSE,Square,0,0,0,Damage,-,Individual,NonMove
 lucius,1,검술의 대가,40,0,1,Point,Cross,0,1,0,FALSE,Square,0,0,0,Damage,-,Individual,NonMove
 reina,1,화염 폭발,45,0,3,Point,Square,0,3,0,FALSE,Square,0,0,0,Damage,-,Area,NonMove
-default,1,암흑 폭발,40,0,1.0,Area,Straight,0,4,0,FALSE,Straight,0,4,0,Damage,darkBall,Area,Move
+default,1,암흑 폭발,20,0,6.0,Point,Square,0,4,0,FALSE,Square,0,4,0,Damage,darkBall,Area,Move
 default,1,태초의 빛,35,0,1.0,Point,Square,0,4,0,TRUE,Square,0,1,0,Heal,lightHeal,Individual,NonMove
 default,1,영혼의 불꽃,100,0,3.0,Area,Square,0,2,0,FALSE,Square,0,2,0,Damage,darkExplosion,Area,NonMove
 default,1,마력 보호막,80,0,1.5,Area,Square,0,0,0,TRUE,Square,0,0,0,Etc,lightShield,Individual,NonMove

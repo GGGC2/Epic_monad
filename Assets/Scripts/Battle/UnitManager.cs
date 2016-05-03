@@ -11,10 +11,23 @@ public class UnitManager : MonoBehaviour {
 	public GameObject unitPrefab;
 	List<GameObject> units = new List<GameObject>();
 	List<GameObject> readiedUnits = new List<GameObject>();
+	List<GameObject> deadUnits = new List<GameObject>();
 
 	public List<GameObject> GetAllUnits()
 	{
 		return units;
+	}
+	
+	public List<GameObject> GetDeadUnits()
+	{
+		// 죽은 유닛들을 체크.
+		deadUnits.Clear();
+		foreach (var unit in units)
+		{
+			if ((unit.GetComponent<Unit>().GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
+				deadUnits.Add(unit);		
+		}
+		return deadUnits;
 	}
 	
 	public int GetStandardActionPoint()
@@ -57,6 +70,12 @@ public class UnitManager : MonoBehaviour {
 		}
 		
 		Debug.Log("Generate units complete");
+	}
+	
+	public void DeleteDeadUnit(GameObject unitObject)
+	{
+		units.Remove(unitObject);
+		readiedUnits.Remove(unitObject);
 	}
 	
 	public List<GameObject> GetUpdatedReadiedUnits()

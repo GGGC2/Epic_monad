@@ -47,7 +47,8 @@ public class BattleData
 	public Direction selectedDirection;
 	public GameObject selectedUnitObject;
 	public List<GameObject> readiedUnits = new List<GameObject>();
-
+	public List<GameObject> deadUnits = new List<GameObject>();
+	
 	public List<ChainInfo> chainList = new List<ChainInfo>();
 
 	public int currentPhase;
