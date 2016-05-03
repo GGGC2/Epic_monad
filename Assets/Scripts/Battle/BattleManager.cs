@@ -168,12 +168,10 @@ public class BattleManager : MonoBehaviour
 	static IEnumerator DestroyDeadUnits(BattleData battleData)
 	{
 		BattleManager battleManager = battleData.battleManager;
-		
-		// foreach (var deadUnit in battleData.deadUnits);
+
 		int numberOfDeadUnits = battleData.deadUnits.Count;
-		for (int i = 0; i < numberOfDeadUnits; i++)
-		{	
-			GameObject deadUnit = battleData.deadUnits[i];
+		foreach (GameObject deadUnit in battleData.deadUnits)
+		{
 			if (deadUnit == battleData.selectedUnitObject)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
@@ -189,9 +187,9 @@ public class BattleManager : MonoBehaviour
 		{
 			BattleManager battleManager = battleData.battleManager;
 			battleData.deadUnits = battleData.unitManager.GetDeadUnits();
-			
+
 			yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
-			
+
 			if (battleData.deadUnits.Contains(battleData.selectedUnitObject))
 			{
 				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
@@ -200,7 +198,7 @@ public class BattleManager : MonoBehaviour
 				Destroy(battleData.selectedUnitObject);
 				yield break;
 			}
-			
+
 			Camera.main.transform.position = new Vector3(
 				battleData.selectedUnitObject.transform.position.x,
 				battleData.selectedUnitObject.transform.position.y,
