@@ -58,4 +58,11 @@ public class BattleData
 
 	// Load from json.
 	public int partyLevel;
+
+	public Skill SelectedSkill
+	{
+		get {
+			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfSeletedSkillByUser - 1];
+		}
+	}
 }

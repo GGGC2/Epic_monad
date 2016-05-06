@@ -38,7 +38,7 @@ namespace Battle.Turn
 				battleData.uiManager.DisableSkillUI();
 
 				BattleManager battleManager = battleData.battleManager;
-				Skill selectedSkill = battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1];
+				Skill selectedSkill = battleData.SelectedSkill;
 				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
 				if (skillTypeOfSelectedSkill == SkillType.Area)
 				{
@@ -58,7 +58,7 @@ namespace Battle.Turn
 			Direction beforeDirection = originalDirection;
 			List<GameObject> selectedTiles = new List<GameObject>();
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
-			Skill selectedSkill = selectedUnit.GetSkillList()[battleData.indexOfSeletedSkillByUser - 1];
+			Skill selectedSkill = battleData.SelectedSkill;
 
 			battleData.rightClicked = false;
 			battleData.isWaitingUserInput = true;
@@ -145,7 +145,7 @@ namespace Battle.Turn
 				Vector2 selectedUnitPos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
 
 				List<GameObject> activeRange = new List<GameObject>();
-				Skill selectedSkill = battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1];
+				Skill selectedSkill = battleData.SelectedSkill;
 				activeRange = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 														selectedUnitPos,
 														selectedSkill.GetFirstMinReach(),
@@ -204,8 +204,7 @@ namespace Battle.Turn
 				GameObject selectedTile = battleData.tileManager.GetTile(selectedTilePosition);
 				Camera.main.transform.position = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y, -10);
 
-				Skill selectedSkill = battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1];
-
+				Skill selectedSkill = battleData.SelectedSkill;
 				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 																			selectedTilePosition,
 																			selectedSkill.GetSecondMinReach(),
@@ -293,7 +292,7 @@ namespace Battle.Turn
 			bool isPossible = false;
 
 			// ap 조건으로 체크.
-			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1].GetRequireAP();
+			int requireAP = battleData.SelectedSkill.GetRequireAP();
 			int remainAPAfterChain = battleData.selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - requireAP;
 
 			foreach (var unit in battleData.unitManager.GetAllUnits())
@@ -306,7 +305,7 @@ namespace Battle.Turn
 			}
 
 			// 스킬 타입으로 체크. 공격스킬만 체인을 걸 수 있음.
-			if (battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1].GetSkillApplyType()
+			if (battleData.SelectedSkill.GetSkillApplyType()
 				!= SkillApplyType.Damage)
 			{
 				isPossible = false;
@@ -322,7 +321,7 @@ namespace Battle.Turn
 			// 방향 돌리기.
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
 			// 스킬 시전에 필요한 ap만큼 선 차감.
-			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetSkillList()[battleData.indexOfSeletedSkillByUser - 1].GetRequireAP();
+			int requireAP = battleData.SelectedSkill.GetRequireAP();
 			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(requireAP);
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
@@ -434,7 +433,7 @@ namespace Battle.Turn
 		private static IEnumerator ApplySkill(BattleData battleData, List<GameObject> selectedTiles)
 		{
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
-			Skill appliedSkill = selectedUnit.GetSkillList()[battleData.indexOfSeletedSkillByUser - 1];
+			Skill appliedSkill = battleData.SelectedSkill;
 			BattleManager battleManager = battleData.battleManager;
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
