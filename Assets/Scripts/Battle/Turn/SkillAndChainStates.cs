@@ -215,7 +215,8 @@ namespace Battle.Turn
 					selectedTiles.Remove(battleData.tileManager.GetTile(selectedTilePosition));
 				battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
 
-				CheckChainPossible(battleData);
+				bool isChainPossible = CheckChainPossible(battleData);
+				battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
 				battleData.uiManager.SetSkillCheckAP(battleData.selectedUnitObject, selectedSkill);
 
 				battleData.rightClicked = false;
@@ -287,7 +288,7 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		private static void CheckChainPossible(BattleData battleData)
+		private static bool CheckChainPossible(BattleData battleData)
 		{
 			bool isPossible = false;
 
@@ -311,7 +312,7 @@ namespace Battle.Turn
 				isPossible = false;
 			}
 
-			battleData.uiManager.EnableSkillCheckChainButton(isPossible);
+			return isPossible;
 		}
 
 		private static IEnumerator ChainAndStandby(BattleData battleData, List<GameObject> selectedTiles)
