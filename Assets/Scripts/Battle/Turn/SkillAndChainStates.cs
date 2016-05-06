@@ -122,7 +122,7 @@ namespace Battle.Turn
 
 					BattleManager battleManager = battleData.battleManager;
 					battleData.currentState = CurrentState.CheckApplyOrChain;
-					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, selectedUnit.GetPosition(), originalDirection));
+					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
 				}
 				yield return null;
 			}
@@ -193,26 +193,25 @@ namespace Battle.Turn
 
 				BattleManager battleManager = battleData.battleManager;
 				battleData.currentState = CurrentState.CheckApplyOrChain;
-				yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.selectedTilePosition, originalDirection));
+				yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedTile, originalDirection));
 			}
 		}
 
-		private static IEnumerator CheckApplyOrChain(BattleData battleData, Vector2 selectedTilePosition, Direction originalDirection)
+		private static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection)
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
-				GameObject selectedTile = battleData.tileManager.GetTile(selectedTilePosition);
-				Camera.main.transform.position = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y, -10);
+				FocusTile(battleData, targetTile);
 
 				Skill selectedSkill = battleData.SelectedSkill;
 				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																			selectedTilePosition,
+																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
 																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
 																			includeMyself: true);
 				if ((selectedSkill.GetSkillType() == SkillType.Area) && (!selectedSkill.GetIncludeMyself()))
-					selectedTiles.Remove(battleData.tileManager.GetTile(selectedTilePosition));
+					selectedTiles.Remove(targetTile.gameObject);
 				battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
 
 				bool isChainPossible = CheckChainPossible(battleData);
@@ -286,6 +285,11 @@ namespace Battle.Turn
 					yield return null;
 			}
 			yield return null;
+		}
+
+		private static void FocusTile(BattleData battleData, Tile focusTile)
+		{
+			Camera.main.transform.position = new Vector3(focusTile.transform.position.x, focusTile.transform.position.y, -10);
 		}
 
 		private static bool CheckChainPossible(BattleData battleData)
