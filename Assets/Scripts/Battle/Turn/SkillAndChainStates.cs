@@ -210,7 +210,7 @@ namespace Battle.Turn
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
 																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
-																			true);
+																			includeMyself: true);
 				if ((selectedSkill.GetSkillType() == SkillType.Area) && (!selectedSkill.GetIncludeMyself()))
 					selectedTiles.Remove(battleData.tileManager.GetTile(selectedTilePosition));
 				battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
