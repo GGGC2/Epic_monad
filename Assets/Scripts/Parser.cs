@@ -23,7 +23,6 @@ public class Parser : MonoBehaviour {
 
 	public static List<UnitInfo> GetParsedUnitInfo()
 	{
-		Debug.LogError("Parse Unit INfo");
 		List<UnitInfo> unitInfoList = new List<UnitInfo>();
 		
 		TextAsset csvFile;
