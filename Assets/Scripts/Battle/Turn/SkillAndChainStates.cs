@@ -201,21 +201,14 @@ namespace Battle.Turn
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
-				FocusTile(battleData, targetTile);
+				FocusTile(targetTile);
 
-				Skill selectedSkill = battleData.SelectedSkill;
-				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																			targetTile.GetTilePos(),
-																			selectedSkill.GetSecondMinReach(),
-																			selectedSkill.GetSecondMaxReach(),
-																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
-																			includeMyself: true);
-				if ((selectedSkill.GetSkillType() == SkillType.Area) && (!selectedSkill.GetIncludeMyself()))
-					selectedTiles.Remove(targetTile.gameObject);
-				battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
+				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
+				battleData.tileManager.ChangeTilesToSeletedColor(tilesInSkillRange, TileColor.Red);
 
 				bool isChainPossible = CheckChainPossible(battleData);
 				battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
+				Skill selectedSkill = battleData.SelectedSkill;
 				battleData.uiManager.SetSkillCheckAP(battleData.selectedUnitObject, selectedSkill);
 
 				battleData.rightClicked = false;
@@ -229,10 +222,10 @@ namespace Battle.Turn
 						battleData.rightClicked = false;
 						battleData.cancelClicked = false;
 
-						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
+						FocusUnit(battleData.SelectedUnit);
 						battleData.uiManager.DisableSkillCheckUI();
-						battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
-						battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(originalDirection);
+						battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(tilesInSkillRange);
+						battleData.SelectedUnit.SetDirection(originalDirection);
 						if (selectedSkill.GetSkillType() == SkillType.Area)
 							battleData.currentState = CurrentState.SelectSkill;
 						else
@@ -242,7 +235,7 @@ namespace Battle.Turn
 					yield return null;
 				}
 
-				battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
+				battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(tilesInSkillRange);
 				BattleManager battleManager = battleData.battleManager;
 				if (battleData.skillApplyCommand == SkillApplyCommand.Apply)
 				{
@@ -250,36 +243,20 @@ namespace Battle.Turn
 					// 체인이 가능한 스킬일 경우. 체인 발동.
 					if (selectedSkill.GetSkillApplyType() == SkillApplyType.Damage)
 					{
-						// 자기 자신을 체인 리스트에 추가.
-						ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
-						// 체인 체크, 순서대로 공격.
-						List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, selectedTiles);
-						int chainCombo = allVaildChainInfo.Count;
-						battleData.currentState = CurrentState.ApplySkill;
-
-						foreach (var chainInfo in allVaildChainInfo)
-						{
-							GameObject focusedTile = chainInfo.GetTargetArea()[0];
-							Camera.main.transform.position = new Vector3(focusedTile.transform.position.x, focusedTile.transform.position.y, -10);
-							yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo, chainCombo));
-						}
-
-						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
-						battleData.currentState = CurrentState.FocusToUnit;
-						// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
+						yield return ApplyChain(battleData, tilesInSkillRange);
 					}
 					// 체인이 불가능한 스킬일 경우, 그냥 발동.
 					else
 					{
 						battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(ApplySkill(battleData, selectedTiles));
+						yield return battleManager.StartCoroutine(ApplySkill(battleData, tilesInSkillRange));
 					}
 				}
 				else if (battleData.skillApplyCommand == SkillApplyCommand.Chain)
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					battleData.currentState = CurrentState.ChainAndStandby;
-					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, selectedTiles));
+					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, tilesInSkillRange));
 				}
 				else
 					yield return null;
@@ -287,9 +264,28 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		private static void FocusTile(BattleData battleData, Tile focusTile)
+		private static void FocusTile(Tile focusTile)
 		{
 			Camera.main.transform.position = new Vector3(focusTile.transform.position.x, focusTile.transform.position.y, -10);
+		}
+
+		private static void FocusUnit(Unit unit)
+		{
+			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
+		}
+
+		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile)
+		{
+				Skill selectedSkill = battleData.SelectedSkill;
+				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+																			targetTile.GetTilePos(),
+																			selectedSkill.GetSecondMinReach(),
+																			selectedSkill.GetSecondMaxReach(),
+																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
+																			includeMyself: true);
+				if ((selectedSkill.GetSkillType() == SkillType.Area) && (!selectedSkill.GetIncludeMyself()))
+					selectedTiles.Remove(targetTile.gameObject);
+				return selectedTiles;
 		}
 
 		private static bool CheckChainPossible(BattleData battleData)
@@ -317,6 +313,27 @@ namespace Battle.Turn
 			}
 
 			return isPossible;
+		}
+
+		private static IEnumerator ApplyChain(BattleData battleData, List<GameObject> tilesInSkillRange)
+		{
+			BattleManager battleManager = battleData.battleManager;
+			// 자기 자신을 체인 리스트에 추가.
+			ChainList.AddChains(battleData.selectedUnitObject, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
+			// 체인 체크, 순서대로 공격.
+			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
+			int chainCombo = allVaildChainInfo.Count;
+			battleData.currentState = CurrentState.ApplySkill;
+
+			foreach (var chainInfo in allVaildChainInfo)
+			{
+				GameObject focusedTile = chainInfo.GetTargetArea()[0];
+				FocusTile(focusedTile.GetComponent<Tile>());
+				yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo, chainCombo));
+			}
+
+			FocusUnit(battleData.SelectedUnit);
+			battleData.currentState = CurrentState.FocusToUnit;
 		}
 
 		private static IEnumerator ChainAndStandby(BattleData battleData, List<GameObject> selectedTiles)
