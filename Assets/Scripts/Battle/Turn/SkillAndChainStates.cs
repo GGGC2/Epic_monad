@@ -259,7 +259,10 @@ namespace Battle.Turn
 					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, tilesInSkillRange));
 				}
 				else
+				{
+					Debug.LogError("Invalid State");
 					yield return null;
+				}
 			}
 			yield return null;
 		}
