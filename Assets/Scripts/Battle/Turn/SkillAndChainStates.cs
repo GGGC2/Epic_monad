@@ -244,6 +244,8 @@ namespace Battle.Turn
 					if (selectedSkill.GetSkillApplyType() == SkillApplyType.Damage)
 					{
 						yield return ApplyChain(battleData, tilesInSkillRange);
+						FocusUnit(battleData.SelectedUnit);
+						battleData.currentState = CurrentState.FocusToUnit;
 					}
 					// 체인이 불가능한 스킬일 경우, 그냥 발동.
 					else
@@ -326,17 +328,14 @@ namespace Battle.Turn
 			// 체인 체크, 순서대로 공격.
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
-			battleData.currentState = CurrentState.ApplySkill;
 
 			foreach (var chainInfo in allVaildChainInfo)
 			{
 				GameObject focusedTile = chainInfo.GetTargetArea()[0];
 				FocusTile(focusedTile.GetComponent<Tile>());
+				battleData.currentState = CurrentState.ApplySkill;
 				yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo, chainCombo));
 			}
-
-			FocusUnit(battleData.SelectedUnit);
-			battleData.currentState = CurrentState.FocusToUnit;
 		}
 
 		private static IEnumerator ChainAndStandby(BattleData battleData, List<GameObject> selectedTiles)
