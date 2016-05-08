@@ -175,6 +175,7 @@ namespace Battle.Turn
 						battleData.cancelClicked = false;
 						battleData.uiManager.DisableCancelButtonUI();
 
+						selectedUnit.SetDirection(originalDirection);
 						battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(activeRange);
 						battleData.currentState = CurrentState.SelectSkill;
 						battleData.isWaitingUserInput = false;
