@@ -147,6 +147,8 @@ public class TileManager : MonoBehaviour {
 				tile.GetComponent<Tile>().SetTileColor(new Color(1, 0.5f, 0.5f, 1));
 			else if (color == TileColor.Blue)
 				tile.GetComponent<Tile>().SetTileColor(new Color(0.6f, 0.6f, 1, 1));
+			else if (color == TileColor.Yellow)
+				tile.GetComponent<Tile>().SetTileColor(new Color(1, 0.9f, 0.016f, 1));
 			tile.GetComponent<Tile>().SetPreSelected(true);
 		}
 	}

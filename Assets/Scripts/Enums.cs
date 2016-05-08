@@ -20,7 +20,7 @@ namespace Enums {
 	
 	public enum TileColor // highlighting selected tile
 	{
-		Blue, Red
+		Blue, Red, Yellow
 	}
 	
 	public enum TileForm

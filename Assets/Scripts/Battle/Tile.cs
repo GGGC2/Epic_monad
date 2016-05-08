@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+
 using Enums;
+using Battle.Feature;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
 
@@ -135,6 +137,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 		if (IsUnitOnTile())
 		{
+			ColorChainTilesByUnit.Show(unitOnTile.GetComponent<Unit>());
 			if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
 
 			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
@@ -148,6 +151,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		tileColor.isHighlight = false;
 
 		FindObjectOfType<UIManager>().DisableTileViewerUI();
+
+		if (IsUnitOnTile())
+		{
+			ColorChainTilesByUnit.Hide(unitOnTile.GetComponent<Unit>());
+		}
 
 		if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
