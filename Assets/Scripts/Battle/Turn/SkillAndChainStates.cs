@@ -329,6 +329,8 @@ namespace Battle.Turn
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
 
+			battleData.SelectedUnit.PrintChainText(chainCombo);
+
 			foreach (var chainInfo in allVaildChainInfo)
 			{
 				GameObject focusedTile = chainInfo.GetTargetArea()[0];
@@ -336,6 +338,8 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.ApplySkill;
 				yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo, chainCombo));
 			}
+
+			battleData.SelectedUnit.DisableChainText();
 		}
 
 		private static IEnumerator ChainAndStandby(BattleData battleData, List<GameObject> selectedTiles)

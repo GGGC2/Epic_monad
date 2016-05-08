@@ -7,6 +7,7 @@ using System.Linq;
 public class Unit : MonoBehaviour
 {
 
+	GameObject chainTextObject;
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
@@ -597,6 +598,17 @@ public class Unit : MonoBehaviour
 		bounsTextObject.SetActive(false);
 	}
 
+	public void PrintChainText(int chainCount)
+	{
+		chainTextObject.SetActive(true);
+		chainTextObject.GetComponent<TextMesh>().text = "연계" + chainCount + "단";
+	}
+
+	public void DisableChainText()
+	{
+		chainTextObject.SetActive(false);
+	}
+
 	void ApplyStats()
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
@@ -669,10 +681,12 @@ public class Unit : MonoBehaviour
 
 	void Awake()
 	{
+		chainTextObject = transform.Find("ChainText").gameObject;
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
 		bounsTextObject = transform.Find("BounsText").gameObject;
+		chainTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
