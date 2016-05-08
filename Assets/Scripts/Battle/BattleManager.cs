@@ -9,7 +9,7 @@ using Battle.Turn;
 
 public class BattleManager : MonoBehaviour
 {
-	private BattleData battleData = new BattleData();
+	public BattleData battleData = new BattleData();
 
 	public class LevelData {
 		public int level;

@@ -86,4 +86,16 @@ public class BattleData
 			return tileManager.GetTile(SelectedUnit.GetPosition()).GetComponent<Tile>();
 		}
 	}
+
+	public ChainInfo GetChainInfo(Unit unit)
+	{
+		foreach (ChainInfo chainInfo in chainList)
+		{
+			if (chainInfo.GetUnit() == unit.gameObject)
+			{
+				return chainInfo;
+			}
+		}
+		return null;
+	}
 }
