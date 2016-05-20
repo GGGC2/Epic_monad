@@ -74,13 +74,12 @@ namespace Enums {
 		Damage, Heal, Etc
 	}
 	
-	public enum BuffType
+	public enum StatusEffectType
 	{
-		None
-	}
-	
-	public enum DebuffType
-	{
+        PowerIncrease,
+        DefenseIncrease,
+        ResistanceIncrease,
+        ContinuousHeal,
 		Retire,
 		DamageOverPhase,
 		Exhaust,
@@ -95,107 +94,5 @@ namespace Enums {
 		Mark,
 		Poison,
 		Bleed
-	}
-	
-	public class Buff
-	{
-		BuffType name;
-		int degree;
-		int amount;
-		int remainPhase;
-		
-		public Buff(BuffType name, int degree, int amount, int remainPhase)
-		{
-			this.name = name;
-			this.degree = degree;
-			this.amount = amount;
-			this.remainPhase = remainPhase;
-		}
-		
-		public BuffType GetName()
-		{
-			return name;
-		}
-		
-		public int GetDegree()
-		{
-			return degree;
-		}
-		
-		public int GetAmount()
-		{
-			return amount;
-		}
-		
-		public int GetRemainPhase()
-		{
-			return remainPhase;   
-		}
-		
-		public void AddRemainPhase(int phase)
-		{
-			remainPhase += phase;
-		}
-		
-		public void SubRemainPhase(int phase)
-		{
-			remainPhase -= phase;
-		}
-		
-		public void DecreaseRemainPhase()
-		{
-			remainPhase --;
-		}
-	}
-	
-	public class Debuff
-	{
-		DebuffType name;
-		int degree;
-		int amount;
-		int remainPhase;
-		
-		public Debuff(DebuffType name, int degree, int amount, int remainPhase)
-		{
-			this.name = name;
-			this.degree = degree;
-			this.amount = amount;
-			this.remainPhase = remainPhase;
-		}
-		
-		public DebuffType GetName()
-		{
-			return name;
-		}
-		
-		public int GetDegree()
-		{
-			return degree;
-		}
-		
-		public int GetAmount()
-		{
-			return amount;
-		}
-		
-		public int GetRemainPhase()
-		{
-			return remainPhase;   
-		}
-		
-		public void AddRemainPhase(int phase)
-		{
-			remainPhase += phase;
-		}
-		
-		public void SubRemainPhase(int phase)
-		{
-			remainPhase -= phase;
-		}
-		
-		public void DecreaseRemainPhase()
-		{
-			remainPhase --;
-		}
 	}
 }
