@@ -42,25 +42,22 @@ public class SkillInfo {
 		int firstMinReach = Int32.Parse(stringList[8]); 
 		int firstMaxReach = Int32.Parse(stringList[9]); 
 		int firstWidth = Int32.Parse(stringList[10]); 
+		
+		RangeForm secondRangeForm = (RangeForm)Enum.Parse(typeof(RangeForm), stringList[11]);
+		int secondMinReach = Int32.Parse(stringList[12]); 
+		int secondMaxReach = Int32.Parse(stringList[13]); 
+		int secondWidth = Int32.Parse(stringList[14]); 
 
-		bool includeMyself = Boolean.Parse(stringList[11]); 
+		SkillApplyType skillApplyType = (SkillApplyType)Enum.Parse(typeof(SkillApplyType), stringList[15]);
 
-		RangeForm secondRangeForm = (RangeForm)Enum.Parse(typeof(RangeForm), stringList[12]);
-		int secondMinReach = Int32.Parse(stringList[13]); 
-		int secondMaxReach = Int32.Parse(stringList[14]); 
-		int secondWidth = Int32.Parse(stringList[15]); 
-
-		SkillApplyType skillApplyType = (SkillApplyType)Enum.Parse(typeof(SkillApplyType), stringList[16]);
-
-		string effectName = stringList[17];
-		EffectVisualType effectVisualType = (EffectVisualType)Enum.Parse(typeof(EffectVisualType), stringList[18]);
-		EffectMoveType effectMoveType = (EffectMoveType)Enum.Parse(typeof(EffectMoveType), stringList[19]);
+		string effectName = stringList[16];
+		EffectVisualType effectVisualType = (EffectVisualType)Enum.Parse(typeof(EffectVisualType), stringList[17]);
+		EffectMoveType effectMoveType = (EffectMoveType)Enum.Parse(typeof(EffectMoveType), stringList[18]);
 	
 		this.skill = new Skill(name, requireAP, cooldown, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,
-							   includeMyself,
 							   secondRangeForm, secondMinReach, secondMaxReach, secondWidth,
 							   skillApplyType,
 							   effectName, effectVisualType, effectMoveType);

@@ -42,29 +42,29 @@ public class TileManager : MonoBehaviour {
 		return tile.transform.position;
 	}
 
-	public List<GameObject> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir, bool includeMyself)
+	public List<GameObject> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		if (form == RangeForm.Square)
 		{
-			return GetTilesInSquareRange(mid, minReach, maxReach, includeMyself);
+			return GetTilesInSquareRange(mid, minReach, maxReach);
 		}
         else if (form == RangeForm.Straight)
         {
-            return GetTilesInStraightRange(mid, minReach, maxReach, dir, includeMyself);
+            return GetTilesInStraightRange(mid, minReach, maxReach, dir);
         }
         else if (form == RangeForm.Cross)
         {
-            return GetTilesInCrossRange(mid, minReach, maxReach, includeMyself);
+            return GetTilesInCrossRange(mid, minReach, maxReach);
         }
         else if (form == RangeForm.DiagonalCross)
         {
-            return GetTilesInDiagonalCrossRange(mid, minReach, maxReach, includeMyself);
+            return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
         }
 		else
-			return GetTilesInSquareRange(mid, minReach, maxReach, includeMyself); // temp return value.
+			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
 	}
 	
-	List<GameObject> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach, bool includeMyself)
+	List<GameObject> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 		tilesInRange.Add(GetTile(mid));
@@ -73,15 +73,10 @@ public class TileManager : MonoBehaviour {
 			tilesInRange = AddNearbyTiles(tilesInRange);
 		}
 		
-		if (!includeMyself)
-		{
-			tilesInRange.Remove(tilesInRange[0]);
-		}
-		
 		return tilesInRange;
 	}
 	
-	List<GameObject> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir, bool includeMyself)
+	List<GameObject> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 		tilesInRange.Add(GetTile(mid));
@@ -95,46 +90,31 @@ public class TileManager : MonoBehaviour {
 			}
 		}
 		
-		if (!includeMyself)
-		{
-			tilesInRange.Remove(tilesInRange[0]);
-		}
-		
 		return tilesInRange;
 	}
 	
-	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach, bool includeMyself)
+	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 		tilesInRange.Add(GetTile(mid));
 
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown, false)).ToList();
-        
-        if(!includeMyself)
-        {
-            tilesInRange.Remove(tilesInRange[0]);
-        }
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
         
         return tilesInRange;
     }
     
-    List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach, bool includeMyself)
+    List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
     {
         List<GameObject> tilesInRange = new List<GameObject>();
         tilesInRange.Add(GetTile(mid));
 
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up, false)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down, false)).ToList();
-        
-        if(!includeMyself)
-        {
-            tilesInRange.Remove(tilesInRange[0]);
-        }
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
+        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
         
         return tilesInRange;
     }
@@ -261,8 +241,6 @@ public class TileManager : MonoBehaviour {
 		GameObject tile = Instantiate(tilePrefab, new Vector3(tileWidth * (j+i) * 0.5f, tileHeight * (j-i) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
 		tile.GetComponent<Tile>().SetTilePos(i, j);
 		tile.GetComponent<Tile>().SetTileInfo(tileForm, tileElement);
-		// tile.GetComponent<Tile>().SetTileForm(tileForm);
-		// tile.GetComponent<Tile>().SetTileElement(tileElement);
 		
 		tiles.Add(new Vector2(i, j), tile);
 	}

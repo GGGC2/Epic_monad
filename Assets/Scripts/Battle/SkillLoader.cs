@@ -19,8 +19,7 @@ public class SkillLoader {
 		Skill skill1 = new Skill("암흑 폭발", 40, 0, 
 								 1.0f, 
 								 SkillType.Point,
-								 RangeForm.Square, 0, 4, 0, 
-								 false,
+								 RangeForm.Square, 1, 4, 0, 
 								 RangeForm.Square, 0, 1, 0,
 								 SkillApplyType.Damage,
 								 "darkBall", EffectVisualType.Area, EffectMoveType.Move);
@@ -28,15 +27,13 @@ public class SkillLoader {
 								 1.0f, 
 								 SkillType.Point,
 								 RangeForm.Cross, 0, 4, 0, 
-								 true,
 								 RangeForm.Square, 0, 1, 0,
 								 SkillApplyType.Heal,
 								 "lightHeal", EffectVisualType.Individual, EffectMoveType.NonMove);
 		Skill skill3 = new Skill("영혼의 불꽃", 100, 0, 
 								 3.0f, 
 								 SkillType.Area,
-								 RangeForm.Straight, 0, 2, 0, 
-								 false,
+								 RangeForm.Straight, 1, 2, 0, 
 								 RangeForm.Square, 0, 2, 0,
 								 SkillApplyType.Damage,
 								 "darkExplosion", EffectVisualType.Area, EffectMoveType.NonMove);
@@ -44,15 +41,13 @@ public class SkillLoader {
 								 1.5f, 
 								 SkillType.Area,
 								 RangeForm.Square, 0, 0, 0,
-								 true,
 								 RangeForm.Square, 0, 0, 0,
 								 SkillApplyType.Etc,
 								 "lightShield", EffectVisualType.Individual, EffectMoveType.NonMove);
 		Skill skill5 = new Skill("사념 포박", 160, 0, 
 								 2.0f, 
 								 SkillType.Point,
-								 RangeForm.Square, 0, 3, 0, 
-								 false,
+								 RangeForm.Square, 1, 3, 0, 
 								 RangeForm.Square, 0, 1, 0,
 								 SkillApplyType.Damage,
 								 "darkBall", EffectVisualType.Area, EffectMoveType.Move);

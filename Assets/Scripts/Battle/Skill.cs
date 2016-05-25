@@ -20,7 +20,6 @@ public class Skill {
 	int firstMinReach;
 	int firstMaxReach;
 	int firstWidth;
-	bool includeMyself;
 	// 2차범위.   ** 범위형의 경우 반드시 1차범위 = 2차범위! **
 	RangeForm secondRangeForm;
 	int secondMinReach;
@@ -38,7 +37,6 @@ public class Skill {
 				 float powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
-				 bool includeMyself,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 				 SkillApplyType skillApplyType,
 				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
@@ -52,7 +50,6 @@ public class Skill {
 		this.firstMinReach = firstMinReach;
 		this.firstMaxReach = firstMaxReach;
 		this.firstWidth = firstWidth;
-		this.includeMyself = includeMyself;
 		this.secondRangeForm = secondRangeForm;
 		this.secondMinReach = secondMinReach;
 		this.secondMaxReach = secondMaxReach;
@@ -72,7 +69,6 @@ public class Skill {
 	public int GetFirstMinReach() {return firstMinReach;}
 	public int GetFirstMaxReach() {return firstMaxReach;}
 	public int GetFirstWidth() {return firstWidth;}
-	public bool GetIncludeMyself() {return includeMyself;}
 	public RangeForm GetSecondRangeForm() {return secondRangeForm;}
 	public int GetSecondMinReach() {return secondMinReach;}
 	public int GetSecondMaxReach() {return secondMaxReach;}
