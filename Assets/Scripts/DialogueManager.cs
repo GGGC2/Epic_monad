@@ -123,12 +123,20 @@ public class DialogueManager : MonoBehaviour {
                 if (dialogueDataList[line].GetEffectSubType() == "left")
                 {
                     leftUnit = dialogueDataList[line].GetNameInCode();
-                    leftPortrait.sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+                    Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+                    if (loadedSprite != null)                
+                        leftPortrait.sprite = loadedSprite;
+                    else
+                        leftPortrait.sprite = transparent;
                 }
                 else if (dialogueDataList[line].GetEffectSubType() == "right")
                 {
                     rightUnit = dialogueDataList[line].GetNameInCode();
-                    rightPortrait.sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+                    Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+                    if (loadedSprite != null)                
+                        rightPortrait.sprite = loadedSprite;
+                    else
+                        rightPortrait.sprite = transparent;
                 }
                 else
                 {
@@ -148,6 +156,15 @@ public class DialogueManager : MonoBehaviour {
                     rightUnit = null;
                     rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
                     isLeftUnitOld = true;
+                }
+                // 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
+                else if (dialogueDataList[line].GetEffectSubType() == "all")
+                {
+                    leftUnit = null;
+                    leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+                    rightUnit = null;
+                    rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+                    isLeftUnitOld = false;
                 }
                 else
                 {
