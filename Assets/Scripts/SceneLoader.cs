@@ -23,7 +23,7 @@ public class SceneLoader : MonoBehaviour {
 		for (int i = 0; i < 20; i++)
 		{
 			fadeoutScreenObject.GetComponent<Image>().color -= new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.05f);
 		}
 		fadeoutScreenObject.SetActive(false);
 	}
@@ -34,7 +34,7 @@ public class SceneLoader : MonoBehaviour {
 		for (int i = 0; i < 20; i++)
 		{
 			fadeoutScreenObject.GetComponent<Image>().color += new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.05f);
 		}
 		Application.LoadLevel(nextSceneName);
 	}
