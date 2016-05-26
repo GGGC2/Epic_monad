@@ -104,7 +104,7 @@ public class DialogueManager : MonoBehaviour {
                 rightPortrait.color = Color.white;
 
             if (dialogueDataList[line].GetName() != "-")
-                nameText.text = "[" + dialogueDataList[line].GetName() + "]";
+                nameText.text = dialogueDataList[line].GetName();
             else
                 nameText.text = null;
             dialogueText.text = dialogueDataList[line].GetDialogue();
@@ -122,21 +122,23 @@ public class DialogueManager : MonoBehaviour {
             {
                 if (dialogueDataList[line].GetEffectSubType() == "left")
                 {
-                    leftUnit = dialogueDataList[line].GetNameInCode();
                     Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-                    if (loadedSprite != null)                
+                    if (loadedSprite != null) 
+                    {
+                        leftUnit = dialogueDataList[line].GetNameInCode();               
                         leftPortrait.sprite = loadedSprite;
-                    else
-                        leftPortrait.sprite = transparent;
+                        isLeftUnitOld = false;
+                    }
                 }
                 else if (dialogueDataList[line].GetEffectSubType() == "right")
                 {
-                    rightUnit = dialogueDataList[line].GetNameInCode();
                     Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-                    if (loadedSprite != null)                
+                    if (loadedSprite != null) 
+                    {      
+                        rightUnit = dialogueDataList[line].GetNameInCode();         
                         rightPortrait.sprite = loadedSprite;
-                    else
-                        rightPortrait.sprite = transparent;
+                        isLeftUnitOld = true;
+                    }
                 }
                 else
                 {
