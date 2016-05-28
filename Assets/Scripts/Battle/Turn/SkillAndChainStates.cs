@@ -76,8 +76,7 @@ namespace Battle.Turn
 															selectedUnit.GetPosition(),
 															selectedSkill.GetSecondMinReach(),
 															selectedSkill.GetSecondMaxReach(),
-															selectedUnit.GetDirection(),
-															false);
+															selectedUnit.GetDirection());
 
 				battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
 			}
@@ -85,7 +84,6 @@ namespace Battle.Turn
 			while (battleData.currentState == CurrentState.SelectSkillApplyDirection)
 			{
 				Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
-				// Debug.LogWarning(newDirection);
 				if (beforeDirection != newDirection)
 				{
 					battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
@@ -96,8 +94,7 @@ namespace Battle.Turn
 																selectedUnit.GetPosition(),
 																selectedSkill.GetSecondMinReach(),
 																selectedSkill.GetSecondMaxReach(),
-																selectedUnit.GetDirection(),
-																false);
+																selectedUnit.GetDirection());
 
 					battleData.tileManager.ChangeTilesToSeletedColor(selectedTiles, TileColor.Red);
 				}
@@ -150,8 +147,7 @@ namespace Battle.Turn
 														selectedUnitPos,
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
-														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
-														selectedSkill.GetIncludeMyself());
+														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
 				battleData.tileManager.ChangeTilesToSeletedColor(activeRange, TileColor.Red);
 
 				battleData.rightClicked = false;
@@ -287,9 +283,8 @@ namespace Battle.Turn
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
-																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection(),
-																			includeMyself: true);
-				if ((selectedSkill.GetSkillType() == SkillType.Area) && (!selectedSkill.GetIncludeMyself()))
+																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
+				if (selectedSkill.GetSkillType() == SkillType.Area)
 					selectedTiles.Remove(targetTile.gameObject);
 				return selectedTiles;
 		}
@@ -446,8 +441,6 @@ namespace Battle.Turn
 				}
 			}
 
-			// tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
-
 			int requireAP = appliedSkill.GetRequireAP();
 			if (unitInChain.gameObject == battleData.selectedUnitObject)
 				unitInChain.UseActionPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
@@ -543,7 +536,6 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = false;
-			// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
 		}
 
 		private static IEnumerator ApplySkillEffect(Skill appliedSkill, GameObject unitObject, List<GameObject> selectedTiles)
