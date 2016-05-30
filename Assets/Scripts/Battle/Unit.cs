@@ -13,6 +13,7 @@ public class Unit : MonoBehaviour
 	GameObject activeArrowIcon;
 	GameObject bounsTextObject;
 	HealthViewer healthViewer;
+	GameObject chainAttackerIcon;
 
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
@@ -582,6 +583,16 @@ public class Unit : MonoBehaviour
 		chainTextObject.SetActive(false);
 	}
 
+	public void ShowChainIcon()
+	{
+		chainAttackerIcon.SetActive(true);
+	}
+
+	public void HideChainIcon()
+	{
+		chainAttackerIcon.SetActive(false);
+	}
+
 	void ApplyStats()
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
@@ -659,11 +670,13 @@ public class Unit : MonoBehaviour
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
 		bounsTextObject = transform.Find("BounsText").gameObject;
+		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		chainTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
 		bounsTextObject.SetActive(false);
+		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}

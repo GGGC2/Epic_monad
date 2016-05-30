@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
 using Enums;
@@ -138,6 +139,14 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		if (IsUnitOnTile())
 		{
 			ColorChainTilesByUnit.Show(unitOnTile.GetComponent<Unit>());
+
+			BattleData battleManager = FindObjectOfType<BattleManager>().battleData;
+			List<Unit> unitsTargetThisTile = battleManager.GetUnitsTargetThisTile(this);
+			foreach (Unit unit in unitsTargetThisTile)
+			{
+				unit.ShowChainIcon();
+			}
+
 			if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
 
 			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
@@ -155,6 +164,13 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		if (IsUnitOnTile())
 		{
 			ColorChainTilesByUnit.Hide(unitOnTile.GetComponent<Unit>());
+		}
+
+		BattleData battleManager = FindObjectOfType<BattleManager>().battleData;
+		List<Unit> unitsTargetThisTile = battleManager.GetUnitsTargetThisTile(this);
+		foreach (Unit unit in unitsTargetThisTile)
+		{
+			unit.HideChainIcon();
 		}
 
 		if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
