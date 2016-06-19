@@ -15,7 +15,9 @@ public class SkillLoader {
 		// RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 		// SkillApplyType skillApplyType,
 		// string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType;
-		List<Skill> skillList = new List<Skill>();
+		
+        List<Skill> skillList = new List<Skill>();
+        /*
 		Skill skill1 = new Skill("암흑 폭발", 40, 0, 
 								 1.0f, 
 								 SkillType.Point,
@@ -56,7 +58,7 @@ public class SkillLoader {
 		skillList.Add(skill3);
 		skillList.Add(skill4);
 		skillList.Add(skill5);
-		
+		*/
 		return skillList;
 	}
 }
