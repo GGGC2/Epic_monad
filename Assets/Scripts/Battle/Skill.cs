@@ -1,5 +1,6 @@
 ﻿using Enums;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Skill {
@@ -9,8 +10,8 @@ public class Skill {
 	int requireAP;
 	int cooldown;
 	
-	// damage factors. - temp.
-	float powerFactor;
+	// damage factors in datatype Dictionary
+	Dictionary<string, float> powerFactor = new Dictionary<string, float>();
 	
 	// reach & range
 	// 지정/범위/경로. 
@@ -34,7 +35,7 @@ public class Skill {
 	EffectMoveType effectMoveType;
 	
 	public Skill(string name, int requireAP, int cooldown, 
-				 float powerFactor,
+				 Dictionary<string, float> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
@@ -63,7 +64,7 @@ public class Skill {
 	public string GetName() {return name;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}	
-	public float GetPowerFactor() {return powerFactor;}
+	public float GetPowerFactor() {return powerFactor["basePower"];} // 계수의 종류를 입력받아 반환하는 형태로 보완할 예정
 	public SkillType GetSkillType() {return skillType;}
 	public RangeForm GetFirstRangeForm() {return firstRangeForm;}
 	public int GetFirstMinReach() {return firstMinReach;}

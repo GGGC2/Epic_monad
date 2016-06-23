@@ -107,7 +107,7 @@ public class UnitManager : MonoBehaviour {
 	{
 		// Decrease each buff & debuff phase
 		foreach (var unit in units)
-			unit.GetComponent<Unit>().DecreaseRemainPhaseBuffAndDebuff();
+			unit.GetComponent<Unit>().DecreaseRemainPhaseStatusEffect();
 		
 		foreach (var unit in units)
 			unit.GetComponent<Unit>().RegenerateActionPoint();

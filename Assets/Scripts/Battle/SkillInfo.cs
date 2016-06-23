@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using System;
 using Enums;
 
@@ -25,16 +27,25 @@ public class SkillInfo {
 	
 	public SkillInfo (string data)
 	{
+        Debug.Log(data);
 		string[] stringList = data.Split(',');
 
 		this.owner = stringList[0];
-		this.requireLevel = Int32.Parse(stringList[1]);
+        this.requireLevel = Int32.Parse(stringList[1]);
   
 		string name = stringList[2];
-		int requireAP = Int32.Parse(stringList[3]);
+        int requireAP = Int32.Parse(stringList[3]);
 		int cooldown = Int32.Parse(stringList[4]); 
 
-		float powerFactor = Single.Parse(stringList[5]);
+        // parsing coefficients for damage calculation
+        string powerFactorString = stringList[5];
+	    Dictionary<string, float> powerFactor = new Dictionary<string, float>();
+        string[] powerFactorList = powerFactorString.Split(' ');
+        foreach (string powerFactorPair in powerFactorList)
+        {
+            string[] parsedPowerFactorPair = powerFactorPair.Split('=');
+            powerFactor.Add(parsedPowerFactorPair[0], Convert.ToSingle(parsedPowerFactorPair[1]));                
+        }
 		
 		SkillType skillType = (SkillType)Enum.Parse(typeof(SkillType), stringList[6]);
 

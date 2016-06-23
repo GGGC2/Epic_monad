@@ -1,0 +1,4 @@
+owner,skill,name,statusEffectType,degree,amount,lastPhase,cooldown,effectName,effectVisualType,effectMoveType
+soldier01,근접공격,지속데미지,DamageOverPhase,0,10,2,0,darkBall,Individual,NonMove
+lucius,검술의 대가,기절,Faint,0,0,2,0,-,Individual,NonMove
+reina,화염 폭발,기절,Faint,0,0,2,0,-,Area,NonMove

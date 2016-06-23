@@ -98,4 +98,18 @@ public class BattleData
 		}
 		return null;
 	}
+
+	public List<Unit> GetUnitsTargetThisTile(Tile tile)
+	{
+		List<Unit> resultUnits = new List<Unit>();
+		foreach (ChainInfo chainInfo in chainList)
+		{
+			if (chainInfo.GetTargetArea().Contains(tile.gameObject))
+			{
+				resultUnits.Add(chainInfo.GetUnit().GetComponent<Unit>());
+			}
+		}
+
+		return resultUnits;
+	}
 }

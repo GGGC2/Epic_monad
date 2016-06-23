@@ -13,6 +13,7 @@ public class Unit : MonoBehaviour
 	GameObject activeArrowIcon;
 	GameObject bounsTextObject;
 	HealthViewer healthViewer;
+	GameObject chainAttackerIcon;
 
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
@@ -84,8 +85,7 @@ public class Unit : MonoBehaviour
 	public int currentHealth;
 	public int activityPoint;
 
-	List<Buff> buffList;
-	List<Debuff> debuffList;
+	List<StatusEffect> statusEffectList;
 
 	GameObject chargeEffect;
 
@@ -122,26 +122,26 @@ public class Unit : MonoBehaviour
 		int actualPower = power;
 
 		// 공격력 감소 효과 적용.
-		if (debuffList.Any(k => k.GetName() == DebuffType.PowerDecrease))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.PowerDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.PowerDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.PowerDecrease)
 				{
-					totalDegree *= (100.0f - debuff.GetDegree()) / 100.0f;
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
 			actualPower = (int)((float)actualPower * totalDegree);
 
 			// 절대치 합연산
 			int totalAmount = 0;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.PowerDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.PowerDecrease)
 				{
-					totalAmount += debuff.GetAmount();
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 			actualPower -= totalAmount;
@@ -182,18 +182,18 @@ public class Unit : MonoBehaviour
 
 	public bool IsBound()
 	{
-		return debuffList.Any(k => k.GetName() == DebuffType.Bind);
+		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind);
 	}
 
 	public bool IsSilenced()
 	{
-		return debuffList.Any(k => k.GetName() == DebuffType.Silence);
+		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
 	}
 
 	public bool IsFainted()
 	{
-		return debuffList.Any(k => k.GetName() == DebuffType.Bind) &&
-			   debuffList.Any(k => k.GetName() == DebuffType.Silence);
+		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind) &&
+			   statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
 	}
 
 	public int GetTrueDexturity()
@@ -207,19 +207,19 @@ public class Unit : MonoBehaviour
 		// FIXME : 버프 / 디버프 값 적용
 
 		// 디버프값만 적용.
-		if (debuffList.Any(k => k.GetName() == DebuffType.Faint))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Faint))
 		{
 			actualDexturity = 0;
 		}
-		else if (debuffList.Any(k => k.GetName() == DebuffType.Exhaust))
+		else if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Exhaust))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.ResistanceDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
 				{
-					totalDegree *= (100.0f - debuff.GetDegree()) / 100.0f;
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
 			actualDexturity = (int)((float)actualDexturity * totalDegree);
@@ -303,66 +303,40 @@ public class Unit : MonoBehaviour
 		return position;
 	}
 
-	public void SetBuff(Buff buff)
+	public void SetStatusEffect(StatusEffect statusEffect)
 	{
-		buffList.Add(buff);
-	}
-
-	public void RemainBuff()
-	{
-		buffList.Remove(buffList[0]);
-	}
-
-	public void RemainAllBuff()
-	{
-		buffList.Clear();
-	}
-
-	public void SetDebuff(Debuff debuff)
-	{
-		debuffList.Add(debuff);
+		statusEffectList.Add(statusEffect);
 		// 침묵이나 기절상태가 될 경우 체인 해제.
 		// FIXME : 넉백 추가할 것. (넉백은 디버프가 아니라서 다른 곳에서 적용할 듯?)
-		if (debuff.GetName() == DebuffType.Faint ||
-			debuff.GetName() == DebuffType.Silence)
+		if (statusEffect.GetStatusEffectType() == StatusEffectType.Faint ||
+			statusEffect.GetStatusEffectType() == StatusEffectType.Silence)
 		{
 			ChainList.RemoveChainsFromUnit(gameObject);
 		}
 	}
 
-	public void RemainDebuff()
+	public void RemainStatusEffect()
 	{
-		debuffList.Remove(debuffList[0]);
+		statusEffectList.Remove(statusEffectList[0]);
 	}
 
-	public void RemainAllDebuff()
+	public void RemainAllStatusEffect()
 	{
-		debuffList.Clear();
+		statusEffectList.Clear();
 	}
 
-	public void DecreaseRemainPhaseBuffAndDebuff()
+	public void DecreaseRemainPhaseStatusEffect()
 	{
-		List<Buff> newBuffList = new List<Buff>();
-		foreach (var buff in buffList)
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+		foreach (var statusEffect in statusEffectList)
 		{
-			buff.DecreaseRemainPhase();
-			if (buff.GetRemainPhase() > 0)
+			statusEffect.DecreaseRemainPhase();
+			if (statusEffect.GetRemainPhase() > 0)
 			{
-				newBuffList.Add(buff);
+				newStatusEffectList.Add(statusEffect);
 			}
 		}
-		buffList = newBuffList;
-
-		List<Debuff> newDebuffList = new List<Debuff>();
-		foreach (var debuff in debuffList)
-		{
-			debuff.DecreaseRemainPhase();
-			if (debuff.GetRemainPhase() > 0)
-			{
-				newDebuffList.Add(debuff);
-			}
-		}
-		debuffList = newDebuffList;
+		statusEffectList = newStatusEffectList;
 	}
 
 	public int GetActualDefense()
@@ -370,26 +344,26 @@ public class Unit : MonoBehaviour
 		int actualDefense = defense;
 
 		// 방어력 감소 효과 적용.
-		if (debuffList.Any(k => k.GetName() == DebuffType.DefenseDecrease))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.DefenseDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.DefenseDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.DefenseDecrease)
 				{
-					totalDegree *= (100.0f - debuff.GetDegree()) / 100.0f;
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
 			actualDefense = (int)((float)actualDefense * totalDegree);
 
 			// 절대치 합연산
 			int totalAmount = 0;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.DefenseDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.DefenseDecrease)
 				{
-					totalAmount += debuff.GetAmount();
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 			actualDefense -= totalAmount;
@@ -403,26 +377,26 @@ public class Unit : MonoBehaviour
 		int actualResistance = resistence;
 
 		// 저항력 감소 효과 적용.
-		if (debuffList.Any(k => k.GetName() == DebuffType.ResistanceDecrease))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.ResistanceDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.ResistanceDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
 				{
-					totalDegree *= (100.0f - debuff.GetDegree()) / 100.0f;
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
 			actualResistance = (int)((float)actualResistance * totalDegree);
 
 			// 절대치 합연산
 			int totalAmount = 0;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.ResistanceDecrease)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
 				{
-					totalAmount += debuff.GetAmount();
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 			actualResistance -= totalAmount;
@@ -476,13 +450,13 @@ public class Unit : MonoBehaviour
 	{
 		int totalAmount = 0;
 
-		if (debuffList.Any(k => k.GetName() == DebuffType.DamageOverPhase))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.DamageOverPhase))
 		{
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.DamageOverPhase)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.DamageOverPhase)
 				{
-					totalAmount += debuff.GetAmount();
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 
@@ -496,15 +470,15 @@ public class Unit : MonoBehaviour
 		// FIXME : 치유량 증가 효과
 
 		// 내상 효과
-		if (debuffList.Any(k => k.GetName() == DebuffType.Wound))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Wound))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
-			foreach (var debuff in debuffList)
+			foreach (var statusEffect in statusEffectList)
 			{
-				if (debuff.GetName() == DebuffType.Exhaust)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.Exhaust)
 				{
-					totalDegree *= (100.0f - debuff.GetDegree()) / 100.0f;
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
 			amount = (int)((float)amount * totalDegree);
@@ -609,6 +583,16 @@ public class Unit : MonoBehaviour
 		chainTextObject.SetActive(false);
 	}
 
+	public void ShowChainIcon()
+	{
+		chainAttackerIcon.SetActive(true);
+	}
+
+	public void HideChainIcon()
+	{
+		chainAttackerIcon.SetActive(false);
+	}
+
 	void ApplyStats()
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
@@ -656,8 +640,8 @@ public class Unit : MonoBehaviour
 		currentHealth = maxHealth;
 		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActionPoint();
 		// skillList = SkillLoader.MakeSkillList();
-		buffList = new List<Buff>();
-		debuffList = new List<Debuff>();
+
+		statusEffectList = new List<StatusEffect>();
 
 		healthViewer.SetInitHealth(maxHealth, side);
 	}
@@ -686,11 +670,13 @@ public class Unit : MonoBehaviour
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
 		bounsTextObject = transform.Find("BounsText").gameObject;
+		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		chainTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
 		bounsTextObject.SetActive(false);
+		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}
