@@ -80,8 +80,6 @@ public class BattleManager : MonoBehaviour
 
 			while (battleData.readiedUnits.Count != 0)
 			{
-				FindObjectOfType<APDisplayCurrentViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
-				FindObjectOfType<APDisplayNextViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
 				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 				yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
@@ -97,8 +95,6 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator ActionAtTurn(GameObject unit)
 	{
-		FindObjectOfType<APDisplayCurrentViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
-		FindObjectOfType<APDisplayNextViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetComponent<Unit>().GetName() + "'s turn");
