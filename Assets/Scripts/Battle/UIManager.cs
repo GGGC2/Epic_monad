@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using BattleUI;
 
 public class UIManager : MonoBehaviour
 {
+	GameObject apBarUI;
 	GameObject commandUI;
 	GameObject skillUI;
 	GameObject skillCheckUI;
@@ -16,6 +18,7 @@ public class UIManager : MonoBehaviour
 
 	private void Awake()
 	{
+		apBarUI = GameObject.Find("APBarPanel");
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
 		skillCheckUI = GameObject.Find("SkillCheckPanel");
@@ -38,6 +41,11 @@ public class UIManager : MonoBehaviour
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.SetActive(false);
 		cancelButtonUI.SetActive(false);
+	}
+
+	public void UpdateApBarUI(BattleData battleData, List<GameObject> allUnits) {
+		apBarUI.SetActive(true);
+		apBarUI.GetComponent<APBarPannel>().UpdateAPDisplay(battleData, allUnits);
 	}
 
 	public void SetCommandUIName(GameObject selectedUnitObject)
