@@ -119,10 +119,23 @@ public class UnitManager : MonoBehaviour {
 		Unit unit = unitGO.GetComponent<Unit>();
 		Unit anotherUnit = anotherUnitGO.GetComponent<Unit>();
 
-		int compareResultByCurrentActionPoint = anotherUnit.GetCurrentActivityPoint().CompareTo(unit.GetCurrentActivityPoint());
-		if (compareResultByCurrentActionPoint != 0)
+		int unitActionPoint = 0;
+		int anotherUnitActionPoint = 0;
+		if (unit.GetCurrentActivityPoint() < GetStandardActionPoint() && anotherUnit.GetCurrentActivityPoint() < GetStandardActionPoint())
 		{
-			return compareResultByCurrentActionPoint;
+			unitActionPoint = unit.GetCurrentActivityPoint() + unit.GetActualStat(Stat.Dexturity);
+			anotherUnitActionPoint = anotherUnit.GetCurrentActivityPoint() + anotherUnit.GetActualStat(Stat.Dexturity);
+		}
+		else
+		{
+			unitActionPoint = unit.GetCurrentActivityPoint();
+			anotherUnitActionPoint = anotherUnit.GetCurrentActivityPoint();
+		}
+
+		int compareResultByActionPoint = anotherUnitActionPoint.CompareTo(unitActionPoint);
+		if (compareResultByActionPoint != 0)
+		{
+			return compareResultByActionPoint;
 		}
 
 		int compareResultByTrueDexturity = anotherUnit.GetActualStat(Stat.Dexturity).CompareTo(unit.GetActualStat(Stat.Dexturity));
