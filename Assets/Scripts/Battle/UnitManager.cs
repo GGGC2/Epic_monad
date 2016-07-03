@@ -114,19 +114,24 @@ public class UnitManager : MonoBehaviour {
 			unit.GetComponent<Unit>().RegenerateActionPoint();
 	}
 	
-	int CompareByActionPoint(GameObject unit, GameObject anotherUnit)
+	int CompareByActionPoint(GameObject unitGO, GameObject anotherUnitGO)
 	{
-		int compareResultByCurrentActionPoint = anotherUnit.GetComponent<Unit>().GetCurrentActivityPoint().CompareTo(unit.GetComponent<Unit>().GetCurrentActivityPoint());
-		if (compareResultByCurrentActionPoint == 0)
+		Unit unit = unitGO.GetComponent<Unit>();
+		Unit anotherUnit = anotherUnitGO.GetComponent<Unit>();
+
+		int compareResultByCurrentActionPoint = anotherUnit.GetCurrentActivityPoint().CompareTo(unit.GetCurrentActivityPoint());
+		if (compareResultByCurrentActionPoint != 0)
 		{
-			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetActualStat(Stat.Dexturity).CompareTo(unit.GetComponent<Unit>().GetActualStat(Stat.Dexturity));
-			if (compareResultByTrueDexturity == 0)
-				return anotherUnit.GetInstanceID().CompareTo(unit.GetInstanceID());
-			else
-				return compareResultByTrueDexturity;
-		}
-		else
 			return compareResultByCurrentActionPoint;
+		}
+
+		int compareResultByTrueDexturity = anotherUnit.GetActualStat(Stat.Dexturity).CompareTo(unit.GetActualStat(Stat.Dexturity));
+		if (compareResultByTrueDexturity != 0)
+		{
+			return compareResultByTrueDexturity;
+		}
+
+		return anotherUnit.GetInstanceID().CompareTo(unit.GetInstanceID());
 	}
 	
 	void LoadSkills()
