@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using UnityEngine.UI;
 
 public class APDisplayNextViewer : MonoBehaviour {
@@ -40,7 +41,7 @@ public class APDisplayNextViewer : MonoBehaviour {
 	void ApplyNextAPText(GameObject unit, GameObject portrait)
 	{
 		int nextPhaseAP = unit.GetComponent<Unit>().GetCurrentActivityPoint() +
-						  unit.GetComponent<Unit>().GetActualDexturity();  
+						  unit.GetComponent<Unit>().GetActualStat(Stat.Dexturity);  
 		
 		portrait.transform.Find("APText").GetComponent<Text>().text = nextPhaseAP.ToString();
 	}
@@ -49,7 +50,7 @@ public class APDisplayNextViewer : MonoBehaviour {
 	{
 		int standardActionPoint = FindObjectOfType<UnitManager>().GetStandardActionPoint();
 		int currentPhaseAP = unit.GetComponent<Unit>().GetCurrentActivityPoint();
-		int nextPhaseAP = currentPhaseAP + unit.GetComponent<Unit>().GetActualDexturity();
+		int nextPhaseAP = currentPhaseAP + unit.GetComponent<Unit>().GetActualStat(Stat.Dexturity);
 		
 		if (isFirst)
 		{
@@ -96,7 +97,7 @@ public class APDisplayNextViewer : MonoBehaviour {
 		if (unitInfo.GetCurrentActivityPoint() >= standardActionPoint)
 			nextPhaseAP = 1000 + unitInfo.GetCurrentActivityPoint();
 		else
-			nextPhaseAP = unitInfo.GetCurrentActivityPoint() + unitInfo.GetActualDexturity();
+			nextPhaseAP = unitInfo.GetCurrentActivityPoint() + unitInfo.GetActualStat(Stat.Dexturity);
 
 		return nextPhaseAP;   
 	}
@@ -106,7 +107,7 @@ public class APDisplayNextViewer : MonoBehaviour {
 		int compareResultByCurrentActionPoint = anotherUnit.GetComponent<Unit>().GetCurrentActivityPoint().CompareTo(unit.GetComponent<Unit>().GetCurrentActivityPoint());
 		if (compareResultByCurrentActionPoint == 0)
 		{
-			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetTrueDexturity().CompareTo(unit.GetComponent<Unit>().GetTrueDexturity());
+			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetStat(Stat.Dexturity).CompareTo(unit.GetComponent<Unit>().GetStat(Stat.Dexturity));
 			if (compareResultByTrueDexturity == 0)
 				return anotherUnit.GetInstanceID().CompareTo(unit.GetInstanceID());
 			else

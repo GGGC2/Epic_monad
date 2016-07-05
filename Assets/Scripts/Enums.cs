@@ -61,6 +61,15 @@ namespace Enums {
 		Point, Area, Route
 	}
 	
+    public enum Stat
+    {
+        MaxHealth, 
+        Power,
+        Defense,
+        Resistance,
+        Dexturity
+    }
+    
 	public enum RangeForm
 	{
 		Square,
@@ -76,9 +85,11 @@ namespace Enums {
 	
 	public enum StatusEffectType
 	{
+        MaxHealthIncrease,
         PowerIncrease,
         DefenseIncrease,
-        ResistanceIncrease,
+        ResistanceIncrease, 
+        DexturityIncrease,
         ContinuousHeal,
 		Retire,
 		DamageOverPhase,
@@ -88,9 +99,11 @@ namespace Enums {
 		Faint,
 		Slow,
 		Wound,
+        MaxHealthDecrease,
 		PowerDecrease,
 		DefenseDecrease,
 		ResistanceDecrease,
+        DexturityDecrease, 
 		Mark,
 		Poison,
 		Bleed

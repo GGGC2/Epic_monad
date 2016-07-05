@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 
 public class UnitManager : MonoBehaviour {
 
@@ -118,7 +119,7 @@ public class UnitManager : MonoBehaviour {
 		int compareResultByCurrentActionPoint = anotherUnit.GetComponent<Unit>().GetCurrentActivityPoint().CompareTo(unit.GetComponent<Unit>().GetCurrentActivityPoint());
 		if (compareResultByCurrentActionPoint == 0)
 		{
-			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetTrueDexturity().CompareTo(unit.GetComponent<Unit>().GetTrueDexturity());
+			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetActualStat(Stat.Dexturity).CompareTo(unit.GetComponent<Unit>().GetActualStat(Stat.Dexturity));
 			if (compareResultByTrueDexturity == 0)
 				return anotherUnit.GetInstanceID().CompareTo(unit.GetInstanceID());
 			else

@@ -57,27 +57,27 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdateHp(Unit unit)
 	{
-		hpText.text = unit.GetCurrentHealth() + " / " + unit.GetMaxHealth();
+		hpText.text = unit.GetCurrentHealth() + " / " + unit.GetStat(Stat.MaxHealth);
 	}
 
 	void UpdateAp(Unit unit)
 	{
-		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetActualDexturity() + ")";
+		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetActualStat(Stat.Dexturity) + ")";
 	}
 
 	void UpdatePower(Unit unit)
 	{
-		powerText.text = unit.GetActualPower().ToString();
+		powerText.text = unit.GetActualStat(Stat.Power).ToString();
 	}
 
 	void UpdateDefense(Unit unit)
 	{
-		defenseText.text = unit.GetActualDefense().ToString();
+		defenseText.text = unit.GetActualStat(Stat.Defense).ToString();
 	}
 
 	void UpdateResistance(Unit unit)
 	{
-		resistanceText.text = unit.GetActualResistance().ToString();
+		resistanceText.text = unit.GetActualStat(Stat.Resistance).ToString();
 	}
 
 	void SetClassImage(UnitClass unitClass)

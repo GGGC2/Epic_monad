@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using UnityEngine;
 using Enums;
 
 public class StatusEffectInfo {
@@ -32,17 +33,22 @@ public class StatusEffectInfo {
   
 		string name = stringList[2];
 		StatusEffectType statusEffectType = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stringList[3]);
-        float degree = Single.Parse(stringList[4]);
-        int amount = Int32.Parse(stringList[5]);
-        int remainPhase = Int32.Parse(stringList[6]);
-		int cooldown = Int32.Parse(stringList[7]); 
+        bool isInfinite = bool.Parse(stringList[4]);
+        bool isStackable = bool.Parse(stringList[5]);
+        bool isRemovable = bool.Parse(stringList[6]);
+        float degree = Single.Parse(stringList[7]);
+        int amount = Int32.Parse(stringList[8]);
+        int remainPhase = Int32.Parse(stringList[9]);
+        int remainStack = Int32.Parse(stringList[10]);
+		int cooldown = Int32.Parse(stringList[11]); 
 
-		string effectName = stringList[8];
-		EffectVisualType effectVisualType = (EffectVisualType)Enum.Parse(typeof(EffectVisualType), stringList[8]);
-		EffectMoveType effectMoveType = (EffectMoveType)Enum.Parse(typeof(EffectMoveType), stringList[9]);
+		string effectName = stringList[12];
+		EffectVisualType effectVisualType = (EffectVisualType)Enum.Parse(typeof(EffectVisualType), stringList[13]);
+		EffectMoveType effectMoveType = (EffectMoveType)Enum.Parse(typeof(EffectMoveType), stringList[14]);
 	
 		this.statusEffect = new StatusEffect(name, statusEffectType, 
-                                             degree, amount, remainPhase, cooldown, 
+                                             isInfinite, isStackable, isRemovable, 
+                                             degree, amount, remainPhase, remainStack, cooldown, 
                                              effectName, effectVisualType, effectMoveType);
 	}
 }

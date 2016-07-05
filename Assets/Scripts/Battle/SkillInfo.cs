@@ -27,7 +27,6 @@ public class SkillInfo {
 	
 	public SkillInfo (string data)
 	{
-        Debug.Log(data);
 		string[] stringList = data.Split(',');
 
 		this.owner = stringList[0];

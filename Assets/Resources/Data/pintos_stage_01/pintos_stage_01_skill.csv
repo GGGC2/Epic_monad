@@ -1,4 +1,4 @@
 owner,requireLevel,name,requireAP,cooldown,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,includeMyself,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType
-soldier01,1,근접공격,50,0,basePower=1,Point,Cross,0,1,0,FALSE,Square,0,1,0,Damage,-,Individual,NonMove
-lucius,1,검술의 대가,40,0,basePower=1,Point,Cross,0,1,0,FALSE,Square,0,1,0,Damage,-,Individual,NonMove
-reina,1,화염 폭발,45,0,basePower=1,Point,Square,0,3,0,FALSE,Square,0,0,0,Damage,-,Area,NonMove
+soldier01,1,근접공격,50,0,Power=1,Point,Cross,0,1,0,FALSE,Square,0,1,0,Damage,-,Individual,NonMove
+lucius,1,검술의 대가,40,0,Power=1,Point,Cross,0,1,0,FALSE,Square,0,1,0,Damage,-,Individual,NonMove
+reina,1,화염 폭발,45,0,Power=1,Point,Square,0,3,0,FALSE,Square,0,0,0,Damage,-,Area,NonMove

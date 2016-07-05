@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Enums;
 using System.Linq;
+using Enums;
 
 public class Unit : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class Unit : MonoBehaviour
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
-	GameObject bounsTextObject;
+	GameObject bonusTextObject;
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
@@ -30,7 +31,7 @@ public class Unit : MonoBehaviour
 	float baseHealth; // 체력
 	float basePower; // 공격력
 	float baseDefense; // 방어력
-	float baseResistence; // 저항력
+	float baseResistance; // 저항력
 	float baseDexturity; // 행동력
 
 	// 계산 관련 값들 - 절대값으로 변경해서 현재는 쓰지 않음.
@@ -52,12 +53,12 @@ public class Unit : MonoBehaviour
 	// float defenseInitialGrowthInterval = 0.75f;
 	// float defenseStandardValue = 40f;
 	// float defenseStandardValueInterval = 10f;
-	// float resistenceAcceleration = 0f;
-	// float resistenceAccelerationInterval = 0f;
-	// float resistenceInitialGrowth = 4.4f;
-	// float resistenceInitialGrowthInterval = 0.75f;
-	// float resistenceStandardValue = 40f;
-	// float resistenceStandardValueInterval = 10f;
+	// float resistanceAcceleration = 0f;
+	// float resistanceAccelerationInterval = 0f;
+	// float resistanceInitialGrowth = 4.4f;
+	// float resistanceInitialGrowthInterval = 0.75f;
+	// float resistanceStandardValue = 40f;
+	// float resistanceStandardValueInterval = 10f;
 	// float dexturityAcceleration = 0f;
 	// float dexturityAccelerationInterval = 0f;
 	// float dexturityInitialGrowth = 0.8f;
@@ -69,10 +70,8 @@ public class Unit : MonoBehaviour
 	int maxHealth;
 	int power;
 	int defense;
-	int resistence;
+	int resistance;
 	int dexturity;
-	int reach;
-	int range;
 
 	// type.
 	UnitClass unitClass;
@@ -115,40 +114,76 @@ public class Unit : MonoBehaviour
 	{
 		Destroy(chargeEffect);
 	}
-
-	// FIXME : 임시로 공격력만 외부에서 참조.
-	public int GetActualPower()
-	{
-		int actualPower = power;
-
-		// 공격력 감소 효과 적용.
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.PowerDecrease))
+    
+    public int GetStat(Stat stat)
+    {
+        if(stat == Stat.MaxHealth) {return maxHealth;}
+        else if(stat == Stat.Power) {return power;}
+        else if(stat == Stat.Defense) {return defense;}
+        else if(stat == Stat.Resistance) {return resistance;}
+        else return dexturity;
+    }
+    
+    public int GetActualStat(Stat stat)
+    {
+        int actualStat = GetStat(stat);
+        StatusEffectType statusIncrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Increase");
+        StatusEffectType statusDecrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Decrease");
+        
+        // stat decrease by debuffs
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.PowerDecrease)
+				if (statusEffect.GetStatusEffectType() == statusDecrease)
 				{
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
-			actualPower = (int)((float)actualPower * totalDegree);
+			actualStat = (int)((float)actualStat * totalDegree);
 
 			// 절대치 합연산
 			int totalAmount = 0;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.PowerDecrease)
+				if (statusEffect.GetStatusEffectType() == statusDecrease)
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
 			}
-			actualPower -= totalAmount;
-		}
+			actualStat -= totalAmount;
+        }
+        
+        // stat increase by buffs
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusIncrease))
+		{
+			// 상대치 곱연산
+			float totalDegree = 1.0f;
+			foreach (var statusEffect in statusEffectList)
+			{
+				if (statusEffect.GetStatusEffectType() == statusIncrease)
+				{
+					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
+				}
+			}
+			actualStat = (int)((float)actualStat * totalDegree);
 
-		return actualPower;
-	}
+			// 절대치 합연산
+			int totalAmount = 0;
+			foreach (var statusEffect in statusEffectList)
+			{
+				if (statusEffect.GetStatusEffectType() == statusIncrease)
+				{
+					totalAmount += statusEffect.GetAmount();
+				}
+			}
+			actualStat += totalAmount;
+        }
+        
+        return actualStat;
+    }
 
 	public void SetActive()
 	{
@@ -170,16 +205,6 @@ public class Unit : MonoBehaviour
 		return skillList;
 	}
 
-	public int GetCurrentHealth()
-	{
-		return currentHealth;
-	}
-
-	public int GetMaxHealth()
-	{
-		return maxHealth;
-	}
-
 	public bool IsBound()
 	{
 		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind);
@@ -195,36 +220,10 @@ public class Unit : MonoBehaviour
 		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind) &&
 			   statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
 	}
-
-	public int GetTrueDexturity()
+    
+    public int GetCurrentHealth()
 	{
-		return dexturity;
-	}
-
-	public int GetActualDexturity()
-	{
-		int actualDexturity = dexturity;
-		// FIXME : 버프 / 디버프 값 적용
-
-		// 디버프값만 적용.
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Faint))
-		{
-			actualDexturity = 0;
-		}
-		else if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Exhaust))
-		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualDexturity = (int)((float)actualDexturity * totalDegree);
-		}
-		return actualDexturity;
+		return currentHealth;
 	}
 
 	public int GetCurrentActivityPoint()
@@ -339,72 +338,6 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
-	public int GetActualDefense()
-	{
-		int actualDefense = defense;
-
-		// 방어력 감소 효과 적용.
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.DefenseDecrease))
-		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.DefenseDecrease)
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualDefense = (int)((float)actualDefense * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.DefenseDecrease)
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualDefense -= totalAmount;
-		}
-
-		return actualDefense;
-	}
-
-	public int GetActualResistance()
-	{
-		int actualResistance = resistence;
-
-		// 저항력 감소 효과 적용.
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.ResistanceDecrease))
-		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualResistance = (int)((float)actualResistance * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.ResistanceDecrease)
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualResistance -= totalAmount;
-		}
-
-		return actualResistance;
-	}
-
 	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
 	{
 		int actualDamage = 0;
@@ -416,12 +349,12 @@ public class Unit : MonoBehaviour
 		if (unitClass == UnitClass.Melee)
 		{
 			// 실제 피해 = 원래 피해 x 200/(200+방어력)
-			actualDamage = amount * 200 / (200 + GetActualDefense());
+			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Defense));
 			Debug.Log("Actual melee damage : " + actualDamage);
 		}
 		else if (unitClass == UnitClass.Magic)
 		{
-			actualDamage = amount * 200 / (200 + GetActualResistance());
+			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Resistance));
 			Debug.Log("Actual magic damage : " + actualDamage);
 		}
 		else if (unitClass == UnitClass.None)
@@ -500,7 +433,7 @@ public class Unit : MonoBehaviour
 
 	public void RegenerateActionPoint()
 	{
-		activityPoint += GetActualDexturity(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
+		activityPoint += GetActualStat(Stat.Dexturity); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
 	}
 
@@ -532,7 +465,7 @@ public class Unit : MonoBehaviour
 		this.baseHealth = unitInfo.baseHealth;
 		this.basePower = unitInfo.basePower;
 		this.baseDefense = unitInfo.baseDefense;
-		this.baseResistence = unitInfo.baseResistence;
+		this.baseResistance = unitInfo.baseResistance;
 		this.baseDexturity = unitInfo.baseDexturity;
 		this.unitClass = unitInfo.unitClass;
 		this.element = unitInfo.element;
@@ -560,16 +493,16 @@ public class Unit : MonoBehaviour
 	}
 
 	// using test.
-	public void PrintCelestialBouns()
+	public void PrintCelestialBonus()
 	{
-		bounsTextObject.SetActive(true);
-		bounsTextObject.GetComponent<TextMesh>().text = "Celestial bouns";
+		bonusTextObject.SetActive(true);
+		bonusTextObject.GetComponent<TextMesh>().text = "Celestial bonus";
 		Invoke("ActiveFalseAtDelay", 0.4f);
 	}
 
 	void ActiveFalseAtDelay()
 	{
-		bounsTextObject.SetActive(false);
+		bonusTextObject.SetActive(false);
 	}
 
 	public void PrintChainText(int chainCount)
@@ -600,7 +533,7 @@ public class Unit : MonoBehaviour
 		maxHealth = (int)baseHealth;
 		power = (int)basePower;
 		defense = (int)baseDefense;
-		resistence = (int)baseResistence;
+		resistance = (int)baseResistance;
 		dexturity = (int)baseDexturity;
 
 		// 절대값으로 그대로 넣도록 변경.
@@ -619,11 +552,11 @@ public class Unit : MonoBehaviour
 		// float actualDefenseStandardValue = defenseStandardValue + (defenseStandardValueInterval * baseDefense);
 		// defense = (int)((actualDefenseAcceleration * partyLevel * (partyLevel - 1f) / 2f)
 		// 				   + (actualDefenseInitialGrowth * partyLevel) + actualDefenseStandardValue);
-		// float actualResistenceAcceleration = resistenceAcceleration + (resistenceAccelerationInterval * baseResistence);
-		// float actualResistenceInitialGrowth = resistenceInitialGrowth + (resistenceInitialGrowthInterval * baseResistence);
-		// float actualResistenceStandardValue = resistenceStandardValue + (resistenceStandardValueInterval * baseResistence);
-		// resistence = (int)((actualResistenceAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualResistenceInitialGrowth * partyLevel) + actualResistenceStandardValue);
+		// float actualResistanceAcceleration = resistanceAcceleration + (resistanceAccelerationInterval * baseResistance);
+		// float actualResistanceInitialGrowth = resistanceInitialGrowth + (resistanceInitialGrowthInterval * baseResistance);
+		// float actualResistanceStandardValue = resistanceStandardValue + (resistanceStandardValueInterval * baseResistance);
+		// resistance = (int)((actualResistanceAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+		// 				   + (actualResistanceInitialGrowth * partyLevel) + actualResistanceStandardValue);
 		// float actualDexturityAcceleration = dexturityAcceleration + (dexturityAccelerationInterval * baseDexturity);
 		// float actualDexturityInitialGrowth = dexturityInitialGrowth + (dexturityInitialGrowthInterval * baseDexturity);
 		// float actualDexturityStandardValue = dexturityStandardValue + (dexturityStandardValueInterval * baseDexturity);
@@ -669,13 +602,13 @@ public class Unit : MonoBehaviour
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
-		bounsTextObject = transform.Find("BounsText").gameObject;
+		bonusTextObject = transform.Find("BonusText").gameObject;
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		chainTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
-		bounsTextObject.SetActive(false);
+		bonusTextObject.SetActive(false);
 		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();

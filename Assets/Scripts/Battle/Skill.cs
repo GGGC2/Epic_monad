@@ -1,6 +1,7 @@
 ﻿using Enums;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Skill {
@@ -64,7 +65,8 @@ public class Skill {
 	public string GetName() {return name;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}	
-	public float GetPowerFactor() {return powerFactor["basePower"];} // 계수의 종류를 입력받아 반환하는 형태로 보완할 예정
+    public Dictionary<string, float> GetPowerFactorDict() {return powerFactor;}
+	public float GetPowerFactor(Stat status) {return powerFactor[status.ToString()];} 
 	public SkillType GetSkillType() {return skillType;}
 	public RangeForm GetFirstRangeForm() {return firstRangeForm;}
 	public int GetFirstMinReach() {return firstMinReach;}

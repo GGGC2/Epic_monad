@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enums;
@@ -396,14 +397,23 @@ namespace Battle.Turn
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Damage)
 				{
 					// 방향 보너스.
-					float directionBouns = Utility.GetDirectionBonus(unitObjectInChain, target);
+					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
 
 					// 천체속성 보너스.
-					float celestialBouns = Utility.GetCelestialBouns(unitObjectInChain, target);
-					if (celestialBouns == 1.2f) unitObjectInChain.GetComponent<Unit>().PrintCelestialBouns();
-					else if (celestialBouns == 0.8f) target.GetComponent<Unit>().PrintCelestialBouns();
+					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
+					if (celestialBonus == 1.2f) unitObjectInChain.GetComponent<Unit>().PrintCelestialBonus();
+					else if (celestialBonus == 0.8f) target.GetComponent<Unit>().PrintCelestialBonus();
+                    
+                    // 총 계수.
+                    float actualPowerFactor = 0.0f;
+                    
+                    foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+                    {
+                        Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+                        actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
+                    }
 
-					var damageAmount = (int)((chainCombo * battleData.chainDamageFactor) * directionBouns * celestialBouns * unitInChain.GetActualPower() * appliedSkill.GetPowerFactor());
+					var damageAmount = (int)((chainCombo * battleData.chainDamageFactor) * directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(unitInChain.GetUnitClass(), damageAmount, false);
 
 					if (target == targets[targets.Count-1])
@@ -419,7 +429,16 @@ namespace Battle.Turn
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Heal)
 				{
-					var recoverAmount = (int)(unitInChain.GetActualPower() * appliedSkill.GetPowerFactor());
+                    // 총 계수.
+                    float actualPowerFactor = 0.0f;
+                    
+                    foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+                    {
+                        Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+                        actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
+                    }
+                    
+					var recoverAmount = (int) actualPowerFactor;
 					var recoverHealthCoroutine = target.GetComponent<Unit>().RecoverHealth(recoverAmount);
 
 					if (target == targets[targets.Count-1])
@@ -481,14 +500,23 @@ namespace Battle.Turn
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Damage)
 				{
 					// 방향 보너스.
-					float directionBouns = Utility.GetDirectionBonus(battleData.selectedUnitObject, target);
+					float directionBonus = Utility.GetDirectionBonus(battleData.selectedUnitObject, target);
 
 					// 천체속성 보너스.
-					float celestialBouns = Utility.GetCelestialBouns(battleData.selectedUnitObject, target);
-					if (celestialBouns == 1.2f) battleData.selectedUnitObject.GetComponent<Unit>().PrintCelestialBouns();
-					else if (celestialBouns == 0.8f) target.GetComponent<Unit>().PrintCelestialBouns();
+					float celestialBonus = Utility.GetCelestialBonus(battleData.selectedUnitObject, target);
+					if (celestialBonus == 1.2f) battleData.selectedUnitObject.GetComponent<Unit>().PrintCelestialBonus();
+					else if (celestialBonus == 0.8f) target.GetComponent<Unit>().PrintCelestialBonus();
+                    
+                    // 총 계수.
+                    float actualPowerFactor = 0.0f;
+                    
+                    foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+                    {
+                        Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+                        actualPowerFactor += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
+                    }
 
-					var damageAmount = (int)(directionBouns * celestialBouns * selectedUnit.GetActualPower() * appliedSkill.GetPowerFactor());
+					var damageAmount = (int)(directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(selectedUnit.GetUnitClass(), damageAmount, false);
 
 					if (target == targets[targets.Count-1])
@@ -503,7 +531,16 @@ namespace Battle.Turn
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Heal)
 				{
-					var recoverAmount = (int)(selectedUnit.GetActualPower() * appliedSkill.GetPowerFactor());
+                    // 총 계수.
+                    float actualPowerFactor = 0.0f;
+                    
+                    foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+                    {
+                        Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+                        actualPowerFactor += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
+                    }
+                    
+					var recoverAmount = (int) actualPowerFactor;
 					var recoverHealthCoroutine = target.GetComponent<Unit>().RecoverHealth(recoverAmount);
 
 					if (target == targets[targets.Count-1])
