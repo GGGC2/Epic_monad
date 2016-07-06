@@ -121,7 +121,12 @@ public class Unit : MonoBehaviour
         else if(stat == Stat.Power) {return power;}
         else if(stat == Stat.Defense) {return defense;}
         else if(stat == Stat.Resistance) {return resistance;}
-        else return dexturity;
+        else if (stat == Stat.Dexturity) {return dexturity;}
+        else
+        {
+          Debug.LogWarning("Cannot get stat of " + stat);
+          return 1;
+        }
     }
     
     public int GetActualStat(Stat stat)
