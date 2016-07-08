@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CustomText : MonoBehaviour
+public class CustomWorldText : MonoBehaviour
 {
 	public string text = "013";
 	public Align align;

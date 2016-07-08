@@ -372,7 +372,7 @@ public class Unit : MonoBehaviour
 			currentHealth = 0;
 
 		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomText>().text = actualDamage.ToString();
+		damageTextObject.GetComponent<CustomWorldText>().text = actualDamage.ToString();
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
