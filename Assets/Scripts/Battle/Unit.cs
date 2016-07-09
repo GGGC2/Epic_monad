@@ -438,8 +438,13 @@ public class Unit : MonoBehaviour
 
 	public void RegenerateActionPoint()
 	{
-		activityPoint += GetActualStat(Stat.Dexturity); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
+		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
+	}
+
+	public int GetRegeneratedActionPoint()
+	{
+		return activityPoint + GetActualStat(Stat.Dexturity); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
 
 	public void UseActionPoint(int amount)

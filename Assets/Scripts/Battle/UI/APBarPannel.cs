@@ -42,7 +42,7 @@ namespace BattleUI
 
 			Clear();
 
-			SetBigProfile(allUnits[0]);
+			SetBigProfile(allUnits[0], standardActionPoint);
 
 			List<GameObject> otherUnits = allUnits.GetRange(index:1, count:allUnits.Count - 1);
 			SetProfiles(standardActionPoint, otherUnits);
@@ -52,10 +52,10 @@ namespace BattleUI
 			SetSeperateBar(standardActionPoint, otherUnits);
 		}
 
-		private void SetBigProfile(GameObject unitGO)
+		private void SetBigProfile(GameObject unitGO, int standardActionPoint)
 		{
 			bigProfile.GetComponent<Image>().enabled = true;
-			SetProfile(bigProfile, unitGO);
+			SetProfile(bigProfile, unitGO, standardActionPoint);
 		}
 
 		private void SetProfiles(int standardActionPoint, List<GameObject> otherUnitGOs)
@@ -71,7 +71,7 @@ namespace BattleUI
 				GameObject unit = otherUnitGOs[index];
 
 				profileGameObject.GetComponent<Image>().enabled = true;
-				SetProfile(profileGameObject, unit);
+				SetProfile(profileGameObject, unit, standardActionPoint);
 			}
 
 			// Does not make space no units left in current turn.
@@ -174,7 +174,7 @@ namespace BattleUI
 			turnSeperateBar.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace, 0);
 		}
 
-		private void SetProfile(GameObject profileGO, GameObject unitGO)
+		private void SetProfile(GameObject profileGO, GameObject unitGO, int standardActionPoint)
 		{
 			Unit unit = unitGO.GetComponent<Unit>();
 			string imagePath = "UnitImage/portrait_" + unit.GetNameInCode().ToString();
@@ -186,6 +186,16 @@ namespace BattleUI
 				sprite = notFoundProfileSprite;
 			}
 			profileGO.GetComponent<Image>().sprite = sprite;
+
+			Debug.Log("Finding apText in " + profileGO.name);
+			GameObject apTextGO = profileGO.transform.Find("apText").gameObject;
+			apTextGO.GetComponent<CustomUIText>().enabled = true;
+			int activityPoint = unit.activityPoint;
+			if (activityPoint < standardActionPoint)
+			{
+				activityPoint = unit.GetRegeneratedActionPoint();
+			}
+			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();
 		}
 
 		private void Clear()
@@ -196,6 +206,7 @@ namespace BattleUI
 			{
 				profile.GetComponent<Image>().enabled = false;
 				profile.GetComponent<DefaultPosition>().ResetPosition();
+				profile.transform.Find("apText").GetComponent<CustomUIText>().enabled = false;
 			}
 
 			foreach (GameObject bar in turnSeperateBars)
