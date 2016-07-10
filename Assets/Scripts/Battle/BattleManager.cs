@@ -209,6 +209,8 @@ public class BattleManager : MonoBehaviour
 			CheckMovePossible(battleData);
 			CheckSkillPossible(battleData);
 
+			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
 			battleData.command = ActionCommand.Waiting;
 			while (battleData.command == ActionCommand.Waiting)
 			{

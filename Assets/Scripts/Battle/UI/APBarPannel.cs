@@ -42,9 +42,18 @@ namespace BattleUI
 
 			Clear();
 
-			SetBigProfile(allUnits[0], standardActionPoint);
+			GameObject selectedUnit = battleData.selectedUnitObject;
 
-			List<GameObject> otherUnits = allUnits.GetRange(index:1, count:allUnits.Count - 1);
+			if (selectedUnit == null)
+			{
+				Debug.LogWarning("There is no selected unit");
+				return;
+			}
+			SetBigProfile(selectedUnit);
+
+			// 리스트를 복사해서 그 중 현재 턴인 유닛을 뺀다
+			List<GameObject> otherUnits = allUnits.GetRange(0, allUnits.Count);
+			otherUnits.Remove(selectedUnit);
 			SetProfiles(standardActionPoint, otherUnits);
 
 			SetCurrentText(standardActionPoint, otherUnits);
@@ -52,10 +61,16 @@ namespace BattleUI
 			SetSeperateBar(standardActionPoint, otherUnits);
 		}
 
-		private void SetBigProfile(GameObject unitGO, int standardActionPoint)
+		private void SetBigProfile(GameObject unitGO)
 		{
 			bigProfile.GetComponent<Image>().enabled = true;
-			SetProfile(bigProfile, unitGO, standardActionPoint);
+
+			Unit unit = unitGO.GetComponent<Unit>();
+			bigProfile.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
+
+			GameObject apTextGO = bigProfile.transform.Find("apText").gameObject;
+			apTextGO.GetComponent<CustomUIText>().enabled = true;
+			apTextGO.GetComponent<CustomUIText>().text = unit.activityPoint.ToString();
 		}
 
 		private void SetProfiles(int standardActionPoint, List<GameObject> otherUnitGOs)
@@ -177,17 +192,8 @@ namespace BattleUI
 		private void SetProfile(GameObject profileGO, GameObject unitGO, int standardActionPoint)
 		{
 			Unit unit = unitGO.GetComponent<Unit>();
-			string imagePath = "UnitImage/portrait_" + unit.GetNameInCode().ToString();
+			profileGO.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
 
-			Sprite sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
-			if (sprite == null)
-			{
-				Debug.LogWarning("Cannot find sprite for " + unit.GetName() + "(" + unit.GetNameInCode() + ")");
-				sprite = notFoundProfileSprite;
-			}
-			profileGO.GetComponent<Image>().sprite = sprite;
-
-			Debug.Log("Finding apText in " + profileGO.name);
 			GameObject apTextGO = profileGO.transform.Find("apText").gameObject;
 			apTextGO.GetComponent<CustomUIText>().enabled = true;
 			int activityPoint = unit.activityPoint;
@@ -196,6 +202,20 @@ namespace BattleUI
 				activityPoint = unit.GetRegeneratedActionPoint();
 			}
 			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();
+		}
+
+		private Sprite FindUnitProfileImage(Unit unit)
+		{
+			string imagePath = "UnitImage/portrait_" + unit.GetNameInCode().ToString();
+
+			Sprite sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
+			if (sprite == null)
+			{
+				Debug.LogWarning("Cannot find sprite for " + unit.GetName() + "(" + unit.GetNameInCode() + ")");
+				sprite = notFoundProfileSprite;
+			}
+
+			return sprite;
 		}
 
 		private void Clear()

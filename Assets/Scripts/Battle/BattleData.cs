@@ -45,7 +45,7 @@ public class BattleData
 	public bool alreadyMoved;
 	public Vector2 selectedTilePosition;
 	public Direction selectedDirection;
-	public GameObject selectedUnitObject;
+	public GameObject selectedUnitObject; // 현재 턴의 유닛
 	public List<GameObject> readiedUnits = new List<GameObject>();
 	public List<GameObject> deadUnits = new List<GameObject>();
 	
