@@ -299,6 +299,19 @@ public class BattleManager : MonoBehaviour
 		Debug.Log(index + "th skill is selected");
 	}
 
+	public void CallbackPointerEnterSkillIndex(int index)
+	{
+		battleData.indexOfPreSelectedSkillByUser = index;
+	}
+
+	public void CallbackPointerExitSkillIndex(int index)
+	{
+		if (index == battleData.indexOfPreSelectedSkillByUser)
+		{
+			battleData.indexOfPreSelectedSkillByUser = 0;
+		}
+	}
+
 	public void CallbackSkillUICancel()
 	{
 		battleData.cancelClicked = true;

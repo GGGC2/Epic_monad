@@ -211,7 +211,6 @@ namespace BattleUI
 			int activityPoint = GetActivityPoint(battleData, unitWrapper);
 			if (activityPoint < standardActionPoint)
 			{
-				Debug.Log("From " + activityPoint + " to " + unit.GetRegeneratedActionPoint());
 				activityPoint += unit.GetRegenerationAmount();
 			}
 			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();

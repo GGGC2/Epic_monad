@@ -31,6 +31,7 @@ public class BattleData
 	public bool isPreSeletedTileByUser = false;
 	public bool isSelectedTileByUser = false;
 	public bool isSelectedDirectionByUser = false;
+	public int indexOfPreSelectedSkillByUser = 0;
 	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
 
@@ -67,6 +68,13 @@ public class BattleData
 	{
 		get {
 			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfSeletedSkillByUser - 1];
+		}
+	}
+
+	public Skill PreSelectedSkill
+	{
+		get {
+			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfPreSelectedSkillByUser - 1];
 		}
 	}
 
