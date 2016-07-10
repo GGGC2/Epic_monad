@@ -59,6 +59,8 @@ public class BattleData
 	// Load from json.
 	public int partyLevel;
 
+	public APAction previewAPAction;
+
 	public Skill SelectedSkill
 	{
 		get {

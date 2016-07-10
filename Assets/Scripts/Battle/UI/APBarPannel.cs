@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 
 using BattleUI.APBarPannels;
+using Enums;
+using Util;
 
 namespace BattleUI
 {
@@ -54,25 +57,20 @@ namespace BattleUI
 
 			SetBigProfile(selectedUnit);
 
-			bool showPreviewUnit = false;
-			if (selectedUnit != allUnits[0])
-			{
-				showPreviewUnit = true;
-			}
-
-			List<UnitWrapper> otherUnits = new List<UnitWrapper>();
 			UnitWrapperFactory wrapperFactory = new UnitWrapperFactory(selectedUnit);
-			otherUnits = wrapperFactory.WrapUnits(allUnits);
+			List<UnitWrapper> otherUnits = wrapperFactory.WrapUnits(allUnits);
 
-			if (!showPreviewUnit)
+			if (selectedUnit == otherUnits[0].GetGameObject() && battleData.previewAPAction == null)
 			{
-				otherUnits.RemoveAll(wrapper => wrapper.GetGameObject() == selectedUnit);
+				otherUnits.RemoveAt(0);
 			}
 
-			SetProfiles(standardActionPoint, otherUnits);
-			SetCurrentText(standardActionPoint, otherUnits);
-			SetNextText(standardActionPoint, otherUnits);
-			SetSeperateBar(standardActionPoint, otherUnits);
+			otherUnits = SortUnits(battleData, otherUnits);
+
+			SetProfiles(battleData, standardActionPoint, otherUnits);
+			SetCurrentText(battleData, standardActionPoint, otherUnits);
+			SetNextText(battleData, standardActionPoint, otherUnits);
+			SetSeperateBar(battleData, standardActionPoint, otherUnits);
 		}
 
 		private void SetBigProfile(GameObject unitGO)
@@ -87,7 +85,7 @@ namespace BattleUI
 			apTextGO.GetComponent<CustomUIText>().text = unit.activityPoint.ToString();
 		}
 
-		private void SetProfiles(int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetProfiles(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
 			if (otherUnits.Count == 0)
 			{
@@ -99,7 +97,7 @@ namespace BattleUI
 				GameObject profileGameObject = otherProfiles[index];
 
 				profileGameObject.GetComponent<Image>().enabled = true;
-				SetProfile(profileGameObject, otherUnits[index], standardActionPoint);
+				SetProfile(battleData, profileGameObject, otherUnits[index], standardActionPoint);
 			}
 
 			// Does not make space no units left in current turn.
@@ -111,24 +109,24 @@ namespace BattleUI
 			for (int index = 0; index < otherUnits.Count; index += 1)
 			{
 				GameObject profileGameObject = otherProfiles[index];
-				Unit unit = otherUnits[index].GetUnit();
+				UnitWrapper unit = otherUnits[index];
 
-				if (unit.GetCurrentActivityPoint() < standardActionPoint)
+				if (GetActivityPoint(battleData, unit) < standardActionPoint)
 				{
 					profileGameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace * 2, 0);
 				}
 			}
 		}
 
-		private void SetCurrentText(int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetCurrentText(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
 			if (otherUnits.Count == 0)
 			{
 				return;
 			}
 
-			Unit firstUnit = otherUnits[0].GetUnit();
-			if (firstUnit.GetCurrentActivityPoint() >= standardActionPoint)
+			UnitWrapper firstUnit = otherUnits[0];
+			if (GetActivityPoint(battleData, firstUnit) >= standardActionPoint)
 			{
 				currentTurnTexts[0].GetComponent<Image>().enabled = true;
 			}
@@ -138,12 +136,12 @@ namespace BattleUI
 			}
 		}
 
-		private void SetNextText(int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetNextText(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
 			for (int i=0; i < otherUnits.Count; i+=1)
 			{
-				Unit unit = otherUnits[i].GetUnit();
-				if (unit.GetCurrentActivityPoint() >= standardActionPoint)
+				UnitWrapper unit = otherUnits[i];
+				if (GetActivityPoint(battleData, unit) >= standardActionPoint)
 				{
 					continue;
 				}
@@ -167,13 +165,13 @@ namespace BattleUI
 			}
 		}
 
-		private void SetSeperateBar(int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetSeperateBar(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
 			int nextTurnUnitIndex = -1;
 			for (int i=0; i < otherUnits.Count; i+=1)
 			{
-				Unit unit = otherUnits[i].GetUnit();
-				if (unit.GetCurrentActivityPoint() < standardActionPoint)
+				UnitWrapper unit = otherUnits[i];
+				if (GetActivityPoint(battleData, unit) < standardActionPoint)
 				{
 					nextTurnUnitIndex = i;
 					break;
@@ -202,17 +200,19 @@ namespace BattleUI
 			turnSeperateBar.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace, 0);
 		}
 
-		private void SetProfile(GameObject profileGO, UnitWrapper unitWrapper, int standardActionPoint)
+		private void SetProfile(BattleData battleData, GameObject profileGO, UnitWrapper unitWrapper, int standardActionPoint)
 		{
 			Unit unit = unitWrapper.GetUnit();
 			profileGO.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
 
 			GameObject apTextGO = profileGO.transform.Find("apText").gameObject;
 			apTextGO.GetComponent<CustomUIText>().enabled = true;
-			int activityPoint = unit.activityPoint;
+
+			int activityPoint = GetActivityPoint(battleData, unitWrapper);
 			if (activityPoint < standardActionPoint)
 			{
-				activityPoint = unit.GetRegeneratedActionPoint();
+				Debug.Log("From " + activityPoint + " to " + unit.GetRegeneratedActionPoint());
+				activityPoint += unit.GetRegenerationAmount();
 			}
 			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();
 
@@ -276,6 +276,50 @@ namespace BattleUI
 				resultList.Add(child.gameObject);
 			}
 			return resultList;
+		}
+
+		private List<UnitWrapper> SortUnits(BattleData battleData, List<UnitWrapper> units)
+		{
+			UnitManager unitManager = battleData.unitManager;
+			int standardActionPoint =  unitManager.GetStandardActionPoint();
+
+			List<UnitWrapper> thisTurnUnits =
+				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) >= standardActionPoint);
+			List<UnitWrapper> nextTurnUnits =
+				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) < standardActionPoint);
+
+			thisTurnUnits.Sort(SortHelper.Chain(new List<Comparison<UnitWrapper>>
+			{
+				SortHelper.CompareBy<UnitWrapper>(wrapper => GetActivityPoint(battleData, wrapper)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetActualStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
+			}, reverse:true));
+
+			nextTurnUnits.Sort(SortHelper.Chain(new List<Comparison<UnitWrapper>>
+			{
+				SortHelper.CompareBy<UnitWrapper>(wrapper => {
+					int ap = GetActivityPoint(battleData, wrapper);
+					int recover = wrapper.GetUnit().GetActualStat(Stat.Dexturity);
+					return ap + recover;
+				}),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetActualStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
+			}, reverse:true));
+
+			List<UnitWrapper> result = new List<UnitWrapper>();
+			result.AddRange(thisTurnUnits);
+			result.AddRange(nextTurnUnits);
+			return result;
+		}
+
+		private int GetActivityPoint(BattleData battleData, UnitWrapper wrapper)
+		{
+			int activityPoint = wrapper.GetUnit().GetCurrentActivityPoint();
+			if (wrapper.IsPreviewUnit() && battleData.previewAPAction != null)
+			{
+				activityPoint -= battleData.previewAPAction.requiredAP;
+			}
+			return activityPoint;
 		}
 	}
 }

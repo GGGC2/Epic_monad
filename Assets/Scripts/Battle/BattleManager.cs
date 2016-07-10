@@ -263,6 +263,18 @@ public class BattleManager : MonoBehaviour
 		battleData.command = ActionCommand.Rest;
 	}
 
+	public void CallbackOnPointerEnterRestCommand()
+	{
+		battleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP(battleData));
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+	}
+
+	public void CallbackOnPointerExitRestCommand()
+	{
+		battleData.previewAPAction = null;
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+	}
+
 	public void CallbackStandbyCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
