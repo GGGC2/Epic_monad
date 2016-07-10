@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+using BattleUI.APBarPannels;
+
 namespace BattleUI
 {
 	public class APBarPannel : MonoBehaviour {
@@ -49,13 +51,25 @@ namespace BattleUI
 				Debug.LogWarning("There is no selected unit");
 				return;
 			}
+
 			SetBigProfile(selectedUnit);
 
-			// 리스트를 복사해서 그 중 현재 턴인 유닛을 뺀다
-			List<GameObject> otherUnits = allUnits.GetRange(0, allUnits.Count);
-			otherUnits.Remove(selectedUnit);
-			SetProfiles(standardActionPoint, otherUnits);
+			bool showPreviewUnit = false;
+			if (selectedUnit != allUnits[0])
+			{
+				showPreviewUnit = true;
+			}
 
+			List<UnitWrapper> otherUnits = new List<UnitWrapper>();
+			UnitWrapperFactory wrapperFactory = new UnitWrapperFactory(selectedUnit);
+			otherUnits = wrapperFactory.WrapUnits(allUnits);
+
+			if (!showPreviewUnit)
+			{
+				otherUnits.RemoveAll(wrapper => wrapper.GetGameObject() == selectedUnit);
+			}
+
+			SetProfiles(standardActionPoint, otherUnits);
 			SetCurrentText(standardActionPoint, otherUnits);
 			SetNextText(standardActionPoint, otherUnits);
 			SetSeperateBar(standardActionPoint, otherUnits);
@@ -73,48 +87,47 @@ namespace BattleUI
 			apTextGO.GetComponent<CustomUIText>().text = unit.activityPoint.ToString();
 		}
 
-		private void SetProfiles(int standardActionPoint, List<GameObject> otherUnitGOs)
+		private void SetProfiles(int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
-			if (otherUnitGOs.Count == 0)
+			if (otherUnits.Count == 0)
 			{
 				return;
 			}
 
-			for (int index = 0; index < otherUnitGOs.Count; index += 1)
+			for (int index = 0; index < otherUnits.Count; index += 1)
 			{
 				GameObject profileGameObject = otherProfiles[index];
-				GameObject unit = otherUnitGOs[index];
 
 				profileGameObject.GetComponent<Image>().enabled = true;
-				SetProfile(profileGameObject, unit, standardActionPoint);
+				SetProfile(profileGameObject, otherUnits[index], standardActionPoint);
 			}
 
 			// Does not make space no units left in current turn.
-			if (otherUnitGOs[0].GetComponent<Unit>().GetCurrentActivityPoint() < standardActionPoint)
+			if (otherUnits[0].GetUnit().GetCurrentActivityPoint() < standardActionPoint)
 			{
 				return;
 			}
 
-			for (int index = 0; index < otherUnitGOs.Count; index += 1)
+			for (int index = 0; index < otherUnits.Count; index += 1)
 			{
 				GameObject profileGameObject = otherProfiles[index];
-				GameObject unit = otherUnitGOs[index];
+				Unit unit = otherUnits[index].GetUnit();
 
-				if (unit.GetComponent<Unit>().GetCurrentActivityPoint() < standardActionPoint)
+				if (unit.GetCurrentActivityPoint() < standardActionPoint)
 				{
 					profileGameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace * 2, 0);
 				}
 			}
 		}
 
-		private void SetCurrentText(int standardActionPoint, List<GameObject> otherUnitGOs)
+		private void SetCurrentText(int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
-			if (otherUnitGOs.Count == 0)
+			if (otherUnits.Count == 0)
 			{
 				return;
 			}
 
-			Unit firstUnit = otherUnitGOs[0].GetComponent<Unit>();
+			Unit firstUnit = otherUnits[0].GetUnit();
 			if (firstUnit.GetCurrentActivityPoint() >= standardActionPoint)
 			{
 				currentTurnTexts[0].GetComponent<Image>().enabled = true;
@@ -125,11 +138,11 @@ namespace BattleUI
 			}
 		}
 
-		private void SetNextText(int standardActionPoint, List<GameObject> otherUnitGOs)
+		private void SetNextText(int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
-			for (int i=0; i < otherUnitGOs.Count; i+=1)
+			for (int i=0; i < otherUnits.Count; i+=1)
 			{
-				Unit unit = otherUnitGOs[i].GetComponent<Unit>();
+				Unit unit = otherUnits[i].GetUnit();
 				if (unit.GetCurrentActivityPoint() >= standardActionPoint)
 				{
 					continue;
@@ -154,12 +167,12 @@ namespace BattleUI
 			}
 		}
 
-		private void SetSeperateBar(int standardActionPoint, List<GameObject> otherUnitGOs)
+		private void SetSeperateBar(int standardActionPoint, List<UnitWrapper> otherUnits)
 		{
 			int nextTurnUnitIndex = -1;
-			for (int i=0; i < otherUnitGOs.Count; i+=1)
+			for (int i=0; i < otherUnits.Count; i+=1)
 			{
-				Unit unit = otherUnitGOs[i].GetComponent<Unit>();
+				Unit unit = otherUnits[i].GetUnit();
 				if (unit.GetCurrentActivityPoint() < standardActionPoint)
 				{
 					nextTurnUnitIndex = i;
@@ -189,9 +202,9 @@ namespace BattleUI
 			turnSeperateBar.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace, 0);
 		}
 
-		private void SetProfile(GameObject profileGO, GameObject unitGO, int standardActionPoint)
+		private void SetProfile(GameObject profileGO, UnitWrapper unitWrapper, int standardActionPoint)
 		{
-			Unit unit = unitGO.GetComponent<Unit>();
+			Unit unit = unitWrapper.GetUnit();
 			profileGO.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
 
 			GameObject apTextGO = profileGO.transform.Find("apText").gameObject;
@@ -202,6 +215,12 @@ namespace BattleUI
 				activityPoint = unit.GetRegeneratedActionPoint();
 			}
 			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();
+
+			if (unitWrapper.IsPreviewUnit())
+			{
+				GameObject arrow = profileGO.transform.Find("arrow").gameObject;
+				arrow.GetComponent<Image>().enabled = true;
+			}
 		}
 
 		private Sprite FindUnitProfileImage(Unit unit)
@@ -227,6 +246,7 @@ namespace BattleUI
 				profile.GetComponent<Image>().enabled = false;
 				profile.GetComponent<DefaultPosition>().ResetPosition();
 				profile.transform.Find("apText").GetComponent<CustomUIText>().enabled = false;
+				profile.transform.Find("arrow").GetComponent<Image>().enabled = false;
 			}
 
 			foreach (GameObject bar in turnSeperateBars)
