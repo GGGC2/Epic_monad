@@ -28,6 +28,7 @@ public class BattleData
 
 	public CurrentState currentState = CurrentState.None;
 
+	public bool isPreSeletedTileByUser = false;
 	public bool isSelectedTileByUser = false;
 	public bool isSelectedDirectionByUser = false;
 	public int indexOfSeletedSkillByUser = 0;
@@ -43,6 +44,7 @@ public class BattleData
 
 	public int moveCount;
 	public bool alreadyMoved;
+	public Vector2 preSelectedTilePosition;
 	public Vector2 selectedTilePosition;
 	public Direction selectedDirection;
 	public GameObject selectedUnitObject; // 현재 턴의 유닛

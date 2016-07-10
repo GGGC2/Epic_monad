@@ -265,12 +265,14 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackOnPointerEnterRestCommand()
 	{
+		Debug.Log("Pointer Enter to Rest in battleManager.");
 		battleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP(battleData));
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 	}
 
 	public void CallbackOnPointerExitRestCommand()
 	{
+		Debug.Log("Pointer exit from Rest in battleManager.");
 		battleData.previewAPAction = null;
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 	}
@@ -364,6 +366,23 @@ public class BattleManager : MonoBehaviour
 	public bool IsLeftClicked()
 	{
 		return battleData.leftClicked;
+	}
+
+	public void OnMouseEnterHandlerFromTile(Vector2 position)
+	{
+		if (battleData.isWaitingUserInput)
+		{
+			battleData.isPreSeletedTileByUser = true;
+			battleData.preSelectedTilePosition = position;
+		}
+	}
+
+	public void OnMouseExitHandlerFromTile(Vector2 position)
+	{
+		if (battleData.isWaitingUserInput)
+		{
+			battleData.isPreSeletedTileByUser = false;
+		}
 	}
 
 	public void OnMouseDownHandlerFromTile(Vector2 position)
