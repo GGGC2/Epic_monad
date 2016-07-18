@@ -13,6 +13,7 @@ public class UnitManager : MonoBehaviour {
 	List<GameObject> units = new List<GameObject>();
 	List<GameObject> readiedUnits = new List<GameObject>();
 	List<GameObject> deadUnits = new List<GameObject>();
+    List<GameObject> enemyUnits = new List<GameObject>();
 
 	public List<GameObject> GetAllUnits()
 	{
@@ -104,6 +105,19 @@ public class UnitManager : MonoBehaviour {
 		return readiedUnits;
 	}
 
+    public List<GameObject> GetEnemyUnits()
+    {
+        foreach (var unit in units)
+        {
+            if (unit.GetComponent<Unit>().GetSide() == Side.Enemy)
+            {
+                enemyUnits.Add(unit);
+                Debug.Log(unit.GetComponent<Unit>().GetName() + " is enemy");
+            }
+        }
+        return enemyUnits;
+    }
+
 	public void EndPhase()
 	{
 		// Decrease each buff & debuff phase
@@ -156,6 +170,7 @@ public class UnitManager : MonoBehaviour {
 	void Start () {
 		LoadSkills();
 		GenerateUnits ();
+        GetEnemyUnits();
 	}
 	
 	// Update is called once per frame
