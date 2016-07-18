@@ -388,11 +388,11 @@ public class Unit : MonoBehaviour
 	{
 		int totalAmount = 0;
 
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.DamageOverPhase))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.ContinuousDamage))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.DamageOverPhase)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.ContinuousDamage)
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
@@ -408,13 +408,13 @@ public class Unit : MonoBehaviour
 		// FIXME : 치유량 증가 효과
 
 		// 내상 효과
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Wound))
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.HealDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.Exhaust)
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.HealDecrease)
 				{
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
@@ -449,6 +449,33 @@ public class Unit : MonoBehaviour
 
 	public void UseActionPoint(int amount)
 	{
+        // 신속에 의한 기술 행동력 소모 감소
+        if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease))
+		{
+			float totalDegree = 1.0f;
+			foreach (var statusEffect in statusEffectList)
+			{
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease)
+				{
+					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
+				}
+			}
+			amount = (int)((float)amount * totalDegree);
+		}
+        // 둔화에 의한 기술 행동력 소모 증가
+        if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease))
+		{
+			float totalDegree = 1.0f;
+			foreach (var statusEffect in statusEffectList)
+			{
+				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease)
+				{
+					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
+                    Debug.Log(name + " has debuff slow, used AP increased by " + statusEffect.GetDegree());
+				}
+			}
+			amount = (int)((float)amount * totalDegree);
+		}
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
