@@ -23,6 +23,9 @@ public class Unit : MonoBehaviour
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
+    
+    // 상태이상 리스트
+    List<StatusEffect> statusEffectList = new List<StatusEffect>();
 
 	// FIXME : temp values
 	Vector2 initPosition;
@@ -83,8 +86,6 @@ public class Unit : MonoBehaviour
 	public Direction direction;
 	public int currentHealth;
 	public int activityPoint;
-
-	List<StatusEffect> statusEffectList;
 
 	GameObject chargeEffect;
 
@@ -209,6 +210,11 @@ public class Unit : MonoBehaviour
 	{
 		return skillList;
 	}
+    
+    public List<StatusEffect> GetStatusEffectList()
+    {
+        return statusEffectList;
+    }
 
 	public bool IsBound()
 	{
@@ -509,7 +515,7 @@ public class Unit : MonoBehaviour
 		this.celestial = unitInfo.celestial;
 	}
 
-	public void ApplySkillList(List<SkillInfo> skillInfoList)
+	public void ApplySkillList(List<SkillInfo> skillInfoList, List<StatusEffectInfo> statusEffectInfoList)
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
 
@@ -517,7 +523,12 @@ public class Unit : MonoBehaviour
 		{
 			if ((skillInfo.GetOwner() == this.nameInCode) &&
 				(skillInfo.GetRequireLevel() <= partyLevel))
-				skillList.Add(skillInfo.GetSkill());
+                {
+                    Skill skill = skillInfo.GetSkill();
+                    skill.ApplyStatusEffectList(statusEffectInfoList);
+                    skillList.Add(skill);
+                }
+				
 		}
 		// 비어있으면 디폴트 스킬로 채우도록.
 		if (skillList.Count() == 0)

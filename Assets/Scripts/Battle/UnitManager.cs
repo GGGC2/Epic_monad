@@ -8,6 +8,7 @@ public class UnitManager : MonoBehaviour {
 	int standardActionPoint;
 
 	List<SkillInfo> skillInfoList = new List<SkillInfo>();
+    List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
 
 	public GameObject unitPrefab;
 	List<GameObject> units = new List<GameObject>();
@@ -54,7 +55,7 @@ public class UnitManager : MonoBehaviour {
 			GameObject unit = Instantiate(unitPrefab) as GameObject;
 			
 			unit.GetComponent<Unit>().ApplyUnitInfo(unitInfo);
-			unit.GetComponent<Unit>().ApplySkillList(skillInfoList);
+			unit.GetComponent<Unit>().ApplySkillList(skillInfoList, statusEffectInfoList);
 			
 			Vector2 initPosition = unit.GetComponent<Unit>().GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -151,10 +152,16 @@ public class UnitManager : MonoBehaviour {
 	{
 		skillInfoList = Parser.GetParsedSkillInfo();
 	}
+    
+    void LoadStatusEffects()
+    {
+        statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
+    }
 
 	// Use this for initialization
 	void Start () {
 		LoadSkills();
+        LoadStatusEffects();
 		GenerateUnits ();
 	}
 	

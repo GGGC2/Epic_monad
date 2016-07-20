@@ -6,7 +6,7 @@ using Enums;
 public class StatusEffectInfo {
 
 	public string owner;
-	public Skill skill;
+	public string skillName;
 	public StatusEffect statusEffect;
 	
 	public string GetOwner()
@@ -14,9 +14,9 @@ public class StatusEffectInfo {
 		return owner;
 	}
 	
-	public Skill GetSkill()
+	public string GetSkillName()
 	{
-		return skill;
+		return skillName;
 	}
 	
 	public StatusEffect GetStatusEffect()
@@ -29,7 +29,7 @@ public class StatusEffectInfo {
 		string[] stringList = data.Split(',');
 
 		this.owner = stringList[0];
-		this.skill = (Skill)Enum.Parse(typeof(Skill), stringList[1]);
+		this.skillName = stringList[1];
   
 		string name = stringList[2];
 		StatusEffectType statusEffectType = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stringList[3]);
