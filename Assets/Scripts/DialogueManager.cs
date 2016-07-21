@@ -9,10 +9,13 @@ public class DialogueManager : MonoBehaviour {
 
 	Sprite transparent;
 	
-	Image leftPortrait;
-	Image rightPortrait; 
-	Text nameText;
-	Text dialogueText;
+    public GameObject dialogueUI;
+    public GameObject adventureUI;
+
+	public Image leftPortrait;
+	public Image rightPortrait; 
+	public Text nameText;
+	public Text dialogueText;
 	
 	string leftUnit;
 	string rightUnit;
@@ -26,6 +29,8 @@ public class DialogueManager : MonoBehaviour {
 	
 	SceneLoader sceneLoader;
 	GameObject skipQuestionUI;
+
+    GameObject[] objects;
 
 	public void SkipDialogue()
 	{
@@ -43,6 +48,78 @@ public class DialogueManager : MonoBehaviour {
 		skipQuestionUI.SetActive(false);
 	}
 
+    public void ActiveAdventureUI()
+    {
+        adventureUI.SetActive(true);
+        dialogueUI.SetActive(false);
+    }
+
+    public void InactiveAdventureUI()
+    {
+        adventureUI.SetActive(false);
+    }
+
+    public void ActiveDialogueUI()
+    {
+        adventureUI.SetActive(false);
+        dialogueUI.SetActive(true);
+    }
+
+    public void LoadAdventureObjects()
+    {
+        objects = adventureUI.GetComponent<AdventureManager>().objects;
+
+        int tempLine = line;
+        int objectIndex = 0;
+
+        for (int i = line; i < endLine; i++) {
+            if (dialogueDataList[i].IsAdventureObject())
+            {
+                objects[objectIndex].transform.Find("NamePanel/ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
+                objects[objectIndex].transform.Find("NamePanel/ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
+                objectIndex++;
+            }
+        }
+    }
+
+    public void PrintLinesFromObjectIndex(int objectIndex)
+    {
+        string objectName = objects[objectIndex].transform.Find("NamePanel/ObjectNameText").gameObject.GetComponent<Text>().text;
+        int startLine = 0;
+
+        for (int i = 0; i < endLine; i++)
+        {
+            if (dialogueDataList[i].GetObjectName() == objectName)
+            {
+                startLine = i+1;
+                break;
+            }
+        }
+
+        ActiveDialogueUI();
+
+        StartCoroutine(PrintLinesFromIndex(startLine));
+    }
+
+    IEnumerator PrintLinesFromIndex(int index)
+    {
+        // Initialize.
+        leftPortrait.sprite = transparent;
+		rightPortrait.sprite = transparent;
+		
+		leftUnit = null;
+		rightUnit = null;
+
+        isLeftUnitOld = true;
+
+        line = index;
+        while (line < endLine)
+		{
+			yield return StartCoroutine(PrintEachLine());
+			yield return null;
+		}
+    }
+
 	void Initialize()
 	{
 		sceneLoader = FindObjectOfType<SceneLoader>();
@@ -50,11 +127,6 @@ public class DialogueManager : MonoBehaviour {
 		InactiveSkipQuestionUI();
 		
 		transparent = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-		
-		leftPortrait = GameObject.Find("LeftPortrait").GetComponent<Image>();
-		rightPortrait = GameObject.Find("RightPortrait").GetComponent<Image>();
-		nameText = GameObject.Find("NameText").GetComponent<Text>();
-		dialogueText = GameObject.Find("DialogueText").GetComponent<Text>();
 		
 		leftPortrait.sprite = transparent;
 		rightPortrait.sprite = transparent;
@@ -68,6 +140,8 @@ public class DialogueManager : MonoBehaviour {
 		endLine = dialogueDataList.Count; 
 		
 		isLeftUnitOld = true;
+
+        adventureUI.SetActive(false);
 		
 		StartCoroutine(PrintAllLine());
 	}
@@ -77,7 +151,11 @@ public class DialogueManager : MonoBehaviour {
         leftPortrait.color = Color.gray;
         rightPortrait.color = Color.gray;
 
-        if (!dialogueDataList[line].IsEffect())
+        if (dialogueDataList[line].IsAdventureObject())
+        {
+            ActiveAdventureUI();
+        }
+        else if (!dialogueDataList[line].IsEffect())
         {
             if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
                 (dialogueDataList[line].GetNameInCode() != rightUnit) &&
@@ -116,9 +194,15 @@ public class DialogueManager : MonoBehaviour {
                 yield return null;
             }
         }
-        else
+        else // isEffect = true
         {
-            if (dialogueDataList[line].GetEffectType() == "appear")
+            if (dialogueDataList[line].GetEffectType() == "adv_start")
+            {
+                ActiveAdventureUI();
+                LoadAdventureObjects();
+                yield break;
+            }
+            else if (dialogueDataList[line].GetEffectType() == "appear")
             {
                 if (dialogueDataList[line].GetEffectSubType() == "left")
                 {
