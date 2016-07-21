@@ -32,8 +32,22 @@ namespace Battle.Turn
 						battleData.isWaitingUserInput = false;
 						yield break;
 					}
+
+					if (battleData.indexOfPreSelectedSkillByUser != 0)
+					{
+						Skill preSelectedSkill = battleData.PreSelectedSkill;
+						int requireAP = preSelectedSkill.GetRequireAP();
+						battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
+					}
+					else
+					{
+						battleData.previewAPAction = null;
+					}
+					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
 					yield return null;
 				}
+				battleData.indexOfPreSelectedSkillByUser = 0;
 				battleData.isWaitingUserInput = false;
 
 				battleData.uiManager.DisableSkillUI();
@@ -51,6 +65,9 @@ namespace Battle.Turn
 					battleData.currentState = CurrentState.SelectSkillApplyPoint;
 					yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
 				}
+
+				battleData.previewAPAction = null;
+				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 			}
 		}
 

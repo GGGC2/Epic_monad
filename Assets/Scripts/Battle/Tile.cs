@@ -136,23 +136,29 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	{
 		tileColor.isHighlight = true;
 
+		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		BattleData battleData = battleManager.battleData;
 		if (IsUnitOnTile())
 		{
 			ColorChainTilesByUnit.Show(unitOnTile.GetComponent<Unit>());
 
-			BattleData battleManager = FindObjectOfType<BattleManager>().battleData;
-			List<Unit> unitsTargetThisTile = battleManager.GetUnitsTargetThisTile(this);
+			List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
 			foreach (Unit unit in unitsTargetThisTile)
 			{
 				unit.ShowChainIcon();
 			}
 
-			if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
+			if (battleManager.IsLeftClicked()) return;
 
 			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
 		}
 
 		FindObjectOfType<UIManager>().SetTileViewer(gameObject);
+
+		if (isPreSeleted)
+		{
+			battleManager.OnMouseEnterHandlerFromTile(position);
+		}
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData)
@@ -166,15 +172,21 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ColorChainTilesByUnit.Hide(unitOnTile.GetComponent<Unit>());
 		}
 
-		BattleData battleManager = FindObjectOfType<BattleManager>().battleData;
-		List<Unit> unitsTargetThisTile = battleManager.GetUnitsTargetThisTile(this);
+		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		BattleData battleData = battleManager.battleData;
+		List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
 		foreach (Unit unit in unitsTargetThisTile)
 		{
 			unit.HideChainIcon();
 		}
 
-		if (FindObjectOfType<BattleManager>().IsLeftClicked()) return;
+		if (battleManager.IsLeftClicked()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
+
+		if (isPreSeleted)
+		{
+			battleManager.OnMouseExitHandlerFromTile(position);
+		}
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData)
