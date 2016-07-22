@@ -152,6 +152,7 @@ namespace Battle.Turn
 			destTile.GetComponent<Tile>().SetUnitOnTile(battleData.selectedUnitObject);
 
 			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(totalUseActionPoint);
+			battleData.previewAPAction = null;
 
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;
