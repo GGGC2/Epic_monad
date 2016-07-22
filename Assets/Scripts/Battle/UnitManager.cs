@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+
+using Enums;
+using Util;
 
 public class UnitManager : MonoBehaviour {
 
 	int standardActionPoint;
 
 	List<SkillInfo> skillInfoList = new List<SkillInfo>();
+    List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
 
 	public GameObject unitPrefab;
 	List<GameObject> units = new List<GameObject>();
@@ -53,7 +58,7 @@ public class UnitManager : MonoBehaviour {
 			GameObject unit = Instantiate(unitPrefab) as GameObject;
 			
 			unit.GetComponent<Unit>().ApplyUnitInfo(unitInfo);
-			unit.GetComponent<Unit>().ApplySkillList(skillInfoList);
+			unit.GetComponent<Unit>().ApplySkillList(skillInfoList, statusEffectInfoList);
 			
 			Vector2 initPosition = unit.GetComponent<Unit>().GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -77,7 +82,7 @@ public class UnitManager : MonoBehaviour {
 		units.Remove(unitObject);
 		readiedUnits.Remove(unitObject);
 	}
-	
+
 	public List<GameObject> GetUpdatedReadiedUnits()
 	{
 		readiedUnits.Clear();
@@ -92,13 +97,12 @@ public class UnitManager : MonoBehaviour {
 		}
 		
 		// AP가 큰 순서대로 소팅.
-		readiedUnits.Sort(delegate(GameObject x, GameObject y)
+		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
 		{
-			if (x.GetComponent<Unit>() == null && y.GetComponent<Unit>() == null) return 0;
-			else if (y.GetComponent<Unit>() == null) return -1;
-			else if (x.GetComponent<Unit>() == null) return 1;
-			else return CompareByActionPoint(x, y);
-		});
+			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetCurrentActivityPoint()),
+			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+		}, reverse:true));
 		
 		return readiedUnits;
 	}
@@ -113,41 +117,53 @@ public class UnitManager : MonoBehaviour {
 			unit.GetComponent<Unit>().RegenerateActionPoint();
 	}
 	
-	int CompareByActionPoint(GameObject unit, GameObject anotherUnit)
-	{
-		int compareResultByCurrentActionPoint = anotherUnit.GetComponent<Unit>().GetCurrentActivityPoint().CompareTo(unit.GetComponent<Unit>().GetCurrentActivityPoint());
-		if (compareResultByCurrentActionPoint == 0)
-		{
-			int compareResultByTrueDexturity = anotherUnit.GetComponent<Unit>().GetTrueDexturity().CompareTo(unit.GetComponent<Unit>().GetTrueDexturity());
-			if (compareResultByTrueDexturity == 0)
-				return anotherUnit.GetInstanceID().CompareTo(unit.GetInstanceID());
-			else
-				return compareResultByTrueDexturity;
-		}
-		else
-			return compareResultByCurrentActionPoint;
-	}
-	
 	void LoadSkills()
 	{
 		skillInfoList = Parser.GetParsedSkillInfo();
 	}
+    
+    void LoadStatusEffects()
+    {
+        statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
+    }
 
 	// Use this for initialization
 	void Start () {
 		LoadSkills();
+        LoadStatusEffects();
 		GenerateUnits ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	   // 유닛 전체에 대해서도 소팅. 변경점이 있을때마다 반영된다.
-		units.Sort(delegate(GameObject x, GameObject y)
+
+		int standardActionPoint = GetStandardActionPoint();
+		List<GameObject> currentTurnUnits =
+			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActionPoint);
+		List<GameObject> nextTurnUnits =
+			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() < standardActionPoint);
+
+		currentTurnUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
 		{
-			if (x.GetComponent<Unit>() == null && y.GetComponent<Unit>() == null) return 0;
-			else if (y.GetComponent<Unit>() == null) return -1;
-			else if (x.GetComponent<Unit>() == null) return 1;
-			else return CompareByActionPoint(x, y);
-		});
+			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetCurrentActivityPoint()),
+			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+		}, reverse:true));
+
+		nextTurnUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
+		{
+			SortHelper.CompareBy<GameObject>(go => {
+					int currentAP = go.GetComponent<Unit>().GetCurrentActivityPoint();
+					int recover = go.GetComponent<Unit>().GetActualStat(Stat.Dexturity);
+					return currentAP + recover;
+			}),
+			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+		}, reverse:true));
+
+	   // 유닛 전체에 대해서도 소팅. 변경점이 있을때마다 반영된다.
+		units.Clear();
+		units.AddRange(currentTurnUnits);
+		units.AddRange(nextTurnUnits);
 	}
 }

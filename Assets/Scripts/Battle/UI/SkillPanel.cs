@@ -16,6 +16,16 @@ namespace BattleUI
 			gameManager.CallbackSkillIndex(index);
 		}
 
+		public void CallbackPointerEnterSkillIndex(int index)
+		{
+			gameManager.CallbackPointerEnterSkillIndex(index);
+		}
+
+		public void CallbackPointerExitSkillIndex(int index)
+		{
+			gameManager.CallbackPointerExitSkillIndex(index);
+		}
+
 		public void CallbackSkillUICancel()
 		{
 			gameManager.CallbackSkillUICancel();

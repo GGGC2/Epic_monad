@@ -80,8 +80,7 @@ public class BattleManager : MonoBehaviour
 
 			while (battleData.readiedUnits.Count != 0)
 			{
-				FindObjectOfType<APDisplayCurrentViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
-				FindObjectOfType<APDisplayNextViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
+				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 				yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
 				battleData.selectedUnitObject = null;
@@ -96,8 +95,7 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator ActionAtTurn(GameObject unit)
 	{
-		FindObjectOfType<APDisplayCurrentViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
-		FindObjectOfType<APDisplayNextViewer>().UpdateAPDisplay(battleData.unitManager.GetAllUnits());
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetComponent<Unit>().GetName() + "'s turn");
 		battleData.selectedUnitObject = unit;
@@ -211,6 +209,8 @@ public class BattleManager : MonoBehaviour
 			CheckMovePossible(battleData);
 			CheckSkillPossible(battleData);
 
+			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
 			battleData.command = ActionCommand.Waiting;
 			while (battleData.command == ActionCommand.Waiting)
 			{
@@ -263,6 +263,20 @@ public class BattleManager : MonoBehaviour
 		battleData.command = ActionCommand.Rest;
 	}
 
+	public void CallbackOnPointerEnterRestCommand()
+	{
+		Debug.Log("Pointer Enter to Rest in battleManager.");
+		battleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP(battleData));
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+	}
+
+	public void CallbackOnPointerExitRestCommand()
+	{
+		Debug.Log("Pointer exit from Rest in battleManager.");
+		battleData.previewAPAction = null;
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+	}
+
 	public void CallbackStandbyCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
@@ -283,6 +297,19 @@ public class BattleManager : MonoBehaviour
 	{
 		battleData.indexOfSeletedSkillByUser = index;
 		Debug.Log(index + "th skill is selected");
+	}
+
+	public void CallbackPointerEnterSkillIndex(int index)
+	{
+		battleData.indexOfPreSelectedSkillByUser = index;
+	}
+
+	public void CallbackPointerExitSkillIndex(int index)
+	{
+		if (index == battleData.indexOfPreSelectedSkillByUser)
+		{
+			battleData.indexOfPreSelectedSkillByUser = 0;
+		}
 	}
 
 	public void CallbackSkillUICancel()
@@ -352,6 +379,23 @@ public class BattleManager : MonoBehaviour
 	public bool IsLeftClicked()
 	{
 		return battleData.leftClicked;
+	}
+
+	public void OnMouseEnterHandlerFromTile(Vector2 position)
+	{
+		if (battleData.isWaitingUserInput)
+		{
+			battleData.isPreSeletedTileByUser = true;
+			battleData.preSelectedTilePosition = position;
+		}
+	}
+
+	public void OnMouseExitHandlerFromTile(Vector2 position)
+	{
+		if (battleData.isWaitingUserInput)
+		{
+			battleData.isPreSeletedTileByUser = false;
+		}
 	}
 
 	public void OnMouseDownHandlerFromTile(Vector2 position)

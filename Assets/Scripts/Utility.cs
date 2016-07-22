@@ -97,7 +97,7 @@ public class Utility : MonoBehaviour {
 		else return 1;
 	}
 	
-	public static float GetCelestialBouns(GameObject attacker, GameObject defender)
+	public static float GetCelestialBonus(GameObject attacker, GameObject defender)
 	{
 		Celestial attackerCelestial = attacker.GetComponent<Unit>().GetCelestial();
 		Celestial defenderCelestial = defender.GetComponent<Unit>().GetCelestial();

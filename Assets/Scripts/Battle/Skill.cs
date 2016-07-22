@@ -1,6 +1,7 @@
 ﻿using Enums;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Skill {
@@ -33,7 +34,10 @@ public class Skill {
 	string effectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
-	
+    
+    // 상태이상 관련 정보
+    List<StatusEffect> statusEffectList = new List<StatusEffect>();
+    
 	public Skill(string name, int requireAP, int cooldown, 
 				 Dictionary<string, float> powerFactor,
 				 SkillType skillType,
@@ -59,12 +63,25 @@ public class Skill {
 		this.effectName = effectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
-	}  
+	}
+      
+    public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
+    {
+        foreach (var statusEffectInfo in statusEffectInfoList)
+        {
+            StatusEffect statusEffect = statusEffectInfo.GetStatusEffect();
+            if(statusEffectInfo.GetSkillName().Equals(this.name))
+            {
+                statusEffectList.Add(statusEffectInfo.GetStatusEffect());
+            }
+        }
+    }
 	
 	public string GetName() {return name;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}	
-	public float GetPowerFactor() {return powerFactor["basePower"];} // 계수의 종류를 입력받아 반환하는 형태로 보완할 예정
+    public Dictionary<string, float> GetPowerFactorDict() {return powerFactor;}
+	public float GetPowerFactor(Stat status) {return powerFactor[status.ToString()];} 
 	public SkillType GetSkillType() {return skillType;}
 	public RangeForm GetFirstRangeForm() {return firstRangeForm;}
 	public int GetFirstMinReach() {return firstMinReach;}
@@ -78,4 +95,5 @@ public class Skill {
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
+    public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
 }
