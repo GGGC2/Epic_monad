@@ -14,8 +14,8 @@ public class DialogueData{
 	string name;
 	string dialogue;
 	
-	string effectType;
-	string effectSubType;
+	string commandType;
+	string commandSubType;
 
 	bool isAdventureObject;
 	string objectName;
@@ -26,8 +26,8 @@ public class DialogueData{
 	public string GetEmotion() { return nameInCode; }
 	public string GetName() { return name; }
 	public string GetDialogue() { return dialogue; }
-	public string GetEffectType() { return effectType; }
-	public string GetEffectSubType() { return effectSubType; }
+	public string GetCommandType() { return commandType; }
+	public string GetCommandSubType() { return commandSubType; }
 	public bool IsAdventureObject() { return isAdventureObject; }
 	public string GetObjectName() { return objectName; }
 	public string GetObjectSubName() { return objectSubName; } 
@@ -40,29 +40,29 @@ public class DialogueData{
 		{
 			isEffect = true;
 			isAdventureObject = false;
-			effectType = stringList[1];
-			if (effectType == "appear")
+			commandType = stringList[1];
+			if (commandType == "appear")
 			{
-				effectSubType = stringList[2];
+				commandSubType = stringList[2];
 				nameInCode = stringList[3];
 			}
-			else if (effectType == "disappear")
+			else if (commandType == "disappear")
 			{
-				effectSubType = stringList[2];
+				commandSubType = stringList[2];
 			}
-			else if (effectType == "adv_start")
+			else if (commandType == "adv_start")
 			{
 				// nothing.
 			}
-			else if (effectType == "load_scene")
+			else if (commandType == "load_scene")
 			{
 				// load next scene.
-				effectSubType = stringList[2];
+				commandSubType = stringList[2];
 			}
-			else if (effectType == "load_script")
+			else if (commandType == "load_script")
 			{
 				// load next script.
-				effectSubType = stringList[2];
+				commandSubType = stringList[2];
 			}
 			else
 			{

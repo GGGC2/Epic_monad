@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour {
 
 	public TextAsset dialogueData;
+	public static string nextDialogueName;
 
 	Sprite transparent;
 	
@@ -34,8 +35,8 @@ public class DialogueManager : MonoBehaviour {
 
 	public void SkipDialogue()
 	{
-		line = endLine;
-		FindObjectOfType<SceneLoader>().LoadNextScene();
+		line = endLine-1;
+		// FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
 	public void ActiveSkipQuestionUI()
@@ -103,6 +104,13 @@ public class DialogueManager : MonoBehaviour {
 
 	void Initialize()
 	{
+		Debug.Log(nextDialogueName);
+        if (nextDialogueName != null)
+        {
+            TextAsset nextScriptFile = Resources.Load("Data/" + nextDialogueName, typeof(TextAsset)) as TextAsset;
+            dialogueData = nextScriptFile;
+        }
+
 		sceneLoader = FindObjectOfType<SceneLoader>();
 		skipQuestionUI = GameObject.Find("SkipQuestion");
 		InactiveSkipQuestionUI();
@@ -145,7 +153,7 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else if (dialogueDataList[line].IsEffect())
 			{
-				HandleEffect();
+				HandleCommand();
 				line++;
 			}
 			else
@@ -161,20 +169,32 @@ public class DialogueManager : MonoBehaviour {
 			}
 		}
 
-		FindObjectOfType<SceneLoader>().LoadNextScene();
+		ActiveAdventureUI();
+
+		// FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
-	void HandleEffect()
+	void HandleCommand()
 	{
-		if (dialogueDataList[line].GetEffectType() == "adv_start")
+		if (dialogueDataList[line].GetCommandType() == "adv_start")
 		{
 			ActiveAdventureUI();
 			LoadAdventureObjects();
 			return;
 		}
-		else if (dialogueDataList[line].GetEffectType() == "appear")
+		else if (dialogueDataList[line].GetCommandType() == "load_scene")
 		{
-			if (dialogueDataList[line].GetEffectSubType() == "left")
+			string nextSceneName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextScene(nextSceneName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_script")
+		{
+			string nextScriptName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextScript(nextScriptName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "appear")
+		{
+			if (dialogueDataList[line].GetCommandSubType() == "left")
 			{
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) 
@@ -184,7 +204,7 @@ public class DialogueManager : MonoBehaviour {
 					isLeftUnitOld = false;
 				}
 			}
-			else if (dialogueDataList[line].GetEffectSubType() == "right")
+			else if (dialogueDataList[line].GetCommandSubType() == "right")
 			{
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) 
@@ -196,25 +216,25 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else
 			{
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
 			}
 		}
-		else if (dialogueDataList[line].GetEffectType() == "disappear")
+		else if (dialogueDataList[line].GetCommandType() == "disappear")
 		{
-			if (dialogueDataList[line].GetEffectSubType() == "left")
+			if (dialogueDataList[line].GetCommandSubType() == "left")
 			{
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = false;
 			}
-			else if (dialogueDataList[line].GetEffectSubType() == "right")
+			else if (dialogueDataList[line].GetCommandSubType() == "right")
 			{
 				rightUnit = null;
 				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = true;
 			}
 			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-			else if (dialogueDataList[line].GetEffectSubType() == "all")
+			else if (dialogueDataList[line].GetCommandSubType() == "all")
 			{
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
@@ -224,12 +244,12 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else
 			{
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
 			}
 		}
 		else
 		{
-			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetEffectType());
+			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
 		}
 	}
 
