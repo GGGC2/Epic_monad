@@ -820,6 +820,10 @@ Prefab:
       propertyPath: dialogueUI
       value: 
       objectReference: {fileID: 768874062}
+    - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
+      propertyPath: dialogueData
+      value: 
+      objectReference: {fileID: 4900000, guid: c17d264ba7537413a84fbc856bd2c0e0, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
   m_IsPrefabParent: 0
