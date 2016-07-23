@@ -55,6 +55,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueData: {fileID: 4900000, guid: c17d264ba7537413a84fbc856bd2c0e0, type: 3}
+  dialogueUI: {fileID: 0}
+  adventureUI: {fileID: 0}
   leftPortrait: {fileID: 0}
   rightPortrait: {fileID: 0}
   nameText: {fileID: 0}
