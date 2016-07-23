@@ -54,6 +54,16 @@ public class DialogueData{
 			{
 				// nothing.
 			}
+			else if (effectType == "load_scene")
+			{
+				// load next scene.
+				effectSubType = stringList[2];
+			}
+			else if (effectType == "load_script")
+			{
+				// load next script.
+				effectSubType = stringList[2];
+			}
 			else
 			{
 				Debug.LogError("undefined effectType : " + stringList[1]);

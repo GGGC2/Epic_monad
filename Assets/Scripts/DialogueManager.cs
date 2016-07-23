@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour {
 
 	public TextAsset dialogueData;
+    public static string nextDialogueName;
 
 	Sprite transparent;
 	
@@ -34,8 +35,8 @@ public class DialogueManager : MonoBehaviour {
 
 	public void SkipDialogue()
 	{
-		line = endLine;
-		FindObjectOfType<SceneLoader>().LoadNextScene();
+		line = endLine-1;
+		// FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
 	public void ActiveSkipQuestionUI()
@@ -122,6 +123,13 @@ public class DialogueManager : MonoBehaviour {
 
 	void Initialize()
 	{
+        Debug.Log(nextDialogueName);
+        if (nextDialogueName != null)
+        {
+            TextAsset nextScriptFile = Resources.Load("Data/" + nextDialogueName, typeof(TextAsset)) as TextAsset;
+            dialogueData = nextScriptFile;
+        }
+
 		sceneLoader = FindObjectOfType<SceneLoader>();
 		skipQuestionUI = GameObject.Find("SkipQuestion");
 		InactiveSkipQuestionUI();
@@ -202,6 +210,16 @@ public class DialogueManager : MonoBehaviour {
                 LoadAdventureObjects();
                 yield break;
             }
+            else if (dialogueDataList[line].GetEffectType() == "load_scene")
+            {
+                string nextSceneName = dialogueDataList[line].GetEffectSubType();
+                FindObjectOfType<SceneLoader>().LoadNextScene(nextSceneName);
+            }
+            else if (dialogueDataList[line].GetEffectType() == "load_script")
+            {
+                string nextScriptName = dialogueDataList[line].GetEffectSubType();
+                FindObjectOfType<SceneLoader>().LoadNextScript(nextScriptName);
+            }
             else if (dialogueDataList[line].GetEffectType() == "appear")
             {
                 if (dialogueDataList[line].GetEffectSubType() == "left")
@@ -273,7 +291,8 @@ public class DialogueManager : MonoBehaviour {
 			yield return null;
 		}
 		
-		FindObjectOfType<SceneLoader>().LoadNextScene();
+        Debug.Log("script end");
+		// FindObjectOfType<SceneLoader>().LoadNextScene();
 		yield return null;
 	}
 	
