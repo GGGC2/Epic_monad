@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour {
 
 	public TextAsset dialogueData;
-    public static string nextDialogueName;
 
 	Sprite transparent;
 	
@@ -35,8 +34,8 @@ public class DialogueManager : MonoBehaviour {
 
 	public void SkipDialogue()
 	{
-		line = endLine-1;
-		// FindObjectOfType<SceneLoader>().LoadNextScene();
+		line = endLine;
+		FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
 	public void ActiveSkipQuestionUI()
@@ -99,209 +98,179 @@ public class DialogueManager : MonoBehaviour {
 
         ActiveDialogueUI();
 
-        StartCoroutine(PrintLinesFromIndex(startLine));
-    }
-
-    IEnumerator PrintLinesFromIndex(int index)
-    {
-        // Initialize.
-        leftPortrait.sprite = transparent;
-		rightPortrait.sprite = transparent;
-		
-		leftUnit = null;
-		rightUnit = null;
-
-        isLeftUnitOld = true;
-
-        line = index;
-        while (line < endLine)
-		{
-			yield return StartCoroutine(PrintEachLine());
-			yield return null;
-		}
+        StartCoroutine(PrintLinesFrom(startLine));
     }
 
 	void Initialize()
 	{
-        Debug.Log(nextDialogueName);
-        if (nextDialogueName != null)
-        {
-            TextAsset nextScriptFile = Resources.Load("Data/" + nextDialogueName, typeof(TextAsset)) as TextAsset;
-            dialogueData = nextScriptFile;
-        }
-
 		sceneLoader = FindObjectOfType<SceneLoader>();
 		skipQuestionUI = GameObject.Find("SkipQuestion");
 		InactiveSkipQuestionUI();
 		
 		transparent = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 		
-		leftPortrait.sprite = transparent;
-		rightPortrait.sprite = transparent;
-		
-		leftUnit = null;
-		rightUnit = null;
-		
 		dialogueDataList = Parser.GetParsedDialogueData(dialogueData);
 		
 		line = 0;
 		endLine = dialogueDataList.Count; 
 		
-		isLeftUnitOld = true;
-
         adventureUI.SetActive(false);
 		
-		StartCoroutine(PrintAllLine());
+		StartCoroutine(PrintLinesFrom(0));
 	}
-	
-	IEnumerator PrintEachLine()
-    {
-        leftPortrait.color = Color.gray;
-        rightPortrait.color = Color.gray;
 
-        if (dialogueDataList[line].IsAdventureObject())
-        {
-            ActiveAdventureUI();
-        }
-        else if (!dialogueDataList[line].IsEffect())
-        {
-            if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
-                (dialogueDataList[line].GetNameInCode() != rightUnit) &&
-                (Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
-            {
-                Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-                if (isLeftUnitOld)
-                {
-                    leftUnit = dialogueDataList[line].GetNameInCode();
-                    leftPortrait.sprite = sprite;
-                    isLeftUnitOld = false;
-                }
-                else
-                {
-                    rightUnit = dialogueDataList[line].GetNameInCode();
-                    rightPortrait.sprite = sprite;
-                    isLeftUnitOld = true;
-                }
-            }
-
-            if (leftUnit == dialogueDataList[line].GetNameInCode())
-                leftPortrait.color = Color.white;
-            else if (rightUnit == dialogueDataList[line].GetNameInCode())
-                rightPortrait.color = Color.white;
-
-            if (dialogueDataList[line].GetName() != "-")
-                nameText.text = dialogueDataList[line].GetName();
-            else
-                nameText.text = null;
-            dialogueText.text = dialogueDataList[line].GetDialogue();
-
-
-            isWaitingMouseInput = true;
-            while (isWaitingMouseInput)
-            {
-                yield return null;
-            }
-        }
-        else // isEffect = true
-        {
-            if (dialogueDataList[line].GetEffectType() == "adv_start")
-            {
-                ActiveAdventureUI();
-                LoadAdventureObjects();
-                yield break;
-            }
-            else if (dialogueDataList[line].GetEffectType() == "load_scene")
-            {
-                string nextSceneName = dialogueDataList[line].GetEffectSubType();
-                FindObjectOfType<SceneLoader>().LoadNextScene(nextSceneName);
-            }
-            else if (dialogueDataList[line].GetEffectType() == "load_script")
-            {
-                string nextScriptName = dialogueDataList[line].GetEffectSubType();
-                FindObjectOfType<SceneLoader>().LoadNextScript(nextScriptName);
-            }
-            else if (dialogueDataList[line].GetEffectType() == "appear")
-            {
-                if (dialogueDataList[line].GetEffectSubType() == "left")
-                {
-                    Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-                    if (loadedSprite != null) 
-                    {
-                        leftUnit = dialogueDataList[line].GetNameInCode();               
-                        leftPortrait.sprite = loadedSprite;
-                        isLeftUnitOld = false;
-                    }
-                }
-                else if (dialogueDataList[line].GetEffectSubType() == "right")
-                {
-                    Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-                    if (loadedSprite != null) 
-                    {      
-                        rightUnit = dialogueDataList[line].GetNameInCode();         
-                        rightPortrait.sprite = loadedSprite;
-                        isLeftUnitOld = true;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
-                }
-            }
-            else if (dialogueDataList[line].GetEffectType() == "disappear")
-            {
-                if (dialogueDataList[line].GetEffectSubType() == "left")
-                {
-                    leftUnit = null;
-                    leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-                    isLeftUnitOld = false;
-                }
-                else if (dialogueDataList[line].GetEffectSubType() == "right")
-                {
-                    rightUnit = null;
-                    rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-                    isLeftUnitOld = true;
-                }
-                // 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-                else if (dialogueDataList[line].GetEffectSubType() == "all")
-                {
-                    leftUnit = null;
-                    leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-                    rightUnit = null;
-                    rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-                    isLeftUnitOld = false;
-                }
-                else
-                {
-                    Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
-                }
-            }
-            else
-            {
-                Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetEffectType());
-            }
-            line++;
-        }
-    }
-
-    IEnumerator PrintAllLine()
+    IEnumerator PrintLinesFrom(int startLine)
 	{
+		// Initialize.
+		leftPortrait.sprite = transparent;
+		rightPortrait.sprite = transparent;
+		
+		leftUnit = null;
+		rightUnit = null;
+
+		isLeftUnitOld = true;
+
+		line = startLine;
 		while (line < endLine)
 		{
-			yield return StartCoroutine(PrintEachLine());
-			yield return null;
+			leftPortrait.color = Color.gray;
+			rightPortrait.color = Color.gray;
+
+			// Previous adventure dialogue is end
+			// If adventure object is clicked, PrintAllLine is called.
+			if (dialogueDataList[line].IsAdventureObject())
+			{
+				ActiveAdventureUI();
+				yield break;
+			}
+			else if (dialogueDataList[line].IsEffect())
+			{
+				HandleEffect();
+				line++;
+			}
+			else
+			{
+				HandleDialogue();
+
+				isWaitingMouseInput = true;
+				while (isWaitingMouseInput)
+				{
+					yield return null;
+				}
+				line++;
+			}
 		}
-		
-        Debug.Log("script end");
-		// FindObjectOfType<SceneLoader>().LoadNextScene();
-		yield return null;
+
+		FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
-	
+
+	void HandleEffect()
+	{
+		if (dialogueDataList[line].GetEffectType() == "adv_start")
+		{
+			ActiveAdventureUI();
+			LoadAdventureObjects();
+			return;
+		}
+		else if (dialogueDataList[line].GetEffectType() == "appear")
+		{
+			if (dialogueDataList[line].GetEffectSubType() == "left")
+			{
+				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+				if (loadedSprite != null) 
+				{
+					leftUnit = dialogueDataList[line].GetNameInCode();               
+					leftPortrait.sprite = loadedSprite;
+					isLeftUnitOld = false;
+				}
+			}
+			else if (dialogueDataList[line].GetEffectSubType() == "right")
+			{
+				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+				if (loadedSprite != null) 
+				{      
+					rightUnit = dialogueDataList[line].GetNameInCode();         
+					rightPortrait.sprite = loadedSprite;
+					isLeftUnitOld = true;
+				}
+			}
+			else
+			{
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
+			}
+		}
+		else if (dialogueDataList[line].GetEffectType() == "disappear")
+		{
+			if (dialogueDataList[line].GetEffectSubType() == "left")
+			{
+				leftUnit = null;
+				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = false;
+			}
+			else if (dialogueDataList[line].GetEffectSubType() == "right")
+			{
+				rightUnit = null;
+				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = true;
+			}
+			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
+			else if (dialogueDataList[line].GetEffectSubType() == "all")
+			{
+				leftUnit = null;
+				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightUnit = null;
+				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = false;
+			}
+			else
+			{
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetEffectSubType());
+			}
+		}
+		else
+		{
+			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetEffectType());
+		}
+	}
+
+	void HandleDialogue()
+	{
+		if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
+			(dialogueDataList[line].GetNameInCode() != rightUnit) &&
+			(Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
+		{
+			Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+			if (isLeftUnitOld)
+			{
+				leftUnit = dialogueDataList[line].GetNameInCode();
+				leftPortrait.sprite = sprite;
+				isLeftUnitOld = false;
+			}
+			else
+			{
+				rightUnit = dialogueDataList[line].GetNameInCode();
+				rightPortrait.sprite = sprite;
+				isLeftUnitOld = true;
+			}
+		}
+
+		if (leftUnit == dialogueDataList[line].GetNameInCode())
+			leftPortrait.color = Color.white;
+		else if (rightUnit == dialogueDataList[line].GetNameInCode())
+			rightPortrait.color = Color.white;
+
+		if (dialogueDataList[line].GetName() != "-")
+			nameText.text = dialogueDataList[line].GetName();
+		else
+			nameText.text = null;
+		dialogueText.text = dialogueDataList[line].GetDialogue();
+	}
+
 	void OnMouseDown()
 	{
 		if ((isWaitingMouseInput) && (!sceneLoader.IsScreenActive()) && (!skipQuestionUI.activeInHierarchy))
 		{
 			isWaitingMouseInput = false;
-			line++;
 		}
 	}
 	
