@@ -1,4 +1,4 @@
-owner,skill,name,statusEffectType,statusEffectSpec,isInfinite,isStackable,isRemovable,degree,amount,lastPhase,lastStack,cooldown,effectName,effectVisualType,effectMoveType
-soldier01,±ÙÁ¢°ø°İ,Áö¼Óµ¥¹ÌÁö,DamageOverPhase,false,false,true,0,10,2,0,0,darkBall,Individual,NonMove
-lucius,°Ë¼úÀÇ ´ë°¡,±âÀı,Faint,false,false,true,0,0,2,0,0,-,Individual,NonMove
-reina,È­¿° Æø¹ß,±âÀı,Faint,false,false,true,0,0,2,0,0,-,Area,NonMove
+ï»¿owner,skill,name,statusEffectType,isInfinite,isStackable,isRemovable,degree,amount,lastPhase,lastStack,cooldown,effectName,effectVisualType,effectMoveType
+soldier01,ê·¼ì ‘ê³µê²©,ë‘”í™”,RequireSkillAPIncrease,FALSE,FALSE,TRUE,0,0,2,0,0,darkBall,Individual,NonMove
+lucius,ê²€ìˆ ì˜ ëŒ€ê°€,ë‘”í™”,RequireSkillAPIncrease,FALSE,FALSE,TRUE,50,0,2,0,0,-,Individual,NonMove
+reina,í™”ì—¼ í­ë°œ,ê¸°ì ˆ,Faint,FALSE,FALSE,TRUE,0,0,2,0,0,-,Area,NonMove

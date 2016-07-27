@@ -43,8 +43,21 @@ namespace Battle.Turn
 						battleData.isWaitingUserInput = false;
 						yield break;
 					}
+
+					if (battleData.isPreSeletedTileByUser)
+					{
+						int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
+						battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
+					}
+					else
+					{
+						battleData.previewAPAction = null;
+					}
+					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
 					yield return null;
 				}
+				battleData.isPreSeletedTileByUser = false;
 				battleData.isSelectedTileByUser = false;
 				battleData.isWaitingUserInput = false;
 
@@ -139,6 +152,7 @@ namespace Battle.Turn
 			destTile.GetComponent<Tile>().SetUnitOnTile(battleData.selectedUnitObject);
 
 			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(totalUseActionPoint);
+			battleData.previewAPAction = null;
 
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;

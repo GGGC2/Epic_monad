@@ -28,8 +28,10 @@ public class BattleData
 
 	public CurrentState currentState = CurrentState.None;
 
+	public bool isPreSeletedTileByUser = false;
 	public bool isSelectedTileByUser = false;
 	public bool isSelectedDirectionByUser = false;
+	public int indexOfPreSelectedSkillByUser = 0;
 	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
 
@@ -43,6 +45,7 @@ public class BattleData
 
 	public int moveCount;
 	public bool alreadyMoved;
+	public Vector2 preSelectedTilePosition;
 	public Vector2 selectedTilePosition;
 	public Direction selectedDirection;
 	public GameObject selectedUnitObject; // 현재 턴의 유닛
@@ -59,10 +62,19 @@ public class BattleData
 	// Load from json.
 	public int partyLevel;
 
+	public APAction previewAPAction;
+
 	public Skill SelectedSkill
 	{
 		get {
 			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfSeletedSkillByUser - 1];
+		}
+	}
+
+	public Skill PreSelectedSkill
+	{
+		get {
+			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfPreSelectedSkillByUser - 1];
 		}
 	}
 

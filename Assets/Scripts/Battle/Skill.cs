@@ -34,7 +34,10 @@ public class Skill {
 	string effectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
-	
+    
+    // 상태이상 관련 정보
+    List<StatusEffect> statusEffectList = new List<StatusEffect>();
+    
 	public Skill(string name, int requireAP, int cooldown, 
 				 Dictionary<string, float> powerFactor,
 				 SkillType skillType,
@@ -60,7 +63,19 @@ public class Skill {
 		this.effectName = effectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
-	}  
+	}
+      
+    public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
+    {
+        foreach (var statusEffectInfo in statusEffectInfoList)
+        {
+            StatusEffect statusEffect = statusEffectInfo.GetStatusEffect();
+            if(statusEffectInfo.GetSkillName().Equals(this.name))
+            {
+                statusEffectList.Add(statusEffectInfo.GetStatusEffect());
+            }
+        }
+    }
 	
 	public string GetName() {return name;}
 	public int GetRequireAP() {return requireAP;}
@@ -80,4 +95,5 @@ public class Skill {
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
+    public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
 }

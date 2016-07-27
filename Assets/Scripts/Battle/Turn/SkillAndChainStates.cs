@@ -32,8 +32,22 @@ namespace Battle.Turn
 						battleData.isWaitingUserInput = false;
 						yield break;
 					}
+
+					if (battleData.indexOfPreSelectedSkillByUser != 0)
+					{
+						Skill preSelectedSkill = battleData.PreSelectedSkill;
+						int requireAP = preSelectedSkill.GetRequireAP();
+						battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
+					}
+					else
+					{
+						battleData.previewAPAction = null;
+					}
+					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
 					yield return null;
 				}
+				battleData.indexOfPreSelectedSkillByUser = 0;
 				battleData.isWaitingUserInput = false;
 
 				battleData.uiManager.DisableSkillUI();
@@ -51,6 +65,9 @@ namespace Battle.Turn
 					battleData.currentState = CurrentState.SelectSkillApplyPoint;
 					yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
 				}
+
+				battleData.previewAPAction = null;
+				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 			}
 		}
 
@@ -390,7 +407,7 @@ namespace Battle.Turn
 			}
 
 			foreach (var target in targets)
-			{
+			{                
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				BattleManager battleManager = battleData.battleManager;
@@ -415,6 +432,27 @@ namespace Battle.Turn
 
 					var damageAmount = (int)((chainCombo * battleData.chainDamageFactor) * directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(unitInChain.GetUnitClass(), damageAmount, false);
+
+                    // 상태이상 적용
+                    if(appliedSkill.GetStatusEffectList().Count > 0)
+                    {
+                        foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+                        {
+                            bool isInList = false;
+                            for (int i = 0; i < target.GetComponent<Unit>().GetStatusEffectList().Count; i++)
+                            {
+                                if(statusEffect.IsSameStatusEffect(target.GetComponent<Unit>().GetStatusEffectList()[i]))
+                                {
+                                    isInList = true;
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+                                    break;
+                                }
+                            }
+                            if (!isInList) target.GetComponent<Unit>().GetStatusEffectList().Add(statusEffect);
+                            Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.GetComponent<Unit>().name);
+                        }
+                    }
 
 					if (target == targets[targets.Count-1])
 					{
@@ -441,6 +479,27 @@ namespace Battle.Turn
 					var recoverAmount = (int) actualPowerFactor;
 					var recoverHealthCoroutine = target.GetComponent<Unit>().RecoverHealth(recoverAmount);
 
+                    // 상태이상 적용
+                    if(appliedSkill.GetStatusEffectList().Count > 0)
+                    {
+                        foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+                        {
+                            bool isInList = false;
+                            for (int i = 0; i < target.GetComponent<Unit>().GetStatusEffectList().Count; i++)
+                            {
+                                if(statusEffect.IsSameStatusEffect(target.GetComponent<Unit>().GetStatusEffectList()[i]))
+                                {
+                                    isInList = true;
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+                                    break;
+                                }
+                            }
+                            if (!isInList) target.GetComponent<Unit>().GetStatusEffectList().Add(statusEffect);
+                            Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.GetComponent<Unit>().name);
+                        }
+                    }
+
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
@@ -451,12 +510,6 @@ namespace Battle.Turn
 					}
 
 					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetComponent<Unit>().GetName());
-				}
-
-				// FIXME : 버프, 디버프는 아직 미구현. 데미지/힐과 별개일 때도 있고 같이 들어갈 때도 있으므로 별도의 if문으로 구현할 것.
-				else
-				{
-					Debug.Log("Apply additional effect to " + target.GetComponent<Unit>().name);
 				}
 			}
 
@@ -518,6 +571,27 @@ namespace Battle.Turn
 
 					var damageAmount = (int)(directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(selectedUnit.GetUnitClass(), damageAmount, false);
+                    
+                    // 상태이상 적용
+                    if(appliedSkill.GetStatusEffectList().Count > 0)
+                    {
+                        foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+                        {
+                            bool isInList = false;
+                            for (int i = 0; i < target.GetComponent<Unit>().GetStatusEffectList().Count; i++)
+                            {
+                                if(statusEffect.IsSameStatusEffect(target.GetComponent<Unit>().GetStatusEffectList()[i]))
+                                {
+                                    isInList = true;
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+                                    break;
+                                }
+                            }
+                            if (!isInList) target.GetComponent<Unit>().GetStatusEffectList().Add(statusEffect);
+                            Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.GetComponent<Unit>().name);
+                        }
+                    }
 
 					if (target == targets[targets.Count-1])
 					{
@@ -542,7 +616,28 @@ namespace Battle.Turn
                     
 					var recoverAmount = (int) actualPowerFactor;
 					var recoverHealthCoroutine = target.GetComponent<Unit>().RecoverHealth(recoverAmount);
-
+                    
+                    // 상태이상 적용
+                    if(appliedSkill.GetStatusEffectList().Count > 0)
+                    {
+                        foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+                        {
+                            bool isInList = false;
+                            for (int i = 0; i < target.GetComponent<Unit>().GetStatusEffectList().Count; i++)
+                            {
+                                if(statusEffect.IsSameStatusEffect(target.GetComponent<Unit>().GetStatusEffectList()[i]))
+                                {
+                                    isInList = true;
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+                                    target.GetComponent<Unit>().GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+                                    break;
+                                }
+                            }
+                            if (!isInList) target.GetComponent<Unit>().GetStatusEffectList().Add(statusEffect);
+                            Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.GetComponent<Unit>().name);
+                        }
+                    }
+                    
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
@@ -553,12 +648,6 @@ namespace Battle.Turn
 					}
 
 					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetComponent<Unit>().GetName());
-				}
-
-				// FIXME : 버프, 디버프는 아직 미구현. 데미지/힐과 별개일 때도 있고 같이 들어갈 때도 있으므로 별도의 if문으로 구현할 것.
-				else
-				{
-					Debug.Log("Apply additional effect to " + target.GetComponent<Unit>().name);
 				}
 			}
 

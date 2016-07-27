@@ -26,6 +26,16 @@ namespace BattleUI
 			gameManager.CallbackRestCommand();
 		}
 
+		public void CallbackOnPointerEnterRestCommand()
+		{
+			gameManager.CallbackOnPointerEnterRestCommand();
+		}
+
+		public void CallbackOnPointerExitRestCommand()
+		{
+			gameManager.CallbackOnPointerExitRestCommand();
+		}
+
 		public void CallbackStandbyCommand()
 		{
 			gameManager.CallbackStandbyCommand();
