@@ -74,8 +74,6 @@ public class SceneLoader : MonoBehaviour {
 		DialogueManager.nextDialogueName = nextScriptFileName;
 		Debug.Log("input - " + DialogueManager.nextDialogueName);
 
-		Scene scene = SceneManager.GetActiveScene();
-		SceneManager.LoadScene(scene.name);
-		// Application.LoadLevel(nextSceneName);
+		SceneManager.LoadScene("dialogue");
 	}
 }
