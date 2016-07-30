@@ -42,7 +42,7 @@ public class WorldMapManager : MonoBehaviour
 		string nextDialogue = GetNextDialogue();
 		Debug.Assert(nextDialogue != null);
 
-		FindObjectOfType<SceneLoader>().LoadNextScript(nextDialogue);
+		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextDialogue);
 	}
 }
 }
