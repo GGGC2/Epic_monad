@@ -296,9 +296,9 @@ public class DialogueManager : MonoBehaviour {
 		dialogueText.text = dialogueDataList[line].GetDialogue();
 	}
 
-	void OnMouseDown()
+	public void OnClickDialogue()
 	{
-		if ((isWaitingMouseInput) && (!sceneLoader.IsScreenActive()) && (!skipQuestionUI.activeInHierarchy))
+		if (isWaitingMouseInput)
 		{
 			isWaitingMouseInput = false;
 		}
