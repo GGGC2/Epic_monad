@@ -56,13 +56,17 @@ public class DialogueData{
 			}
 			else if (commandType == "load_script")
 			{
-				// load next script.
+				// load next dialogue script.
 				commandSubType = stringList[2];
 			}
 			else if (commandType == "load_battle")
 			{
-				// load next stage.
+				// load next battle stage.
 				commandSubType = stringList[2];
+			}
+			else if (commandType == "load_worldmap")
+			{
+				// load worldmap.
 			}
 			else
 			{

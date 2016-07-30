@@ -197,6 +197,10 @@ public class DialogueManager : MonoBehaviour {
 			string nextSceneName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
 		}
+		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
+		{
+			// goto worldmap.
+		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{
 			if (dialogueDataList[line].GetCommandSubType() == "left")

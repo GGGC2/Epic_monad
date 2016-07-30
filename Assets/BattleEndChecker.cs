@@ -33,7 +33,7 @@ public class BattleEndChecker : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.S))
 		{
-			sceneLoader.LoadNextDialogueScene("pintos#2-3");
+			sceneLoader.LoadNextDialogueScene("pintos#3");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class BattleEndChecker : MonoBehaviour {
 
 		if (currentPhase > maxPhase)
 		{
-			sceneLoader.LoadNextDialogueScene("pintos#2-3");
+			sceneLoader.LoadNextDialogueScene("pintos#3");
 		}
 	}
 }
