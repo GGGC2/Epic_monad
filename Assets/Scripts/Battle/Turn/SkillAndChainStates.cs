@@ -430,7 +430,7 @@ namespace Battle.Turn
                         actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
                     }
 
-					var damageAmount = (int)((chainCombo * battleData.chainDamageFactor) * directionBonus * celestialBonus * actualPowerFactor);
+					var damageAmount = (int)((battleData.GetChainDamageFactorFromChainCombo(chainCombo)) * directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(unitInChain.GetUnitClass(), damageAmount, false);
 
                     // 상태이상 적용
