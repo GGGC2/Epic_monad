@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Linq;
 
 public class DialogueManager : MonoBehaviour {
 
@@ -70,6 +71,8 @@ public class DialogueManager : MonoBehaviour {
     {
         objects = adventureUI.GetComponent<AdventureManager>().objects;
 
+		objects.ToList().ForEach(x => x.SetActive(true));
+
         int tempLine = line;
         int objectIndex = 0;
 
@@ -81,6 +84,12 @@ public class DialogueManager : MonoBehaviour {
                 objectIndex++;
             }
         }
+
+		Debug.Log(objects.Length);
+		for (int i = objectIndex; i < objects.Length; i++)
+		{
+			objects[i].SetActive(false);
+		}
     }
 
     public void PrintLinesFromObjectIndex(int objectIndex)
