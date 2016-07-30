@@ -64,6 +64,11 @@ public class DialogueData{
 				// load next script.
 				commandSubType = stringList[2];
 			}
+			else if (commandType == "load_battle")
+			{
+				// load next stage.
+				commandSubType = stringList[2];
+			}
 			else
 			{
 				Debug.LogError("undefined effectType : " + stringList[1]);

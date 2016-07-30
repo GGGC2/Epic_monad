@@ -7,7 +7,6 @@ using System.Linq;
 public class DialogueManager : MonoBehaviour {
 
 	public TextAsset dialogueData;
-	public static string nextDialogueName;
 
 	Sprite transparent;
 	
@@ -37,7 +36,6 @@ public class DialogueManager : MonoBehaviour {
 	public void SkipDialogue()
 	{
 		line = endLine-1;
-		// FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
 	public void ActiveSkipQuestionUI()
@@ -113,10 +111,10 @@ public class DialogueManager : MonoBehaviour {
 
 	void Initialize()
 	{
-		Debug.Log(nextDialogueName);
-        if (nextDialogueName != null)
+		Debug.Log(SceneData.nextDialogueName);
+        if (SceneData.nextDialogueName != null)
         {
-            TextAsset nextScriptFile = Resources.Load("Data/" + nextDialogueName, typeof(TextAsset)) as TextAsset;
+            TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.nextDialogueName, typeof(TextAsset)) as TextAsset;
             dialogueData = nextScriptFile;
         }
 
@@ -179,8 +177,6 @@ public class DialogueManager : MonoBehaviour {
 		}
 
 		ActiveAdventureUI();
-
-		// FindObjectOfType<SceneLoader>().LoadNextScene();
 	}
 
 	void HandleCommand()
@@ -200,6 +196,11 @@ public class DialogueManager : MonoBehaviour {
 		{
 			string nextScriptName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextScript(nextScriptName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_battle")
+		{
+			string nextSceneName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{

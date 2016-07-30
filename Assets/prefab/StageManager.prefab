@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 407154}
-  - 114: {fileID: 11427906}
+  - 114: {fileID: 11472570}
   m_Layer: 0
   m_Name: StageManager
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11427906
+--- !u!114 &11472570
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -36,7 +36,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 119434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7ae091f18b794d92aa057ef7d8c117a, type: 3}
+  m_Script: {fileID: 11500000, guid: abdfdd0cc737c4c3eacd057149883675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapData: {fileID: 4900000, guid: 2eb93f66e5c9340e1bcd77aa88972899, type: 3}
