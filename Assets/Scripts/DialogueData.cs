@@ -54,11 +54,6 @@ public class DialogueData{
 			{
 				// nothing.
 			}
-			else if (commandType == "load_scene")
-			{
-				// load next scene.
-				commandSubType = stringList[2];
-			}
 			else if (commandType == "load_script")
 			{
 				// load next script.

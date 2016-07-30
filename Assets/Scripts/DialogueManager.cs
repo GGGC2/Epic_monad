@@ -187,15 +187,10 @@ public class DialogueManager : MonoBehaviour {
 			LoadAdventureObjects();
 			return;
 		}
-		else if (dialogueDataList[line].GetCommandType() == "load_scene")
-		{
-			string nextSceneName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextScene(nextSceneName);
-		}
 		else if (dialogueDataList[line].GetCommandType() == "load_script")
 		{
 			string nextScriptName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextScript(nextScriptName);
+			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_battle")
 		{

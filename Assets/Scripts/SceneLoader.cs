@@ -7,11 +7,6 @@ public class SceneLoader : MonoBehaviour {
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
-	public void LoadNextScene(string nextSceneName)
-	{
-		StartCoroutine(FadeoutAndLoadScene(nextSceneName));
-	}
-
 	public void LoadNextBattleScene(string nextSceneName)
 	{
 		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
@@ -20,11 +15,6 @@ public class SceneLoader : MonoBehaviour {
 	public void LoadNextDialogueScene(string nextSceneName)
 	{
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
-	}
-
-	public void LoadNextScript(string nextScriptFileName)
-	{
-		StartCoroutine(FadeoutAndLoadDialogueScene(nextScriptFileName));
 	}
 
 	public bool IsScreenActive()
@@ -41,18 +31,6 @@ public class SceneLoader : MonoBehaviour {
 			yield return new WaitForSeconds(0.05f);
 		}
 		fadeoutScreenObject.SetActive(false);
-	}
-
-	IEnumerator FadeoutAndLoadScene(string nextSceneName)
-	{
-		fadeoutScreenObject.SetActive(true);
-		for (int i = 0; i < 20; i++)
-		{
-			fadeoutScreenObject.GetComponent<Image>().color += new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.05f);
-		}
-
-		SceneManager.LoadScene(nextSceneName);
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
