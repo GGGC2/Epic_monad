@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+using WorldMap;
+
 public class Parser : MonoBehaviour {
 
 	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile)
@@ -111,5 +113,27 @@ public class Parser : MonoBehaviour {
 		}
 		
 		return tileInfoList;
+	}
+
+	public static List<StoryInfo> GetParsedStoryInfo()
+	{
+		List<StoryInfo> stories = new List<StoryInfo>();
+		TextAsset csvFile;
+
+		csvFile = Resources.Load("Data/worldMap") as TextAsset;
+
+		string csvText = csvFile.text;
+		string[] lines = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		List<string> dataLines = new List<string>(lines);
+		dataLines = dataLines.GetRange(1, lines.Length - 1);
+
+		foreach (string line in dataLines)
+		{
+			StoryInfo storyInfo = new StoryInfo(line);
+			stories.Add(storyInfo);
+		}
+
+		return stories;
 	}
 }
