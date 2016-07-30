@@ -81,6 +81,7 @@ namespace Battle.Turn
 			battleData.rightClicked = false;
 			battleData.isWaitingUserInput = true;
 			battleData.isSelectedTileByUser = false;
+			battleData.isPreSeletedTileByUser = false;
 
 			if (battleData.currentState == CurrentState.SelectSkill)
 			{
@@ -131,6 +132,8 @@ namespace Battle.Turn
 
 				if (battleData.isSelectedTileByUser)
 				{
+					battleData.isPreSeletedTileByUser = false;
+					battleData.isSelectedTileByUser = false;
 					battleData.isWaitingUserInput = false;
 					battleData.uiManager.DisableCancelButtonUI();
 					battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
@@ -174,6 +177,7 @@ namespace Battle.Turn
 
 				battleData.isWaitingUserInput = true;
 				battleData.isSelectedTileByUser = false;
+				battleData.isPreSeletedTileByUser = false;
 				while (!battleData.isSelectedTileByUser)
 				{
 					Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
@@ -198,6 +202,7 @@ namespace Battle.Turn
 					yield return null;
 				}
 				battleData.isSelectedTileByUser = false;
+				battleData.isPreSeletedTileByUser = false;
 				battleData.isWaitingUserInput = false;
 				battleData.uiManager.DisableCancelButtonUI();
 
