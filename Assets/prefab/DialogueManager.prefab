@@ -9,7 +9,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 470680}
   - 114: {fileID: 11408426}
-  - 61: {fileID: 6177280}
   m_Layer: 0
   m_Name: DialogueManager
   m_TagString: Untagged
@@ -29,20 +28,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!61 &6177280
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 195748}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 12, y: 8}
 --- !u!114 &11408426
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -54,7 +39,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c747ef008fef4483d9cb6b69ea492126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueData: {fileID: 4900000, guid: c17d264ba7537413a84fbc856bd2c0e0, type: 3}
+  dialogueData: {fileID: 4900000, guid: 4ace9c83fba694bd09864f1fdd15014c, type: 3}
   dialogueUI: {fileID: 0}
   adventureUI: {fileID: 0}
   leftPortrait: {fileID: 0}

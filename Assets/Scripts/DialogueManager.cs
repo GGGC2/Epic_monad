@@ -35,7 +35,41 @@ public class DialogueManager : MonoBehaviour {
 
 	public void SkipDialogue()
 	{
-		line = endLine-1;
+		InactiveSkipQuestionUI();
+
+		int newLine = line;
+		for (int i = newLine; i < endLine; i++)
+		{
+			if (dialogueDataList[i].IsAdventureObject())
+			{
+				ActiveAdventureUI();
+				break;
+			}
+			
+			if (dialogueDataList[i].GetCommandType() == "adv_start")
+			{
+				ActiveAdventureUI();
+				LoadAdventureObjects();
+				return;
+			}
+			else if (dialogueDataList[i].GetCommandType() == "load_script")
+			{
+				string nextScriptName = dialogueDataList[i].GetCommandSubType();
+				FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
+				return;
+			}
+			else if (dialogueDataList[i].GetCommandType() == "load_battle")
+			{
+				string nextSceneName = dialogueDataList[i].GetCommandSubType();
+				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+				return;
+			}
+			else if (dialogueDataList[i].GetCommandType() == "load_worldmap")
+			{
+				// goto worldmap.
+			}
+		}
+		ActiveAdventureUI();
 	}
 
 	public void ActiveSkipQuestionUI()
