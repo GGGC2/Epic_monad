@@ -40,7 +40,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c06a810d9114203ace368e70dcaf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPhase: 0
+  isBattleEnd: 0
+  minNumberOfTargetUnit: 0
+  minNumberOfAlly: 0
+  minNumberOfEnemy: 0
 --- !u!114 &11472570
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,8 +55,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abdfdd0cc737c4c3eacd057149883675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapData: {fileID: 4900000, guid: 2eb93f66e5c9340e1bcd77aa88972899, type: 3}
-  unitData: {fileID: 4900000, guid: 028b34b8d0cf34e93a42ac84810d28c0, type: 3}
+  mapData: {fileID: 4900000, guid: 4eba42b3fb8c9480bac9709ddfb11cab, type: 3}
+  unitData: {fileID: 4900000, guid: ba9fbe18369944e1c82bda44c8ecacd2, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

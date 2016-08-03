@@ -21,7 +21,7 @@ public class PhaseDisplay : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		phaseText.text = "[Phase " + FindObjectOfType<BattleManager>().GetCurrentPhase() + " / " + battleEndChecker.maxPhase + "]";
+		phaseText.text = "[Phase " + FindObjectOfType<BattleManager>().GetCurrentPhase() + " / " + battleEndChecker.MaxPhase + "]";
 		standardAPText.text = "Standard AP : " + unitManager.GetStandardActionPoint() + "";
 	}
 }
