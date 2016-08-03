@@ -20,20 +20,21 @@ public class UnitInfo {
 	
 	public UnitInfo (string data)
 	{
-		string[] stringList = data.Split(',');
-
-		this.name = stringList[0];
-		this.nameInCode = stringList[1];
-		this.side = (Side)Enum.Parse(typeof(Side), stringList[2]);
-		this.initPosition = new Vector2(Int32.Parse(stringList[3]), Int32.Parse(stringList[4]));
-		this.initDirection = (Direction)Enum.Parse(typeof(Direction), stringList[5]);
-		this.baseHealth = Int32.Parse(stringList[6]);
-		this.basePower = Int32.Parse(stringList[7]);
-		this.baseDefense = Int32.Parse(stringList[8]);
-		this.baseResistance = Int32.Parse(stringList[9]);
-		this.baseDexturity = Int32.Parse(stringList[10]);
-		this.unitClass = (UnitClass)Enum.Parse(typeof(UnitClass), stringList[11]);
-		this.element = (Element)Enum.Parse(typeof(Element), stringList[12]);
-		this.celestial = (Celestial)Enum.Parse(typeof(Celestial), stringList[13]);
+		CommaStringParser commaParser = new CommaStringParser(data);
+		this.name = commaParser.Consume();
+		this.nameInCode = commaParser.Consume();
+		this.side = commaParser.ConsumeEnum<Side>();
+		int x = commaParser.ConsumeInt();
+		int y = commaParser.ConsumeInt();
+		this.initPosition = new Vector2(x, y);
+		this.initDirection = commaParser.ConsumeEnum<Direction>();
+		this.baseHealth = commaParser.ConsumeInt();
+		this.basePower = commaParser.ConsumeInt();
+		this.baseDefense = commaParser.ConsumeInt();
+		this.baseResistance = commaParser.ConsumeInt();
+		this.baseDexturity = commaParser.ConsumeInt();
+		this.unitClass = commaParser.ConsumeEnum<UnitClass>();
+		this.element = commaParser.ConsumeEnum<Element>();
+		this.celestial = commaParser.ConsumeEnum<Celestial>();
 	}
 }

@@ -27,17 +27,17 @@ public class SkillInfo {
 	
 	public SkillInfo (string data)
 	{
-		string[] stringList = data.Split(',');
+		CommaStringParser commaParser = new CommaStringParser(data);
 
-		this.owner = stringList[0];
-        this.requireLevel = Int32.Parse(stringList[1]);
+		this.owner = commaParser.Consume();
+        this.requireLevel = commaParser.ConsumeInt();
   
-		string name = stringList[2];
-        int requireAP = Int32.Parse(stringList[3]);
-		int cooldown = Int32.Parse(stringList[4]); 
+		string name = commaParser.Consume();
+        int requireAP = commaParser.ConsumeInt();
+		int cooldown = commaParser.ConsumeInt();
 
         // parsing coefficients for damage calculation
-        string powerFactorString = stringList[5];
+        string powerFactorString = commaParser.Consume();
 	    Dictionary<string, float> powerFactor = new Dictionary<string, float>();
         string[] powerFactorList = powerFactorString.Split(' ');
         foreach (string powerFactorPair in powerFactorList)
@@ -46,24 +46,24 @@ public class SkillInfo {
             powerFactor.Add(parsedPowerFactorPair[0], Convert.ToSingle(parsedPowerFactorPair[1]));                
         }
 		
-		SkillType skillType = (SkillType)Enum.Parse(typeof(SkillType), stringList[6]);
+		SkillType skillType = commaParser.ConsumeEnum<SkillType>();
 
-		RangeForm firstRangeForm = (RangeForm)Enum.Parse(typeof(RangeForm), stringList[7]);
-		int firstMinReach = Int32.Parse(stringList[8]); 
-		int firstMaxReach = Int32.Parse(stringList[9]); 
-		int firstWidth = Int32.Parse(stringList[10]); 
+		RangeForm firstRangeForm = commaParser.ConsumeEnum<RangeForm>();
+		int firstMinReach = commaParser.ConsumeInt();
+		int firstMaxReach = commaParser.ConsumeInt();
+		int firstWidth = commaParser.ConsumeInt();
 		
-		RangeForm secondRangeForm = (RangeForm)Enum.Parse(typeof(RangeForm), stringList[11]);
-		int secondMinReach = Int32.Parse(stringList[12]); 
-		int secondMaxReach = Int32.Parse(stringList[13]); 
-		int secondWidth = Int32.Parse(stringList[14]); 
+		RangeForm secondRangeForm = commaParser.ConsumeEnum<RangeForm>();
+		int secondMinReach = commaParser.ConsumeInt();
+		int secondMaxReach = commaParser.ConsumeInt();
+		int secondWidth = commaParser.ConsumeInt();
 
-		SkillApplyType skillApplyType = (SkillApplyType)Enum.Parse(typeof(SkillApplyType), stringList[15]);
+		SkillApplyType skillApplyType = commaParser.ConsumeEnum<SkillApplyType>();
 
-		string effectName = stringList[16];
-		EffectVisualType effectVisualType = (EffectVisualType)Enum.Parse(typeof(EffectVisualType), stringList[17]);
-		EffectMoveType effectMoveType = (EffectMoveType)Enum.Parse(typeof(EffectMoveType), stringList[18]);
-	
+		string effectName = commaParser.Consume();
+		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
+		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
+
 		this.skill = new Skill(name, requireAP, cooldown, 
 							   powerFactor,
 							   skillType,
