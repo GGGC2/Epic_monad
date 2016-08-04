@@ -20,9 +20,48 @@ public class BattleEndTrigger
 		triggerNumber = 1;
 		maxPhase = 100;
 		targetUnitNames = new List<string>();
-		minNumberOfTargetUnit = 100;
-		minNumberOfAlly = 100;
-		minNumberOfEnemy = 100;
+		minNumberOfTargetUnit = 0;
+		minNumberOfAlly = 0;
+		minNumberOfEnemy = 0;
+	}
+
+	public BattleEndTrigger(string data)
+	{
+		CommaStringParser commaParser = new CommaStringParser(data);
+
+		result = commaParser.ConsumeEnum<BattleResult>();
+		triggerNumber = commaParser.ConsumeInt();
+
+		if (triggerNumber == 5 || triggerNumber == 6 || triggerNumber == 9 || triggerNumber == 10)
+			return;
+
+		if (triggerNumber == 1)
+		{
+			maxPhase = commaParser.ConsumeInt();
+		}
+		else if (triggerNumber == 2 || triggerNumber == 3 || triggerNumber == 4)
+		{
+			targetUnitNames = new List<string>();
+			int numberOfName = commaParser.ConsumeInt();
+			for (int i = 0; i < numberOfName; i++)
+			{
+				string targetUnitName = commaParser.Consume();
+				targetUnitNames.Add(targetUnitName);
+			}
+
+			if (triggerNumber == 3)
+			{
+				minNumberOfTargetUnit = commaParser.ConsumeInt();
+			}
+		}
+		else if (triggerNumber == 7)
+		{
+			minNumberOfAlly = commaParser.ConsumeInt();
+		}
+		else if (triggerNumber == 8)
+		{
+			minNumberOfEnemy = commaParser.ConsumeInt();
+		}
 	}	
 }
 
@@ -161,8 +200,15 @@ public class BattleEndChecker : MonoBehaviour {
 	SceneLoader sceneLoader;
 
 	public bool isBattleEnd;
+	public bool isBattleWin;
+	public bool isBattleLose;
 
-	List<int> battleEndTriggers = new List<int>();
+	List<BattleEndTrigger> battleEndTriggers = new List<BattleEndTrigger>();
+	List<int> battleWinTriggers = new List<int>();
+	List<int> battleLoseTriggers = new List<int>();
+	List<BattleEndCondition> battleWinConditions = new List<BattleEndCondition>();
+	List<BattleEndCondition> battleLoseConditions = new List<BattleEndCondition>();
+	// List<int> battleEndTriggers_int = new List<int>();
 	List<BattleEndCondition> battleEndConditions = new List<BattleEndCondition>();
 
 	int maxPhase;
@@ -213,86 +259,122 @@ public class BattleEndChecker : MonoBehaviour {
 		unitManager = battleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
 
-		battleEndTriggers.Add(4);
+		// battleEndTriggers_int.Add(4);
 		// battleEndTriggers.Add(10);
+		battleEndTriggers = Parser.GetParsedBattleEndConditionData();
+		// Debug.Log("BET : " + battleEndTriggers.Count);
+		// battleEndTriggers.ForEach(trigger => Debug.Log(trigger.result + ", " + trigger.triggerNumber));
 
-		battleEndConditions = BattleEndConditionFactory(battleEndTriggers);
+		battleWinConditions = BattleEndConditionFactory(battleEndTriggers, Enums.BattleResult.Win);
+		battleLoseConditions = BattleEndConditionFactory(battleEndTriggers, Enums.BattleResult.Lose);
+
+		// Debug.Log("BET_win : " + battleWinConditions.Count);
+		// Debug.Log("BET_lose : " + battleLoseConditions.Count);
+		
+		// battleEndConditions = BattleEndConditionFactory(battleEndTriggers_int);
 
 		isBattleEnd = false;
+		isBattleWin = false;
+		isBattleLose = false;
 
-		maxPhase = 5; // Using test.
-		targetUnitNames.Add("루키어스");
-		targetUnitNames.Add("레이나");
-		minNumberOfTargetUnit = 2;
-		minNumberOfAlly = 2;
-		minNumberOfEnemy = 4;
-
+		// maxPhase = 5; // Using test.
+		// targetUnitNames.Add("루키어스");
+		// targetUnitNames.Add("레이나");
+		// minNumberOfTargetUnit = 2;
+		// minNumberOfAlly = 2;
+		// minNumberOfEnemy = 4;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		CheckPushedButton();
-		
-		isBattleEnd = battleEndConditions.Any(x => x.Check(this));
-		if (isBattleEnd)
+		if (!isBattleEnd)
 		{
-			sceneLoader.LoadNextDialogueScene("pintos#3");
+			isBattleWin = battleWinConditions.Any(x => x.Check(this));
+			isBattleLose = battleLoseConditions.Any(x => x.Check(this));
+			isBattleEnd = isBattleWin || isBattleLose;
+		
+			CheckPushedButton();
+		
+			if (isBattleEnd)
+			{
+				if (isBattleWin)
+				{
+					Debug.Log("Win");
+					sceneLoader.LoadNextDialogueScene("pintos#3");
+				}
+				else
+					Debug.Log("Lose");
+			}
 		}
 	}
 
-	List<BattleEndCondition> BattleEndConditionFactory(List<int> battleEndTriggers)
+	List<BattleEndCondition> BattleEndConditionFactory(List<BattleEndTrigger> battleEndTriggers, BattleResult result)
 	{
 		List<BattleEndCondition> battleEndConditions = new List<BattleEndCondition>();
 
-		if (battleEndTriggers.Contains(1))
+		List<BattleEndTrigger> battleEndTriggersFilteredByResult = battleEndTriggers.FindAll(trigger => trigger.result == result);
+
+		// Debug.Log("BET_factory : " + battleEndTriggersFilteredByResult.Count + ", " + result);
+
+		foreach (var trigger in battleEndTriggersFilteredByResult)
 		{
-			PhaseChecker phaseChecker = new PhaseChecker();
-			battleEndConditions.Add(phaseChecker);
-		}
-		if (battleEndTriggers.Contains(2))
-		{
-			TargetUnitAllDieChecker targetUnitAllDieChecker = new TargetUnitAllDieChecker();
-			battleEndConditions.Add(targetUnitAllDieChecker);
-		}
-		if (battleEndTriggers.Contains(3))
-		{
-			TargetUnitSomeDieChecker targetUnitSomeDieChecker = new TargetUnitSomeDieChecker();
-			battleEndConditions.Add(targetUnitSomeDieChecker);
-		}
-		if (battleEndTriggers.Contains(4))
-		{
-			TargetUnitAtLeastOneDieChecker targetUnitAtLeastOneDieChecker = new TargetUnitAtLeastOneDieChecker();
-			battleEndConditions.Add(targetUnitAtLeastOneDieChecker);
-		}
-		if (battleEndTriggers.Contains(5))
-		{
-			AllyAllDieChecker allyAllDieChecker = new AllyAllDieChecker();
-			battleEndConditions.Add(allyAllDieChecker);
-		}
-		if (battleEndTriggers.Contains(6))
-		{
-			EnemyAllDieChecker enemyAllDieChecker = new EnemyAllDieChecker();
-			battleEndConditions.Add(enemyAllDieChecker);
-		}
-		if (battleEndTriggers.Contains(7))
-		{
-			AllySomeDieChecker allySomeDieChecker = new AllySomeDieChecker();
-			battleEndConditions.Add(allySomeDieChecker);
-		}
-		if (battleEndTriggers.Contains(8))
-		{
-			EnemySomeDieChecker enemySomeDieChecker = new EnemySomeDieChecker();
-			battleEndConditions.Add(enemySomeDieChecker);
-		}
-		if (battleEndTriggers.Contains(9))
-		{
-			AllyAtLeastOneDieChecker allyAtLeastOneDieChecker = new AllyAtLeastOneDieChecker();
-			battleEndConditions.Add(allyAtLeastOneDieChecker);
-		}
-		if (battleEndTriggers.Contains(10))
-		{
-			EnemyAtLeastOneDieChecker enemyAtLeastOneDieChecker = new EnemyAtLeastOneDieChecker();
-			battleEndConditions.Add(enemyAtLeastOneDieChecker);
+			if (trigger.triggerNumber == 1)
+			{
+				PhaseChecker phaseChecker = new PhaseChecker();
+				maxPhase = trigger.maxPhase;
+				battleEndConditions.Add(phaseChecker);
+			}
+			if (trigger.triggerNumber == 2)
+			{
+				TargetUnitAllDieChecker targetUnitAllDieChecker = new TargetUnitAllDieChecker();
+				targetUnitNames = trigger.targetUnitNames;
+				battleEndConditions.Add(targetUnitAllDieChecker);
+			}
+			if (trigger.triggerNumber == 3)
+			{
+				TargetUnitSomeDieChecker targetUnitSomeDieChecker = new TargetUnitSomeDieChecker();
+				targetUnitNames = trigger.targetUnitNames;
+				minNumberOfTargetUnit = trigger.minNumberOfTargetUnit;
+				battleEndConditions.Add(targetUnitSomeDieChecker);
+			}
+			if (trigger.triggerNumber == 4)
+			{
+				TargetUnitAtLeastOneDieChecker targetUnitAtLeastOneDieChecker = new TargetUnitAtLeastOneDieChecker();
+				targetUnitNames = trigger.targetUnitNames;
+				battleEndConditions.Add(targetUnitAtLeastOneDieChecker);
+			}
+			if (trigger.triggerNumber == 5)
+			{
+				AllyAllDieChecker allyAllDieChecker = new AllyAllDieChecker();
+				battleEndConditions.Add(allyAllDieChecker);
+			}
+			if (trigger.triggerNumber == 6)
+			{
+				EnemyAllDieChecker enemyAllDieChecker = new EnemyAllDieChecker();
+				battleEndConditions.Add(enemyAllDieChecker);
+			}
+			if (trigger.triggerNumber == 7)
+			{
+				AllySomeDieChecker allySomeDieChecker = new AllySomeDieChecker();
+				minNumberOfAlly = trigger.minNumberOfAlly;
+				battleEndConditions.Add(allySomeDieChecker);
+			}
+			if (trigger.triggerNumber == 8)
+			{
+				EnemySomeDieChecker enemySomeDieChecker = new EnemySomeDieChecker();
+				minNumberOfEnemy = trigger.minNumberOfEnemy;
+				battleEndConditions.Add(enemySomeDieChecker);
+			}
+			if (trigger.triggerNumber == 9)
+			{
+				AllyAtLeastOneDieChecker allyAtLeastOneDieChecker = new AllyAtLeastOneDieChecker();
+				battleEndConditions.Add(allyAtLeastOneDieChecker);
+			}
+			if (trigger.triggerNumber == 10)
+			{
+				EnemyAtLeastOneDieChecker enemyAtLeastOneDieChecker = new EnemyAtLeastOneDieChecker();
+				battleEndConditions.Add(enemyAtLeastOneDieChecker);
+			}
 		}
 
 		return battleEndConditions;
@@ -304,19 +386,13 @@ public class BattleEndChecker : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.S))
 		{
-			sceneLoader.LoadNextDialogueScene("pintos#3");
+			isBattleEnd = true;
+			isBattleWin = true;
 		}
-	}
-
-	void CheckRemainPhase()
-	{	
-		if (isBattleEnd) return;
-
-		int currentPhase = battleData.currentPhase;
-
-		if (currentPhase > maxPhase)
+		else if (Input.GetKeyDown(KeyCode.D))
 		{
-			sceneLoader.LoadNextDialogueScene("pintos#3");
+			isBattleEnd = true;
+			isBattleLose = true;
 		}
 	}
 }
