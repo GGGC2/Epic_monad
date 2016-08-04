@@ -4,6 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Enums;
 
+public class BattleEndTrigger
+{
+	public BattleResult result;
+	public int triggerNumber;
+	public int maxPhase;
+	public List<string> targetUnitNames;
+	public int minNumberOfTargetUnit;
+	public int minNumberOfAlly;
+	public int minNumberOfEnemy;
+
+	public BattleEndTrigger()
+	{
+		result = Enums.BattleResult.Win;
+		triggerNumber = 1;
+		maxPhase = 100;
+		targetUnitNames = new List<string>();
+		minNumberOfTargetUnit = 100;
+		minNumberOfAlly = 100;
+		minNumberOfEnemy = 100;
+	}	
+}
 
 interface BattleEndCondition
 {
@@ -26,9 +47,19 @@ class TargetUnitAllDieChecker : BattleEndCondition
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		bool remainAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetAllUnits().Any(y => Equals(y.GetComponent<Unit>().GetName(), x)));
-		if (!remainAnyTargetUnit) return true;
-		return false;
+		var targetUnitNames = checker.TargetUnitNames;
+		var allUnits = checker.BattleData.unitManager.GetAllUnits();
+		var notDiedUnitNames =
+			from unitName in targetUnitNames
+			from unit in allUnits
+			where unit.GetComponent<Unit>().GetName() == unitName
+			select unitName;
+		bool allDied = notDiedUnitNames.Count() == 0; 
+		return allDied;
+
+		// bool remainAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetAllUnits().Any(y => Equals(y.GetComponent<Unit>().GetName(), x)));
+		// if (!remainAnyTargetUnit) return true;
+		// return false;
 	}
 }
 
@@ -49,8 +80,7 @@ class TargetUnitAtLeastOneDieChecker : BattleEndCondition
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		// bool dieAnyTargetUnit = checker.BattleData.unitManager.GetDeadUnits().Any(x => checker.TargetUnitNames.Contains(x.GetComponent<Unit>().GetName()));
-		bool dieAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetDeadUnits().Any(y => Equals(y.GetComponent<Unit>().GetName(), x)));
+		bool dieAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetDeadUnitsInfo().Any(y => Equals(y.unitName, x)));
 		if (dieAnyTargetUnit) return true;
 		return false;
 	}
@@ -84,7 +114,7 @@ class AllyAtLeastOneDieChecker : BattleEndCondition
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		bool dieAnyAlly = checker.BattleData.unitManager.GetDeadUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Ally);
+		bool dieAnyAlly = checker.BattleData.unitManager.GetDeadUnitsInfo().Any(x => x.unitSide == Enums.Side.Ally);
 		if (dieAnyAlly) return true;
 		return false;
 	}
@@ -118,7 +148,7 @@ class EnemyAtLeastOneDieChecker : BattleEndCondition
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		bool dieAnyEnemy = checker.BattleData.unitManager.GetDeadUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
+		bool dieAnyEnemy = checker.BattleData.unitManager.GetDeadUnitsInfo().Any(x => x.unitSide == Enums.Side.Enemy);
 		if (dieAnyEnemy) return true;
 		return false;
 	}
@@ -183,7 +213,7 @@ public class BattleEndChecker : MonoBehaviour {
 		unitManager = battleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
 
-		// battleEndTriggers.Add(4);
+		battleEndTriggers.Add(4);
 		// battleEndTriggers.Add(10);
 
 		battleEndConditions = BattleEndConditionFactory(battleEndTriggers);
@@ -193,6 +223,7 @@ public class BattleEndChecker : MonoBehaviour {
 		maxPhase = 5; // Using test.
 		targetUnitNames.Add("루키어스");
 		targetUnitNames.Add("레이나");
+		minNumberOfTargetUnit = 2;
 		minNumberOfAlly = 2;
 		minNumberOfEnemy = 4;
 

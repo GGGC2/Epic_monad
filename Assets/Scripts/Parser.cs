@@ -23,6 +23,24 @@ public class Parser : MonoBehaviour {
 		return dialogueDataList;
 	}
 
+	public static List<BattleEndTrigger> GetParsedBattleEndConditionData()
+	{
+		List<BattleEndTrigger> battleEndTriggers = new List<BattleEndTrigger>();
+
+		TextAsset csvFile;
+		if (FindObjectOfType<StageManager>() == null)
+		{
+			BattleEndTrigger battleEndTrigger = new BattleEndTrigger();
+			battleEndTriggers.Add(battleEndTrigger);
+			return battleEndTriggers; 
+		}
+
+		csvFile = FindObjectOfType<StageManager>().battleEndConditionData as TextAsset;
+		
+
+		return battleEndTriggers;
+	}
+
 	public static List<UnitInfo> GetParsedUnitInfo()
 	{
 		List<UnitInfo> unitInfoList = new List<UnitInfo>();

@@ -3,6 +3,11 @@ using System.Collections;
 
 namespace Enums {
 	
+	public enum BattleResult
+	{
+		Win, Lose
+	}
+
 	public enum EffectVisualType
 	{
 		Individual, Area

@@ -2,9 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using Enums;
 using Util;
+
+public class DeadUnitInfo
+{
+	public readonly string unitName;
+	public readonly Side unitSide;
+
+	public DeadUnitInfo(GameObject unitObject)
+	{
+		Unit unit = unitObject.GetComponent<Unit>();
+		unitName = unit.GetName();
+		unitSide = unit.GetSide();
+	}
+}
 
 public class UnitManager : MonoBehaviour {
 
@@ -18,6 +30,7 @@ public class UnitManager : MonoBehaviour {
 	List<GameObject> readiedUnits = new List<GameObject>();
 	List<GameObject> deadUnits = new List<GameObject>();
     List<GameObject> enemyUnits = new List<GameObject>();
+	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
 
 	public List<GameObject> GetAllUnits()
 	{
@@ -33,7 +46,22 @@ public class UnitManager : MonoBehaviour {
 			if ((unit.GetComponent<Unit>().GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
 				deadUnits.Add(unit);		
 		}
+
 		return deadUnits;
+	}
+
+	public void	MakeDeadUnitInfo()
+	{		
+		foreach (var deadUnit in deadUnits)
+		{
+			DeadUnitInfo deadUnitInfo = new DeadUnitInfo(deadUnit);
+			deadUnitsInfo.Add(deadUnitInfo);
+		}
+	}
+
+	public List<DeadUnitInfo> GetDeadUnitsInfo()
+	{
+		return deadUnitsInfo;
 	}
 	
 	public int GetStandardActionPoint()

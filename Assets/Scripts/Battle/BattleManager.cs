@@ -197,6 +197,8 @@ public class BattleManager : MonoBehaviour
 				yield break;
 			}
 
+			battleData.unitManager.MakeDeadUnitInfo();
+
 			Camera.main.transform.position = new Vector3(
 				battleData.selectedUnitObject.transform.position.x,
 				battleData.selectedUnitObject.transform.position.y,
