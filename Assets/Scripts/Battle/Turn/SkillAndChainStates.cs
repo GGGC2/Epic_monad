@@ -317,7 +317,7 @@ namespace Battle.Turn
 			bool isPossible = false;
 
 			// ap 조건으로 체크.
-			int requireAP = battleData.SelectedSkill.GetRequireAP()[0];
+			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
 			int remainAPAfterChain = battleData.selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - requireAP;
 
 			foreach (var unit in battleData.unitManager.GetAllUnits())
@@ -368,7 +368,7 @@ namespace Battle.Turn
 			// 방향 돌리기.
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
 			// 스킬 시전에 필요한 ap만큼 선 차감.
-			int requireAP = battleData.SelectedSkill.GetRequireAP()[0];
+			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
 			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(requireAP);
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
@@ -518,7 +518,7 @@ namespace Battle.Turn
 				}
 			}
 
-			int requireAP = appliedSkill.GetRequireAP()[0];
+			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			if (unitInChain.gameObject == battleData.selectedUnitObject)
 				unitInChain.UseActionPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -658,7 +658,7 @@ namespace Battle.Turn
 
 			battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(selectedTiles);
 
-			int requireAP = appliedSkill.GetRequireAP()[0];
+			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			selectedUnit.UseActionPoint(requireAP);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 

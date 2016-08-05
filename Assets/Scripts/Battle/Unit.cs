@@ -457,9 +457,11 @@ public class Unit : MonoBehaviour
 	{
 		return GetActualStat(Stat.Dexturity);
 	}
-
-	public void UseActionPoint(int amount)
-	{
+    
+    public int GetActualRequireSkillAP(Skill selectedSkill)
+    {
+        int requireSkillAP = selectedSkill.GetRequireAP()[0];
+        
         // 신속에 의한 기술 행동력 소모 감소
         if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease))
 		{
@@ -471,7 +473,7 @@ public class Unit : MonoBehaviour
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
 			}
-			amount = (int)((float)amount * totalDegree);
+			requireSkillAP = (int)((float)requireSkillAP * totalDegree);
 		}
         // 둔화에 의한 기술 행동력 소모 증가
         if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease))
@@ -485,8 +487,14 @@ public class Unit : MonoBehaviour
                     Debug.Log(name + " has debuff slow, used AP increased by " + statusEffect.GetDegree());
 				}
 			}
-			amount = (int)((float)amount * totalDegree);
+			requireSkillAP = (int)((float) requireSkillAP * totalDegree);
 		}
+        
+        return requireSkillAP;
+    }
+
+	public void UseActionPoint(int amount)
+	{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
