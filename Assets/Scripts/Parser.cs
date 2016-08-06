@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 
 using WorldMap;
+using SkillTree;
 
 public class Parser : MonoBehaviour {
 
@@ -160,5 +161,25 @@ public class Parser : MonoBehaviour {
 		}
 
 		return stories;
+	}
+
+	public static List<SkillColumnInfo> GetSkillColumInfo()
+	{
+		List<SkillColumnInfo> columnInfos = new List<SkillColumnInfo>();
+		TextAsset csvFile = Resources.Load("Data/unitSkillColumns") as TextAsset;;
+
+		string csvText = csvFile.text;
+		string[] lines = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		List<string> dataLines = new List<string>(lines);
+		dataLines = dataLines.GetRange(1, lines.Length - 1);
+
+		foreach (string line in dataLines)
+		{
+			SkillColumnInfo storyInfo = new SkillColumnInfo(line);
+			columnInfos.Add(storyInfo);
+		}
+
+		return columnInfos;
 	}
 }

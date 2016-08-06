@@ -9,6 +9,7 @@ public class SkillInfo {
 	public string owner;
 	public int requireLevel;
 	public Skill skill;
+	public int column;
 	
 	public string GetOwner()
 	{
@@ -33,21 +34,42 @@ public class SkillInfo {
         this.requireLevel = commaParser.ConsumeInt();
   
 		string name = commaParser.Consume();
+		this.column = commaParser.ConsumeInt();
         int[] requireAPArray = new int[5];
-        string[] requireAPString = commaParser.Consume().Split(' ');
+		string originRequireAPString = commaParser.Consume();
+        string[] requireAPString = originRequireAPString.Split(' ');
         for(int i = 0; i < 5; i++)
         {
-            requireAPArray[i] = Int32.Parse(requireAPString[i]);
+			int parsed = 0;
+			try
+			{
+				parsed = Int32.Parse(requireAPString[i]);
+			}
+			catch
+			{
+				Debug.LogWarning("Parse error in requireAPs : " + originRequireAPString);
+				parsed = -1;
+			}
+			requireAPArray[i] = parsed;
         }
 		int cooldown = commaParser.ConsumeInt();
 
         // parsing coefficients for damage calculation
         string statType = commaParser.Consume();
         float[] powerFactorArray = new float[5];
-        string[] powerFactorString = commaParser.Consume().Split(' ');
+		string originPowerFactorString = commaParser.Consume();
+        string[] powerFactorString = originPowerFactorString.Split(' ');
         for(int i = 0; i < 5; i++)
         {
-            powerFactorArray[i] = Convert.ToSingle(powerFactorString[i]);
+			try
+			{
+				powerFactorArray[i] = Convert.ToSingle(powerFactorString[i]);
+			}
+			catch
+			{
+				Debug.LogWarning("Parse error in powerFactorString : " + originPowerFactorString);
+				powerFactorArray[i] = 0;
+			}
         }
         
 	    Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
