@@ -1670,6 +1670,14 @@ Prefab:
       propertyPath: unitData
       value: 
       objectReference: {fileID: 4900000, guid: 72a769614803341998d12bf2dddddc09, type: 3}
+    - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
+      propertyPath: mapData
+      value: 
+      objectReference: {fileID: 4900000, guid: 4eba42b3fb8c9480bac9709ddfb11cab, type: 3}
+    - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
+      propertyPath: unitData
+      value: 
+      objectReference: {fileID: 4900000, guid: ba9fbe18369944e1c82bda44c8ecacd2, type: 3}
     m_RemovedComponents:
     - {fileID: 11427906, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
@@ -1689,6 +1697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c06a810d9114203ace368e70dcaf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxPhase: 0
 --- !u!1 &1835291129
 GameObject:
   m_ObjectHideFlags: 0

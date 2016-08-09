@@ -45,6 +45,7 @@ namespace Enums {
 	
 	public enum Direction
 	{
+		// 위 4개만이 실제 게임의 타일 방향, 아래 4개는 개발용 변수
 		LeftUp, 
         LeftDown, 
         RightUp, 
@@ -74,8 +75,10 @@ namespace Enums {
 	{
 		Square,
 		Straight,
+		Diagonal,
 		Cross,
-        DiagonalCross
+        DiagonalCross,
+		Sector
 	}
 	
 	public enum SkillApplyType
