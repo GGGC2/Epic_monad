@@ -18,6 +18,19 @@ public class DeadUnitInfo
 	}
 }
 
+public class RetreatUnitInfo
+{
+	public readonly string unitName;
+	public readonly Side unitSide;
+
+	public RetreatUnitInfo(GameObject unitObject)
+	{
+		Unit unit = unitObject.GetComponent<Unit>();
+		unitName = unit.GetName();
+		unitSide = unit.GetSide();
+	}
+}
+
 public class UnitManager : MonoBehaviour {
 
 	int standardActionPoint;
@@ -29,14 +42,44 @@ public class UnitManager : MonoBehaviour {
 	List<GameObject> units = new List<GameObject>();
 	List<GameObject> readiedUnits = new List<GameObject>();
 	List<GameObject> deadUnits = new List<GameObject>();
+	List<GameObject> retreatUnits = new List<GameObject>();
     List<GameObject> enemyUnits = new List<GameObject>();
 	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
+	List<RetreatUnitInfo> retreatUnitsInfo = new List<RetreatUnitInfo>();
 
 	public List<GameObject> GetAllUnits()
 	{
 		return units;
 	}
 	
+	public List<GameObject> GetRetreatUnits()
+	{
+		retreatUnits.Clear();
+		foreach (var unit in units)
+		{
+			float percentHealth = 100f * (float)unit.GetComponent<Unit>().GetCurrentHealth() / (float)unit.GetComponent<Unit>().GetMaxHealth();
+			if (((percentHealth <= 10) && (unit.GetComponent<Unit>().GetCurrentHealth() > 0)) || 
+				(retreatUnits.Contains(unit)))
+				retreatUnits.Add(unit);		
+		}
+
+		return retreatUnits;
+	}
+
+	public void	MakeRetreatUnitInfo()
+	{		
+		foreach (var retreatUnit in retreatUnits)
+		{
+			RetreatUnitInfo retreatUnitInfo = new RetreatUnitInfo(retreatUnit);
+			retreatUnitsInfo.Add(retreatUnitInfo);
+		}
+	}
+
+	public List<RetreatUnitInfo> GetRetreatUnitsInfo()
+	{
+		return retreatUnitsInfo;
+	}
+
 	public List<GameObject> GetDeadUnits()
 	{
 		// 죽은 유닛들을 체크.
@@ -107,6 +150,12 @@ public class UnitManager : MonoBehaviour {
 	}
 	
 	public void DeleteDeadUnit(GameObject unitObject)
+	{
+		units.Remove(unitObject);
+		readiedUnits.Remove(unitObject);
+	}
+
+	public void DeleteRetreatUnit(GameObject unitObject)
 	{
 		units.Remove(unitObject);
 		readiedUnits.Remove(unitObject);

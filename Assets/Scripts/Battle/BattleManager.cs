@@ -167,11 +167,12 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		int numberOfDeadUnits = battleData.deadUnits.Count;
 		foreach (GameObject deadUnit in battleData.deadUnits)
 		{
 			if (deadUnit == battleData.selectedUnitObject)
 				continue;
+			// 죽은 유닛에게 추가 이펙트.
+			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetComponent<Unit>().GetName() + " is dead");
@@ -179,17 +180,44 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
+	static IEnumerator DestroyRetreatUnits(BattleData battleData)
+	{
+		BattleManager battleManager = battleData.battleManager;
+
+		foreach (GameObject retreatUnit in battleData.retreatUnits)
+		{
+			if (retreatUnit == battleData.selectedUnitObject)
+				continue;
+			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
+			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
+			Debug.Log(retreatUnit.GetComponent<Unit>().GetName() + " retreats");
+			Destroy(retreatUnit);
+		}
+	}
+	
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
 		while (battleData.currentState == CurrentState.FocusToUnit)
 		{
 			BattleManager battleManager = battleData.battleManager;
+			battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
 			battleData.deadUnits = battleData.unitManager.GetDeadUnits();
 
+			yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
 			yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
+
+			if (battleData.retreatUnits.Contains(battleData.selectedUnitObject))
+			{
+				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
+				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnitObject);
+				Debug.Log("SelectedUnit retreats");
+				Destroy(battleData.selectedUnitObject);
+				yield break;
+			}
 
 			if (battleData.deadUnits.Contains(battleData.selectedUnitObject))
 			{
+				battleData.selectedUnitObject.GetComponent<SpriteRenderer>().color = Color.red;
 				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
 				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnitObject);
 				Debug.Log("SelectedUnit is dead");
