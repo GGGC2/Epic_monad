@@ -60,6 +60,10 @@ public class TileManager : MonoBehaviour {
         {
             return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
         }
+		else if (form == RangeForm.Sector)
+		{
+			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
+		}
 		else
 			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
 	}
@@ -118,6 +122,27 @@ public class TileManager : MonoBehaviour {
         
         return tilesInRange;
     }
+
+	List<GameObject> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 부채꼴 방향과 수직인 벡터
+
+		for(int i = 0; i < maxReach; i++)
+		{
+			int j = i;
+			Vector2 position = mid + ToVector2(dir)*(i+1);
+			tilesInRange.Add(GetTile(position));
+			while(j > 0)
+			{
+				tilesInRange.Add(GetTile(position + perpendicular*j));
+				tilesInRange.Add(GetTile(position - perpendicular*j));
+				j--;
+			}
+		}
+
+		return tilesInRange;
+	}
     
 	public void ChangeTilesToSeletedColor(List<GameObject> tiles, TileColor color)
 	{

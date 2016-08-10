@@ -99,7 +99,7 @@ public class UIManager : MonoBehaviour
 		for (int i = 0; i < skillList.Count; i++)
 		{
 			GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>().interactable = true;
-			if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < skillList[i].GetRequireAP())
+			if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i]))
 			{
 				GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>().interactable = false;
 			}
@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour
 	public void SetSkillCheckAP(GameObject selectedUnitObject, Skill selectedSkill)
 	{
 		skillCheckUI.SetActive(true);
-		int requireAP = selectedSkill.GetRequireAP();
+		int requireAP = selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(selectedSkill);
 		string newAPText = "소모 AP : " + requireAP + "\n" +
 			"잔여 AP : " + (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;

@@ -8,11 +8,11 @@ public class Skill {
 
 	// base info.
 	string name;
-	int requireAP;
+	int[] requireAPArray;
 	int cooldown;
 	
 	// damage factors in datatype Dictionary
-	Dictionary<string, float> powerFactor = new Dictionary<string, float>();
+	Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
 	
 	// reach & range
 	// 지정/범위/경로. 
@@ -38,8 +38,8 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
     
-	public Skill(string name, int requireAP, int cooldown, 
-				 Dictionary<string, float> powerFactor,
+	public Skill(string name, int[] requireAPArray, int cooldown, 
+                 Dictionary<string, float[]> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
@@ -47,7 +47,7 @@ public class Skill {
 				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
-		this.requireAP = requireAP;
+		this.requireAPArray = requireAPArray;
 		this.cooldown = cooldown;
 		this.powerFactor = powerFactor;
 		this.skillType = skillType;
@@ -78,10 +78,10 @@ public class Skill {
     }
 	
 	public string GetName() {return name;}
-	public int GetRequireAP() {return requireAP;}
+	public int[] GetRequireAP() {return requireAPArray;}
 	public int GetCooldown() {return cooldown;}	
-    public Dictionary<string, float> GetPowerFactorDict() {return powerFactor;}
-	public float GetPowerFactor(Stat status) {return powerFactor[status.ToString()];} 
+    public Dictionary<string, float[]> GetPowerFactorDict() {return powerFactor;}
+	public float[] GetPowerFactor(Stat status) {return powerFactor[status.ToString()];} 
 	public SkillType GetSkillType() {return skillType;}
 	public RangeForm GetFirstRangeForm() {return firstRangeForm;}
 	public int GetFirstMinReach() {return firstMinReach;}

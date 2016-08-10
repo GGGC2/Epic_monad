@@ -33,18 +33,25 @@ public class SkillInfo {
         this.requireLevel = commaParser.ConsumeInt();
   
 		string name = commaParser.Consume();
-        int requireAP = commaParser.ConsumeInt();
+        int[] requireAPArray = new int[5];
+        string[] requireAPString = commaParser.Consume().Split(' ');
+        for(int i = 0; i < 5; i++)
+        {
+            requireAPArray[i] = Int32.Parse(requireAPString[i]);
+        }
 		int cooldown = commaParser.ConsumeInt();
 
         // parsing coefficients for damage calculation
-        string powerFactorString = commaParser.Consume();
-	    Dictionary<string, float> powerFactor = new Dictionary<string, float>();
-        string[] powerFactorList = powerFactorString.Split(' ');
-        foreach (string powerFactorPair in powerFactorList)
+        string statType = commaParser.Consume();
+        float[] powerFactorArray = new float[5];
+        string[] powerFactorString = commaParser.Consume().Split(' ');
+        for(int i = 0; i < 5; i++)
         {
-            string[] parsedPowerFactorPair = powerFactorPair.Split('=');
-            powerFactor.Add(parsedPowerFactorPair[0], Convert.ToSingle(parsedPowerFactorPair[1]));                
+            powerFactorArray[i] = Convert.ToSingle(powerFactorString[i]);
         }
+        
+	    Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
+        powerFactor.Add(statType, powerFactorArray);
 		
 		SkillType skillType = commaParser.ConsumeEnum<SkillType>();
 
@@ -64,7 +71,7 @@ public class SkillInfo {
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
-		this.skill = new Skill(name, requireAP, cooldown, 
+		this.skill = new Skill(name, requireAPArray, cooldown, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,
