@@ -647,10 +647,11 @@ public class Unit : MonoBehaviour
 
 	void LoadSprite()
 	{
-		spriteLeftUp = Resources.Load("UnitImage/" + nameInCode + "_LeftUp", typeof(Sprite)) as Sprite;
-		spriteLeftDown = Resources.Load("UnitImage/" + nameInCode + "_LeftDown", typeof(Sprite)) as Sprite;
-		spriteRightUp = Resources.Load("UnitImage/" + nameInCode + "_RightUp", typeof(Sprite)) as Sprite;
-		spriteRightDown = Resources.Load("UnitImage/" + nameInCode + "_RightDown", typeof(Sprite)) as Sprite;
+		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + nameInCode);
+		spriteLeftUp = sprites[1] as Sprite;
+		spriteLeftDown = sprites[3] as Sprite;
+		spriteRightUp = sprites[4] as Sprite;
+		spriteRightDown = sprites[2] as Sprite;
 		GetComponent<SpriteRenderer>().sprite = spriteLeftUp; // FIXME : 초기 방향에 따라 스프라이트 지정되도록 기능 추가.
 	}
 
