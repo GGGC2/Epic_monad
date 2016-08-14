@@ -93,7 +93,7 @@ public class UnitManager : MonoBehaviour {
 		return deadUnits;
 	}
 
-	public void	MakeDeadUnitInfo()
+	void MakeDeadUnitInfo()
 	{		
 		foreach (var deadUnit in deadUnits)
 		{
@@ -104,6 +104,7 @@ public class UnitManager : MonoBehaviour {
 
 	public List<DeadUnitInfo> GetDeadUnitsInfo()
 	{
+		MakeDeadUnitInfo();
 		return deadUnitsInfo;
 	}
 	

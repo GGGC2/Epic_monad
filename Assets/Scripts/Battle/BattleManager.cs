@@ -225,7 +225,7 @@ public class BattleManager : MonoBehaviour
 				yield break;
 			}
 
-			battleData.unitManager.MakeDeadUnitInfo();
+			// battleData.unitManager.MakeDeadUnitInfo(); // 문제없이 잘 돌아가면 삭제해도 무방.
 
 			Camera.main.transform.position = new Vector3(
 				battleData.selectedUnitObject.transform.position.x,
