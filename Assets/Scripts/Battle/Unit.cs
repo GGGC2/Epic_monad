@@ -488,7 +488,7 @@ public class Unit : MonoBehaviour
         int requireSkillAP = selectedSkill.GetRequireAP()[0];
         
         // 신속에 의한 기술 행동력 소모 감소
-        if (this.HasStatusEffectType(RequireSkillAPDecrease))
+        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPDecrease))
 		{
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
@@ -501,7 +501,7 @@ public class Unit : MonoBehaviour
 			requireSkillAP = (int)((float)requireSkillAP * totalDegree);
 		}
         // 둔화에 의한 기술 행동력 소모 증가
-        if (this.HasStatusEffectType(RequireSkillAPIncrease))
+        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPIncrease))
 		{
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
