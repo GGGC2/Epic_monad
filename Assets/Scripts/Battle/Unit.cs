@@ -137,7 +137,7 @@ public class Unit : MonoBehaviour
         StatusEffectType statusDecrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Decrease");
         
         // stat decrease by debuffs
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusDecrease))
+		if (this.HasStatusEffectType(statusDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
@@ -163,7 +163,7 @@ public class Unit : MonoBehaviour
         }
         
         // stat increase by buffs
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusIncrease))
+		if (this.HasStatusEffectType(statusIncrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
@@ -354,6 +354,26 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
+	public bool HasStatusEffect(StatusEffect statusEffect)
+	{
+		bool hasStatusEffect = false;
+		if (statusEffectList.Any(k => k.GetName().Equals(statusEffect.GetName())))
+		{
+			hasStatusEffect = true;
+		}
+		return hasStatusEffect;
+	}
+
+	public bool HasStatusEffectType(StatusEffectType statusEffectType)
+	{
+		bool hasStatusEffectType = false;
+		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusEffectType))
+		{
+			hasStatusEffectType = true;
+		}
+		return hasStatusEffectType;
+	}
+
 	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
 	{
 		int actualDamage = 0;
@@ -468,7 +488,7 @@ public class Unit : MonoBehaviour
         int requireSkillAP = selectedSkill.GetRequireAP()[0];
         
         // 신속에 의한 기술 행동력 소모 감소
-        if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease))
+        if (this.HasStatusEffectType(RequireSkillAPDecrease))
 		{
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
@@ -481,7 +501,7 @@ public class Unit : MonoBehaviour
 			requireSkillAP = (int)((float)requireSkillAP * totalDegree);
 		}
         // 둔화에 의한 기술 행동력 소모 증가
-        if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease))
+        if (this.HasStatusEffectType(RequireSkillAPIncrease))
 		{
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
