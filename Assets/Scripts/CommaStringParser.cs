@@ -1,3 +1,4 @@
+using UnityEngine;
 using System;
 
 public class CommaStringParser
@@ -19,22 +20,57 @@ public class CommaStringParser
 
 	public bool ConsumeBool()
 	{
-		return bool.Parse(Consume());
+		string strValue = Consume();
+		try
+		{
+			return bool.Parse(strValue);
+		}
+		catch (FormatException e)
+		{
+			Debug.LogWarning("Cannot parse boolean value " + strValue);
+			return false;
+		}
 	}
 
 	public int ConsumeInt()
 	{
-		return Int32.Parse(Consume());
+		string strValue = Consume();
+		try
+		{
+			return Int32.Parse(strValue);
+		}
+		catch (FormatException e)
+		{
+			Debug.LogWarning("Cannot parse integer value " + strValue);
+			return -1;
+		}
 	}
 
 	public float ConsumeFloat()
 	{
-		return Single.Parse(Consume());
+		string strValue = Consume();
+		try
+		{
+			return Single.Parse(Consume());
+		}
+		catch (FormatException e)
+		{
+			Debug.LogWarning("Cannot parse float value " + strValue);
+			return -1;
+		}
 	}
 
 	public T ConsumeEnum<T>()
 	{
 		string beforeParsed = Consume();
-		return (T)Enum.Parse(typeof(T), beforeParsed);
+		try 
+		{
+			return (T)Enum.Parse(typeof(T), beforeParsed);
+		}
+		catch (ArgumentException e)
+		{
+			Debug.LogWarning("Invalid enum value " + beforeParsed + " : " + typeof(T).FullName);
+			return default(T); // null
+		}
 	}
 }
