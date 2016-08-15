@@ -1,4 +1,4 @@
 ﻿owner,skill,name,statusEffectType,isInfinite,isStackable,isRemovable,degree,amount,lastPhase,lastStack,cooldown,effectName,effectVisualType,effectMoveType
-soldier01,근접공격,둔화,RequireSkillAPIncrease,FALSE,FALSE,TRUE,0,0,2,0,0,darkBall,Individual,NonMove
-lucius,검술의 대가,둔화,RequireSkillAPIncrease,FALSE,FALSE,TRUE,50,0,2,0,0,-,Individual,NonMove
-reina,화염 폭발,기절,Faint,FALSE,FALSE,TRUE,0,0,2,0,0,-,Area,NonMove
+soldier01,근접공격,둔화,RequireSkillAPIncrease,FALSE,FALSE,TRUE,0,0,2,0,0,darkBall,Individual,NonMove,Move
+lucius,검술의 대가,둔화,RequireSkillAPIncrease,FALSE,FALSE,TRUE,50,0,2,0,0,-,Individual,NonMove,Move
+reina,화염 폭발,기절,Faint,FALSE,FALSE,TRUE,0,0,2,0,0,-,Area,NonMove,Move
