@@ -73,7 +73,9 @@ namespace Enums {
         Power,
         Defense,
         Resistance,
-        Dexturity
+        Dexturity,
+		usedAP, // 엄밀히 말해 Stat은 아니지만 대미지/효과 계산에 포함되므로 추가
+		remainAP // usedAP와 동일
     }
     
 	public enum RangeForm
@@ -121,6 +123,7 @@ namespace Enums {
         Retire,
 		Shield,
 		ConditionalShield, // 조건부 보호막: 특정 조건 만족 시 보호막 발동 
+		Reflect, // 반사: 받는 피해의 일부만큼 공격자에게 피해
         Etc // 위 분류에 해당하지 않는 효과
 	}
 }

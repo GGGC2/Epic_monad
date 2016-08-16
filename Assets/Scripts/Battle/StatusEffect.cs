@@ -56,6 +56,11 @@ public class StatusEffect {
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
     
+    public void SetRemainAmount(int remainAmount)
+    {
+        amount = remainAmount;
+    }
+
     public void AddRemainPhase(int phase)
 	{
 		remainPhase += phase;
@@ -95,13 +100,24 @@ public class StatusEffect {
     {
         remainStack = stack; 
     }
+
+    public bool IsOfType(StatusEffectType statusEffectType)
+    {
+        bool isOfType = false;
+        if (statusEffectType.Equals(this.GetStatusEffectType()))
+        {
+            isOfType = true;
+        }
+        
+        return isOfType;
+    }
     
     public bool IsSameStatusEffect(StatusEffect statusEffect)
     {
         bool isSameStatusEffect = false;
         if(this.name.Equals(statusEffect.GetName()))
         {
-            if(this.statusEffectType.Equals(statusEffect.GetStatusEffectType()))
+            if(this.IsOfType(statusEffect.GetStatusEffectType()))
             {
                 isSameStatusEffect = true;
             }

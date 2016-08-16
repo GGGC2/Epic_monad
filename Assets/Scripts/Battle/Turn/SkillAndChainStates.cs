@@ -441,7 +441,7 @@ namespace Battle.Turn
 					{
 						foreach (var statusEffect in unitObjectInChain.GetComponent<Unit>().GetStatusEffectList())
 						{
-							if (statusEffect.GetStatusEffectType().Equals(StatusEffectType.Smite))
+							if (statusEffect.IsOfType(StatusEffectType.Smite))
 							{
 								smiteAmount += statusEffect.GetAmount();
 							}

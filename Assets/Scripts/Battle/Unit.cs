@@ -37,38 +37,6 @@ public class Unit : MonoBehaviour
 	float baseResistance; // 저항력
 	float baseDexturity; // 행동력
 
-	// 계산 관련 값들 - 절대값으로 변경해서 현재는 쓰지 않음.
-	// float healthAcceleration = 0.91f;
-	// float healthAccelerationInterval = 0.09f;
-	// float healthInitialGrowth = 31.4f;
-	// float healthInitialGrowthInterval = 2f;
-	// float healthStandardValue = 400f;
-	// float healthStandardValueInterval = 25f;
-	// float powerAcceleration = 0.14f;
-	// float powerAccelerationInterval = 0.025f;
-	// float powerInitialGrowth = 4.9f;
-	// float powerInitialGrowthInterval = 0.4f;
-	// float powerStandardValue = 69f;
-	// float powerStandardValueInterval = 4.25f;
-	// float defenseAcceleration = 0f;
-	// float defenseAccelerationInterval = 0f;
-	// float defenseInitialGrowth = 4.4f;
-	// float defenseInitialGrowthInterval = 0.75f;
-	// float defenseStandardValue = 40f;
-	// float defenseStandardValueInterval = 10f;
-	// float resistanceAcceleration = 0f;
-	// float resistanceAccelerationInterval = 0f;
-	// float resistanceInitialGrowth = 4.4f;
-	// float resistanceInitialGrowthInterval = 0.75f;
-	// float resistanceStandardValue = 40f;
-	// float resistanceStandardValueInterval = 10f;
-	// float dexturityAcceleration = 0f;
-	// float dexturityAccelerationInterval = 0f;
-	// float dexturityInitialGrowth = 0.8f;
-	// float dexturityInitialGrowthInterval = 0.05f;
-	// float dexturityStandardValue = 50f;
-	// float dexturityStandardValueInterval = 2.5f;
-
 	// Applied stats.
 	int maxHealth;
 	int power;
@@ -143,7 +111,7 @@ public class Unit : MonoBehaviour
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == statusDecrease)
+				if (statusEffect.IsOfType(statusDecrease))
 				{
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
@@ -154,7 +122,7 @@ public class Unit : MonoBehaviour
 			int totalAmount = 0;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == statusDecrease)
+				if (statusEffect.IsOfType(statusDecrease))
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
@@ -169,7 +137,7 @@ public class Unit : MonoBehaviour
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == statusIncrease)
+				if (statusEffect.IsOfType(statusIncrease))
 				{
 					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
 				}
@@ -180,7 +148,7 @@ public class Unit : MonoBehaviour
 			int totalAmount = 0;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == statusIncrease)
+				if (statusEffect.IsOfType(statusIncrease))
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
@@ -307,8 +275,8 @@ public class Unit : MonoBehaviour
 		statusEffectList.Add(statusEffect);
 		// 침묵이나 기절상태가 될 경우 체인 해제.
 		// FIXME : 넉백 추가할 것. (넉백은 디버프가 아니라서 다른 곳에서 적용할 듯?)
-		if (statusEffect.GetStatusEffectType() == StatusEffectType.Faint ||
-			statusEffect.GetStatusEffectType() == StatusEffectType.Silence)
+		if (statusEffect.IsOfType(StatusEffectType.Faint) ||
+			statusEffect.IsOfType(StatusEffectType.Silence))
 		{
 			ChainList.RemoveChainsFromUnit(gameObject);
 		}
@@ -351,35 +319,102 @@ public class Unit : MonoBehaviour
 	public bool HasStatusEffectType(StatusEffectType statusEffectType)
 	{
 		bool hasStatusEffectType = false;
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusEffectType))
+		if (statusEffectList.Any(k => k.IsOfType(statusEffectType)))
 		{
 			hasStatusEffectType = true;
 		}
 		return hasStatusEffectType;
 	}
 
+	// 유닛이 보유한 효과 중 특정 StatusEffectType 효과의 절대수치 합을 반환
+	public int GetTotalStatusEffectAmount(StatusEffectType statusEffectType)
+	{
+		int totalAmount = 0;
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (statusEffect.IsOfType(statusEffectType))
+			{
+				totalAmount += statusEffect.GetAmount();
+			}
+		}
+		return totalAmount;
+	}
+	
+	// 유닛이 보유한 효과 중 특정 StatusEffectType 효과의 상대수치 곱을 반환
+	public float GetTotalStatusEffectDegree(StatusEffectType statusEffectType)
+	{
+		float totalDegree = 1.0f;
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (statusEffect.IsOfType(statusEffectType))
+			{
+				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
+			}
+		}
+		return totalDegree;
+	}
+
 	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
 	{
 		int actualDamage = 0;
 		// 공격이 물리인지 마법인지 체크
-		// 방어력 / 저항력 중 맞는 값을 적용
-		// 방어 증가/감소 / 저항 증가/감소 적용			 // FIXME : 증가분 미적용
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
+		// 대미지 증가/감소 효과 적용
+		// 보호막 있을 경우 대미지 삭감
 		// 체력 깎임
 		// 체인 해제
 		if (unitClass == UnitClass.Melee)
 		{
 			// 실제 피해 = 원래 피해 x 200/(200+방어력)
 			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Defense));
-			Debug.Log("Actual melee damage : " + actualDamage);
+			Debug.Log("Actual melee damage without status effect : " + actualDamage);
 		}
 		else if (unitClass == UnitClass.Magic)
 		{
 			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Resistance));
-			Debug.Log("Actual magic damage : " + actualDamage);
+			Debug.Log("Actual magic damage without status effect: " + actualDamage);
 		}
 		else if (unitClass == UnitClass.None)
 		{
 			actualDamage = amount;
+		}
+
+		// 대미지 증가/감소 효과
+		if (this.HasStatusEffectType(StatusEffectType.DamageIncrease))
+		{
+			int increaseAmount = GetTotalStatusEffectAmount(StatusEffectType.DamageIncrease);
+			float increaseDegree = GetTotalStatusEffectDegree(StatusEffectType.DamageIncrease);
+			actualDamage = (int) ((float) actualDamage * increaseDegree) + increaseAmount;
+		}
+		if (this.HasStatusEffectType(StatusEffectType.DamageDecrease))
+		{
+			int decreaseAmount = GetTotalStatusEffectAmount(StatusEffectType.DamageDecrease);
+			float decreaseDegree = GetTotalStatusEffectDegree(StatusEffectType.DamageDecrease);
+			actualDamage = (int) ((float) actualDamage * decreaseDegree) + decreaseAmount;
+		}
+
+		// 보호막에 따른 대미지 삭감
+		if (this.HasStatusEffectType(StatusEffectType.Shield))
+		{
+			int shieldAmount = 0;
+			for (int i = 0; i < statusEffectList.Count; i++)
+			{
+				if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+				{
+					shieldAmount = statusEffectList[i].GetAmount();
+					if (shieldAmount > actualDamage)
+					{
+						actualDamage = 0;
+						statusEffectList[i].SetRemainAmount(shieldAmount - actualDamage);
+						break;
+					}
+					else
+					{
+						actualDamage -= shieldAmount;
+						// FIXME : 보호막 사라짐 구현 필요
+					}
+				}
+			}
 		}
 
 		currentHealth -= actualDamage;
@@ -403,11 +438,11 @@ public class Unit : MonoBehaviour
 	{
 		int totalAmount = 0;
 
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.ContinuousDamage))
+		if (this.HasStatusEffectType(StatusEffectType.ContinuousDamage))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.ContinuousDamage)
+				if (statusEffect.IsOfType(StatusEffectType.ContinuousDamage))
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
@@ -418,18 +453,36 @@ public class Unit : MonoBehaviour
 		}
 	}
 
+	public void ApplyHealOverPhase()
+	{
+		int totalAmount = 0;
+
+		if (this.HasStatusEffectType(StatusEffectType.ContinuousHeal))
+		{
+			foreach (var statusEffect in statusEffectList)
+			{
+				if (statusEffect.IsOfType(StatusEffectType.ContinuousHeal))
+				{
+					totalAmount += statusEffect.GetAmount();
+				}
+			}
+		}
+
+		RecoverHealth(totalAmount);
+	}
+
 	public IEnumerator RecoverHealth(int amount)
 	{
 		// FIXME : 치유량 증가 효과
 
 		// 내상 효과
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.HealDecrease))
+		if (this.HasStatusEffectType(StatusEffectType.HealDecrease))
 		{
 			// 상대치 곱연산
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.HealDecrease)
+				if (statusEffect.IsOfType(StatusEffectType.HealDecrease))
 				{
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
@@ -477,7 +530,7 @@ public class Unit : MonoBehaviour
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease)
+				if (statusEffect.IsOfType(StatusEffectType.RequireSkillAPDecrease))
 				{
 					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
 				}
@@ -490,7 +543,7 @@ public class Unit : MonoBehaviour
 			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease)
+				if (statusEffect.IsOfType(StatusEffectType.RequireSkillAPIncrease))
 				{
 					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
                     Debug.Log(name + " has debuff slow, used AP increased by " + statusEffect.GetDegree());
