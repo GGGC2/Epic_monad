@@ -290,6 +290,14 @@ public class DialogueManager : MonoBehaviour {
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
 			}
 		}
+		else if (dialogueDataList[line].GetCommandType() == "bgm")
+		{
+			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
+		}
+		else if (dialogueDataList[line].GetCommandType() == "sound_effect")
+		{
+			// Not implement yet.
+		}
 		else
 		{
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
