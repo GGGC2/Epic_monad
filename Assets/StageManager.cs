@@ -6,6 +6,7 @@ public class StageManager : MonoBehaviour {
 	public TextAsset mapData;
 	public TextAsset unitData;
 	public TextAsset battleEndConditionData;
+	public TextAsset bgmData;
 
 	// Use this for initialization
 	void Awake () {
@@ -13,13 +14,15 @@ public class StageManager : MonoBehaviour {
 		if (SceneData.nextStageName != null)
 		{
 			string nextStageName = SceneData.nextStageName;
-			Debug.Log("Data/" + SceneData.nextStageName + "_map, " + "Data/" + SceneData.nextStageName + "_unit");
+			// Debug.Log("Data/" + SceneData.nextStageName + "_map, " + "Data/" + SceneData.nextStageName + "_unit");
 			TextAsset nextMapFile = Resources.Load("Data/" + SceneData.nextStageName + "_map", typeof(TextAsset)) as TextAsset;
 			mapData = nextMapFile;
 			TextAsset nextUnitFile = Resources.Load("Data/" + SceneData.nextStageName + "_unit", typeof(TextAsset)) as TextAsset;
 			unitData = nextUnitFile;
 			TextAsset nextBattleEndConditionFile = Resources.Load("Data/" + SceneData.nextStageName + "_battleEndCondition", typeof(TextAsset)) as TextAsset;
 			battleEndConditionData = nextBattleEndConditionFile;
+			TextAsset nextBgmFile = Resources.Load("Data/" + SceneData.nextStageName + "_bgm", typeof(TextAsset)) as TextAsset;
+			bgmData = nextBgmFile;
 		}
 	}
 }
