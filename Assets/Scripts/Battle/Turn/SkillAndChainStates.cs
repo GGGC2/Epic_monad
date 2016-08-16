@@ -443,7 +443,7 @@ namespace Battle.Turn
 						{
 							if (statusEffect.GetStatusEffectType().Equals(StatusEffectType.Smite))
 							{
-								smiteAmount += Smite.GetAmount();
+								smiteAmount += statusEffect.GetAmount();
 							}
 						}
 					}
