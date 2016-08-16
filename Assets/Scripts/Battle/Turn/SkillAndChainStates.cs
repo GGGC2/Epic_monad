@@ -435,6 +435,19 @@ namespace Battle.Turn
                         actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
                     }
 
+					// 강타 효과에 의한 대미지 추가
+					int smiteAmount = 0;
+					if (unitObjectInChain.GetComponent<Unit>().HasStatusEffectType(StatusEffectType.Smite))
+					{
+						foreach (var statusEffect in unitObjectInChain.GetComponent<Unit>().GetStatusEffectList())
+						{
+							if (statusEffect.GetStatusEffectType().Equals(StatusEffectType.Smite))
+							{
+								smiteAmount += Smite.GetAmount();
+							}
+						}
+					}
+
 					var damageAmount = (int)((battleData.GetChainDamageFactorFromChainCombo(chainCombo)) * directionBonus * celestialBonus * actualPowerFactor);
 					var damageCoroutine = target.GetComponent<Unit>().Damaged(unitInChain.GetUnitClass(), damageAmount, false);
 

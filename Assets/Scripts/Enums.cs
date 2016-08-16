@@ -119,7 +119,8 @@ namespace Enums {
         Confused, // 혼란: 적과 아군을 반대로 인식
         Faint, // 기절: 턴이 돌아오면 자동 휴식
         Retire,
-		Shield, 
+		Shield,
+		ConditionalShield, // 조건부 보호막: 특정 조건 만족 시 보호막 발동 
         Etc // 위 분류에 해당하지 않는 효과
 	}
 }

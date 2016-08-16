@@ -134,8 +134,8 @@ public class BattleManager : MonoBehaviour
 	{
 		bool isPossible = false;
 
-		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().IsSilenced() ||
-					 battleData.selectedUnitObject.GetComponent<Unit>().IsFainted());
+		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffectType(StatusEffectType.Silence) ||
+					 battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffectType(StatusEffectType.Faint));
 
 		GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
@@ -144,8 +144,8 @@ public class BattleManager : MonoBehaviour
 	{
 		bool isPossible = false;
 
-		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().IsBound() ||
-					 battleData.selectedUnitObject.GetComponent<Unit>().IsFainted() ||
+		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffectType(StatusEffectType.Bind) ||
+					 battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffectType(StatusEffectType.Faint) ||
 					 battleData.alreadyMoved);
 
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;

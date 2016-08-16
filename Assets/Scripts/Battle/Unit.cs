@@ -216,22 +216,6 @@ public class Unit : MonoBehaviour
         return statusEffectList;
     }
 
-	public bool IsBound()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind);
-	}
-
-	public bool IsSilenced()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
-	}
-
-	public bool IsFainted()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind) &&
-			   statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
-	}
-
 	public int GetMaxHealth()
 	{
 		return maxHealth;
