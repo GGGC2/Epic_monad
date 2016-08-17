@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Save;
+
 namespace SkillTree
 {
 
@@ -33,6 +35,7 @@ public class SkillColumnInfo
 
 public class SkillTreeManager : MonoBehaviour
 {
+	const int maxEnhanceLevel = 5;
 	int selectedIndex = 0;
 
 	List<GameObject> nameButtons;
@@ -46,18 +49,23 @@ public class SkillTreeManager : MonoBehaviour
 	GameObject standing;
 	GameObject root;
 
-	List<string> dummyUnitList = new List<string>();
+	List<string> partyUnitNames = new List<string>();
 	List<UnitInfo> unitInfos = new List<UnitInfo>();
 	List<SkillInfo> skillInfos = new List<SkillInfo>();
+	Dictionary<string, SkillInfo> skillInfoByName = new Dictionary<string, SkillInfo>();
 	List<SkillColumnInfo> skillColumnInfos = new List<SkillColumnInfo>();
 
 	void Awake()
 	{
-		dummyUnitList.Add("reina");
-		dummyUnitList.Add("lucius");
+		partyUnitNames = PartyDB.GetPartyUnits();
 
 		unitInfos = Parser.GetParsedUnitInfo();
 		skillInfos = Parser.GetParsedSkillInfo();
+		foreach (SkillInfo skillInfo in skillInfos)
+		{
+			string skillName = skillInfo.skill.GetName();
+			skillInfoByName[skillName] = skillInfo;
+		}
 		skillColumnInfos = Parser.GetSkillColumInfo();
 
 		InitializeUIs();
@@ -115,12 +123,14 @@ public class SkillTreeManager : MonoBehaviour
 		{
 			Text text = nameGO.transform.Find("text").GetComponent<Text>();
 			text.text = "";
+			nameGO.GetComponent<Image>().enabled = false;
 		}
 
-		for (int i=0; i<dummyUnitList.Count; i++)
+		for (int i=0; i<partyUnitNames.Count; i++)
 		{
 			Text text = nameButtons[i].transform.Find("text").GetComponent<Text>();
 			text.text = GetUnitInfo(i).name;
+			nameButtons[i].GetComponent<Image>().enabled = true;
 		}
 	}
 
@@ -136,12 +146,12 @@ public class SkillTreeManager : MonoBehaviour
 		column3Text.GetComponent<Text>().text = skillColumnInfo.column3Name;
 
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		string nameInCode = unitInfo.nameInCode;
+		string unitNameInCode = unitInfo.nameInCode;
 
 		List<SkillInfo> unitSkills = new List<SkillInfo>();
 		foreach (SkillInfo skillInfo in skillInfos)
 		{
-			if (skillInfo.owner == nameInCode)
+			if (skillInfo.owner == unitNameInCode)
 			{
 				unitSkills.Add(skillInfo);
 			}
@@ -150,27 +160,112 @@ public class SkillTreeManager : MonoBehaviour
 		foreach (SkillInfo unitSkillInfo in unitSkills)
 		{
 			GameObject skillGameObject = GetSkillGameObject(unitSkillInfo.column, unitSkillInfo.requireLevel);
-			skillGameObject.transform.Find("Icon").GetComponent<Image>().enabled = true;
-			Text text = skillGameObject.transform.Find("Text").GetComponent<Text>();
-			text.enabled = true;
-			text.text = unitSkillInfo.skill.GetName();
+			skillGameObject.GetComponent<SkillButton>().SetSkillInfo(unitSkillInfo);
+
+			Skill skill = unitSkillInfo.skill;
+			bool isLearned = SkillDB.IsLearned(unitNameInCode, skill.GetName());
+			bool haveSkillPoint = GetAvailableSkillPoint(unitNameInCode) > 0;
+			bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skill.GetName()) < maxEnhanceLevel && haveSkillPoint;
+
+			int totalSkillPointUntilLevel = unitSkillInfo.requireLevel - 1;
+			int usedSkillPointUntilLevel = GetUsedSkillPointUntilLevel(unitNameInCode, unitSkillInfo.requireLevel - 1);
+			bool isLearnable = usedSkillPointUntilLevel >= totalSkillPointUntilLevel && haveSkillPoint;
+
+			if (!isLearned && !isLearnable)
+			{
+				skillGameObject.GetComponent<SkillButton>().ChangeState(this, SkillButtonState.NotLearnable);
+			}
+			else if (!isLearned && isLearnable)
+			{
+				skillGameObject.GetComponent<SkillButton>().ChangeState(this, SkillButtonState.Learnable);
+			}
+			else if (isLearned && isEnhanceable)
+			{
+				skillGameObject.GetComponent<SkillButton>().ChangeState(this, SkillButtonState.LearnedEnhanceable);
+			}
+			else if (isLearned && !isEnhanceable)
+			{
+				skillGameObject.GetComponent<SkillButton>().ChangeState(this, SkillButtonState.LearnedMaxEnhanced);
+			}
+			else
+			{
+				Debug.LogError("Invalid case");
+			}
 		}
 		//  required level validation is needed
+	}
+
+	private int GetAvailableSkillPoint(string unitName)
+	{
+		return PartyDB.GetPartyLevel() - GetAllUsedSkillPoint(unitName);
+	}
+
+	private int GetUsedSkillPointUntilLevel(string unitName, int level)
+	{
+		List<string> skillNames = SkillDB.GetLearnedSkillNames(unitName);
+		int sum = 0;
+		foreach (string skillName in skillNames)
+		{
+			if (skillInfoByName[skillName].requireLevel <= level)
+			{
+				sum += SkillDB.GetEnhanceLevel(unitName, skillName);
+			}
+		}
+		return sum;
+	}
+
+	private int GetAllUsedSkillPoint(string unitName)
+	{
+		List<string> skillNames = SkillDB.GetLearnedSkillNames(unitName);
+		int sum = 0;
+		foreach (string skillName in skillNames)
+		{
+			sum += SkillDB.GetEnhanceLevel(unitName, skillName);
+		}
+		return sum;
 	}
 
 	private void InitializeSkillUI(List<GameObject> skills)
 	{
 		foreach (GameObject skill in skills)
 		{
-			skill.transform.Find("Icon").GetComponent<Image>().enabled = false;
-			skill.transform.Find("Text").GetComponent<Text>().enabled = false;
+			skill.GetComponent<SkillButton>().ChangeState(this, SkillButtonState.NotExist);
 		}
+	}
+
+	public void OnSkillButtonClick(string skillName)
+	{
+		Debug.Log("Skill clicked " + skillName);
+
+		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
+		string unitNameInCode = unitInfo.nameInCode;
+		bool haveSkillPoint = GetAvailableSkillPoint(unitNameInCode) > 0;
+		bool isLearned = SkillDB.IsLearned(unitNameInCode, skillName);
+		bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skillName) < maxEnhanceLevel && haveSkillPoint;
+
+		if (!isLearned)
+		{
+			SkillDB.Learn(unitNameInCode, skillName);
+		}
+		else if (isEnhanceable)
+		{
+			SkillDB.Enhance(unitNameInCode, skillName);
+		}
+		else
+		{
+			Debug.LogError("Cannot learn or enhance");
+		}
+
+		UpdateSkills(selectedIndex);
+		UpdateDetail(selectedIndex);
 	}
 
 	private void UpdateDetail(int selectedIndex)
 	{
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
 		this.description.name.GetComponent<Text>().text = unitInfo.name;
+		this.description.level.GetComponent<Text>().text = PartyDB.GetPartyLevel().ToString();
+		this.description.skillPoint.GetComponent<Text>().text = GetAvailableSkillPoint(unitInfo.nameInCode).ToString();
 	}
 
 	private void UpdateUnitImage(int selectedIndex)
@@ -200,7 +295,7 @@ public class SkillTreeManager : MonoBehaviour
 	{
 		foreach (UnitInfo unitInfo in unitInfos)
 		{
-			if (unitInfo.nameInCode == dummyUnitList[index])
+			if (unitInfo.nameInCode == partyUnitNames[index])
 			{
 				return unitInfo;
 			}
@@ -213,7 +308,7 @@ public class SkillTreeManager : MonoBehaviour
 	{
 		foreach (SkillColumnInfo skillColumnInfo in skillColumnInfos)
 		{
-			if (skillColumnInfo.unitName == dummyUnitList[index])
+			if (skillColumnInfo.unitName == partyUnitNames[index])
 			{
 				return skillColumnInfo;
 			}

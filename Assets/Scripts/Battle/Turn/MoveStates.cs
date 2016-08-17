@@ -28,6 +28,7 @@ namespace Battle.Turn
 
 				battleData.isWaitingUserInput = true;
 				battleData.isSelectedTileByUser = false;
+				battleData.isPreSeletedTileByUser = false;
 				while (!battleData.isSelectedTileByUser)
 				{
 					//yield break 넣으면 코루틴 강제종료
