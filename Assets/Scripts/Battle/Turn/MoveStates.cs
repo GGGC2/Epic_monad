@@ -20,7 +20,7 @@ namespace Battle.Turn
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
 
-				battleData.tileManager.ChangeTilesToSeletedColor(movableTiles, TileColor.Blue);
+				battleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
 
 				battleData.rightClicked = false;
 				battleData.cancelClicked = false;
@@ -37,7 +37,7 @@ namespace Battle.Turn
 						battleData.cancelClicked = false;
 						battleData.uiManager.DisableCancelButtonUI();
 
-						battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(movableTiles);
+						battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 
 						battleData.currentState = CurrentState.FocusToUnit;
 						battleData.isWaitingUserInput = false;
@@ -72,7 +72,7 @@ namespace Battle.Turn
 
 				battleData.moveCount += distance;
 
-				battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(movableTiles);
+				battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 				battleData.currentState = CurrentState.CheckDestination;
 				battleData.uiManager.DisableCancelButtonUI();
 				BattleManager battleManager = battleData.battleManager;
@@ -90,7 +90,7 @@ namespace Battle.Turn
 				// destTileList.Add(destTile);
 				List<GameObject> destTileList = destPath;
 				destTileList.Add(destTile);
-				battleData.tileManager.ChangeTilesToSeletedColor(destTileList, TileColor.Blue);
+				battleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
 				// UI를 띄우고
 				battleData.uiManager.EnableSelectDirectionUI();
 				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnitObject, totalUseActionPoint);
@@ -119,7 +119,7 @@ namespace Battle.Turn
 
 						battleData.moveCount -= distance;
 						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
-						battleData.tileManager.ChangeTilesToSeletedColor(nearbyTiles, TileColor.Blue);
+						battleData.tileManager.PaintTiles(nearbyTiles, TileColor.Blue);
 						battleData.uiManager.DisableSelectDirectionUI();
 						battleData.uiManager.DisableDestCheckUI();
 						battleData.currentState = CurrentState.SelectMovingPoint;
@@ -133,7 +133,7 @@ namespace Battle.Turn
 				battleData.uiManager.DisableCancelButtonUI();
 
 				// 방향을 클릭하면 그 자리로 이동. MoveToTile 호출
-				battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(destTileList);
+				battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 				battleData.currentState = CurrentState.MoveToTile;
 				battleData.uiManager.DisableDestCheckUI();
 				BattleManager battleManager = battleData.battleManager;
