@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
+
 using BattleUI;
 
 public class UIManager : MonoBehaviour
 {
+	const int skillButtonCount = 5;
+
 	GameObject apBarUI;
 	GameObject commandUI;
 	GameObject skillUI;
@@ -73,7 +77,6 @@ public class UIManager : MonoBehaviour
 		EnableSkillUI();
 		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetSkillList();
 
-		const int skillButtonCount = 5;
 		if (skillList.Count > skillButtonCount) {
 			Debug.LogError("Too many skill count " + skillList.Count);
 		}
@@ -96,7 +99,9 @@ public class UIManager : MonoBehaviour
 	public void CheckUsableSkill(GameObject selectedUnitObject)
 	{
 		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetSkillList();
-		for (int i = 0; i < skillList.Count; i++)
+
+		int iterationCount = Math.Min(skillButtonCount, skillList.Count);
+		for (int i = 0; i < iterationCount; i++)
 		{
 			GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>().interactable = true;
 			if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i]))
