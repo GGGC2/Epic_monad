@@ -33,6 +33,7 @@ public class StatusEffectInfo {
 
 		string name = commaParser.Consume();
 		StatusEffectType statusEffectType = commaParser.ConsumeEnum<StatusEffectType>();
+		bool isBuff = commaParser.ConsumeBool();
         bool isInfinite = commaParser.ConsumeBool();
         bool isStackable = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
@@ -48,7 +49,7 @@ public class StatusEffectInfo {
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 	
 		this.statusEffect = new StatusEffect(name, statusEffectType, 
-                                             isInfinite, isStackable, isRemovable, 
+                                             isBuff, isInfinite, isStackable, isRemovable, 
                                              degree, amount, remainPhase, remainStack, cooldown, 
                                              effectName, effectVisualType, effectMoveType);
 	}

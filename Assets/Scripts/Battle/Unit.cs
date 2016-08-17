@@ -101,59 +101,12 @@ public class Unit : MonoBehaviour
     public int GetActualStat(Stat stat)
     {
         int actualStat = GetStat(stat);
-        StatusEffectType statusIncrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Increase");
-        StatusEffectType statusDecrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Decrease");
+        StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
         
-        // stat decrease by debuffs
-		if (this.HasStatusEffectType(statusDecrease))
+		// 능력치 증감 효과 적용
+		if (this.HasStatusEffectType(statusChange))
 		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(statusDecrease))
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualStat = (int)((float)actualStat * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(statusDecrease))
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualStat -= totalAmount;
-        }
-        
-        // stat increase by buffs
-		if (this.HasStatusEffectType(statusIncrease))
-		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(statusIncrease))
-				{
-					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualStat = (int)((float)actualStat * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(statusIncrease))
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualStat += totalAmount;
+			actualStat = GetActualNumber(actualStat, statusChange);
         }
         
         return actualStat;
@@ -326,10 +279,11 @@ public class Unit : MonoBehaviour
 		return hasStatusEffectType;
 	}
 
-	// 유닛이 보유한 효과 중 특정 StatusEffectType 효과의 절대수치 합을 반환
-	public int GetTotalStatusEffectAmount(StatusEffectType statusEffectType)
+	public int GetActualNumber(int data, StatusEffectType statusEffectType)
 	{
 		int totalAmount = 0;
+		float totalDegree = 1.0f;
+
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (statusEffect.IsOfType(statusEffectType))
@@ -337,13 +291,6 @@ public class Unit : MonoBehaviour
 				totalAmount += statusEffect.GetAmount();
 			}
 		}
-		return totalAmount;
-	}
-	
-	// 유닛이 보유한 효과 중 특정 StatusEffectType 효과의 상대수치 곱을 반환
-	public float GetTotalStatusEffectDegree(StatusEffectType statusEffectType)
-	{
-		float totalDegree = 1.0f;
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (statusEffect.IsOfType(statusEffectType))
@@ -351,7 +298,8 @@ public class Unit : MonoBehaviour
 				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
 			}
 		}
-		return totalDegree;
+
+		return (int) ((float)data * totalDegree) + totalAmount;
 	}
 
 	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
@@ -379,18 +327,10 @@ public class Unit : MonoBehaviour
 			actualDamage = amount;
 		}
 
-		// 대미지 증가/감소 효과
-		if (this.HasStatusEffectType(StatusEffectType.DamageIncrease))
+		// 대미지 증감 효과 적용
+		if (this.HasStatusEffectType(StatusEffectType.DamageChange))
 		{
-			int increaseAmount = GetTotalStatusEffectAmount(StatusEffectType.DamageIncrease);
-			float increaseDegree = GetTotalStatusEffectDegree(StatusEffectType.DamageIncrease);
-			actualDamage = (int) ((float) actualDamage * increaseDegree) + increaseAmount;
-		}
-		if (this.HasStatusEffectType(StatusEffectType.DamageDecrease))
-		{
-			int decreaseAmount = GetTotalStatusEffectAmount(StatusEffectType.DamageDecrease);
-			float decreaseDegree = GetTotalStatusEffectDegree(StatusEffectType.DamageDecrease);
-			actualDamage = (int) ((float) actualDamage * decreaseDegree) + decreaseAmount;
+			actualDamage = GetActualNumber(actualDamage, StatusEffectType.DamageChange); 
 		}
 
 		// 보호막에 따른 대미지 삭감
@@ -473,21 +413,10 @@ public class Unit : MonoBehaviour
 
 	public IEnumerator RecoverHealth(int amount)
 	{
-		// FIXME : 치유량 증가 효과
-
-		// 내상 효과
-		if (this.HasStatusEffectType(StatusEffectType.HealDecrease))
+		// 회복량 증감 효과 적용
+		if (this.HasStatusEffectType(StatusEffectType.HealChange))
 		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(StatusEffectType.HealDecrease))
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			amount = (int)((float)amount * totalDegree);
+			amount = GetActualNumber(amount, StatusEffectType.HealChange);
 		}
 
 		currentHealth += amount;
@@ -524,32 +453,10 @@ public class Unit : MonoBehaviour
     {
         int requireSkillAP = selectedSkill.GetRequireAP()[0];
         
-        // 신속에 의한 기술 행동력 소모 감소
-        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPDecrease))
+        // 행동력(기술) 소모 증감 효과 적용
+        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPChange))
 		{
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(StatusEffectType.RequireSkillAPDecrease))
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			requireSkillAP = (int)((float)requireSkillAP * totalDegree);
-		}
-        // 둔화에 의한 기술 행동력 소모 증가
-        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPIncrease))
-		{
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(StatusEffectType.RequireSkillAPIncrease))
-				{
-					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
-                    Debug.Log(name + " has debuff slow, used AP increased by " + statusEffect.GetDegree());
-				}
-			}
-			requireSkillAP = (int)((float) requireSkillAP * totalDegree);
+			requireSkillAP = GetActualNumber(requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
         
         return requireSkillAP;
