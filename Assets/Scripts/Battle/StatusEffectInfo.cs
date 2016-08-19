@@ -50,7 +50,7 @@ public class StatusEffectInfo {
 	
 		this.statusEffect = new StatusEffect(name, statusEffectType, 
                                              isBuff, isInfinite, isStackable, isRemovable, 
-                                             degree, amount, remainPhase, remainStack, cooldown, 
+                                             degree, amount, remainPhase, remainStack, cooldown, false, 
                                              effectName, effectVisualType, effectMoveType);
 	}
 }

@@ -17,6 +17,7 @@ public class StatusEffect {
     int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
     int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
     int cooldown; // 효과가 적용되는 시점
+    bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
 	
 	// 이펙트 관련 정보
 	string effectName;
@@ -24,8 +25,8 @@ public class StatusEffect {
 	EffectMoveType effectMoveType;
 	
 	public StatusEffect(string name, StatusEffectType statusEffectType,  
-                  bool isBuff, bool isInfinite, bool isStackable, bool isRemovable, 
-                  float degree, int amount, int remainPhase, int remainStack, int cooldown,
+                  bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
+                  float degree, int amount, int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
@@ -39,6 +40,7 @@ public class StatusEffect {
         this.remainPhase = remainPhase;
         this.remainStack = remainStack;
         this.cooldown = cooldown;
+        this.toBeRemoved = toBeRemoved; 
         this.effectName = effectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
@@ -55,6 +57,7 @@ public class StatusEffect {
     public int GetRemainPhase() {return remainPhase;}
     public int GetRemainStack() {return remainStack;}
 	public int GetCooldown() {return cooldown;}	
+    public bool GetToBeRemoved() {return toBeRemoved;}
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
@@ -102,6 +105,11 @@ public class StatusEffect {
     public void SetRemainStack(int stack)
     {
         remainStack = stack; 
+    }
+
+    public void SetToBeRemoved(bool toEnd)
+    {
+        toBeRemoved = toEnd;
     }
 
     public bool IsOfType(StatusEffectType statusEffectType)

@@ -438,13 +438,30 @@ namespace Battle.Turn
 
 					// 강타 효과에 의한 대미지 추가
 					int smiteAmount = 0;
-					if (unitInChain.HasStatusEffectType(StatusEffectType.Smite))
+					if (unitInChain.HasStatusEffect(StatusEffectType.Smite))
 					{
-						smiteAmount = unitInChain.GetActualNumber(smiteAmount, StatusEffectType.Smite);
+						smiteAmount = unitInChain.GetActualEffect(smiteAmount, StatusEffectType.Smite);
 					}
 
 					var damageAmount = (int)((battleData.GetChainDamageFactorFromChainCombo(chainCombo)) * directionBonus * celestialBonus * actualPowerFactor) + smiteAmount;
 					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, false);
+
+					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
+					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
+					{
+						int reflectAmount = damageAmount;
+						foreach (var statusEffect in targetUnit.GetStatusEffectList())
+						{
+							if (statusEffect.IsOfType(StatusEffectType.Reflect))
+							{
+								reflectAmount = (int)((float)reflectAmount * statusEffect.GetDegree());
+								break;
+							}
+						}
+						
+						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, false);
+						battleManager.StartCoroutine(reflectCoroutine);
+					}
 
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
@@ -585,13 +602,30 @@ namespace Battle.Turn
 
 					// 강타 효과에 의한 대미지 추가
 					int smiteAmount = 0;
-					if (selectedUnit.HasStatusEffectType(StatusEffectType.Smite))
+					if (selectedUnit.HasStatusEffect(StatusEffectType.Smite))
 					{
-						smiteAmount = selectedUnit.GetActualNumber(smiteAmount, StatusEffectType.Smite);
+						smiteAmount = selectedUnit.GetActualEffect(smiteAmount, StatusEffectType.Smite);
 					}
 
 					var damageAmount = (int)(directionBonus * celestialBonus * actualPowerFactor) + smiteAmount;
 					var damageCoroutine = targetUnit.Damaged(selectedUnit.GetUnitClass(), damageAmount, false);
+
+					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
+					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
+					{
+						int reflectAmount = damageAmount;
+						foreach (var statusEffect in targetUnit.GetStatusEffectList())
+						{
+							if (statusEffect.IsOfType(StatusEffectType.Reflect))
+							{
+								reflectAmount = (int)((float)reflectAmount * statusEffect.GetDegree());
+								break;
+							}
+						}
+						
+						var reflectCoroutine = selectedUnit.Damaged(targetUnit.GetUnitClass(), reflectAmount, false);
+						battleManager.StartCoroutine(reflectCoroutine);
+					}
 					
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)

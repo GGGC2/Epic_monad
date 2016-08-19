@@ -104,9 +104,9 @@ public class Unit : MonoBehaviour
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
         
 		// 능력치 증감 효과 적용
-		if (this.HasStatusEffectType(statusChange))
+		if (this.HasStatusEffect(statusChange))
 		{
-			actualStat = GetActualNumber(actualStat, statusChange);
+			actualStat = GetActualEffect(actualStat, statusChange);
         }
         
         return actualStat;
@@ -235,51 +235,52 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void RemainStatusEffect()
-	{
-		statusEffectList.Remove(statusEffectList[0]);
-	}
-
-	public void RemainAllStatusEffect()
-	{
-		statusEffectList.Clear();
-	}
-
 	public void DecreaseRemainPhaseStatusEffect()
 	{
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffectList)
 		{
-			statusEffect.DecreaseRemainPhase();
 			if (statusEffect.GetRemainPhase() > 0)
 			{
-				newStatusEffectList.Add(statusEffect);
+				statusEffect.DecreaseRemainPhase();
+				if (statusEffect.GetRemainPhase() == 0)
+					statusEffect.SetToBeRemoved(true);
 			}
+		}
+	}
+
+	public void UpdateStatusEffect()
+	{
+		int count = statusEffectList.Count;
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+
+		for(int i = 0; i < count; i++)
+		{
+			if(!statusEffectList[i].GetToBeRemoved())
+				newStatusEffectList.Add(statusEffectList[i]);
 		}
 		statusEffectList = newStatusEffectList;
 	}
 
+	// searching certain StatusEffect
 	public bool HasStatusEffect(StatusEffect statusEffect)
 	{
 		bool hasStatusEffect = false;
 		if (statusEffectList.Any(k => k.GetName().Equals(statusEffect.GetName())))
-		{
 			hasStatusEffect = true;
-		}
 		return hasStatusEffect;
 	}
 
-	public bool HasStatusEffectType(StatusEffectType statusEffectType)
+	// searching certain StatusEffectType
+	public bool HasStatusEffect(StatusEffectType statusEffectType)
 	{
-		bool hasStatusEffectType = false;
-		if (statusEffectList.Any(k => k.IsOfType(statusEffectType)))
-		{
-			hasStatusEffectType = true;
-		}
-		return hasStatusEffectType;
+		bool hasStatusEffect = false;
+		if (statusEffectList.Any(k => k.IsOfType(statusEffectType))) 
+			hasStatusEffect = true;
+
+		return hasStatusEffect;
 	}
 
-	public int GetActualNumber(int data, StatusEffectType statusEffectType)
+	public int GetActualEffect(int data, StatusEffectType statusEffectType)
 	{
 		int totalAmount = 0;
 		float totalDegree = 1.0f;
@@ -289,6 +290,15 @@ public class Unit : MonoBehaviour
 			if (statusEffect.IsOfType(statusEffectType))
 			{
 				totalAmount += statusEffect.GetAmount();
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				{
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					{
+						statusEffect.SetToBeRemoved(true);
+						this.UpdateStatusEffect();
+					}
+				}
 			}
 		}
 		foreach (var statusEffect in statusEffectList)
@@ -296,6 +306,15 @@ public class Unit : MonoBehaviour
 			if (statusEffect.IsOfType(statusEffectType))
 			{
 				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				{
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					{
+						statusEffect.SetToBeRemoved(true);
+						this.UpdateStatusEffect();
+					}
+				}
 			}
 		}
 
@@ -328,13 +347,13 @@ public class Unit : MonoBehaviour
 		}
 
 		// 대미지 증감 효과 적용
-		if (this.HasStatusEffectType(StatusEffectType.DamageChange))
+		if (this.HasStatusEffect(StatusEffectType.DamageChange))
 		{
-			actualDamage = GetActualNumber(actualDamage, StatusEffectType.DamageChange); 
+			actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
 		}
 
 		// 보호막에 따른 대미지 삭감
-		if (this.HasStatusEffectType(StatusEffectType.Shield))
+		if (this.HasStatusEffect(StatusEffectType.Shield))
 		{
 			int shieldAmount = 0;
 			for (int i = 0; i < statusEffectList.Count; i++)
@@ -351,7 +370,8 @@ public class Unit : MonoBehaviour
 					else
 					{
 						actualDamage -= shieldAmount;
-						// FIXME : 보호막 사라짐 구현 필요
+						statusEffectList[i].SetToBeRemoved(true);
+						this.UpdateStatusEffect();
 					}
 				}
 			}
@@ -378,7 +398,7 @@ public class Unit : MonoBehaviour
 	{
 		int totalAmount = 0;
 
-		if (this.HasStatusEffectType(StatusEffectType.ContinuousDamage))
+		if (this.HasStatusEffect(StatusEffectType.ContinuousDamage))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
@@ -397,7 +417,7 @@ public class Unit : MonoBehaviour
 	{
 		int totalAmount = 0;
 
-		if (this.HasStatusEffectType(StatusEffectType.ContinuousHeal))
+		if (this.HasStatusEffect(StatusEffectType.ContinuousHeal))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
@@ -414,9 +434,9 @@ public class Unit : MonoBehaviour
 	public IEnumerator RecoverHealth(int amount)
 	{
 		// 회복량 증감 효과 적용
-		if (this.HasStatusEffectType(StatusEffectType.HealChange))
+		if (this.HasStatusEffect(StatusEffectType.HealChange))
 		{
-			amount = GetActualNumber(amount, StatusEffectType.HealChange);
+			amount = GetActualEffect(amount, StatusEffectType.HealChange);
 		}
 
 		currentHealth += amount;
@@ -454,9 +474,9 @@ public class Unit : MonoBehaviour
         int requireSkillAP = selectedSkill.GetRequireAP()[0];
         
         // 행동력(기술) 소모 증감 효과 적용
-        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPChange))
+        if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
 		{
-			requireSkillAP = GetActualNumber(requireSkillAP, StatusEffectType.RequireSkillAPChange);
+			requireSkillAP = GetActualEffect(requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
         
         return requireSkillAP;
