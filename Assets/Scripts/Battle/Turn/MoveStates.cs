@@ -76,12 +76,12 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.CheckDestination;
 				battleData.uiManager.DisableCancelButtonUI();
 				BattleManager battleManager = battleData.battleManager;
-				yield return battleManager.StartCoroutine(CheckDestination(battleData, movableTiles, destTile, destPath, totalUseActionPoint, distance));
+				yield return battleManager.StartCoroutine(CheckDestination(battleData, destTile, destPath, totalUseActionPoint, distance));
 			}
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(BattleData battleData, List<GameObject> nearbyTiles, GameObject destTile, List<GameObject> destPath, int totalUseActionPoint, int distance)
+		private static IEnumerator CheckDestination(BattleData battleData, GameObject destTile, List<GameObject> destPath, int totalUseActionPoint, int distance)
 		{
 			while (battleData.currentState == CurrentState.CheckDestination)
 			{
@@ -119,7 +119,7 @@ namespace Battle.Turn
 
 						battleData.moveCount -= distance;
 						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
-						battleData.tileManager.PaintTiles(nearbyTiles, TileColor.Blue);
+						battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 						battleData.uiManager.DisableSelectDirectionUI();
 						battleData.uiManager.DisableDestCheckUI();
 						battleData.currentState = CurrentState.SelectMovingPoint;
