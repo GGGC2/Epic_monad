@@ -12,7 +12,7 @@ public class RestAndRecover {
 	{
 		int usingActivityPointToRest = GetRestCostAP(battleData);
 		int recoverHealthDuringRest = (int)(battleData.selectedUnitObject.GetComponent<Unit>().GetStat(Stat.MaxHealth) * (usingActivityPointToRest / 100f));
-		battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(usingActivityPointToRest);
+		battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(usingActivityPointToRest);
 		IEnumerator recoverHealthCoroutine = battleData.selectedUnitObject.GetComponent<Unit>().RecoverHealth(recoverHealthDuringRest);
 
 		BattleManager battleManager = battleData.battleManager;

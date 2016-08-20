@@ -848,7 +848,7 @@ Prefab:
       value: "\uC720\uBBFC"
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: regenerationActionPoint
+      propertyPath: regenerationActivityPoint
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 0}

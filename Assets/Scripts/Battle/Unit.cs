@@ -453,13 +453,13 @@ public class Unit : MonoBehaviour
 		recoverTextObject.SetActive(false);
 	}
 
-	public void RegenerateActionPoint()
+	public void RegenerateActivityPoint()
 	{
-		activityPoint = GetRegeneratedActionPoint();
+		activityPoint = GetRegeneratedActivityPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
 	}
 
-	public int GetRegeneratedActionPoint()
+	public int GetRegeneratedActivityPoint()
 	{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
@@ -478,11 +478,17 @@ public class Unit : MonoBehaviour
 		{
 			requireSkillAP = GetActualEffect(requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
+
+		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
+		if (selectedSkill.GetRequireAP()[0] == 9999)
+		{
+			requireSkillAP = GetCurrentActivityPoint();
+		}
         
         return requireSkillAP;
     }
 
-	public void UseActionPoint(int amount)
+	public void UseActivityPoint(int amount)
 	{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
@@ -621,7 +627,7 @@ public class Unit : MonoBehaviour
 		position = initPosition;
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
-		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActionPoint();
+		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<StatusEffect>();

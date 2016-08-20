@@ -33,7 +33,7 @@ public class RetreatUnitInfo
 
 public class UnitManager : MonoBehaviour {
 
-	int standardActionPoint;
+	int standardActivityPoint;
 
 	List<SkillInfo> skillInfoList = new List<SkillInfo>();
     List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
@@ -108,14 +108,14 @@ public class UnitManager : MonoBehaviour {
 		return deadUnitsInfo;
 	}
 	
-	public int GetStandardActionPoint()
+	public int GetStandardActivityPoint()
 	{
-		return standardActionPoint;
+		return standardActivityPoint;
 	}
 	
-	public void SetStandardActionPoint(int partyLevel)
+	public void SetStandardActivityPoint(int partyLevel)
 	{
-		standardActionPoint = partyLevel + 60;
+		standardActivityPoint = partyLevel + 60;
 	}
 
 	void GenerateUnits ()
@@ -168,7 +168,7 @@ public class UnitManager : MonoBehaviour {
 		// check each unit and add all readied units.
 		foreach (var unit in units)
 		{
-			if (unit.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActionPoint)
+			if (unit.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActivityPoint)
 			{
 				readiedUnits.Add(unit);
 				Debug.Log(unit.GetComponent<Unit>().GetName() + " is readied");
@@ -209,7 +209,7 @@ public class UnitManager : MonoBehaviour {
 		}
 		
 		foreach (var unit in units)
-			unit.GetComponent<Unit>().RegenerateActionPoint();
+			unit.GetComponent<Unit>().RegenerateActivityPoint();
 	}
 	
 	void LoadSkills()
@@ -233,11 +233,11 @@ public class UnitManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		int standardActionPoint = GetStandardActionPoint();
+		int standardActivityPoint = GetStandardActivityPoint();
 		List<GameObject> currentTurnUnits =
-			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActionPoint);
+			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActivityPoint);
 		List<GameObject> nextTurnUnits =
-			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() < standardActionPoint);
+			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() < standardActivityPoint);
 
 		currentTurnUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
 		{

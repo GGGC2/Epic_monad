@@ -69,7 +69,7 @@ namespace Battle.Turn
 				Vector2 currentTilePos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
 				Vector2 distanceVector = battleData.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
-				int totalUseActionPoint = movableTilesWithPath[battleData.selectedTilePosition].requireActivityPoint;
+				int totalUseActivityPoint = movableTilesWithPath[battleData.selectedTilePosition].requireActivityPoint;
 
 				battleData.moveCount += distance;
 
@@ -77,12 +77,12 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.CheckDestination;
 				battleData.uiManager.DisableCancelButtonUI();
 				BattleManager battleManager = battleData.battleManager;
-				yield return battleManager.StartCoroutine(CheckDestination(battleData, destTile, destPath, totalUseActionPoint, distance));
+				yield return battleManager.StartCoroutine(CheckDestination(battleData, destTile, destPath, totalUseActivityPoint, distance));
 			}
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(BattleData battleData, GameObject destTile, List<GameObject> destPath, int totalUseActionPoint, int distance)
+		private static IEnumerator CheckDestination(BattleData battleData, GameObject destTile, List<GameObject> destPath, int totalUseActivityPoint, int distance)
 		{
 			while (battleData.currentState == CurrentState.CheckDestination)
 			{
@@ -94,7 +94,7 @@ namespace Battle.Turn
 				battleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
 				// UI를 띄우고
 				battleData.uiManager.EnableSelectDirectionUI();
-				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnitObject, totalUseActionPoint);
+				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnitObject, totalUseActivityPoint);
 
 				// 카메라를 옮기고
 				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
@@ -138,12 +138,12 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.MoveToTile;
 				battleData.uiManager.DisableDestCheckUI();
 				BattleManager battleManager = battleData.battleManager;
-				yield return battleManager.StartCoroutine(MoveToTile(battleData, destTile, battleData.selectedDirection, totalUseActionPoint));
+				yield return battleManager.StartCoroutine(MoveToTile(battleData, destTile, battleData.selectedDirection, totalUseActivityPoint));
 			}
 			yield return null;
 		}
 
-		private static IEnumerator MoveToTile(BattleData battleData, GameObject destTile, Direction directionAtDest, int totalUseActionPoint)
+		private static IEnumerator MoveToTile(BattleData battleData, GameObject destTile, Direction directionAtDest, int totalUseActivityPoint)
 		{
 			GameObject currentTile = battleData.tileManager.GetTile(battleData.selectedUnitObject.GetComponent<Unit>().GetPosition());
 			currentTile.GetComponent<Tile>().SetUnitOnTile(null);
@@ -152,7 +152,7 @@ namespace Battle.Turn
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(directionAtDest);
 			destTile.GetComponent<Tile>().SetUnitOnTile(battleData.selectedUnitObject);
 
-			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(totalUseActionPoint);
+			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(totalUseActivityPoint);
 			battleData.previewAPAction = null;
 
 			battleData.currentState = CurrentState.FocusToUnit;

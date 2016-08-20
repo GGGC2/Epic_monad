@@ -136,11 +136,11 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.SetActive(false);
 	}
 
-	public void SetDestCheckUIAP(GameObject selectedUnitObject, int totalUseActionPoint)
+	public void SetDestCheckUIAP(GameObject selectedUnitObject, int totalUseActivityPoint)
 	{
 		destCheckUI.SetActive(true);
-		string newAPText = "소모 AP : " + totalUseActionPoint + "\n" +
-			"잔여 AP : " + (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - totalUseActionPoint);
+		string newAPText = "소모 AP : " + totalUseActivityPoint + "\n" +
+			"잔여 AP : " + (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - totalUseActivityPoint);
 		destCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 

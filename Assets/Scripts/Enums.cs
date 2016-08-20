@@ -64,18 +64,19 @@ namespace Enums {
 	public enum SkillType
 	{
 		// 지정형, 범위형, 경로형.
-		Point, Area, Route
+		Point, Area, Route, Auto
 	}
 	
     public enum Stat
     {
         MaxHealth, 
+		CurrentHealth, // 엄밀히 말해 Stat은 아니지만 대미지/효과 계산에 포함되므로 추가
         Power,
         Defense,
         Resistance,
         Dexturity,
-		usedAP, // 엄밀히 말해 Stat은 아니지만 대미지/효과 계산에 포함되므로 추가
-		remainAP // usedAP와 동일
+		UsedAP, // CurrentHealth와 동일
+		CurrentAP // CurrentHealth와 동일
     }
     
 	public enum RangeForm
@@ -85,12 +86,19 @@ namespace Enums {
 		Diagonal,
 		Cross,
         DiagonalCross,
-		Sector
+		Sector, 
+		Global
 	}
 	
 	public enum SkillApplyType
 	{
-		Damage, Heal, Etc
+		Damage, 
+		HealHealth, 
+		HealAP,
+		StatusEffect, 
+		Move, 
+		Tile, 
+		Etc
 	}
 	
 	public enum StatusEffectType

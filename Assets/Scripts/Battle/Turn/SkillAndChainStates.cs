@@ -369,7 +369,7 @@ namespace Battle.Turn
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
 			// 스킬 시전에 필요한 ap만큼 선 차감.
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
-			battleData.selectedUnitObject.GetComponent<Unit>().UseActionPoint(requireAP);
+			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -444,6 +444,14 @@ namespace Battle.Turn
 					}
 
 					var damageAmount = (int)((battleData.GetChainDamageFactorFromChainCombo(chainCombo)) * directionBonus * celestialBonus * actualPowerFactor) + smiteAmount;
+
+					// reina_m_12 속성 보너스
+					if (appliedSkill.GetName().Equals("불의 파동") && targetUnit.GetElement().Equals(Element.Plant))
+					{
+						float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
+						damageAmount = (int) ((float)damageAmount * elementDamageBonus[0]);
+					}
+
 					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, false);
 
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
@@ -495,7 +503,7 @@ namespace Battle.Turn
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
 				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Heal)
+				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
 				{
 					// 총 계수.
 					float actualPowerFactor = 0.0f;
@@ -545,7 +553,7 @@ namespace Battle.Turn
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			if (unitInChain.gameObject == battleData.selectedUnitObject)
-				unitInChain.UseActionPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+				unitInChain.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
 			yield return new WaitForSeconds(0.5f);
@@ -658,7 +666,7 @@ namespace Battle.Turn
 					}
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName());
 				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Heal)
+				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
 				{
 					// 총 계수.
 					float actualPowerFactor = 0.0f;
@@ -709,7 +717,7 @@ namespace Battle.Turn
 			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
-			selectedUnit.UseActionPoint(requireAP);
+			selectedUnit.UseActivityPoint(requireAP);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
 			yield return new WaitForSeconds(0.5f);
