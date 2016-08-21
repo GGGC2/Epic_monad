@@ -9,15 +9,32 @@ namespace Save
 {
 public class SaveData
 {
+	public Progress progress;
 	public PartySaveData party;
 	public List<SkillSaveData> skills;
 
 	public static SaveData MakeInitialData()
 	{
 		SaveData saveData = new SaveData();
+		saveData.progress = Progress.MakeInitialData();
 		saveData.party = PartySaveData.MakeInitialData();
 		saveData.skills = new List<SkillSaveData>();
 		return saveData;
+	}
+}
+
+public class Progress
+{
+	public string worldMap = "";
+	public string dialogue = "";
+	public string battle = "";
+
+	public static Progress MakeInitialData()
+	{
+		Progress progress = new Progress();
+		progress.worldMap = "Pintos1";
+		progress.dialogue = "Pintos#1-1";
+		return progress;
 	}
 }
 
