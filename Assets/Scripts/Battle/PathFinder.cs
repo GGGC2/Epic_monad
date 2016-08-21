@@ -65,7 +65,7 @@ public class PathFinder {
 		// 필요 행동력(이동) 증감 효과 적용
 		if(unit.GetComponent<Unit>().HasStatusEffect(StatusEffectType.RequireMoveAPChange))
 		{
-			requireAP = unit.GetComponent<Unit>().GetActualEffect(requireAP, StatusEffectType.RequireMoveAPChange);
+			requireAP = (int)(unit.GetComponent<Unit>().GetActualEffect((float) requireAP, StatusEffectType.RequireMoveAPChange));
 		}
 		if (requireAP > remainAP) return;
 		

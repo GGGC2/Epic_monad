@@ -12,9 +12,10 @@ public class StatusEffect {
     bool isStackable; // 상태 이상 중첩이 가능한 경우 true
     bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
     
-    float degree; // 영향을 주는 수치(상대수치)
+    float[] degreeArray; // 영향을 주는 수치(상대수치)
     Stat amountStat; // 영향을 주는 수치(절대수치)의 스탯값
-    int amount; // 영향을 주는 수치(절대수치)
+    float[] amountFactorArray; // 영향을 주는 수치(절대수치)
+    int remainAmount; // 남은 수치
     int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
     int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
     int cooldown; // 효과가 적용되는 시점
@@ -27,7 +28,8 @@ public class StatusEffect {
 	
 	public StatusEffect(string name, StatusEffectType statusEffectType,  
                   bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
-                  float degree, Stat amountStat, int amount, int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
+                  float[] degreeArray, Stat amountStat, float[] amountFactorArray, int remainAmount, 
+                  int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
@@ -36,9 +38,10 @@ public class StatusEffect {
         this.isInfinite = isInfinite;
         this.isStackable = isStackable;
         this.isRemovable = isRemovable;
-        this.degree = degree;
+        this.degreeArray = degreeArray;
         this.amountStat = amountStat;
-        this.amount = amount;
+        this.amountFactorArray = amountFactorArray;
+        this.remainAmount = remainAmount;
         this.remainPhase = remainPhase;
         this.remainStack = remainStack;
         this.cooldown = cooldown;
@@ -54,9 +57,12 @@ public class StatusEffect {
     public bool GetIsInfinite() {return isInfinite;}
     public bool GetIsStackable() {return isStackable;}
     public bool GetIsRemovable() {return isRemovable;}
-    public float GetDegree() {return degree;}
+    public float[] GetDegree() {return degreeArray;}
+    public float GetDegree(int level) {return degreeArray[level-1];}
     public Stat GetAmountStat() {return amountStat;}
-    public int GetAmount() {return amount;}
+    public float[] GetAmount() {return amountFactorArray;}
+    public float GetAmount(int level) {return amountFactorArray[level-1];}
+    public int GetRemainAmount() {return remainAmount;}
     public int GetRemainPhase() {return remainPhase;}
     public int GetRemainStack() {return remainStack;}
 	public int GetCooldown() {return cooldown;}	
@@ -65,9 +71,9 @@ public class StatusEffect {
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
     
-    public void SetRemainAmount(int remainAmount)
+    public void SetRemainAmount(int amount)
     {
-        amount = remainAmount;
+        remainAmount = amount;
     }
 
     public void AddRemainPhase(int phase)

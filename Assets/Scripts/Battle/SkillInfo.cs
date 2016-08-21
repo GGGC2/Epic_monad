@@ -36,7 +36,7 @@ public class SkillInfo {
 		string name = commaParser.Consume();
 		this.column = commaParser.ConsumeInt();
 		string originRequireAPString = commaParser.Consume();
-        string[] requireAPStringGroup = originRequireAPString.Split(' ');
+        string[] requireAPStringArray = originRequireAPString.Split(' ');
 		int[] requireAPArray = new int[5];
 
 		for(int i = 0; i < 5; i++)
@@ -44,7 +44,7 @@ public class SkillInfo {
 			int parsed = 0;
 			try
 			{
-				parsed = Int32.Parse(requireAPStringGroup[i]);				
+				parsed = Int32.Parse(requireAPStringArray[i]);	
 			}
 			catch
 			{
@@ -54,14 +54,14 @@ public class SkillInfo {
 			requireAPArray[i] = parsed;
 		}
 		string originCooldownString = commaParser.Consume();
-		string[] cooldownStringGroup = originCooldownString.Split(' ');
+		string[] cooldownStringArray = originCooldownString.Split(' ');
 		int[] cooldownArray = new int[5];
 		for(int i = 0; i < 5; i++)
 		{
 			int parsed = 0;
 			try
 			{
-				parsed = Int32.Parse(cooldownStringGroup[i]);				
+				parsed = Int32.Parse(cooldownStringArray[i]);			
 			}
 			catch
 			{
@@ -75,32 +75,33 @@ public class SkillInfo {
         string originStatTypeString = commaParser.Consume();
 		string[] statTypeArray = originStatTypeString.Split('/');
 		string originPowerFactorString = commaParser.Consume();
-        string[] powerFactorStringGroup = originPowerFactorString.Split('/');
-		float[][] powerFactorArrayGroup = new float[powerFactorStringGroup.Length][];
+        string[] powerFactorStringArray = originPowerFactorString.Split('/');
+		float[][] powerFactorArrayArray = new float[powerFactorStringArray.Length][];
 
-        for(int i = 0; i < powerFactorStringGroup.Length; i++)
+        for(int i = 0; i < powerFactorStringArray.Length; i++)
 		{
-			string[] powerFactorString = powerFactorStringGroup[i].Split(' ');
+			powerFactorArrayArray[i] = new float[5];
+			string[] powerFactorString = powerFactorStringArray[i].Split(' ');
 			for(int j = 0; j < 5; j++)
 			{				
-				int parsed = 0;
+				float parsed = 0.0f;
 				try
 				{
-					parsed = Int32.Parse(powerFactorString[j]);
+					parsed = Convert.ToSingle(powerFactorString[j]);
 				}
 				catch
 				{
 					Debug.LogWarning("Parse error in powerFactors : " + originRequireAPString);
 					parsed = -1;
 				}
-				powerFactorArrayGroup[i][j] = parsed;
+				powerFactorArrayArray[i][j] = parsed;
 			}
 		}
         
 	    Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
 		for(int i = 0; i < statTypeArray.Length; i++)
 		{
-			powerFactor.Add(statTypeArray[i], powerFactorArrayGroup[i]);
+			powerFactor.Add(statTypeArray[i], powerFactorArrayArray[i]);
 		}
 		
 		SkillType skillType = commaParser.ConsumeEnum<SkillType>();
@@ -117,14 +118,14 @@ public class SkillInfo {
 
 		SkillApplyType skillApplyType = commaParser.ConsumeEnum<SkillApplyType>();
 		string originPenetrationString = commaParser.Consume();
-		string[] penetrationStringGroup = originPenetrationString.Split(' ');
+		string[] penetrationStringArray = originPenetrationString.Split(' ');
 		float[] penetrationArray = new float[5];
 		for(int i = 0; i < 5; i++)
 		{
 			int parsed = 0;
 			try
 			{
-				parsed = Int32.Parse(penetrationStringGroup[i]);				
+				parsed = Int32.Parse(penetrationStringArray[i]);				
 			}
 			catch
 			{

@@ -114,6 +114,9 @@ namespace Enums {
         DefenseChange,
         ResistanceChange, 
         DexturityChange,
+		UsedAPChange, 
+		CurrentAPChange, 
+		NoneChange, 
         Smite, // 강타: 공격 시 추가 피해
         Silence, // 침묵: 기술 사용 불가
         RequireMoveAPChange, // 이동 시 행동력 소모 증감

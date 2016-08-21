@@ -452,10 +452,15 @@ namespace Battle.Turn
 					int smiteAmount = 0;
 					if (unitInChain.HasStatusEffect(StatusEffectType.Smite))
 					{
-						smiteAmount = unitInChain.GetActualEffect(smiteAmount, StatusEffectType.Smite);
+						smiteAmount = (int) unitInChain.GetActualEffect((float)smiteAmount, StatusEffectType.Smite);
 					}
 
 					var damageAmount = (baseDamage * directionBonus * celestialBonus * chainBonus) + (float) smiteAmount;
+					Debug.Log("baseDamage : " + baseDamage);
+					Debug.Log("directionBonus : " + directionBonus);
+					Debug.Log("celestialBonus : " + celestialBonus);
+					Debug.Log("chainBonus : " + chainBonus);
+					Debug.Log("smiteAmount : " + smiteAmount);
 
 					// reina_m_12 속성 보너스
 					if (appliedSkill.GetName().Equals("불의 파동") && targetUnit.GetElement().Equals(Element.Plant))
@@ -481,7 +486,7 @@ namespace Battle.Turn
 						{
 							if (statusEffect.IsOfType(StatusEffectType.Reflect))
 							{
-								reflectAmount = reflectAmount * statusEffect.GetDegree();
+								reflectAmount = reflectAmount * statusEffect.GetDegree(1);
 								break;
 							}
 						}
@@ -625,6 +630,7 @@ namespace Battle.Turn
 					
 					var recoverAmount = (int) actualAmount;
 					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
+					Debug.Log("recoverAmount : " + actualAmount);
 					
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
@@ -681,6 +687,7 @@ namespace Battle.Turn
 					
 					var recoverAmount = (int) actualAmount;
 					var recoverAPCoroutine = targetUnit.RecoverAP(recoverAmount);
+					Debug.Log("recoverAmount : " + actualAmount);
 					
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
@@ -731,12 +738,21 @@ namespace Battle.Turn
 									break;
 								}
 							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							if (!isInList)
+							{
+								if(statusEffect.IsOfType(StatusEffectType.Shield))
+								{
+									statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(1)));
+								}
+								targetUnit.GetStatusEffectList().Add(statusEffect);
+							}
+
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(1)));
 						}
 					}
 					
-					var statusEffectCoroutine = targetUnit.RecoverHealth(-1); // 임시로 -1로 설정
+					var statusEffectCoroutine = targetUnit.RecoverHealth(0); // 임시로 0로 설정
 					
 					if (target == targets[targets.Count-1])
 					{

@@ -106,7 +106,7 @@ public class Unit : MonoBehaviour
 		// 능력치 증감 효과 적용
 		if (this.HasStatusEffect(statusChange))
 		{
-			actualStat = GetActualEffect(actualStat, statusChange);
+			actualStat = (int) GetActualEffect(actualStat, statusChange);
         }
         
         return actualStat;
@@ -280,57 +280,16 @@ public class Unit : MonoBehaviour
 		return hasStatusEffect;
 	}
 
-	public int GetActualEffect(int data, StatusEffectType statusEffectType)
-	{
-		int totalAmount = 0;
-		float totalDegree = 1.0f;
-
-		foreach (var statusEffect in statusEffectList)
-		{
-			if (statusEffect.IsOfType(statusEffectType))
-			{
-				totalAmount += statusEffect.GetAmount();
-				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-				{
-					statusEffect.DecreaseRemainStack();
-					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-					{
-						statusEffect.SetToBeRemoved(true);
-						this.UpdateStatusEffect();
-					}
-				}
-			}
-		}
-		foreach (var statusEffect in statusEffectList)
-		{
-			if (statusEffect.IsOfType(statusEffectType))
-			{
-				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
-				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-				{
-					statusEffect.DecreaseRemainStack();
-					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-					{
-						statusEffect.SetToBeRemoved(true);
-						this.UpdateStatusEffect();
-					}
-				}
-			}
-		}
-
-		return (int) ((float)data * totalDegree) + totalAmount;
-	}
-
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		int totalAmount = 0;
+		float totalAmount = 0.0f;
 		float totalDegree = 1.0f;
 
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (statusEffect.IsOfType(statusEffectType))
 			{
-				totalAmount += statusEffect.GetAmount();
+				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount(1);
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();
@@ -346,7 +305,7 @@ public class Unit : MonoBehaviour
 		{
 			if (statusEffect.IsOfType(statusEffectType))
 			{
-				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
+				totalDegree = (100.0f + statusEffect.GetDegree(1)) / 100.0f;
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();
@@ -359,7 +318,7 @@ public class Unit : MonoBehaviour
 			}
 		}
 
-		return data * totalDegree + (float) totalAmount;
+		return data * totalDegree + totalAmount;
 	}
 
 	public IEnumerator Damaged(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
@@ -407,11 +366,12 @@ public class Unit : MonoBehaviour
 				{
 					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
 					{
-						shieldAmount = statusEffectList[i].GetAmount();
+						shieldAmount = statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
 						{
-							finalDamage = 0;
 							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
+							finalDamage = 0;
+							Debug.Log("Remain Shield Amount : " + statusEffectList[i].GetRemainAmount());
 							break;
 						}
 						else
@@ -456,7 +416,7 @@ public class Unit : MonoBehaviour
 
 	public void ApplyDamageOverPhase()
 	{
-		int totalAmount = 0;
+		float totalAmount = 0.0f;
 
 		if (this.HasStatusEffect(StatusEffectType.ContinuousDamage))
 		{
@@ -464,7 +424,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.ContinuousDamage))
 				{
-					totalAmount += statusEffect.GetAmount();
+					totalAmount += statusEffect.GetAmount(1);
 				}
 			}
 
@@ -475,7 +435,7 @@ public class Unit : MonoBehaviour
 
 	public void ApplyHealOverPhase()
 	{
-		int totalAmount = 0;
+		float totalAmount = 0.0f;
 
 		if (this.HasStatusEffect(StatusEffectType.ContinuousHeal))
 		{
@@ -483,7 +443,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.ContinuousHeal))
 				{
-					totalAmount += statusEffect.GetAmount();
+					totalAmount += statusEffect.GetAmount(1);
 				}
 			}
 		}
@@ -491,7 +451,7 @@ public class Unit : MonoBehaviour
 		RecoverHealth(totalAmount);
 	}
 
-	public IEnumerator RecoverHealth(int amount)
+	public IEnumerator RecoverHealth(float amount)
 	{
 		// 회복량 증감 효과 적용
 		if (this.HasStatusEffect(StatusEffectType.HealChange))
@@ -499,7 +459,7 @@ public class Unit : MonoBehaviour
 			amount = GetActualEffect(amount, StatusEffectType.HealChange);
 		}
 
-		currentHealth += amount;
+		currentHealth += (int) amount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
@@ -551,7 +511,7 @@ public class Unit : MonoBehaviour
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
 		{
-			requireSkillAP = GetActualEffect(requireSkillAP, StatusEffectType.RequireSkillAPChange);
+			requireSkillAP = (int) GetActualEffect((float)requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
