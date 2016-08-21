@@ -1,33 +1,9 @@
-owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType
-soldier01,1,근접공격,1,50 50 50 50 50,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Square,0,0,0,Damage,-,Individual,NonMove
-lucius,1,검술의 대가,1,40 40 40 40 40,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Square,0,0,0,Damage,-,Individual,NonMove
-reina,1,화염 폭발,2,24 28 32 36 40,0,Power,0.5 0.7 0.9 1.1 1.3,Point,Square,1,2,0,Cross,0,1,0,Damage,-,Area,NonMove
-reina,6,화염구,1,24 28 32 36 40,0,Power,0.8 1.05 1.3 1.55 1.8,Point,Square,1,4,0,Square,0,0,0,Damage,-,Area,NonMove
-reina,12,불의 파동,1,29 34 38 43 47,0,Power,0.6 0.8 1 1.2 1.4,*자동?,,,,,*반경?,1,3,0,Damage,-,Area,NonMove
-reina,18,마력 과충전,3,0 0 0 0 0,5,Power,0 0 0 0 0,*자동?,,,,,Square,0,0,0,Damage,-,Area,NonMove
-reina,30,아마겟돈,1,56 64 73 81 90,10,Power,0.9 1.2 1.5 1.8 2.1,Point,*반경?,1,7,0,Square,0,2,0,Damage,-,Area,NonMove
-reina,30,마법 보호막,3,*전체?,8,Power,0 0 0 0 0,*자동?,,,,,Square,0,0,0,*피해없음?,-,Area,NonMove
-reina,60,대재앙,1,92 99 106 113 120,10,Power,2.2 2.5 2.8 3.1 3.4,Point,*반경?,1,7,0,Square,0,2,0,Damage,-,Area,NonMove
-reina,60,비전 방패 강화,3,*전체?,8,Power,0 0 0 0 0,*자동?,,,,,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,1,광전효과,1,22 26 29 33 36,0,Power,0.7 0.75 0.8 0.85 0.9,Point,Cross,1,6,0,Square,0,0,0,Damage,-,Area,NonMove
-sisterna,6,전자기학,3,28 32 36 40 44,0,Power *Defense?,0.5 0.65 0.8 0.95 1.1,Point,Cross,1,2,0,Square,0,2,0,Damage,-,Area,NonMove
-sisterna,12,선 스펙트럼,2,30 34 39 43 48,5,Power,0 0 0 0 0,Point,*부채?,0,3,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,18,슈뢰딩거의 상자,1,39 43 47 51 55,5 5 4 4 3,Power,0 0 0 0 0,Point,Diagonal,1,4,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,30,조화진동,2,*전체?,10 9 8 7 6,*행동력 소모량?,10 11 12 13 14,Point,Cross,1,7,0,Square,0,0,0,Damage,-,Area,NonMove
-sisterna,42,마찰력 제거,3,0 0 0 0 0,7 6 5 4 3,?,?,Point,Square,1,4,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,48,헬륨 원자,2,52 54 56 58 60,5,Power,0 0 0 0 0,Point,*부채?,0,3,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,54,양자도약,1,0 0 0 0 0,10 9 8 7 6,?,?,Point,*반경?,1,6,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-sisterna,60,곁맞음,2,*전체?,6,*행동력 소모량?, 16 17 18 19 20,Point,Cross,1,7,0,Square,0,0,0,Damage,-,Area,NonMove
-eren,1,칠흑의 화살,1,23 28 33 37 42,0,Power,0.3 0.45 0.6 0.75 0.9,Point,*반경?,1,6,0,Cross,0,1,0,Damage,-,Area,NonMove
-eren,1,섬광 투영,3,10 10 10 10 10,7 6 5 4 3,Power,0 0 0 0 0,Point,*전방?,1,3,3,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,12,보이지 않는 손,1,27 32 37 41 46,6 5 4 3 2,Power,0 0 0 0 0,Point,*팔방?,1,4,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,18,치유의 빛,3,24 29 34 39 44,0,Power,0.2 0.3 0.4 0.5 0.6,Point,*부채?,1,5,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,24,에테르 장벽,2,18 21 25 28 32,3,Power,0 0 0 0 0,*자동?,,,,,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,30,생명력 흡수,1,32 38 43 48 53,5,Power,0.7 0.9 1.1 1.3 1.5,*자동?,,,,,*반경?,1,3,0,Damage,-,Area,NonMove
-eren,30,순간 재충전,3,45 40 35 30 25,9 8 7 6 5,Power,0 0 0 0 0,Point,Diagonal,0,5,0,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,36,죽음의 화살,1,46 48 50 52 54,0,Power,1 1.1 1.2 1.3 1.4,Point,*반경?,1,6,0,Cross,0,1,0,Damage,-,Area,NonMove
-eren,42,태초의 빛,3,30 30 30 30 30,8 7 6 5 4,Power,0 0 0 0 0,Point,Square,0,3,0,Diagonal,0,1,0,*피해없음?,-,Area,NonMove
-eren,48,원한의 일격,1,41 47 53 60 66,0,Power,1.2 1.6 2 2.4 2.8,Point,*반경?,0,8,0,Square,0,0,0,Damage,-,Area,NonMove
-eren,54,에테르의 메아리,2,25 30 35 40 45,3,Power,0 0 0 0 0,*자동?,,,,,Square,0,0,0,*피해없음?,-,Area,NonMove
-eren,60,영혼 소각,1,53 56 59 62 65,5,Power,1.6 1.75 1.9 2.05 2.2,*자동?,,,,,*반경?,1,3,0,Damage,-,Area,NonMove
-eren,60,운명의 개척자,3,35 40 45 50 55,5,Power,0 0 0 0 0,Point,Diagonal,0,5,0,Square,0,0,0,*피해없음?,-,Area,NonMove
+owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,penetration,effectName,effectVisualType,effectMoveType
+soldier01,1,��������,1,50 50 50 50 50,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Square,0,0,0,DamageHealth,0,-,Individual,NonMove
+lucius,1,�˼��� �밡,1,40 40 40 40 40,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Square,0,0,0,DamageHealth,0,-,Individual,NonMove
+reina,1,ȭ�� ����,2,24 28 32 36 40,0,Power,0.5 0.7 0.9 1.1 1.3,Point,Square,1,2,0,Cross,0,1,0,DamageHealth,0,-,Area,NonMove
+reina,6,ȭ����,1,24 28 32 36 40,0,Power,0.8 1.05 1.3 1.55 1.8,Point,Square,1,4,0,Square,0,0,0,DamageHealth,0,-,Area,NonMove
+reina,12,���� �ĵ�,1,29 34 38 43 47,0,Power,0.6 0.8 1 1.2 1.4,Auto,Square,0,0,0,Square,1,3,0,DamageHealth,0,-,Area,NonMove
+reina,18,���� ������,3,0 0 0 0 0,5,Dexturity,0.2 0.25 0.3 0.35 0.4,Self,Square,0,0,0,Square,0,0,0,HealAP,0,-,Area,NonMove
+reina,30,�Ƹ��ٵ�,1,56 64 73 81 90,10,Power,0.9 1.2 1.5 1.8 2.1,Point,Square,1,7,0,Square,0,2,0,DamageHealth,0,-,Area,NonMove
+reina,30,���� ��ȣ��,3,9999 9999 9999 9999 9999,8,None,0 0 0 0 0,Self,Square,0,0,0,Square,0,0,0,Buff,0,-,Area,NonMove

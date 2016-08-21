@@ -321,77 +321,137 @@ public class Unit : MonoBehaviour
 		return (int) ((float)data * totalDegree) + totalAmount;
 	}
 
-	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
+	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		int actualDamage = 0;
-		// 공격이 물리인지 마법인지 체크
-		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
-		// 대미지 증가/감소 효과 적용
-		// 보호막 있을 경우 대미지 삭감
-		// 체력 깎임
-		// 체인 해제
-		if (unitClass == UnitClass.Melee)
-		{
-			// 실제 피해 = 원래 피해 x 200/(200+방어력)
-			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Defense));
-			Debug.Log("Actual melee damage without status effect : " + actualDamage);
-		}
-		else if (unitClass == UnitClass.Magic)
-		{
-			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Resistance));
-			Debug.Log("Actual magic damage without status effect: " + actualDamage);
-		}
-		else if (unitClass == UnitClass.None)
-		{
-			actualDamage = amount;
-		}
+		int totalAmount = 0;
+		float totalDegree = 1.0f;
 
-		// 대미지 증감 효과 적용
-		if (this.HasStatusEffect(StatusEffectType.DamageChange))
+		foreach (var statusEffect in statusEffectList)
 		{
-			actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
-		}
-
-		// 보호막에 따른 대미지 삭감
-		if (this.HasStatusEffect(StatusEffectType.Shield))
-		{
-			int shieldAmount = 0;
-			for (int i = 0; i < statusEffectList.Count; i++)
+			if (statusEffect.IsOfType(statusEffectType))
 			{
-				if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+				totalAmount += statusEffect.GetAmount();
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
-					shieldAmount = statusEffectList[i].GetAmount();
-					if (shieldAmount > actualDamage)
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
 					{
-						actualDamage = 0;
-						statusEffectList[i].SetRemainAmount(shieldAmount - actualDamage);
-						break;
+						statusEffect.SetToBeRemoved(true);
+						this.UpdateStatusEffect();
 					}
-					else
+				}
+			}
+		}
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (statusEffect.IsOfType(statusEffectType))
+			{
+				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				{
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
 					{
-						actualDamage -= shieldAmount;
-						statusEffectList[i].SetToBeRemoved(true);
+						statusEffect.SetToBeRemoved(true);
 						this.UpdateStatusEffect();
 					}
 				}
 			}
 		}
 
-		currentHealth -= actualDamage;
-		if (currentHealth < 0)
-			currentHealth = 0;
+		return data * totalDegree + (float) totalAmount;
+	}
 
-		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomWorldText>().text = actualDamage.ToString();
+	public IEnumerator Damaged(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
+	{
+		float actualDamage = 0.0f;
+		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+		
+		// 공격이 물리인지 마법인지 체크
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
+		// 대미지 증가/감소 효과 적용
+		// 보호막 있을 경우 대미지 삭감
+		// 체력 깎임
+		// 체인 해제
+		if (isHealth == true)
+		{
+			if (unitClass == UnitClass.Melee)
+			{
+				// 실제 피해 = 원래 피해 x 200/(200+방어력)
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Defense) * (1.0f - penetration));
+				Debug.Log("Actual melee damage without status effect : " + actualDamage);
+			}
+			else if (unitClass == UnitClass.Magic)
+			{
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				Debug.Log("Actual magic damage without status effect: " + actualDamage);
+			}
+			else if (unitClass == UnitClass.None)
+			{
+				actualDamage = amount;
+			}
 
-		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+			// 대미지 증감 효과 적용
+			if (this.HasStatusEffect(StatusEffectType.DamageChange))
+			{
+				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
+			}
 
-		if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
-			ChainList.RemoveChainsFromUnit(gameObject);
+			finalDamage = (int) actualDamage;
 
-		// 데미지 표시되는 시간.
-		yield return new WaitForSeconds(1);
-		damageTextObject.SetActive(false);
+			// 보호막에 따른 대미지 삭감
+			if (this.HasStatusEffect(StatusEffectType.Shield))
+			{
+				int shieldAmount = 0;
+				for (int i = 0; i < statusEffectList.Count; i++)
+				{
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					{
+						shieldAmount = statusEffectList[i].GetAmount();
+						if (shieldAmount > finalDamage)
+						{
+							finalDamage = 0;
+							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
+							break;
+						}
+						else
+						{
+							finalDamage -= shieldAmount;
+							statusEffectList[i].SetToBeRemoved(true);
+							this.UpdateStatusEffect();
+						}
+					}
+				}
+			}
+
+			if (finalDamage > -1) 
+				currentHealth -= finalDamage;
+			if (currentHealth < 0)
+				currentHealth = 0; 
+
+			damageTextObject.SetActive(true);
+			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+
+			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+
+			if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
+				ChainList.RemoveChainsFromUnit(gameObject);
+
+			// 데미지 표시되는 시간.
+			yield return new WaitForSeconds(1);
+			damageTextObject.SetActive(false);
+		}
+
+		else
+		{
+			finalDamage = (int) amount;
+			if (activityPoint >= finalDamage)
+			{
+				activityPoint -= finalDamage;
+			}
+			else activityPoint = 0;
+			Debug.Log(GetName() + " loses " + finalDamage + "AP.");
+		}
 	}
 
 	public void ApplyDamageOverPhase()
@@ -409,7 +469,7 @@ public class Unit : MonoBehaviour
 			}
 
 			// FIXME : 도트데미지는 물뎀인가 마뎀인가? 기획서대로 적용할 것. 언제? 일단 보류중.
-			Damaged(UnitClass.None, totalAmount, true);
+			Damaged(UnitClass.None, totalAmount, 0f, true, false);
 		}
 	}
 
@@ -448,9 +508,24 @@ public class Unit : MonoBehaviour
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
-		// 데미지 표시되는 시간.
+		// 회복량 표시되는 시간.
 		yield return new WaitForSeconds(1);
 		recoverTextObject.SetActive(false);
+	}
+
+	public IEnumerator RecoverAP(int amount)
+	{
+		activityPoint += amount;
+
+		recoverTextObject.SetActive(true);
+		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+
+		// healthViewer.UpdateCurrentActivityPoint(currentHealth, maxHealth);
+
+		// 회복량 표시되는 시간.
+		yield return new WaitForSeconds(1);
+		recoverTextObject.SetActive(false);
+
 	}
 
 	public void RegenerateActivityPoint()
@@ -471,7 +546,7 @@ public class Unit : MonoBehaviour
     
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
-        int requireSkillAP = selectedSkill.GetRequireAP()[0];
+        int requireSkillAP = selectedSkill.GetRequireAP(1);
         
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
@@ -480,7 +555,7 @@ public class Unit : MonoBehaviour
 		}
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
-		if (selectedSkill.GetRequireAP()[0] == 9999)
+		if (selectedSkill.GetRequireAP(1) == 9999)
 		{
 			requireSkillAP = GetCurrentActivityPoint();
 		}

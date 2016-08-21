@@ -13,6 +13,7 @@ public class StatusEffect {
     bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
     
     float degree; // 영향을 주는 수치(상대수치)
+    Stat amountStat; // 영향을 주는 수치(절대수치)의 스탯값
     int amount; // 영향을 주는 수치(절대수치)
     int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
     int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
@@ -26,7 +27,7 @@ public class StatusEffect {
 	
 	public StatusEffect(string name, StatusEffectType statusEffectType,  
                   bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
-                  float degree, int amount, int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
+                  float degree, Stat amountStat, int amount, int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
@@ -36,6 +37,7 @@ public class StatusEffect {
         this.isStackable = isStackable;
         this.isRemovable = isRemovable;
         this.degree = degree;
+        this.amountStat = amountStat;
         this.amount = amount;
         this.remainPhase = remainPhase;
         this.remainStack = remainStack;
@@ -53,6 +55,7 @@ public class StatusEffect {
     public bool GetIsStackable() {return isStackable;}
     public bool GetIsRemovable() {return isRemovable;}
     public float GetDegree() {return degree;}
+    public Stat GetAmountStat() {return amountStat;}
     public int GetAmount() {return amount;}
     public int GetRemainPhase() {return remainPhase;}
     public int GetRemainStack() {return remainStack;}

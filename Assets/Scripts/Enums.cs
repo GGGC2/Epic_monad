@@ -63,8 +63,8 @@ namespace Enums {
 	
 	public enum SkillType
 	{
-		// 지정형, 범위형, 경로형.
-		Point, Area, Route, Auto
+		// 지정형, 경로형, 자동형, 재귀형
+		Point, Route, Auto, Self
 	}
 	
     public enum Stat
@@ -76,7 +76,8 @@ namespace Enums {
         Resistance,
         Dexturity,
 		UsedAP, // CurrentHealth와 동일
-		CurrentAP // CurrentHealth와 동일
+		CurrentAP, // CurrentHealth와 동일
+		None // 대미지 없음, 고정값, 또는 기타 특수한 경우 
     }
     
 	public enum RangeForm
@@ -87,15 +88,20 @@ namespace Enums {
 		Cross,
         DiagonalCross,
 		Sector, 
-		Global
+		Global,
+		Auto,
+		Self
 	}
 	
 	public enum SkillApplyType
 	{
-		Damage, 
+		// 스킬 타입의 효과 우선 순위: Tile > Damage > Heal > Debuff > Buff > Move
+		DamageHealth, 
+		DamageAP,
 		HealHealth, 
 		HealAP,
-		StatusEffect, 
+		Buff, // 체인 불가능한 버프 효과 스킬
+		Debuff, // 체인 가능한 디버프 효과 스킬 
 		Move, 
 		Tile, 
 		Etc

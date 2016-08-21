@@ -35,45 +35,73 @@ public class SkillInfo {
   
 		string name = commaParser.Consume();
 		this.column = commaParser.ConsumeInt();
-        int[] requireAPArray = new int[5];
 		string originRequireAPString = commaParser.Consume();
-        string[] requireAPString = originRequireAPString.Split(' ');
-        for(int i = 0; i < 5; i++)
-        {
+        string[] requireAPStringGroup = originRequireAPString.Split(' ');
+		int[] requireAPArray = new int[5];
+
+		for(int i = 0; i < 5; i++)
+		{
 			int parsed = 0;
 			try
 			{
-				parsed = Int32.Parse(requireAPString[i]);
+				parsed = Int32.Parse(requireAPStringGroup[i]);				
 			}
 			catch
 			{
 				Debug.LogWarning("Parse error in requireAPs : " + originRequireAPString);
-				parsed = -1;
+				parsed = -1;				
 			}
 			requireAPArray[i] = parsed;
-        }
-		int cooldown = commaParser.ConsumeInt();
-
-        // parsing coefficients for damage calculation
-        string statType = commaParser.Consume();
-        float[] powerFactorArray = new float[5];
-		string originPowerFactorString = commaParser.Consume();
-        string[] powerFactorString = originPowerFactorString.Split(' ');
-        for(int i = 0; i < 5; i++)
-        {
+		}
+		string originCooldownString = commaParser.Consume();
+		string[] cooldownStringGroup = originCooldownString.Split(' ');
+		int[] cooldownArray = new int[5];
+		for(int i = 0; i < 5; i++)
+		{
+			int parsed = 0;
 			try
 			{
-				powerFactorArray[i] = Convert.ToSingle(powerFactorString[i]);
+				parsed = Int32.Parse(cooldownStringGroup[i]);				
 			}
 			catch
 			{
-				Debug.LogWarning("Parse error in powerFactorString : " + originPowerFactorString);
-				powerFactorArray[i] = 0;
+				Debug.LogWarning("Parse error in requireAPs : " + originCooldownString);
+				parsed = -1;				
 			}
-        }
+			cooldownArray[i] = parsed;
+		}
+
+        // parsing coefficients for damage calculation
+        string originStatTypeString = commaParser.Consume();
+		string[] statTypeArray = originStatTypeString.Split('/');
+		string originPowerFactorString = commaParser.Consume();
+        string[] powerFactorStringGroup = originPowerFactorString.Split('/');
+		float[][] powerFactorArrayGroup = new float[powerFactorStringGroup.Length][];
+
+        for(int i = 0; i < powerFactorStringGroup.Length; i++)
+		{
+			string[] powerFactorString = powerFactorStringGroup[i].Split(' ');
+			for(int j = 0; j < 5; j++)
+			{				
+				int parsed = 0;
+				try
+				{
+					parsed = Int32.Parse(powerFactorString[j]);
+				}
+				catch
+				{
+					Debug.LogWarning("Parse error in powerFactors : " + originRequireAPString);
+					parsed = -1;
+				}
+				powerFactorArrayGroup[i][j] = parsed;
+			}
+		}
         
 	    Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
-        powerFactor.Add(statType, powerFactorArray);
+		for(int i = 0; i < statTypeArray.Length; i++)
+		{
+			powerFactor.Add(statTypeArray[i], powerFactorArrayGroup[i]);
+		}
 		
 		SkillType skillType = commaParser.ConsumeEnum<SkillType>();
 
@@ -88,17 +116,34 @@ public class SkillInfo {
 		int secondWidth = commaParser.ConsumeInt();
 
 		SkillApplyType skillApplyType = commaParser.ConsumeEnum<SkillApplyType>();
+		string originPenetrationString = commaParser.Consume();
+		string[] penetrationStringGroup = originPenetrationString.Split(' ');
+		float[] penetrationArray = new float[5];
+		for(int i = 0; i < 5; i++)
+		{
+			int parsed = 0;
+			try
+			{
+				parsed = Int32.Parse(penetrationStringGroup[i]);				
+			}
+			catch
+			{
+				Debug.LogWarning("Parse error in penetrations : " + originPenetrationString);
+				parsed = -1;				
+			}
+			penetrationArray[i] = parsed;
+		}
 
 		string effectName = commaParser.Consume();
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
-		this.skill = new Skill(name, requireAPArray, cooldown, 
+		this.skill = new Skill(name, requireAPArray, cooldownArray, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,
 							   secondRangeForm, secondMinReach, secondMaxReach, secondWidth,
-							   skillApplyType,
+							   skillApplyType, penetrationArray,
 							   effectName, effectVisualType, effectMoveType);
 	}
 }

@@ -64,6 +64,10 @@ public class TileManager : MonoBehaviour {
 		{
 			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
 		}
+		else if (form == RangeForm.Global)
+		{
+			return GetTilesInGlobalRange();
+		}
 		else
 			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
 	}
@@ -139,6 +143,17 @@ public class TileManager : MonoBehaviour {
 				tilesInRange.Add(GetTile(position - perpendicular*j));
 				j--;
 			}
+		}
+
+		return tilesInRange;
+	}
+
+	List<GameObject> GetTilesInGlobalRange()
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		foreach (var key in tiles.Keys)
+		{
+			tilesInRange.Add(tiles[key]);
 		}
 
 		return tilesInRange;

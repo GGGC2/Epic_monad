@@ -39,6 +39,7 @@ public class StatusEffectInfo {
         bool isRemovable = commaParser.ConsumeBool();
 
         float degree = commaParser.ConsumeFloat();
+		Stat amountStat = commaParser.ConsumeEnum<Stat>();
         int amount = commaParser.ConsumeInt();
 		int remainPhase = commaParser.ConsumeInt();
         int remainStack = commaParser.ConsumeInt();
@@ -50,7 +51,7 @@ public class StatusEffectInfo {
 	
 		this.statusEffect = new StatusEffect(name, statusEffectType, 
                                              isBuff, isInfinite, isStackable, isRemovable, 
-                                             degree, amount, remainPhase, remainStack, cooldown, false, 
+                                             degree, amountStat, amount, remainPhase, remainStack, cooldown, false, 
                                              effectName, effectVisualType, effectMoveType);
 	}
 }

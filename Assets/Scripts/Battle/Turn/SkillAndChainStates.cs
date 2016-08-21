@@ -36,7 +36,7 @@ namespace Battle.Turn
 					if (battleData.indexOfPreSelectedSkillByUser != 0)
 					{
 						Skill preSelectedSkill = battleData.PreSelectedSkill;
-						int requireAP = preSelectedSkill.GetRequireAP()[0];
+						int requireAP = preSelectedSkill.GetRequireAP(1);
 						battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
 					}
 					else
@@ -55,7 +55,7 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				Skill selectedSkill = battleData.SelectedSkill;
 				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
-				if (skillTypeOfSelectedSkill == SkillType.Area)
+				if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
 				{
 					battleData.currentState = CurrentState.SelectSkillApplyDirection;
 					yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
@@ -246,7 +246,7 @@ namespace Battle.Turn
 						battleData.uiManager.DisableSkillCheckUI();
 						battleData.tileManager.DepaintTiles(tilesInSkillRange, TileColor.Red);
 						battleData.SelectedUnit.SetDirection(originalDirection);
-						if (selectedSkill.GetSkillType() == SkillType.Area)
+						if (selectedSkill.GetSkillType() == SkillType.Auto)
 							battleData.currentState = CurrentState.SelectSkill;
 						else
 							battleData.currentState = CurrentState.SelectSkillApplyPoint;
@@ -261,7 +261,7 @@ namespace Battle.Turn
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					// 체인이 가능한 스킬일 경우. 체인 발동.
-					if (selectedSkill.GetSkillApplyType() == SkillApplyType.Damage)
+					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 					{
 						yield return ApplyChain(battleData, tilesInSkillRange);
 						FocusUnit(battleData.SelectedUnit);
@@ -307,7 +307,7 @@ namespace Battle.Turn
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
 																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
-				if (selectedSkill.GetSkillType() == SkillType.Area)
+				if (selectedSkill.GetSkillType() == SkillType.Auto)
 					selectedTiles.Remove(targetTile.gameObject);
 				return selectedTiles;
 		}
@@ -330,8 +330,7 @@ namespace Battle.Turn
 			}
 
 			// 스킬 타입으로 체크. 공격스킬만 체인을 걸 수 있음.
-			if (battleData.SelectedSkill.GetSkillApplyType()
-				!= SkillApplyType.Damage)
+			if (battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth)
 			{
 				isPossible = false;
 			}
@@ -391,7 +390,7 @@ namespace Battle.Turn
 			List<GameObject> selectedTiles = chainInfo.GetTargetArea();
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
-			if (appliedSkill.GetSkillType() != SkillType.Area)
+			if (appliedSkill.GetSkillType() != SkillType.Auto)
 				unitInChain.SetDirection(Utility.GetDirectionToTarget(unitInChain.gameObject, selectedTiles));
 
 			// 자신의 체인 정보 삭제.
@@ -417,8 +416,27 @@ namespace Battle.Turn
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				BattleManager battleManager = battleData.battleManager;
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Damage)
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
+					// 스킬 기본 대미지 계산
+					float baseDamage = 0.0f;
+					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+					{
+						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+						if (stat.Equals(Stat.UsedAP))
+						{
+							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else if (stat.Equals(Stat.None))
+						{
+							baseDamage += appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else
+						{
+							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+						}
+					}
+
 					// 방향 보너스.
 					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
 
@@ -426,15 +444,9 @@ namespace Battle.Turn
 					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
 					if (celestialBonus == 1.2f) unitInChain.PrintCelestialBonus();
 					else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
-					
-					// 총 계수.
-					float actualPowerFactor = 0.0f;
-					
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
-					}
+
+					// 체인 보너스.
+					float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
 
 					// 강타 효과에 의한 대미지 추가
 					int smiteAmount = 0;
@@ -443,31 +455,38 @@ namespace Battle.Turn
 						smiteAmount = unitInChain.GetActualEffect(smiteAmount, StatusEffectType.Smite);
 					}
 
-					var damageAmount = (int)((battleData.GetChainDamageFactorFromChainCombo(chainCombo)) * directionBonus * celestialBonus * actualPowerFactor) + smiteAmount;
+					var damageAmount = (baseDamage * directionBonus * celestialBonus * chainBonus) + (float) smiteAmount;
 
 					// reina_m_12 속성 보너스
 					if (appliedSkill.GetName().Equals("불의 파동") && targetUnit.GetElement().Equals(Element.Plant))
 					{
 						float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
-						damageAmount = (int) ((float)damageAmount * elementDamageBonus[0]);
+						damageAmount = damageAmount * elementDamageBonus[0];
 					}
 
-					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, false);
+					// yeong_l_18 대상 숫자 보너스
+					if (appliedSkill.GetName().Equals("섬광 찌르기") && targets.Count > 1)
+					{
+						float targetNumberBonus = (float)targets.Count*0.1f + 1.0f;
+						damageAmount = damageAmount * targetNumberBonus;
+					}
+
+					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(1), false, true);
 
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
 					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
 					{
-						int reflectAmount = damageAmount;
+						float reflectAmount = damageAmount;
 						foreach (var statusEffect in targetUnit.GetStatusEffectList())
 						{
 							if (statusEffect.IsOfType(StatusEffectType.Reflect))
 							{
-								reflectAmount = (int)((float)reflectAmount * statusEffect.GetDegree());
+								reflectAmount = reflectAmount * statusEffect.GetDegree();
 								break;
 							}
 						}
 						
-						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, false);
+						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(1), false, true);
 						battleManager.StartCoroutine(reflectCoroutine);
 					}
 
@@ -503,20 +522,9 @@ namespace Battle.Turn
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
 				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
-				{
-					// 총 계수.
-					float actualPowerFactor = 0.0f;
-					
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						actualPowerFactor += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
-					}
-					
-					var recoverAmount = (int) actualPowerFactor;
-					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
 
+				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
+				{
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
@@ -538,16 +546,12 @@ namespace Battle.Turn
 						}
 					}
 
+					var statusEffectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), -1.0f, appliedSkill.GetPenetration(1), false, false);
+
 					if (target == targets[targets.Count-1])
 					{
-						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
+						yield return battleManager.StartCoroutine(statusEffectCoroutine);
 					}
-					else
-					{
-						battleManager.StartCoroutine(recoverHealthCoroutine);
-					}
-
-					Debug.Log("Apply " + recoverAmount + " heal to " + targetUnit.GetName());
 				}
 			}
 
@@ -569,7 +573,7 @@ namespace Battle.Turn
 			BattleManager battleManager = battleData.battleManager;
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
-			if (appliedSkill.GetSkillType() != SkillType.Area)
+			if (appliedSkill.GetSkillType() != SkillType.Auto)
 				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit.gameObject, selectedTiles));
 
 			// 이펙트 임시로 비활성화.
@@ -589,95 +593,37 @@ namespace Battle.Turn
 			foreach (var target in targets)
 			{
 				Unit targetUnit = target.GetComponent<Unit>();
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Damage)
+
+				// kashasti_l_12
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
 				{
-					// 방향 보너스.
-					float directionBonus = Utility.GetDirectionBonus(battleData.selectedUnitObject, target);
-
-					// 천체속성 보너스.
-					float celestialBonus = Utility.GetCelestialBonus(battleData.selectedUnitObject, target);
-					if (celestialBonus == 1.2f) battleData.selectedUnitObject.GetComponent<Unit>().PrintCelestialBonus();
-					else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
-					
-					// 총 계수.
-					float actualPowerFactor = 0.0f;
-					
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						actualPowerFactor += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
-					}
-
-					// 강타 효과에 의한 대미지 추가
-					int smiteAmount = 0;
-					if (selectedUnit.HasStatusEffect(StatusEffectType.Smite))
-					{
-						smiteAmount = selectedUnit.GetActualEffect(smiteAmount, StatusEffectType.Smite);
-					}
-
-					var damageAmount = (int)(directionBonus * celestialBonus * actualPowerFactor) + smiteAmount;
-					var damageCoroutine = targetUnit.Damaged(selectedUnit.GetUnitClass(), damageAmount, false);
-
-					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
-					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
-					{
-						int reflectAmount = damageAmount;
-						foreach (var statusEffect in targetUnit.GetStatusEffectList())
-						{
-							if (statusEffect.IsOfType(StatusEffectType.Reflect))
-							{
-								reflectAmount = (int)((float)reflectAmount * statusEffect.GetDegree());
-								break;
-							}
-						}
-						
-						var reflectCoroutine = selectedUnit.Damaged(targetUnit.GetUnitClass(), reflectAmount, false);
-						battleManager.StartCoroutine(reflectCoroutine);
-					}
-					
-					// 상태이상 적용
-					if(appliedSkill.GetStatusEffectList().Count > 0)
-					{
-						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
-						{
-							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
-							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
-								{
-									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									break;
-								}
-							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
-						}
-					}
-
-					if (target == targets[targets.Count-1])
-					{
-						yield return battleManager.StartCoroutine(damageCoroutine);
-					}
-					else
-					{
-						battleManager.StartCoroutine(damageCoroutine);
-					}
-					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName());
+					float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
+					var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[0], appliedSkill.GetPenetration(1), false, false);
+					battleManager.StartCoroutine(damageCoroutine);
 				}
+
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
 				{
-					// 총 계수.
-					float actualPowerFactor = 0.0f;
-					
+					// 스킬 기본 계수 계산
+					float actualAmount = 0.0f;
 					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
 					{
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						actualPowerFactor += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+						if (stat.Equals(Stat.UsedAP))
+						{
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else if (stat.Equals(Stat.None))
+						{
+							actualAmount += appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else
+						{
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+						}
 					}
 					
-					var recoverAmount = (int) actualPowerFactor;
+					var recoverAmount = (int) actualAmount;
 					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
 					
 					// 상태이상 적용
@@ -711,6 +657,95 @@ namespace Battle.Turn
 					}
 
 					Debug.Log("Apply " + recoverAmount + " heal to " + targetUnit.GetName());
+				}
+				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP)
+				{
+					// 스킬 기본 계수 계산
+					float actualAmount = 0.0f;
+					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+					{
+						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+						if (stat.Equals(Stat.UsedAP))
+						{
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else if (stat.Equals(Stat.None))
+						{
+							actualAmount += appliedSkill.GetPowerFactor(stat)[0];
+						}
+						else
+						{
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+						}
+					}
+					
+					var recoverAmount = (int) actualAmount;
+					var recoverAPCoroutine = targetUnit.RecoverAP(recoverAmount);
+					
+					// 상태이상 적용
+					if(appliedSkill.GetStatusEffectList().Count > 0)
+					{
+						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+						{
+							bool isInList = false;
+							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							{
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								{
+									isInList = true;
+									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									break;
+								}
+							}
+							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+						}
+					}
+					
+					if (target == targets[targets.Count-1])
+					{
+						yield return battleManager.StartCoroutine(recoverAPCoroutine);
+					}
+					else
+					{
+						battleManager.StartCoroutine(recoverAPCoroutine);
+					}
+
+					Debug.Log("Apply " + recoverAmount + " heal to " + targetUnit.GetName());
+				}
+				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
+				{
+					if(appliedSkill.GetStatusEffectList().Count > 0)
+					{
+						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
+						{
+							bool isInList = false;
+							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							{
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								{
+									isInList = true;
+									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									break;
+								}
+							}
+							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+						}
+					}
+					
+					var statusEffectCoroutine = targetUnit.RecoverHealth(-1); // 임시로 -1로 설정
+					
+					if (target == targets[targets.Count-1])
+					{
+						yield return battleManager.StartCoroutine(statusEffectCoroutine);
+					}
+					else
+					{
+						battleManager.StartCoroutine(statusEffectCoroutine);
+					}
 				}
 			}
 
