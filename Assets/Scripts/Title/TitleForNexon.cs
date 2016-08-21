@@ -1,10 +1,30 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
+using DG.Tweening;
 
 using Save;
+using WorldMap;
 
 public class TitleForNexon : MonoBehaviour
 {
+	public DOTweenPath titlePath;
+	public DOTweenAnimation titleAnimation;
+
+	public List<Button> titleButtons;
+	public List<DOTweenAnimation> buttonAnimations;
+
+	public List<Button> worldMapButtons;
+	public List<DOTweenAnimation> worldMapButtonAnimations;
+
+	public void Awake()
+	{
+		foreach (var button in worldMapButtons)
+		{
+			button.enabled = false;
+		}
+	}
+
 	public void OnLowLevelClicked()
 	{
 		SaveDataCenter.Reset();
@@ -17,8 +37,10 @@ public class TitleForNexon : MonoBehaviour
 			"lucius"
 		};
 
-		SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
-		sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
+		ShowWorldMap();
+
+		// SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
+		// sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
 	}
 
 	public void OnHighLevelClicked()
@@ -36,7 +58,34 @@ public class TitleForNexon : MonoBehaviour
 			"lucius"
 		};
 
-		SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
-		sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
+		ShowWorldMap();
+
+		// SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
+		// sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
+	}
+
+	private void ShowWorldMap()
+	{
+		titlePath.DOPlay();
+		titleAnimation.DOPlay();
+		foreach (var animation in buttonAnimations)
+		{
+			animation.DOPlay();
+		}
+		foreach (var button in titleButtons)
+		{
+			button.enabled = false;
+		}
+
+		foreach (var animation in worldMapButtonAnimations)
+		{
+			animation.DOPlay();
+		}
+		foreach (var button in worldMapButtons)
+		{
+			button.enabled = true;
+		}
+
+		GetComponent<WorldMapManager>().enabled = true;
 	}
 }

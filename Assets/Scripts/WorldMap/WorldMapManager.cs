@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Save;
+
 namespace WorldMap
 {
 public class WorldMapManager : MonoBehaviour
@@ -32,7 +34,7 @@ public class WorldMapManager : MonoBehaviour
 
 		if (currentStory == "")
 		{
-			currentStory = storyInfos[0].storyName;
+			currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
 			Debug.Log("Set current story to " + currentStory);
 		}
 	}
