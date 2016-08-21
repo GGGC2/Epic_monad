@@ -43,7 +43,7 @@ namespace BattleUI
 		{
 			Debug.Assert(allUnits.Count > 0);
 			UnitManager unitManager = battleData.unitManager;
-			int standardActionPoint =  unitManager.GetStandardActionPoint();
+			int standardActivityPoint =  unitManager.GetStandardActivityPoint();
 
 			Clear();
 
@@ -67,10 +67,10 @@ namespace BattleUI
 
 			otherUnits = SortUnits(battleData, otherUnits);
 
-			SetProfiles(battleData, standardActionPoint, otherUnits);
-			SetCurrentText(battleData, standardActionPoint, otherUnits);
-			SetNextText(battleData, standardActionPoint, otherUnits);
-			SetSeperateBar(battleData, standardActionPoint, otherUnits);
+			SetProfiles(battleData, standardActivityPoint, otherUnits);
+			SetCurrentText(battleData, standardActivityPoint, otherUnits);
+			SetNextText(battleData, standardActivityPoint, otherUnits);
+			SetSeperateBar(battleData, standardActivityPoint, otherUnits);
 		}
 
 		private void SetBigProfile(GameObject unitGO)
@@ -85,7 +85,7 @@ namespace BattleUI
 			apTextGO.GetComponent<CustomUIText>().text = unit.activityPoint.ToString();
 		}
 
-		private void SetProfiles(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetProfiles(BattleData battleData, int standardActivityPoint, List<UnitWrapper> otherUnits)
 		{
 			if (otherUnits.Count == 0)
 			{
@@ -97,11 +97,11 @@ namespace BattleUI
 				GameObject profileGameObject = otherProfiles[index];
 
 				profileGameObject.GetComponent<Image>().enabled = true;
-				SetProfile(battleData, profileGameObject, otherUnits[index], standardActionPoint);
+				SetProfile(battleData, profileGameObject, otherUnits[index], standardActivityPoint);
 			}
 
 			// Does not make space no units left in current turn.
-			if (otherUnits[0].GetUnit().GetCurrentActivityPoint() < standardActionPoint)
+			if (otherUnits[0].GetUnit().GetCurrentActivityPoint() < standardActivityPoint)
 			{
 				return;
 			}
@@ -111,14 +111,14 @@ namespace BattleUI
 				GameObject profileGameObject = otherProfiles[index];
 				UnitWrapper unit = otherUnits[index];
 
-				if (GetActivityPoint(battleData, unit) < standardActionPoint)
+				if (GetActivityPoint(battleData, unit) < standardActivityPoint)
 				{
 					profileGameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace * 2, 0);
 				}
 			}
 		}
 
-		private void SetCurrentText(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetCurrentText(BattleData battleData, int standardActivityPoint, List<UnitWrapper> otherUnits)
 		{
 			if (otherUnits.Count == 0)
 			{
@@ -126,7 +126,7 @@ namespace BattleUI
 			}
 
 			UnitWrapper firstUnit = otherUnits[0];
-			if (GetActivityPoint(battleData, firstUnit) >= standardActionPoint)
+			if (GetActivityPoint(battleData, firstUnit) >= standardActivityPoint)
 			{
 				currentTurnTexts[0].GetComponent<Image>().enabled = true;
 			}
@@ -136,12 +136,12 @@ namespace BattleUI
 			}
 		}
 
-		private void SetNextText(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetNextText(BattleData battleData, int standardActivityPoint, List<UnitWrapper> otherUnits)
 		{
 			for (int i=0; i < otherUnits.Count; i+=1)
 			{
 				UnitWrapper unit = otherUnits[i];
-				if (GetActivityPoint(battleData, unit) >= standardActionPoint)
+				if (GetActivityPoint(battleData, unit) >= standardActivityPoint)
 				{
 					continue;
 				}
@@ -165,13 +165,13 @@ namespace BattleUI
 			}
 		}
 
-		private void SetSeperateBar(BattleData battleData, int standardActionPoint, List<UnitWrapper> otherUnits)
+		private void SetSeperateBar(BattleData battleData, int standardActivityPoint, List<UnitWrapper> otherUnits)
 		{
 			int nextTurnUnitIndex = -1;
 			for (int i=0; i < otherUnits.Count; i+=1)
 			{
 				UnitWrapper unit = otherUnits[i];
-				if (GetActivityPoint(battleData, unit) < standardActionPoint)
+				if (GetActivityPoint(battleData, unit) < standardActivityPoint)
 				{
 					nextTurnUnitIndex = i;
 					break;
@@ -200,7 +200,7 @@ namespace BattleUI
 			turnSeperateBar.GetComponent<RectTransform>().anchoredPosition += new Vector2(seperationSpace, 0);
 		}
 
-		private void SetProfile(BattleData battleData, GameObject profileGO, UnitWrapper unitWrapper, int standardActionPoint)
+		private void SetProfile(BattleData battleData, GameObject profileGO, UnitWrapper unitWrapper, int standardActivityPoint)
 		{
 			Unit unit = unitWrapper.GetUnit();
 			profileGO.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
@@ -209,7 +209,7 @@ namespace BattleUI
 			apTextGO.GetComponent<CustomUIText>().enabled = true;
 
 			int activityPoint = GetActivityPoint(battleData, unitWrapper);
-			if (activityPoint < standardActionPoint)
+			if (activityPoint < standardActivityPoint)
 			{
 				activityPoint += unit.GetRegenerationAmount();
 			}
@@ -280,12 +280,12 @@ namespace BattleUI
 		private List<UnitWrapper> SortUnits(BattleData battleData, List<UnitWrapper> units)
 		{
 			UnitManager unitManager = battleData.unitManager;
-			int standardActionPoint =  unitManager.GetStandardActionPoint();
+			int standardActivityPoint =  unitManager.GetStandardActivityPoint();
 
 			List<UnitWrapper> thisTurnUnits =
-				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) >= standardActionPoint);
+				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) >= standardActivityPoint);
 			List<UnitWrapper> nextTurnUnits =
-				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) < standardActionPoint);
+				units.FindAll(wrapper => GetActivityPoint(battleData, wrapper) < standardActivityPoint);
 
 			thisTurnUnits.Sort(SortHelper.Chain(new List<Comparison<UnitWrapper>>
 			{

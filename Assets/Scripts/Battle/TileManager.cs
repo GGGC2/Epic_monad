@@ -48,21 +48,25 @@ public class TileManager : MonoBehaviour {
 		{
 			return GetTilesInSquareRange(mid, minReach, maxReach);
 		}
-        else if (form == RangeForm.Straight)
-        {
-            return GetTilesInStraightRange(mid, minReach, maxReach, dir);
-        }
-        else if (form == RangeForm.Cross)
-        {
-            return GetTilesInCrossRange(mid, minReach, maxReach);
-        }
-        else if (form == RangeForm.DiagonalCross)
-        {
-            return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
-        }
+		else if (form == RangeForm.Straight)
+		{
+			return GetTilesInStraightRange(mid, minReach, maxReach, dir);
+		}
+		else if (form == RangeForm.Cross)
+		{
+			return GetTilesInCrossRange(mid, minReach, maxReach);
+		}
+		else if (form == RangeForm.DiagonalCross)
+		{
+			return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
+		}
 		else if (form == RangeForm.Sector)
 		{
 			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
+		}
+		else if (form == RangeForm.Global)
+		{
+			return GetTilesInGlobalRange();
 		}
 		else
 			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
@@ -102,26 +106,26 @@ public class TileManager : MonoBehaviour {
 		List<GameObject> tilesInRange = new List<GameObject>();
 		tilesInRange.Add(GetTile(mid));
 
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
-        
-        return tilesInRange;
-    }
-    
-    List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
-    {
-        List<GameObject> tilesInRange = new List<GameObject>();
-        tilesInRange.Add(GetTile(mid));
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
+		
+		return tilesInRange;
+	}
+	
+	List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		tilesInRange.Add(GetTile(mid));
 
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
-        tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
-        
-        return tilesInRange;
-    }
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
+		
+		return tilesInRange;
+	}
 
 	List<GameObject> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
@@ -143,26 +147,32 @@ public class TileManager : MonoBehaviour {
 
 		return tilesInRange;
 	}
-    
-	public void ChangeTilesToSeletedColor(List<GameObject> tiles, TileColor color)
+
+	List<GameObject> GetTilesInGlobalRange()
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		foreach (var key in tiles.Keys)
+		{
+			tilesInRange.Add(tiles[key]);
+		}
+
+		return tilesInRange;
+	}
+	
+	public void PaintTiles(List<GameObject> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
-			if (color == TileColor.Red)
-				tile.GetComponent<Tile>().SetTileColor(new Color(1, 0.5f, 0.5f, 1));
-			else if (color == TileColor.Blue)
-				tile.GetComponent<Tile>().SetTileColor(new Color(0.6f, 0.6f, 1, 1));
-			else if (color == TileColor.Yellow)
-				tile.GetComponent<Tile>().SetTileColor(new Color(1, 0.9f, 0.016f, 1));
+			tile.GetComponent<Tile>().PaintTile(color);
 			tile.GetComponent<Tile>().SetPreSelected(true);
 		}
 	}
 	
-	public void ChangeTilesFromSeletedColorToDefaultColor(List<GameObject> tiles)
+	public void DepaintTiles(List<GameObject> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
-			tile.GetComponent<Tile>().SetTileColor(Color.white);
+			tile.GetComponent<Tile>().DepaintTile(color);
 			tile.GetComponent<Tile>().SetPreSelected(false);
 		}
 	}
@@ -203,46 +213,46 @@ public class TileManager : MonoBehaviour {
 		
 		return newTileList;
 	}
-    
-    Vector2 ToVector2(Direction dir)
-    {
-        if(dir == Direction.LeftUp)
-        {
-            return Vector2.left;
-        }
-        
-        else if(dir == Direction.LeftDown) 
-        {
-            return Vector2.down;
-        }
-        
-        else if(dir == Direction.RightUp)
-        {
-            return Vector2.up;
-        }
-        
-        else if(dir == Direction.RightDown)
-        {
-            return Vector2.right;
-        }
-        
-        else if(dir == Direction.Left)
-        {
-            return Vector2.left+Vector2.down;
-        }
-        
-        else if(dir == Direction.Right)
-        {
-            return Vector2.right+Vector2.up;
-        }
-        
-        else if(dir == Direction.Up)
-        {
-            return Vector2.left+Vector2.up;
-        }
-        
-        else return Vector2.right+Vector2.down;
-    }
+	
+	Vector2 ToVector2(Direction dir)
+	{
+		if(dir == Direction.LeftUp)
+		{
+			return Vector2.left;
+		}
+		
+		else if(dir == Direction.LeftDown) 
+		{
+			return Vector2.down;
+		}
+		
+		else if(dir == Direction.RightUp)
+		{
+			return Vector2.up;
+		}
+		
+		else if(dir == Direction.RightDown)
+		{
+			return Vector2.right;
+		}
+		
+		else if(dir == Direction.Left)
+		{
+			return Vector2.left+Vector2.down;
+		}
+		
+		else if(dir == Direction.Right)
+		{
+			return Vector2.right+Vector2.up;
+		}
+		
+		else if(dir == Direction.Up)
+		{
+			return Vector2.left+Vector2.up;
+		}
+		
+		else return Vector2.right+Vector2.down;
+	}
 	
 	void GenerateTiles (List<TileInfo> tileInfoList)
 	{

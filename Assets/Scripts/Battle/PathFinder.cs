@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 
 public class PathFinder {
 	
@@ -20,7 +21,6 @@ public class PathFinder {
 	{
 		Dictionary<Vector2, GameObject> tiles = GameObject.FindObjectOfType<TileManager>().GetAllTiles();
 		Vector2 unitPosition = unit.GetComponent<Unit>().GetPosition();
-		int remainAP = unit.GetComponent<Unit>().GetCurrentActivityPoint();
 
 		Queue<TileTuple> tileQueue = new Queue<TileTuple>();
 		
@@ -38,10 +38,10 @@ public class PathFinder {
 			Vector2 newPosition = newTileTuple.tilePosition;
 			TileWithPath newTileWithPath = newTileTuple.tileWithPath;
 			// 전후좌우에 있는 타일을 탐색.
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, remainAP, newPosition, newPosition + Vector2.up);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, remainAP, newPosition, newPosition + Vector2.down);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, remainAP, newPosition, newPosition + Vector2.left);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, remainAP, newPosition, newPosition + Vector2.right);
+			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.up);
+			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.down);
+			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.left);
+			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right);
 		}		
 		//// queue가 비었으면 loop를 탈출.		
 		
@@ -49,7 +49,7 @@ public class PathFinder {
 	}
 	
 	static void SearchNearbyTile(Dictionary<Vector2, GameObject> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
-								 Queue<TileTuple> tileQueue, int remainAP, Vector2 tilePosition, Vector2 nearbyTilePosition)
+								 Queue<TileTuple> tileQueue, GameObject unit, Vector2 tilePosition, Vector2 nearbyTilePosition)
 	{
 		// if, 타일이 존재하지 않거나, 타일 위에 다른 유닛이 있거나, 타일까지 드는 ap가 remain ap보다 큰 경우 고려하지 않음.
 		if (!tiles.ContainsKey(nearbyTilePosition)) return;
@@ -60,7 +60,14 @@ public class PathFinder {
 		
 		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];
 		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTileObject, prevTileWithPath);
-		if (nearbyTileWithPath.requireActivityPoint > remainAP) return;
+		int remainAP = unit.GetComponent<Unit>().GetCurrentActivityPoint();
+		int requireAP = nearbyTileWithPath.requireActivityPoint;
+		// 필요 행동력(이동) 증감 효과 적용
+		if(unit.GetComponent<Unit>().HasStatusEffect(StatusEffectType.RequireMoveAPChange))
+		{
+			requireAP = (int)(unit.GetComponent<Unit>().GetActualEffect((float) requireAP, StatusEffectType.RequireMoveAPChange));
+		}
+		if (requireAP > remainAP) return;
 		
 		// else, 
 		//	 if, 새로운 타일이거나, 기존보다 ap가 더 적게 드는 경로일 경우 업데이트하고 해당 타일을 queue에 넣음.

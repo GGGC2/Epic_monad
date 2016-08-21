@@ -80,8 +80,14 @@ public class Parser : MonoBehaviour {
 		return unitInfoList;
 	}
 	
+	private static List<SkillInfo> skillInfosCache;
 	public static List<SkillInfo> GetParsedSkillInfo()
 	{
+		if (skillInfosCache != null)
+		{
+			return skillInfosCache;
+		}
+
 		List<SkillInfo> skillInfoList = new List<SkillInfo>();
 		
 		TextAsset csvFile = Resources.Load("Data/testSkillData") as TextAsset;
@@ -94,7 +100,55 @@ public class Parser : MonoBehaviour {
 			skillInfoList.Add(skillInfo);
 		}
 		
+		skillInfosCache = skillInfoList;
 		return skillInfoList;
+	}
+
+	private static Dictionary<string, SkillInfo> skillInfoByName;
+	public static SkillInfo GetSkillInfoByName(string skillName)
+	{
+		if (skillInfoByName == null)
+		{
+			skillInfoByName = new Dictionary<string, SkillInfo>();
+
+			List<SkillInfo> skillInfos = GetParsedSkillInfo();
+			foreach (SkillInfo skillInfo in skillInfos)
+			{
+				skillInfoByName.Add(skillInfo.skill.GetName(), skillInfo);
+			}
+		}
+
+		return skillInfoByName[skillName];
+	}
+
+	private static Dictionary<string, List<SkillInfo>> skillInfoByUnit;
+	public static List<SkillInfo> GetSkillInfoByUnit(string unitName)
+	{
+		if (skillInfoByUnit == null)
+		{
+			skillInfoByUnit = new Dictionary<string, List<SkillInfo>>();
+
+			List<SkillInfo> skillInfos = GetParsedSkillInfo();
+			foreach (SkillInfo skillInfo in skillInfos)
+			{
+				if (!skillInfoByUnit.ContainsKey(skillInfo.owner))
+				{
+					skillInfoByUnit.Add(skillInfo.owner, new List<SkillInfo>());
+				}
+
+				skillInfoByUnit[skillInfo.owner].Add(skillInfo);
+			}
+		}
+
+		try
+		{
+			return skillInfoByUnit[unitName];
+		}
+		catch (Exception e)
+		{
+			Debug.LogError("Cannot find skills for unit " + unitName);
+			throw e;
+		}
 	}
     
     public static List<StatusEffectInfo> GetParsedStatusEffectInfo()

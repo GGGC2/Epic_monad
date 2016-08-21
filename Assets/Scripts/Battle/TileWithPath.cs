@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 
 public class TileWithPath {
 	int apGap = 2; // 이동 계차.

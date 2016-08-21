@@ -37,38 +37,6 @@ public class Unit : MonoBehaviour
 	float baseResistance; // 저항력
 	float baseDexturity; // 행동력
 
-	// 계산 관련 값들 - 절대값으로 변경해서 현재는 쓰지 않음.
-	// float healthAcceleration = 0.91f;
-	// float healthAccelerationInterval = 0.09f;
-	// float healthInitialGrowth = 31.4f;
-	// float healthInitialGrowthInterval = 2f;
-	// float healthStandardValue = 400f;
-	// float healthStandardValueInterval = 25f;
-	// float powerAcceleration = 0.14f;
-	// float powerAccelerationInterval = 0.025f;
-	// float powerInitialGrowth = 4.9f;
-	// float powerInitialGrowthInterval = 0.4f;
-	// float powerStandardValue = 69f;
-	// float powerStandardValueInterval = 4.25f;
-	// float defenseAcceleration = 0f;
-	// float defenseAccelerationInterval = 0f;
-	// float defenseInitialGrowth = 4.4f;
-	// float defenseInitialGrowthInterval = 0.75f;
-	// float defenseStandardValue = 40f;
-	// float defenseStandardValueInterval = 10f;
-	// float resistanceAcceleration = 0f;
-	// float resistanceAccelerationInterval = 0f;
-	// float resistanceInitialGrowth = 4.4f;
-	// float resistanceInitialGrowthInterval = 0.75f;
-	// float resistanceStandardValue = 40f;
-	// float resistanceStandardValueInterval = 10f;
-	// float dexturityAcceleration = 0f;
-	// float dexturityAccelerationInterval = 0f;
-	// float dexturityInitialGrowth = 0.8f;
-	// float dexturityInitialGrowthInterval = 0.05f;
-	// float dexturityStandardValue = 50f;
-	// float dexturityStandardValueInterval = 2.5f;
-
 	// Applied stats.
 	int maxHealth;
 	int power;
@@ -133,59 +101,12 @@ public class Unit : MonoBehaviour
     public int GetActualStat(Stat stat)
     {
         int actualStat = GetStat(stat);
-        StatusEffectType statusIncrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Increase");
-        StatusEffectType statusDecrease = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Decrease");
+        StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
         
-        // stat decrease by debuffs
-		if (this.HasStatusEffectType(statusDecrease))
+		// 능력치 증감 효과 적용
+		if (this.HasStatusEffect(statusChange))
 		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == statusDecrease)
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualStat = (int)((float)actualStat * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == statusDecrease)
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualStat -= totalAmount;
-        }
-        
-        // stat increase by buffs
-		if (this.HasStatusEffectType(statusIncrease))
-		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == statusIncrease)
-				{
-					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			actualStat = (int)((float)actualStat * totalDegree);
-
-			// 절대치 합연산
-			int totalAmount = 0;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == statusIncrease)
-				{
-					totalAmount += statusEffect.GetAmount();
-				}
-			}
-			actualStat += totalAmount;
+			actualStat = (int) GetActualEffect(actualStat, statusChange);
         }
         
         return actualStat;
@@ -215,22 +136,6 @@ public class Unit : MonoBehaviour
     {
         return statusEffectList;
     }
-
-	public bool IsBound()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind);
-	}
-
-	public bool IsSilenced()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
-	}
-
-	public bool IsFainted()
-	{
-		return statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Bind) &&
-			   statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.Silence);
-	}
 
 	public int GetMaxHealth()
 	{
@@ -323,137 +228,238 @@ public class Unit : MonoBehaviour
 		statusEffectList.Add(statusEffect);
 		// 침묵이나 기절상태가 될 경우 체인 해제.
 		// FIXME : 넉백 추가할 것. (넉백은 디버프가 아니라서 다른 곳에서 적용할 듯?)
-		if (statusEffect.GetStatusEffectType() == StatusEffectType.Faint ||
-			statusEffect.GetStatusEffectType() == StatusEffectType.Silence)
+		if (statusEffect.IsOfType(StatusEffectType.Faint) ||
+			statusEffect.IsOfType(StatusEffectType.Silence))
 		{
 			ChainList.RemoveChainsFromUnit(gameObject);
 		}
-	}
-
-	public void RemainStatusEffect()
-	{
-		statusEffectList.Remove(statusEffectList[0]);
-	}
-
-	public void RemainAllStatusEffect()
-	{
-		statusEffectList.Clear();
 	}
 
 	public void DecreaseRemainPhaseStatusEffect()
 	{
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffectList)
 		{
-			statusEffect.DecreaseRemainPhase();
 			if (statusEffect.GetRemainPhase() > 0)
 			{
-				newStatusEffectList.Add(statusEffect);
+				statusEffect.DecreaseRemainPhase();
+				if (statusEffect.GetRemainPhase() == 0)
+					statusEffect.SetToBeRemoved(true);
 			}
+		}
+	}
+
+	public void UpdateStatusEffect()
+	{
+		int count = statusEffectList.Count;
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+
+		for(int i = 0; i < count; i++)
+		{
+			if(!statusEffectList[i].GetToBeRemoved())
+				newStatusEffectList.Add(statusEffectList[i]);
 		}
 		statusEffectList = newStatusEffectList;
 	}
 
+	// searching certain StatusEffect
 	public bool HasStatusEffect(StatusEffect statusEffect)
 	{
 		bool hasStatusEffect = false;
 		if (statusEffectList.Any(k => k.GetName().Equals(statusEffect.GetName())))
-		{
 			hasStatusEffect = true;
-		}
 		return hasStatusEffect;
 	}
 
-	public bool HasStatusEffectType(StatusEffectType statusEffectType)
+	// searching certain StatusEffectType
+	public bool HasStatusEffect(StatusEffectType statusEffectType)
 	{
-		bool hasStatusEffectType = false;
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == statusEffectType))
-		{
-			hasStatusEffectType = true;
-		}
-		return hasStatusEffectType;
+		bool hasStatusEffect = false;
+		if (statusEffectList.Any(k => k.IsOfType(statusEffectType))) 
+			hasStatusEffect = true;
+
+		return hasStatusEffect;
 	}
 
-	public IEnumerator Damaged(UnitClass unitClass, int amount, bool isDot)
+	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		int actualDamage = 0;
+		float totalAmount = 0.0f;
+		float totalDegree = 1.0f;
+
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (statusEffect.IsOfType(statusEffectType))
+			{
+				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount(1);
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				{
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					{
+						statusEffect.SetToBeRemoved(true);
+						this.UpdateStatusEffect();
+					}
+				}
+			}
+		}
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (statusEffect.IsOfType(statusEffectType))
+			{
+				totalDegree = (100.0f + statusEffect.GetDegree(1)) / 100.0f;
+				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				{
+					statusEffect.DecreaseRemainStack();
+					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					{
+						statusEffect.SetToBeRemoved(true);
+						this.UpdateStatusEffect();
+					}
+				}
+			}
+		}
+
+		return data * totalDegree + totalAmount;
+	}
+
+	public IEnumerator Damaged(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
+	{
+		float actualDamage = 0.0f;
+		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+		
 		// 공격이 물리인지 마법인지 체크
-		// 방어력 / 저항력 중 맞는 값을 적용
-		// 방어 증가/감소 / 저항 증가/감소 적용			 // FIXME : 증가분 미적용
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
+		// 대미지 증가/감소 효과 적용
+		// 보호막 있을 경우 대미지 삭감
 		// 체력 깎임
 		// 체인 해제
-		if (unitClass == UnitClass.Melee)
+		if (isHealth == true)
 		{
-			// 실제 피해 = 원래 피해 x 200/(200+방어력)
-			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Defense));
-			Debug.Log("Actual melee damage : " + actualDamage);
+			if (unitClass == UnitClass.Melee)
+			{
+				// 실제 피해 = 원래 피해 x 200/(200+방어력)
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Defense) * (1.0f - penetration));
+				Debug.Log("Actual melee damage without status effect : " + actualDamage);
+			}
+			else if (unitClass == UnitClass.Magic)
+			{
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				Debug.Log("Actual magic damage without status effect: " + actualDamage);
+			}
+			else if (unitClass == UnitClass.None)
+			{
+				actualDamage = amount;
+			}
+
+			// 대미지 증감 효과 적용
+			if (this.HasStatusEffect(StatusEffectType.DamageChange))
+			{
+				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
+			}
+
+			finalDamage = (int) actualDamage;
+
+			// 보호막에 따른 대미지 삭감
+			if (this.HasStatusEffect(StatusEffectType.Shield))
+			{
+				int shieldAmount = 0;
+				for (int i = 0; i < statusEffectList.Count; i++)
+				{
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					{
+						shieldAmount = statusEffectList[i].GetRemainAmount();
+						if (shieldAmount > finalDamage)
+						{
+							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
+							finalDamage = 0;
+							Debug.Log("Remain Shield Amount : " + statusEffectList[i].GetRemainAmount());
+							break;
+						}
+						else
+						{
+							finalDamage -= shieldAmount;
+							statusEffectList[i].SetToBeRemoved(true);
+							this.UpdateStatusEffect();
+						}
+					}
+				}
+			}
+
+			if (finalDamage > -1) 
+				currentHealth -= finalDamage;
+			if (currentHealth < 0)
+				currentHealth = 0; 
+
+			damageTextObject.SetActive(true);
+			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+
+			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+
+			if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
+				ChainList.RemoveChainsFromUnit(gameObject);
+
+			// 데미지 표시되는 시간.
+			yield return new WaitForSeconds(1);
+			damageTextObject.SetActive(false);
 		}
-		else if (unitClass == UnitClass.Magic)
+
+		else
 		{
-			actualDamage = amount * 200 / (200 + GetActualStat(Stat.Resistance));
-			Debug.Log("Actual magic damage : " + actualDamage);
+			finalDamage = (int) amount;
+			if (activityPoint >= finalDamage)
+			{
+				activityPoint -= finalDamage;
+			}
+			else activityPoint = 0;
+			Debug.Log(GetName() + " loses " + finalDamage + "AP.");
 		}
-		else if (unitClass == UnitClass.None)
-		{
-			actualDamage = amount;
-		}
-
-		currentHealth -= actualDamage;
-		if (currentHealth < 0)
-			currentHealth = 0;
-
-		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomWorldText>().text = actualDamage.ToString();
-
-		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
-
-		if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
-			ChainList.RemoveChainsFromUnit(gameObject);
-
-		// 데미지 표시되는 시간.
-		yield return new WaitForSeconds(1);
-		damageTextObject.SetActive(false);
 	}
 
 	public void ApplyDamageOverPhase()
 	{
-		int totalAmount = 0;
+		float totalAmount = 0.0f;
 
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.ContinuousDamage))
+		if (this.HasStatusEffect(StatusEffectType.ContinuousDamage))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.ContinuousDamage)
+				if (statusEffect.IsOfType(StatusEffectType.ContinuousDamage))
 				{
-					totalAmount += statusEffect.GetAmount();
+					totalAmount += statusEffect.GetAmount(1);
 				}
 			}
 
 			// FIXME : 도트데미지는 물뎀인가 마뎀인가? 기획서대로 적용할 것. 언제? 일단 보류중.
-			Damaged(UnitClass.None, totalAmount, true);
+			Damaged(UnitClass.None, totalAmount, 0f, true, false);
 		}
 	}
 
-	public IEnumerator RecoverHealth(int amount)
+	public void ApplyHealOverPhase()
 	{
-		// FIXME : 치유량 증가 효과
+		float totalAmount = 0.0f;
 
-		// 내상 효과
-		if (statusEffectList.Any(k => k.GetStatusEffectType() == StatusEffectType.HealDecrease))
+		if (this.HasStatusEffect(StatusEffectType.ContinuousHeal))
 		{
-			// 상대치 곱연산
-			float totalDegree = 1.0f;
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.HealDecrease)
+				if (statusEffect.IsOfType(StatusEffectType.ContinuousHeal))
 				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
+					totalAmount += statusEffect.GetAmount(1);
 				}
 			}
-			amount = (int)((float)amount * totalDegree);
 		}
 
-		currentHealth += amount;
+		RecoverHealth(totalAmount);
+	}
+
+	public IEnumerator RecoverHealth(float amount)
+	{
+		// 회복량 증감 효과 적용
+		if (this.HasStatusEffect(StatusEffectType.HealChange))
+		{
+			amount = GetActualEffect(amount, StatusEffectType.HealChange);
+		}
+
+		currentHealth += (int) amount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
@@ -462,18 +468,33 @@ public class Unit : MonoBehaviour
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
-		// 데미지 표시되는 시간.
+		// 회복량 표시되는 시간.
 		yield return new WaitForSeconds(1);
 		recoverTextObject.SetActive(false);
 	}
 
-	public void RegenerateActionPoint()
+	public IEnumerator RecoverAP(int amount)
 	{
-		activityPoint = GetRegeneratedActionPoint();
+		activityPoint += amount;
+
+		recoverTextObject.SetActive(true);
+		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+
+		// healthViewer.UpdateCurrentActivityPoint(currentHealth, maxHealth);
+
+		// 회복량 표시되는 시간.
+		yield return new WaitForSeconds(1);
+		recoverTextObject.SetActive(false);
+
+	}
+
+	public void RegenerateActivityPoint()
+	{
+		activityPoint = GetRegeneratedActivityPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
 	}
 
-	public int GetRegeneratedActionPoint()
+	public int GetRegeneratedActivityPoint()
 	{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
@@ -485,40 +506,24 @@ public class Unit : MonoBehaviour
     
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
-        int requireSkillAP = selectedSkill.GetRequireAP()[0];
+        int requireSkillAP = selectedSkill.GetRequireAP(1);
         
-        // 신속에 의한 기술 행동력 소모 감소
-        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPDecrease))
+        // 행동력(기술) 소모 증감 효과 적용
+        if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
 		{
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPDecrease)
-				{
-					totalDegree *= (100.0f - statusEffect.GetDegree()) / 100.0f;
-				}
-			}
-			requireSkillAP = (int)((float)requireSkillAP * totalDegree);
+			requireSkillAP = (int) GetActualEffect((float)requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
-        // 둔화에 의한 기술 행동력 소모 증가
-        if (this.HasStatusEffectType(StatusEffectType.RequireSkillAPIncrease))
+
+		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
+		if (selectedSkill.GetRequireAP(1) == 9999)
 		{
-			float totalDegree = 1.0f;
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireSkillAPIncrease)
-				{
-					totalDegree *= (100.0f + statusEffect.GetDegree()) / 100.0f;
-                    Debug.Log(name + " has debuff slow, used AP increased by " + statusEffect.GetDegree());
-				}
-			}
-			requireSkillAP = (int)((float) requireSkillAP * totalDegree);
+			requireSkillAP = GetCurrentActivityPoint();
 		}
         
         return requireSkillAP;
     }
 
-	public void UseActionPoint(int amount)
+	public void UseActivityPoint(int amount)
 	{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
@@ -657,7 +662,7 @@ public class Unit : MonoBehaviour
 		position = initPosition;
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
-		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActionPoint();
+		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<StatusEffect>();

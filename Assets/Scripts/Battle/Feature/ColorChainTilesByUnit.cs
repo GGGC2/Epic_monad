@@ -19,7 +19,7 @@ namespace Battle.Feature
 			}
 
 			List<GameObject> targetArea = chainInfo.GetTargetArea();
-			battleData.tileManager.ChangeTilesToSeletedColor(targetArea, TileColor.Yellow);
+			battleData.tileManager.PaintTiles(targetArea, TileColor.Yellow);
 		}
 
 		public static void Hide(Unit unit)
@@ -34,7 +34,7 @@ namespace Battle.Feature
 			}
 
 			List<GameObject> targetArea = chainInfo.GetTargetArea();
-			battleData.tileManager.ChangeTilesFromSeletedColorToDefaultColor(targetArea);
+			battleData.tileManager.DepaintTiles(targetArea, TileColor.Yellow);
 		}
 	}
 }

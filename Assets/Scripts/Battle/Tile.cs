@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.EventSystems;
 
 using Enums;
@@ -12,23 +14,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public Element element;
 	Vector2 position;
 	GameObject unitOnTile = null;
-
-	class TileColor
-	{
-		public SpriteRenderer sprite;
-		public Color originalColor;
-		public bool isHighlight;
-
-		public TileColor(GameObject tile)
-		{
-			sprite = tile.GetComponent<SpriteRenderer>();
-			originalColor = Color.white;
-			isHighlight = false;
-		}
-	}
-
-	TileColor tileColor;
-
+	public SpriteRenderer sprite;
+	public bool isHighlight;
+	public List<Color> colors;
+	
 	bool isPreSeleted = false;
 
 	public void SetPreSelected(bool input)
@@ -91,10 +80,39 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		unitOnTile = unit;
 	}
 
-	public void SetTileColor(Color color)
+	/* Tile painting related */
+	public void PaintTile(TileColor tileColor)
 	{
-		tileColor.originalColor = color;
+		Color color = TileColorToColor(tileColor);
+		PaintTile(color);
 	}
+
+	public void PaintTile(Color color) {
+		colors.Add(color);
+	}
+
+	public void DepaintTile(TileColor tileColor)
+	{
+		Color color = TileColorToColor(tileColor);
+		DepaintTile(color);
+	}
+
+	public void DepaintTile(Color color)
+	{
+		colors.Remove(color);
+	}
+
+	public Color TileColorToColor(TileColor color) {
+		if (color == TileColor.Red)
+			return new Color(1, 0.5f, 0.5f, 1);
+		else if (color == TileColor.Blue)
+			return new Color(0.6f, 0.6f, 1, 1);
+		else if (color == TileColor.Yellow)
+			return new Color(1, 0.9f, 0.016f, 1);
+		else
+			throw new NotImplementedException(color.ToString() + " is not a supported color");
+	}
+
 
 	public GameObject GetUnitOnTile ()
 	{
@@ -134,7 +152,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData)
 	{
-		tileColor.isHighlight = true;
+		isHighlight = true;
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		BattleData battleData = battleManager.battleData;
@@ -163,7 +181,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData)
 	{
-		tileColor.isHighlight = false;
+		isHighlight = false;
 
 		FindObjectOfType<UIManager>().DisableTileViewerUI();
 
@@ -200,7 +218,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void Awake ()
 	{
-		tileColor = new TileColor(gameObject);
+		sprite = gameObject.GetComponent<SpriteRenderer>();
+		isHighlight = false;
+		colors = new List<Color>();
 	}
 
 	// Use this for initialization
@@ -209,10 +229,23 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	// Update is called once per frame
-	void Update () {
-		if (tileColor.isHighlight)
-			tileColor.sprite.color = tileColor.originalColor - new Color(0.3f, 0.3f, 0.3f, 0);
-		else
-			tileColor.sprite.color = tileColor.originalColor;
+	void Update ()
+	{
+		sprite.color = mixColors(colors);
+
+		if (isHighlight)
+			sprite.color -= new Color(0.3f, 0.3f, 0.3f, 0);
+	}
+
+	Color mixColors(List<Color> colors)
+	{
+		if (colors.Count == 0){
+			return Color.white;
+		}
+
+		return new Color(colors.Average(color => color.r),
+						 colors.Average(color => color.g),
+						 colors.Average(color => color.b),
+						 colors.Average(color => color.a));
 	}
 }
