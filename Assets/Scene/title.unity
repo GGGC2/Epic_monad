@@ -447,7 +447,7 @@ MonoBehaviour:
       PublicKeyToken=null
   delay: 0
   duration: 1
-  easeType: 6
+  easeType: 37
   easeCurve:
     serializedVersion: 2
     m_Curve:
@@ -458,8 +458,8 @@ MonoBehaviour:
       tangentMode: 0
     - time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -562,19 +562,19 @@ MonoBehaviour:
       PublicKeyToken=null
   delay: 0
   duration: 1
-  easeType: 6
+  easeType: 37
   easeCurve:
     serializedVersion: 2
     m_Curve:
     - time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.073944464
+      outSlope: 0.073944464
       tangentMode: 0
     - time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2.6879346
+      outSlope: 2.6879346
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
