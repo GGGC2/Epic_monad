@@ -38,9 +38,6 @@ public class TitleForNexon : MonoBehaviour
 		};
 
 		ShowWorldMap();
-
-		// SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
-		// sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
 	}
 
 	public void OnHighLevelClicked()
@@ -48,24 +45,44 @@ public class TitleForNexon : MonoBehaviour
 		SaveDataCenter.Reset();
 		SaveData saveData = SaveDataCenter.GetSaveData();
 
-		saveData.progress.worldMap = "Pintos2";
-		saveData.progress.dialogue = "Pintos#2-1";
+		saveData.progress.worldMap = "Pintos5";
+		saveData.progress.dialogue = "Pintos#7-1";
 
-		saveData.party.partyLevel = 1;
+		saveData.party.partyLevel = 18;
 		saveData.party.partyUnitNames = new List<string>
 		{
 			"reina",
-			"lucius"
+			"sisterna"
 		};
 
 		ShowWorldMap();
+	}
 
-		// SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
-		// sceneLoader.LoadNextDialogueScene(saveData.progress.dialogue);
+	public void OnBossLevelClicked()
+	{
+		SaveDataCenter.Reset();
+		SaveData saveData = SaveDataCenter.GetSaveData();
+
+		saveData.progress.worldMap = "Pintos9";
+		saveData.progress.dialogue = "Pintos#15-1";
+
+		saveData.party.partyLevel = 30;
+		saveData.party.partyUnitNames = new List<string>
+		{
+			"reina",
+			"sisterna",
+			"yeong",
+			"eren",
+			"luvericha"
+		};
+
+		ShowWorldMap();
 	}
 
 	private void ShowWorldMap()
 	{
+		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
+		
 		titlePath.DOPlay();
 		titleAnimation.DOPlay();
 		foreach (var animation in buttonAnimations)
