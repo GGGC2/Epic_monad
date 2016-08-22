@@ -236,7 +236,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
 		{
-			// goto worldmap.
+			string nextStoryName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{
