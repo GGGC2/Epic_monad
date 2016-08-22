@@ -15,6 +15,7 @@ public class DialogueManager : MonoBehaviour {
 
 	public Image leftPortrait;
 	public Image rightPortrait; 
+	public Image namePanel;
 	public Text nameText;
 	public Text dialogueText;
 	
@@ -66,7 +67,9 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_worldmap")
 			{
-				// goto worldmap.
+				string nextStoryName = dialogueDataList[i].GetCommandSubType();
+				FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
+				return;
 			}
 		}
 		ActiveAdventureUI();
@@ -331,9 +334,15 @@ public class DialogueManager : MonoBehaviour {
 			rightPortrait.color = Color.white;
 
 		if (dialogueDataList[line].GetName() != "-")
+		{
 			nameText.text = dialogueDataList[line].GetName();
+			namePanel.enabled = true;
+		}
 		else
+		{
 			nameText.text = null;
+			namePanel.enabled = false;
+		}
 		dialogueText.text = dialogueDataList[line].GetDialogue();
 	}
 

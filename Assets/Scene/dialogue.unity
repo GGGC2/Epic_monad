@@ -483,6 +483,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1796239657 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11423962, guid: 55ec5618ddfe641c49a7965105624b56,
+    type: 2}
+  m_PrefabInternal: {fileID: 1796239656}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &1836486487
 Prefab:
   m_ObjectHideFlags: 0
@@ -550,6 +556,10 @@ Prefab:
       propertyPath: dialogueData
       value: 
       objectReference: {fileID: 4900000, guid: c17d264ba7537413a84fbc856bd2c0e0, type: 3}
+    - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
+      propertyPath: namePanel
+      value: 
+      objectReference: {fileID: 1796239657}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
   m_IsPrefabParent: 0
