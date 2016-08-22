@@ -111,8 +111,8 @@ public class DialogueManager : MonoBehaviour {
         for (int i = line; i < endLine; i++) {
             if (dialogueDataList[i].IsAdventureObject())
             {
-                objects[objectIndex].transform.Find("NamePanel/ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
-                objects[objectIndex].transform.Find("NamePanel/ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
+                objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
+                objects[objectIndex].transform.Find("ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
                 objectIndex++;
             }
         }
@@ -126,7 +126,7 @@ public class DialogueManager : MonoBehaviour {
 
     public void PrintLinesFromObjectIndex(int objectIndex)
     {
-        string objectName = objects[objectIndex].transform.Find("NamePanel/ObjectNameText").gameObject.GetComponent<Text>().text;
+        string objectName = objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text;
         int startLine = 0;
 
         for (int i = 0; i < endLine; i++)
