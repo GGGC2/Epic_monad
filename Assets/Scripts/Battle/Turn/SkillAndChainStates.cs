@@ -71,7 +71,7 @@ namespace Battle.Turn
 			}
 		}
 
-		private static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
+		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
 		{
 			Direction beforeDirection = originalDirection;
 			List<GameObject> selectedTiles = new List<GameObject>();
@@ -147,7 +147,7 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		private static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
+		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
 		{
 			Direction beforeDirection = originalDirection;
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
@@ -217,7 +217,7 @@ namespace Battle.Turn
 			}
 		}
 
-		private static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection)
+		public static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection)
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
@@ -259,13 +259,13 @@ namespace Battle.Turn
 							battleData.currentState = CurrentState.SelectSkill;
 						else
 							battleData.currentState = CurrentState.SelectSkillApplyPoint;
-						
+
 						// 데미지 미리보기 해제.
 						foreach (KeyValuePair<GameObject, float> kv in calculatedTotalDamage)
 						{
 							kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
 						}
-						
+
 						yield break;
 					}
 					yield return null;
@@ -360,7 +360,7 @@ namespace Battle.Turn
 			Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
 
 			ChainList.AddChains(battleData.selectedUnitObject, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
-			
+
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
 
@@ -400,7 +400,7 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				Unit targetUnit = target.GetComponent<Unit>();                
+				Unit targetUnit = target.GetComponent<Unit>();
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				BattleManager battleManager = battleData.battleManager;
@@ -484,7 +484,7 @@ namespace Battle.Turn
 					// 반사 미적용.
 
 					// 상태이상 적용
-					
+
 					// battleManager.StartCoroutine(damageCoroutine);
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
@@ -494,7 +494,7 @@ namespace Battle.Turn
 			unitInChain.SetDirection(oldDirection);
 		}
 
-		private static IEnumerator ApplyChain(BattleData battleData, List<GameObject> tilesInSkillRange)
+		public static IEnumerator ApplyChain(BattleData battleData, List<GameObject> tilesInSkillRange)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			// 자기 자신을 체인 리스트에 추가.
@@ -568,7 +568,7 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				Unit targetUnit = target.GetComponent<Unit>();                
+				Unit targetUnit = target.GetComponent<Unit>();
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				BattleManager battleManager = battleData.battleManager;
@@ -646,7 +646,7 @@ namespace Battle.Turn
 								break;
 							}
 						}
-						
+
 						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(1), false, true);
 						battleManager.StartCoroutine(reflectCoroutine);
 					}
@@ -783,11 +783,11 @@ namespace Battle.Turn
 							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
 						}
 					}
-					
+
 					var recoverAmount = (int) actualAmount;
 					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
-					
+
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
@@ -808,7 +808,7 @@ namespace Battle.Turn
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
-					
+
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
@@ -840,11 +840,11 @@ namespace Battle.Turn
 							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
 						}
 					}
-					
+
 					var recoverAmount = (int) actualAmount;
 					var recoverAPCoroutine = targetUnit.RecoverAP(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
-					
+
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
@@ -865,7 +865,7 @@ namespace Battle.Turn
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
-					
+
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverAPCoroutine);
@@ -907,9 +907,9 @@ namespace Battle.Turn
 							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(1)));
 						}
 					}
-					
+
 					var statusEffectCoroutine = targetUnit.RecoverHealth(0); // 임시로 0로 설정
-					
+
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(statusEffectCoroutine);

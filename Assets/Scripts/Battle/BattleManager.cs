@@ -153,7 +153,7 @@ public class BattleManager : MonoBehaviour
 
 	List<GameObject> deadUnits = new List<GameObject>();
 
-	static IEnumerator FadeOutEffect(GameObject unitObject, float time)
+	public static IEnumerator FadeOutEffect(GameObject unitObject, float time)
 	{
 		SpriteRenderer sr = unitObject.GetComponent<SpriteRenderer>();
 		for (int i = 0; i < 10; i++)
@@ -163,7 +163,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	static IEnumerator DestroyDeadUnits(BattleData battleData)
+	public static IEnumerator DestroyDeadUnits(BattleData battleData)
 	{
 		BattleManager battleManager = battleData.battleManager;
 
@@ -180,7 +180,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	static IEnumerator DestroyRetreatUnits(BattleData battleData)
+	public static IEnumerator DestroyRetreatUnits(BattleData battleData)
 	{
 		BattleManager battleManager = battleData.battleManager;
 
@@ -194,7 +194,7 @@ public class BattleManager : MonoBehaviour
 			Destroy(retreatUnit);
 		}
 	}
-	
+
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
 		while (battleData.currentState == CurrentState.FocusToUnit)
