@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,8 +48,15 @@ namespace Battle.Turn
 
 					if (battleData.isPreSeletedTileByUser)
 					{
-						int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
-						battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
+						try
+						{
+							int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
+							battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
+						}
+						catch (Exception e)
+						{
+							Debug.LogException(e);
+						}
 					}
 					else
 					{
