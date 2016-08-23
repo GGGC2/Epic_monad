@@ -3,16 +3,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 using Enums;
 
 public class Unit : MonoBehaviour
 {
 
-	GameObject chainTextObject;
+	public GameObject chainBonusTextObject;
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
-	GameObject bonusTextObject;
+	public GameObject celestialBonusTextObject;
+	public GameObject directionBonusTextObject;
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
@@ -61,6 +63,11 @@ public class Unit : MonoBehaviour
 	Sprite spriteLeftDown;
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
+
+	public List<StatusEffect> GetAllStatusEffectList()
+	{
+		return statusEffectList;
+	}
 
 	public Sprite GetCurrentSprite()
 	{
@@ -661,28 +668,53 @@ public class Unit : MonoBehaviour
 			}
 	}
 
-	// using test.
+	// 보너스 텍스트 표시.
+	public void PrintDirectionBonus(float bonus)
+	{
+		directionBonusTextObject.SetActive(true);
+		if (bonus == 1.1f)
+			directionBonusTextObject.GetComponentInChildren<Text>().text = "측면 공격 보너스 (x1.1)";
+		else 
+			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 보너스 (x1.25)";
+		// Invoke("ActiveFalseAtDelay", 0.5f);
+	}
+
 	public void PrintCelestialBonus()
 	{
-		bonusTextObject.SetActive(true);
-		bonusTextObject.GetComponent<TextMesh>().text = "Celestial bonus";
-		Invoke("ActiveFalseAtDelay", 0.4f);
+		celestialBonusTextObject.SetActive(true);
+		// bonusTextObject.GetComponent<TextMesh>().text = "Celestial bonus";
+		celestialBonusTextObject.GetComponentInChildren<Text>().text = "천체속성 보너스 (x1.2)";
+		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 
-	void ActiveFalseAtDelay()
+	public void ActiveFalseAllBounsText()
 	{
-		bonusTextObject.SetActive(false);
+		celestialBonusTextObject.SetActive(false);
+		chainBonusTextObject.SetActive(false);
+		directionBonusTextObject.SetActive(false);
 	}
 
-	public void PrintChainText(int chainCount)
+	public void PrintChainBonus(int chainCount)
 	{
-		chainTextObject.SetActive(true);
-		chainTextObject.GetComponent<TextMesh>().text = "연계" + chainCount + "단";
+		float chainBonus;
+
+		if (chainCount < 2)	chainBonus = 1.0f;
+		else if (chainCount == 2) chainBonus = 1.2f;
+		else if (chainCount == 3) chainBonus = 1.5f;
+		else if (chainCount == 4) chainBonus = 2.0f;
+		else chainBonus = 3.0f;
+
+		if (chainCount < 2)	return;
+
+		chainBonusTextObject.SetActive(true);
+		// chainBonusTextObject.GetComponent<TextMesh>().text = "연계" + chainCount + "단";
+		chainBonusTextObject.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
+		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 
 	public void DisableChainText()
 	{
-		chainTextObject.SetActive(false);
+		chainBonusTextObject.SetActive(false);
 	}
 
 	public void ShowChainIcon()
@@ -764,21 +796,28 @@ public class Unit : MonoBehaviour
 		ApplyStats();
 		LoadSprite();
 		Initialize();
+
+		chainBonusTextObject.SetActive(false);
+		celestialBonusTextObject.SetActive(false);
+		directionBonusTextObject.SetActive(false);
 	}
 
 	void Awake()
 	{
-		chainTextObject = transform.Find("ChainText").gameObject;
+		// chainBonusTextObject = transform.Find("ChainText").gameObject;
+		chainBonusTextObject = GameObject.Find("ChainBounsPanel");
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
-		bonusTextObject = transform.Find("BonusText").gameObject;
+		// celestialBonusTextObject = transform.Find("BonusText").gameObject;
+		celestialBonusTextObject = GameObject.Find("CelestialBounsPanel");
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
-		chainTextObject.SetActive(false);
+		directionBonusTextObject = GameObject.Find("DirectionBounsPanel");
+		// chainBonusTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
-		bonusTextObject.SetActive(false);
+		// celestialBonusTextObject.SetActive(false);
 		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();

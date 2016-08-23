@@ -266,6 +266,7 @@ namespace Battle.Turn
 							kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
 						}
 
+
 						yield break;
 					}
 					yield return null;
@@ -427,14 +428,16 @@ namespace Battle.Turn
 
 					// 방향 보너스.
 					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
+					// if (directionBonus > 1f) unitInChain.PrintDirectionBonus(directionBonus);
 
 					// 천체속성 보너스.
 					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
-					if (celestialBonus == 1.2f) unitInChain.PrintCelestialBonus();
-					else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
+					// if (celestialBonus > 1f) unitInChain.PrintCelestialBonus();
+					// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
 
 					// 체인 보너스.
 					float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
+					// if (directionBonus > 1f) unitInChain.PrintDirectionBonus(chainCombo);
 
 					// 강타 효과에 의한 대미지 추가
 					int smiteAmount = 0;
@@ -478,14 +481,9 @@ namespace Battle.Turn
 						damageList.Add(targetUnit.gameObject, totalDamage);
 					}
 
-					// var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(1), false, true);
-
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
 					// 반사 미적용.
 
-					// 상태이상 적용
-
-					// battleManager.StartCoroutine(damageCoroutine);
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
 				}
@@ -503,7 +501,7 @@ namespace Battle.Turn
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
 
-			battleData.SelectedUnit.PrintChainText(chainCombo);
+			battleData.SelectedUnit.PrintChainBonus(chainCombo);
 
 			foreach (var chainInfo in allVaildChainInfo)
 			{
@@ -595,14 +593,17 @@ namespace Battle.Turn
 
 					// 방향 보너스.
 					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
+					if (directionBonus > 1f) unitInChain.PrintDirectionBonus(directionBonus);
 
 					// 천체속성 보너스.
 					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
-					if (celestialBonus == 1.2f) unitInChain.PrintCelestialBonus();
-					else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
+					if (celestialBonus > 1f) unitInChain.PrintCelestialBonus();
+					// '보너스'만 표시하려고 임시로 주석처리.
+					// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
 
 					// 체인 보너스.
 					float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
+					if (chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
 
 					// 강타 효과에 의한 대미지 추가
 					int smiteAmount = 0;
@@ -714,6 +715,8 @@ namespace Battle.Turn
 						yield return battleManager.StartCoroutine(statusEffectCoroutine);
 					}
 				}
+
+				unitInChain.ActiveFalseAllBounsText();
 			}
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);

@@ -49,7 +49,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &122874
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,6 +560,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 432755227ae824048983af733b219a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chainBonusTextObject: {fileID: 0}
+  celestialBonusTextObject: {fileID: 0}
+  directionBonusTextObject: {fileID: 0}
   position: {x: 0, y: 0}
   direction: 0
   currentHealth: 0

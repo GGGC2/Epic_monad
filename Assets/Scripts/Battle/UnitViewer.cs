@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using Enums;
+using System.Collections.Generic;
 
 // This component is used in two UI.
 // SelectedUnitViewer and UnitViewer.
@@ -26,7 +27,8 @@ public class UnitViewer : MonoBehaviour {
 	Text powerText;
 	Text defenseText;
 	Text resistanceText;
-	// FIXME : 버프/디버프는 아직 미구현.
+	// FIXME : 버프/디버프 표시 임시로 텍스트로.
+	public Text statusEffectText;
 
 	public void UpdateUnitViewer(GameObject unitObject)
 	{
@@ -42,6 +44,22 @@ public class UnitViewer : MonoBehaviour {
 		UpdatePower(unit);
 		UpdateDefense(unit);
 		UpdateResistance(unit);
+
+		UpdateEffect(unit);
+	}
+
+	void UpdateEffect(Unit unit)
+	{
+		List<StatusEffect> effectList = unit.GetAllStatusEffectList();
+		int numberOfEffects = effectList.Count;
+		string concattedText = "";
+		for (int i = 0; i < numberOfEffects; i++)
+		{
+			concattedText += effectList[i].GetName() + "(" + effectList[i].GetRemainPhase() + ")";
+			if (i < numberOfEffects-1)
+				concattedText += " ";
+		}
+		statusEffectText.text = concattedText;
 	}
 
 	void CheckElementBuff(Unit unit)
