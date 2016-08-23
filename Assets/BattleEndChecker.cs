@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -374,7 +375,7 @@ public class BattleEndChecker : MonoBehaviour {
 				if (isBattleWin)
 				{
 					Debug.Log("Win");
-					sceneLoader.LoadNextDialogueScene("title");
+					SceneManager.LoadScene("title");
 				}
 				else
 					Debug.Log("Lose");
