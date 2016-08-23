@@ -48,13 +48,16 @@ TextureImporter:
   alignment: 9
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 250
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: triana_0
+    - serializedVersion: 2
+      name: triana_0
       rect:
         serializedVersion: 2
         x: 0
@@ -64,22 +67,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 30, y: 283}
-        - {x: -24, y: 283}
-        - {x: -44, y: 280}
-        - {x: -60, y: 257}
-        - {x: -60, y: 232}
-        - {x: -41, y: 179}
-        - {x: -59, y: 84}
-        - {x: -60, y: 78}
-        - {x: -60, y: -22}
-        - {x: -44, y: -27}
-        - {x: 56, y: -27}
-        - {x: 57, y: -26}
-        - {x: 57, y: 231}
-        - {x: 47, y: 260}
-    - name: triana_1
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: triana_1
       rect:
         serializedVersion: 2
         x: 250
@@ -89,20 +80,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -28, y: 290}
-        - {x: -60, y: 273}
-        - {x: -60, y: 239}
-        - {x: -46, y: 192}
-        - {x: -60, y: 152}
-        - {x: -60, y: -15}
-        - {x: -38, y: -27}
-        - {x: 21, y: -27}
-        - {x: 43, y: -24}
-        - {x: 60, y: -12}
-        - {x: 60, y: 261}
-        - {x: 40, y: 290}
-    - name: triana_2
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: triana_2
       rect:
         serializedVersion: 2
         x: 500
@@ -112,16 +93,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 25, y: 290}
-        - {x: -34, y: 290}
-        - {x: -58, y: 260}
-        - {x: -58, y: -14}
-        - {x: -47, y: -27}
-        - {x: 62, y: -27}
-        - {x: 62, y: 263}
-        - {x: 60, y: 265}
-    - name: triana_3
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: triana_3
       rect:
         serializedVersion: 2
         x: 750
@@ -131,18 +106,8 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 62, y: 251}
-        - {x: 43, y: 274}
-        - {x: 35, y: 283}
-        - {x: -22, y: 283}
-        - {x: -58, y: 269}
-        - {x: -58, y: -14}
-        - {x: -48, y: -27}
-        - {x: 40, y: -27}
-        - {x: 60, y: -8}
-        - {x: 53, y: 146}
-        - {x: 62, y: 225}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 

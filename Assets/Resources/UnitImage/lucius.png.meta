@@ -48,13 +48,16 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 250
   alphaIsTransparency: 1
+  spriteTessellationDetail: -1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: sisterna_0
+    - serializedVersion: 2
+      name: sisterna_0
       rect:
         serializedVersion: 2
         x: 0
@@ -64,21 +67,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 49, y: 254}
-        - {x: 34, y: 282}
-        - {x: 24, y: 284}
-        - {x: -32, y: 284}
-        - {x: -55, y: 262}
-        - {x: -53, y: 66}
-        - {x: -57, y: 46}
-        - {x: -57, y: -20}
-        - {x: -50, y: -27}
-        - {x: 35, y: -27}
-        - {x: 70, y: -14}
-        - {x: 70, y: 64}
-        - {x: 56, y: 160}
-    - name: sisterna_1
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: sisterna_1
       rect:
         serializedVersion: 2
         x: 250
@@ -88,21 +80,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 30, y: 286}
-        - {x: -24, y: 286}
-        - {x: -58, y: 269}
-        - {x: -48, y: 249}
-        - {x: -65, y: 151}
-        - {x: -74, y: 77}
-        - {x: -74, y: 11}
-        - {x: -67, y: -10}
-        - {x: -34, y: -27}
-        - {x: 25, y: -27}
-        - {x: 56, y: -16}
-        - {x: 56, y: 112}
-        - {x: 54, y: 256}
-    - name: sisterna_2
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: sisterna_2
       rect:
         serializedVersion: 2
         x: 500
@@ -112,21 +93,10 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 70, y: 153}
-        - {x: 50, y: 258}
-        - {x: 42, y: 286}
-        - {x: -40, y: 286}
-        - {x: -53, y: 273}
-        - {x: -57, y: 209}
-        - {x: -57, y: -8}
-        - {x: -52, y: -21}
-        - {x: -15, y: -27}
-        - {x: 29, y: -27}
-        - {x: 54, y: -23}
-        - {x: 75, y: 19}
-        - {x: 75, y: 95}
-    - name: sisterna_3
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: sisterna_3
       rect:
         serializedVersion: 2
         x: 750
@@ -136,20 +106,8 @@ TextureImporter:
       alignment: 9
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 52, y: 252}
-        - {x: 47, y: 264}
-        - {x: 28, y: 284}
-        - {x: -16, y: 284}
-        - {x: -46, y: 274}
-        - {x: -51, y: 193}
-        - {x: -69, y: 101}
-        - {x: -69, y: -11}
-        - {x: -38, y: -27}
-        - {x: 46, y: -27}
-        - {x: 56, y: -21}
-        - {x: 56, y: 112}
-        - {x: 51, y: 153}
+      outline: []
+      tessellationDetail: -1
     outline: []
   spritePackingTag: 
   userData: 
