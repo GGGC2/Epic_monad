@@ -764,6 +764,12 @@ public class Unit : MonoBehaviour
 	void LoadSprite()
 	{
 		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + nameInCode);
+
+		if (sprites.Length == 0)
+		{
+			Debug.LogError("Cannot find sprite for " + nameInCode);
+			sprites = Resources.LoadAll("UnitImage/notFound");
+		}
 		spriteLeftUp = sprites[1] as Sprite;
 		spriteLeftDown = sprites[3] as Sprite;
 		spriteRightUp = sprites[4] as Sprite;

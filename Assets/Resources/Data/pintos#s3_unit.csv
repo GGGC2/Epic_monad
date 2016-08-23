@@ -1,0 +1,4 @@
+Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial
+마력석,manastone,Enemy,10,15,LeftUp,70,50,20,20,40,Melee,Plant,Earth
+시스터나,sisterna,Ally,7,2,RightDown,458,73,51,28,53,Melee,Water,Sun
+레이나,reina,Ally,5,4,RightDown,350,70,0,50,50,Magic,Fire,Earth
