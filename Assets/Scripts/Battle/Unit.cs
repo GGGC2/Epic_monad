@@ -321,6 +321,84 @@ public class Unit : MonoBehaviour
 		return data * totalDegree + totalAmount;
 	}
 
+	public float GetActualDamage(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
+	{
+		float actualDamage = 0.0f;
+		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+		
+		// 공격이 물리인지 마법인지 체크
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
+		// 대미지 증가/감소 효과 적용
+		// 보호막 있을 경우 대미지 삭감
+		// 체력 깎임
+		// 체인 해제
+		if (isHealth == true)
+		{
+			if (unitClass == UnitClass.Melee)
+			{
+				// 실제 피해 = 원래 피해 x 200/(200+방어력)
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Defense) * (1.0f - penetration));
+				Debug.Log("Actual melee damage without status effect : " + actualDamage);
+			}
+			else if (unitClass == UnitClass.Magic)
+			{
+				actualDamage = amount * 200.0f / (200.0f + GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				Debug.Log("Actual magic damage without status effect: " + actualDamage);
+			}
+			else if (unitClass == UnitClass.None)
+			{
+				actualDamage = amount;
+			}
+
+			// 대미지 증감 효과 적용
+			if (this.HasStatusEffect(StatusEffectType.DamageChange))
+			{
+				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
+			}
+
+			finalDamage = (int) actualDamage;
+
+			// 보호막에 따른 대미지 삭감
+			if (this.HasStatusEffect(StatusEffectType.Shield))
+			{
+				int shieldAmount = 0;
+				for (int i = 0; i < statusEffectList.Count; i++)
+				{
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					{
+						shieldAmount = statusEffectList[i].GetRemainAmount();
+						if (shieldAmount > finalDamage)
+						{
+							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
+							finalDamage = 0;
+							Debug.Log("Remain Shield Amount : " + statusEffectList[i].GetRemainAmount());
+							break;
+						}
+						else
+						{
+							finalDamage -= shieldAmount;
+							statusEffectList[i].SetToBeRemoved(true);
+							this.UpdateStatusEffect();
+						}
+					}
+				}
+			}
+		}
+
+		else
+		{
+			// finalDamage = (int) amount;
+			// if (activityPoint >= finalDamage)
+			// {
+			// 	activityPoint -= finalDamage;
+			// }
+			// else activityPoint = 0;
+			// Debug.Log(GetName() + " loses " + finalDamage + "AP.");
+		}
+
+		return (float) finalDamage;
+	}
+
 	public IEnumerator Damaged(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
 	{
 		float actualDamage = 0.0f;
