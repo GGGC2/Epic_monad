@@ -1,11 +1,29 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Enums;
 
 namespace Battle.Turn
 {
+	public class UdongNoodle
+	{
+		public static Vector2 FindNearestEnemy(List<GameObject> movableTiles, List<GameObject> units, GameObject mainUnit)
+		{
+			var positions = from tileGO in movableTiles
+					from unitGO in units
+					let tile = tileGO.GetComponent<Tile>()
+					let unit = unitGO.GetComponent<Unit>()
+					where unit.GetSide() == Side.Ally
+					let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
+					orderby distance
+					select tile.GetTilePos();
+
+			return positions.First();
+		}
+	}
+
 	public class AIStates
 	{
 		public static IEnumerator AIMove(BattleData battleData)
@@ -23,7 +41,8 @@ namespace Battle.Turn
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
+			// var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
+			var randomPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnitObject);
 
 			// FIXME : 어딘가로 옮겨야 할 텐데...
 			GameObject destTile = battleData.tileManager.GetTile(randomPosition);
