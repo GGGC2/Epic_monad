@@ -19,3 +19,7 @@ EditorBuildSettings:
     path: Assets/Scene/pintos#s1.unity
   - enabled: 1
     path: Assets/Scene/Battle.unity
+  - enabled: 1
+    path: Assets/Scene/worldMap.unity
+  - enabled: 1
+    path: Assets/Scene/title.unity

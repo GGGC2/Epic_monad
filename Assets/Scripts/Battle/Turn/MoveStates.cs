@@ -143,7 +143,7 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		private static IEnumerator MoveToTile(BattleData battleData, GameObject destTile, Direction directionAtDest, int totalUseActivityPoint)
+		public static IEnumerator MoveToTile(BattleData battleData, GameObject destTile, Direction directionAtDest, int totalUseActivityPoint)
 		{
 			GameObject currentTile = battleData.tileManager.GetTile(battleData.selectedUnitObject.GetComponent<Unit>().GetPosition());
 			currentTile.GetComponent<Tile>().SetUnitOnTile(null);
