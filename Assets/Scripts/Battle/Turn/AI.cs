@@ -11,16 +11,55 @@ namespace Battle.Turn
 	{
 		public static Vector2 FindNearestEnemy(List<GameObject> movableTiles, List<GameObject> units, GameObject mainUnit)
 		{
+			Side otherSide;
+
+			if (mainUnit.GetComponent<Unit>().GetSide() == Side.Ally)
+			{
+				otherSide = Side.Enemy;
+			}
+			else
+			{
+				otherSide = Side.Ally;
+			}
+
 			var positions = from tileGO in movableTiles
 					from unitGO in units
 					let tile = tileGO.GetComponent<Tile>()
 					let unit = unitGO.GetComponent<Unit>()
-					where unit.GetSide() == Side.Ally
+					where unit.GetSide() == otherSide
 					let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
 					orderby distance
 					select tile.GetTilePos();
 
-			return positions.First();
+			List<Vector2> availablePositions = positions.ToList();
+			if (availablePositions.Count > 0)
+			{
+				return availablePositions[0];
+			}
+			return mainUnit.GetComponent<Unit>().GetPosition();
+		}
+
+		public static Tile FindEnemyTile(List<GameObject> activeTileRange, GameObject mainUnit)
+		{
+			Side otherSide;
+
+			if (mainUnit.GetComponent<Unit>().GetSide() == Side.Ally)
+			{
+				otherSide = Side.Enemy;
+			}
+			else
+			{
+				otherSide = Side.Ally;
+			}
+
+			var tilesHaveEnemy = from tileGO in activeTileRange
+								 let tile = tileGO.GetComponent<Tile>()
+								 where tile.GetUnitOnTile() != null
+								 let unit = tile.GetUnitOnTile().GetComponent<Unit>()
+								 where unit.GetSide() == otherSide
+								 select tile;
+
+			return tilesHaveEnemy.FirstOrDefault();
 		}
 	}
 
@@ -161,7 +200,13 @@ namespace Battle.Turn
 														selectedSkill.GetFirstMaxReach(),
 														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
 
-				Tile selectedTile = activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
+				Tile selectedTile = UdongNoodle.FindEnemyTile(activeRange, battleData.selectedUnitObject);
+
+				if (selectedTile == null)
+				{
+					yield break;
+				}
+				// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
 
 				battleData.selectedTilePosition = selectedTile.GetTilePos();
 
