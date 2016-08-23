@@ -46,7 +46,8 @@ public class SkillDB
 	{
 		List<SkillSaveData> skillSaveDatas = SaveDataCenter.GetSaveData().skills;
 
-		if (skillSaveDatas.Count == 0)
+		var allLearnedSkillsForUnit = skillSaveDatas.FindAll(skill => Parser.GetSkillInfoByName(skill.skillName).owner == unitName);
+		if (allLearnedSkillsForUnit.Count == 0)
 		{
 			List<string> level1Skills = GetLevel1Skills()[unitName];
 			foreach (string level1Skill in level1Skills)

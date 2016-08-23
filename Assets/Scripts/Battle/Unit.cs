@@ -6,6 +6,8 @@ using System.Linq;
 using UnityEngine.UI;
 using Enums;
 
+using Save;
+
 public class Unit : MonoBehaviour
 {
 
@@ -25,7 +27,7 @@ public class Unit : MonoBehaviour
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
-    
+
     // 상태이상 리스트
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
 
@@ -90,7 +92,7 @@ public class Unit : MonoBehaviour
 	{
 		Destroy(chargeEffect);
 	}
-    
+
     public int GetStat(Stat stat)
     {
         if(stat == Stat.MaxHealth) {return maxHealth;}
@@ -104,18 +106,18 @@ public class Unit : MonoBehaviour
           return 1;
         }
     }
-    
+
     public int GetActualStat(Stat stat)
     {
         int actualStat = GetStat(stat);
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
-        
+
 		// 능력치 증감 효과 적용
 		if (this.HasStatusEffect(statusChange))
 		{
 			actualStat = (int) GetActualEffect(actualStat, statusChange);
         }
-        
+
         return actualStat;
     }
 
@@ -138,7 +140,18 @@ public class Unit : MonoBehaviour
 	{
 		return skillList;
 	}
-    
+
+	public List<Skill> GetLearnedSkillList()
+	{
+		var learnedSkills =
+			 from skill in skillList
+			 where SkillDB.IsLearned(nameInCode, skill.GetName())
+			 select skill;
+
+		Debug.LogWarning(GetNameInCode() +  " Learnedskils" + learnedSkills.Count());
+		return learnedSkills.ToList();
+	}
+
     public List<StatusEffect> GetStatusEffectList()
     {
         return statusEffectList;
@@ -148,7 +161,7 @@ public class Unit : MonoBehaviour
 	{
 		return maxHealth;
 	}
-    
+
     public int GetCurrentHealth()
 	{
 		return currentHealth;
@@ -281,7 +294,7 @@ public class Unit : MonoBehaviour
 	public bool HasStatusEffect(StatusEffectType statusEffectType)
 	{
 		bool hasStatusEffect = false;
-		if (statusEffectList.Any(k => k.IsOfType(statusEffectType))) 
+		if (statusEffectList.Any(k => k.IsOfType(statusEffectType)))
 			hasStatusEffect = true;
 
 		return hasStatusEffect;
@@ -332,7 +345,7 @@ public class Unit : MonoBehaviour
 	{
 		float actualDamage = 0.0f;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-		
+
 		// 공격이 물리인지 마법인지 체크
 		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
 		// 대미지 증가/감소 효과 적용
@@ -360,7 +373,7 @@ public class Unit : MonoBehaviour
 			// 대미지 증감 효과 적용
 			if (this.HasStatusEffect(StatusEffectType.DamageChange))
 			{
-				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
+				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange);
 			}
 
 			finalDamage = (int) actualDamage;
@@ -410,7 +423,7 @@ public class Unit : MonoBehaviour
 	{
 		float actualDamage = 0.0f;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-		
+
 		// 공격이 물리인지 마법인지 체크
 		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
 		// 대미지 증가/감소 효과 적용
@@ -438,7 +451,7 @@ public class Unit : MonoBehaviour
 			// 대미지 증감 효과 적용
 			if (this.HasStatusEffect(StatusEffectType.DamageChange))
 			{
-				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange); 
+				actualDamage = GetActualEffect(actualDamage, StatusEffectType.DamageChange);
 			}
 
 			finalDamage = (int) actualDamage;
@@ -469,10 +482,10 @@ public class Unit : MonoBehaviour
 				}
 			}
 
-			if (finalDamage > -1) 
+			if (finalDamage > -1)
 				currentHealth -= finalDamage;
 			if (currentHealth < 0)
-				currentHealth = 0; 
+				currentHealth = 0;
 
 			damageTextObject.SetActive(true);
 			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
@@ -588,11 +601,11 @@ public class Unit : MonoBehaviour
 	{
 		return GetActualStat(Stat.Dexturity);
 	}
-    
+
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
         int requireSkillAP = selectedSkill.GetRequireAP(1);
-        
+
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
 		{
@@ -604,7 +617,7 @@ public class Unit : MonoBehaviour
 		{
 			requireSkillAP = GetCurrentActivityPoint();
 		}
-        
+
         return requireSkillAP;
     }
 
@@ -656,7 +669,7 @@ public class Unit : MonoBehaviour
                     skill.ApplyStatusEffectList(statusEffectInfoList);
                     skillList.Add(skill);
                 }
-				
+
 		}
 		// 비어있으면 디폴트 스킬로 채우도록.
 		if (skillList.Count() == 0)
@@ -783,6 +796,12 @@ public class Unit : MonoBehaviour
 	void LoadSprite()
 	{
 		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + nameInCode);
+
+		if (sprites.Length == 0)
+		{
+			Debug.LogError("Cannot find sprite for " + nameInCode);
+			sprites = Resources.LoadAll("UnitImage/notFound");
+		}
 		spriteLeftUp = sprites[1] as Sprite;
 		spriteLeftDown = sprites[3] as Sprite;
 		spriteRightUp = sprites[4] as Sprite;
