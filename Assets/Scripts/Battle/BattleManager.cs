@@ -82,7 +82,15 @@ public class BattleManager : MonoBehaviour
 			{
 				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-				yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
+				battleData.selectedUnitObject = battleData.readiedUnits[0];
+				if (battleData.SelectedUnit.GetSide() == Side.Enemy)
+				{
+					yield return AIStates.AIMove(battleData);
+				}
+				else
+				{
+					yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
+				}
 				battleData.selectedUnitObject = null;
 
 				battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
