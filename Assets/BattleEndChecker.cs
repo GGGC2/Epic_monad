@@ -374,7 +374,7 @@ public class BattleEndChecker : MonoBehaviour {
 				if (isBattleWin)
 				{
 					Debug.Log("Win");
-					sceneLoader.LoadNextDialogueScene("pintos#3");
+					sceneLoader.LoadNextDialogueScene("title");
 				}
 				else
 					Debug.Log("Lose");
