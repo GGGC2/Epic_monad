@@ -63,3 +63,4 @@ reina	-	레이나	(기본)(......결국 오늘도 이렇게 나오겠다는 건�
 lucius	-	루키어스	......
 *	disappear	lucius
 servant	-	시종	황제 폐하께서 곧 입장하셔서 축사를 하실 겁니다. 지금 바로 모시고 올 테니, 여기서 잠시만 기다려 주십시오.
+*	load_script	pintos#2-2

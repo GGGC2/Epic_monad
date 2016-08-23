@@ -15,6 +15,7 @@ public class DialogueManager : MonoBehaviour {
 
 	public Image leftPortrait;
 	public Image rightPortrait; 
+	public Image namePanel;
 	public Text nameText;
 	public Text dialogueText;
 	
@@ -66,7 +67,9 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_worldmap")
 			{
-				// goto worldmap.
+				string nextStoryName = dialogueDataList[i].GetCommandSubType();
+				FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
+				return;
 			}
 		}
 		ActiveAdventureUI();
@@ -233,7 +236,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
 		{
-			// goto worldmap.
+			string nextStoryName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{
@@ -264,13 +268,14 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "disappear")
 		{
-			if (dialogueDataList[line].GetCommandSubType() == "left")
+			string commandSubType = dialogueDataList[line].GetCommandSubType();
+			if (commandSubType == "left" || commandSubType == leftUnit)
 			{
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = false;
 			}
-			else if (dialogueDataList[line].GetCommandSubType() == "right")
+			else if (commandSubType == "right" || commandSubType == rightUnit)
 			{
 				rightUnit = null;
 				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
@@ -331,9 +336,15 @@ public class DialogueManager : MonoBehaviour {
 			rightPortrait.color = Color.white;
 
 		if (dialogueDataList[line].GetName() != "-")
+		{
 			nameText.text = dialogueDataList[line].GetName();
+			namePanel.enabled = true;
+		}
 		else
+		{
 			nameText.text = null;
+			namePanel.enabled = false;
+		}
 		dialogueText.text = dialogueDataList[line].GetDialogue();
 	}
 

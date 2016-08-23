@@ -76,6 +76,7 @@ public class DialogueData{
 			else if (commandType == "load_worldmap")
 			{
 				// load worldmap.
+				commandSubType = stringList[2];
 			}
 			else
 			{
