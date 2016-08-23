@@ -268,13 +268,14 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "disappear")
 		{
-			if (dialogueDataList[line].GetCommandSubType() == "left")
+			string commandSubType = dialogueDataList[line].GetCommandSubType();
+			if (commandSubType == "left" || commandSubType == leftUnit)
 			{
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = false;
 			}
-			else if (dialogueDataList[line].GetCommandSubType() == "right")
+			else if (commandSubType == "right" || commandSubType == rightUnit)
 			{
 				rightUnit = null;
 				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
