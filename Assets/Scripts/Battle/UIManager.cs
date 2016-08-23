@@ -75,7 +75,7 @@ public class UIManager : MonoBehaviour
 	public void UpdateSkillInfo(GameObject selectedUnitObject)
 	{
 		EnableSkillUI();
-		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetSkillList();
+		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetLearnedSkillList();
 
 		if (skillList.Count > skillButtonCount) {
 			Debug.LogError("Too many skill count " + skillList.Count);
@@ -98,7 +98,7 @@ public class UIManager : MonoBehaviour
 
 	public void CheckUsableSkill(GameObject selectedUnitObject)
 	{
-		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetSkillList();
+		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetLearnedSkillList();
 
 		int iterationCount = Math.Min(skillButtonCount, skillList.Count);
 		for (int i = 0; i < iterationCount; i++)
