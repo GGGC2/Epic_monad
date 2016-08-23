@@ -30,7 +30,7 @@ namespace Battle.Turn
 		{
 			BattleManager battleManager = battleData.battleManager;
 
-			battleManager.StartCoroutine(AIDIe(battleData));
+			yield return battleManager.StartCoroutine(AIDIe(battleData));
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnitObject);
 			List<GameObject> movableTiles = new List<GameObject>();
@@ -59,7 +59,6 @@ namespace Battle.Turn
 
 			List<GameObject> destTileList = destPath;
 			destTileList.Add(destTile);
-			battleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
 
 			// 카메라를 옮기고
 			Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
@@ -137,8 +136,6 @@ namespace Battle.Turn
 														selectedSkill.GetSecondMaxReach(),
 														selectedUnit.GetDirection());
 
-			battleData.selectedUnitObject = selectedTiles[Random.Range(0, selectedTiles.Count)].GetComponent<Tile>().GetUnitOnTile();
-
 			if (battleData.isSelectedTileByUser)
 			{
 				BattleManager battleManager = battleData.battleManager;
@@ -151,8 +148,6 @@ namespace Battle.Turn
 		{
 			Direction beforeDirection = originalDirection;
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
-
-
 
 			while (battleData.currentState == CurrentState.SelectSkillApplyPoint)
 			{
