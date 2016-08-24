@@ -299,6 +299,11 @@ public class DialogueManager : MonoBehaviour {
 		{
 			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
 		}
+		else if (dialogueDataList[line].GetCommandType() == "bg")
+		{
+			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
+			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
+		}
 		else if (dialogueDataList[line].GetCommandType() == "sound_effect")
 		{
 			// Not implement yet.

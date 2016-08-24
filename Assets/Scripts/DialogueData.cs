@@ -57,6 +57,10 @@ public class DialogueData{
 				{
 					commandSubType = stringList[2];
 				}
+				else if (commandType == "bg")
+				{
+					commandSubType = stringList[2];
+				}
 				else if (commandType == "sound_effect")
 				{
 					// subtype : se file name.
