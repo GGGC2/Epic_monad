@@ -28,7 +28,7 @@ public class UnitViewer : MonoBehaviour {
 	Text defenseText;
 	Text resistanceText;
 	// FIXME : 버프/디버프 표시 임시로 텍스트로.
-	public Text statusEffectText;
+	Text statusEffectText;
 
 	public void UpdateUnitViewer(GameObject unitObject)
 	{
@@ -159,5 +159,7 @@ public class UnitViewer : MonoBehaviour {
 		powerText = transform.Find("Power").Find("PowerText").GetComponent<Text>();
 		defenseText = transform.Find("Defense").Find("DefenseText").GetComponent<Text>();
 		resistanceText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
+
+		statusEffectText = transform.Find("buffs").GetComponent<Text>();
 	}
 }
