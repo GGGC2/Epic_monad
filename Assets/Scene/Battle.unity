@@ -2319,11 +2319,11 @@ Prefab:
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: mapData
       value: 
-      objectReference: {fileID: 4900000, guid: 4eba42b3fb8c9480bac9709ddfb11cab, type: 3}
+      objectReference: {fileID: 4900000, guid: b9610dff2f49d44bc9bd991ad078a953, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: unitData
       value: 
-      objectReference: {fileID: 4900000, guid: ba9fbe18369944e1c82bda44c8ecacd2, type: 3}
+      objectReference: {fileID: 4900000, guid: cb303f77513b243b1b8cc45b272741e1, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: battleEndConditionData
       value: 

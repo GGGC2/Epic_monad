@@ -472,7 +472,7 @@ MonoBehaviour:
   lookAhead: 0.01
   autoPlay: 0
   autoKill: 1
-  relative: 0
+  relative: 1
   isLocal: 0
   isClosedPath: 0
   pathResolution: 10
@@ -489,13 +489,13 @@ MonoBehaviour:
     subdivisionsXSegment: 10
     subdivisions: 20
     wps:
-    - {x: 574, y: 323, z: 0}
+    - {x: 546, y: 370, z: 0}
     - {x: 203.70898, y: 564.53345, z: 0}
     controlPoints: []
-    length: 442.10162
+    length: 393.70853
     wpLengths:
     - 0
-    - 442.10162
+    - 393.70853
     isFinalized: 1
     timesTable:
     - 0
@@ -509,7 +509,7 @@ MonoBehaviour:
   perspectiveHandleSize: 0.5
   showIndexes: 1
   pathColor: {r: 1, g: 1, b: 1, a: 0.5}
-  lastSrcPosition: {x: 574, y: 323, z: 0}
+  lastSrcPosition: {x: 546, y: 370, z: 0}
   wpsDropdown: 1
 --- !u!114 &220685346
 MonoBehaviour:
@@ -2867,8 +2867,8 @@ Camera:
   m_GameObject: {fileID: 2106637391}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
