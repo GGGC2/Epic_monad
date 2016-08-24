@@ -27,6 +27,8 @@ public class Unit : MonoBehaviour
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
+	// 사용한 스킬 정보 저장.
+	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
     // 상태이상 리스트
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
@@ -243,6 +245,25 @@ public class Unit : MonoBehaviour
 		return position;
 	}
 
+	public Dictionary<string, int> GetUsedSkillDict()
+	{
+		return usedSkillDict;
+	}
+
+	public void UpdateSkillCooldown()
+	{
+		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
+		foreach (var skill in usedSkillDict.Keys)
+		{
+			usedSkillDict[skill]--;
+			if (usedSkillDict[skill] != 0)
+			{
+				newUsedSkillDict.Add(skill, usedSkillDict[skill]);
+			}
+		}
+		usedSkillDict = newUsedSkillDict;
+	}
+
 	public void SetStatusEffect(StatusEffect statusEffect)
 	{
 		statusEffectList.Add(statusEffect);
@@ -259,14 +280,14 @@ public class Unit : MonoBehaviour
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.GetRemainPhase() > 0)
+			if (statusEffect.GetRemainPhase() > 0 && statusEffect.GetCooldown() == 0)
 			{
 				statusEffect.DecreaseRemainPhase();
 				if (statusEffect.GetRemainPhase() == 0)
 					statusEffect.SetToBeRemoved(true);
 			}
 		}
-	}
+	} 
 
 	public void UpdateStatusEffect()
 	{
@@ -281,6 +302,17 @@ public class Unit : MonoBehaviour
 			}
 		}
 		statusEffectList = newStatusEffectList;
+	}
+
+	public void UpdateStatusEffectCooldown()
+	{
+		foreach (var statusEffect in statusEffectList)
+		{
+			if(statusEffect.GetCooldown() != 0)
+			{
+				statusEffect.DecreaseCooldown();
+			}
+		}
 	}
 
 	// searching certain StatusEffect
@@ -309,7 +341,7 @@ public class Unit : MonoBehaviour
 
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.IsOfType(statusEffectType))
+			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
 			{
 				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount(1);
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
@@ -318,14 +350,13 @@ public class Unit : MonoBehaviour
 					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
 					{
 						statusEffect.SetToBeRemoved(true);
-						this.UpdateStatusEffect();
 					}
 				}
 			}
 		}
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.IsOfType(statusEffectType))
+			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
 			{
 				totalDegree = (100.0f + statusEffect.GetDegree(1)) / 100.0f;
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
@@ -334,11 +365,11 @@ public class Unit : MonoBehaviour
 					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
 					{
 						statusEffect.SetToBeRemoved(true);
-						this.UpdateStatusEffect();
 					}
 				}
 			}
 		}
+		this.UpdateStatusEffect();
 
 		return data * totalDegree + totalAmount;
 	}
@@ -392,7 +423,7 @@ public class Unit : MonoBehaviour
 				int shieldAmount = 0;
 				for (int i = 0; i < statusEffectList.Count; i++)
 				{
-					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield) && statusEffectList[i].GetCooldown() == 0)
 					{
 						shieldAmount = statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
@@ -406,10 +437,10 @@ public class Unit : MonoBehaviour
 						{
 							finalDamage -= shieldAmount;
 							statusEffectList[i].SetToBeRemoved(true);
-							this.UpdateStatusEffect();
 						}
 					}
 				}
+				this.UpdateStatusEffect();
 			}
 		}
 
@@ -476,7 +507,7 @@ public class Unit : MonoBehaviour
 				int shieldAmount = 0;
 				for (int i = 0; i < statusEffectList.Count; i++)
 				{
-					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield) && statusEffectList[i].GetCooldown() == 0)
 					{
 						// sisterna_m_12 발동 조건 체크
 						if (statusEffectList[i].GetName().Equals("파장 분류"))
@@ -493,7 +524,6 @@ public class Unit : MonoBehaviour
 																				0, 1, 0, false, "None", EffectVisualType.None, EffectMoveType.None);
 								statusEffectList.Add(sisternaSmite);
 								statusEffectList[i].SetToBeRemoved(true);
-								this.UpdateStatusEffect();
 								break;
 							}
 						}
@@ -509,10 +539,10 @@ public class Unit : MonoBehaviour
 						{
 							finalDamage -= shieldAmount;
 							statusEffectList[i].SetToBeRemoved(true);
-							this.UpdateStatusEffect();
 						}
 					}
 				}
+				this.UpdateStatusEffect();
 			}
 
 			if (finalDamage > -1)
