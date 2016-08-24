@@ -100,14 +100,21 @@ public class UIManager : MonoBehaviour
 	{
 		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetLearnedSkillList();
 
+        Color enabledColor = new Color(1, 1, 1);
+        Color disabledColor = new Color(1, 0, 0);
+
 		int iterationCount = Math.Min(skillButtonCount, skillList.Count);
 		for (int i = 0; i < iterationCount; i++)
 		{
-			GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>().interactable = true;
-			if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i]) 
+            Button skillButton = GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>();
+            skillButton.interactable = true;
+		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
+
+            if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i]) 
 			|| selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
 			{
-				GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>().interactable = false;
+                skillButton.interactable = false;
+			    skillButton.GetComponentInChildren<Text>().color = disabledColor;
 			}
 		}
 	}
