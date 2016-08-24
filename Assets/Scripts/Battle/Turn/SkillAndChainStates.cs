@@ -36,7 +36,7 @@ namespace Battle.Turn
 					if (battleData.indexOfPreSelectedSkillByUser != 0)
 					{
 						Skill preSelectedSkill = battleData.PreSelectedSkill;
-						int requireAP = preSelectedSkill.GetRequireAP(1);
+						int requireAP = preSelectedSkill.GetRequireAP(preSelectedSkill.GetLevel());
 						battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
 					}
 					else
@@ -414,15 +414,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							baseDamage += appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else
 						{
-							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 					}
 
@@ -468,7 +468,7 @@ namespace Battle.Turn
 					}
 
 					//유닛과 유닛의 데미지를 Dictionary에 추가.
-					float actualDamage = targetUnit.GetActualDamage(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(1), false, true);
+					float actualDamage = targetUnit.GetActualDamage(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 					if (!damageList.ContainsKey(targetUnit.gameObject))
 					{
 						damageList.Add(targetUnit.gameObject, actualDamage);
@@ -535,9 +535,9 @@ namespace Battle.Turn
 				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
 			}
 			// 스킬 쿨다운 기록
-			if (battleData.SelectedSkill.GetCooldown(1) > 0)
+			if (battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()) > 0)
 			{
-				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(1));
+				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()));
 			}
 			
 			// 체인 목록에 추가.
@@ -605,15 +605,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							baseDamage += appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else
 						{
-							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 					}
 
@@ -659,7 +659,7 @@ namespace Battle.Turn
 						damageAmount = damageAmount * targetNumberBonus;
 					}
 
-					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(1), false, true);
+					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
 					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
@@ -669,12 +669,12 @@ namespace Battle.Turn
 						{
 							if (statusEffect.IsOfType(StatusEffectType.Reflect))
 							{
-								reflectAmount = reflectAmount * statusEffect.GetDegree(1);
+								reflectAmount = reflectAmount * statusEffect.GetDegree(statusEffect.GetLevel());
 								break;
 							}
 						}
 
-						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(1), false, true);
+						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 						battleManager.StartCoroutine(reflectCoroutine);
 					}
 
@@ -734,7 +734,7 @@ namespace Battle.Turn
 						}
 					}
 
-					var statusEffectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), -1.0f, appliedSkill.GetPenetration(1), false, false);
+					var statusEffectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), -1.0f, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
 
 					if (target == targets[targets.Count-1])
 					{
@@ -750,9 +750,9 @@ namespace Battle.Turn
 			{
 				unitInChain.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
 				// 스킬 쿨다운 기록
-				if (appliedSkill.GetCooldown(1) > 0)
+				if (appliedSkill.GetCooldown(appliedSkill.GetLevel()) > 0)
 				{
-					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(1));
+					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(appliedSkill.GetLevel()));
 				}
 			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -795,7 +795,7 @@ namespace Battle.Turn
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
 				{
 					float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
-					var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[0], appliedSkill.GetPenetration(1), false, false);
+					var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[0], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
 					battleManager.StartCoroutine(damageCoroutine);
 				}
 
@@ -808,15 +808,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							actualAmount += appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else
 						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 					}
 
@@ -838,7 +838,7 @@ namespace Battle.Turn
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
-										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(1)));
+										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
@@ -848,7 +848,7 @@ namespace Battle.Turn
 								if (statusEffect.IsOfType(StatusEffectType.Shield))
 								{
 									targetUnit.GetStatusEffectList()[targetUnit.GetStatusEffectList().Count].SetRemainAmount
-									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(1)));
+									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 								}
 							}
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
@@ -875,15 +875,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							actualAmount += appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 						else
 						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[0];
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
 						}
 					}
 
@@ -944,13 +944,13 @@ namespace Battle.Turn
 							{
 								if(statusEffect.IsOfType(StatusEffectType.Shield))
 								{
-									statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(1)));
+									statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
 								}
 								targetUnit.GetStatusEffectList().Add(statusEffect);
 							}
 
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
-							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(1)));
+							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
 						}
 					}
 
@@ -972,9 +972,9 @@ namespace Battle.Turn
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			selectedUnit.UseActivityPoint(requireAP);
 			// 스킬 쿨다운 기록
-			if (appliedSkill.GetCooldown(1) > 0)
+			if (appliedSkill.GetCooldown(appliedSkill.GetLevel()) > 0)
 			{
-				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(1));
+				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(appliedSkill.GetLevel()));
 			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
