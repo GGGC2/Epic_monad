@@ -55,18 +55,21 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_script")
 			{
+				InactiveAdventureUI();
 				string nextScriptName = dialogueDataList[i].GetCommandSubType();
 				FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 				return;
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_battle")
 			{
+				InactiveAdventureUI();
 				string nextSceneName = dialogueDataList[i].GetCommandSubType();
 				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
 				return;
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_worldmap")
 			{
+				InactiveAdventureUI();
 				string nextStoryName = dialogueDataList[i].GetCommandSubType();
 				FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 				return;
@@ -230,16 +233,19 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_script")
 		{
+			InactiveAdventureUI();
 			string nextScriptName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_battle")
 		{
+			InactiveAdventureUI();
 			string nextSceneName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
 		{
+			InactiveAdventureUI();
 			string nextStoryName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 		}
