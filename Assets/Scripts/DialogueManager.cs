@@ -107,8 +107,7 @@ public class DialogueManager : MonoBehaviour {
         objects = adventureUI.GetComponent<AdventureManager>().objects;
 
 		objects.ToList().ForEach(x => x.SetActive(true));
-
-        int tempLine = line;
+        
         int objectIndex = 0;
 
         for (int i = line; i < endLine; i++) {
@@ -116,6 +115,8 @@ public class DialogueManager : MonoBehaviour {
             {
                 objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
                 objects[objectIndex].transform.Find("ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
+                objects[objectIndex].transform.Find("New").gameObject.SetActive(true);
+                objects[objectIndex].transform.Find("Highlight").gameObject.SetActive(true);
                 objectIndex++;
             }
         }
@@ -129,7 +130,10 @@ public class DialogueManager : MonoBehaviour {
 
     public void PrintLinesFromObjectIndex(int objectIndex)
     {
-        string objectName = objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text;
+        GameObject buttonPanel = objects[objectIndex];
+        buttonPanel.transform.Find("New").gameObject.SetActive(false);
+        buttonPanel.transform.Find("Highlight").gameObject.SetActive(false);
+        string objectName = buttonPanel.transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text;
         int startLine = 0;
 
         for (int i = 0; i < endLine; i++)
