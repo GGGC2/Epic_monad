@@ -729,7 +729,7 @@ public class Unit : MonoBehaviour
 				(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
-					if(SkillDB.IsLearned(this.GetName(), skill.GetName()))
+					if(SkillDB.IsLearned(this.nameInCode(), skill.GetName()))
 					{
 						skill.SetLevel(SkillDB.GetEnhanceLevel(this.GetName(), skill.GetName()));
 						skill.ApplyStatusEffectList(statusEffectInfoList);
