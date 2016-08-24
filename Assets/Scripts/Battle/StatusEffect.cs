@@ -5,6 +5,7 @@ using UnityEngine;
 public class StatusEffect {
 
 	string name; // 유저에게 보일 이름
+    int level; // 효과를 지닌 스킬의 레벨
     StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류
     
     bool isBuff; // 버프일 경우 true
@@ -26,13 +27,14 @@ public class StatusEffect {
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
 	
-	public StatusEffect(string name, StatusEffectType statusEffectType,  
+	public StatusEffect(string name, int level, StatusEffectType statusEffectType,  
                   bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
                   float[] degreeArray, Stat amountStat, float[] amountFactorArray, int remainAmount, 
                   int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
+        this.level = level;
 		this.statusEffectType = statusEffectType;
         this.isBuff = isBuff;
         this.isInfinite = isInfinite;
@@ -52,6 +54,7 @@ public class StatusEffect {
     }
 	
 	public string GetName() {return name;}
+    public int GetLevel() {return level;}
     public StatusEffectType GetStatusEffectType() {return statusEffectType;}
     public bool GetIsBuff() {return isBuff;}
     public bool GetIsInfinite() {return isInfinite;}
@@ -70,6 +73,11 @@ public class StatusEffect {
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
+
+    public void SetLevel(int num)
+    {
+        level = num;
+    }
     
     public void SetRemainAmount(int amount)
     {
