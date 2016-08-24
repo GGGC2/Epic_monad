@@ -125,6 +125,12 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			return "평지";
 		else if (form == TileForm.Hill)
 			return "언덕";
+		else if (form == TileForm.Cliff)
+			return "절벽";
+		else if (form == TileForm.Water)
+			return "호수";
+		else if (form == TileForm.HigherHill)
+			return "높은 언덕";
 		else
 			return "";
 	}
