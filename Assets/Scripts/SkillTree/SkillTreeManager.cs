@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 using Save;
 
@@ -84,7 +85,7 @@ public class SkillTreeManager : MonoBehaviour
 
 		nameButtons = new List<GameObject>();
 		Transform characterNames = root.transform.Find("CharacterNames");
-		for (int i=1; i<=8; i++)
+		for (int i=1; i<=7; i++)
 		{
 			nameButtons.Add(characterNames.Find("name" + i).gameObject);
 		}
@@ -169,7 +170,8 @@ public class SkillTreeManager : MonoBehaviour
 
 			int totalSkillPointUntilLevel = unitSkillInfo.requireLevel - 1;
 			int usedSkillPointUntilLevel = GetUsedSkillPointUntilLevel(unitNameInCode, unitSkillInfo.requireLevel - 1);
-			bool isLearnable = usedSkillPointUntilLevel >= totalSkillPointUntilLevel && haveSkillPoint;
+			// bool isLearnable = usedSkillPointUntilLevel >= totalSkillPointUntilLevel && haveSkillPoint;
+			bool isLearnable = PartyDB.GetPartyLevel() >= unitSkillInfo.GetRequireLevel() && haveSkillPoint;
 
 			if (!isLearned && !isLearnable)
 			{
@@ -340,6 +342,11 @@ public class SkillTreeManager : MonoBehaviour
 		int skillIndex = requireLevels.IndexOf(requireLevel);
 
 		return skillsInColumn[skillIndex];
+	}
+
+	public void ReturnToWorldMap()
+	{
+		SceneManager.LoadScene("worldMap");
 	}
 }
 }
