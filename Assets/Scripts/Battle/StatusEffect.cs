@@ -116,6 +116,16 @@ public class StatusEffect {
         remainStack = stack; 
     }
 
+    public void DecreaseCooldown()
+    {
+        cooldown--;
+    }
+
+    public void SetCooldown(int updatedCooldown)
+    {
+        cooldown = updatedCooldown;
+    }
+
     public void SetToBeRemoved(bool toEnd)
     {
         toBeRemoved = toEnd;

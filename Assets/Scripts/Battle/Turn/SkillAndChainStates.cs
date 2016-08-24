@@ -534,6 +534,11 @@ namespace Battle.Turn
 				int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
 				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
 			}
+			// 스킬 쿨다운 기록
+			if (battleData.SelectedSkill.GetCooldown(1) > 0)
+			{
+				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(1));
+			}
 			
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
@@ -742,7 +747,14 @@ namespace Battle.Turn
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			if (unitInChain.gameObject == battleData.selectedUnitObject)
+			{
 				unitInChain.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+				// 스킬 쿨다운 기록
+				if (appliedSkill.GetCooldown(1) > 0)
+				{
+					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(1));
+				}
+			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
 			yield return new WaitForSeconds(0.5f);
@@ -959,6 +971,11 @@ namespace Battle.Turn
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			selectedUnit.UseActivityPoint(requireAP);
+			// 스킬 쿨다운 기록
+			if (appliedSkill.GetCooldown(1) > 0)
+			{
+				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(1));
+			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
 			yield return new WaitForSeconds(0.5f);
