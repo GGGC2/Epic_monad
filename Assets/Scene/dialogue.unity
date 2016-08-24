@@ -408,14 +408,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11442202, guid: cfcab888066814e668aadf383a349170, type: 2}
-      propertyPath: nextSceneName
-      value: pintos#s1
-      objectReference: {fileID: 0}
-    - target: {fileID: 110448, guid: cfcab888066814e668aadf383a349170, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfcab888066814e668aadf383a349170, type: 2}
   m_IsPrefabParent: 0
