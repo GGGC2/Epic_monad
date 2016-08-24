@@ -326,6 +326,7 @@ namespace Battle.Turn
 																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
 				if (selectedSkill.GetSkillType() == SkillType.Auto)
 					selectedTiles.Remove(targetTile.gameObject);
+				Debug.Log("NO. of tiles selected : "+selectedTiles.Count);
 				return selectedTiles;
 		}
 
@@ -585,6 +586,7 @@ namespace Battle.Turn
 			foreach (var target in targets)
 			{
 				Unit targetUnit = target.GetComponent<Unit>();
+				Debug.Log("Total target No : "+targets.Count+" Current Target : "+targetUnit.GetName());
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
@@ -734,7 +736,6 @@ namespace Battle.Turn
 						}
 					}
 
-					var statusEffectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), -1.0f, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
 					yield return null;
 				}
 
