@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using Save;
+using System;
 
 namespace WorldMap
 {
 public class WorldMapManager : MonoBehaviour
 {
 	public static List<StoryInfo> storyInfos = new List<StoryInfo>();
-	public static string currentStory = "";
+
+        public static string currentStory = "";
 
 	public static string GetNextDialogue()
 	{
@@ -22,6 +25,12 @@ public class WorldMapManager : MonoBehaviour
 
 		return null;
 	}
+
+	public static void ToSkillTree()
+	{
+		SceneManager.LoadScene("SkillTree");
+	}
+
 
 	void Awake()
 	{

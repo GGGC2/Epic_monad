@@ -39,7 +39,7 @@ GameObject:
   - 198: {fileID: 198000010118918072}
   - 199: {fileID: 199000012781225100}
   m_Layer: 0
-  m_Name: Blast
+  m_Name: RedBlast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
