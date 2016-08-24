@@ -189,7 +189,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000010793479094, guid: 24bf24269620a49e0a355f664ef2aee9, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010434245934, guid: 24bf24269620a49e0a355f664ef2aee9,
+        type: 2}
+      propertyPath: m_Text
+      value: "\uD074\uB9AC\uC5B4 \uCD5C\uACE0 \uC810\uC218 : 80 / 150"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 24bf24269620a49e0a355f664ef2aee9, type: 2}
