@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 5784fbf0dafee4a8c9f1112ae7d018a8
-timeCreated: 1471181755
+guid: 9fe96f7deea2c45b297d3cad1b92a1eb
+timeCreated: 1471600789
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: sisterna_0
-    21300002: sisterna_1
-    21300004: sisterna_2
-    21300006: sisterna_3
+    21300000: eren_0
+    21300002: eren_1
+    21300004: eren_2
+    21300006: eren_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -45,7 +45,7 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
+  alignment: 9
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 250
@@ -57,7 +57,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sisterna_0
+      name: eren_0
       rect:
         serializedVersion: 2
         x: 0
@@ -70,7 +70,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_1
+      name: eren_1
       rect:
         serializedVersion: 2
         x: 250
@@ -83,7 +83,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_2
+      name: eren_2
       rect:
         serializedVersion: 2
         x: 500
@@ -96,7 +96,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_3
+      name: eren_3
       rect:
         serializedVersion: 2
         x: 750
