@@ -278,7 +278,9 @@ namespace Battle.Turn
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					// 체인이 가능한 스킬일 경우. 체인 발동.
-					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+					// 왜 CheckChainPossible 안 쓴 거죠...? 일단 발표 끝나고 고칠랭
+					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
+					 || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 					{
 						yield return ApplyChain(battleData, tilesInSkillRange);
 						FocusUnit(battleData.SelectedUnit);
@@ -348,10 +350,12 @@ namespace Battle.Turn
 			}
 
 			// 스킬 타입으로 체크. 공격스킬만 체인을 걸 수 있음.
-			if (battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth)
+			if (battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth
+			 && battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.Debuff)
 			{
 				isPossible = false;
 			}
+			Debug.Log("Skill Apply Type : "+battleData.SelectedSkill.GetSkillApplyType());
 
 			return isPossible;
 		}
@@ -415,15 +419,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							baseDamage += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else
 						{
-							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 					}
 
@@ -591,14 +595,11 @@ namespace Battle.Turn
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
-					// sisterna_r_12의 타일 속성 판정
+					// sisterna_r_6의 타일 속성 판정
 					if (appliedSkill.GetName().Equals("전자기학"))
 					{
-						if (!target.GetComponent<Tile>().GetTileElement().Equals(Element.Metal)
-						 && !target.GetComponent<Tile>().GetTileElement().Equals(Element.Water))
-						 {
-							 continue;
-						 }
+						Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
+						if(!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) continue;
 					}
 					// 스킬 기본 대미지 계산
 					float baseDamage = 0.0f;
@@ -607,15 +608,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							baseDamage += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else
 						{
-							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 					}
 
@@ -715,6 +716,7 @@ namespace Battle.Turn
 
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 				{
+					Debug.Log("Using skill "+appliedSkill.GetName());
 					// 상태이상 적용
 					if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
@@ -815,15 +817,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							actualAmount += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else
 						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 					}
 
@@ -887,15 +889,15 @@ namespace Battle.Turn
 						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 						if (stat.Equals(Stat.UsedAP))
 						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else if (stat.Equals(Stat.None))
 						{
-							actualAmount += appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 						else
 						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat)[appliedSkill.GetLevel()];
+							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 						}
 					}
 

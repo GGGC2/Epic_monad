@@ -65,6 +65,7 @@ class SkillButton : MonoBehaviour
 				break;
 			case SkillButtonState.LearnedEnhanceable:
 				border.GetComponent<Image>().enabled = true;
+				LoadIcon(skillTreeManager);
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
@@ -76,6 +77,7 @@ class SkillButton : MonoBehaviour
 				break;
 			case SkillButtonState.LearnedMaxEnhanced:
 				border.GetComponent<Image>().enabled = true;
+				LoadIcon(skillTreeManager);
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
@@ -87,6 +89,7 @@ class SkillButton : MonoBehaviour
 				break;
 			case SkillButtonState.Learnable:
 				border.GetComponent<Image>().enabled = true;
+				LoadIcon(skillTreeManager);
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
@@ -99,6 +102,7 @@ class SkillButton : MonoBehaviour
 				break;
 			case SkillButtonState.NotLearnable:
 				border.GetComponent<Image>().enabled = true;
+				LoadIcon(skillTreeManager);
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
@@ -111,6 +115,14 @@ class SkillButton : MonoBehaviour
 				Debug.LogError("Invalid state : " + state);
 				break;
 		}
+	}
+
+	private void LoadIcon(SkillTreeManager skillTreeManager)
+	{
+		string path = "Icon/" + skillTreeManager.SelectedUnitName + "_" + skillInfo.column + "_" + skillInfo.requireLevel;
+		Debug.Log("Path is " + path);
+		Sprite sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
+		icon.GetComponent<Image>().sprite = sprite;
 	}
 }
 }

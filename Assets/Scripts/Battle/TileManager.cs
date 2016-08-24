@@ -108,9 +108,9 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		minReach = Math.Max(1, minReach);
 
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
+		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
@@ -123,9 +123,9 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		minReach = Math.Max(1, minReach);
 
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
+		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
@@ -139,7 +139,8 @@ public class TileManager : MonoBehaviour {
 		List<GameObject> tilesInRange = new List<GameObject>();
 		
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
-		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach, maxReach)).ToList();
+		minReach = Math.Max(1, minReach);
+		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach,maxReach)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInDiagonalCrossRange(mid, minReach, maxReach)).ToList();
 
 		return tilesInRange;

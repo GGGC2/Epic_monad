@@ -63,7 +63,7 @@ public class SkillTreeManager : MonoBehaviour
 	Dictionary<string, SkillInfo> skillInfoByName = new Dictionary<string, SkillInfo>();
 	List<SkillColumnInfo> skillColumnInfos = new List<SkillColumnInfo>();
 
-	void Awake()
+	void Start()
 	{
 		partyUnitNames = PartyDB.GetPartyUnits();
 
