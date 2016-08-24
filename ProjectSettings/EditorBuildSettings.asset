@@ -8,6 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/title.unity
   - enabled: 1
+    path: Assets/Scene/title.unity
+  - enabled: 1
     path: Assets/Scene/pintos#2-1.unity
   - enabled: 1
     path: Assets/Scene/pintos#2-2.unity
