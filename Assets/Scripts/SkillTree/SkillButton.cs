@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Save;
 
 namespace SkillTree
 {
@@ -20,11 +21,13 @@ class SkillButton : MonoBehaviour
 	GameObject icon;
 	GameObject border;
 	SkillInfo skillInfo;
+	GameObject level;
 
 	public void Awake()
 	{
 		text = transform.Find("Text").gameObject;
 		icon = transform.Find("Icon").gameObject;
+		level = transform.Find("Level").gameObject;
 		border = gameObject;
 
 		UpdateState(null);
@@ -47,6 +50,8 @@ class SkillButton : MonoBehaviour
 		button.animationTriggers.normalTrigger = "Normal";
 		button.animationTriggers.highlightedTrigger = "Highlighted";
 
+
+		level.GetComponent<Text>().enabled = false;
 		icon.GetComponent<Image>().enabled = false;
 		text.GetComponent<Text>().enabled = false;
 		GetComponent<Button>().onClick.RemoveAllListeners();
@@ -60,6 +65,8 @@ class SkillButton : MonoBehaviour
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
+				level.GetComponent<Text>().enabled = true;
+				level.GetComponent<Text>().text = SkillDB.GetEnhanceLevel(skillTreeManager.SelectedUnitName, skillInfo.skill.GetName()).ToString();
 				GetComponent<Button>().interactable = true;
 				button.onClick.AddListener(() => skillTreeManager.OnSkillButtonClick(skillInfo.skill.GetName()));
 				break;
@@ -67,6 +74,8 @@ class SkillButton : MonoBehaviour
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
+				level.GetComponent<Text>().enabled = true;
+				level.GetComponent<Text>().text = SkillDB.GetEnhanceLevel(skillTreeManager.SelectedUnitName, skillInfo.skill.GetName()).ToString();
 				GetComponent<Button>().interactable = true;
 				button.animationTriggers.highlightedTrigger = "Normal";
 				break;
@@ -74,6 +83,8 @@ class SkillButton : MonoBehaviour
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
+				level.GetComponent<Text>().enabled = true;
+				level.GetComponent<Text>().text = SkillDB.GetEnhanceLevel(skillTreeManager.SelectedUnitName, skillInfo.skill.GetName()).ToString();
 				GetComponent<Button>().interactable = true;
 				button.animationTriggers.normalTrigger = "Disabled";
 				button.onClick.AddListener(() => skillTreeManager.OnSkillButtonClick(skillInfo.skill.GetName()));
@@ -82,6 +93,8 @@ class SkillButton : MonoBehaviour
 				icon.GetComponent<Image>().enabled = true;
 				text.GetComponent<Text>().enabled = true;
 				text.GetComponent<Text>().text = skillInfo.skill.GetName();
+				level.GetComponent<Text>().enabled = true;
+				level.GetComponent<Text>().text = SkillDB.GetEnhanceLevel(skillTreeManager.SelectedUnitName, skillInfo.skill.GetName()).ToString();
 				GetComponent<Button>().interactable = false;
 				break;
 			default:

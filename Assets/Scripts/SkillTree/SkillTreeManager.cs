@@ -38,6 +38,13 @@ public class SkillTreeManager : MonoBehaviour
 {
 	const int maxEnhanceLevel = 5;
 	int selectedIndex = 0;
+	public string SelectedUnitName
+	{
+		get
+		{
+			return partyUnitNames[selectedIndex];
+		}
+	}
 
 	List<GameObject> nameButtons;
 	GameObject column1Text;
