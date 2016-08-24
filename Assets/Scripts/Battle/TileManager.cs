@@ -7,7 +7,7 @@ using Enums;
 public class TileManager : MonoBehaviour {
 
 	public GameObject tilePrefab;
-	
+
 	Dictionary<Vector2, GameObject> tiles = new Dictionary<Vector2, GameObject>();
 
 	float tileHeight = 0.5f*100/100;
@@ -26,7 +26,7 @@ public class TileManager : MonoBehaviour {
 		else
 			return null;
 	}
-	
+
 	public GameObject GetTile(Vector2 position)
 	{
 		Vector2 key = position;
@@ -35,7 +35,7 @@ public class TileManager : MonoBehaviour {
 		else
 			return null;
 	}
-	
+
 	public Vector3 GetTilePos(Vector2 position)
 	{
 		GameObject tile = GetTile(position);
@@ -71,7 +71,7 @@ public class TileManager : MonoBehaviour {
 		else
 			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
 	}
-	
+
 	List<GameObject> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
@@ -80,15 +80,15 @@ public class TileManager : MonoBehaviour {
 		{
 			tilesInRange = AddNearbyTiles(tilesInRange);
 		}
-		
+
 		return tilesInRange;
 	}
-	
+
 	List<GameObject> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 		tilesInRange.Add(GetTile(mid));
-		
+
 		for(int i = 0; i < maxReach; i++)
 		{
 			Vector2 position = mid + ToVector2(dir)*(i+1);
@@ -97,10 +97,10 @@ public class TileManager : MonoBehaviour {
 				tilesInRange.Add(GetTile(position));
 			}
 		}
-		
+
 		return tilesInRange;
 	}
-	
+
 	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
@@ -110,10 +110,10 @@ public class TileManager : MonoBehaviour {
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
-		
+
 		return tilesInRange;
 	}
-	
+
 	List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
@@ -123,7 +123,7 @@ public class TileManager : MonoBehaviour {
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
-		
+
 		return tilesInRange;
 	}
 
@@ -158,7 +158,7 @@ public class TileManager : MonoBehaviour {
 
 		return tilesInRange;
 	}
-	
+
 	public void PaintTiles(List<GameObject> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
@@ -167,7 +167,7 @@ public class TileManager : MonoBehaviour {
 			tile.GetComponent<Tile>().SetPreSelected(true);
 		}
 	}
-	
+
 	public void DepaintTiles(List<GameObject> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
@@ -176,14 +176,14 @@ public class TileManager : MonoBehaviour {
 			tile.GetComponent<Tile>().SetPreSelected(false);
 		}
 	}
-	
+
 	List<GameObject> AddNearbyTiles(List<GameObject> tileList)
 	{
 		List<GameObject> newTileList = new List<GameObject>();
 		foreach (var tile in tileList)
 		{
 			Vector2 position = tile.GetComponent<Tile>().GetTilePos();
-			
+
 			if (!newTileList.Contains(tile))
 			{
 				newTileList.Add(tile);
@@ -210,73 +210,73 @@ public class TileManager : MonoBehaviour {
 				newTileList.Add(nearbyRightTile);
 			}
 		}
-		
+
 		return newTileList;
 	}
-	
+
 	Vector2 ToVector2(Direction dir)
 	{
 		if(dir == Direction.LeftUp)
 		{
 			return Vector2.left;
 		}
-		
-		else if(dir == Direction.LeftDown) 
+
+		else if(dir == Direction.LeftDown)
 		{
 			return Vector2.down;
 		}
-		
+
 		else if(dir == Direction.RightUp)
 		{
 			return Vector2.up;
 		}
-		
+
 		else if(dir == Direction.RightDown)
 		{
 			return Vector2.right;
 		}
-		
+
 		else if(dir == Direction.Left)
 		{
 			return Vector2.left+Vector2.down;
 		}
-		
+
 		else if(dir == Direction.Right)
 		{
 			return Vector2.right+Vector2.up;
 		}
-		
+
 		else if(dir == Direction.Up)
 		{
 			return Vector2.left+Vector2.up;
 		}
-		
+
 		else return Vector2.right+Vector2.down;
 	}
-	
-	void GenerateTiles (List<TileInfo> tileInfoList)
+
+	public void GenerateTiles (List<TileInfo> tileInfoList)
 	{
 		foreach (var tileInfo in tileInfoList)
 		{
 			GenerateTile(tileInfo);
 		}
 	}
-	
+
 	void GenerateTile (TileInfo tileInfo)
 	{
 		if (tileInfo.IsEmptyTile()) return;
-		
+
 		Vector2 tilePosition = tileInfo.GetTilePosition();
 		TileForm tileForm = tileInfo.GetTileForm();
 		Element tileElement = tileInfo.GetTileElement();
-	
+
 		int j = (int)tilePosition.y;
 		int i = (int)tilePosition.x;
-	
+
 		GameObject tile = Instantiate(tilePrefab, new Vector3(tileWidth * (j+i) * 0.5f, tileHeight * (j-i) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
 		tile.GetComponent<Tile>().SetTilePos(i, j);
 		tile.GetComponent<Tile>().SetTileInfo(tileForm, tileElement);
-		
+
 		tiles.Add(new Vector2(i, j), tile);
 	}
 
@@ -286,11 +286,11 @@ public class TileManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 }

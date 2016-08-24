@@ -51,23 +51,23 @@ public class UnitManager : MonoBehaviour {
 	{
 		return units;
 	}
-	
+
 	public List<GameObject> GetRetreatUnits()
 	{
 		retreatUnits.Clear();
 		foreach (var unit in units)
 		{
 			float percentHealth = 100f * (float)unit.GetComponent<Unit>().GetCurrentHealth() / (float)unit.GetComponent<Unit>().GetMaxHealth();
-			if (((percentHealth <= 10) && (unit.GetComponent<Unit>().GetCurrentHealth() > 0)) || 
+			if (((percentHealth <= 10) && (unit.GetComponent<Unit>().GetCurrentHealth() > 0)) ||
 				(retreatUnits.Contains(unit)))
-				retreatUnits.Add(unit);		
+				retreatUnits.Add(unit);
 		}
 
 		return retreatUnits;
 	}
 
 	public void	MakeRetreatUnitInfo()
-	{		
+	{
 		foreach (var retreatUnit in retreatUnits)
 		{
 			RetreatUnitInfo retreatUnitInfo = new RetreatUnitInfo(retreatUnit);
@@ -87,14 +87,14 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			if ((unit.GetComponent<Unit>().GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
-				deadUnits.Add(unit);		
+				deadUnits.Add(unit);
 		}
 
 		return deadUnits;
 	}
 
 	void MakeDeadUnitInfo()
-	{		
+	{
 		foreach (var deadUnit in deadUnits)
 		{
 			DeadUnitInfo deadUnitInfo = new DeadUnitInfo(deadUnit);
@@ -107,49 +107,49 @@ public class UnitManager : MonoBehaviour {
 		MakeDeadUnitInfo();
 		return deadUnitsInfo;
 	}
-	
+
 	public int GetStandardActivityPoint()
 	{
 		return standardActivityPoint;
 	}
-	
+
 	public void SetStandardActivityPoint(int partyLevel)
 	{
 		standardActivityPoint = partyLevel + 60;
 	}
 
-	void GenerateUnits ()
+	public void GenerateUnits ()
 	{
-		// TileManager tileManager = GetComponent<TileManager>(); 
+		// TileManager tileManager = GetComponent<TileManager>();
 		float tileWidth = 0.5f*200/100;
 		float tileHeight = 0.5f*100/100;
-		
+
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
-		
+
 		foreach (var unitInfo in unitInfoList)
 		{
 			GameObject unit = Instantiate(unitPrefab) as GameObject;
-			
+
 			unit.GetComponent<Unit>().ApplyUnitInfo(unitInfo);
 			unit.GetComponent<Unit>().ApplySkillList(skillInfoList, statusEffectInfoList);
-			
+
 			Vector2 initPosition = unit.GetComponent<Unit>().GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
 			// Vector3 respawnPos = tilePosition + new Vector3(0,0,5f);
-			Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f, 
-											 tileHeight * (initPosition.y - initPosition.x) * 0.5f, 
+			Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f,
+											 tileHeight * (initPosition.y - initPosition.x) * 0.5f,
 											 (initPosition.y - initPosition.x) * 0.1f - 5f);
 			unit.transform.position = respawnPos;
-			
+
 			GameObject tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.GetComponent<Tile>().SetUnitOnTile(unit);
-			
+
 			units.Add(unit);
 		}
-		
+
 		Debug.Log("Generate units complete");
 	}
-	
+
 	public void DeleteDeadUnit(GameObject unitObject)
 	{
 		units.Remove(unitObject);
@@ -174,7 +174,7 @@ public class UnitManager : MonoBehaviour {
 				Debug.Log(unit.GetComponent<Unit>().GetName() + " is readied");
 			}
 		}
-		
+
 		// AP가 큰 순서대로 소팅.
 		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
 		{
@@ -182,7 +182,7 @@ public class UnitManager : MonoBehaviour {
 			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
 			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
 		}, reverse:true));
-		
+
 		return readiedUnits;
 	}
 
@@ -207,16 +207,16 @@ public class UnitManager : MonoBehaviour {
 			unit.GetComponent<Unit>().DecreaseRemainPhaseStatusEffect();
 			unit.GetComponent<Unit>().UpdateStatusEffect();
 		}
-		
+
 		foreach (var unit in units)
 			unit.GetComponent<Unit>().RegenerateActivityPoint();
 	}
-	
+
 	void LoadSkills()
 	{
 		skillInfoList = Parser.GetParsedSkillInfo();
 	}
-    
+
     void LoadStatusEffects()
     {
         statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
@@ -229,7 +229,7 @@ public class UnitManager : MonoBehaviour {
 		GenerateUnits ();
         GetEnemyUnits();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 
