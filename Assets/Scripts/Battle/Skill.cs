@@ -8,6 +8,7 @@ public class Skill {
 
 	// base info.
 	string name;
+	int level;
 	int[] requireAPArray;
 	int[] cooldownArray;
 	
@@ -39,7 +40,7 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
     
-	public Skill(string name, int[] requireAPArray, int[] cooldownArray, 
+	public Skill(string name, int level, int[] requireAPArray, int[] cooldownArray, 
                  Dictionary<string, float[]> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -48,6 +49,7 @@ public class Skill {
 				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
 		this.name = name;
+		this.level = level;
 		this.requireAPArray = requireAPArray;
 		this.cooldownArray = cooldownArray;
 		this.powerFactor = powerFactor;
@@ -72,6 +74,7 @@ public class Skill {
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
             StatusEffect statusEffect = statusEffectInfo.GetStatusEffect();
+			statusEffect.SetLevel(level);
             if(statusEffectInfo.GetSkillName().Equals(this.name))
             {
                 statusEffectList.Add(statusEffectInfo.GetStatusEffect());
@@ -80,6 +83,7 @@ public class Skill {
     }
 	
 	public string GetName() {return name;}
+	public int GetLevel() {return level;}
 	public int[] GetRequireAP() {return requireAPArray;}
 	public int GetRequireAP(int level) {return requireAPArray[level-1];}
 	public int[] GetCooldown() {return cooldownArray;}	
@@ -103,4 +107,6 @@ public class Skill {
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
     public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
+
+	public void SetLevel(int num) {level = num;}
 }
