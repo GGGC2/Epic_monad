@@ -539,7 +539,7 @@ namespace Battle.Turn
 			{
 				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()));
 			}
-			
+
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -567,8 +567,9 @@ namespace Battle.Turn
 			// 자신의 체인 정보 삭제.
 			ChainList.RemoveChainsFromUnit(unitObjectInChain);
 
+			BattleManager battleManager = battleData.battleManager;
 			// 이펙트 임시로 비활성화.
-			// yield return StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
 
 			List<GameObject> targets = new List<GameObject>();
 
@@ -586,7 +587,6 @@ namespace Battle.Turn
 				Unit targetUnit = target.GetComponent<Unit>();
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
-				BattleManager battleManager = battleData.battleManager;
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					// sisterna_r_12의 타일 속성 판정
@@ -774,7 +774,7 @@ namespace Battle.Turn
 				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit.gameObject, selectedTiles));
 
 			// 이펙트 임시로 비활성화.
-			// yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
 
 			List<GameObject> targets = new List<GameObject>();
 
@@ -837,12 +837,12 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+									if (statusEffect.IsOfType(StatusEffectType.Shield))
 										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
-							if (!isInList) 
+							if (!isInList)
 							{
 								targetUnit.GetStatusEffectList().Add(statusEffect);
 								if (statusEffect.IsOfType(StatusEffectType.Shield))
@@ -1003,9 +1003,11 @@ namespace Battle.Turn
 				endPos = endPos / (float)selectedTiles.Count;
 
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-				particle.transform.position = startPos - new Vector3(0, 0, 0.01f);
+				particle.transform.position = startPos - new Vector3(0, -0.5f, 0.01f);
 				yield return new WaitForSeconds(0.2f);
-				iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, 0, 5f), 0.5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				// 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				// 유닛의 중앙 부분을 공격하기 위하여 y축으고 0.5 올린다.
+				iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, -0.5f, 5f), 0.5f);
 				yield return new WaitForSeconds(0.3f);
 				GameObject.Destroy(particle, 0.5f);
 				yield return null;
@@ -1021,7 +1023,12 @@ namespace Battle.Turn
 				targetPos = targetPos / (float)selectedTiles.Count;
 				targetPos = targetPos - new Vector3(0, 0, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
 
-				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
+				GameObject particlePrefab =  Resources.Load("Particle/" + effectName) as GameObject;
+				if (particlePrefab == null)
+				{
+					Debug.LogError("Cannot load particle " + effectName);
+				}
+				GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
 				particle.transform.position = targetPos - new Vector3(0, 0, 0.01f);
 				yield return new WaitForSeconds(0.5f);
 				GameObject.Destroy(particle, 0.5f);
