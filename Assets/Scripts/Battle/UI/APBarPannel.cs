@@ -22,6 +22,8 @@ namespace BattleUI
 
 		private int seperationSpace = 10;
 
+		const int maxUICount = 13;
+
 		private void Awake()
 		{
 			bigProfile = transform.Find("Big/Profile").gameObject;
@@ -66,6 +68,10 @@ namespace BattleUI
 			}
 
 			otherUnits = SortUnits(battleData, otherUnits);
+			if (otherUnits.Count > maxUICount - 1)
+			{
+				otherUnits = otherUnits.GetRange(0, maxUICount - 1);
+			}
 
 			SetProfiles(battleData, standardActivityPoint, otherUnits);
 			SetCurrentText(battleData, standardActivityPoint, otherUnits);
