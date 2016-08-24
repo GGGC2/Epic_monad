@@ -17,7 +17,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public SpriteRenderer sprite;
 	public bool isHighlight;
 	public List<Color> colors;
-	
+
 	bool isPreSeleted = false;
 
 	public void SetPreSelected(bool input)
@@ -40,7 +40,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		string imageName = form.ToString() + "_" + element.ToString();
 		string imagePath = "TileImage/" + imageName;
 		GetComponent<SpriteRenderer>().sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
-		
+
 		SetTileForm(form);
 		SetTileElement(element);
 	}
@@ -125,6 +125,12 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			return "평지";
 		else if (form == TileForm.Hill)
 			return "언덕";
+		else if (form == TileForm.Cliff)
+			return "절벽";
+		else if (form == TileForm.Water)
+			return "호수";
+		else if (form == TileForm.HigherHill)
+			return "높은 언덕";
 		else
 			return "";
 	}
@@ -142,6 +148,18 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			// USING ONLY TEST
 			return EditInfo.RequireApAtHill;
 			// return 5;
+		}
+		else if (type == TileForm.Water)
+		{
+			return 9999;
+		}
+		else if (type == TileForm.HigherHill)
+		{
+			return EditInfo.RequireApAtHigherHill;
+		}
+		else if (type == TileForm.Cliff)
+		{
+			return 9999;
 		}
 		else
 		{

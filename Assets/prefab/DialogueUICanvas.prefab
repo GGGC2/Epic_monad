@@ -1302,15 +1302,15 @@ RectTransform:
   m_GameObject: {fileID: 103256}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22431588}
   m_RootOrder: 1
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: -160}
-  m_SizeDelta: {x: 500, y: 300}
+  m_AnchoredPosition: {x: 50, y: -50}
+  m_SizeDelta: {x: 700, y: 750}
   m_Pivot: {x: 1, y: 0}
 --- !u!224 &22449346
 RectTransform:
@@ -1496,11 +1496,11 @@ RectTransform:
   - {fileID: 224000012005934606}
   - {fileID: 224000012636168970}
   - {fileID: 224000013603666700}
-  - {fileID: 224000011958993712}
-  - {fileID: 224000012218251132}
-  - {fileID: 224000012429709468}
-  - {fileID: 224000013973247676}
   - {fileID: 224000013098011638}
+  - {fileID: 224000012429709468}
+  - {fileID: 224000012218251132}
+  - {fileID: 224000013973247676}
+  - {fileID: 224000011958993712}
   m_Father: {fileID: 22496350}
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 1}
@@ -1516,15 +1516,15 @@ RectTransform:
   m_GameObject: {fileID: 169168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22431588}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -160}
-  m_SizeDelta: {x: 500, y: 300}
+  m_AnchoredPosition: {x: -50, y: -50}
+  m_SizeDelta: {x: 700, y: 750}
   m_Pivot: {x: 0, y: 0}
 --- !u!224 &22496350
 RectTransform:
@@ -1948,7 +1948,7 @@ GameObject:
   - 114: {fileID: 114000011899114510}
   - 114: {fileID: 114000011944766508}
   m_Layer: 5
-  m_Name: ButtonPanel (9)
+  m_Name: ButtonPanel (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2171,7 +2171,7 @@ GameObject:
   - 114: {fileID: 114000013812885012}
   - 114: {fileID: 114000014055559946}
   m_Layer: 5
-  m_Name: ButtonPanel (8)
+  m_Name: ButtonPanel (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2480,7 +2480,7 @@ GameObject:
   - 114: {fileID: 114000013711360104}
   - 114: {fileID: 114000010078216094}
   m_Layer: 5
-  m_Name: ButtonPanel (6)
+  m_Name: ButtonPanel (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2515,7 +2515,7 @@ GameObject:
   - 114: {fileID: 114000014253978534}
   - 114: {fileID: 114000011973798314}
   m_Layer: 5
-  m_Name: ButtonPanel (5)
+  m_Name: ButtonPanel (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2678,7 +2678,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 8
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2937,7 +2937,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3223,7 +3223,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 7
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3395,7 +3395,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3561,7 +3561,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 5
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3613,7 +3613,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 9
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3746,7 +3746,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4233,7 +4233,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4745,7 +4745,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 6
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5319,7 +5319,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 80.00003, y: -170}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000010083276518
 RectTransform:
@@ -5824,11 +5824,11 @@ RectTransform:
   - {fileID: 224000010207502582}
   - {fileID: 224000012675207906}
   m_Father: {fileID: 22485806}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 650, y: -545.00037}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000011961677540
 RectTransform:
@@ -5869,7 +5869,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 80.00001, y: -295.0001}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000012067036972
 RectTransform:
@@ -5924,11 +5924,11 @@ RectTransform:
   - {fileID: 224000010131973528}
   - {fileID: 224000011428246072}
   m_Father: {fileID: 22485806}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 650, y: -420.0003}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000012229577784
 RectTransform:
@@ -6001,11 +6001,11 @@ RectTransform:
   - {fileID: 224000012336819976}
   - {fileID: 224000011059026240}
   m_Father: {fileID: 22485806}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 650, y: -295.0002}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000012587057468
 RectTransform:
@@ -6046,7 +6046,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 80.00003, y: -420.0002}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000012675207906
 RectTransform:
@@ -6119,11 +6119,11 @@ RectTransform:
   - {fileID: 224000010703293180}
   - {fileID: 224000012067036972}
   m_Father: {fileID: 22485806}
-  m_RootOrder: 9
+  m_RootOrder: 5
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 650, y: -45}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000013232841148
 RectTransform:
@@ -6200,7 +6200,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 80, y: -45}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000013509835598
 RectTransform:
@@ -6259,7 +6259,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 80.00001, y: -545.0003}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000013667488762
 RectTransform:
@@ -6336,7 +6336,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 650, y: -170.00006}
-  m_SizeDelta: {x: 500, y: 250}
+  m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &224000014214966582
 RectTransform:

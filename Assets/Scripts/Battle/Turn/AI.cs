@@ -204,7 +204,10 @@ namespace Battle.Turn
 
 				if (selectedTile == null)
 				{
-					yield break;
+                    // 아무것도 할 게 없을 경우 휴식
+                    battleData.currentState = CurrentState.RestAndRecover;
+                    yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+                    yield break;
 				}
 				// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
 
