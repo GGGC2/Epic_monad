@@ -60,6 +60,10 @@ public class TileManager : MonoBehaviour {
 		{
 			return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
 		}
+		else if (form == RangeForm.AllDirection)
+		{
+			return GetTilesInAllDirectionRange(mid, minReach, maxReach);
+		}
 		else if (form == RangeForm.Sector)
 		{
 			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
@@ -87,11 +91,10 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		tilesInRange.Add(GetTile(mid));
 
-		for(int i = 0; i < maxReach; i++)
+		for(int i = minReach; i < maxReach; i++)
 		{
-			Vector2 position = mid + ToVector2(dir)*(i+1);
+			Vector2 position = mid + ToVector2(dir)*i;
 			if (GetTile(position) != null)
 			{
 				tilesInRange.Add(GetTile(position));
@@ -104,7 +107,6 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		tilesInRange.Add(GetTile(mid));
 
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
@@ -117,12 +119,21 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		tilesInRange.Add(GetTile(mid));
 
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
+
+		return tilesInRange;
+	}
+
+	List<GameObject> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		
+		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach, maxReach)).ToList();
+		tilesInRange = tilesInRange.Concat(GetTilesInDiagonalCrossRange(mid, minReach, maxReach)).ToList();
 
 		return tilesInRange;
 	}

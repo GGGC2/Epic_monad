@@ -63,7 +63,130 @@ namespace Battle.Turn
 		}
 	}
 
-	public class AIStates
+    public class SpaghettiConLumache {
+        //
+        //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
+        //  ♪ღ♪         Spaghetti Con Lumache          ♪ღ♪
+        //  ♪ღ♪   Selection of the finest algorithms   ♪ღ♪
+        //  ♪ღ♪        for Las Lumache to move         ♪ღ♪
+        //  ♪ღ♪                                        ♪ღ♪
+        //  ♪ღ♪          ** Chef's Choice **           ♪ღ♪
+        //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
+        // 
+
+        public static Vector2 CalculateDestination(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+            // Destination calculation algorithm
+            //
+            // If it's far from (>3) manastone, go to the nearest manastone
+            // Else if it's close to player (<=4), go to the nearest player
+            // Else pick a random tile from moveable tiles that are close (<=2) to manastone
+            
+            Unit mainunit = mainUnitObject.GetComponent<Unit>();
+            float distanceFromNearestManastone = float.PositiveInfinity;
+            foreach (GameObject unitObject in unitObjects)
+            {
+                Unit unit = unitObject.GetComponent<Unit>();
+                if (unit.GetNameInCode() != "manastone")
+                {
+                    continue;
+                }
+                float distance = Vector2.Distance(mainunit.GetPosition(), unit.GetPosition());
+                if (distanceFromNearestManastone > distance)
+                {
+                    distanceFromNearestManastone = distance;
+                }
+            }
+
+
+            if (distanceFromNearestManastone > 3)
+            {
+                return FindNearestManastone(movableTileObjects, unitObjects, mainUnitObject);
+            }
+
+            
+            float distanceFromNearestPlayer = float.PositiveInfinity;
+            foreach (GameObject unitObject in unitObjects) {
+                Unit unit = unitObject.GetComponent<Unit>();
+                if (unit.GetSide() != Side.Ally) {
+                    continue;
+                }
+                float distance = Vector2.Distance(mainunit.GetPosition(), unit.GetPosition());
+                if (distanceFromNearestPlayer > distance) {
+                    distanceFromNearestPlayer = distance;
+                }
+            }
+            
+
+            if (distanceFromNearestPlayer <= 4)
+            {
+                return FindNearestPlayer(movableTileObjects, unitObjects, mainUnitObject);
+            }
+
+            List<Tile> nearManastoneTiles = new List<Tile>();
+            foreach (GameObject movableTileObject in movableTileObjects) {
+                Tile movableTile = movableTileObject.GetComponent<Tile>();
+
+                foreach (GameObject unitObject in unitObjects) {
+                    Unit unit = unitObject.GetComponent<Unit>();
+                    if (unit.GetNameInCode() != "manastone") {
+                        continue;
+                    }
+                    float distance = Vector2.Distance(movableTile.GetTilePos(), unit.GetPosition());
+                    if (distance <= 4)
+                    {
+                        nearManastoneTiles.Add(movableTile);
+                        break;
+                    }
+                }
+            }
+
+            Tile chosenRandomTile = nearManastoneTiles[Random.Range(0, nearManastoneTiles.Count)];
+
+            return chosenRandomTile.GetTilePos();
+
+        }
+
+        public static Vector2 FindNearestManastone(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+
+
+            var positions = from tileGO in movableTileObjects
+                            from unitGO in unitObjects
+                            let tile = tileGO.GetComponent<Tile>()
+                            let unit = unitGO.GetComponent<Unit>()
+                            where unit.GetNameInCode() == "manastone"
+                            let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
+                            orderby distance
+                            select tile.GetTilePos();
+
+            List<Vector2> availablePositions = positions.ToList();
+            if (availablePositions.Count > 0) {
+                return availablePositions[0];
+            }
+            return mainUnitObject.GetComponent<Unit>().GetPosition();
+        }
+
+        public static Vector2 FindNearestPlayer(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+
+
+            var positions = from tileGO in movableTileObjects
+                            from unitGO in unitObjects
+                            let tile = tileGO.GetComponent<Tile>()
+                            let unit = unitGO.GetComponent<Unit>()
+                            where unit.GetSide() == Side.Ally
+                            let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
+                            orderby distance
+                            select tile.GetTilePos();
+
+            List<Vector2> availablePositions = positions.ToList();
+            if (availablePositions.Count > 0) {
+                return availablePositions[0];
+            }
+            return mainUnitObject.GetComponent<Unit>().GetPosition();
+        }
+    }
+
+
+    public class AIStates
 	{
 		public static IEnumerator AIMove(BattleData battleData)
 		{
@@ -80,16 +203,28 @@ namespace Battle.Turn
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			// var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
-			var randomPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnitObject);
+		    Unit currentUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+		    Vector2 destPosition;
 
-			// FIXME : 어딘가로 옮겨야 할 텐데...
-			GameObject destTile = battleData.tileManager.GetTile(randomPosition);
-			List<GameObject> destPath = movableTilesWithPath[randomPosition].path;
-			Vector2 currentTilePos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
-			Vector2 distanceVector = randomPosition - currentTilePos;
+            if (currentUnit.GetNameInCode() == "monster")
+		    {
+                // stage 3 달팽이 몬스터 temp AI
+		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
+		            battleData.selectedUnitObject);
+		    }
+		    else
+		    {
+                // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
+                destPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnitObject);
+            }
+
+            // FIXME : 어딘가로 옮겨야 할 텐데...
+            GameObject destTile = battleData.tileManager.GetTile(destPosition);
+			List<GameObject> destPath = movableTilesWithPath[destPosition].path;
+			Vector2 currentTilePos = currentUnit.GetPosition();
+			Vector2 distanceVector = destPosition - currentTilePos;
 			int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
-			int totalUseActivityPoint = movableTilesWithPath[randomPosition].requireActivityPoint;
+			int totalUseActivityPoint = movableTilesWithPath[destPosition].requireActivityPoint;
 
 			// battleData.moveCount += distance;
 

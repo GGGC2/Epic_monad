@@ -87,6 +87,7 @@ namespace Enums {
 		Diagonal,
 		Cross,
         DiagonalCross,
+		AllDirection,
 		Sector,
 		Global,
 		Auto,

@@ -3,3 +3,12 @@ reina,마력 과충전,과충전 상태,Silence,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0
 reina,마법 보호막,비전 방패,Shield,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,UsedAP,10 11 12 13 14,4,0,0,None,None,None
 sisterna,선 스펙트럼,파장 분류,conditionalShield,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,MaxHealth,0.08 0.11 0.14 0.17 0.2,0,1,0,None,None,None
 sisterna,슈뢰딩거의 상자,상자에 든 고양이,Faint,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,1,0,0,None,None,None
+eren,섬광 투영,기절,Faint,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,1,0,0,None,None,None
+eren,보이지 않는 손,속박,Bind,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,2,0,0,None,None,None
+eren,보이지 않는 손,둔화,RequireSkillAPChange,FALSE,FALSE,FALSE,TRUE,-0.04 -0.08 -0.12 -0.16 -0.20,None,0 0 0 0 0,2,0,0,None,None,None
+eren,에테르 장벽,에테르 장벽,DamageChange,TRUE,FALSE,FALSE,TRUE,-0.2 -0.3 -0.4 -0.5 -0.6,None,0 0 0 0 0,0,1,0,None,None,None
+lubericha,교향곡:영웅,강화의 선율,PowerChange,TRUE,FALSE,FALSE,TRUE,0.1 0.15 0.2 0.25 0.3,None,0 0 0 0 0,2,0,0,None,None,None
+lubericha,엘리제를 위하여,보호막,Shield,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,Power,0.4 0.55 0.7 0.85 1.0,2,0,0,None,None,None
+lubericha,환상곡,지속 회복,ContinuousHeal,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,Power,0.4 0.5 0.6 0.7 0.8,3,0,0,None,None,None
+yeong,준비태세,준비태세,DexturityChange,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,None,6 12 18 24 30,1,0,0,None,None,None
+yeong,승부,대결 중,DamageChange,FALSE,TRUE,FALSE,TRUE,0.1 0.1 0.1 0.1 0.1,None,0 0 0 0 0,9999,0,0,None,None,None

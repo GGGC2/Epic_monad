@@ -280,7 +280,7 @@ public class Unit : MonoBehaviour
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.GetRemainPhase() > 0 && statusEffect.GetCooldown() == 0)
+			if (statusEffect.GetRemainPhase() > 0 && statusEffect.GetCooldown() == 0 && !statusEffect.GetIsInfinite())
 			{
 				statusEffect.DecreaseRemainPhase();
 				if (statusEffect.GetRemainPhase() == 0)
