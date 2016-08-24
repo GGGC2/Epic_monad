@@ -276,7 +276,9 @@ public class Unit : MonoBehaviour
 		for(int i = 0; i < count; i++)
 		{
 			if(!statusEffectList[i].GetToBeRemoved())
+			{
 				newStatusEffectList.Add(statusEffectList[i]);
+			}
 		}
 		statusEffectList = newStatusEffectList;
 	}
@@ -370,6 +372,12 @@ public class Unit : MonoBehaviour
 				actualDamage = amount;
 			}
 
+			// sisterna_l_1의 저항력 계산
+			if (penetration == -1.0f)
+			{
+				actualDamage = amount - GetActualStat(Stat.Resistance);
+			}
+
 			// 대미지 증감 효과 적용
 			if (this.HasStatusEffect(StatusEffectType.DamageChange))
 			{
@@ -448,6 +456,12 @@ public class Unit : MonoBehaviour
 				actualDamage = amount;
 			}
 
+			// sisterna_l_1의 저항력 계산
+			if (penetration == -1.0f)
+			{
+				actualDamage = amount - GetActualStat(Stat.Resistance);
+			}
+
 			// 대미지 증감 효과 적용
 			if (this.HasStatusEffect(StatusEffectType.DamageChange))
 			{
@@ -464,6 +478,25 @@ public class Unit : MonoBehaviour
 				{
 					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
 					{
+						// sisterna_m_12 발동 조건 체크
+						if (statusEffectList[i].GetName().Equals("파장 분류"))
+						{
+							if (finalDamage < (int)(0.2 * maxHealth)) continue;
+							else
+							{
+								int absorbDamage = (int)(statusEffectList[i].GetAmount(1) * this.GetActualStat(statusEffectList[i].GetAmountStat()));
+								finalDamage -= absorbDamage;
+								float[] tempArray = new float[5] {0, 0, 0, 0, 0}; // 강타 정의용 임시 array
+								StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", StatusEffectType.Smite,
+																				true, false, false, false, 
+																				tempArray, Stat.None, tempArray, absorbDamage, 
+																				0, 1, 0, false, "None", EffectVisualType.None, EffectMoveType.None);
+								statusEffectList.Add(sisternaSmite);
+								statusEffectList[i].SetToBeRemoved(true);
+								this.UpdateStatusEffect();
+								break;
+							}
+						}
 						shieldAmount = statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
 						{

@@ -10,12 +10,12 @@ namespace Enums {
 
 	public enum EffectVisualType
 	{
-		Individual, Area
+		Individual, Area, None
 	}
 
 	public enum EffectMoveType
 	{
-		Move, NonMove
+		Move, NonMove, None
 	}
 
 	public enum Side

@@ -520,9 +520,21 @@ namespace Battle.Turn
 
 			// 방향 돌리기.
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
-			// 스킬 시전에 필요한 ap만큼 선 차감.
-			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
-			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
+
+			// sisterna_m_30 대상 AP 선 계산
+			if(battleData.SelectedSkill.GetName().Equals("조화진동"))
+			{
+				int enemyCurrentAP = selectedTiles[0].GetComponent<Unit>().GetCurrentActivityPoint();
+				int requireAP = Math.Min(enemyCurrentAP, battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill));
+				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
+			}
+			else
+			{
+				// 기타 스킬 AP 사용 선차감
+				int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
+				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
+			}
+			
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -572,6 +584,15 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
+					// sisterna_r_12의 타일 속성 판정
+					if (appliedSkill.GetName().Equals("전자기학"))
+					{
+						if (!target.GetComponent<Tile>().GetTileElement().Equals(Element.Metal)
+						 && !target.GetComponent<Tile>().GetTileElement().Equals(Element.Water))
+						 {
+							 continue;
+						 }
+					}
 					// 스킬 기본 대미지 계산
 					float baseDamage = 0.0f;
 					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
@@ -804,10 +825,20 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(1)));
 									break;
 								}
 							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							if (!isInList) 
+							{
+								targetUnit.GetStatusEffectList().Add(statusEffect);
+								if (statusEffect.IsOfType(StatusEffectType.Shield))
+								{
+									targetUnit.GetStatusEffectList()[targetUnit.GetStatusEffectList().Count].SetRemainAmount
+									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(1)));
+								}
+							}
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
