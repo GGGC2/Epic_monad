@@ -988,6 +988,12 @@ namespace Battle.Turn
 		private static IEnumerator ApplySkillEffect(Skill appliedSkill, GameObject unitObject, List<GameObject> selectedTiles)
 		{
 			string effectName = appliedSkill.GetEffectName();
+			if (effectName == "-")
+			{
+				Debug.Log("There is no effect for " + appliedSkill.GetName());
+				yield break;
+			}
+
 			EffectVisualType effectVisualType = appliedSkill.GetEffectVisualType();
 			EffectMoveType effectMoveType = appliedSkill.GetEffectMoveType();
 
@@ -1021,7 +1027,7 @@ namespace Battle.Turn
 					targetPos += tile.transform.position;
 				}
 				targetPos = targetPos / (float)selectedTiles.Count;
-				targetPos = targetPos - new Vector3(0, 0, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				targetPos = targetPos - new Vector3(0, -0.5f, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
 
 				GameObject particlePrefab =  Resources.Load("Particle/" + effectName) as GameObject;
 				if (particlePrefab == null)
@@ -1029,7 +1035,7 @@ namespace Battle.Turn
 					Debug.LogError("Cannot load particle " + effectName);
 				}
 				GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
-				particle.transform.position = targetPos - new Vector3(0, 0, 0.01f);
+				particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
 				yield return new WaitForSeconds(0.5f);
 				GameObject.Destroy(particle, 0.5f);
 				yield return null;
@@ -1050,7 +1056,7 @@ namespace Battle.Turn
 				foreach (var targetPos in targetPosList)
 				{
 					GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-					particle.transform.position = targetPos - new Vector3(0, 0, 0.01f);
+					particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
 					GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 				}
 				if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
@@ -1063,7 +1069,7 @@ namespace Battle.Turn
 					midPos = midPos / (float)selectedTiles.Count;
 
 					GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-					particle.transform.position = midPos - new Vector3(0, 0, 0.01f);
+					particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
 					GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 				}
 
