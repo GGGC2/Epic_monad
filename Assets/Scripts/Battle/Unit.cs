@@ -253,7 +253,8 @@ public class Unit : MonoBehaviour
 	public void UpdateSkillCooldown()
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
-		foreach (var skill in usedSkillDict.Keys)
+		List<string> usedSkillKeys = new List<string>();
+		foreach (var skill in usedSkillKeys)
 		{
 			usedSkillDict[skill]--;
 			if (usedSkillDict[skill] != 0)
