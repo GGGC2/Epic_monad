@@ -539,7 +539,7 @@ namespace Battle.Turn
 			{
 				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()));
 			}
-			
+
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -567,8 +567,9 @@ namespace Battle.Turn
 			// 자신의 체인 정보 삭제.
 			ChainList.RemoveChainsFromUnit(unitObjectInChain);
 
+			BattleManager battleManager = battleData.battleManager;
 			// 이펙트 임시로 비활성화.
-			// yield return StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
 
 			List<GameObject> targets = new List<GameObject>();
 
@@ -586,7 +587,6 @@ namespace Battle.Turn
 				Unit targetUnit = target.GetComponent<Unit>();
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target);
-				BattleManager battleManager = battleData.battleManager;
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					// sisterna_r_12의 타일 속성 판정
@@ -735,11 +735,7 @@ namespace Battle.Turn
 					}
 
 					var statusEffectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), -1.0f, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
-
-					if (target == targets[targets.Count-1])
-					{
-						yield return battleManager.StartCoroutine(statusEffectCoroutine);
-					}
+					yield return null;
 				}
 
 				unitInChain.ActiveFalseAllBounsText();
@@ -774,7 +770,7 @@ namespace Battle.Turn
 				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit.gameObject, selectedTiles));
 
 			// 이펙트 임시로 비활성화.
-			// yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
 
 			List<GameObject> targets = new List<GameObject>();
 
@@ -791,12 +787,22 @@ namespace Battle.Turn
 			{
 				Unit targetUnit = target.GetComponent<Unit>();
 
-				// kashasti_l_12
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
 				{
-					float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
-					var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[0], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
-					battleManager.StartCoroutine(damageCoroutine);
+					// kashasti_l_12
+					if(appliedSkill.GetName().Equals("이매진 불릿"))
+					{
+						float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
+						var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[appliedSkill.GetLevel()-1], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
+						battleManager.StartCoroutine(damageCoroutine);
+					}
+					// lubericha_l_30
+					else if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
+					{
+						int apDamage = targetUnit.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
+						var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage, 0.0f, false, false);
+						battleManager.StartCoroutine(damageCoroutine);
+					}
 				}
 
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
@@ -821,6 +827,11 @@ namespace Battle.Turn
 					}
 
 					var recoverAmount = (int) actualAmount;
+					// lubericha_r_1 회복량 조건 체크
+					if (appliedSkill.GetName().Equals("사랑의 기쁨") && targetUnit.GetNameInCode().Equals("lubericha"))
+					{
+						recoverAmount = recoverAmount / 2;
+					}
 					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
 
@@ -837,12 +848,12 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+									if (statusEffect.IsOfType(StatusEffectType.Shield))
 										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
-							if (!isInList) 
+							if (!isInList)
 							{
 								targetUnit.GetStatusEffectList().Add(statusEffect);
 								if (statusEffect.IsOfType(StatusEffectType.Shield))
@@ -904,10 +915,20 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							if (!isInList)
+							{
+								if (statusEffect.IsOfType(StatusEffectType.Shield))
+								{
+									targetUnit.GetStatusEffectList()[targetUnit.GetStatusEffectList().Count].SetRemainAmount
+									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+								}
+								targetUnit.GetStatusEffectList().Add(statusEffect);
+							} 
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
@@ -929,6 +950,9 @@ namespace Battle.Turn
 					{
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
+							// lubericha_m_1 조건 체크
+							if (appliedSkill.GetName().Equals("교향곡:영웅") && targetUnit.GetNameInCode().Equals("lubericha")) continue;
+
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
 							{
@@ -937,6 +961,8 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
@@ -944,7 +970,19 @@ namespace Battle.Turn
 							{
 								if(statusEffect.IsOfType(StatusEffectType.Shield))
 								{
-									statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
+									// lubericha_r_18 보호막 수치 계산
+									if (appliedSkill.GetName().Equals("엘리제를 위하여"))
+									{
+										statusEffect.SetRemainAmount((int)(selectedUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+									}
+									else if(appliedSkill.GetName().Equals("마법 보호막"))
+									{
+										statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
+									}
+									else
+									{
+										statusEffect.SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+									}
 								}
 								targetUnit.GetStatusEffectList().Add(statusEffect);
 							}
@@ -953,17 +991,12 @@ namespace Battle.Turn
 							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
 						}
 					}
-
-					var statusEffectCoroutine = targetUnit.RecoverHealth(0); // 임시로 0로 설정
-
-					if (target == targets[targets.Count-1])
-					{
-						yield return battleManager.StartCoroutine(statusEffectCoroutine);
-					}
-					else
-					{
-						battleManager.StartCoroutine(statusEffectCoroutine);
-					}
+					yield return null;
+				}
+				// lubericha_l_6 스킬 효과
+				else if (appliedSkill.GetName().Equals("정화된 밤"))
+				{
+					targetUnit.GetStatusEffectList().RemoveAt(0);
 				}
 			}
 
@@ -988,6 +1021,12 @@ namespace Battle.Turn
 		private static IEnumerator ApplySkillEffect(Skill appliedSkill, GameObject unitObject, List<GameObject> selectedTiles)
 		{
 			string effectName = appliedSkill.GetEffectName();
+			if (effectName == "-")
+			{
+				Debug.Log("There is no effect for " + appliedSkill.GetName());
+				yield break;
+			}
+
 			EffectVisualType effectVisualType = appliedSkill.GetEffectVisualType();
 			EffectMoveType effectMoveType = appliedSkill.GetEffectMoveType();
 
@@ -1003,9 +1042,11 @@ namespace Battle.Turn
 				endPos = endPos / (float)selectedTiles.Count;
 
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-				particle.transform.position = startPos - new Vector3(0, 0, 0.01f);
+				particle.transform.position = startPos - new Vector3(0, -0.5f, 0.01f);
 				yield return new WaitForSeconds(0.2f);
-				iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, 0, 5f), 0.5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				// 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				// 유닛의 중앙 부분을 공격하기 위하여 y축으고 0.5 올린다.
+				iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, -0.5f, 5f), 0.5f);
 				yield return new WaitForSeconds(0.3f);
 				GameObject.Destroy(particle, 0.5f);
 				yield return null;
@@ -1019,10 +1060,15 @@ namespace Battle.Turn
 					targetPos += tile.transform.position;
 				}
 				targetPos = targetPos / (float)selectedTiles.Count;
-				targetPos = targetPos - new Vector3(0, 0, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+				targetPos = targetPos - new Vector3(0, -0.5f, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
 
-				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-				particle.transform.position = targetPos - new Vector3(0, 0, 0.01f);
+				GameObject particlePrefab =  Resources.Load("Particle/" + effectName) as GameObject;
+				if (particlePrefab == null)
+				{
+					Debug.LogError("Cannot load particle " + effectName);
+				}
+				GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
+				particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
 				yield return new WaitForSeconds(0.5f);
 				GameObject.Destroy(particle, 0.5f);
 				yield return null;
@@ -1043,7 +1089,7 @@ namespace Battle.Turn
 				foreach (var targetPos in targetPosList)
 				{
 					GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-					particle.transform.position = targetPos - new Vector3(0, 0, 0.01f);
+					particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
 					GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 				}
 				if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
@@ -1056,7 +1102,7 @@ namespace Battle.Turn
 					midPos = midPos / (float)selectedTiles.Count;
 
 					GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-					particle.transform.position = midPos - new Vector3(0, 0, 0.01f);
+					particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
 					GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 				}
 
