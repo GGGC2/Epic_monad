@@ -488,8 +488,8 @@ public class Unit : MonoBehaviour
 								finalDamage -= absorbDamage;
 								float[] tempArray = new float[5] {0, 0, 0, 0, 0}; // 강타 정의용 임시 array
 								StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", StatusEffectType.Smite,
-																				true, false, false, false, 
-																				tempArray, Stat.None, tempArray, absorbDamage, 
+																				true, false, false, false,
+																				tempArray, Stat.None, tempArray, absorbDamage,
 																				0, 1, 0, false, "None", EffectVisualType.None, EffectMoveType.None);
 								statusEffectList.Add(sisternaSmite);
 								statusEffectList[i].SetToBeRemoved(true);
@@ -720,7 +720,7 @@ public class Unit : MonoBehaviour
 		directionBonusTextObject.SetActive(true);
 		if (bonus == 1.1f)
 			directionBonusTextObject.GetComponentInChildren<Text>().text = "측면 공격 보너스 (x1.1)";
-		else 
+		else
 			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 보너스 (x1.25)";
 		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
@@ -819,6 +819,11 @@ public class Unit : MonoBehaviour
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
 		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();
+		if (dexturity == 0)
+		{
+			// Manastone is not move
+			activityPoint = 0;
+		}
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<StatusEffect>();
