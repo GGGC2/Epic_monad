@@ -331,38 +331,46 @@ namespace Battle.Turn
 				GameObject targetTile = battleData.tileManager.GetTile(enemy.GetComponent<Unit>().GetPosition() + dirVec * 5);
 				enemy.GetComponent<Unit>().GetKnockedBack(battleData, targetTile);
 
-				yield return new WaitForSeconds(0.1f);
+				yield return new WaitForSeconds(0.5f);
 			}
 		}
 
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
+			bool nothingTodo = true;
+
 			if (Skill1Available(battleData))
 			{
+				nothingTodo = false;
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 1));
 			}
 
 			if (Skill2Available(battleData))
 			{
+				nothingTodo = false;
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 2));
 			}
 
 			if (Skill3Available(battleData))
 			{
+				nothingTodo = false;
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 3));
 			}
 
 			Direction? skill4AvailableDirection = Skill4AvailableDirection(battleData);
 			if (skill4AvailableDirection.HasValue)
 			{
+				nothingTodo = false;
+				battleData.uiManager.SetSkillNamePanelUI(battleData.SelectedSkill.GetName());
 				Debug.LogError("Skill 4 available " + skill4AvailableDirection.Value);
 				battleData.SelectedUnit.SetDirection(skill4AvailableDirection.Value);
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 4));
 				yield return battleManager.StartCoroutine(Skill4Knockback(battleData));
+				battleData.uiManager.ResetSkillNamePanelUI();
 			}
 
-			else
+			if (nothingTodo)
 			{
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
