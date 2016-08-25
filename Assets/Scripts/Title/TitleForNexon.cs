@@ -71,7 +71,6 @@ public class TitleForNexon : MonoBehaviour
 		{
 			"reina",
 			"sisterna",
-			"yeong",
 			"eren",
 			"luvericha"
 		};
