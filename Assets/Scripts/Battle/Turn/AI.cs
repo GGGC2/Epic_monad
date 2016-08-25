@@ -209,11 +209,6 @@ namespace Battle.Turn
 					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
 					select unitGO;
 
-			foreach (var a in enemies.ToList())
-			{
-				Debug.Log("target name  is " + a.GetComponent<Unit>().GetName());
-			}
-
 			return enemies.Count() >= 2;
 		}
 
@@ -245,6 +240,31 @@ namespace Battle.Turn
 			return enemiesNearEachOther.Count() > 0;
 		}
 
+		public static bool Skill3Available(BattleData battleData)
+		{
+			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+
+			battleData.indexOfSeletedSkillByUser = 3;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			List<GameObject> selectedTiles = new List<GameObject>();
+			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+														selectedUnit.GetPosition(),
+														selectedSkill.GetFirstMinReach(),
+														selectedSkill.GetFirstMaxReach(),
+														selectedUnit.GetDirection());
+
+			var enemies = from tileGO in selectedTiles
+					let tile = tileGO.GetComponent<Tile>()
+					let unitGO = tile.GetUnitOnTile()
+					where unitGO != null
+					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
+					select unitGO;
+
+			return enemies.Count() > 0;
+		}
+
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -256,6 +276,11 @@ namespace Battle.Turn
 			if (Skill2Available(battleData))
 			{
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 2));
+			}
+
+			if (Skill3Available(battleData))
+			{
+				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 3));
 			}
 
 			else
