@@ -217,13 +217,47 @@ namespace Battle.Turn
 			return enemies.Count() >= 2;
 		}
 
+		public static bool Skill2Available(BattleData battleData)
+		{
+			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+
+			battleData.indexOfSeletedSkillByUser = 2;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			List<GameObject> selectedTiles = new List<GameObject>();
+			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+														selectedUnit.GetPosition(),
+														selectedSkill.GetFirstMinReach(),
+														selectedSkill.GetFirstMaxReach(),
+														selectedUnit.GetDirection());
+
+			TileManager tileManager = battleData.tileManager;
+			var enemiesNearEachOther =
+					from tileGO in selectedTiles
+					let tile = tileGO.GetComponent<Tile>()
+					let nearTileGOs = tileManager.GetTilesInRange(RangeForm.Square, tile.GetTilePos(), 0, 1, Direction.Down)
+					let nearTileUnits = nearTileGOs.Select(tileGO2 => tileGO2.GetComponent<Tile>().GetUnitOnTile())
+					let nearUnits = nearTileUnits.Where(unitGO => unitGO != null && unitGO.GetComponent<Unit>().GetSide() == Side.Ally)
+					where nearUnits.Count() >= 2
+					select tileGO;
+
+			return enemiesNearEachOther.Count() > 0;
+		}
+
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			if (Skill1Available(battleData))
 			{
-				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, battleData.indexOfSeletedSkillByUser));
+				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 1));
 			}
+
+			if (Skill2Available(battleData))
+			{
+				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 2));
+			}
+
 			else
 			{
 				battleData.currentState = CurrentState.RestAndRecover;
@@ -428,6 +462,7 @@ namespace Battle.Turn
 				}
 				// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
 
+				battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
 				battleData.selectedTilePosition = selectedTile.GetTilePos();
 
 				// 타겟팅 스킬을 타겟이 없는 장소에 지정했을 경우 적용되지 않도록 예외처리 필요 - 대부분의 스킬은 논타겟팅. 추후 보강.
@@ -440,6 +475,7 @@ namespace Battle.Turn
 				yield return SkillAndChainStates.ApplyChain(battleData, tilesInSkillRange);
 				FocusUnit(battleData.SelectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
+				battleData.uiManager.ResetSkillNamePanelUI();
 			}
 		}
 
