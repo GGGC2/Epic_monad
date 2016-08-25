@@ -19,8 +19,18 @@ public class TileViewer : MonoBehaviour {
 		}
 		tileImage.sprite = tile.GetComponent<SpriteRenderer>().sprite;
 		nameText.text = tileInfo.GetTileName();
-		apText.text = "AP " + tileInfo.GetRequireAPAtTile();
-		SetElementImage(tileInfo.GetTileElement());
+	    int requiredAP = tileInfo.GetRequireAPAtTile();
+	    int unclimbableAP = 200;
+	    if (requiredAP < unclimbableAP)
+	    {
+	        apText.text = "AP " + requiredAP;
+	    }
+	    else
+	    {
+	        apText.text = "-";
+	    }
+
+        SetElementImage(tileInfo.GetTileElement());
 	}
 
 	void SetElementImage(Element element)
