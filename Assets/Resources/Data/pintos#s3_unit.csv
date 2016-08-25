@@ -1,34 +1,34 @@
-Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial
-ë§ˆë ¥ì„,manastone,Enemy,24,36,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,21,34,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,36,33,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,37,32,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,34,30,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,10,26,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,9,24,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,24,21,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,26,20,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,24,17,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,3,12,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,1,11,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,4,9,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,33,10,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,33,8,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,32,7,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ë§ˆë ¥ì„,manastone,Enemy,34,7,LeftUp,70,0,20,20,0,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,34,35,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,33,30,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,37,29,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,25,24,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,21,19,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,27,18,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,4,15,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,6,11,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,34,13,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,35,10,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,29,8,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,37,8,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,31,5,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ëª¬ìŠ¤í„°,monster,Enemy,35,5,LeftUp,70,30,20,20,40,Melee,Plant,Earth
-ì‹œìŠ¤í„°ë‚˜,sisterna,Ally,7,39,RightDown,458,73,51,28,53,Melee,Water,Sun
-ë ˆì´ë‚˜,reina,Ally,5,37,RightDown,350,70,0,50,50,Magic,Fire,Earth
+Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,,,,,,,,,,,,,,Celestial
+¸¶·Â¼®,manastone,Enemy,13,29,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,10,27,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,5,22,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,4,20,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,23,28,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,22,26,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,25,27,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,20,11,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,19,9,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,16,9,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,3,5,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,1,4,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,4,2,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,23,6,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,25,6,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,25,5,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,26,4,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸¶·Â¼®,manastone,Enemy,26,7,LeftUp,70,0,20,20,0,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,22,29,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,21,25,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,26,26,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,19,11,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,18,8,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,15,10,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,4,8,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,6,4,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,22,6,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,22,4,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,24,4,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,24,7,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+¸ó½ºÅÍ,monster,Enemy,25,8,LeftUp,70,30,20,20,40,Melee,Plant,Earth,,,,,,,,,,,,,,
+½Ã½ºÅÍ³ª,sisterna,Ally,4,29,RightDown,458,73,51,28,53,Melee,Water,Sun,,,,,,,,,,,,,,
+·¹ÀÌ³ª,reina,Ally,2,27,RightDown,350,70,0,50,50,Magic,Fire,Earth,,,,,,,,,,,,,,
