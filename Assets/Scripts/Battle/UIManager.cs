@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
 	GameObject tileViewerUI;
 	GameObject selectDirectionUI;
 	GameObject cancelButtonUI;
+	GameObject skillNamePanelUI;
 
 	private void Awake()
 	{
@@ -32,6 +33,7 @@ public class UIManager : MonoBehaviour
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = GameObject.Find("SelectDirectionUI");
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
+		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 	}
 
 	private void Start()
@@ -45,6 +47,7 @@ public class UIManager : MonoBehaviour
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.SetActive(false);
 		cancelButtonUI.SetActive(false);
+		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
 	public void UpdateApBarUI(BattleData battleData, List<GameObject> allUnits) {
@@ -110,7 +113,7 @@ public class UIManager : MonoBehaviour
             skillButton.interactable = true;
 		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
 
-            if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i]) 
+            if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i])
 			|| selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
 			{
                 skillButton.interactable = false;
@@ -213,5 +216,15 @@ public class UIManager : MonoBehaviour
 	public void DisableCancelButtonUI()
 	{
 		cancelButtonUI.SetActive(false);
+	}
+
+	public void ResetSkillNamePanelUI()
+	{
+		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
+	}
+
+	public void SetSkillNamePanelUI(string skillName)
+	{
+		skillNamePanelUI.GetComponent<SkillNamePanel>().Set(skillName);
 	}
 }

@@ -806,7 +806,7 @@ namespace Battle.Turn
 						var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[appliedSkill.GetLevel()-1], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
 						battleManager.StartCoroutine(damageCoroutine);
 					}
-					// lubericha_l_30
+					// luvericha_l_30
 					else if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
 					{
 						int apDamage = targetUnit.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
@@ -837,8 +837,8 @@ namespace Battle.Turn
 					}
 
 					var recoverAmount = (int) actualAmount;
-					// lubericha_r_1 회복량 조건 체크
-					if (appliedSkill.GetName().Equals("사랑의 기쁨") && targetUnit.GetNameInCode().Equals("lubericha"))
+					// luvericha_r_1 회복량 조건 체크
+					if (appliedSkill.GetName().Equals("사랑의 기쁨") && targetUnit.GetNameInCode().Equals("luvericha"))
 					{
 						recoverAmount = recoverAmount / 2;
 					}
@@ -925,7 +925,7 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+									if (statusEffect.IsOfType(StatusEffectType.Shield))
 										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
@@ -938,7 +938,7 @@ namespace Battle.Turn
 									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 								}
 								targetUnit.GetStatusEffectList().Add(statusEffect);
-							} 
+							}
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
@@ -960,8 +960,8 @@ namespace Battle.Turn
 					{
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
-							// lubericha_m_1 조건 체크
-							if (appliedSkill.GetName().Equals("교향곡:영웅") && targetUnit.GetNameInCode().Equals("lubericha")) continue;
+							// luvericha_m_1 조건 체크
+							if (appliedSkill.GetName().Equals("교향곡:영웅") && targetUnit.GetNameInCode().Equals("luvericha")) continue;
 
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
@@ -971,7 +971,7 @@ namespace Battle.Turn
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
 									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield)) 
+									if (statusEffect.IsOfType(StatusEffectType.Shield))
 										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
@@ -980,7 +980,7 @@ namespace Battle.Turn
 							{
 								if(statusEffect.IsOfType(StatusEffectType.Shield))
 								{
-									// lubericha_r_18 보호막 수치 계산
+									// luvericha_r_18 보호막 수치 계산
 									if (appliedSkill.GetName().Equals("엘리제를 위하여"))
 									{
 										statusEffect.SetRemainAmount((int)(selectedUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
@@ -1003,7 +1003,7 @@ namespace Battle.Turn
 					}
 					yield return null;
 				}
-				// lubericha_l_6 스킬 효과
+				// luvericha_l_6 스킬 효과
 				else if (appliedSkill.GetName().Equals("정화된 밤"))
 				{
 					targetUnit.GetStatusEffectList().RemoveAt(0);

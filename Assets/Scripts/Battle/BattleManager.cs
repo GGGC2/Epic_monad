@@ -45,7 +45,7 @@ public class BattleManager : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		battleData.partyLevel = GetLevelInfoFromJson();
+		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
 
 		battleData.selectedUnitObject = null;
