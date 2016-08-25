@@ -8,7 +8,7 @@ using WorldMap;
 
 public class TitleForNexon : MonoBehaviour
 {
-	public DOTweenPath titlePath;
+	public DOTweenAnimation titlePath;
 	public DOTweenAnimation titleAnimation;
 
 	public List<Button> titleButtons;
@@ -82,7 +82,7 @@ public class TitleForNexon : MonoBehaviour
 	private void ShowWorldMap()
 	{
 		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
-		
+
 		titlePath.DOPlay();
 		titleAnimation.DOPlay();
 		foreach (var animation in buttonAnimations)

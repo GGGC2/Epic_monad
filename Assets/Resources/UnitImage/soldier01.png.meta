@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 466033a4654a943898f8d7e1661faa3f
-timeCreated: 1471181778
+guid: 4b57353f52f0742e9864d518feec7b1f
+timeCreated: 1472027051
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: sisterna_0
-    21300002: sisterna_1
-    21300004: sisterna_2
-    21300006: sisterna_3
+    21300000: monster_0
+    21300002: monster_1
+    21300004: monster_2
+    21300006: monster_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -57,7 +57,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sisterna_0
+      name: monster_0
       rect:
         serializedVersion: 2
         x: 0
@@ -65,12 +65,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      pivot: {x: 0.5, y: 0.24960877}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: sisterna_1
+      name: monster_1
       rect:
         serializedVersion: 2
         x: 250
@@ -78,12 +78,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      pivot: {x: 0.5187793, y: 0.24569641}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: sisterna_2
+      name: monster_2
       rect:
         serializedVersion: 2
         x: 500
@@ -91,12 +91,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      pivot: {x: 0.47343212, y: 0.2224594}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: sisterna_3
+      name: monster_3
       rect:
         serializedVersion: 2
         x: 750
@@ -104,10 +104,10 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5, y: 0.2}
+      pivot: {x: 0.5683179, y: 0.21059872}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,10 +93,10 @@ public class TileManager : MonoBehaviour {
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 
-		for(int i = minReach; i < maxReach; i++)
+		for(int i = minReach; i < maxReach+1; i++)
 		{
 			Vector2 position = mid + ToVector2(dir)*i;
-			if (GetTile(position) != null)
+			if (GetTile(position) != null && !tilesInRange.Contains(GetTile(position)))
 			{
 				tilesInRange.Add(GetTile(position));
 			}
@@ -108,11 +109,14 @@ public class TileManager : MonoBehaviour {
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 
+		if (minReach == 0) tilesInRange.Add(GetTile(mid));
+		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
 
+		Debug.Log("No. of selected tiles : "+tilesInRange.Count);
 		return tilesInRange;
 	}
 
@@ -120,6 +124,8 @@ public class TileManager : MonoBehaviour {
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 
+		if (minReach == 0) tilesInRange.Add(GetTile(mid));
+		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
@@ -132,7 +138,9 @@ public class TileManager : MonoBehaviour {
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
 		
-		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach, maxReach)).ToList();
+		if (minReach == 0) tilesInRange.Add(GetTile(mid));
+		minReach = Math.Max(1, minReach);
+		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach,maxReach)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInDiagonalCrossRange(mid, minReach, maxReach)).ToList();
 
 		return tilesInRange;

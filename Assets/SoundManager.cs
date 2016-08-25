@@ -15,16 +15,16 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		stageManager = FindObjectOfType<StageManager>();
 		audioSource = gameObject.GetComponent<AudioSource>();
 
 		if (SceneManager.GetActiveScene().name == "Battle")
 			PlayBgm("Script_Tense");
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 }

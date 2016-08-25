@@ -8,3 +8,4 @@ Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePo
 제국군 마법사,temp07,Ally,3,6,RightUp,255,72,37,32,20,Magic,Plant,Moon
 루키어스,lucius,Ally,2,4,RightDown,458,73,51,28,53,Melee,Water,Sun
 레이나,reina,Ally,2,3,RightDown,350,70,0,50,50,Magic,Fire,Earth
+시스터나,sisterna,Ally,7,39,RightDown,458,73,51,28,53,Melee,Water,Sun
