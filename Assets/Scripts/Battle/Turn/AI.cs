@@ -328,7 +328,7 @@ namespace Battle.Turn
 				Vector2 dirVec = battleData.tileManager.ToVector2(selectedUnit.GetDirection());
 				BattleManager battleManager = battleData.battleManager;
 
-				GameObject targetTile = battleData.tileManager.GetTile(enemy.GetComponent<Unit>().GetPosition() + dirVec * 5);
+				GameObject targetTile = battleData.tileManager.GetTile(enemy.GetComponent<Unit>().GetPosition() + dirVec * 3);
 				enemy.GetComponent<Unit>().GetKnockedBack(battleData, targetTile);
 
 				yield return new WaitForSeconds(0.5f);
