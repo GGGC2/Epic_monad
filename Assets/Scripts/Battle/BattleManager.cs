@@ -85,7 +85,7 @@ public class BattleManager : MonoBehaviour
 				battleData.selectedUnitObject = battleData.readiedUnits[0];
 				if (battleData.SelectedUnit.GetSide() == Side.Enemy)
 				{
-					yield return AIStates.AIMove(battleData);
+					yield return AIStates.StartAI(battleData);
 				}
 				else
 				{
@@ -328,7 +328,7 @@ public class BattleManager : MonoBehaviour
 
 	public static IEnumerator Standby()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.1f);
 	}
 
 	public void CallbackSkillIndex(int index)

@@ -696,7 +696,7 @@ namespace Battle.Turn
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
@@ -717,6 +717,19 @@ namespace Battle.Turn
 					{
 						battleManager.StartCoroutine(damageCoroutine);
 					}
+
+					// eren_l_30 회복
+					if (appliedSkill.GetName().Equals("생명력 흡수"))
+					{
+						int finalDamage = (int)CalculateTotalDamage(battleData, selectedTiles)[target];
+						int targetCurrentHealth = targetUnit.GetCurrentHealth();
+						float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
+						int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);
+						if (targetCurrentHealth == 0) recoverAmount *= 2;
+						var recoverCoroutine = unitInChain.RecoverHealth(recoverAmount);
+						battleManager.StartCoroutine(recoverCoroutine);
+					}
+
 					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
 				}
@@ -732,7 +745,7 @@ namespace Battle.Turn
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
@@ -740,7 +753,12 @@ namespace Battle.Turn
 									break;
 								}
 							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
+							if (!isInList)
+							{
+								if (statusEffect.GetName().Equals("상자에 든 고양이")) 
+									statusEffect.SetRemainAmount((int)(unitInChain.GetActualStat(Stat.Power)*statusEffect.GetAmount(appliedSkill.GetLevel())));
+								targetUnit.GetStatusEffectList().Add(statusEffect);
+							}
 							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
 						}
 					}
@@ -853,7 +871,7 @@ namespace Battle.Turn
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
@@ -920,7 +938,7 @@ namespace Battle.Turn
 							bool isInList = false;
 							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
 									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
@@ -956,7 +974,11 @@ namespace Battle.Turn
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
 				{
-					if(appliedSkill.GetStatusEffectList().Count > 0)
+					if (appliedSkill.GetName().Equals("순간 재충전"))
+					{
+						targetUnit.GetUsedSkillDict().Clear();
+					}
+					else if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
@@ -985,6 +1007,7 @@ namespace Battle.Turn
 									{
 										statusEffect.SetRemainAmount((int)(selectedUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									}
+									// reina_r_30 보호막 수치 계산
 									else if(appliedSkill.GetName().Equals("마법 보호막"))
 									{
 										statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
@@ -1006,7 +1029,15 @@ namespace Battle.Turn
 				// luvericha_l_6 스킬 효과
 				else if (appliedSkill.GetName().Equals("정화된 밤"))
 				{
-					targetUnit.GetStatusEffectList().RemoveAt(0);
+					for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+					{
+						if(targetUnit.GetStatusEffectList()[i].GetIsRemovable())
+						{
+							targetUnit.GetStatusEffectList().RemoveAt(i);
+							break;
+						}
+					}
+					
 				}
 			}
 

@@ -1,11 +1,11 @@
 ﻿owner,skill,name,statusEffectType,isBuff,isInfinite,isStackable,isRemovable,degree,amountStat,amountFactor,lastPhase,lastStack,cooldown,effectName,effectVisualType,effectMoveType
-orchid,None,강화,PowerChange,TRUE,TRUE,TRUE,FALSE,0 0 0 0 0,None,30 30 30 30 30,0,0,0,None,None,None
+orchid,약공격,강화,PowerChange,TRUE,TRUE,TRUE,FALSE,0 0 0 0 0,None,30 30 30 30 30,0,0,0,None,None,None
 orchid,강공격,방어력 감소,DefenceChange,FALSE,FALSE,FALSE,TRUE,0.5 0.5 0.5 0.5 0.5,None,0 0 0 0 0,2,0,0,None,None,None
 orchid,밀어내기,특수 효과,Etc,FALSE,FALSE,TRUE,FALSE,0 0 0 0 0,None,0 0 0 0 0,3,0,0,None,None,None
 reina,마력 과충전,과충전 상태,Silence,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,1,0,1,None,None,None
 reina,마법 보호막,비전 방패,Shield,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,UsedAP,10 11 12 13 14,4,0,0,None,None,None
 sisterna,선 스펙트럼,파장 분류,Shield,TRUE,FALSE,FALSE,TRUE,0 0 0 0 0,MaxHealth,0.08 0.11 0.14 0.17 0.2,0,1,0,None,None,None
-sisterna,슈뢰딩거의 상자,상자에 든 고양이,Faint,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,1,0,0,None,None,None
+sisterna,슈뢰딩거의 상자,상자에 든 고양이,Faint,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,Power,1.2 1.5 1.8 2.1 2.4,1,0,0,None,None,None
 eren,섬광 투영,기절,Faint,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,1,0,0,None,None,None
 eren,보이지 않는 손,속박,Bind,FALSE,FALSE,FALSE,TRUE,0 0 0 0 0,None,0 0 0 0 0,2,0,0,None,None,None
 eren,보이지 않는 손,둔화,RequireSkillAPChange,FALSE,FALSE,FALSE,TRUE,-0.04 -0.08 -0.12 -0.16 -0.20,None,0 0 0 0 0,2,0,0,None,None,None

@@ -297,6 +297,14 @@ public class Unit : MonoBehaviour
 
 		for(int i = 0; i < count; i++)
 		{
+			if(statusEffectList[i].GetName().Equals("상자에 든 고양이") && statusEffectList[i].GetToBeRemoved())
+			{
+				float catIsDead = UnityEngine.Random.Range(0.0f, 1.0f);
+				if (catIsDead > 0.5f)
+				{
+					Damaged(UnitClass.Magic,statusEffectList[i].GetRemainAmount(), 0.0f, false, true);
+				}
+			}
 			if(!statusEffectList[i].GetToBeRemoved())
 			{
 				newStatusEffectList.Add(statusEffectList[i]);
@@ -691,6 +699,11 @@ public class Unit : MonoBehaviour
 	{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
+	}
+
+	public void GetKnockedBack(Vector2 movement)
+	{
+		this.SetPosition(this.position+movement);
 	}
 
 	public void UpdateSpriteByDirection()
