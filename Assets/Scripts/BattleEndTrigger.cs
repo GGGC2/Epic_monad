@@ -17,6 +17,8 @@ public class BattleEndTrigger
 	public int minNumberOfReachedTargetUnit;
 	public int minNumberOfReachedAlly;
 	public int minNumberOfReachedEnemy;
+
+	public string nextSceneIndex;
 	
 	public BattleEndTrigger()
 	{
@@ -32,6 +34,8 @@ public class BattleEndTrigger
 		minNumberOfReachedTargetUnit = 0;
 		minNumberOfReachedAlly = 0;
 		minNumberOfReachedEnemy = 0;
+
+		nextSceneIndex = "";
 	}
 
 	public BattleEndTrigger(string data)
@@ -40,6 +44,12 @@ public class BattleEndTrigger
 
 		result = commaParser.ConsumeEnum<BattleResult>();
 		triggerNumber = commaParser.ConsumeInt();
+
+		if (triggerNumber == 0)
+		{
+			nextSceneIndex = commaParser.Consume();
+			return;
+		}
 
 		if (triggerNumber == 5 || triggerNumber == 6 || triggerNumber == 9 || triggerNumber == 10)
 			return;

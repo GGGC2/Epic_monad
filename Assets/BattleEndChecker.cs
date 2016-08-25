@@ -269,6 +269,8 @@ public class BattleEndChecker : MonoBehaviour {
 	int minNumberOfReachedAlly;
 	int minNumberOfReachedEnemy;
 
+	string nextScriptName;
+
 	public BattleData BattleData
 	{
 		get { return battleData; }
@@ -345,6 +347,8 @@ public class BattleEndChecker : MonoBehaviour {
 		battleWinConditions = BattleEndConditionFactory(battleEndTriggers, Enums.BattleResult.Win);
 		battleLoseConditions = BattleEndConditionFactory(battleEndTriggers, Enums.BattleResult.Lose);
 
+		nextScriptName = battleEndTriggers.Find(x => x.result == Enums.BattleResult.End).nextSceneIndex;
+
 		// Debug.Log("BET_win : " + battleWinConditions.Count);
 		// Debug.Log("BET_lose : " + battleLoseConditions.Count);
 		
@@ -375,10 +379,11 @@ public class BattleEndChecker : MonoBehaviour {
 				if (isBattleWin)
 				{
 					Debug.Log("Win");
-					SceneManager.LoadScene("title");
+					FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 				}
 				else
 					Debug.Log("Lose");
+					FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 			}
 		}
 	}

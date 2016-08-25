@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour {
 
@@ -249,6 +250,10 @@ public class DialogueManager : MonoBehaviour {
 			// InactiveAdventureUI();
 			string nextStoryName = dialogueDataList[line].GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_title")
+		{
+			SceneManager.LoadScene("title");
 		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{

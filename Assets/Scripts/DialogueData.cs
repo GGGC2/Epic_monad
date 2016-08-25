@@ -85,6 +85,10 @@ public class DialogueData{
 					// load worldmap.
 					commandSubType = stringList[2];
 				}
+				else if (commandType == "load_title")
+				{
+					//
+				}
 				else
 				{
 					Debug.LogError("undefined effectType : " + stringList[1]);

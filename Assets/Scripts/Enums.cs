@@ -5,7 +5,7 @@ namespace Enums {
 
 	public enum BattleResult
 	{
-		Win, Lose
+		Win, Lose, End
 	}
 
 	public enum EffectVisualType
