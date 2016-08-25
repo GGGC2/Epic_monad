@@ -72,7 +72,7 @@ namespace Battle.Turn
         //  ♪ღ♪                                        ♪ღ♪
         //  ♪ღ♪          ** Chef's Choice **           ♪ღ♪
         //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
-        // 
+        //
 
         public static Vector2 CalculateDestination(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
             // Destination calculation algorithm
@@ -80,7 +80,7 @@ namespace Battle.Turn
             // If it's far from (>3) manastone, go to the nearest manastone
             // Else if it's close to player (<=4), go to the nearest player
             // Else pick a random tile from moveable tiles that are close (<=2) to manastone
-            
+
             Unit mainunit = mainUnitObject.GetComponent<Unit>();
             float distanceFromNearestManastone = float.PositiveInfinity;
             foreach (GameObject unitObject in unitObjects)
@@ -103,7 +103,7 @@ namespace Battle.Turn
                 return FindNearestManastone(movableTileObjects, unitObjects, mainUnitObject);
             }
 
-            
+
             float distanceFromNearestPlayer = float.PositiveInfinity;
             foreach (GameObject unitObject in unitObjects) {
                 Unit unit = unitObject.GetComponent<Unit>();
@@ -115,7 +115,7 @@ namespace Battle.Turn
                     distanceFromNearestPlayer = distance;
                 }
             }
-            
+
 
             if (distanceFromNearestPlayer <= 4)
             {
@@ -185,9 +185,67 @@ namespace Battle.Turn
         }
     }
 
+	public class OrchidBrain
+	{
+		public static bool Skill1Available(BattleData battleData)
+		{
+			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 
+			battleData.indexOfSeletedSkillByUser = 1;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			List<GameObject> selectedTiles = new List<GameObject>();
+			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+														selectedUnit.GetPosition(),
+														selectedSkill.GetSecondMinReach(),
+														selectedSkill.GetSecondMaxReach(),
+														selectedUnit.GetDirection());
+
+			var enemies = from tileGO in selectedTiles
+					let tile = tileGO.GetComponent<Tile>()
+					let unitGO = tile.GetUnitOnTile()
+					where unitGO != null
+					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
+					select unitGO;
+
+			foreach (var a in enemies.ToList())
+			{
+				Debug.Log("target name  is " + a.GetComponent<Unit>().GetName());
+			}
+
+			return enemies.Count() >= 2;
+		}
+
+		public static IEnumerator AIStart(BattleData battleData)
+		{
+			BattleManager battleManager = battleData.battleManager;
+			if (Skill1Available(battleData))
+			{
+				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, battleData.indexOfSeletedSkillByUser));
+			}
+			else
+			{
+				battleData.currentState = CurrentState.RestAndRecover;
+				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+			}
+		}
+	}
     public class AIStates
 	{
+		public static IEnumerator StartAI(BattleData battleData)
+		{
+			Unit currentUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			BattleManager battleManager = battleData.battleManager;
+			if (currentUnit.GetNameInCode() == "orchid")
+			{
+				yield return battleManager.StartCoroutine(OrchidBrain.AIStart(battleData));
+			}
+			else
+			{
+				yield return battleManager.StartCoroutine(AIMove(battleData));
+			}
+		}
 		public static IEnumerator AIMove(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -212,6 +270,10 @@ namespace Battle.Turn
 		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
 		            battleData.selectedUnitObject);
 		    }
+			if (currentUnit.GetNameInCode() == "orchid")
+			{
+				destPosition = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
+			}
 		    else
 		    {
                 // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
@@ -274,10 +336,13 @@ namespace Battle.Turn
 
 		public static IEnumerator AIAttack(BattleData battleData)
 		{
-			battleData.uiManager.DisableSkillUI();
+			return AIAttack(battleData, 1);
+		}
 
+		public static IEnumerator AIAttack(BattleData battleData, int selectedSkillIndex)
+		{
 			BattleManager battleManager = battleData.battleManager;
-			battleData.indexOfSeletedSkillByUser = 1;
+			battleData.indexOfSeletedSkillByUser = selectedSkillIndex;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
@@ -294,7 +359,6 @@ namespace Battle.Turn
 
 			battleData.previewAPAction = null;
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
 		}
 
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
@@ -310,12 +374,30 @@ namespace Battle.Turn
 														selectedSkill.GetSecondMaxReach(),
 														selectedUnit.GetDirection());
 
-			if (battleData.isSelectedTileByUser)
+			Tile selectedTile = UdongNoodle.FindEnemyTile(selectedTiles, battleData.selectedUnitObject);
+
+			if (selectedTile == null)
 			{
-				BattleManager battleManager = battleData.battleManager;
-				battleData.currentState = CurrentState.CheckApplyOrChain;
-				yield return battleManager.StartCoroutine(SkillAndChainStates.CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+				// 아무것도 할 게 없을 경우 휴식
+				battleData.currentState = CurrentState.RestAndRecover;
+				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+				yield break;
 			}
+			// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
+
+			battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
+
+
+			BattleManager battleManager = battleData.battleManager;
+			battleData.currentState = CurrentState.CheckApplyOrChain;
+
+			List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+
+			yield return SkillAndChainStates.ApplyChain(battleData, tilesInSkillRange);
+			FocusUnit(battleData.SelectedUnit);
+			battleData.currentState = CurrentState.FocusToUnit;
+
+			battleData.uiManager.ResetSkillNamePanelUI();
 		}
 
 		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
@@ -353,13 +435,11 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				battleData.currentState = CurrentState.CheckApplyOrChain;
 
-				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile);
+				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
 				yield return SkillAndChainStates.ApplyChain(battleData, tilesInSkillRange);
 				FocusUnit(battleData.SelectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
-
-				yield return battleManager.StartCoroutine(SkillAndChainStates.CheckApplyOrChain(battleData, battleData.SelectedTile, originalDirection));
 			}
 		}
 
@@ -368,7 +448,7 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
-		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile)
+		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile, Unit selectedUnit = null)
 		{
 				Skill selectedSkill = battleData.SelectedSkill;
 				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -377,7 +457,16 @@ namespace Battle.Turn
 																			selectedSkill.GetSecondMaxReach(),
 																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
 				if (selectedSkill.GetSkillType() == SkillType.Auto)
-					selectedTiles.Remove(targetTile.gameObject);
+				{
+					if (selectedUnit != null)
+					{
+						selectedTiles.Remove(battleData.tileManager.GetTile(selectedUnit.GetPosition()));
+					}
+					else
+					{
+						selectedTiles.Remove(targetTile.gameObject);
+					}
+				}
 				return selectedTiles;
 		}
 	}
