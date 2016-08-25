@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 35f45a8f396ec4b7d8e44f538c8b9cfe
-timeCreated: 1471179641
+guid: b5c94a852c5ce4854bae271ab4d92255
+timeCreated: 1471971140
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: sisterna_0
-    21300002: sisterna_1
-    21300004: sisterna_2
-    21300006: sisterna_3
+    21300000: notFound_0
+    21300002: notFound_1
+    21300004: notFound_2
+    21300006: notFound_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -57,7 +57,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sisterna_0
+      name: notFound_0
       rect:
         serializedVersion: 2
         x: 0
@@ -70,7 +70,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_1
+      name: notFound_1
       rect:
         serializedVersion: 2
         x: 250
@@ -83,10 +83,10 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_2
+      name: notFound_2
       rect:
         serializedVersion: 2
-        x: 500
+        x: 498
         y: 0
         width: 250
         height: 400
@@ -96,7 +96,7 @@ TextureImporter:
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: sisterna_3
+      name: notFound_3
       rect:
         serializedVersion: 2
         x: 750

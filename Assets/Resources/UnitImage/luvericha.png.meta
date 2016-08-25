@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 1fa7acfcbdd1f48a4b74b9d179a162aa
-timeCreated: 1471971140
+guid: ce92a10c0ee77431fbe2857f121de60b
+timeCreated: 1472142040
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: notFound_0
-    21300002: notFound_1
-    21300004: notFound_2
-    21300006: notFound_3
+    21300000: luvericha_0
+    21300002: luvericha_1
+    21300004: luvericha_2
+    21300006: luvericha_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -57,7 +57,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: notFound_0
+      name: luvericha_0
       rect:
         serializedVersion: 2
         x: 0
@@ -68,9 +68,9 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: notFound_1
+      name: luvericha_1
       rect:
         serializedVersion: 2
         x: 250
@@ -81,12 +81,12 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: notFound_2
+      name: luvericha_2
       rect:
         serializedVersion: 2
-        x: 498
+        x: 500
         y: 0
         width: 250
         height: 400
@@ -94,9 +94,9 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     - serializedVersion: 2
-      name: notFound_3
+      name: luvericha_3
       rect:
         serializedVersion: 2
         x: 750
@@ -107,7 +107,7 @@ TextureImporter:
       pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      tessellationDetail: -1
+      tessellationDetail: 0
     outline: []
   spritePackingTag: 
   userData: 
