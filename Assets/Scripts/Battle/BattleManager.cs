@@ -328,7 +328,7 @@ public class BattleManager : MonoBehaviour
 
 	public static IEnumerator Standby()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.1f);
 	}
 
 	public void CallbackSkillIndex(int index)
