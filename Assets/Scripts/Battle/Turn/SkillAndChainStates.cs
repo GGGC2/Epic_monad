@@ -412,6 +412,13 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
+					// sisterna_r_6의 타일 속성 판정
+					if (appliedSkill.GetName().Equals("전자기학"))
+					{
+						Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
+						if(!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) continue;
+					}
+
 					// 스킬 기본 대미지 계산
 					float baseDamage = 0.0f;
 					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
