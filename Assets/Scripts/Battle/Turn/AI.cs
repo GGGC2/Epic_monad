@@ -265,6 +265,76 @@ namespace Battle.Turn
 			return enemies.Count() > 0;
 		}
 
+		public static Direction? Skill4AvailableDirection(BattleData battleData)
+		{
+			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+
+			if (selectedUnit.activityPoint < 70)
+			{
+				return null;
+			}
+
+			battleData.indexOfSeletedSkillByUser = 4;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			List<GameObject> selectedTiles = new List<GameObject>();
+
+			foreach (Direction direction in new List<Direction> { Direction.LeftUp, Direction.LeftDown, Direction.RightUp, Direction.RightDown})
+			{
+				selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+														selectedUnit.GetPosition(),
+														selectedSkill.GetSecondMinReach(),
+														selectedSkill.GetSecondMaxReach(),
+														direction);
+
+				var enemies = from tileGO in selectedTiles
+						let tile = tileGO.GetComponent<Tile>()
+						let unitGO = tile.GetUnitOnTile()
+						where unitGO != null
+						where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
+						select unitGO;
+
+				if (enemies.Count() > 0)
+				{
+					return direction;
+				}
+			}
+			return null;
+		}
+
+		public static IEnumerator Skill4Knockback(BattleData battleData)
+		{
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+
+			battleData.indexOfSeletedSkillByUser = 4;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			var selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+													selectedUnit.GetPosition(),
+													selectedSkill.GetSecondMinReach(),
+													selectedSkill.GetSecondMaxReach(),
+													selectedUnit.GetDirection());
+
+			var enemies = from tileGO in selectedTiles
+					let tile = tileGO.GetComponent<Tile>()
+					let unitGO = tile.GetUnitOnTile()
+					where unitGO != null
+					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
+					select unitGO;
+
+			foreach (var enemy in enemies)
+			{
+				Vector2 dirVec = battleData.tileManager.ToVector2(selectedUnit.GetDirection());
+				BattleManager battleManager = battleData.battleManager;
+
+				GameObject targetTile = battleData.tileManager.GetTile(enemy.GetComponent<Unit>().GetPosition() + dirVec * 5);
+				enemy.GetComponent<Unit>().GetKnockedBack(battleData, targetTile);
+
+				yield return new WaitForSeconds(0.1f);
+			}
+		}
+
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -281,6 +351,15 @@ namespace Battle.Turn
 			if (Skill3Available(battleData))
 			{
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 3));
+			}
+
+			Direction? skill4AvailableDirection = Skill4AvailableDirection(battleData);
+			if (skill4AvailableDirection.HasValue)
+			{
+				Debug.LogError("Skill 4 available " + skill4AvailableDirection.Value);
+				battleData.SelectedUnit.SetDirection(skill4AvailableDirection.Value);
+				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 4));
+				yield return battleManager.StartCoroutine(Skill4Knockback(battleData));
 			}
 
 			else
@@ -437,15 +516,12 @@ namespace Battle.Turn
 
 			if (selectedTile == null)
 			{
+				Debug.LogError("Cannot find unit for attack. " );
 				// 아무것도 할 게 없을 경우 휴식
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 				yield break;
 			}
-			// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
-
-			battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
-
 
 			BattleManager battleManager = battleData.battleManager;
 			battleData.currentState = CurrentState.CheckApplyOrChain;
@@ -480,12 +556,12 @@ namespace Battle.Turn
 
 				if (selectedTile == null)
 				{
+					Debug.LogError("Cannot find unit for attack. " );
                     // 아무것도 할 게 없을 경우 휴식
                     battleData.currentState = CurrentState.RestAndRecover;
                     yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
                     yield break;
 				}
-				// activeRange[Random.Range(0, activeRange.Count)].GetComponent<Tile>();
 
 				battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
 				battleData.selectedTilePosition = selectedTile.GetTilePos();
@@ -516,7 +592,7 @@ namespace Battle.Turn
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
-																			battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
+																			selectedUnit.GetDirection());
 				if (selectedSkill.GetSkillType() == SkillType.Auto)
 				{
 					if (selectedUnit != null)

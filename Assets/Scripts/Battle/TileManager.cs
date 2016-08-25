@@ -137,7 +137,7 @@ public class TileManager : MonoBehaviour {
 	List<GameObject> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<GameObject> tilesInRange = new List<GameObject>();
-		
+
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
 		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach,maxReach)).ToList();
@@ -233,7 +233,7 @@ public class TileManager : MonoBehaviour {
 		return newTileList;
 	}
 
-	Vector2 ToVector2(Direction dir)
+	public Vector2 ToVector2(Direction dir)
 	{
 		if(dir == Direction.LeftUp)
 		{

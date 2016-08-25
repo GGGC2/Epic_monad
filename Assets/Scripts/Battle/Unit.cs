@@ -701,9 +701,13 @@ public class Unit : MonoBehaviour
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
 
-	public void GetKnockedBack(Vector2 movement)
+	public void GetKnockedBack(BattleData battleData, GameObject destTile)
 	{
-		this.SetPosition(this.position+movement);
+		GameObject currentTile = battleData.tileManager.GetTile(GetPosition());
+		currentTile.GetComponent<Tile>().SetUnitOnTile(null);
+		transform.position = destTile.transform.position + new Vector3(0, 0, -5f);
+		SetPosition(destTile.GetComponent<Tile>().GetTilePos());
+		destTile.GetComponent<Tile>().SetUnitOnTile(gameObject);
 	}
 
 	public void UpdateSpriteByDirection()
