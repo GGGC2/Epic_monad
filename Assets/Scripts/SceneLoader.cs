@@ -11,16 +11,19 @@ public class SceneLoader : MonoBehaviour {
 
 	public void LoadNextBattleScene(string nextSceneName)
 	{
+		FindObjectOfType<DialogueManager>().InactiveAdventureUI();
 		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
 	{
+		FindObjectOfType<DialogueManager>().InactiveAdventureUI();
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
 	}
 
 	public void LoadNextWorldMapScene(string storyName)
 	{
+		FindObjectOfType<DialogueManager>().InactiveAdventureUI();
 		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
