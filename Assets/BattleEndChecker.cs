@@ -349,6 +349,9 @@ public class BattleEndChecker : MonoBehaviour {
 
 		nextScriptName = battleEndTriggers.Find(x => x.result == Enums.BattleResult.End).nextSceneIndex;
 
+		if (nextScriptName == "pintos#16")
+			FindObjectOfType<SoundManager>().PlayBgm("Boss_Orchid");
+
 		// Debug.Log("BET_win : " + battleWinConditions.Count);
 		// Debug.Log("BET_lose : " + battleLoseConditions.Count);
 		
