@@ -31,7 +31,7 @@ public class CustomWorldText : MonoBehaviour
 		RIGHT
 	}
 
-	void Start () {
+	void OnEnable () {
 		DestroyAllChilds();
 		GenerateTextInstances();
 		RePosition();
