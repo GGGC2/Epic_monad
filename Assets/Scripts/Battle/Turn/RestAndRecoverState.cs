@@ -11,7 +11,9 @@ public class RestAndRecover {
 	public static IEnumerator Run(BattleData battleData)
 	{
 		int usingActivityPointToRest = GetRestCostAP(battleData);
-		int recoverHealthDuringRest = (int)(battleData.selectedUnitObject.GetComponent<Unit>().GetStat(Stat.MaxHealth) * (usingActivityPointToRest / 100f));
+		int maxHealthOfUnit = battleData.selectedUnitObject.GetComponent<Unit>().GetStat(Stat.MaxHealth);
+		int level = 30;
+		int recoverHealthDuringRest = (int)(0.9f + maxHealthOfUnit*0.0006f + level*0.04f)*usingActivityPointToRest;
 		battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(usingActivityPointToRest);
 		IEnumerator recoverHealthCoroutine = battleData.selectedUnitObject.GetComponent<Unit>().RecoverHealth(recoverHealthDuringRest);
 
