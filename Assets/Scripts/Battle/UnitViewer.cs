@@ -144,14 +144,10 @@ public class UnitViewer : MonoBehaviour {
 		elementImage = transform.Find("ElementImage").GetComponent<Image>();
 		elementBuffIcon = transform.Find("ElementImage").Find("BuffImage").gameObject;
 		elementDebuffIcon = transform.Find("ElementImage").Find("DebuffImage").gameObject;
-		elementBuffIcon.SetActive(false);
-		elementDebuffIcon.SetActive(false);
 
 		celestialImage = transform.Find("CelestialImage").GetComponent<Image>();
 		celestialBuffIcon = transform.Find("CelestialImage").Find("BuffImage").gameObject;
 		celestialDebuffIcon = transform.Find("CelestialImage").Find("DebuffImage").gameObject;
-		celestialBuffIcon.SetActive(false);
-		celestialDebuffIcon.SetActive(false);
 
 		hpText = transform.Find("HP").Find("HPText").GetComponent<Text>();
 		apText = transform.Find("AP").Find("APText").GetComponent<Text>();
@@ -161,5 +157,14 @@ public class UnitViewer : MonoBehaviour {
 		resistanceText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
 
 		statusEffectText = transform.Find("buffs").GetComponent<Text>();
+	}
+
+	void Start()
+	{
+		elementBuffIcon.SetActive(false);
+		elementDebuffIcon.SetActive(false);
+
+		celestialBuffIcon.SetActive(false);
+		celestialDebuffIcon.SetActive(false);
 	}
 }
