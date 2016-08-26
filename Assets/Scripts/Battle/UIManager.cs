@@ -163,7 +163,7 @@ public class UIManager : MonoBehaviour
 	public void UpdateUnitViewer(GameObject unitOnTile)
 	{
 		unitViewerUI.SetActive(true);
-		FindObjectOfType<UnitViewer>().UpdateUnitViewer(unitOnTile);
+		unitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(unitOnTile);
 	}
 
 	public bool IsUnitViewerShowing()
