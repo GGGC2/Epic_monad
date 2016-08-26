@@ -300,9 +300,9 @@ public class Unit : MonoBehaviour
 			if(statusEffectList[i].GetName().Equals("상자에 든 고양이") && statusEffectList[i].GetToBeRemoved())
 			{
 				float catIsDead = UnityEngine.Random.Range(0.0f, 1.0f);
-				if (catIsDead > 0.5f)
+				if (catIsDead > 0.2f)
 				{
-					Damaged(UnitClass.Magic,statusEffectList[i].GetRemainAmount(), 0.0f, false, true);
+					StartCoroutine(Damaged(UnitClass.Magic,statusEffectList[i].GetRemainAmount(), 0.0f, false, true));
 				}
 			}
 			if(!statusEffectList[i].GetToBeRemoved())
