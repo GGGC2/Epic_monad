@@ -13,12 +13,12 @@ public class ChainList : MonoBehaviour {
 		ChainInfo newChainInfo = new ChainInfo(unit, targetArea, skillIndex);
 		chainList.Add(newChainInfo);
 
-		SetChargeEffectToUnit(unit, "darkCharge");
+		SetChargeEffectToUnit(unit);
 	}
 
-	static void SetChargeEffectToUnit(GameObject unit, string effectName)
+	static void SetChargeEffectToUnit(GameObject unit)
 	{
-		GameObject effect = Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
+		GameObject effect = Instantiate(Resources.Load("Effect/Waiting")) as GameObject;
 		unit.GetComponent<Unit>().SetChargeEffect(effect);
 	}
 
