@@ -596,6 +596,33 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 720
       objectReference: {fileID: 0}
+    - target: {fileID: 164522, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11487724, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 11487724, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_Text
+      value: "\uBB50, \uB2E8\uC21C\uD558\uAC8C \uC0DD\uAC01\uD558\uBA74\n\uC720\uB2C8\uD2F0
+        \uC81C\uAD6D\uC758 \uC591\uB300 \uADC0\uC871\uAC00\uC778 \uB458 \uC0AC\uC774\uAC00
+        \uC559\uC219\uC778 \uAC83\uBCF4\uB2E8\n\uAC00\uAE4C\uC6B4 \uAC8C \uBC14\uB78C\uC9C1\uD558\uB2E4\uB294
+        \uC815\uB3C4\uACA0\uC9C0?"
+      objectReference: {fileID: 0}
+    - target: {fileID: 22461988, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 22461988, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 172
+      objectReference: {fileID: 0}
+    - target: {fileID: 11487724, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
   m_IsPrefabParent: 0
