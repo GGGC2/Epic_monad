@@ -10,8 +10,9 @@ using Battle.Feature;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
 
-	public TileForm form;
 	public Element element;
+	public int APAtStandardHeight;
+	public int height;
 	Vector2 position;
 	GameObject unitOnTile = null;
 	public SpriteRenderer sprite;
@@ -20,65 +21,44 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	bool isPreSeleted = false;
 
-	public void SetPreSelected(bool input)
-	{
-		isPreSeleted = input;
-	}
+	public void SetPreSelected(bool input)	{	isPreSeleted = input;	}
 
-	public void SetTilePos(int x, int y)
-	{
-		position = new Vector2(x, y);
-	}
+	public void SetTilePos(int x, int y)	{	position = new Vector2(x, y);	}
 
-	public Vector2 GetTilePos()
-	{
-		return position;
-	}
+	public Vector2 GetTilePos()	{	return position;	}
 
-	public void SetTileInfo(TileForm form, Element element)
+	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height)
 	{
-		string imageName = form.ToString() + "_" + element.ToString();
+		string typeIndexString = typeIndex.ToString();
+		if (typeIndex < 10)
+			typeIndexString = "0" + typeIndexString;
+
+		string imageName = element.ToString() + "_" + typeIndexString;
 		string imagePath = "TileImage/" + imageName;
 		GetComponent<SpriteRenderer>().sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
 
-		SetTileForm(form);
+		SetTileAPAtStandardHeight(APAtStandardHeight);
+		SetTileHeight(height);
 		SetTileElement(element);
 	}
 
-	public void SetTileForm(TileForm form)
-	{
-		this.form = form;
-	}
+	public void SetTileAPAtStandardHeight(int APAtStandardHeight)	{	this.APAtStandardHeight = APAtStandardHeight;	}
 
-	public void SetTileElement(Element element)
-	{
-		this.element = element;
-	}
+	public void SetTileHeight(int height)	{	this.height = height;	}
 
-	public TileForm GetTileForm()
-	{
-		return form;
-	}
+	public void SetTileElement(Element element)	{	this.element = element;	}
 
-	public Element GetTileElement()
-	{
-		return element;
-	}
+	public int GetTileAPAtStandardHeight()	{	return APAtStandardHeight;	}
 
-	public int GetRequireAPAtTile()
-	{
-		return GetRequireAPFromTileType(form);
-	}
+	public int GetTileHeight()	{	return height;	}
 
-	public bool IsUnitOnTile ()
-	{
-		return !(unitOnTile == null);
-	}
+	public Element GetTileElement()	{	return element;	}
 
-	public void SetUnitOnTile(GameObject unit)
-	{
-		unitOnTile = unit;
-	}
+	public int GetRequireAPAtTile()	{	return CalculatingRequireAPOfTile(APAtStandardHeight, height);	}
+
+	public bool IsUnitOnTile ()	{	return !(unitOnTile == null);	}
+
+	public void SetUnitOnTile(GameObject unit)	{	unitOnTile = unit;	}
 
 	/* Tile painting related */
 	public void PaintTile(TileColor tileColor)
@@ -121,49 +101,23 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public string GetTileName()
 	{
-		if (form == TileForm.Flatland)
+		if (element == Element.None)
 			return "평지";
-		else if (form == TileForm.Hill)
-			return "언덕";
-		else if (form == TileForm.Cliff)
-			return "절벽";
-		else if (form == TileForm.Water)
-			return "호수";
-		else if (form == TileForm.HigherHill)
-			return "높은 언덕";
+		else if (element == Element.Water)
+			return "물";
+		else if (element == Element.Plant)
+			return "풀밭";
 		else
-			return "";
+			return "--";
 	}
 
-	int GetRequireAPFromTileType(TileForm type)
+	int CalculatingRequireAPOfTile(int tileAPAtStandardHeight, int tileHeight)
 	{
-		if (type == TileForm.Flatland)
-		{
-			// USING ONLY TEST
-			return EditInfo.RequireApAtFlatland;
-			// return 3;
-		}
-		else if (type == TileForm.Hill)
-		{
-			// USING ONLY TEST
-			return EditInfo.RequireApAtHill;
-			// return 5;
-		}
-		else if (type == TileForm.Water)
-		{
-			return 9999;
-		}
-		else if (type == TileForm.HigherHill)
-		{
-			return EditInfo.RequireApAtHigherHill;
-		}
-		else if (type == TileForm.Cliff)
-		{
-			return 9999;
-		}
+		if (tileAPAtStandardHeight >= 0 && tileHeight >= 0)
+			return tileAPAtStandardHeight * (1 + tileHeight); // 임시 공식.
 		else
 		{
-			Debug.Log("Invaild tiletype : " + type.ToString());
+			Debug.Log("Invaild input. tileAP : " + tileAPAtStandardHeight + " height : " + tileHeight);
 			return 1;
 		}
 	}

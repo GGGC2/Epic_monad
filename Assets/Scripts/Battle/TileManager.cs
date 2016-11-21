@@ -11,8 +11,8 @@ public class TileManager : MonoBehaviour {
 
 	Dictionary<Vector2, GameObject> tiles = new Dictionary<Vector2, GameObject>();
 
-	float tileHeight = 0.5f*100/100;
-	float tileWidth = 0.5f*200/100;
+	float tileImageHeight = 0.5f*100/100;
+	float tileImageWidth = 0.5f*200/100;
 
 	public Dictionary<Vector2, GameObject> GetAllTiles()
 	{
@@ -286,16 +286,18 @@ public class TileManager : MonoBehaviour {
 		if (tileInfo.IsEmptyTile()) return;
 
 		Vector2 tilePosition = tileInfo.GetTilePosition();
-		TileForm tileForm = tileInfo.GetTileForm();
 		Element tileElement = tileInfo.GetTileElement();
+		int tileAPAtStandardHeight = tileInfo.GetTileAPAtStandardHeight();
+		int tileHeight = tileInfo.GetTileHeight();
+		int tileIndex = tileInfo.GetTileIndex();
 
 		int j = (int)tilePosition.y;
 		int i = (int)tilePosition.x;
 
-		GameObject tile = Instantiate(tilePrefab, new Vector3(tileWidth * (j+i) * 0.5f, tileHeight * (j-i) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
+		// FIXME : 높이 보정치 추가할 것.
+		GameObject tile = Instantiate(tilePrefab, new Vector3(tileImageWidth * (j+i) * 0.5f, tileImageHeight * (j-i+tileHeight) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
 		tile.GetComponent<Tile>().SetTilePos(i, j);
-		tile.GetComponent<Tile>().SetTileInfo(tileForm, tileElement);
-
+		tile.GetComponent<Tile>().SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight);
 		tiles.Add(new Vector2(i, j), tile);
 	}
 

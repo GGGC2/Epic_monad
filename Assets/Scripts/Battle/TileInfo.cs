@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Enums;
+using System;
 
 public class TileInfo {
 	Vector2 tilePosition;
-	TileForm tileForm;
+	int tileAPAtStandardHeight;
+	int tileHeight; // 추후 높이 시스템 구현되면 사용.
 	Element tileElement;
+	int tileTypeIndex;
 	bool isEmptyTile;
 
 	public Vector2 GetTilePosition() { return tilePosition; }
-	public TileForm GetTileForm() { return tileForm; }
 	public Element GetTileElement() { return tileElement; }
+	public int GetTileAPAtStandardHeight() { return tileAPAtStandardHeight; }
+	public int GetTileHeight() { return tileHeight; }
+	public int GetTileIndex() { return tileTypeIndex; }
 	public bool IsEmptyTile() { return isEmptyTile; }
 
 	public TileInfo(Vector2 tilePosition, string tileInfoString)
@@ -23,31 +28,9 @@ public class TileInfo {
 
 		this.isEmptyTile = false;
 
-		char tileFormChar = tileInfoString[0];
 		this.tilePosition = tilePosition;
 
-		if (tileFormChar == 'F')
-			this.tileForm = TileForm.Flatland;
-		else if (tileFormChar == 'H')
-			this.tileForm = TileForm.Hill;
-		else if (tileFormChar == 'C')
-			this.tileForm = TileForm.Cliff;
-		else if (tileFormChar == 'I')
-			this.tileForm = TileForm.HigherHill;
-		else if (tileFormChar == 'W')
-			this.tileForm = TileForm.Water;
-		else
-		{
-			Debug.LogError("Undefined tileForm: <" + tileFormChar + ">" + " at " + tilePosition);
-		}
-
-		if (tileInfoString.Length < 2)
-		{
-			this.tileElement = Element.None;
-			return;
-		}
-
-		char tileElementChar = tileInfoString[1];
+		char tileElementChar = tileInfoString[0];
 
 		if (tileElementChar == 'F')
 			this.tileElement = Element.Fire;
@@ -57,7 +40,29 @@ public class TileInfo {
 			this.tileElement = Element.Plant;
 		else if (tileElementChar == 'M')
 			this.tileElement = Element.Metal;
+		else if (tileElementChar == 'N')
+			this.tileElement = Element.None;
 		else
 			Debug.LogError("Undefined tileType: <" + tileElement + ">" + " at " + tilePosition);
+
+		string tileTypeIndexSubstring = tileInfoString.Substring(1,2);
+		int number;
+		if (Int32.TryParse (tileTypeIndexSubstring, out number))
+			this.tileTypeIndex = Convert.ToInt32(tileTypeIndexSubstring);
+		else
+			Debug.LogError ("Undefined tileTypeIndex: <" + tileTypeIndexSubstring + ">" + "at" + tilePosition);
+
+		string tileHeightSubstring = tileInfoString.Substring(3,2);
+		if (Int32.TryParse(tileHeightSubstring, out number))
+			this.tileHeight = Convert.ToInt32(tileHeightSubstring);
+		else
+			Debug.LogError ("Undefined tileTypeIndex: <" + tileHeightSubstring + ">" + "at" + tilePosition);
+
+		// FIXME : 타일 AP 세팅 부분. 임시 구현.
+		if (tileElement == Element.Water)
+			this.tileAPAtStandardHeight = 9999;
+		else
+			this.tileAPAtStandardHeight = 3;
+
 	}
 }
