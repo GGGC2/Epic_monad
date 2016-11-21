@@ -2385,15 +2385,15 @@ Prefab:
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: mapData
       value: 
-      objectReference: {fileID: 4900000, guid: 7132b3a8f46dd42fa86c489b48f77b11, type: 3}
+      objectReference: {fileID: 4900000, guid: 4eba42b3fb8c9480bac9709ddfb11cab, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: unitData
       value: 
-      objectReference: {fileID: 4900000, guid: c121762a743ee4827a965324045331f6, type: 3}
+      objectReference: {fileID: 4900000, guid: ba9fbe18369944e1c82bda44c8ecacd2, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: battleEndConditionData
       value: 
-      objectReference: {fileID: 4900000, guid: 2f7051c1761704dc39cd418365c75fd7, type: 3}
+      objectReference: {fileID: 4900000, guid: 5229a59a7ba85499c95ca1086ce9b7e9, type: 3}
     m_RemovedComponents:
     - {fileID: 11427906, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
