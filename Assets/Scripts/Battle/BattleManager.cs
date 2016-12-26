@@ -240,6 +240,8 @@ public class BattleManager : MonoBehaviour
 				battleData.selectedUnitObject.transform.position.y,
 				-10);
 
+			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnitObject.transform.position);
+
 			battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnitObject);
 
 			battleData.uiManager.SetCommandUIName(battleData.selectedUnitObject);

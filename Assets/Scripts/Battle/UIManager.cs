@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
 	GameObject selectDirectionUI;
 	GameObject cancelButtonUI;
 	GameObject skillNamePanelUI;
+	GameObject movedUICanvas;
 
 	private void Awake()
 	{
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
 		selectDirectionUI = GameObject.Find("SelectDirectionUI");
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
+		movedUICanvas = GameObject.Find("MovedUICanvas");
 	}
 
 	private void Start()
@@ -226,5 +228,10 @@ public class UIManager : MonoBehaviour
 	public void SetSkillNamePanelUI(string skillName)
 	{
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Set(skillName);
+	}
+
+	public void SetMovedUICanvasOnCenter(Vector2 position)
+	{
+		movedUICanvas.transform.position = new Vector3(position.x, position.y, -8);
 	}
 }

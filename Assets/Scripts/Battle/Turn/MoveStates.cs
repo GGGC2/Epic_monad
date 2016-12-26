@@ -106,6 +106,7 @@ namespace Battle.Turn
 
 				// 카메라를 옮기고
 				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
+				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
 				// 클릭 대기
 				battleData.rightClicked = false;
 				battleData.cancelClicked = false;
