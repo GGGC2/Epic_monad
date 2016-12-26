@@ -232,6 +232,8 @@ public class UIManager : MonoBehaviour
 
 	public void SetMovedUICanvasOnCenter(Vector2 position)
 	{
-		movedUICanvas.transform.position = new Vector3(position.x, position.y, -8);
+		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
+		FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
+		movedUICanvas.transform.position = newPosition;
 	}
 }
