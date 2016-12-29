@@ -631,6 +631,12 @@ public class Unit : MonoBehaviour
 			amount = GetActualEffect(amount, StatusEffectType.HealChange);
 		}
 
+		// 초과회복량 차감
+		if (currentHealth + (int)amount > maxHealth)
+		{
+			amount = (int)amount - (currentHealth + (int)amount - maxHealth);
+		}
+
 		currentHealth += (int) amount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
@@ -640,8 +646,11 @@ public class Unit : MonoBehaviour
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
-		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(1);
+		// 회복량 표시되는 시간. (회복량이 0일때는 딜레이 없음)
+		if (amount > 0)
+			yield return new WaitForSeconds(1);
+		else
+			yield return null;
 		recoverTextObject.SetActive(false);
 	}
 
