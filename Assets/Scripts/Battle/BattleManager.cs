@@ -325,7 +325,7 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackCancel()
 	{
-		battleData.input.cancelClicked = true;
+		battleData.triggers.cancelClicked.Trigger();
 	}
 
 	public static IEnumerator Standby()
@@ -336,6 +336,7 @@ public class BattleManager : MonoBehaviour
 	public void CallbackSkillIndex(int index)
 	{
 		battleData.indexOfSeletedSkillByUser = index;
+		battleData.triggers.skillSelected.Trigger();
 		Debug.Log(index + "th skill is selected");
 	}
 
@@ -354,24 +355,26 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackSkillUICancel()
 	{
-		battleData.input.cancelClicked = true;
+		battleData.triggers.cancelClicked.Trigger();
 	}
 
 	public void CallbackApplyCommand()
 	{
 		battleData.uiManager.DisableSkillCheckUI();
+		battleData.triggers.skillApplyCommandChanged.Trigger();
 		battleData.skillApplyCommand = SkillApplyCommand.Apply;
 	}
 
 	public void CallbackChainCommand()
 	{
 		battleData.uiManager.DisableSkillCheckUI();
+		battleData.triggers.skillApplyCommandChanged.Trigger();
 		battleData.skillApplyCommand = SkillApplyCommand.Chain;
 	}
 
 	public void CallbackRightClick()
 	{
-		battleData.input.rightClicked = true;
+		battleData.triggers.rightClicked.Trigger();
 	}
 
 	public void CallbackDirection(String directionString)
@@ -388,7 +391,7 @@ public class BattleManager : MonoBehaviour
 		else if (directionString == "RightDown")
 			battleData.selectedDirection = Direction.RightDown;
 
-		battleData.isSelectedDirectionByUser = true;
+		battleData.triggers.selectedDirectionByUser.Trigger();
 		battleData.uiManager.DisableSelectDirectionUI();
 	}
 
@@ -442,7 +445,7 @@ public class BattleManager : MonoBehaviour
 	{
 		if (battleData.isWaitingUserInput)
 		{
-			battleData.isSelectedTileByUser = true;
+			battleData.triggers.selectedTileByUser.Trigger();
 			battleData.selectedTilePosition = position;
 		}
 	}

@@ -9,63 +9,69 @@ namespace Battle.Turn
 {
 	public class MoveStates
 	{
+		private static IEnumerator UpdatePreviewAP(BattleData battleData, Dictionary<Vector2, TileWithPath> movableTilesWithPath)
+		{
+			while (true)
+			{
+				if (battleData.isPreSeletedTileByUser)
+				{
+					try
+					{
+						int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
+						battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
+					}
+					catch (Exception e)
+					{
+						Debug.LogException(e);
+					}
+				}
+				else
+				{
+					battleData.previewAPAction = null;
+				}
+				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+				yield return null;
+			}
+		}
+
 		public static IEnumerator SelectMovingPointState(BattleData battleData)
 		{
 			while (battleData.currentState == CurrentState.SelectMovingPoint)
 			{
-				// List<GameObject> movableTiles = CheckMovableTiles(selectedUnitObject);
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnitObject);
 				List<GameObject> movableTiles = new List<GameObject>();
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				{
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
-
 				battleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
 
-				battleData.input.Reset();
 				battleData.uiManager.EnableCancelButtonUI();
-
 				battleData.isWaitingUserInput = true;
-				battleData.isSelectedTileByUser = false;
 				battleData.isPreSeletedTileByUser = false;
-				while (!battleData.isSelectedTileByUser)
-				{
-					//yield break 넣으면 코루틴 강제종료
-					if (battleData.rightClicked || battleData.cancelClicked)
-					{
-						battleData.uiManager.DisableCancelButtonUI();
-						battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 
-						battleData.currentState = CurrentState.FocusToUnit;
-						battleData.isWaitingUserInput = false;
-						yield break;
-					}
+				var update = UpdatePreviewAP(battleData, movableTilesWithPath);
+				battleData.battleManager.StartCoroutine(update);
+				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+					battleData.triggers.rightClicked,
+					battleData.triggers.cancelClicked,
+					battleData.triggers.selectedTileByUser
+				));
+				battleData.battleManager.StopCoroutine(update);
 
-					if (battleData.isPreSeletedTileByUser)
-					{
-						try
-						{
-							int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
-							battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-						}
-						catch (Exception e)
-						{
-							Debug.LogException(e);
-						}
-					}
-					else
-					{
-						battleData.previewAPAction = null;
-					}
-					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-					yield return null;
-				}
-				battleData.isPreSeletedTileByUser = false;
-				battleData.isSelectedTileByUser = false;
 				battleData.isWaitingUserInput = false;
+				battleData.isPreSeletedTileByUser = false;
 
+				//yield break 넣으면 코루틴 강제종료
+				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
+				{
+					battleData.uiManager.DisableCancelButtonUI();
+					battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
+
+					battleData.currentState = CurrentState.FocusToUnit;
+					battleData.isWaitingUserInput = false;
+					yield break;
+				}
 
 				// FIXME : 어딘가로 옮겨야 할 텐데...
 				GameObject destTile = battleData.tileManager.GetTile(battleData.selectedTilePosition);
@@ -104,36 +110,33 @@ namespace Battle.Turn
 				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
 				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
 				// 클릭 대기
-				battleData.input.Reset();
+
 				battleData.uiManager.EnableCancelButtonUI();
-
 				battleData.isWaitingUserInput = true;
-				battleData.isSelectedDirectionByUser = false;
-				while (!battleData.isSelectedDirectionByUser)
-				{
-					// 클릭 중 취소하면 돌아감
-					// moveCount 되돌리기
-					// 카메라 유닛 위치로 원상복구
-					// 이동가능 위치 다시 표시해주고
-					// UI 숨기고
-					if (battleData.rightClicked || battleData.cancelClicked)
-					{
-						battleData.uiManager.DisableCancelButtonUI();
-
-						battleData.moveCount -= distance;
-						Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
-						battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
-						battleData.uiManager.DisableSelectDirectionUI();
-						battleData.uiManager.DisableDestCheckUI();
-						battleData.currentState = CurrentState.SelectMovingPoint;
-						battleData.isWaitingUserInput = false;
-						yield break;
-					}
-					yield return null;
-				}
-				battleData.isSelectedDirectionByUser = false;
+				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+					battleData.triggers.selectedDirectionByUser,
+					battleData.triggers.rightClicked,
+					battleData.triggers.cancelClicked
+				));
 				battleData.isWaitingUserInput = false;
 				battleData.uiManager.DisableCancelButtonUI();
+
+				// 클릭 중 취소하면 돌아감
+				// moveCount 되돌리기
+				// 카메라 유닛 위치로 원상복구
+				// 이동가능 위치 다시 표시해주고
+				// UI 숨기고
+				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
+				{
+					battleData.moveCount -= distance;
+					Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
+					battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
+					battleData.uiManager.DisableSelectDirectionUI();
+					battleData.uiManager.DisableDestCheckUI();
+					battleData.currentState = CurrentState.SelectMovingPoint;
+					battleData.isWaitingUserInput = false;
+					yield break;
+				}
 
 				// 방향을 클릭하면 그 자리로 이동. MoveToTile 호출
 				battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
