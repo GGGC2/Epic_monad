@@ -23,8 +23,7 @@ namespace Battle.Turn
 
 				battleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
 
-				battleData.rightClicked = false;
-				battleData.cancelClicked = false;
+				battleData.input.Reset();
 				battleData.uiManager.EnableCancelButtonUI();
 
 				battleData.isWaitingUserInput = true;
@@ -35,10 +34,7 @@ namespace Battle.Turn
 					//yield break 넣으면 코루틴 강제종료
 					if (battleData.rightClicked || battleData.cancelClicked)
 					{
-						battleData.rightClicked = false;
-						battleData.cancelClicked = false;
 						battleData.uiManager.DisableCancelButtonUI();
-
 						battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 
 						battleData.currentState = CurrentState.FocusToUnit;
@@ -108,8 +104,7 @@ namespace Battle.Turn
 				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
 				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
 				// 클릭 대기
-				battleData.rightClicked = false;
-				battleData.cancelClicked = false;
+				battleData.input.Reset();
 				battleData.uiManager.EnableCancelButtonUI();
 
 				battleData.isWaitingUserInput = true;
@@ -123,8 +118,6 @@ namespace Battle.Turn
 					// UI 숨기고
 					if (battleData.rightClicked || battleData.cancelClicked)
 					{
-						battleData.rightClicked = false;
-						battleData.cancelClicked = false;
 						battleData.uiManager.DisableCancelButtonUI();
 
 						battleData.moveCount -= distance;

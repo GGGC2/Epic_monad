@@ -138,7 +138,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 				unit.ShowChainIcon();
 			}
 
-			if (battleManager.IsLeftClicked()) return;
+			if (battleManager.EnemyUnitSelected()) return;
 
 			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
 		}
@@ -170,7 +170,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			unit.HideChainIcon();
 		}
 
-		if (battleManager.IsLeftClicked()) return;
+		if (battleManager.EnemyUnitSelected()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
 
 		if (isPreSeleted)

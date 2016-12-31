@@ -15,8 +15,7 @@ namespace Battle.Turn
 				battleData.uiManager.UpdateSkillInfo(battleData.selectedUnitObject);
 				battleData.uiManager.CheckUsableSkill(battleData.selectedUnitObject);
 
-				battleData.rightClicked = false;
-				battleData.cancelClicked = false;
+				battleData.input.Reset();
 
 				battleData.isWaitingUserInput = true;
 				battleData.indexOfSeletedSkillByUser = 0;
@@ -24,9 +23,6 @@ namespace Battle.Turn
 				{
 					if (battleData.rightClicked || battleData.cancelClicked)
 					{
-						battleData.rightClicked = false;
-						battleData.cancelClicked = false;
-
 						battleData.uiManager.DisableSkillUI();
 						battleData.currentState = CurrentState.FocusToUnit;
 						battleData.isWaitingUserInput = false;
@@ -78,7 +74,7 @@ namespace Battle.Turn
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			battleData.rightClicked = false;
+			battleData.input.Reset();
 			battleData.isWaitingUserInput = true;
 			battleData.isSelectedTileByUser = false;
 			battleData.isPreSeletedTileByUser = false;
@@ -120,8 +116,6 @@ namespace Battle.Turn
 
 				if (battleData.rightClicked || battleData.cancelClicked)
 				{
-					battleData.rightClicked = false;
-					battleData.cancelClicked = false;
 					battleData.uiManager.DisableCancelButtonUI();
 
 					selectedUnit.SetDirection(originalDirection);
@@ -171,8 +165,7 @@ namespace Battle.Turn
 														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
 				battleData.tileManager.PaintTiles(activeRange, TileColor.Red);
 
-				battleData.rightClicked = false;
-				battleData.cancelClicked = false;
+				battleData.input.Reset();
 				battleData.uiManager.EnableCancelButtonUI();
 
 				battleData.isWaitingUserInput = true;
@@ -189,8 +182,6 @@ namespace Battle.Turn
 
 					if (battleData.rightClicked || battleData.cancelClicked)
 					{
-						battleData.rightClicked = false;
-						battleData.cancelClicked = false;
 						battleData.uiManager.DisableCancelButtonUI();
 
 						selectedUnit.SetDirection(originalDirection);
@@ -240,17 +231,13 @@ namespace Battle.Turn
 				Skill selectedSkill = battleData.SelectedSkill;
 				battleData.uiManager.SetSkillCheckAP(battleData.selectedUnitObject, selectedSkill);
 
-				battleData.rightClicked = false;
-				battleData.cancelClicked = false;
+				battleData.input.Reset();
 
 				battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 				while (battleData.skillApplyCommand == SkillApplyCommand.Waiting)
 				{
 					if (battleData.rightClicked || battleData.cancelClicked)
 					{
-						battleData.rightClicked = false;
-						battleData.cancelClicked = false;
-
 						FocusUnit(battleData.SelectedUnit);
 						battleData.uiManager.DisableSkillCheckUI();
 						battleData.tileManager.DepaintTiles(tilesInSkillRange, TileColor.Red);

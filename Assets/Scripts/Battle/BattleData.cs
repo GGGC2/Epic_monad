@@ -21,6 +21,17 @@ public enum SkillApplyCommand
 
 public class BattleData
 {
+	public class Input
+	{
+		public bool rightClicked = false; // 우클릭 : 취소
+		public bool cancelClicked = false;
+
+		public void Reset()
+		{
+			rightClicked = false;
+			cancelClicked = false;
+		}
+	}
 	public TileManager tileManager;
 	public UnitManager unitManager;
 	public UIManager uiManager;
@@ -35,10 +46,16 @@ public class BattleData
 	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
 
-	public bool rightClicked = false; // 우클릭 : 취소
-	public bool leftClicked = false; // 좌클릭 : 유닛뷰어 고정
-
-	public bool cancelClicked = false;
+	public bool enemyUnitSelected = false;
+	public Input input = new Input();
+	public bool rightClicked
+	{
+		get { return input.rightClicked; }
+	}
+	public bool cancelClicked
+	{
+		get { return input.cancelClicked; }
+	}
 
 	public ActionCommand command = ActionCommand.Waiting;
 	public SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
