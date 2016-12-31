@@ -4,16 +4,16 @@ namespace BattleUI
 {
 	public class CancelButtonPanel : MonoBehaviour
 	{
-		private BattleManager gameManager;
+		private BattleManager battleManager;
 
 		public void Start()
 		{
-			gameManager = FindObjectOfType<BattleManager>();
+			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		public void CallbackCancel()
 		{
-			gameManager.CallbackCancel();
+			battleManager.CallbackCancel();
 		}
 	}
 }

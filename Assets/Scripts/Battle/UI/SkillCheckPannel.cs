@@ -4,26 +4,26 @@ namespace BattleUI
 {
 	public class SkillCheckPannel : MonoBehaviour
 	{
-		private BattleManager gameManager;
+		private BattleManager battleManager;
 
 		public void Start()
 		{
-			gameManager = FindObjectOfType<BattleManager>();
+			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		public void CallbackApplyCommand()
 		{
-			gameManager.CallbackApplyCommand();
+			battleManager.CallbackApplyCommand();
 		}
 
 		public void CallbackChainCommand()
 		{
-			gameManager.CallbackChainCommand();
+			battleManager.CallbackChainCommand();
 		}
 
 		public void CallbackCancel()
 		{
-			gameManager.CallbackCancel();
+			battleManager.CallbackCancel();
 		}
 	}
 }

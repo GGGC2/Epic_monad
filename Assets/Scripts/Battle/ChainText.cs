@@ -6,13 +6,13 @@ using System.Linq;
 public class ChainText : MonoBehaviour {
 	Text text;
 	UnitManager unitManager;
-	BattleManager gameManager;
+	BattleManager battleManager;
 
 	// Use this for initialization
 	void Start () {
 		text = gameObject.GetComponent<Text>();
 		unitManager = FindObjectOfType<UnitManager>();
-		gameManager = FindObjectOfType<BattleManager>();
+		battleManager = FindObjectOfType<BattleManager>();
 	}
 
 	// Update is called once per frame
@@ -21,7 +21,7 @@ public class ChainText : MonoBehaviour {
 
 		string titleText = "[Chain List]\n";
 		newText += titleText;
-		foreach (var chainInfo in gameManager.GetChainList())
+		foreach (var chainInfo in battleManager.GetChainList())
 		{
 			// 현재 턴인 유닛에게 강조표시.
 			if (!chainInfo.GetTargetArea().Any(k => k.GetComponent<Tile>().IsUnitOnTile()))

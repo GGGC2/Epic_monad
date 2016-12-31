@@ -6,13 +6,13 @@ public class APText : MonoBehaviour {
 
 	Text text;
 	UnitManager unitManager;
-	BattleManager gameManager;
+	BattleManager battleManager;
 
 	// Use this for initialization
 	void Start () {
 		text = gameObject.GetComponent<Text>();
 		unitManager = FindObjectOfType<UnitManager>();
-		gameManager = FindObjectOfType<BattleManager>();
+		battleManager = FindObjectOfType<BattleManager>();
 	}
 
 	// Update is called once per frame
@@ -26,7 +26,7 @@ public class APText : MonoBehaviour {
 		foreach (var unit in unitManager.GetAllUnits())
 		{
 			// 현재 턴인 유닛에게 강조표시.
-			if (gameManager.GetSelectedUnit() == unit)
+			if (battleManager.GetSelectedUnit() == unit)
 				newText += "> ";
 			string unitText = unit.GetComponent<Unit>().name + " : " + unit.GetComponent<Unit>().GetCurrentActivityPoint() + "\n";
 			newText += unitText;

@@ -4,16 +4,16 @@ namespace BattleUI
 {
 	public class SelectDirectionUI : MonoBehaviour
 	{
-		private BattleManager gameManager;
+		private BattleManager battleManager;
 
 		public void Start()
 		{
-			gameManager = FindObjectOfType<BattleManager>();
+			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		public void CallbackDirection(string directionString)
 		{
-			gameManager.CallbackDirection(directionString);
+			battleManager.CallbackDirection(directionString);
 		}
 	}
 }

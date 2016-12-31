@@ -4,41 +4,41 @@ namespace BattleUI
 {
 	public class CommandPannel : MonoBehaviour
 	{
-		private BattleManager gameManager;
+		private BattleManager battleManager;
 
 		public void Start()
 		{
-			gameManager = FindObjectOfType<BattleManager>();
+			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		public void CallbackMoveCommand()
 		{
-			gameManager.CallbackMoveCommand();
+			battleManager.CallbackMoveCommand();
 		}
 
 		public void CallbackAttackCommand()
 		{
-			gameManager.CallbackAttackCommand();
+			battleManager.CallbackAttackCommand();
 		}
 
 		public void CallbackRestCommand()
 		{
-			gameManager.CallbackRestCommand();
+			battleManager.CallbackRestCommand();
 		}
 
 		public void CallbackOnPointerEnterRestCommand()
 		{
-			gameManager.CallbackOnPointerEnterRestCommand();
+			battleManager.CallbackOnPointerEnterRestCommand();
 		}
 
 		public void CallbackOnPointerExitRestCommand()
 		{
-			gameManager.CallbackOnPointerExitRestCommand();
+			battleManager.CallbackOnPointerExitRestCommand();
 		}
 
 		public void CallbackStandbyCommand()
 		{
-			gameManager.CallbackStandbyCommand();
+			battleManager.CallbackStandbyCommand();
 		}
 	}
 }

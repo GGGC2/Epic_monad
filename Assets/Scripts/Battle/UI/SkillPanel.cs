@@ -4,31 +4,31 @@ namespace BattleUI
 {
 	public class SkillPanel : MonoBehaviour
 	{
-		private BattleManager gameManager;
+		private BattleManager battleManager;
 
 		public void Start()
 		{
-			gameManager = FindObjectOfType<BattleManager>();
+			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		public void CallbackSkillIndex(int index)
 		{
-			gameManager.CallbackSkillIndex(index);
+			battleManager.CallbackSkillIndex(index);
 		}
 
 		public void CallbackPointerEnterSkillIndex(int index)
 		{
-			gameManager.CallbackPointerEnterSkillIndex(index);
+			battleManager.CallbackPointerEnterSkillIndex(index);
 		}
 
 		public void CallbackPointerExitSkillIndex(int index)
 		{
-			gameManager.CallbackPointerExitSkillIndex(index);
+			battleManager.CallbackPointerExitSkillIndex(index);
 		}
 
 		public void CallbackSkillUICancel()
 		{
-			gameManager.CallbackSkillUICancel();
+			battleManager.CallbackSkillUICancel();
 		}
 	}
 }

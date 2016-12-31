@@ -7,7 +7,7 @@ public class PhaseDisplay : MonoBehaviour {
 	Text phaseText;
 	Text standardAPText;
 	UnitManager unitManager;
-	BattleManager gameManager;
+	BattleManager battleManager;
 	BattleEndChecker battleEndChecker;
 
 	// Use this for initialization
@@ -15,7 +15,7 @@ public class PhaseDisplay : MonoBehaviour {
 		phaseText = transform.Find("PhaseText").GetComponent<Text>();
 		standardAPText = transform.Find("StandardAPText").GetComponent<Text>();
 		unitManager = FindObjectOfType<UnitManager>();
-		gameManager = FindObjectOfType<BattleManager>();
+		battleManager = FindObjectOfType<BattleManager>();
 		battleEndChecker = FindObjectOfType<BattleEndChecker>();
 	}
 

@@ -185,10 +185,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			return;
 		}
 
-		BattleManager gameManager = FindObjectOfType<BattleManager>();
-		if ((isPreSeleted) && (gameManager != null))
+		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		if ((isPreSeleted) && (battleManager != null))
 		{
-			gameManager.OnMouseDownHandlerFromTile(position);
+			battleManager.OnMouseDownHandlerFromTile(position);
 		}
 	}
 
