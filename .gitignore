@@ -39,3 +39,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 *.app
+
+# ignore per project vimrc
+.vimrc
