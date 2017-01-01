@@ -428,7 +428,6 @@ public class BattleManager : MonoBehaviour
 	{
 		if (battleData.isWaitingUserInput)
 		{
-			battleData.isPreSeletedTileByUser = true;
 			battleData.preSelectedTilePosition = position;
 		}
 	}
@@ -437,7 +436,7 @@ public class BattleManager : MonoBehaviour
 	{
 		if (battleData.isWaitingUserInput)
 		{
-			battleData.isPreSeletedTileByUser = false;
+			battleData.preSelectedTilePosition = null;
 		}
 	}
 

@@ -110,7 +110,7 @@ public class BattleData
 	public Triggers triggers = new Triggers();
 	public CurrentState currentState = CurrentState.None;
 
-	public bool isPreSeletedTileByUser = false;
+	public Vector2? preSelectedTilePosition;
 	public int indexOfPreSelectedSkillByUser = 0;
 	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
@@ -122,7 +122,6 @@ public class BattleData
 
 	public int moveCount;
 	public bool alreadyMoved;
-	public Vector2 preSelectedTilePosition;
 	public Vector2 selectedTilePosition;
 	public Direction selectedDirection;
 	public GameObject selectedUnitObject; // 현재 턴의 유닛

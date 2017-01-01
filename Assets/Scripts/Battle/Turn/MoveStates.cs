@@ -13,21 +13,16 @@ namespace Battle.Turn
 		{
 			while (true)
 			{
-				if (battleData.isPreSeletedTileByUser)
+				if (battleData.preSelectedTilePosition.HasValue == false ||
+					movableTilesWithPath.ContainsKey(battleData.preSelectedTilePosition.Value) == false)
 				{
-					try
-					{
-						int requiredAP = movableTilesWithPath[battleData.preSelectedTilePosition].requireActivityPoint;
-						battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					}
-					catch (Exception e)
-					{
-						Debug.LogException(e);
-					}
+					battleData.previewAPAction = null;
 				}
 				else
 				{
-					battleData.previewAPAction = null;
+					var preSelectedTile = battleData.preSelectedTilePosition.Value;
+					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
+					battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
 				}
 				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 				yield return null;
@@ -48,7 +43,6 @@ namespace Battle.Turn
 
 				battleData.uiManager.EnableCancelButtonUI();
 				battleData.isWaitingUserInput = true;
-				battleData.isPreSeletedTileByUser = false;
 
 				var update = UpdatePreviewAP(battleData, movableTilesWithPath);
 				battleData.battleManager.StartCoroutine(update);
@@ -60,7 +54,6 @@ namespace Battle.Turn
 				battleData.battleManager.StopCoroutine(update);
 
 				battleData.isWaitingUserInput = false;
-				battleData.isPreSeletedTileByUser = false;
 
 				//yield break 넣으면 코루틴 강제종료
 				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)

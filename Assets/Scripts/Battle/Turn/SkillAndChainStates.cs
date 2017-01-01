@@ -110,7 +110,6 @@ namespace Battle.Turn
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			battleData.isWaitingUserInput = true;
-			battleData.isPreSeletedTileByUser = false;
 
 			if (battleData.currentState == CurrentState.SelectSkill)
 			{
@@ -138,7 +137,6 @@ namespace Battle.Turn
 			));
 			battleData.battleManager.StopCoroutine(update);
 
-			battleData.isPreSeletedTileByUser = false;
 			battleData.isWaitingUserInput = false;
 			battleData.uiManager.DisableCancelButtonUI();
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -206,7 +204,6 @@ namespace Battle.Turn
 				battleData.uiManager.EnableCancelButtonUI();
 
 				battleData.isWaitingUserInput = true;
-				battleData.isPreSeletedTileByUser = false;
 
 				var update = UpdatePointSkillMouseDirection(battleData);
 				battleData.battleManager.StartCoroutine(update);
@@ -216,7 +213,6 @@ namespace Battle.Turn
 					battleData.triggers.cancelClicked
 				));
 				battleData.battleManager.StopCoroutine(update);
-				battleData.isPreSeletedTileByUser = false;
 				battleData.isWaitingUserInput = false;
 				battleData.uiManager.DisableCancelButtonUI();
 
