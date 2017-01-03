@@ -145,7 +145,7 @@ namespace Battle.Turn
 		{
 			GameObject currentTile = battleData.tileManager.GetTile(battleData.selectedUnitObject.GetComponent<Unit>().GetPosition());
 			currentTile.GetComponent<Tile>().SetUnitOnTile(null);
-			battleData.selectedUnitObject.transform.position = destTile.transform.position + new Vector3(0, 0, -5f);
+			battleData.selectedUnitObject.transform.position = destTile.transform.position + new Vector3(0, 0, -0.05f);
 			battleData.selectedUnitObject.GetComponent<Unit>().SetPosition(destTile.GetComponent<Tile>().GetTilePos());
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(directionAtDest);
 			destTile.GetComponent<Tile>().SetUnitOnTile(battleData.selectedUnitObject);
