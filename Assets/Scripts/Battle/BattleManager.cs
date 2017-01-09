@@ -251,33 +251,25 @@ public class BattleManager : MonoBehaviour
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			battleData.command = ActionCommand.Waiting;
-			while (battleData.command == ActionCommand.Waiting)
-			{
-				yield return null;
-			}
+			yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
 
-			if (battleData.command == ActionCommand.Move)
+			if (battleData.triggers.actionCommand.Data == ActionCommand.Move)
 			{
-				battleData.command = ActionCommand.Waiting;
 				battleData.currentState = CurrentState.SelectMovingPoint;
 				yield return battleManager.StartCoroutine(MoveStates.SelectMovingPointState(battleData));
 			}
-			else if (battleData.command == ActionCommand.Attack)
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Attack)
 			{
-				battleData.command = ActionCommand.Waiting;
 				battleData.currentState = CurrentState.SelectSkill;
 				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
 			}
-			else if (battleData.command == ActionCommand.Rest)
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest)
 			{
-				battleData.command = ActionCommand.Waiting;
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 			}
-			else if (battleData.command == ActionCommand.Standby)
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Standby)
 			{
-				battleData.command = ActionCommand.Waiting;
 				battleData.currentState = CurrentState.Standby;
 				yield return battleManager.StartCoroutine(Standby());
 			}
@@ -288,19 +280,25 @@ public class BattleManager : MonoBehaviour
 	public void CallbackMoveCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
-		battleData.command = ActionCommand.Move;
+		battleData.triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
 	public void CallbackAttackCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
-		battleData.command = ActionCommand.Attack;
+		battleData.triggers.actionCommand.Trigger(ActionCommand.Attack);
 	}
 
 	public void CallbackRestCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
-		battleData.command = ActionCommand.Rest;
+		battleData.triggers.actionCommand.Trigger(ActionCommand.Rest);
+	}
+
+	public void CallbackStandbyCommand()
+	{
+		battleData.uiManager.DisableCommandUI();
+		battleData.triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 
 	public void CallbackOnPointerEnterRestCommand()
@@ -315,12 +313,6 @@ public class BattleManager : MonoBehaviour
 		Debug.Log("Pointer exit from Rest in battleManager.");
 		battleData.previewAPAction = null;
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-	}
-
-	public void CallbackStandbyCommand()
-	{
-		battleData.uiManager.DisableCommandUI();
-		battleData.command = ActionCommand.Standby;
 	}
 
 	public void CallbackCancel()

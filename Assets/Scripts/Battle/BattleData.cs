@@ -39,7 +39,7 @@ public class EventTrigger
 		}
 	}
 
-	public IEnumerable Wait()
+	public IEnumerator Wait()
 	{
 		Begin();
 
@@ -90,6 +90,56 @@ public class EventTrigger
 	}
 }
 
+public class EventTrigger<T>
+{
+	private bool enabled = false;
+	private bool triggered = false;
+	private T data = default(T);
+
+	public bool Triggered
+	{
+		get { return triggered; }
+	}
+
+	public T Data
+	{
+		get { return data; }
+	}
+
+	public void Trigger(T data)
+	{
+		if (enabled)
+		{
+			triggered = true;
+			this.data = data;
+		}
+	}
+
+	public IEnumerator Wait()
+	{
+		Begin();
+
+		while (triggered == false)
+		{
+			yield return null;
+		}
+
+		End();
+	}
+
+	private void Begin()
+	{
+		enabled = true;
+		triggered = false;
+		this.data = default(T);
+	}
+
+	private void End()
+	{
+		enabled = false;
+	}
+}
+
 public class BattleData
 {
 	public TileManager tileManager;
@@ -105,6 +155,7 @@ public class BattleData
 		public EventTrigger selectedDirectionByUser = new EventTrigger();
 		public EventTrigger skillSelected = new EventTrigger();
 		public EventTrigger skillApplyCommandChanged = new EventTrigger();
+		public EventTrigger<ActionCommand> actionCommand = new EventTrigger<ActionCommand>();
 	}
 
 	public Triggers triggers = new Triggers();
@@ -114,10 +165,8 @@ public class BattleData
 	public int indexOfPreSelectedSkillByUser = 0;
 	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
-
 	public bool enemyUnitSelected = false;
 
-	public ActionCommand command = ActionCommand.Waiting;
 	public SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
 	public int moveCount;
