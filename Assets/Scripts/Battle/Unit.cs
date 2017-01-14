@@ -240,6 +240,26 @@ public class Unit : MonoBehaviour
 		this.position = position;
 	}
 
+	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp)
+	{
+		before.SetUnitOnTile(null);
+		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
+		SetPosition(after.GetTilePos());
+		SetDirection(direction);
+		after.SetUnitOnTile(this.gameObject);
+		this.activityPoint = snapshotAp;
+	}
+
+	public void ApplyMove(Tile before, Tile after, Direction direction, int costAp)
+	{
+		before.SetUnitOnTile(null);
+		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
+		SetPosition(after.GetTilePos());
+		SetDirection(direction);
+		after.SetUnitOnTile(this.gameObject);
+		UseActivityPoint(costAp);
+	}
+
 	public Vector2 GetPosition()
 	{
 		return position;

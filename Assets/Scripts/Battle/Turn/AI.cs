@@ -434,8 +434,6 @@ namespace Battle.Turn
 			int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 			int totalUseActivityPoint = movableTilesWithPath[destPosition].requireActivityPoint;
 
-			// battleData.moveCount += distance;
-
 			// battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			battleData.currentState = CurrentState.CheckDestination;
 
@@ -572,7 +570,7 @@ namespace Battle.Turn
 				}
 
 				battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
-				battleData.selectedTilePosition = selectedTile.GetTilePos();
+				battleData.move.selectedTilePosition = selectedTile.GetTilePos();
 
 				// 타겟팅 스킬을 타겟이 없는 장소에 지정했을 경우 적용되지 않도록 예외처리 필요 - 대부분의 스킬은 논타겟팅. 추후 보강.
 

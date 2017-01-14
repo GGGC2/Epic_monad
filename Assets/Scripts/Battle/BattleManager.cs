@@ -107,7 +107,7 @@ public class BattleManager : MonoBehaviour
 
 		Debug.Log(unit.GetComponent<Unit>().GetName() + "'s turn");
 		battleData.selectedUnitObject = unit;
-		battleData.moveCount = 0; // 누적 이동 수
+		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
 		ChainList.RemoveChainsFromUnit(battleData.selectedUnitObject); // 턴이 돌아오면 자신이 건 체인 삭제.
 		battleData.currentState = CurrentState.FocusToUnit;
@@ -251,9 +251,23 @@ public class BattleManager : MonoBehaviour
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
+			if (battleData.alreadyMoved) {
+				yield return battleManager.StartCoroutine(
+					EventTrigger.WaitOr(
+						battleData.triggers.actionCommand,
+						battleData.triggers.rightClicked
+					)
+				);
+			} else {
+				yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
+			}
 
-			if (battleData.triggers.actionCommand.Data == ActionCommand.Move)
+			if (battleData.alreadyMoved && battleData.triggers.rightClicked.Triggered)
+			{
+				Battle.Turn.MoveStates.RestoreMoveSnapshot(battleData);
+				battleData.alreadyMoved = false;
+			}
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Move)
 			{
 				battleData.currentState = CurrentState.SelectMovingPoint;
 				yield return battleManager.StartCoroutine(MoveStates.SelectMovingPointState(battleData));
@@ -375,13 +389,13 @@ public class BattleManager : MonoBehaviour
 			return;
 
 		if (directionString == "LeftUp")
-			battleData.selectedDirection = Direction.LeftUp;
+			battleData.move.selectedDirection = Direction.LeftUp;
 		else if (directionString == "LeftDown")
-			battleData.selectedDirection = Direction.LeftDown;
+			battleData.move.selectedDirection = Direction.LeftDown;
 		else if (directionString == "RightUp")
-			battleData.selectedDirection = Direction.RightUp;
+			battleData.move.selectedDirection = Direction.RightUp;
 		else if (directionString == "RightDown")
-			battleData.selectedDirection = Direction.RightDown;
+			battleData.move.selectedDirection = Direction.RightDown;
 
 		battleData.triggers.selectedDirectionByUser.Trigger();
 		battleData.uiManager.DisableSelectDirectionUI();
@@ -437,7 +451,7 @@ public class BattleManager : MonoBehaviour
 		if (battleData.isWaitingUserInput)
 		{
 			battleData.triggers.selectedTileByUser.Trigger();
-			battleData.selectedTilePosition = position;
+			battleData.move.selectedTilePosition = position;
 		}
 	}
 

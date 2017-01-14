@@ -21,7 +21,14 @@ public enum SkillApplyCommand
 	Waiting, Apply, Chain
 }
 
-public class EventTrigger
+public interface IEventTrigger
+{
+	void Begin();
+	void End();
+	bool Triggered { get; }
+}
+
+public class EventTrigger: IEventTrigger
 {
 	private bool enabled = false;
 	private bool triggered = false;
@@ -51,18 +58,20 @@ public class EventTrigger
 		End();
 	}
 
-	private void Begin()
+	// Wait이나 WaitOr을 쓰면 자동으로 호출됩니다.
+	public void Begin()
 	{
 		enabled = true;
 		triggered = false;
 	}
 
-	private void End()
+	// Wait이나 WaitOr을 쓰면 자동으로 호출됩니다.
+	public void End()
 	{
 		enabled = false;
 	}
 
-	public static IEnumerator WaitOr(params EventTrigger[] triggers)
+	public static IEnumerator WaitOr(params IEventTrigger[] triggers)
 	{
 		foreach (var trigger in triggers)
 		{
@@ -74,7 +83,7 @@ public class EventTrigger
 		{
 			foreach (var trigger in triggers)
 			{
-				if (trigger.triggered)
+				if (trigger.Triggered)
 				{
 					looping = false;
 					break;
@@ -90,7 +99,7 @@ public class EventTrigger
 	}
 }
 
-public class EventTrigger<T>
+public class EventTrigger<T>: IEventTrigger
 {
 	private bool enabled = false;
 	private bool triggered = false;
@@ -127,14 +136,16 @@ public class EventTrigger<T>
 		End();
 	}
 
-	private void Begin()
+	// Wait이나 WaitOr을 쓰면 자동으로 호출됩니다.
+	public void Begin()
 	{
 		enabled = true;
 		triggered = false;
 		this.data = default(T);
 	}
 
-	private void End()
+	// Wait이나 WaitOr을 쓰면 자동으로 호출됩니다.
+	public void End()
 	{
 		enabled = false;
 	}
@@ -169,10 +180,23 @@ public class BattleData
 
 	public SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
-	public int moveCount;
+	public class Move {
+		public int moveCount = 0;
+		public Vector2 selectedTilePosition = Vector2.zero;
+		public Direction selectedDirection = Direction.LeftUp;
+	}
+
+	public class MoveSnapshopt {
+		public Tile tile;
+		public int ap;
+		public Direction direction;
+	}
+
+	public Move move = new Move();
 	public bool alreadyMoved;
-	public Vector2 selectedTilePosition;
-	public Direction selectedDirection;
+	// 이동을 취소하기 위해서 필요
+	public MoveSnapshopt moveSnapshot;
+
 	public GameObject selectedUnitObject; // 현재 턴의 유닛
 	public List<GameObject> readiedUnits = new List<GameObject>();
 	public List<GameObject> deadUnits = new List<GameObject>();
@@ -216,7 +240,7 @@ public class BattleData
 	public Tile SelectedTile
 	{
 		get {
-			return tileManager.GetTile(selectedTilePosition).GetComponent<Tile>();
+			return tileManager.GetTile(move.selectedTilePosition).GetComponent<Tile>();
 		}
 	}
 

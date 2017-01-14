@@ -67,14 +67,14 @@ namespace Battle.Turn
 				}
 
 				// FIXME : 어딘가로 옮겨야 할 텐데...
-				GameObject destTile = battleData.tileManager.GetTile(battleData.selectedTilePosition);
-				List<GameObject> destPath = movableTilesWithPath[battleData.selectedTilePosition].path;
+				GameObject destTile = battleData.tileManager.GetTile(battleData.move.selectedTilePosition);
+				List<GameObject> destPath = movableTilesWithPath[battleData.move.selectedTilePosition].path;
 				Vector2 currentTilePos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
-				Vector2 distanceVector = battleData.selectedTilePosition - currentTilePos;
+				Vector2 distanceVector = battleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
-				int totalUseActivityPoint = movableTilesWithPath[battleData.selectedTilePosition].requireActivityPoint;
+				int totalUseActivityPoint = movableTilesWithPath[battleData.move.selectedTilePosition].requireActivityPoint;
 
-				battleData.moveCount += distance;
+				battleData.move.moveCount += distance;
 
 				battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 				battleData.currentState = CurrentState.CheckDestination;
@@ -121,7 +121,7 @@ namespace Battle.Turn
 				// UI 숨기고
 				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
 				{
-					battleData.moveCount -= distance;
+					battleData.move.moveCount -= distance;
 					Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
 					battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 					battleData.uiManager.DisableSelectDirectionUI();
@@ -136,29 +136,46 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.MoveToTile;
 				battleData.uiManager.DisableDestCheckUI();
 				BattleManager battleManager = battleData.battleManager;
-				yield return battleManager.StartCoroutine(MoveToTile(battleData, destTile, battleData.selectedDirection, totalUseActivityPoint));
+				yield return battleManager.StartCoroutine(MoveToTile(battleData, destTile, battleData.move.selectedDirection, totalUseActivityPoint));
 			}
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTile(BattleData battleData, GameObject destTile, Direction directionAtDest, int totalUseActivityPoint)
+		public static IEnumerator MoveToTile(BattleData battleData, GameObject destTileGO, Direction directionAtDest, int totalUseActivityPoint)
 		{
-			GameObject currentTile = battleData.tileManager.GetTile(battleData.selectedUnitObject.GetComponent<Unit>().GetPosition());
-			currentTile.GetComponent<Tile>().SetUnitOnTile(null);
-			battleData.selectedUnitObject.transform.position = destTile.transform.position + new Vector3(0, 0, -0.05f);
-			battleData.selectedUnitObject.GetComponent<Unit>().SetPosition(destTile.GetComponent<Tile>().GetTilePos());
-			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(directionAtDest);
-			destTile.GetComponent<Tile>().SetUnitOnTile(battleData.selectedUnitObject);
+			CaptureMoveSnapshot(battleData);
 
-			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(totalUseActivityPoint);
+			Tile beforeTile = battleData.SelectedUnitTile;
+			Unit unit = battleData.SelectedUnit;
+			Tile nextTile = destTileGO.GetComponent<Tile>();
+			unit.ApplyMove(beforeTile, nextTile, directionAtDest, totalUseActivityPoint);
+
 			battleData.previewAPAction = null;
-
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;
 			BattleManager battleManager = battleData.battleManager;
-			// yield return battleManager.StartCoroutine(BattleManager.FocusToUnit(battleData));
 
 			yield return null;
+		}
+
+		private static void CaptureMoveSnapshot(BattleData battleData)
+		{
+			Debug.Log("Capture move snapshot");
+			BattleData.MoveSnapshopt snapshot = new BattleData.MoveSnapshopt();
+			snapshot.tile = battleData.SelectedUnitTile;
+			snapshot.ap = battleData.SelectedUnit.activityPoint;
+			snapshot.direction = battleData.SelectedUnit.direction;
+			battleData.moveSnapshot = snapshot;
+		}
+
+		public static void RestoreMoveSnapshot(BattleData battleData)
+		{
+			Debug.Log("Restore move snapshot");
+			var snapshot = battleData.moveSnapshot;
+			Unit unit = battleData.SelectedUnit;
+			Tile beforeTile = battleData.SelectedUnitTile;
+			Tile nextTile = snapshot.tile;
+			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);
 		}
 	}
 }
