@@ -6,11 +6,11 @@ public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
 	// 새로운 체인 정보 추가. 들어가는 정보는 시전자, 적용범위, 스킬인덱스.
-	public static void AddChains(GameObject unit, List<GameObject> targetArea, int skillIndex)
+	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, int skillIndex)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(unit, targetArea, skillIndex);
+		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skillIndex);
 		chainList.Add(newChainInfo);
 
 		SetChargeEffectToUnit(unit);

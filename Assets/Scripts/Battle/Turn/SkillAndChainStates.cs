@@ -246,7 +246,7 @@ namespace Battle.Turn
 				battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
 
 				//데미지 미리보기
-				Dictionary<GameObject, float> calculatedTotalDamage = CalculateTotalDamage(battleData, tilesInSkillRange);
+				Dictionary<GameObject, float> calculatedTotalDamage = CalculateTotalDamage(battleData, targetTile, tilesInSkillRange);
 				foreach (KeyValuePair<GameObject, float> kv in calculatedTotalDamage)
 				{
 					Debug.Log(kv.Key.GetComponent<Unit>().GetName() + " - Damage preview");
@@ -295,7 +295,7 @@ namespace Battle.Turn
 					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
 					 || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 					{
-						yield return ApplyChain(battleData, tilesInSkillRange);
+						yield return ApplyChain(battleData, targetTile, tilesInSkillRange);
 						FocusUnit(battleData.SelectedUnit);
 						battleData.currentState = CurrentState.FocusToUnit;
 					}
@@ -310,7 +310,7 @@ namespace Battle.Turn
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					battleData.currentState = CurrentState.ChainAndStandby;
-					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, tilesInSkillRange));
+					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, tilesInSkillRange));
 				}
 				else
 				{
@@ -373,12 +373,12 @@ namespace Battle.Turn
 			return isPossible;
 		}
 
-		public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, List<GameObject> tilesInSkillRange)
+		public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange)
 		{
 			// List<ChainInfo> tempChainList = new List<ChainInfo>();
 			Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
 
-			ChainList.AddChains(battleData.selectedUnitObject, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
+			ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
 
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
@@ -517,11 +517,11 @@ namespace Battle.Turn
 			unitInChain.SetDirection(oldDirection);
 		}
 
-		public static IEnumerator ApplyChain(BattleData battleData, List<GameObject> tilesInSkillRange)
+		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<GameObject> tilesInSkillRange)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			// 자기 자신을 체인 리스트에 추가.
-			ChainList.AddChains(battleData.selectedUnitObject, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
+			ChainList.AddChains(battleData.selectedUnitObject, targetTile, tilesInSkillRange, battleData.indexOfSeletedSkillByUser);
 			// 체인 체크, 순서대로 공격.
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
@@ -539,7 +539,7 @@ namespace Battle.Turn
 			battleData.SelectedUnit.DisableChainText();
 		}
 
-		private static IEnumerator ChainAndStandby(BattleData battleData, List<GameObject> selectedTiles)
+		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<GameObject> selectedTiles)
 		{
 			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
@@ -566,7 +566,7 @@ namespace Battle.Turn
 			}
 
 			// 체인 목록에 추가.
-			ChainList.AddChains(battleData.selectedUnitObject, selectedTiles, battleData.indexOfSeletedSkillByUser);
+			ChainList.AddChains(battleData.selectedUnitObject, targetTile, selectedTiles, battleData.indexOfSeletedSkillByUser);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 			yield return new WaitForSeconds(0.5f);
 
@@ -583,6 +583,7 @@ namespace Battle.Turn
 			GameObject unitObjectInChain = chainInfo.GetUnit();
 			Unit unitInChain = unitObjectInChain.GetComponent<Unit>();
 			Skill appliedSkill = unitInChain.GetSkillList()[chainInfo.GetSkillIndex() - 1];
+			Tile targetTile = chainInfo.GetCenterTile();
 			List<GameObject> selectedTiles = chainInfo.GetTargetArea();
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
@@ -734,7 +735,7 @@ namespace Battle.Turn
 					// eren_l_30 회복
 					if (appliedSkill.GetName().Equals("생명력 흡수"))
 					{
-						int finalDamage = (int)CalculateTotalDamage(battleData, selectedTiles)[target];
+						int finalDamage = (int)CalculateTotalDamage(battleData, targetTile, selectedTiles)[target];
 						int targetCurrentHealth = targetUnit.GetCurrentHealth();
 						float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
 						int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);
@@ -799,6 +800,16 @@ namespace Battle.Turn
 			battleData.alreadyMoved = false;
 		}
 
+		private static List<GameObject> ReselectTilesByRoute(BattleData battleData, List<GameObject> selectedTiles)
+		{
+			List<GameObject> reselectTiles = new List<GameObject>();
+			//단차 제외하고 구현.
+			Vector2 startPos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
+			// Vector2 endPos = ; 
+
+			return reselectTiles;
+		}
+
 		// 체인 불가능 스킬일 경우의 스킬 시전 코루틴. 스킬 적용 범위만 받는다.
 		private static IEnumerator ApplySkill(BattleData battleData, List<GameObject> selectedTiles)
 		{
@@ -806,6 +817,10 @@ namespace Battle.Turn
 			Skill appliedSkill = battleData.SelectedSkill;
 			BattleManager battleManager = battleData.battleManager;
 
+			// 경로형 스킬의 경우 대상 범위 재지정
+			if (appliedSkill.GetSkillType() == SkillType.Route)
+				selectedTiles = ReselectTilesByRoute(battleData, selectedTiles);			
+			
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 			if (appliedSkill.GetSkillType() != SkillType.Auto)
 				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit.gameObject, selectedTiles));

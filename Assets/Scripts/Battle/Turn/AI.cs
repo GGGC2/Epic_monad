@@ -534,7 +534,7 @@ namespace Battle.Turn
 
 			List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
-			yield return SkillAndChainStates.ApplyChain(battleData, tilesInSkillRange);
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange);
 			FocusUnit(battleData.SelectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
@@ -579,7 +579,7 @@ namespace Battle.Turn
 
 				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
-				yield return SkillAndChainStates.ApplyChain(battleData, tilesInSkillRange);
+				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange);
 				FocusUnit(battleData.SelectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
 				battleData.uiManager.ResetSkillNamePanelUI();

@@ -5,14 +5,16 @@ using System.Collections.Generic;
 public class ChainInfo {
 
 	// 체인에 필요한 정보?
-	// 시전자, 영역, 시전스킬
+	// 시전자, 중심, 영역, 시전스킬
 	GameObject unit;
+	Tile centerTile;
 	List<GameObject> targetArea;
 	int skillIndex;
 
-	public ChainInfo (GameObject unit, List<GameObject> targetArea, int skillIndex)
+	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, int skillIndex)
 	{
 		this.unit = unit;
+		this.centerTile = centerTile;
 		this.targetArea = targetArea;
 		this.skillIndex = skillIndex;
 	}
@@ -22,6 +24,11 @@ public class ChainInfo {
 		return unit;
 	}
 	
+	public Tile GetCenterTile()
+	{
+		return centerTile;
+	}
+
 	public List<GameObject> GetTargetArea()
 	{
 		return targetArea;
