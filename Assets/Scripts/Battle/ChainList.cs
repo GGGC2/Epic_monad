@@ -16,6 +16,17 @@ public class ChainList : MonoBehaviour {
 		SetChargeEffectToUnit(unit);
 	}
 
+	// 경로형 기술일 경우 이쪽으로. 경로형 범위(routeArea) 추가.
+	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, int skillIndex, List<GameObject> routeArea)
+	{
+		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
+
+		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skillIndex, routeArea);
+		chainList.Add(newChainInfo);
+
+		SetChargeEffectToUnit(unit);
+	}
+
 	static void SetChargeEffectToUnit(GameObject unit)
 	{
 		GameObject effect = Instantiate(Resources.Load("Effect/Waiting")) as GameObject;

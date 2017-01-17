@@ -59,7 +59,9 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				Skill selectedSkill = battleData.SelectedSkill;
 				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
-				if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+				if (skillTypeOfSelectedSkill == SkillType.Auto || 
+					skillTypeOfSelectedSkill == SkillType.Self ||
+					skillTypeOfSelectedSkill == SkillType.Route)
 				{
 					battleData.currentState = CurrentState.SelectSkillApplyDirection;
 					yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
@@ -83,23 +85,90 @@ namespace Battle.Turn
 			{
 				Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
 				Direction beforeDirection = battleData.SelectedUnit.GetDirection();
-				var selectedTiles = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetSecondRangeForm(),
+				var selectedTilesByBeforeDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
 																battleData.SelectedUnit.GetPosition(),
-																battleData.SelectedSkill.GetSecondMinReach(),
-																battleData.SelectedSkill.GetSecondMaxReach(),
-																battleData.SelectedUnit.GetDirection());
+																battleData.SelectedSkill.GetFirstMinReach(),
+																battleData.SelectedSkill.GetFirstMaxReach(),
+																beforeDirection);
+
+				var routeTilesByBeforeDirection = new List<GameObject>();
+				var selectedTilesAtRouteByBeforeDirection = new List<GameObject>();
+
+				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+				{
+					// 동일한 코드
+					routeTilesByBeforeDirection = GetRouteTiles(selectedTilesByBeforeDirection);	
+
+					// 경로형 기술의 2차범위를 설정.
+					// 경로의 마지막 타일을 중심으로 범위 재설정
+					Tile destTile = selectedTilesByBeforeDirection[selectedTilesByBeforeDirection.Count-1].GetComponent<Tile>();
+					selectedTilesAtRouteByBeforeDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetSecondRangeForm(),
+																		destTile.GetTilePos(),
+																		battleData.SelectedSkill.GetSecondMinReach(),
+																		battleData.SelectedSkill.GetSecondMaxReach(),
+																		beforeDirection);
+				}
+				
+				var selectedTilesByNewDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
+																battleData.SelectedUnit.GetPosition(),
+																battleData.SelectedSkill.GetFirstMinReach(),
+																battleData.SelectedSkill.GetFirstMaxReach(),
+																newDirection);
+
+				var routeTilesByNewDirection = new List<GameObject>();
+				var selectedTilesAtRouteByNewDirection = new List<GameObject>();
+
+				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+				{
+					// 동일한 코드
+					routeTilesByNewDirection = GetRouteTiles(selectedTilesByNewDirection);	
+
+					// 경로형 기술의 2차범위를 설정.
+					// 경로의 마지막 타일을 중심으로 범위 재설정
+					Tile destTile = selectedTilesByNewDirection[selectedTilesByNewDirection.Count-1].GetComponent<Tile>();
+					selectedTilesAtRouteByNewDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetSecondRangeForm(),
+																		destTile.GetTilePos(),
+																		battleData.SelectedSkill.GetSecondMinReach(),
+																		battleData.SelectedSkill.GetSecondMaxReach(),
+																		newDirection);
+				}
 
 				if (beforeDirection != newDirection)
 				{
-					battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
+					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+						battleData.tileManager.DepaintTiles(routeTilesByBeforeDirection, TileColor.Red);
+					else
+						battleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
 
 					beforeDirection = newDirection;
 					battleData.SelectedUnit.SetDirection(newDirection);
 
-					battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+						battleData.tileManager.PaintTiles(routeTilesByNewDirection, TileColor.Red);
+					else
+						battleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
 				}
 				yield return null;
 			}
+		}
+
+		public static List<GameObject> GetRouteTiles(List<GameObject> tiles)
+		{
+			List<GameObject> newRouteTiles = new List<GameObject>();
+			foreach (var tile in tiles)
+			{
+				// 타일 단차에 의한 부분(미구현)
+				// 즉시 탐색을 종료한다.
+				// break;
+				
+				// 첫 유닛을 만난 경우
+				// 이번 타일을 마지막으로 종료한다.
+				newRouteTiles.Add(tile);
+				if (tile.GetComponent<Tile>().IsUnitOnTile())
+					break;
+			}
+
+			return newRouteTiles;
 		}
 
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
@@ -109,6 +178,11 @@ namespace Battle.Turn
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 			Skill selectedSkill = battleData.SelectedSkill;
 
+			// 경로형 기술에서만 쓰인다.
+			List<GameObject> routeTiles = new List<GameObject>();
+			List<GameObject> selectedTilesAtRoute = new List<GameObject>();
+			Tile destTileAtRoute = null;
+
 			battleData.isWaitingUserInput = true;
 
 			if (battleData.currentState == CurrentState.SelectSkill)
@@ -117,17 +191,42 @@ namespace Battle.Turn
 				yield break;
 			}
 
+			// 경로형 기술과 함께 묶기 위해 자동형 기술도 1차범위를 유효범위로 지정함.
+			// 따라서 자동형, 자신 대상 기술의 경우 2차범위는 의미가 없으며,
+			// 경로형 기술의 경우 2차범위를 따로 처리한다.
+			// 기존 코드에서는 일관적으로 2차범위를 유효범위로 취급했으나 자동형, 자신 대상 기술의 경우 1차 == 2차이므로 문제없을듯.
 			if (battleData.currentState == CurrentState.SelectSkillApplyDirection)
 			{
-				selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 															selectedUnit.GetPosition(),
-															selectedSkill.GetSecondMinReach(),
-															selectedSkill.GetSecondMaxReach(),
+															selectedSkill.GetFirstMinReach(),
+															selectedSkill.GetFirstMaxReach(),
 															selectedUnit.GetDirection());
 
-				battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+				{
+					// 경로형 기술의 경우 추가연산.
+					// '경로'를 연산.
+					// **지정범위 타일 리스트에 대한 예측이 맞다는 가정 하에 짜여있으므로 검증 필요
+					routeTiles = GetRouteTiles(selectedTiles);	
+
+					// 경로형 기술의 2차범위를 설정.
+					// 경로의 마지막 타일을 중심으로 범위 재설정
+					destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
+					selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+																		destTileAtRoute.GetTilePos(),
+																		selectedSkill.GetSecondMinReach(),
+																		selectedSkill.GetSecondMaxReach(),
+																		selectedUnit.GetDirection());
+
+					battleData.tileManager.PaintTiles(routeTiles, TileColor.Red);
+					// battleData.tileManager.PaintTiles(selectedTilesAtRoute, TileColor.Red);
+				}
+				else
+					battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 			}
 
+			// 이부분을 수정하지 않으면 마우스 이동시 업데이트가 안 되므로 반드시 확인할 것
 			var update = UpdateRangeSkillMouseDirection(battleData);
 			battleData.battleManager.StartCoroutine(update);
 			yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
@@ -137,14 +236,33 @@ namespace Battle.Turn
 			));
 			battleData.battleManager.StopCoroutine(update);
 
+			// 마찬가지로 1차범위로 넣는다.
+			// 여기서 왜 연산을 또 하지? selectedTiles를 새로 구할 필요가 있나? 일단 그대로 구현.
 			battleData.isWaitingUserInput = false;
 			battleData.uiManager.DisableCancelButtonUI();
-			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 											selectedUnit.GetPosition(),
-											selectedSkill.GetSecondMinReach(),
-											selectedSkill.GetSecondMaxReach(),
+											selectedSkill.GetFirstMinReach(),
+											selectedSkill.GetFirstMaxReach(),
 											selectedUnit.GetDirection());
-			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
+			
+			// 위쪽과 동일
+			if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+			{
+				routeTiles = GetRouteTiles(selectedTiles);	
+
+				destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
+				selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+																	destTileAtRoute.GetTilePos(),
+																	selectedSkill.GetSecondMinReach(),
+																	selectedSkill.GetSecondMaxReach(),
+																	selectedUnit.GetDirection());
+
+				battleData.tileManager.DepaintTiles(routeTiles, TileColor.Red);
+				battleData.tileManager.DepaintTiles(selectedTilesAtRoute, TileColor.Red);
+			}
+			else
+				battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
 			if (battleData.triggers.rightClicked.Triggered ||
 			    battleData.triggers.cancelClicked.Triggered)
@@ -158,7 +276,10 @@ namespace Battle.Turn
 			{
 				BattleManager battleManager = battleData.battleManager;
 				battleData.currentState = CurrentState.CheckApplyOrChain;
-				yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
+				else
+					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
 			}
 		}
 

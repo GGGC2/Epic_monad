@@ -5,11 +5,14 @@ using System.Collections.Generic;
 public class ChainInfo {
 
 	// 체인에 필요한 정보?
-	// 시전자, 중심, 영역, 시전스킬
+	// 시전자, 중심, 영역, 시전스킬 + 경로형 여부, 경로범위
 	GameObject unit;
 	Tile centerTile;
 	List<GameObject> targetArea;
 	int skillIndex;
+
+	bool isRouteType;
+	List<GameObject> routeArea;
 
 	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, int skillIndex)
 	{
@@ -17,28 +20,36 @@ public class ChainInfo {
 		this.centerTile = centerTile;
 		this.targetArea = targetArea;
 		this.skillIndex = skillIndex;
-	}
-	
-	public GameObject GetUnit()
-	{
-		return unit;
-	}
-	
-	public Tile GetCenterTile()
-	{
-		return centerTile;
+
+		this.isRouteType = false;
 	}
 
-	public List<GameObject> GetTargetArea()
+	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, int skillIndex, List<GameObject> routeArea)
 	{
-		return targetArea;
+		this.unit = unit;
+		this.centerTile = centerTile;
+		this.targetArea = targetArea;
+		this.skillIndex = skillIndex;
+
+		this.isRouteType = true;
+		this.routeArea = routeArea;
 	}
 	
-	public int GetSkillIndex()
+	public GameObject GetUnit() {	return unit;	}
+	public Tile GetCenterTile() {	return centerTile;	}
+	public List<GameObject> GetTargetArea() {	return targetArea;	}
+	public int GetSkillIndex() {	return skillIndex;	}
+	public List<GameObject> GetRouteArea()
 	{
-		return skillIndex;
+		if (!isRouteType)
+		{
+			Debug.LogError("Invaild access - not route type skill");
+			return new List<GameObject>();
+		}
+		else
+			return routeArea;
 	}
-	
+
 	public bool Overlapped(List<GameObject> anotherTargetArea)
 	{
 		List<GameObject> anotherTargets = new List<GameObject>();
