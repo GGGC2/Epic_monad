@@ -54,7 +54,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public Element GetTileElement()	{	return element;	}
 
-	public int GetRequireAPAtTile()	{	return CalculatingRequireAPOfTile(APAtStandardHeight, height);	}
+	public int GetRequireAPAtTile()	{	return APAtStandardHeight;	}
 
 	public bool IsUnitOnTile ()	{	return !(unitOnTile == null);	}
 

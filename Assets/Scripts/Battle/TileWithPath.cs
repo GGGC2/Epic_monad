@@ -28,8 +28,17 @@ public class TileWithPath {
 		this.path.Add(lastPrevTile);
 
 		// USING ONLY TEST.
-		int apGap = EditInfo.ApGap;
+		// int apGap = EditInfo.ApGap;
 
-		this.requireActivityPoint = prevTileWithPath.requireActivityPoint + (tile.GetComponent<Tile>().GetRequireAPAtTile() + prevPath.Count * apGap);
+		// 상승이동일 경우 기본값 * 3. 아닐 경우 기본값 * 1
+		int climbValue = 1;
+
+		int heightOfDestTile = destTile.GetComponent<Tile>().GetTileHeight();
+		int heightOfLastPrevTile = lastPrevTile.GetComponent<Tile>().GetTileHeight();
+		if (heightOfDestTile > heightOfLastPrevTile)
+			climbValue = 3;
+
+		this.requireActivityPoint = prevTileWithPath.requireActivityPoint 
+									+ (tile.GetComponent<Tile>().GetRequireAPAtTile() * climbValue + prevPath.Count * apGap);
 	}
 }
