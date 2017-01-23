@@ -5,23 +5,73 @@ using System.Collections.Generic;
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
-	// 새로운 체인 정보 추가. 들어가는 정보는 시전자, 적용범위, 스킬인덱스.
-	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, int skillIndex)
+	// *주의 : SkillAndChainStates.cs에서 같은 이름의 함수를 수정할 것!!
+	public static List<GameObject> GetRouteTiles(List<GameObject> tiles)
+	{
+		List<GameObject> newRouteTiles = new List<GameObject>();
+		foreach (var tile in tiles)
+		{
+			// 타일 단차에 의한 부분(미구현)
+			// 즉시 탐색을 종료한다.
+			// break;
+			
+			// 첫 유닛을 만난 경우
+			// 이번 타일을 마지막으로 종료한다.
+			newRouteTiles.Add(tile);
+			if (tile.GetComponent<Tile>().IsUnitOnTile())
+				break;
+		}
+
+		return newRouteTiles;
+	}
+
+	// 체인리스트에서 경로형 기술 범위 재설정. 이동 후, 스킬시전 후(유닛 사망, 넉백, 풀링 등) 꼭 호출해줄 것
+	public static List<ChainInfo> RefreshChainInfo(List<ChainInfo> chainList)
+	{
+		TileManager tileManager = FindObjectOfType<TileManager>();
+
+		List<ChainInfo> newChainList = new List<ChainInfo>();
+		foreach (var chainInfo in chainList)
+		{
+			if (chainInfo.IsRouteType())
+			{
+				List<GameObject> newRouteTiles = GetRouteTiles(chainInfo.GetRouteArea());
+				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1].GetComponent<Tile>();
+				Skill skill = chainInfo.GetSkill();
+				GameObject unit = chainInfo.GetUnit();
+				List<GameObject> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
+																	newCenterTile.GetTilePos(),
+																	skill.GetSecondMinReach(),
+																	skill.GetSecondMaxReach(),
+																	unit.GetComponent<Unit>().GetDirection());
+
+				ChainInfo newChainInfo = new ChainInfo(unit, newCenterTile, newTargetTiles, skill, chainInfo.GetRouteArea());
+				newChainList.Add(newChainInfo);
+			}
+			else
+				newChainList.Add(chainInfo);
+		}
+
+		return newChainList;
+	}
+
+	// 새로운 체인 정보 추가. 들어가는 정보는 시전자, 적용범위, 시전스킬.
+	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skillIndex);
+		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill);
 		chainList.Add(newChainInfo);
 
 		SetChargeEffectToUnit(unit);
 	}
 
 	// 경로형 기술일 경우 이쪽으로. 경로형 범위(routeArea) 추가.
-	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, int skillIndex, List<GameObject> routeArea)
+	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> routeArea)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skillIndex, routeArea);
+		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill, routeArea);
 		chainList.Add(newChainInfo);
 
 		SetChargeEffectToUnit(unit);

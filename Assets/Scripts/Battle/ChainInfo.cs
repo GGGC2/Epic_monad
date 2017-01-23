@@ -9,27 +9,27 @@ public class ChainInfo {
 	GameObject unit;
 	Tile centerTile;
 	List<GameObject> targetArea;
-	int skillIndex;
+	Skill skill;
 
 	bool isRouteType;
 	List<GameObject> routeArea;
 
-	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, int skillIndex)
+	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, Skill skill)
 	{
 		this.unit = unit;
 		this.centerTile = centerTile;
 		this.targetArea = targetArea;
-		this.skillIndex = skillIndex;
+		this.skill = skill;
 
 		this.isRouteType = false;
 	}
 
-	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, int skillIndex, List<GameObject> routeArea)
+	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, Skill skill, List<GameObject> routeArea)
 	{
 		this.unit = unit;
 		this.centerTile = centerTile;
 		this.targetArea = targetArea;
-		this.skillIndex = skillIndex;
+		this.skill = skill;
 
 		this.isRouteType = true;
 		this.routeArea = routeArea;
@@ -38,7 +38,8 @@ public class ChainInfo {
 	public GameObject GetUnit() {	return unit;	}
 	public Tile GetCenterTile() {	return centerTile;	}
 	public List<GameObject> GetTargetArea() {	return targetArea;	}
-	public int GetSkillIndex() {	return skillIndex;	}
+	public Skill GetSkill() {	return skill;	}
+	public bool IsRouteType() {	return isRouteType;	}
 	public List<GameObject> GetRouteArea()
 	{
 		if (!isRouteType)
@@ -49,7 +50,7 @@ public class ChainInfo {
 		else
 			return routeArea;
 	}
-
+	
 	public bool Overlapped(List<GameObject> anotherTargetArea)
 	{
 		List<GameObject> anotherTargets = new List<GameObject>();
