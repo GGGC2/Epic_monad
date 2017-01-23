@@ -7,6 +7,8 @@ using UnityEngine;
 public class Skill {
 
 	// base info.
+	string owner;
+	int column;
 	string name;
 	int level;
 	int[] requireAPArray;
@@ -40,7 +42,7 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
     
-	public Skill(string name, int level, int[] requireAPArray, int[] cooldownArray, 
+	public Skill(string owner, int column, string name, int level, int[] requireAPArray, int[] cooldownArray, 
                  Dictionary<string, float[]> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -48,6 +50,8 @@ public class Skill {
 				 SkillApplyType skillApplyType, float[] penetrationArray, 
 				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
+		this.owner = owner;
+		this.column = column;
 		this.name = name;
 		this.level = level;
 		this.requireAPArray = requireAPArray;
@@ -81,7 +85,9 @@ public class Skill {
             }
         }
     }
-	
+
+	public string GetOwner(){return owner;}
+	public int GetColumn() { return column; }
 	public string GetName() {return name;}
 	public int GetLevel() {return level;}
 	public int[] GetRequireAP() {return requireAPArray;}

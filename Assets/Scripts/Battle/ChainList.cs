@@ -55,23 +55,11 @@ public class ChainList : MonoBehaviour {
 		return newChainList;
 	}
 
-	// 새로운 체인 정보 추가. 들어가는 정보는 시전자, 적용범위, 시전스킬.
-	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill)
+	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill);
-		chainList.Add(newChainInfo);
-
-		SetChargeEffectToUnit(unit);
-	}
-
-	// 경로형 기술일 경우 이쪽으로. 경로형 범위(routeArea) 추가.
-	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> routeArea)
-	{
-		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
-
-		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill, routeArea);
+		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill, firstRange);
 		chainList.Add(newChainInfo);
 
 		SetChargeEffectToUnit(unit);

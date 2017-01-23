@@ -140,7 +140,7 @@ public class SkillInfo {
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
-		this.skill = new Skill(name, level, requireAPArray, cooldownArray, 
+		this.skill = new Skill(owner, column, name, level, requireAPArray, cooldownArray, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,

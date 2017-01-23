@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
 
 namespace Battle.Turn
@@ -81,6 +82,22 @@ namespace Battle.Turn
 
 		private static IEnumerator UpdateRangeSkillMouseDirection(BattleData battleData)
 		{
+			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Skill selectedSkill = battleData.SelectedSkill;
+			var selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+															selectedUnit.GetPosition(),
+															selectedSkill.GetFirstMinReach(),
+															selectedSkill.GetFirstMaxReach(),
+															selectedUnit.GetDirection());
+
+
+			if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+			{
+				selectedTiles = GetRouteTiles(selectedTiles);
+			}
+
+			battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+			
 			while (true)
 			{
 				Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
@@ -91,22 +108,11 @@ namespace Battle.Turn
 																battleData.SelectedSkill.GetFirstMaxReach(),
 																beforeDirection);
 
-				var routeTilesByBeforeDirection = new List<GameObject>();
 				var selectedTilesAtRouteByBeforeDirection = new List<GameObject>();
 
 				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 				{
-					// 동일한 코드
-					routeTilesByBeforeDirection = GetRouteTiles(selectedTilesByBeforeDirection);	
-
-					// 경로형 기술의 2차범위를 설정.
-					// 경로의 마지막 타일을 중심으로 범위 재설정
-					Tile destTile = selectedTilesByBeforeDirection[selectedTilesByBeforeDirection.Count-1].GetComponent<Tile>();
-					selectedTilesAtRouteByBeforeDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetSecondRangeForm(),
-																		destTile.GetTilePos(),
-																		battleData.SelectedSkill.GetSecondMinReach(),
-																		battleData.SelectedSkill.GetSecondMaxReach(),
-																		beforeDirection);
+					selectedTilesByBeforeDirection = GetRouteTiles(selectedTilesByBeforeDirection);
 				}
 				
 				var selectedTilesByNewDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
@@ -115,38 +121,20 @@ namespace Battle.Turn
 																battleData.SelectedSkill.GetFirstMaxReach(),
 																newDirection);
 
-				var routeTilesByNewDirection = new List<GameObject>();
-				var selectedTilesAtRouteByNewDirection = new List<GameObject>();
-
 				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 				{
 					// 동일한 코드
-					routeTilesByNewDirection = GetRouteTiles(selectedTilesByNewDirection);	
-
-					// 경로형 기술의 2차범위를 설정.
-					// 경로의 마지막 타일을 중심으로 범위 재설정
-					Tile destTile = selectedTilesByNewDirection[selectedTilesByNewDirection.Count-1].GetComponent<Tile>();
-					selectedTilesAtRouteByNewDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetSecondRangeForm(),
-																		destTile.GetTilePos(),
-																		battleData.SelectedSkill.GetSecondMinReach(),
-																		battleData.SelectedSkill.GetSecondMaxReach(),
-																		newDirection);
+					selectedTilesByNewDirection = GetRouteTiles(selectedTilesByNewDirection);
 				}
 
 				if (beforeDirection != newDirection)
 				{
-					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-						battleData.tileManager.DepaintTiles(routeTilesByBeforeDirection, TileColor.Red);
-					else
-						battleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
+					battleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
 
 					beforeDirection = newDirection;
 					battleData.SelectedUnit.SetDirection(newDirection);
 
-					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-						battleData.tileManager.PaintTiles(routeTilesByNewDirection, TileColor.Red);
-					else
-						battleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
+					battleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
 				}
 				yield return null;
 			}
@@ -172,63 +160,16 @@ namespace Battle.Turn
 			return newRouteTiles;
 		}
 
+
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
 		{
 			Direction beforeDirection = originalDirection;
-			List<GameObject> selectedTiles = new List<GameObject>();
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			// 경로형 기술에서만 쓰인다.
-			List<GameObject> routeTiles = new List<GameObject>();
-			List<GameObject> selectedTilesAtRoute = new List<GameObject>();
-			Tile destTileAtRoute = null;
-
 			while (true) {
+
 				battleData.isWaitingUserInput = true;
-
-				if (battleData.currentState == CurrentState.SelectSkill)
-				{
-					battleData.uiManager.DisableCancelButtonUI();
-					yield break;
-				}
-
-				// 경로형 기술과 함께 묶기 위해 자동형 기술도 1차범위를 유효범위로 지정함.
-				// 따라서 자동형, 자신 대상 기술의 경우 2차범위는 의미가 없으며,
-				// 경로형 기술의 경우 2차범위를 따로 처리한다.
-				// 기존 코드에서는 일관적으로 2차범위를 유효범위로 취급했으나 자동형, 자신 대상 기술의 경우 1차 == 2차이므로 문제없을듯.
-				if (battleData.currentState == CurrentState.SelectSkillApplyDirection)
-				{
-					selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-																selectedUnit.GetPosition(),
-																selectedSkill.GetFirstMinReach(),
-																selectedSkill.GetFirstMaxReach(),
-																selectedUnit.GetDirection());
-
-					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-					{
-						// 경로형 기술의 경우 추가연산.
-						// '경로'를 연산.
-						// **지정범위 타일 리스트에 대한 예측이 맞다는 가정 하에 짜여있으므로 검증 필요
-						routeTiles = GetRouteTiles(selectedTiles);	
-
-						// 경로형 기술의 2차범위를 설정.
-						// 경로의 마지막 타일을 중심으로 범위 재설정
-						destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
-						selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																			destTileAtRoute.GetTilePos(),
-																			selectedSkill.GetSecondMinReach(),
-																			selectedSkill.GetSecondMaxReach(),
-																			selectedUnit.GetDirection());
-
-						battleData.tileManager.PaintTiles(routeTiles, TileColor.Red);
-						// battleData.tileManager.PaintTiles(selectedTilesAtRoute, TileColor.Red);
-					}
-					else
-						battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
-				}
-
-				// 이부분을 수정하지 않으면 마우스 이동시 업데이트가 안 되므로 반드시 확인할 것
 				var update = UpdateRangeSkillMouseDirection(battleData);
 				battleData.battleManager.StartCoroutine(update);
 				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
@@ -237,34 +178,10 @@ namespace Battle.Turn
 					battleData.triggers.selectedTileByUser
 				));
 				battleData.battleManager.StopCoroutine(update);
-
-				// 마찬가지로 1차범위로 넣는다.
-				// 여기서 왜 연산을 또 하지? selectedTiles를 새로 구할 필요가 있나? 일단 그대로 구현.
 				battleData.isWaitingUserInput = false;
-				battleData.uiManager.DisableCancelButtonUI();
-				selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-												selectedUnit.GetPosition(),
-												selectedSkill.GetFirstMinReach(),
-												selectedSkill.GetFirstMaxReach(),
-												selectedUnit.GetDirection());
-				
-				// 위쪽과 동일
-				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-				{
-					routeTiles = GetRouteTiles(selectedTiles);	
 
-					destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
-					selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																		destTileAtRoute.GetTilePos(),
-																		selectedSkill.GetSecondMinReach(),
-																		selectedSkill.GetSecondMaxReach(),
-																		selectedUnit.GetDirection());
-
-					battleData.tileManager.DepaintTiles(routeTiles, TileColor.Red);
-					battleData.tileManager.DepaintTiles(selectedTilesAtRoute, TileColor.Red);
-				}
-				else
-					battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
+				List<GameObject> selectedTiles = new List<GameObject>();
+				battleData.tileManager.DepaintAllTiles(TileColor.Red);
 
 				if (battleData.triggers.rightClicked.Triggered ||
 					battleData.triggers.cancelClicked.Triggered)
@@ -279,9 +196,18 @@ namespace Battle.Turn
 					BattleManager battleManager = battleData.battleManager;
 					battleData.currentState = CurrentState.CheckApplyOrChain;
 					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection, selectedTiles));
+					{
+						var destTileAtRoute = GetTilesInFirstRange(battleData).Last().GetComponent<Tile>();
+						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
+					}
 					else
 						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+				}
+
+				if (battleData.currentState == CurrentState.SelectSkill)
+				{
+					battleData.uiManager.DisableCancelButtonUI();
+					yield break;
 				}
 			}
 		}
@@ -360,7 +286,7 @@ namespace Battle.Turn
 			}
 		}
 
-		public static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection, List<GameObject> routeTiles = null)
+		public static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection)
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
@@ -368,9 +294,10 @@ namespace Battle.Turn
 
 				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
 				battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
+				List<GameObject> firstRange = GetTilesInFirstRange(battleData);
 
 				//데미지 미리보기
-				Dictionary<GameObject, float> calculatedTotalDamage = CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, routeTiles);
+				Dictionary<GameObject, float> calculatedTotalDamage = CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
 				foreach (KeyValuePair<GameObject, float> kv in calculatedTotalDamage)
 				{
 					Debug.Log(kv.Key.GetComponent<Unit>().GetName() + " - Damage preview");
@@ -419,7 +346,7 @@ namespace Battle.Turn
 					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
 					 || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 					{
-						yield return ApplyChain(battleData, targetTile, tilesInSkillRange);
+						yield return ApplyChain(battleData, targetTile, tilesInSkillRange, firstRange);
 						FocusUnit(battleData.SelectedUnit);
 						battleData.currentState = CurrentState.FocusToUnit;
 						// 연계 정보 업데이트
@@ -438,7 +365,7 @@ namespace Battle.Turn
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					battleData.currentState = CurrentState.ChainAndStandby;
-					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, tilesInSkillRange, routeTiles));
+					yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, tilesInSkillRange, firstRange));
 					// 연계 정보 업데이트. 여기선 안 해줘도 될 것 같은데 혹시 몰라서...
 					battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
 				}
@@ -459,6 +386,17 @@ namespace Battle.Turn
 		private static void FocusUnit(Unit unit)
 		{
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
+		}
+
+		private static List<GameObject> GetTilesInFirstRange(BattleData battleData)
+		{
+			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
+																battleData.SelectedUnit.GetPosition(),
+																battleData.SelectedSkill.GetFirstMinReach(),
+																battleData.SelectedSkill.GetFirstMaxReach(),
+																battleData.SelectedUnit.GetDirection());
+
+			return firstRange;
 		}
 
 		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile)
@@ -503,15 +441,12 @@ namespace Battle.Turn
 			return isPossible;
 		}
 
-		public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> tilesInRouteArea = null)
+		public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 		{
 			// List<ChainInfo> tempChainList = new List<ChainInfo>();
 			Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
 
-			if (tilesInRouteArea != null)
-				ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.SelectedSkill, tilesInRouteArea);
-			else
-				ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.SelectedSkill);
+			ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
 			int chainCombo = allVaildChainInfo.Count;
@@ -650,14 +585,11 @@ namespace Battle.Turn
 			unitInChain.SetDirection(oldDirection);
 		}
 
-		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<GameObject> tilesInSkillRange, List<GameObject> tilesInRouteArea = null)
+		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			// 자기 자신을 체인 리스트에 추가.
-			if (tilesInRouteArea != null)
-				ChainList.AddChains(battleData.selectedUnitObject, targetTile, tilesInSkillRange, battleData.SelectedSkill, tilesInRouteArea);
-			else
-				ChainList.AddChains(battleData.selectedUnitObject, targetTile, tilesInSkillRange, battleData.SelectedSkill);
+			ChainList.AddChains(battleData.selectedUnitObject, targetTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
 			// 체인 체크, 순서대로 공격.
 			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
@@ -676,7 +608,7 @@ namespace Battle.Turn
 			battleData.SelectedUnit.DisableChainText();
 		}
 
-		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<GameObject> selectedTiles, List<GameObject> tilesInRouteArea = null)
+		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<GameObject> selectedTiles, List<GameObject> firstRange)
 		{
 			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
@@ -703,10 +635,7 @@ namespace Battle.Turn
 			}
 
 			// 체인 목록에 추가.
-			if (tilesInRouteArea != null)
-				ChainList.AddChains(battleData.selectedUnitObject, targetTile, selectedTiles, battleData.SelectedSkill, tilesInRouteArea);
-			else
-				ChainList.AddChains(battleData.selectedUnitObject, targetTile, selectedTiles, battleData.SelectedSkill);
+			ChainList.AddChains(battleData.selectedUnitObject, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 			yield return new WaitForSeconds(0.5f);
 
@@ -875,7 +804,7 @@ namespace Battle.Turn
 					// eren_l_30 회복
 					if (appliedSkill.GetName().Equals("생명력 흡수"))
 					{
-						int finalDamage = (int)CalculateTotalDamage(battleData, targetTile, selectedTiles)[target];
+						int finalDamage = (int)CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target];
 						int targetCurrentHealth = targetUnit.GetCurrentHealth();
 						float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
 						int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);

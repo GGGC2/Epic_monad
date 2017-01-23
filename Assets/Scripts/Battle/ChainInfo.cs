@@ -9,46 +9,35 @@ public class ChainInfo {
 	GameObject unit;
 	Tile centerTile;
 	List<GameObject> targetArea;
+	List<GameObject> firstRange;
 	Skill skill;
 
-	bool isRouteType;
 	List<GameObject> routeArea;
 
-	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, Skill skill)
+	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> secondRange, Skill skill, List<GameObject> firstRange)
 	{
 		this.unit = unit;
 		this.centerTile = centerTile;
-		this.targetArea = targetArea;
+		this.targetArea = secondRange;
 		this.skill = skill;
 
-		this.isRouteType = false;
-	}
-
-	public ChainInfo (GameObject unit, Tile centerTile, List<GameObject> targetArea, Skill skill, List<GameObject> routeArea)
-	{
-		this.unit = unit;
-		this.centerTile = centerTile;
-		this.targetArea = targetArea;
-		this.skill = skill;
-
-		this.isRouteType = true;
-		this.routeArea = routeArea;
+		this.firstRange = firstRange;
 	}
 	
 	public GameObject GetUnit() {	return unit;	}
 	public Tile GetCenterTile() {	return centerTile;	}
 	public List<GameObject> GetTargetArea() {	return targetArea;	}
 	public Skill GetSkill() {	return skill;	}
-	public bool IsRouteType() {	return isRouteType;	}
+	public bool IsRouteType() {	return skill.GetSkillType() == Enums.SkillType.Route;	}
 	public List<GameObject> GetRouteArea()
 	{
-		if (!isRouteType)
+		if (!IsRouteType())
 		{
 			Debug.LogError("Invaild access - not route type skill");
 			return new List<GameObject>();
 		}
 		else
-			return routeArea;
+			return firstRange;
 	}
 	
 	public bool Overlapped(List<GameObject> anotherTargetArea)

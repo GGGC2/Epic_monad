@@ -196,6 +196,11 @@ public class TileManager : MonoBehaviour {
 		}
 	}
 
+	public void DepaintAllTiles(TileColor color)
+	{
+		DepaintTiles(GetTilesInGlobalRange(), color);
+	}
+
 	List<GameObject> AddNearbyTiles(List<GameObject> tileList)
 	{
 		List<GameObject> newTileList = new List<GameObject>();

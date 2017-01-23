@@ -534,7 +534,7 @@ namespace Battle.Turn
 
 			List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
-			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange);
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
 			FocusUnit(battleData.SelectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
@@ -552,7 +552,8 @@ namespace Battle.Turn
 
 				List<GameObject> activeRange = new List<GameObject>();
 				Skill selectedSkill = battleData.SelectedSkill;
-				activeRange = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+				activeRange = 
+					battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 														selectedUnitPos,
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
@@ -579,7 +580,7 @@ namespace Battle.Turn
 
 				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
-				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange);
+				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
 				FocusUnit(battleData.SelectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
 				battleData.uiManager.ResetSkillNamePanelUI();
@@ -612,5 +613,17 @@ namespace Battle.Turn
 				}
 				return selectedTiles;
 		}
+
+		private static List<GameObject> GetTilesInFirstRange(BattleData battleData)
+		{
+			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
+																battleData.SelectedUnit.GetPosition(),
+																battleData.SelectedSkill.GetFirstMinReach(),
+																battleData.SelectedSkill.GetFirstMaxReach(),
+																battleData.SelectedUnit.GetDirection());
+
+			return firstRange;
+		}
+
 	}
 }
