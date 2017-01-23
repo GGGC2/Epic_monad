@@ -197,7 +197,8 @@ namespace Battle.Turn
 					battleData.currentState = CurrentState.CheckApplyOrChain;
 					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 					{
-						var destTileAtRoute = GetTilesInFirstRange(battleData).Last().GetComponent<Tile>();
+						var firstRange = GetTilesInFirstRange(battleData);
+						var destTileAtRoute = GetRouteTiles(firstRange).Last().GetComponent<Tile>();
 						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
 					}
 					else
