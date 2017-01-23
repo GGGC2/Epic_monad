@@ -184,35 +184,75 @@ namespace Battle.Turn
 			List<GameObject> selectedTilesAtRoute = new List<GameObject>();
 			Tile destTileAtRoute = null;
 
-			battleData.isWaitingUserInput = true;
+			while (true) {
+				battleData.isWaitingUserInput = true;
 
-			if (battleData.currentState == CurrentState.SelectSkill)
-			{
+				if (battleData.currentState == CurrentState.SelectSkill)
+				{
+					battleData.uiManager.DisableCancelButtonUI();
+					yield break;
+				}
+
+				// 경로형 기술과 함께 묶기 위해 자동형 기술도 1차범위를 유효범위로 지정함.
+				// 따라서 자동형, 자신 대상 기술의 경우 2차범위는 의미가 없으며,
+				// 경로형 기술의 경우 2차범위를 따로 처리한다.
+				// 기존 코드에서는 일관적으로 2차범위를 유효범위로 취급했으나 자동형, 자신 대상 기술의 경우 1차 == 2차이므로 문제없을듯.
+				if (battleData.currentState == CurrentState.SelectSkillApplyDirection)
+				{
+					selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+																selectedUnit.GetPosition(),
+																selectedSkill.GetFirstMinReach(),
+																selectedSkill.GetFirstMaxReach(),
+																selectedUnit.GetDirection());
+
+					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+					{
+						// 경로형 기술의 경우 추가연산.
+						// '경로'를 연산.
+						// **지정범위 타일 리스트에 대한 예측이 맞다는 가정 하에 짜여있으므로 검증 필요
+						routeTiles = GetRouteTiles(selectedTiles);	
+
+						// 경로형 기술의 2차범위를 설정.
+						// 경로의 마지막 타일을 중심으로 범위 재설정
+						destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
+						selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+																			destTileAtRoute.GetTilePos(),
+																			selectedSkill.GetSecondMinReach(),
+																			selectedSkill.GetSecondMaxReach(),
+																			selectedUnit.GetDirection());
+
+						battleData.tileManager.PaintTiles(routeTiles, TileColor.Red);
+						// battleData.tileManager.PaintTiles(selectedTilesAtRoute, TileColor.Red);
+					}
+					else
+						battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+				}
+
+				// 이부분을 수정하지 않으면 마우스 이동시 업데이트가 안 되므로 반드시 확인할 것
+				var update = UpdateRangeSkillMouseDirection(battleData);
+				battleData.battleManager.StartCoroutine(update);
+				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+					battleData.triggers.rightClicked,
+					battleData.triggers.cancelClicked,
+					battleData.triggers.selectedTileByUser
+				));
+				battleData.battleManager.StopCoroutine(update);
+
+				// 마찬가지로 1차범위로 넣는다.
+				// 여기서 왜 연산을 또 하지? selectedTiles를 새로 구할 필요가 있나? 일단 그대로 구현.
+				battleData.isWaitingUserInput = false;
 				battleData.uiManager.DisableCancelButtonUI();
-				yield break;
-			}
-
-			// 경로형 기술과 함께 묶기 위해 자동형 기술도 1차범위를 유효범위로 지정함.
-			// 따라서 자동형, 자신 대상 기술의 경우 2차범위는 의미가 없으며,
-			// 경로형 기술의 경우 2차범위를 따로 처리한다.
-			// 기존 코드에서는 일관적으로 2차범위를 유효범위로 취급했으나 자동형, 자신 대상 기술의 경우 1차 == 2차이므로 문제없을듯.
-			if (battleData.currentState == CurrentState.SelectSkillApplyDirection)
-			{
 				selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-															selectedUnit.GetPosition(),
-															selectedSkill.GetFirstMinReach(),
-															selectedSkill.GetFirstMaxReach(),
-															selectedUnit.GetDirection());
-
+												selectedUnit.GetPosition(),
+												selectedSkill.GetFirstMinReach(),
+												selectedSkill.GetFirstMaxReach(),
+												selectedUnit.GetDirection());
+				
+				// 위쪽과 동일
 				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 				{
-					// 경로형 기술의 경우 추가연산.
-					// '경로'를 연산.
-					// **지정범위 타일 리스트에 대한 예측이 맞다는 가정 하에 짜여있으므로 검증 필요
 					routeTiles = GetRouteTiles(selectedTiles);	
 
-					// 경로형 기술의 2차범위를 설정.
-					// 경로의 마지막 타일을 중심으로 범위 재설정
 					destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
 					selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 																		destTileAtRoute.GetTilePos(),
@@ -220,67 +260,29 @@ namespace Battle.Turn
 																		selectedSkill.GetSecondMaxReach(),
 																		selectedUnit.GetDirection());
 
-					battleData.tileManager.PaintTiles(routeTiles, TileColor.Red);
-					// battleData.tileManager.PaintTiles(selectedTilesAtRoute, TileColor.Red);
+					battleData.tileManager.DepaintTiles(routeTiles, TileColor.Red);
+					battleData.tileManager.DepaintTiles(selectedTilesAtRoute, TileColor.Red);
 				}
 				else
-					battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
-			}
+					battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
-			// 이부분을 수정하지 않으면 마우스 이동시 업데이트가 안 되므로 반드시 확인할 것
-			var update = UpdateRangeSkillMouseDirection(battleData);
-			battleData.battleManager.StartCoroutine(update);
-			yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-				battleData.triggers.rightClicked,
-				battleData.triggers.cancelClicked,
-				battleData.triggers.selectedTileByUser
-			));
-			battleData.battleManager.StopCoroutine(update);
+				if (battleData.triggers.rightClicked.Triggered ||
+					battleData.triggers.cancelClicked.Triggered)
+				{
+					selectedUnit.SetDirection(originalDirection);
+					battleData.currentState = CurrentState.SelectSkill;
+					yield break;
+				}
 
-			// 마찬가지로 1차범위로 넣는다.
-			// 여기서 왜 연산을 또 하지? selectedTiles를 새로 구할 필요가 있나? 일단 그대로 구현.
-			battleData.isWaitingUserInput = false;
-			battleData.uiManager.DisableCancelButtonUI();
-			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-											selectedUnit.GetPosition(),
-											selectedSkill.GetFirstMinReach(),
-											selectedSkill.GetFirstMaxReach(),
-											selectedUnit.GetDirection());
-			
-			// 위쪽과 동일
-			if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-			{
-				routeTiles = GetRouteTiles(selectedTiles);	
-
-				destTileAtRoute = routeTiles[routeTiles.Count-1].GetComponent<Tile>();
-				selectedTilesAtRoute = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																	destTileAtRoute.GetTilePos(),
-																	selectedSkill.GetSecondMinReach(),
-																	selectedSkill.GetSecondMaxReach(),
-																	selectedUnit.GetDirection());
-
-				battleData.tileManager.DepaintTiles(routeTiles, TileColor.Red);
-				battleData.tileManager.DepaintTiles(selectedTilesAtRoute, TileColor.Red);
-			}
-			else
-				battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
-
-			if (battleData.triggers.rightClicked.Triggered ||
-			    battleData.triggers.cancelClicked.Triggered)
-			{
-				selectedUnit.SetDirection(originalDirection);
-				battleData.currentState = CurrentState.SelectSkill;
-				yield break;
-			}
-
-			if (battleData.triggers.selectedTileByUser.Triggered)
-			{
-				BattleManager battleManager = battleData.battleManager;
-				battleData.currentState = CurrentState.CheckApplyOrChain;
-				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
-					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection, selectedTiles));
-				else
-					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+				if (battleData.triggers.selectedTileByUser.Triggered)
+				{
+					BattleManager battleManager = battleData.battleManager;
+					battleData.currentState = CurrentState.CheckApplyOrChain;
+					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
+						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection, selectedTiles));
+					else
+						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+				}
 			}
 		}
 
