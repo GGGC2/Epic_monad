@@ -205,7 +205,7 @@ namespace Battle.Turn
 						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
 				}
 
-				if (battleData.currentState == CurrentState.SelectSkill)
+				if (battleData.currentState != CurrentState.SelectSkillApplyDirection)
 				{
 					battleData.uiManager.DisableCancelButtonUI();
 					yield break;
