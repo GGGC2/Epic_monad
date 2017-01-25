@@ -7,7 +7,7 @@ orchid,1,중공격,1,42 42 42 42 42,0 0 0 0 0,Power,1.5 1.5 1.5 1.5 1.5,Point,Sq
 orchid,1,강공격,1,60 60 60 60 60,0 0 0 0 0,Power,2 2 2 2 2,Point,Square,1,1,0,Square,0,0,0,DamageHealth,0 0 0 0 0,-,Area,NonMove
 orchid,1,밀어내기,1,70 70 70 70 70,0 0 0 0 0,None,0 0 0 0 0,Auto,Square,0,0,0,Sector,1,7,0,Debuff,0 0 0 0 0,-,Area,NonMove
 lucius,1,검술의 대가,1,40 40 40 40 40,0 0 0 0 0,Power,1 1 1 1 1,Point,Cross,1,1,0,Square,0,0,0,DamageHealth,0 0 0 0 0,Melee,Individual,NonMove
-reina,1,화염 폭발,2,24 28 32 36 40,0 0 0 0 0,Power,0.5 0.7 0.9 1.1 1.3,Route,Straight,1,7,0,Square,0,2,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move
+reina,1,화염 폭발 강화,2,24 28 32 36 40,0 0 0 0 0,Power,0.5 0.7 0.9 1.1 1.3,Route,Straight,1,7,0,Square,0,2,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move
 reina,6,화염구,1,24 28 32 36 40,0 0 0 0 0,Power,0.8 1.05 1.3 1.55 1.8,Point,Cross,1,4,0,Square,0,0,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move
 reina,12,불의 파동,1,29 34 38 43 47,0 0 0 0 0,Power,0.6 0.8 1 1.2 1.4,Auto,Square,0,0,0,Square,1,3,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move
 reina,18,마력 과충전,3,0 0 0 0 0,5 5 5 5 5,Dexturity,0.2 0.25 0.3 0.35 0.4,Self,Square,0,0,0,Square,0,0,0,HealAP,0 0 0 0 0,-,Area,Move
