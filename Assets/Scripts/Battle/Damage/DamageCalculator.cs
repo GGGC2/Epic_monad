@@ -58,19 +58,35 @@ public class DamageCalculator
 			return damageList;
 		}
 
-		GameObject unitObjectInChain = chainInfo.GetUnit();
-		Unit unitInChain = unitObjectInChain.GetComponent<Unit>();			
+		GameObject casterUnitObject = chainInfo.GetUnit();
+		Unit caterUnit = casterUnitObject.GetComponent<Unit>();			
 		List<GameObject> selectedTiles = chainInfo.GetTargetArea();
 
-		Direction oldDirection = unitInChain.GetDirection();
+		Direction oldDirection = caterUnit.GetDirection();
 
 		// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 		if (appliedSkill.GetSkillType() != SkillType.Auto)
-			unitInChain.SetDirection(Utility.GetDirectionToTarget(unitInChain.gameObject, selectedTiles));
+			caterUnit.SetDirection(Utility.GetDirectionToTarget(caterUnit.gameObject, selectedTiles));
 
-		List<GameObject> targets = new List<GameObject>();
+		List<GameObject> targets = GetTargetUnits(selectedTiles);
 
-		foreach (var tileObject in selectedTiles)
+		foreach (var target in targets)
+		{
+			Unit targetUnit = target.GetComponent<Unit>();
+			float actualDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count);
+			damageList.Add(targetUnit.gameObject, actualDamage);
+
+			Debug.Log("Apply " + actualDamage + " damage to " + targetUnit.GetName() + "\n" +
+						"ChainCombo : " + chainCombo);
+		}
+
+		caterUnit.SetDirection(oldDirection);
+		return damageList;
+	}
+
+	private static List<GameObject> GetTargetUnits(List<GameObject> targetTiles) {
+		var targets = new List<GameObject>();
+		foreach (var tileObject in targetTiles)
 		{
 			Tile tile = tileObject.GetComponent<Tile>();
 			if (tile.IsUnitOnTile())
@@ -78,104 +94,125 @@ public class DamageCalculator
 				targets.Add(tile.GetUnitOnTile());
 			}
 		}
+		return targets;
+	}
 
-		foreach (var target in targets)
+	private static float CalculateAttackDamage(BattleData battleData, GameObject target, GameObject casterUnitObject, Skill appliedSkill, int chainCombo, int targetCount)
+	{
+		Unit casterUnit = casterUnitObject.GetComponent<Unit>();
+		Unit targetUnit = target.GetComponent<Unit>();
+		// 방향 체크.
+		Utility.GetDegreeAtAttack(casterUnitObject, target);
+		BattleManager battleManager = battleData.battleManager;
+
+		float damageAmount = 0;
+
+		// 스킬 기본 대미지 계산
+		damageAmount += PowerFactorDamage(appliedSkill, casterUnit);
+		damageAmount *= DirectionBonus(casterUnitObject, target);
+		damageAmount *= CelestialBonus(casterUnitObject, target);
+		damageAmount *= ChainComboBonus(battleData, chainCombo);
+		damageAmount += SmiteAmount(casterUnit);
+		damageAmount = ApplyIndividualSkillDamage(damageAmount, appliedSkill, battleData, targetUnit, targetCount);
+
+		//유닛과 유닛의 데미지를 Dictionary에 추가.
+		float actualDamage = targetUnit.GetActualDamage(casterUnit.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+		return actualDamage;
+	}
+
+	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
+	{
+		float damage = 0;
+		foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
 		{
-			Unit targetUnit = target.GetComponent<Unit>();
-			// 방향 체크.
-			Utility.GetDegreeAtAttack(unitObjectInChain, target);
-			BattleManager battleManager = battleData.battleManager;
-			// sisterna_r_6의 타일 속성 판정
-			if (appliedSkill.GetName().Equals("전자기학"))
+			Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
+			if (stat.Equals(Stat.UsedAP))
 			{
-				Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
-				if(!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) continue;
+				damage += casterUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 			}
-
-			// 스킬 기본 대미지 계산
-			float baseDamage = 0.0f;
-			foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
+			else if (stat.Equals(Stat.None))
 			{
-				Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-				if (stat.Equals(Stat.UsedAP))
-				{
-					baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-				}
-				else if (stat.Equals(Stat.None))
-				{
-					baseDamage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-				}
-				else
-				{
-					baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-				}
-			}
-
-			// 방향 보너스.
-			float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
-			// if (directionBonus > 1f) unitInChain.PrintDirectionBonus(directionBonus);
-
-			// 천체속성 보너스.
-			float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
-			// if (celestialBonus > 1f) unitInChain.PrintCelestialBonus();
-			// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
-
-			// 체인 보너스.
-			float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
-			// if (directionBonus > 1f) unitInChain.PrintDirectionBonus(chainCombo);
-
-			// 강타 효과에 의한 대미지 추가
-			int smiteAmount = 0;
-			if (unitInChain.HasStatusEffect(StatusEffectType.Smite))
-			{
-				smiteAmount = (int) unitInChain.GetActualEffect((float)smiteAmount, StatusEffectType.Smite);
-			}
-
-			var damageAmount = (baseDamage * directionBonus * celestialBonus * chainBonus) + (float) smiteAmount;
-			Debug.Log("baseDamage : " + baseDamage);
-			Debug.Log("directionBonus : " + directionBonus);
-			Debug.Log("celestialBonus : " + celestialBonus);
-			Debug.Log("chainBonus : " + chainBonus);
-			Debug.Log("smiteAmount : " + smiteAmount);
-
-			// reina_m_12 속성 보너스
-			if (appliedSkill.GetName().Equals("불의 파동") && targetUnit.GetElement().Equals(Element.Plant))
-			{
-				float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
-				damageAmount = damageAmount * elementDamageBonus[0];
-			}
-
-			// yeong_l_18 대상 숫자 보너스
-			if (appliedSkill.GetName().Equals("섬광 찌르기") && targets.Count > 1)
-			{
-				float targetNumberBonus = (float)targets.Count*0.1f + 1.0f;
-				damageAmount = damageAmount * targetNumberBonus;
-			}
-
-			//유닛과 유닛의 데미지를 Dictionary에 추가.
-			float actualDamage = targetUnit.GetActualDamage(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
-			if (!damageList.ContainsKey(targetUnit.gameObject))
-			{
-				damageList.Add(targetUnit.gameObject, actualDamage);
+				damage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 			}
 			else
 			{
-				float totalDamage = damageList[targetUnit.gameObject];
-				totalDamage += actualDamage;
-				damageList.Remove(targetUnit.gameObject);
-				damageList.Add(targetUnit.gameObject, totalDamage);
+				damage += casterUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
 			}
-
-			// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
-			// 반사 미적용.
-
-			Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
-						"ChainCombo : " + chainCombo);
-		
 		}
 
-		unitInChain.SetDirection(oldDirection);
-		return damageList;
+		Debug.Log("baseDamage : " + damage);
+
+		return damage;
+	}
+
+	private static float DirectionBonus(GameObject casterUnitObject, GameObject target) {
+		float directionBonus = Utility.GetDirectionBonus(casterUnitObject, target);
+		Debug.Log("directionBonus : " + directionBonus);
+		return directionBonus;
+	}
+
+	private static float CelestialBonus(GameObject casterUnitObject, GameObject target) {
+		float celestialBonus = Utility.GetCelestialBonus(casterUnitObject, target);
+		Debug.Log("celestialBonus : " + celestialBonus);
+		return celestialBonus;
+	}
+
+	private static float ChainComboBonus(BattleData battleData, int chainCombo) {
+		float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
+		Debug.Log("chainBonus : " + chainBonus);
+		return chainBonus;
+	}
+
+	private static float SmiteAmount(Unit casterUnit) {
+		int smiteAmount = 0;
+		if (casterUnit.HasStatusEffect(StatusEffectType.Smite))
+		{
+			// FIXME: smiteAmount(0) is passed wihch is multiplied in GetActualEffect
+			// Always smiteAmount is 0
+			smiteAmount = (int) casterUnit.GetActualEffect((float)smiteAmount, StatusEffectType.Smite);
+		}
+		Debug.Log("smiteAmount : " + smiteAmount);
+		return smiteAmount;
+	}
+
+	private static float ApplyIndividualSkillDamage(float previousDamage, Skill appliedSkill, BattleData battleData, Unit targetUnit, int targetCount) {
+		switch (appliedSkill.GetName())
+		{
+			// reina_m_12 속성 보너스
+			case "불의 파동":
+				if (targetUnit.GetElement().Equals(Element.Plant))
+				{
+					float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
+					return previousDamage * elementDamageBonus[0];
+				}
+				else
+				{
+					return previousDamage;
+				}
+			// yeong_l_18 대상 숫자 보너스
+			case "섬광 찌르기":
+				if (targetCount > 1)
+				{
+					float targetNumberBonus = (float)targetCount*0.1f + 1.0f;
+					return previousDamage * targetNumberBonus;
+				}
+				else
+				{
+					return previousDamage;
+				}
+			case "전자기학":
+				Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
+				if (!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) 
+				{
+					return previousDamage * 0;
+				}
+				else
+				{
+					return previousDamage;
+				}
+			default:
+			return previousDamage;
+		}
 	}
 }
 }
