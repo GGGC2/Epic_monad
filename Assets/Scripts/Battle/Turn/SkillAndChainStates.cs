@@ -102,7 +102,9 @@ namespace Battle.Turn
 			{
 				Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
 				Direction beforeDirection = battleData.SelectedUnit.GetDirection();
-				var selectedTilesByBeforeDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
+				var selectedTilesByBeforeDirection = GetTilesInFirstRange(battleData, beforeDirection);
+				
+				 battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
 																battleData.SelectedUnit.GetPosition(),
 																battleData.SelectedSkill.GetFirstMinReach(),
 																battleData.SelectedSkill.GetFirstMaxReach(),
@@ -389,13 +391,19 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
-		private static List<GameObject> GetTilesInFirstRange(BattleData battleData)
+		private static List<GameObject> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 		{
+			Direction realDirection;
+			if (direction.HasValue) {
+				realDirection = direction.Value;
+			} else {
+				realDirection = battleData.SelectedUnit.GetDirection();
+			}
 			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
 																battleData.SelectedUnit.GetPosition(),
 																battleData.SelectedSkill.GetFirstMinReach(),
 																battleData.SelectedSkill.GetFirstMaxReach(),
-																battleData.SelectedUnit.GetDirection());
+																realDirection);
 
 			return firstRange;
 		}
