@@ -228,15 +228,10 @@ namespace Battle.Turn
 
 				List<GameObject> activeRange = new List<GameObject>();
 				Skill selectedSkill = battleData.SelectedSkill;
-				activeRange = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-														selectedUnitPos,
-														selectedSkill.GetFirstMinReach(),
-														selectedSkill.GetFirstMaxReach(),
-														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
+				activeRange = GetTilesInFirstRange(battleData);
+
 				battleData.tileManager.PaintTiles(activeRange, TileColor.Red);
-
 				battleData.uiManager.EnableCancelButtonUI();
-
 				battleData.isWaitingUserInput = true;
 
 				var update = UpdatePointSkillMouseDirection(battleData);
@@ -260,7 +255,6 @@ namespace Battle.Turn
 					yield break;
 				}
 
-				// 타겟팅 스킬을 타겟이 없는 장소에 지정했을 경우 적용되지 않도록 예외처리 필요 - 대부분의 스킬은 논타겟팅. 추후 보강.
 				battleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
 				battleData.uiManager.DisableSkillUI();
 
@@ -307,8 +301,8 @@ namespace Battle.Turn
 					FocusUnit(battleData.SelectedUnit);
 					battleData.uiManager.DisableSkillCheckUI();
 					battleData.SelectedUnit.SetDirection(originalDirection);
-					if (selectedSkill.GetSkillType() == SkillType.Auto)
-						battleData.currentState = CurrentState.SelectSkill;
+					if (selectedSkill.GetSkillType() != SkillType.Point)
+						battleData.currentState = CurrentState.SelectSkillApplyDirection;
 					else
 						battleData.currentState = CurrentState.SelectSkillApplyPoint;
 
@@ -326,7 +320,8 @@ namespace Battle.Turn
 				{
 					battleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					// 체인이 가능한 스킬일 경우. 체인 발동.
-					// 왜 CheckChainPossible 안 쓴 거죠...? 일단 발표 끝나고 고칠랭
+					// 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
+					// 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
 					if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
 					 || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 					{
