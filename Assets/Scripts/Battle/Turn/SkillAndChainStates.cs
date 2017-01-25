@@ -84,13 +84,7 @@ namespace Battle.Turn
 		{
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 			Skill selectedSkill = battleData.SelectedSkill;
-			var selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-															selectedUnit.GetPosition(),
-															selectedSkill.GetFirstMinReach(),
-															selectedSkill.GetFirstMaxReach(),
-															selectedUnit.GetDirection());
-
-
+			var selectedTiles = GetTilesInFirstRange(battleData);
 			if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 			{
 				selectedTiles = GetRouteTiles(selectedTiles);
@@ -103,26 +97,13 @@ namespace Battle.Turn
 				Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnitObject);
 				Direction beforeDirection = battleData.SelectedUnit.GetDirection();
 				var selectedTilesByBeforeDirection = GetTilesInFirstRange(battleData, beforeDirection);
-				
-				 battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-																battleData.SelectedUnit.GetPosition(),
-																battleData.SelectedSkill.GetFirstMinReach(),
-																battleData.SelectedSkill.GetFirstMaxReach(),
-																beforeDirection);
-
-				var selectedTilesAtRouteByBeforeDirection = new List<GameObject>();
 
 				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 				{
 					selectedTilesByBeforeDirection = GetRouteTiles(selectedTilesByBeforeDirection);
 				}
 				
-				var selectedTilesByNewDirection = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-																battleData.SelectedUnit.GetPosition(),
-																battleData.SelectedSkill.GetFirstMinReach(),
-																battleData.SelectedSkill.GetFirstMaxReach(),
-																newDirection);
-
+				var selectedTilesByNewDirection = GetTilesInFirstRange(battleData, newDirection);
 				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 				{
 					// 동일한 코드
