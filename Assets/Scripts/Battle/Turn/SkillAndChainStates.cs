@@ -497,23 +497,14 @@ namespace Battle.Turn
 			// 이펙트 임시로 비활성화.
 			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
 
-			List<GameObject> targets = new List<GameObject>();
-
-			foreach (var tileObject in selectedTiles)
-			{
-				Tile tile = tileObject.GetComponent<Tile>();
-				if (tile.IsUnitOnTile())
-				{
-					targets.Add(tile.GetUnitOnTile());
-				}
-			}
+			List<Unit> targets = GetUnitsInTiles(selectedTiles);
 
 			foreach (var target in targets)
 			{
 				Unit targetUnit = target.GetComponent<Unit>();
 				Debug.Log("Total target No : "+targets.Count+" Current Target : "+targetUnit.GetName());
 				// 방향 체크.
-				Utility.GetDegreeAtAttack(unitObjectInChain, target);
+				Utility.GetDegreeAtAttack(unitObjectInChain, target.gameObject);
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					// sisterna_r_6의 타일 속성 판정
@@ -542,11 +533,11 @@ namespace Battle.Turn
 					}
 
 					// 방향 보너스.
-					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target);
+					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target.gameObject);
 					if (directionBonus > 1f) unitInChain.PrintDirectionBonus(directionBonus);
 
 					// 천체속성 보너스.
-					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target);
+					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target.gameObject);
 					if (celestialBonus > 1f) unitInChain.PrintCelestialBonus();
 					// '보너스'만 표시하려고 임시로 주석처리.
 					// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
@@ -635,7 +626,7 @@ namespace Battle.Turn
 					// eren_l_30 회복
 					if (appliedSkill.GetName().Equals("생명력 흡수"))
 					{
-						int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target];
+						int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target.gameObject];
 						int targetCurrentHealth = targetUnit.GetCurrentHealth();
 						float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
 						int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);
@@ -708,6 +699,20 @@ namespace Battle.Turn
 			// Vector2 endPos = ; 
 
 			return reselectTiles;
+		}
+
+		private static List<Unit> GetUnitsInTiles(List<GameObject> tiles)
+		{
+			List<Unit> units = new List<Unit>();
+			foreach (var tileObject in tiles)
+			{
+				Tile tile = tileObject.GetComponent<Tile>();
+				if (tile.IsUnitOnTile())
+				{
+					units.Add(tile.GetUnitOnTile().GetComponent<Unit>());
+				}
+			}
+			return units;
 		}
 
 		// 체인 불가능 스킬일 경우의 스킬 시전 코루틴. 스킬 적용 범위만 받는다.
