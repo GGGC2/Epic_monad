@@ -452,8 +452,6 @@ namespace Battle.Turn
 
 		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<GameObject> selectedTiles, List<GameObject> firstRange)
 		{
-			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
-
 			// 방향 돌리기.
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
 
