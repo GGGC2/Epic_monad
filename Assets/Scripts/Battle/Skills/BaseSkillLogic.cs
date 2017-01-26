@@ -11,5 +11,9 @@ public class BaseSkillLogic
 		int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
 		return requireAP;
 	}
+
+	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<GameObject> selectedTiles)
+	{
+	}
 }
 }

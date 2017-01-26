@@ -50,7 +50,7 @@ public class DamageCalculator
 		return merged;
 	}
 
-	static Dictionary<GameObject, float> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, float> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<GameObject, float>();
 		Skill appliedSkill = chainInfo.GetSkill();
@@ -227,6 +227,20 @@ public class DamageCalculator
 			default:
 			return previousDamage;
 		}
+	}
+
+	public static float CalculateReflectDamage(float attackDamage, Unit target)
+	{
+		float reflectAmount = attackDamage;
+		foreach (var statusEffect in target.GetStatusEffectList())
+		{
+			if (statusEffect.IsOfType(StatusEffectType.Reflect))
+			{
+				reflectAmount = reflectAmount * statusEffect.GetDegree(statusEffect.GetLevel());
+				break;
+			}
+		}
+		return reflectAmount;
 	}
 }
 }
