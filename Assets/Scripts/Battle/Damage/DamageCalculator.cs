@@ -73,7 +73,9 @@ public class DamageCalculator
 		foreach (var target in targets)
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
-			float actualDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count);
+			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
+			float actualDamage = targetUnit.GetActualDamage(casterUnitObject.GetComponent<Unit>().GetUnitClass(), attackDamage,
+				appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 			damageList.Add(targetUnit.gameObject, actualDamage);
 
 			Debug.Log("Apply " + actualDamage + " damage to " + targetUnit.GetName() + "\n" +
@@ -97,7 +99,17 @@ public class DamageCalculator
 		return targets;
 	}
 
-	private static float CalculateAttackDamage(BattleData battleData, GameObject target, GameObject casterUnitObject, Skill appliedSkill, int chainCombo, int targetCount)
+	public class AttackDamage
+	{
+		public float baseDamage = 0;
+		public float directionBonus = 0;
+		public float celestialBonus = 0;
+		public float chainBonus = 0;
+		public float smiteAmount = 0;
+		public float resultDamage = 0;
+	}
+
+	public static AttackDamage CalculateAttackDamage(BattleData battleData, GameObject target, GameObject casterUnitObject, Skill appliedSkill, int chainCombo, int targetCount)
 	{
 		Unit casterUnit = casterUnitObject.GetComponent<Unit>();
 		Unit targetUnit = target.GetComponent<Unit>();
@@ -105,19 +117,21 @@ public class DamageCalculator
 		Utility.GetDegreeAtAttack(casterUnitObject, target);
 		BattleManager battleManager = battleData.battleManager;
 
-		float damageAmount = 0;
+		AttackDamage attackDamage = new AttackDamage();
+		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, casterUnit);
+		attackDamage.directionBonus = DirectionBonus(casterUnitObject, target);
+		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
+		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
+		attackDamage.smiteAmount = SmiteAmount(casterUnit);
+		float defaultDamage = attackDamage.baseDamage 
+			* attackDamage.directionBonus
+			* attackDamage.celestialBonus
+			* attackDamage.chainBonus
+			+ attackDamage.smiteAmount;
+		
+		attackDamage.resultDamage = ApplyIndividualSkillDamage(defaultDamage, appliedSkill, battleData, targetUnit, targetCount);
 
-		// 스킬 기본 대미지 계산
-		damageAmount += PowerFactorDamage(appliedSkill, casterUnit);
-		damageAmount *= DirectionBonus(casterUnitObject, target);
-		damageAmount *= CelestialBonus(casterUnitObject, target);
-		damageAmount *= ChainComboBonus(battleData, chainCombo);
-		damageAmount += SmiteAmount(casterUnit);
-		damageAmount = ApplyIndividualSkillDamage(damageAmount, appliedSkill, battleData, targetUnit, targetCount);
-
-		//유닛과 유닛의 데미지를 Dictionary에 추가.
-		float actualDamage = targetUnit.GetActualDamage(casterUnit.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
-		return actualDamage;
+		return attackDamage;
 	}
 
 	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)

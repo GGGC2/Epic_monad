@@ -503,82 +503,21 @@ namespace Battle.Turn
 			{
 				Debug.Log("Total target No : "+targets.Count+" Current Target : "+target.GetName());
 				// 방향 체크.
-				Utility.GetDegreeAtAttack(unitObjectInChain, target.gameObject);
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
-					// sisterna_r_6의 타일 속성 판정
-					if (appliedSkill.GetName().Equals("전자기학"))
-					{
-						Element tileElement = battleData.tileManager.GetTile(target.GetPosition()).GetComponent<Tile>().GetTileElement();
-						if(!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) continue;
-					}
-					// 스킬 기본 대미지 계산
-					float baseDamage = 0.0f;
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						if (stat.Equals(Stat.UsedAP))
-						{
-							baseDamage += unitInChain.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else if (stat.Equals(Stat.None))
-						{
-							baseDamage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else
-						{
-							baseDamage += unitInChain.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-					}
-
-					// 방향 보너스.
-					float directionBonus = Utility.GetDirectionBonus(unitObjectInChain, target.gameObject);
-					if (directionBonus > 1f) unitInChain.PrintDirectionBonus(directionBonus);
-
-					// 천체속성 보너스.
-					float celestialBonus = Utility.GetCelestialBonus(unitObjectInChain, target.gameObject);
-					if (celestialBonus > 1f) unitInChain.PrintCelestialBonus();
+					var attackDamage = DamageCalculator.CalculateAttackDamage(battleData, target.gameObject, unitObjectInChain, appliedSkill, chainCombo, targets.Count);
+					if (attackDamage.directionBonus > 1f) unitInChain.PrintDirectionBonus(attackDamage.directionBonus);
+					if (attackDamage.celestialBonus > 1f) unitInChain.PrintCelestialBonus();
 					// '보너스'만 표시하려고 임시로 주석처리.
 					// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
+					if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
 
-					// 체인 보너스.
-					float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
-					if (chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
-
-					// 강타 효과에 의한 대미지 추가
-					int smiteAmount = 0;
-					if (unitInChain.HasStatusEffect(StatusEffectType.Smite))
-					{
-						smiteAmount = (int) unitInChain.GetActualEffect((float)smiteAmount, StatusEffectType.Smite);
-					}
-
-					var damageAmount = (baseDamage * directionBonus * celestialBonus * chainBonus) + (float) smiteAmount;
-					Debug.Log("baseDamage : " + baseDamage);
-					Debug.Log("directionBonus : " + directionBonus);
-					Debug.Log("celestialBonus : " + celestialBonus);
-					Debug.Log("chainBonus : " + chainBonus);
-					Debug.Log("smiteAmount : " + smiteAmount);
-
-					// reina_m_12 속성 보너스
-					if (appliedSkill.GetName().Equals("불의 파동") && target.GetElement().Equals(Element.Plant))
-					{
-						float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
-						damageAmount = damageAmount * elementDamageBonus[0];
-					}
-
-					// yeong_l_18 대상 숫자 보너스
-					if (appliedSkill.GetName().Equals("섬광 찌르기") && targets.Count > 1)
-					{
-						float targetNumberBonus = (float)targets.Count*0.1f + 1.0f;
-						damageAmount = damageAmount * targetNumberBonus;
-					}
-
-					var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+					var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), attackDamage.resultDamage, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
 					if (target.HasStatusEffect(StatusEffectType.Reflect))
 					{
-						float reflectAmount = damageAmount;
+						float reflectAmount = attackDamage.resultDamage;
 						foreach (var statusEffect in target.GetStatusEffectList())
 						{
 							if (statusEffect.IsOfType(StatusEffectType.Reflect))
@@ -633,9 +572,6 @@ namespace Battle.Turn
 						var recoverCoroutine = unitInChain.RecoverHealth(recoverAmount);
 						battleManager.StartCoroutine(recoverCoroutine);
 					}
-
-					Debug.Log("Apply " + damageAmount + " damage to " + target.GetName() + "\n" +
-								"ChainCombo : " + chainCombo);
 				}
 
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
