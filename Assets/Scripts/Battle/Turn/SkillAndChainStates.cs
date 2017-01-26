@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
+using Battle.Skills;
 
 namespace Battle.Turn
 {
@@ -455,19 +456,9 @@ namespace Battle.Turn
 			// 방향 돌리기.
 			battleData.selectedUnitObject.GetComponent<Unit>().SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnitObject, selectedTiles));
 
-			// sisterna_m_30 대상 AP 선 계산
-			if(battleData.SelectedSkill.GetName().Equals("조화진동"))
-			{
-				int enemyCurrentAP = selectedTiles[0].GetComponent<Unit>().GetCurrentActivityPoint();
-				int requireAP = Math.Min(enemyCurrentAP, battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill));
-				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
-			}
-			else
-			{
-				// 기타 스킬 AP 사용 선차감
-				int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
-				battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
-			}
+			int requireAP = SkillLogicFactory.Get(battleData.SelectedSkill).CalculateAP(battleData, selectedTiles);
+			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
+
 			// 스킬 쿨다운 기록
 			if (battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()) > 0)
 			{
