@@ -612,22 +612,20 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				Unit targetUnit = target.GetComponent<Unit>();
-
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
 				{
 					// kashasti_l_12
 					if(appliedSkill.GetName().Equals("이매진 불릿"))
 					{
 						float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
-						var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage[appliedSkill.GetLevel()-1], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
+						var damageCoroutine = target.Damaged(UnitClass.None, apDamage[appliedSkill.GetLevel()-1], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
 						battleManager.StartCoroutine(damageCoroutine);
 					}
 					// luvericha_l_30
 					else if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
 					{
-						int apDamage = targetUnit.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
-						var damageCoroutine = targetUnit.Damaged(UnitClass.None, apDamage, 0.0f, false, false);
+						int apDamage = target.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
+						var damageCoroutine = target.Damaged(UnitClass.None, apDamage, 0.0f, false, false);
 						battleManager.StartCoroutine(damageCoroutine);
 					}
 				}
@@ -655,11 +653,11 @@ namespace Battle.Turn
 
 					var recoverAmount = (int) actualAmount;
 					// luvericha_r_1 회복량 조건 체크
-					if (appliedSkill.GetName().Equals("사랑의 기쁨") && targetUnit.GetNameInCode().Equals("luvericha"))
+					if (appliedSkill.GetName().Equals("사랑의 기쁨") && target.GetNameInCode().Equals("luvericha"))
 					{
 						recoverAmount = recoverAmount / 2;
 					}
-					var recoverHealthCoroutine = targetUnit.RecoverHealth(recoverAmount);
+					var recoverHealthCoroutine = target.RecoverHealth(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
 
 					// 상태이상 적용
@@ -668,28 +666,28 @@ namespace Battle.Turn
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
 							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
+								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
 							if (!isInList)
 							{
-								targetUnit.GetStatusEffectList().Add(statusEffect);
+								target.GetStatusEffectList().Add(statusEffect);
 								if (statusEffect.IsOfType(StatusEffectType.Shield))
 								{
-									targetUnit.GetStatusEffectList()[targetUnit.GetStatusEffectList().Count].SetRemainAmount
-									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+									target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
+									((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 								}
 							}
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
 						}
 					}
 
@@ -702,7 +700,7 @@ namespace Battle.Turn
 						battleManager.StartCoroutine(recoverHealthCoroutine);
 					}
 
-					Debug.Log("Apply " + recoverAmount + " heal to " + targetUnit.GetName());
+					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP)
 				{
@@ -726,7 +724,7 @@ namespace Battle.Turn
 					}
 
 					var recoverAmount = (int) actualAmount;
-					var recoverAPCoroutine = targetUnit.RecoverAP(recoverAmount);
+					var recoverAPCoroutine = target.RecoverAP(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
 
 					// 상태이상 적용
@@ -735,15 +733,15 @@ namespace Battle.Turn
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
 							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
+								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
@@ -751,12 +749,12 @@ namespace Battle.Turn
 							{
 								if (statusEffect.IsOfType(StatusEffectType.Shield))
 								{
-									targetUnit.GetStatusEffectList()[targetUnit.GetStatusEffectList().Count].SetRemainAmount
-									((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+									target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
+									((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 								}
-								targetUnit.GetStatusEffectList().Add(statusEffect);
+								target.GetStatusEffectList().Add(statusEffect);
 							}
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
 						}
 					}
 
@@ -769,31 +767,31 @@ namespace Battle.Turn
 						battleManager.StartCoroutine(recoverAPCoroutine);
 					}
 
-					Debug.Log("Apply " + recoverAmount + " heal to " + targetUnit.GetName());
+					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
 				{
 					if (appliedSkill.GetName().Equals("순간 재충전"))
 					{
-						targetUnit.GetUsedSkillDict().Clear();
+						target.GetUsedSkillDict().Clear();
 					}
 					else if(appliedSkill.GetStatusEffectList().Count > 0)
 					{
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
 							// luvericha_m_1 조건 체크
-							if (appliedSkill.GetName().Equals("교향곡:영웅") && targetUnit.GetNameInCode().Equals("luvericha")) continue;
+							if (appliedSkill.GetName().Equals("교향곡:영웅") && target.GetNameInCode().Equals("luvericha")) continue;
 
 							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]))
+								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]))
 								{
 									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										targetUnit.GetStatusEffectList()[i].SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									break;
 								}
 							}
@@ -813,13 +811,13 @@ namespace Battle.Turn
 									}
 									else
 									{
-										statusEffect.SetRemainAmount((int)(targetUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+										statusEffect.SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
 									}
 								}
-								targetUnit.GetStatusEffectList().Add(statusEffect);
+								target.GetStatusEffectList().Add(statusEffect);
 							}
 
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
 							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
 						}
 					}
@@ -828,11 +826,11 @@ namespace Battle.Turn
 				// luvericha_l_6 스킬 효과
 				else if (appliedSkill.GetName().Equals("정화된 밤"))
 				{
-					for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+					for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 					{
-						if(targetUnit.GetStatusEffectList()[i].GetIsRemovable())
+						if(target.GetStatusEffectList()[i].GetIsRemovable())
 						{
-							targetUnit.GetStatusEffectList().RemoveAt(i);
+							target.GetStatusEffectList().RemoveAt(i);
 							break;
 						}
 					}

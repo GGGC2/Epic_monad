@@ -13,6 +13,8 @@ public static class SkillLogicFactory
 			return new HarmonySkillLogic();
 			case "생명력 흡수":
 			return new LifeDrainSkillLogic();
+			case "이매진 블릿":
+			return new ImagineBulletSkillLogic();
 			default:
 			return new BaseSkillLogic();
 		}

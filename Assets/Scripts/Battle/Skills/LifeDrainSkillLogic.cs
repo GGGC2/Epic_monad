@@ -18,22 +18,5 @@ public class LifeDrainSkillLogic : BaseSkillLogic {
 		var recoverCoroutine = unitInChain.RecoverHealth(recoverAmount);
 		battleData.battleManager.StartCoroutine(recoverCoroutine);
 	}
-
-	private static List<GameObject> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
-	{
-		Direction realDirection;
-		if (direction.HasValue) {
-			realDirection = direction.Value;
-		} else {
-			realDirection = battleData.SelectedUnit.GetDirection();
-		}
-		var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-															battleData.SelectedUnit.GetPosition(),
-															battleData.SelectedSkill.GetFirstMinReach(),
-															battleData.SelectedSkill.GetFirstMaxReach(),
-															realDirection);
-
-		return firstRange;
-	}
 }
 }
