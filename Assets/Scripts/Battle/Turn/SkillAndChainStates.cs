@@ -497,7 +497,7 @@ namespace Battle.Turn
 			BattleManager battleManager = battleData.battleManager;
 			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain.gameObject, selectedTiles));
 
-			List<Unit> targets = GetUnitsInTiles(selectedTiles);
+			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
 			foreach (var target in targets)
 			{
@@ -576,7 +576,7 @@ namespace Battle.Turn
 			return reselectTiles;
 		}
 
-		private static List<Unit> GetUnitsInTiles(List<GameObject> tiles)
+		private static List<Unit> GetUnitsOnTiles(List<GameObject> tiles)
 		{
 			List<Unit> units = new List<Unit>();
 			foreach (var tileObject in tiles)
@@ -608,16 +608,7 @@ namespace Battle.Turn
 			// 이펙트 임시로 비활성화.
 			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
 
-			List<GameObject> targets = new List<GameObject>();
-
-			foreach (var tileObject in selectedTiles)
-			{
-				Tile tile = tileObject.GetComponent<Tile>();
-				if (tile.IsUnitOnTile())
-				{
-					targets.Add(tile.GetUnitOnTile());
-				}
-			}
+			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
 			foreach (var target in targets)
 			{
