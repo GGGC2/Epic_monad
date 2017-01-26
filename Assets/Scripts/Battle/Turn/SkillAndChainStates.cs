@@ -501,8 +501,7 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				Unit targetUnit = target.GetComponent<Unit>();
-				Debug.Log("Total target No : "+targets.Count+" Current Target : "+targetUnit.GetName());
+				Debug.Log("Total target No : "+targets.Count+" Current Target : "+target.GetName());
 				// 방향 체크.
 				Utility.GetDegreeAtAttack(unitObjectInChain, target.gameObject);
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
@@ -510,7 +509,7 @@ namespace Battle.Turn
 					// sisterna_r_6의 타일 속성 판정
 					if (appliedSkill.GetName().Equals("전자기학"))
 					{
-						Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
+						Element tileElement = battleData.tileManager.GetTile(target.GetPosition()).GetComponent<Tile>().GetTileElement();
 						if(!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) continue;
 					}
 					// 스킬 기본 대미지 계산
@@ -561,7 +560,7 @@ namespace Battle.Turn
 					Debug.Log("smiteAmount : " + smiteAmount);
 
 					// reina_m_12 속성 보너스
-					if (appliedSkill.GetName().Equals("불의 파동") && targetUnit.GetElement().Equals(Element.Plant))
+					if (appliedSkill.GetName().Equals("불의 파동") && target.GetElement().Equals(Element.Plant))
 					{
 						float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
 						damageAmount = damageAmount * elementDamageBonus[0];
@@ -574,13 +573,13 @@ namespace Battle.Turn
 						damageAmount = damageAmount * targetNumberBonus;
 					}
 
-					var damageCoroutine = targetUnit.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+					var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), damageAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 
 					// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
-					if (targetUnit.HasStatusEffect(StatusEffectType.Reflect))
+					if (target.HasStatusEffect(StatusEffectType.Reflect))
 					{
 						float reflectAmount = damageAmount;
-						foreach (var statusEffect in targetUnit.GetStatusEffectList())
+						foreach (var statusEffect in target.GetStatusEffectList())
 						{
 							if (statusEffect.IsOfType(StatusEffectType.Reflect))
 							{
@@ -589,7 +588,7 @@ namespace Battle.Turn
 							}
 						}
 
-						var reflectCoroutine = unitInChain.Damaged(targetUnit.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+						var reflectCoroutine = unitInChain.Damaged(target.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
 						battleManager.StartCoroutine(reflectCoroutine);
 					}
 
@@ -599,18 +598,18 @@ namespace Battle.Turn
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
 							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
+								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									break;
 								}
 							}
-							if (!isInList) targetUnit.GetStatusEffectList().Add(statusEffect);
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							if (!isInList) target.GetStatusEffectList().Add(statusEffect);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
 						}
 					}
 
@@ -627,7 +626,7 @@ namespace Battle.Turn
 					if (appliedSkill.GetName().Equals("생명력 흡수"))
 					{
 						int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target.gameObject];
-						int targetCurrentHealth = targetUnit.GetCurrentHealth();
+						int targetCurrentHealth = target.GetCurrentHealth();
 						float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
 						int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);
 						if (targetCurrentHealth == 0) recoverAmount *= 2;
@@ -635,7 +634,7 @@ namespace Battle.Turn
 						battleManager.StartCoroutine(recoverCoroutine);
 					}
 
-					Debug.Log("Apply " + damageAmount + " damage to " + targetUnit.GetName() + "\n" +
+					Debug.Log("Apply " + damageAmount + " damage to " + target.GetName() + "\n" +
 								"ChainCombo : " + chainCombo);
 				}
 
@@ -648,13 +647,13 @@ namespace Battle.Turn
 						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
 						{
 							bool isInList = false;
-							for (int i = 0; i < targetUnit.GetStatusEffectList().Count; i++)
+							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 							{
-								if(statusEffect.IsSameStatusEffect(targetUnit.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
+								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
 								{
 									isInList = true;
-									targetUnit.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									targetUnit.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
+									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
+									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
 									break;
 								}
 							}
@@ -662,9 +661,9 @@ namespace Battle.Turn
 							{
 								if (statusEffect.GetName().Equals("상자에 든 고양이")) 
 									statusEffect.SetRemainAmount((int)(unitInChain.GetActualStat(Stat.Power)*statusEffect.GetAmount(appliedSkill.GetLevel())));
-								targetUnit.GetStatusEffectList().Add(statusEffect);
+								target.GetStatusEffectList().Add(statusEffect);
 							}
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + targetUnit.name);
+							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
 						}
 					}
 
