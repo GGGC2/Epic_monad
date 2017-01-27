@@ -9,6 +9,8 @@ public static class SkillLogicFactory
 	public static BaseSkillLogic Get(Skill skill)
 	{
 		switch (skill.GetName()) {
+			case "은빛 베기":
+			return new Yeong_1_l_SkillLogic();
 			case "조화진동":
 			return new HarmonySkillLogic();
 			case "생명력 흡수":

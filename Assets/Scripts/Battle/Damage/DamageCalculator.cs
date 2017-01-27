@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using UnityEngine;
+using Battle.Skills;
 
 namespace Battle
 {
@@ -190,6 +191,9 @@ public class DamageCalculator
 	}
 
 	private static float ApplyIndividualSkillDamage(float previousDamage, Skill appliedSkill, BattleData battleData, Unit targetUnit, int targetCount) {
+		previousDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(previousDamage, appliedSkill, battleData, targetUnit, targetCount);
+
+		/*		
 		switch (appliedSkill.GetName())
 		{
 			// reina_m_12 속성 보너스
@@ -227,6 +231,8 @@ public class DamageCalculator
 			default:
 			return previousDamage;
 		}
+		*/
+		return previousDamage;
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target)

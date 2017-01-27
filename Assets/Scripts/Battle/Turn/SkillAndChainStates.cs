@@ -790,7 +790,7 @@ namespace Battle.Turn
 				*/
 			}
 
-			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
+			// battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			selectedUnit.UseActivityPoint(requireAP);

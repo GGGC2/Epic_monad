@@ -13,6 +13,11 @@ public class BaseSkillLogic
 		return requireAP;
 	}
 
+	public virtual float ApplyIndividualAdditionalDamage(float previousDamage, Skill appliedSkill, BattleData battleData, Unit targetUnit, int targetCount)
+	{
+		return previousDamage;
+	}
+
 	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<GameObject> selectedTiles)
 	{
 	}
