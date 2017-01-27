@@ -501,20 +501,18 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				Debug.Log("Total target No : "+targets.Count+" Current Target : "+target.GetName());
-
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					yield return battleManager.StartCoroutine(ApplyDamage(battleData, unitInChain, target, appliedSkill, chainCombo, targets.Count, target == targets.Last()));
 				}
 
+				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
+
+				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 				if(appliedSkill.GetStatusEffectList().Count > 0)
 				{
-					Debug.Log("Using skill "+appliedSkill.GetName());
 					StatusEffector.AttachStatusEffect(appliedSkill, target);
 				}
-
-				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
 
 				unitInChain.ActiveFalseAllBounsText();
 			}
@@ -605,32 +603,31 @@ namespace Battle.Turn
 			if (appliedSkill.GetSkillType() != SkillType.Auto)
 				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit.gameObject, selectedTiles));
 
-			// 이펙트 임시로 비활성화.
 			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnitObject, selectedTiles));
 
 			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
 			foreach (var target in targets)
 			{
+				/* 팩토리로
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
 				{
-					// kashasti_l_12
-					if(appliedSkill.GetName().Equals("이매진 불릿"))
-					{
-						float[] apDamage = new float[5] {32.0f, 44.0f, 57.0f, 69.0f, 81.0f};
-						var damageCoroutine = target.Damaged(UnitClass.None, apDamage[appliedSkill.GetLevel()-1], appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, false);
-						battleManager.StartCoroutine(damageCoroutine);
-					}
 					// luvericha_l_30
-					else if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
+					if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
 					{
 						int apDamage = target.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
 						var damageCoroutine = target.Damaged(UnitClass.None, apDamage, 0.0f, false, false);
 						battleManager.StartCoroutine(damageCoroutine);
 					}
 				}
+				*/
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+				{
+					yield return battleManager.StartCoroutine(ApplyDamage(battleData, selectedUnit, target, appliedSkill, 1, targets.Count, target == targets.Last()));
+				}
 
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
+				/* 이것도 팩토리로
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
 				{
 					// 스킬 기본 계수 계산
 					float actualAmount = 0.0f;
@@ -660,37 +657,6 @@ namespace Battle.Turn
 					var recoverHealthCoroutine = target.RecoverHealth(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
 
-					// 상태이상 적용
-					if(appliedSkill.GetStatusEffectList().Count > 0)
-					{
-						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
-						{
-							bool isInList = false;
-							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
-							{
-								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
-								{
-									isInList = true;
-									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-									break;
-								}
-							}
-							if (!isInList)
-							{
-								target.GetStatusEffectList().Add(statusEffect);
-								if (statusEffect.IsOfType(StatusEffectType.Shield))
-								{
-									target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
-									((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-								}
-							}
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
-						}
-					}
-
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
@@ -702,7 +668,8 @@ namespace Battle.Turn
 
 					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
 				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP)
+				
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP)
 				{
 					// 스킬 기본 계수 계산
 					float actualAmount = 0.0f;
@@ -727,37 +694,6 @@ namespace Battle.Turn
 					var recoverAPCoroutine = target.RecoverAP(recoverAmount);
 					Debug.Log("recoverAmount : " + actualAmount);
 
-					// 상태이상 적용
-					if(appliedSkill.GetStatusEffectList().Count > 0)
-					{
-						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
-						{
-							bool isInList = false;
-							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
-							{
-								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]) && !statusEffect.GetIsStackable())
-								{
-									isInList = true;
-									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-									break;
-								}
-							}
-							if (!isInList)
-							{
-								if (statusEffect.IsOfType(StatusEffectType.Shield))
-								{
-									target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
-									((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-								}
-								target.GetStatusEffectList().Add(statusEffect);
-							}
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
-						}
-					}
-
 					if (target == targets[targets.Count-1])
 					{
 						yield return battleManager.StartCoroutine(recoverAPCoroutine);
@@ -769,7 +705,21 @@ namespace Battle.Turn
 
 					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
 				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
+				*/
+
+				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, selectedUnit, selectedTiles[0].GetComponent<Tile>(), selectedTiles);
+
+				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
+				if(appliedSkill.GetStatusEffectList().Count > 0)
+				{
+					StatusEffector.AttachStatusEffect(appliedSkill, target);
+				}
+				
+				selectedUnit.ActiveFalseAllBounsText();
+
+				// 상태이상
+				/*
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
 				{
 					if (appliedSkill.GetName().Equals("순간 재충전"))
 					{
@@ -823,8 +773,9 @@ namespace Battle.Turn
 					}
 					yield return null;
 				}
+				// 스킬팩토리에서 처리 가능
 				// luvericha_l_6 스킬 효과
-				else if (appliedSkill.GetName().Equals("정화된 밤"))
+				if (appliedSkill.GetName().Equals("정화된 밤"))
 				{
 					for (int i = 0; i < target.GetStatusEffectList().Count; i++)
 					{
@@ -836,6 +787,7 @@ namespace Battle.Turn
 					}
 					
 				}
+				*/
 			}
 
 			battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
