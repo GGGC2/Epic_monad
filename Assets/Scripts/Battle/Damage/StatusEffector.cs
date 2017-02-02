@@ -22,7 +22,8 @@ public static class StatusEffector
 				alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
 				alreadyAppliedSameEffect.SetRemainStack(statusEffect.GetRemainStack());
 				if (statusEffect.IsOfType(StatusEffectType.Shield))
-					alreadyAppliedSameEffect.SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+					alreadyAppliedSameEffect.SetRemainAmount(
+						(int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount()));
 			}
 			else
 			{
@@ -30,7 +31,7 @@ public static class StatusEffector
 				if (statusEffect.IsOfType(StatusEffectType.Shield))
 				{
 					target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
-					((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
+					((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount()));
 				}
 			}
 

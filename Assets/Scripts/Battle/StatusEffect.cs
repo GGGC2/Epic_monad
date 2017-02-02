@@ -47,32 +47,23 @@ public class StatusEffect {
         
         class FlexibleElement
         {
-            int level; // 효과를 지닌 스킬의 레벨
             int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
             int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
-            int cooldown; // 효과가 적용되는 시점
+            int cooldown; // 효과가 적용되는 시점 (사라진 후 추가효과 있을 때)
             bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
 
-            public FlexibleElement(int level, 
-                        int remainPhase, int remainStack, int cooldown, bool toBeRemoved)
+            public FlexibleElement(int remainPhase, int remainStack, int cooldown, bool toBeRemoved)
             {
-                this.level = level;
                 this.remainPhase = remainPhase;
                 this.remainStack = remainStack;
                 this.cooldown = cooldown;
                 this.toBeRemoved = toBeRemoved; 
             }
 
-            public int GetLevel() {return level;}
             public int GetRemainPhase() {return remainPhase;}
             public int GetRemainStack() {return remainStack;}
             public int GetCooldown() {return cooldown;}	
             public bool GetToBeRemoved() {return toBeRemoved;}
-
-            public void SetLevel(int num)
-            {
-                level = num;
-            }
 
             public void AddRemainPhase(int phase)
             {
@@ -133,7 +124,7 @@ public class StatusEffect {
         FixedElement fixedElement;
         FlexibleElement flexibleElement;
 
-        public DisplayElement(string name, int level,  
+        public DisplayElement(string name,  
                   bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
                   int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
@@ -142,8 +133,7 @@ public class StatusEffect {
                   isBuff, isInfinite, isStackable, isRemovable, 
                   effectName, effectVisualType, effectMoveType);
 
-            this.flexibleElement = new FlexibleElement(level,
-                    remainPhase, remainStack, cooldown, toBeRemoved);
+            this.flexibleElement = new FlexibleElement(remainPhase, remainStack, cooldown, toBeRemoved);
         }
 
         public string GetName() {return fixedElement.GetName();}
@@ -155,16 +145,10 @@ public class StatusEffect {
         public EffectVisualType GetEffectVisualType() {return fixedElement.GetEffectVisualType();}
         public EffectMoveType GetEffectMoveType() {return fixedElement.GetEffectMoveType();}
 
-        public int GetLevel() {return flexibleElement.GetLevel();}
         public int GetRemainPhase() {return flexibleElement.GetRemainPhase();}
         public int GetRemainStack() {return flexibleElement.GetRemainStack();}
         public int GetCooldown() {return flexibleElement.GetCooldown();}	
         public bool GetToBeRemoved() {return flexibleElement.GetToBeRemoved();}
-
-        public void SetLevel(int num)
-        {
-            flexibleElement.SetLevel(num);
-        }
 
         public void AddRemainPhase(int phase)
         {
@@ -242,21 +226,19 @@ public class StatusEffect {
 
         class FlexibleElement
         {
-            float[] degreeArray; // 영향을 주는 수치(상대수치)
-            float[] amountFactorArray; // 영향을 주는 수치(절대수치)
+            float degree; // 영향을 주는 수치(상대수치)
+            float amount; // 영향을 주는 수치(절대수치)
             int remainAmount; // 남은 수치
 
-            public FlexibleElement(float[] degreeArray, float[] amountFactorArray, int remainAmount)
+            public FlexibleElement(float degree, float amount, int remainAmount)
             {
-                this.degreeArray = degreeArray;
-                this.amountFactorArray = amountFactorArray;
+                this.degree = degree;
+                this.amount = amount;
                 this.remainAmount = remainAmount;
             }
 
-            public float[] GetDegree() {return degreeArray;}
-            public float GetDegree(int level) {return degreeArray[level-1];}
-            public float[] GetAmount() {return amountFactorArray;}
-            public float GetAmount(int level) {return amountFactorArray[level-1];}
+            public float GetDegree() {return degree;}
+            public float GetAmount() {return amount;}
             public int GetRemainAmount() {return remainAmount;}
 
             public void SetRemainAmount(int amount)
@@ -269,19 +251,17 @@ public class StatusEffect {
         FlexibleElement flexibleElement;
 
         public ActualElement(StatusEffectType statusEffectType, 
-                float[] degreeArray, Stat amountStat, float[] amountFactorArray, int remainAmount)
+                float degree, Stat amountStat, float amount, int remainAmount)
         {
             this.fixedElement = new FixedElement(statusEffectType, amountStat);
-            this.flexibleElement = new FlexibleElement(degreeArray, amountFactorArray, remainAmount);                
+            this.flexibleElement = new FlexibleElement(degree, amount, remainAmount);                
         }
 
         public StatusEffectType GetStatusEffectType() {return fixedElement.GetStatusEffectType();}
         public Stat GetAmountStat() {return fixedElement.GetAmountStat();}
         
-        public float[] GetDegree() {return flexibleElement.GetDegree();}
-        public float GetDegree(int level) {return flexibleElement.GetDegree(level);}
-        public float[] GetAmount() {return GetAmount();}
-        public float GetAmount(int level) {return GetAmount(level);}
+        public float GetDegree() {return flexibleElement.GetDegree();}
+        public float GetAmount() {return GetAmount();}
         public int GetRemainAmount() {return GetRemainAmount();}
 
         public void SetRemainAmount(int amount)
@@ -293,25 +273,24 @@ public class StatusEffect {
     DisplayElement displayElement;
     List<ActualElement> actualElements;
 	
-	public StatusEffect(string name, int level, StatusEffectType statusEffectType,  
+	public StatusEffect(string name, StatusEffectType statusEffectType,  
                   bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
-                  float[] degreeArray, Stat amountStat, float[] amountFactorArray, int remainAmount, 
+                  float degree, Stat amountStat, float amount, int remainAmount, 
                   int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
 	{
-		this.displayElement = new DisplayElement(name, level,  
+		this.displayElement = new DisplayElement(name,  
                                                 isBuff, isInfinite, isStackable, isRemovable,
                                                 remainPhase, remainStack, cooldown, toBeRemoved, 
                                                 effectName, effectVisualType, effectMoveType);
 
         this.actualElements = new List<ActualElement>();
         ActualElement actualElement = new ActualElement(statusEffectType, 
-                                degreeArray, amountStat, amountFactorArray, remainAmount);
+                                degree, amountStat, amount, remainAmount);
         actualElements.Add(actualElement);
     }
 	
     public string GetName() {return displayElement.GetName();}
-    public int GetLevel() {return displayElement.GetLevel();}
     public bool GetIsBuff() {return displayElement.GetIsBuff();}
     public bool GetIsInfinite() {return displayElement.GetIsInfinite();}
     public bool GetIsStackable() {return displayElement.GetIsStackable();}
@@ -325,18 +304,11 @@ public class StatusEffect {
     public EffectMoveType GetEffectMoveType() {return displayElement.GetEffectMoveType();}
 
     public StatusEffectType GetStatusEffectType() {return actualElements[0].GetStatusEffectType();}
-    public float[] GetDegree() {return actualElements[0].GetDegree();}
-    public float GetDegree(int level) {return actualElements[0].GetDegree(level);}
+    public float GetDegree() {return actualElements[0].GetDegree();}
     public Stat GetAmountStat() {return actualElements[0].GetAmountStat();}
-    public float[] GetAmount() {return actualElements[0].GetAmount();}
-    public float GetAmount(int level) {return actualElements[0].GetAmount(level);}
+    public float GetAmount() {return actualElements[0].GetAmount();}
     public int GetRemainAmount() {return actualElements[0].GetRemainAmount();}
 
-    public void SetLevel(int num)
-    {
-        displayElement.SetLevel(num);
-    }
-    
     public void SetRemainAmount(int amount)
     {
         actualElements[0].SetRemainAmount(amount);

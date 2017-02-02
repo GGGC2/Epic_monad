@@ -372,7 +372,7 @@ public class Unit : MonoBehaviour
 		{
 			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
 			{
-				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount(statusEffect.GetLevel());
+				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount();
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();
@@ -387,7 +387,7 @@ public class Unit : MonoBehaviour
 		{
 			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
 			{
-				totalDegree = (100.0f + statusEffect.GetDegree(statusEffect.GetLevel())) / 100.0f;
+				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();
@@ -544,13 +544,14 @@ public class Unit : MonoBehaviour
 							if (finalDamage < (int)(0.2 * maxHealth)) continue;
 							else
 							{
-								int absorbDamage = (int)(statusEffectList[i].GetAmount(statusEffectList[i].GetLevel()) * this.GetActualStat(statusEffectList[i].GetAmountStat()));
+								int absorbDamage = (int)(statusEffectList[i].GetAmount() * this.GetActualStat(statusEffectList[i].GetAmountStat()));
 								finalDamage -= absorbDamage;
-								float[] tempArray = new float[5] {0, 0, 0, 0, 0}; // 강타 정의용 임시 array
-								StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", statusEffectList[i].GetLevel(), StatusEffectType.Smite,
+								float tempValue = 0; // 강타 정의용 임시 array
+								StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", StatusEffectType.Smite,
 																				true, false, false, false,
-																				tempArray, Stat.None, tempArray, absorbDamage,
-																				0, 1, 0, false, "None", EffectVisualType.None, EffectMoveType.None);
+																				tempValue, Stat.None, tempValue, absorbDamage,
+																				0, 1, 0, false, 
+																				"None", EffectVisualType.None, EffectMoveType.None);
 								statusEffectList.Add(sisternaSmite);
 								statusEffectList[i].SetToBeRemoved(true);
 								break;
@@ -616,7 +617,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.ContinuousDamage))
 				{
-					totalAmount += statusEffect.GetAmount(statusEffect.GetLevel());
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 
@@ -635,7 +636,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.ContinuousHeal))
 				{
-					totalAmount += statusEffect.GetAmount(statusEffect.GetLevel());
+					totalAmount += statusEffect.GetAmount();
 				}
 			}
 		}
@@ -707,7 +708,7 @@ public class Unit : MonoBehaviour
 
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
-        int requireSkillAP = selectedSkill.GetRequireAP(selectedSkill.GetLevel());
+        int requireSkillAP = selectedSkill.GetRequireAP();
 
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
@@ -716,7 +717,7 @@ public class Unit : MonoBehaviour
 		}
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
-		if (selectedSkill.GetRequireAP(selectedSkill.GetLevel()) == 9999)
+		if (selectedSkill.GetRequireAP() == 9999)
 		{
 			requireSkillAP = GetCurrentActivityPoint();
 		}
@@ -780,7 +781,6 @@ public class Unit : MonoBehaviour
                     Skill skill = skillInfo.GetSkill();
 					if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
 					{
-						skill.SetLevel(SkillDB.GetEnhanceLevel(this.GetName(), skill.GetName()));
 						skill.ApplyStatusEffectList(statusEffectInfoList);
                     	skillList.Add(skill);
 					}

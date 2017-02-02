@@ -34,7 +34,6 @@ public class SkillInfo {
         this.requireLevel = commaParser.ConsumeInt();
   
 		string name = commaParser.Consume();
-		int level = 0; // default level : 0
 		this.column = commaParser.ConsumeInt();
 		string originRequireAPString = commaParser.Consume();
         string[] requireAPStringArray = originRequireAPString.Split(' ');
@@ -140,7 +139,7 @@ public class SkillInfo {
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
-		this.skill = new Skill(owner, column, name, level, requireAPArray, cooldownArray, 
+		this.skill = new Skill(owner, column, name, requireAPArray, cooldownArray, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,

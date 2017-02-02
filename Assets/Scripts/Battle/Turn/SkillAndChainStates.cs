@@ -18,7 +18,7 @@ namespace Battle.Turn
 				if (battleData.indexOfPreSelectedSkillByUser != 0)
 				{
 					Skill preSelectedSkill = battleData.PreSelectedSkill;
-					int requireAP = preSelectedSkill.GetRequireAP(preSelectedSkill.GetLevel());
+					int requireAP = preSelectedSkill.GetRequireAP();
 					battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
 				}
 				else
@@ -461,9 +461,9 @@ namespace Battle.Turn
 			battleData.selectedUnitObject.GetComponent<Unit>().UseActivityPoint(requireAP);
 
 			// 스킬 쿨다운 기록
-			if (battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()) > 0)
+			if (battleData.SelectedSkill.GetCooldown() > 0)
 			{
-				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown(battleData.SelectedSkill.GetLevel()));
+				battleData.selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown());
 			}
 
 			// 체인 목록에 추가.
@@ -522,9 +522,9 @@ namespace Battle.Turn
 			{
 				unitInChain.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
 				// 스킬 쿨다운 기록
-				if (appliedSkill.GetCooldown(appliedSkill.GetLevel()) > 0)
+				if (appliedSkill.GetCooldown() > 0)
 				{
-					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(appliedSkill.GetLevel()));
+					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
 				}
 			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
@@ -548,11 +548,11 @@ namespace Battle.Turn
 			if (target.HasStatusEffect(StatusEffectType.Reflect))
 			{
 				float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target);
-				var reflectCoroutine = unitInChain.Damaged(target.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+				var reflectCoroutine = unitInChain.Damaged(target.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(), false, true);
 				battleManager.StartCoroutine(reflectCoroutine);
 			}
 
-			var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), attackDamage.resultDamage, appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+			var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), attackDamage.resultDamage, appliedSkill.GetPenetration(), false, true);
 			if (isLastTarget)
 			{
 				yield return battleManager.StartCoroutine(damageCoroutine);
@@ -795,9 +795,9 @@ namespace Battle.Turn
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
 			selectedUnit.UseActivityPoint(requireAP);
 			// 스킬 쿨다운 기록
-			if (appliedSkill.GetCooldown(appliedSkill.GetLevel()) > 0)
+			if (appliedSkill.GetCooldown() > 0)
 			{
-				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown(appliedSkill.GetLevel()));
+				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
 			}
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 

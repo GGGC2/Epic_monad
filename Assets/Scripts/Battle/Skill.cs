@@ -42,7 +42,7 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
     
-	public Skill(string owner, int column, string name, int level, int[] requireAPArray, int[] cooldownArray, 
+	public Skill(string owner, int column, string name, int[] requireAPArray, int[] cooldownArray, 
                  Dictionary<string, float[]> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -53,7 +53,6 @@ public class Skill {
 		this.owner = owner;
 		this.column = column;
 		this.name = name;
-		this.level = level;
 		this.requireAPArray = requireAPArray;
 		this.cooldownArray = cooldownArray;
 		this.powerFactor = powerFactor;
@@ -78,7 +77,6 @@ public class Skill {
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
             StatusEffect statusEffect = statusEffectInfo.GetStatusEffect();
-			statusEffect.SetLevel(level);
             if(statusEffectInfo.GetSkillName().Equals(this.name))
             {
                 statusEffectList.Add(statusEffectInfo.GetStatusEffect());
@@ -89,14 +87,10 @@ public class Skill {
 	public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
-	public int GetLevel() {return level;}
-	public int[] GetRequireAP() {return requireAPArray;}
-	public int GetRequireAP(int level) {return requireAPArray[level-1];}
-	public int[] GetCooldown() {return cooldownArray;}	
-	public int GetCooldown(int level) {return cooldownArray[level-1];}
+	public int GetRequireAP() {return requireAPArray[0];}
+	public int GetCooldown() {return cooldownArray[0];}
     public Dictionary<string, float[]> GetPowerFactorDict() {return powerFactor;}
-	public float[] GetPowerFactor(Stat status) {return powerFactor[status.ToString()];} 
-	public float GetPowerFactor(Stat status, int level) {return powerFactor[status.ToString()][level-1];}
+	public float GetPowerFactor(Stat status) {return powerFactor[status.ToString()][0];} 
 	public SkillType GetSkillType() {return skillType;}
 	public RangeForm GetFirstRangeForm() {return firstRangeForm;}
 	public int GetFirstMinReach() {return firstMinReach;}
@@ -107,12 +101,9 @@ public class Skill {
 	public int GetSecondMaxReach() {return secondMaxReach;}
 	public int GetSecondWidth() {return secondWidth;}
 	public SkillApplyType GetSkillApplyType() {return skillApplyType;}
-	public float[] GetPenetration() {return penetrationArray;}
-	public float GetPenetration(int level) {return penetrationArray[level-1];}
+	public float GetPenetration() {return penetrationArray[0];}
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
     public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
-
-	public void SetLevel(int num) {level = num;}
 }

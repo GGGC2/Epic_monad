@@ -76,7 +76,7 @@ public class DamageCalculator
 			Unit targetUnit = target.GetComponent<Unit>();
 			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
 			float actualDamage = targetUnit.GetActualDamage(casterUnitObject.GetComponent<Unit>().GetUnitClass(), attackDamage,
-				appliedSkill.GetPenetration(appliedSkill.GetLevel()), false, true);
+				appliedSkill.GetPenetration(), false, true);
 			damageList.Add(targetUnit.gameObject, actualDamage);
 
 			Debug.Log("Apply " + actualDamage + " damage to " + targetUnit.GetName() + "\n" +
@@ -143,15 +143,15 @@ public class DamageCalculator
 			Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
 			if (stat.Equals(Stat.UsedAP))
 			{
-				damage += casterUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
+				damage += casterUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat);
 			}
 			else if (stat.Equals(Stat.None))
 			{
-				damage += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
+				damage += appliedSkill.GetPowerFactor(stat);
 			}
 			else
 			{
-				damage += casterUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
+				damage += casterUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
 			}
 		}
 
@@ -242,7 +242,7 @@ public class DamageCalculator
 		{
 			if (statusEffect.IsOfType(StatusEffectType.Reflect))
 			{
-				reflectAmount = reflectAmount * statusEffect.GetDegree(statusEffect.GetLevel());
+				reflectAmount = reflectAmount * statusEffect.GetDegree();
 				break;
 			}
 		}

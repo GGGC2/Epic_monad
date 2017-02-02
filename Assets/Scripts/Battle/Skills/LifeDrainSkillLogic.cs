@@ -12,8 +12,8 @@ public class LifeDrainSkillLogic : BaseSkillLogic {
 		Unit target = targetTile.GetUnitOnTile().GetComponent<Unit>();
 		int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target.gameObject];
 		int targetCurrentHealth = target.GetCurrentHealth();
-		float[] recoverFactor = new float[5] {0.3f, 0.35f, 0.4f, 0.45f, 0.5f};
-		int recoverAmount = (int) ((float) finalDamage * recoverFactor[appliedSkill.GetLevel()-1]);
+		float recoverFactor = 0.3f;
+		int recoverAmount = (int) ((float) finalDamage * recoverFactor);
 		if (targetCurrentHealth == 0) recoverAmount *= 2;
 		var recoverCoroutine = unitInChain.RecoverHealth(recoverAmount);
 		battleData.battleManager.StartCoroutine(recoverCoroutine);
