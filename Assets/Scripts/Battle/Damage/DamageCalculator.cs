@@ -242,7 +242,7 @@ public class DamageCalculator
 		{
 			if (statusEffect.IsOfType(StatusEffectType.Reflect))
 			{
-				reflectAmount = reflectAmount * statusEffect.GetDegree();
+				reflectAmount = reflectAmount * statusEffect.GetAmount();
 				break;
 			}
 		}

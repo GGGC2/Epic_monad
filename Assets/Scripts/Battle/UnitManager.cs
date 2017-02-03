@@ -208,7 +208,6 @@ public class UnitManager : MonoBehaviour {
 		{
 			unit.GetComponent<Unit>().DecreaseRemainPhaseStatusEffect();
 			unit.GetComponent<Unit>().UpdateStatusEffect();
-			unit.GetComponent<Unit>().UpdateStatusEffectCooldown();
 			unit.GetComponent<Unit>().UpdateSkillCooldown();
 		}
 

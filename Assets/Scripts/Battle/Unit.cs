@@ -301,7 +301,7 @@ public class Unit : MonoBehaviour
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.GetRemainPhase() > 0 && statusEffect.GetCooldown() == 0 && !statusEffect.GetIsInfinite())
+			if (statusEffect.GetRemainPhase() > 0 && !statusEffect.GetIsInfinite())
 			{
 				statusEffect.DecreaseRemainPhase();
 				if (statusEffect.GetRemainPhase() == 0)
@@ -333,17 +333,6 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
-	public void UpdateStatusEffectCooldown()
-	{
-		foreach (var statusEffect in statusEffectList)
-		{
-			if(statusEffect.GetCooldown() != 0)
-			{
-				statusEffect.DecreaseCooldown();
-			}
-		}
-	}
-
 	// searching certain StatusEffect
 	public bool HasStatusEffect(StatusEffect statusEffect)
 	{
@@ -370,7 +359,7 @@ public class Unit : MonoBehaviour
 
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
+			if (statusEffect.IsOfType(statusEffectType))
 			{
 				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount();
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
@@ -385,9 +374,9 @@ public class Unit : MonoBehaviour
 		}
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.IsOfType(statusEffectType) && statusEffect.GetCooldown() == 0)
+			if (statusEffect.IsOfType(statusEffectType))
 			{
-				totalDegree = (100.0f + statusEffect.GetDegree()) / 100.0f;
+				totalDegree = (100.0f + statusEffect.GetAmount()) / 100.0f;
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();
@@ -452,7 +441,7 @@ public class Unit : MonoBehaviour
 				int shieldAmount = 0;
 				for (int i = 0; i < statusEffectList.Count; i++)
 				{
-					if (statusEffectList[i].IsOfType(StatusEffectType.Shield) && statusEffectList[i].GetCooldown() == 0)
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
 					{
 						shieldAmount = statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
@@ -536,27 +525,27 @@ public class Unit : MonoBehaviour
 				int shieldAmount = 0;
 				for (int i = 0; i < statusEffectList.Count; i++)
 				{
-					if (statusEffectList[i].IsOfType(StatusEffectType.Shield) && statusEffectList[i].GetCooldown() == 0)
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
 					{
 						// sisterna_m_12 발동 조건 체크
-						if (statusEffectList[i].GetName().Equals("파장 분류"))
-						{
-							if (finalDamage < (int)(0.2 * maxHealth)) continue;
-							else
-							{
-								int absorbDamage = (int)(statusEffectList[i].GetAmount() * this.GetActualStat(statusEffectList[i].GetAmountStat()));
-								finalDamage -= absorbDamage;
-								float tempValue = 0; // 강타 정의용 임시 array
-								StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", StatusEffectType.Smite,
-																				true, false, false, false,
-																				tempValue, Stat.None, tempValue, absorbDamage,
-																				0, 1, 0, false, 
-																				"None", EffectVisualType.None, EffectMoveType.None);
-								statusEffectList.Add(sisternaSmite);
-								statusEffectList[i].SetToBeRemoved(true);
-								break;
-							}
-						}
+						// if (statusEffectList[i].GetName().Equals("파장 분류"))
+						// {
+						// 	if (finalDamage < (int)(0.2 * maxHealth)) continue;
+						// 	else
+						// 	{
+						// 		int absorbDamage = (int)(statusEffectList[i].GetAmount() * this.GetActualStat(statusEffectList[i].GetAmountStat()));
+						// 		finalDamage -= absorbDamage;
+						// 		float tempValue = 0; // 강타 정의용 임시 array
+						// 		StatusEffect sisternaSmite = new StatusEffect("파장 분류 강타", StatusEffectType.Smite,
+						// 														true, false, false, false,
+						// 														tempValue, Stat.None, tempValue, absorbDamage,
+						// 														0, 1, 0, false, 
+						// 														"None", EffectVisualType.None, EffectMoveType.None);
+						// 		statusEffectList.Add(sisternaSmite);
+						// 		statusEffectList[i].SetToBeRemoved(true);
+						// 		break;
+						// 	}
+						// }
 						shieldAmount = statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
 						{

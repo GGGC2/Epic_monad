@@ -11,9 +11,11 @@ public class StatusEffect {
         class FixedElement
         {
             string name; // 유저에게 보일 이름
+            bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
             bool isBuff; // 버프일 경우 true
             bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
             bool isStackable; // 상태 이상 중첩이 가능한 경우 true
+            int maxStack; // 최대 가능한 스택 수
             bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
             // 이펙트 관련 정보
@@ -22,13 +24,16 @@ public class StatusEffect {
             EffectMoveType effectMoveType;
 
             public FixedElement(string name,  
-                  bool isBuff, bool isInfinite, bool isStackable, bool isRemovable, 
+                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isStackable, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
                 this.name = name;
+                this.isHidden = isHidden;
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
                 this.isStackable = isStackable;
+                this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
                 this.effectName = effectName;
                 this.effectVisualType = effectVisualType;
@@ -47,22 +52,22 @@ public class StatusEffect {
         
         class FlexibleElement
         {
-            int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
+            GameObject caster; // 시전자
             int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
-            int cooldown; // 효과가 적용되는 시점 (사라진 후 추가효과 있을 때)
+            int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
+            // 없애면 터져서 일단 넣어놓음
             bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
 
-            public FlexibleElement(int remainPhase, int remainStack, int cooldown, bool toBeRemoved)
+            public FlexibleElement(GameObject caster, int remainStack, int remainPhase, bool toBeRemoved)
             {
-                this.remainPhase = remainPhase;
+                this.caster = caster;
                 this.remainStack = remainStack;
-                this.cooldown = cooldown;
+                this.remainPhase = remainPhase;
                 this.toBeRemoved = toBeRemoved; 
             }
 
             public int GetRemainPhase() {return remainPhase;}
             public int GetRemainStack() {return remainStack;}
-            public int GetCooldown() {return cooldown;}	
             public bool GetToBeRemoved() {return toBeRemoved;}
 
             public void AddRemainPhase(int phase)
@@ -105,16 +110,6 @@ public class StatusEffect {
                 remainStack = stack; 
             }
 
-            public void DecreaseCooldown()
-            {
-                cooldown--;
-            }
-
-            public void SetCooldown(int updatedCooldown)
-            {
-                cooldown = updatedCooldown;
-            }
-
             public void SetToBeRemoved(bool toEnd)
             {
                 toBeRemoved = toEnd;
@@ -125,15 +120,16 @@ public class StatusEffect {
         FlexibleElement flexibleElement;
 
         public DisplayElement(string name,  
-                  bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
-                  int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
+                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isStackable, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
         {
             this.fixedElement = new FixedElement(name,  
-                  isBuff, isInfinite, isStackable, isRemovable, 
+                  isHidden, isBuff, isInfinite, 
+                  isStackable, maxStack, isRemovable, 
                   effectName, effectVisualType, effectMoveType);
 
-            this.flexibleElement = new FlexibleElement(remainPhase, remainStack, cooldown, toBeRemoved);
+            this.flexibleElement = new FlexibleElement(null, 0, 0, false);
         }
 
         public string GetName() {return fixedElement.GetName();}
@@ -147,7 +143,6 @@ public class StatusEffect {
 
         public int GetRemainPhase() {return flexibleElement.GetRemainPhase();}
         public int GetRemainStack() {return flexibleElement.GetRemainStack();}
-        public int GetCooldown() {return flexibleElement.GetCooldown();}	
         public bool GetToBeRemoved() {return flexibleElement.GetToBeRemoved();}
 
         public void AddRemainPhase(int phase)
@@ -190,16 +185,6 @@ public class StatusEffect {
             flexibleElement.SetRemainStack(stack); 
         }
 
-        public void DecreaseCooldown()
-        {
-            flexibleElement.DecreaseCooldown();
-        }
-
-        public void SetCooldown(int updatedCooldown)
-        {
-            flexibleElement.SetCooldown(updatedCooldown);
-        }
-
         public void SetToBeRemoved(bool toEnd)
         {
             flexibleElement.SetToBeRemoved(toEnd);
@@ -207,7 +192,7 @@ public class StatusEffect {
     }
     	
     // 비공유 목록
-    class ActualElement
+    public class ActualElement
     {
         class FixedElement
         {
@@ -226,24 +211,21 @@ public class StatusEffect {
 
         class FlexibleElement
         {
-            float degree; // 영향을 주는 수치(상대수치)
-            float amount; // 영향을 주는 수치(절대수치)
-            int remainAmount; // 남은 수치
+            int amount; // 영향을 주는 수치
+            int remainAmount; // 남은 수치 (실드 등)
 
-            public FlexibleElement(float degree, float amount, int remainAmount)
+            public FlexibleElement(int amount, int remainAmount)
             {
-                this.degree = degree;
                 this.amount = amount;
                 this.remainAmount = remainAmount;
             }
 
-            public float GetDegree() {return degree;}
-            public float GetAmount() {return amount;}
+            public int GetAmount() {return amount;}
             public int GetRemainAmount() {return remainAmount;}
 
-            public void SetRemainAmount(int amount)
+            public void SetRemainAmount(int newRemainAmount)
             {
-                remainAmount = amount;
+                remainAmount = newRemainAmount;
             }
         }
 
@@ -251,43 +233,39 @@ public class StatusEffect {
         FlexibleElement flexibleElement;
 
         public ActualElement(StatusEffectType statusEffectType, 
-                float degree, Stat amountStat, float amount, int remainAmount)
+                Stat amountStat, bool isRelative)
         {
             this.fixedElement = new FixedElement(statusEffectType, amountStat);
-            this.flexibleElement = new FlexibleElement(degree, amount, remainAmount);                
+            this.flexibleElement = new FlexibleElement(0, 0);                
         }
 
         public StatusEffectType GetStatusEffectType() {return fixedElement.GetStatusEffectType();}
         public Stat GetAmountStat() {return fixedElement.GetAmountStat();}
         
-        public float GetDegree() {return flexibleElement.GetDegree();}
-        public float GetAmount() {return GetAmount();}
+        public int GetAmount() {return GetAmount();}
         public int GetRemainAmount() {return GetRemainAmount();}
 
-        public void SetRemainAmount(int amount)
+        public void SetRemainAmount(int newRemainAmount)
         {
-            flexibleElement.SetRemainAmount(amount);
+            flexibleElement.SetRemainAmount(newRemainAmount);
         }
     }
 
     DisplayElement displayElement;
     List<ActualElement> actualElements;
 	
-	public StatusEffect(string name, StatusEffectType statusEffectType,  
-                  bool isBuff, bool isInfinite, bool isStackable, bool isRemovable,
-                  float degree, Stat amountStat, float amount, int remainAmount, 
-                  int remainPhase, int remainStack, int cooldown, bool toBeRemoved, 
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
+	public StatusEffect(string name,   
+                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isStackable, int maxStack, bool isRemovable,
+                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType,
+                  List<ActualElement> newActualEffects)
 	{
 		this.displayElement = new DisplayElement(name,  
-                                                isBuff, isInfinite, isStackable, isRemovable,
-                                                remainPhase, remainStack, cooldown, toBeRemoved, 
+                                                isHidden, isBuff, isInfinite, 
+                                                isStackable, maxStack, isRemovable,
                                                 effectName, effectVisualType, effectMoveType);
 
-        this.actualElements = new List<ActualElement>();
-        ActualElement actualElement = new ActualElement(statusEffectType, 
-                                degree, amountStat, amount, remainAmount);
-        actualElements.Add(actualElement);
+        this.actualElements = newActualEffects;
     }
 	
     public string GetName() {return displayElement.GetName();}
@@ -297,14 +275,12 @@ public class StatusEffect {
     public bool GetIsRemovable() {return displayElement.GetIsRemovable();}
     public int GetRemainPhase() {return displayElement.GetRemainPhase();}
     public int GetRemainStack() {return displayElement.GetRemainStack();}
-    public int GetCooldown() {return displayElement.GetCooldown();}	
     public bool GetToBeRemoved() {return displayElement.GetToBeRemoved();}
     public string GetEffectName() {return displayElement.GetEffectName();}
     public EffectVisualType GetEffectVisualType() {return displayElement.GetEffectVisualType();}
     public EffectMoveType GetEffectMoveType() {return displayElement.GetEffectMoveType();}
 
     public StatusEffectType GetStatusEffectType() {return actualElements[0].GetStatusEffectType();}
-    public float GetDegree() {return actualElements[0].GetDegree();}
     public Stat GetAmountStat() {return actualElements[0].GetAmountStat();}
     public float GetAmount() {return actualElements[0].GetAmount();}
     public int GetRemainAmount() {return actualElements[0].GetRemainAmount();}
@@ -352,16 +328,6 @@ public class StatusEffect {
     public void SetRemainStack(int stack)
     {
         displayElement.SetRemainStack(stack); 
-    }
-
-    public void DecreaseCooldown()
-    {
-        displayElement.DecreaseCooldown();
-    }
-
-    public void SetCooldown(int updatedCooldown)
-    {
-        displayElement.SetCooldown(updatedCooldown);
     }
 
     public void SetToBeRemoved(bool toEnd)
