@@ -27,6 +27,7 @@ public class Unit : MonoBehaviour
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
+	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 	// 사용한 스킬 정보 저장.
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
@@ -758,7 +759,7 @@ public class Unit : MonoBehaviour
 		this.celestial = unitInfo.celestial;
 	}
 
-	public void ApplySkillList(List<SkillInfo> skillInfoList, List<StatusEffectInfo> statusEffectInfoList)
+	public void ApplySkillList(List<SkillInfo> skillInfoList, List<StatusEffectInfo> statusEffectInfoList, List<PassiveSkillInfo> passiveSkillInfoList)
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
 
@@ -778,12 +779,24 @@ public class Unit : MonoBehaviour
 		}
 		// 비어있으면 디폴트 스킬로 채우도록.
 		if (skillList.Count() == 0)
+		{
 			foreach (var skillInfo in skillInfoList)
 			{
 				if ((skillInfo.GetOwner() == "default") &&
 					(skillInfo.GetRequireLevel() <= partyLevel))
 					skillList.Add(skillInfo.GetSkill());
 			}
+		}
+
+		foreach (var passiveSkillInfo in passiveSkillInfoList)
+		{
+			if ((passiveSkillInfo.GetOwner() == this.nameInCode) &&
+				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
+			{
+				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
+				passiveSkillList.Add(passiveSkill);
+			}
+		}
 	}
 
 	// 보너스 텍스트 표시.

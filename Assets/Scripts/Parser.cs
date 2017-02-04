@@ -104,6 +104,23 @@ public class Parser : MonoBehaviour {
 		return skillInfoList;
 	}
 
+	public static List<PassiveSkillInfo> GetParsedPassiveSkillInfo()
+	{
+		List<PassiveSkillInfo> skillInfoList = new List<PassiveSkillInfo>();
+
+		TextAsset csvFile = Resources.Load("Data/testPassiveSkillData") as TextAsset;
+		string csvText = csvFile.text;
+		string[] unparsedSkillInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		for (int i = 1; i < unparsedSkillInfoStrings.Length; i++)
+		{
+			PassiveSkillInfo skillInfo = new PassiveSkillInfo(unparsedSkillInfoStrings[i]);
+			skillInfoList.Add(skillInfo);
+		}
+
+		return skillInfoList;
+	}
+
 	private static Dictionary<string, SkillInfo> skillInfoByName;
 	public static SkillInfo GetSkillInfoByName(string skillName)
 	{
