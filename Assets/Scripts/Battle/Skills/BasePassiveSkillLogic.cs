@@ -11,5 +11,9 @@ public class BasePassiveSkillLogic
 	{
 		return false;
 	}
+
+	public virtual void triggerEvasionEvent(BattleData battleData, Unit unit)
+	{
+	}
 }
 }

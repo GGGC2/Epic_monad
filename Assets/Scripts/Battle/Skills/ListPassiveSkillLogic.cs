@@ -23,5 +23,13 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 
 		return false;
 	}
+
+	public override void triggerEvasionEvent(BattleData battleData, Unit unit)
+	{
+		foreach (var skill in passiveSkills)
+		{
+			skill.triggerEvasionEvent(battleData, unit);
+		}
+	}
 }
 }

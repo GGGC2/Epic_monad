@@ -36,6 +36,8 @@ public static class SkillLogicFactory
 		{
 			case "영회피":
 			return new Yeong_0_1_SkillLogic();
+			case "유법":
+			return new Yeong_1_2_SkillLogic();
 			default:
 			return new BasePassiveSkillLogic();
 		}
