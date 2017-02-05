@@ -501,6 +501,12 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
+				List<PassiveSkill> passiveSkills = target.GetLearnedPassiveSkillList();
+				if (SkillLogicFactory.Get(passiveSkills).checkEvade()) {
+					Debug.LogError("EVASION SUCCESS");
+					continue;
+				}
+
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					yield return battleManager.StartCoroutine(ApplyDamage(battleData, unitInChain, target, appliedSkill, chainCombo, targets.Count, target == targets.Last()));

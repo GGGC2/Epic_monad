@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Battle.Skills
 {
@@ -19,6 +20,24 @@ public static class SkillLogicFactory
 			return new ImagineBulletSkillLogic();
 			default:
 			return new BaseSkillLogic();
+		}
+	}
+
+	public static BasePassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
+	{
+		List<BasePassiveSkillLogic> passiveSkillLogic = passiveSkills.Select(skill => Get(skill))
+			.ToList();
+		return new ListPassiveSkillLogic(passiveSkillLogic);
+	}
+
+	private static BasePassiveSkillLogic Get(PassiveSkill passiveSkill)
+	{
+		switch (passiveSkill.GetName())
+		{
+			case "영회피":
+			return new Yeong_0_1_SkillLogic();
+			default:
+			return new BasePassiveSkillLogic();
 		}
 	}
 }

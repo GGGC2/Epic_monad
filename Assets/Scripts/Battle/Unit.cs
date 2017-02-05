@@ -155,6 +155,12 @@ public class Unit : MonoBehaviour
 		return learnedSkills.ToList();
 	}
 
+	public List<PassiveSkill> GetLearnedPassiveSkillList()
+	{
+		// Learn passive skill is not implemented yet
+		return passiveSkillList;
+	}
+
     public List<StatusEffect> GetStatusEffectList()
     {
         return statusEffectList;
