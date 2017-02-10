@@ -124,13 +124,13 @@ public class DamageCalculator
 		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(casterUnit);
-		float defaultDamage = attackDamage.baseDamage 
-			* attackDamage.directionBonus
-			* attackDamage.celestialBonus
-			* attackDamage.chainBonus
-			+ attackDamage.smiteAmount;
-		
-		attackDamage.resultDamage = ApplyIndividualSkillDamage(defaultDamage, appliedSkill, battleData, targetUnit, targetCount);
+		attackDamage.resultDamage = (attackDamage.baseDamage
+									+ attackDamage.smiteAmount) 
+									* attackDamage.directionBonus
+									* attackDamage.celestialBonus
+									* attackDamage.chainBonus;
+
+		attackDamage = ApplyIndividualSkillDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
 		return attackDamage;
 	}
@@ -190,8 +190,8 @@ public class DamageCalculator
 		return smiteAmount;
 	}
 
-	private static float ApplyIndividualSkillDamage(float previousDamage, Skill appliedSkill, BattleData battleData, Unit targetUnit, int targetCount) {
-		previousDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(previousDamage, appliedSkill, battleData, targetUnit, targetCount);
+	private static DamageCalculator.AttackDamage ApplyIndividualSkillDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
+		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
 		/*		
 		switch (appliedSkill.GetName())
@@ -232,7 +232,7 @@ public class DamageCalculator
 			return previousDamage;
 		}
 		*/
-		return previousDamage;
+		return attackDamage;
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target)

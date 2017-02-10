@@ -10,6 +10,12 @@ public static class SkillLogicFactory
 	public static BaseSkillLogic Get(Skill skill)
 	{
 		switch (skill.GetName()) {
+			case "화염 폭발":
+			return new Reina_1_l_SkillLogic();
+			case "화염구":
+			return new Reina_1_m_SkillLogic();
+			case "지옥 불꽃":
+			return new Reina_4_m_SkillLogic();
 			case "은빛 베기":
 			return new Yeong_1_l_SkillLogic();
 			case "조화진동":
@@ -34,6 +40,8 @@ public static class SkillLogicFactory
 	{
 		switch (passiveSkill.GetName())
 		{
+			case "핀토스의 긍지":
+			return new Reina_0_1_SkillLogic();
 			case "영회피":
 			return new Yeong_0_1_SkillLogic();
 			case "유법":
