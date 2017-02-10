@@ -10,18 +10,18 @@ public class StatusEffect {
     {
         class FixedElement
         {
-            string name; // 유저에게 보일 이름
-            bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
-            bool isBuff; // 버프일 경우 true
-            bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
-            bool isStackable; // 상태 이상 중첩이 가능한 경우 true
-            int maxStack; // 최대 가능한 스택 수
-            bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
+            public readonly string name; // 유저에게 보일 이름
+            public readonly bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
+            public readonly bool isBuff; // 버프일 경우 true
+            public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
+            public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
+            public readonly int maxStack; // 최대 가능한 스택 수
+            public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
             // 이펙트 관련 정보
-            string effectName;
-            EffectVisualType effectVisualType;
-            EffectMoveType effectMoveType;
+            public readonly string effectName;
+            public readonly EffectVisualType effectVisualType;
+            public readonly EffectMoveType effectMoveType;
 
             public FixedElement(string name,  
                   bool isHidden, bool isBuff, bool isInfinite, 
@@ -66,6 +66,7 @@ public class StatusEffect {
                 this.toBeRemoved = toBeRemoved; 
             }
 
+            public GameObject GetCaster() {return caster;}
             public int GetRemainPhase() {return remainPhase;}
             public int GetRemainStack() {return remainStack;}
             public bool GetToBeRemoved() {return toBeRemoved;}
@@ -141,6 +142,7 @@ public class StatusEffect {
         public EffectVisualType GetEffectVisualType() {return fixedElement.GetEffectVisualType();}
         public EffectMoveType GetEffectMoveType() {return fixedElement.GetEffectMoveType();}
 
+        public GameObject GetCaster() {return flexibleElement.GetCaster();}
         public int GetRemainPhase() {return flexibleElement.GetRemainPhase();}
         public int GetRemainStack() {return flexibleElement.GetRemainStack();}
         public bool GetToBeRemoved() {return flexibleElement.GetToBeRemoved();}
@@ -196,8 +198,8 @@ public class StatusEffect {
     {
         class FixedElement
         {
-            StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류        
-            Stat amountStat; // 영향을 주는 수치(절대수치)의 스탯값
+            public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류        
+            public readonly Stat amountStat; // 영향을 주는 스탯
 
             public FixedElement(StatusEffectType statusEffectType, Stat amountStat)
             {
@@ -211,13 +213,15 @@ public class StatusEffect {
 
         class FlexibleElement
         {
-            int amount; // 영향을 주는 수치
+            int amount; // 영향을 주는 실제 값
             int remainAmount; // 남은 수치 (실드 등)
+            bool isRelative; // 절대/상대 여부
 
-            public FlexibleElement(int amount, int remainAmount)
+            public FlexibleElement(int amount, int remainAmount, bool isRelative)
             {
                 this.amount = amount;
                 this.remainAmount = remainAmount;
+                this.isRelative = isRelative;
             }
 
             public int GetAmount() {return amount;}
@@ -236,7 +240,7 @@ public class StatusEffect {
                 Stat amountStat, bool isRelative)
         {
             this.fixedElement = new FixedElement(statusEffectType, amountStat);
-            this.flexibleElement = new FlexibleElement(0, 0);                
+            this.flexibleElement = new FlexibleElement(0, 0, true);                
         }
 
         public StatusEffectType GetStatusEffectType() {return fixedElement.GetStatusEffectType();}
@@ -273,6 +277,7 @@ public class StatusEffect {
     public bool GetIsInfinite() {return displayElement.GetIsInfinite();}
     public bool GetIsStackable() {return displayElement.GetIsStackable();}
     public bool GetIsRemovable() {return displayElement.GetIsRemovable();}
+    public GameObject GetCaster() {return displayElement.GetCaster();}
     public int GetRemainPhase() {return displayElement.GetRemainPhase();}
     public int GetRemainStack() {return displayElement.GetRemainStack();}
     public bool GetToBeRemoved() {return displayElement.GetToBeRemoved();}

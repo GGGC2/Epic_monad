@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using Enums;
+using Battle.Skills;
 
 using Save;
 
@@ -361,8 +362,8 @@ public class Unit : MonoBehaviour
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		float totalAmount = 0.0f;
-		float totalDegree = 1.0f;
+		float totalAmount = 0.0f; // 절대값
+		float totalDegree = 1.0f; // 상대값
 
 		foreach (var statusEffect in statusEffectList)
 		{
@@ -383,7 +384,15 @@ public class Unit : MonoBehaviour
 		{
 			if (statusEffect.IsOfType(statusEffectType))
 			{
-				totalDegree = (100.0f + statusEffect.GetAmount()) / 100.0f;
+				float additionalPowerBouns = 0;					
+				if (statusEffectType == StatusEffectType.PowerChange)
+				{
+					List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+					foreach (var passiveSkill in passiveSkills)
+						additionalPowerBouns += SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
+				}
+				
+				totalDegree = (100.0f + statusEffect.GetAmount() + additionalPowerBouns) / 100.0f;
 				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 				{
 					statusEffect.DecreaseRemainStack();

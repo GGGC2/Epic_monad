@@ -7,6 +7,10 @@ namespace Battle.Skills
 {
 public class BasePassiveSkillLogic
 {
+	public virtual float GetAdditionalPowerBouns(Unit unit)
+	{
+		return 0;
+	}
 	public virtual bool checkEvade()
 	{
 		return false;
