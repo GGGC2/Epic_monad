@@ -103,9 +103,11 @@ public class DamageCalculator
 	public class AttackDamage
 	{
 		public float baseDamage = 0;
-		public float directionBonus = 0;
-		public float celestialBonus = 0;
-		public float chainBonus = 0;
+		public float ratioDamageBonus = 1.0f;
+		public float valueDamageBonus = 0;
+		public float directionBonus = 1.0f;
+		public float celestialBonus = 1.0f;
+		public float chainBonus = 1.0f;
 		public float smiteAmount = 0;
 		public float resultDamage = 0;
 	}
@@ -124,13 +126,16 @@ public class DamageCalculator
 		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(casterUnit);
+
+		attackDamage = ApplyBonusDamageFromEachSkill(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
+
 		attackDamage.resultDamage = (attackDamage.baseDamage
+									* attackDamage.ratioDamageBonus
+									+ attackDamage.valueDamageBonus
 									+ attackDamage.smiteAmount) 
 									* attackDamage.directionBonus
 									* attackDamage.celestialBonus
 									* attackDamage.chainBonus;
-
-		attackDamage = ApplyIndividualSkillDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
 		return attackDamage;
 	}
@@ -190,7 +195,7 @@ public class DamageCalculator
 		return smiteAmount;
 	}
 
-	private static DamageCalculator.AttackDamage ApplyIndividualSkillDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
+	private static DamageCalculator.AttackDamage ApplyBonusDamageFromEachSkill(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
 		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
 		/*		

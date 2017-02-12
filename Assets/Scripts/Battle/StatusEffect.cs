@@ -226,6 +226,7 @@ public class StatusEffect {
 
             public int GetAmount() {return amount;}
             public int GetRemainAmount() {return remainAmount;}
+            public bool GetIsRelative() { return isRelative; }
 
             public void SetRemainAmount(int newRemainAmount)
             {
@@ -248,6 +249,7 @@ public class StatusEffect {
         
         public int GetAmount() {return GetAmount();}
         public int GetRemainAmount() {return GetRemainAmount();}
+        public bool GetIsRelative() {return GetIsRelative();}
 
         public void SetRemainAmount(int newRemainAmount)
         {
@@ -289,6 +291,7 @@ public class StatusEffect {
     public Stat GetAmountStat() {return actualElements[0].GetAmountStat();}
     public float GetAmount() {return actualElements[0].GetAmount();}
     public int GetRemainAmount() {return actualElements[0].GetRemainAmount();}
+    public bool GetIsRelative() {return actualElements[0].GetIsRelative();}
 
     public void SetRemainAmount(int amount)
     {

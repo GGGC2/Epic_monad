@@ -362,50 +362,51 @@ public class Unit : MonoBehaviour
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		float totalAmount = 0.0f; // 절대값
-		float totalDegree = 1.0f; // 상대값
+		float totalvalue = 0.0f; // 절대값
+		float totalratio = 1.0f; // 상대값
 
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (statusEffect.IsOfType(statusEffectType))
 			{
-				totalAmount += (float) statusEffect.GetAmountStat() * statusEffect.GetAmount();
-				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+				if (statusEffect.GetIsRelative()) // 상대값 합산
 				{
-					statusEffect.DecreaseRemainStack();
-					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					float additionalPowerBouns = 0;					
+					if (statusEffectType == StatusEffectType.PowerChange)
 					{
-						statusEffect.SetToBeRemoved(true);
+						List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+						foreach (var passiveSkill in passiveSkills)
+							additionalPowerBouns *= SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
+					}
+					
+					totalratio *= statusEffect.GetAmount() * additionalPowerBouns;
+					if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+					{
+						statusEffect.DecreaseRemainStack();
+						if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+						{
+							statusEffect.SetToBeRemoved(true);
+						}
+					}	
+				}
+				else // 절대값 합산
+				{
+					totalvalue += statusEffect.GetAmount();
+					if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+					{
+						statusEffect.DecreaseRemainStack();
+						if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+						{
+							statusEffect.SetToBeRemoved(true);
+						}
 					}
 				}
 			}
 		}
-		foreach (var statusEffect in statusEffectList)
-		{
-			if (statusEffect.IsOfType(statusEffectType))
-			{
-				float additionalPowerBouns = 0;					
-				if (statusEffectType == StatusEffectType.PowerChange)
-				{
-					List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-					foreach (var passiveSkill in passiveSkills)
-						additionalPowerBouns += SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
-				}
-				
-				totalDegree = (100.0f + statusEffect.GetAmount() + additionalPowerBouns) / 100.0f;
-				if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-				{
-					statusEffect.DecreaseRemainStack();
-					if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-					{
-						statusEffect.SetToBeRemoved(true);
-					}
-				}
-			}
-		}
+		
 		this.UpdateStatusEffect();
 
-		return data * totalDegree + totalAmount;
+		return data * totalratio + totalvalue;
 	}
 
 	public float GetActualDamage(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)

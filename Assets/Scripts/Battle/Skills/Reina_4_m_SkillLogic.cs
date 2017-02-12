@@ -11,14 +11,10 @@ public class Reina_4_m_SkillLogic : BaseSkillLogic {
 		// 공버프가 총 30% 면 이 값은 1.3이 된다
 		float damageBonusToAttackBuff = casterUnit.GetActualStat(Stat.Power) / casterUnit.GetStat(Stat.Power);
 		
-		float finalDamage = (attackDamage.baseDamage
-							* damageBonusToAttackBuff
-							+ attackDamage.smiteAmount) 
-							* attackDamage.directionBonus
-							* attackDamage.celestialBonus
-							* attackDamage.chainBonus;
+		if (damageBonusToAttackBuff < 1.0f)
+			damageBonusToAttackBuff = 1.0f;
 
-		attackDamage.resultDamage = finalDamage;
+		attackDamage.ratioDamageBonus *= damageBonusToAttackBuff;
 
 		return attackDamage;
 	}
