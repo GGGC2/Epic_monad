@@ -82,6 +82,7 @@ namespace Enums {
 
 	public enum RangeForm
 	{
+		Diamond,
 		Square,
 		Straight,
 		Diagonal,

@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
 public class BasePassiveSkillLogic
 {
-	public virtual float GetAdditionalPowerBouns(Unit unit)
+	public virtual float GetAdditionalPowerBouns(Unit caster)
 	{
 		return 0;
 	}

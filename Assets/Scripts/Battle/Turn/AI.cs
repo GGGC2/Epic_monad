@@ -231,7 +231,7 @@ namespace Battle.Turn
 			var enemiesNearEachOther =
 					from tileGO in selectedTiles
 					let tile = tileGO.GetComponent<Tile>()
-					let nearTileGOs = tileManager.GetTilesInRange(RangeForm.Square, tile.GetTilePos(), 0, 1, Direction.Down)
+					let nearTileGOs = tileManager.GetTilesInRange(RangeForm.Diamond, tile.GetTilePos(), 0, 1, Direction.Down)
 					let nearTileUnits = nearTileGOs.Select(tileGO2 => tileGO2.GetComponent<Tile>().GetUnitOnTile())
 					let nearUnits = nearTileUnits.Where(unitGO => unitGO != null && unitGO.GetComponent<Unit>().GetSide() == Side.Ally)
 					where nearUnits.Count() >= 2

@@ -45,7 +45,11 @@ public class TileManager : MonoBehaviour {
 
 	public List<GameObject> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
-		if (form == RangeForm.Square)
+		if (form == RangeForm.Diamond)
+		{
+			return GetTilesInDiamondRange(mid, minReach, maxReach);
+		}
+		else if (form == RangeForm.Square)
 		{
 			return GetTilesInSquareRange(mid, minReach, maxReach);
 		}
@@ -74,7 +78,19 @@ public class TileManager : MonoBehaviour {
 			return GetTilesInGlobalRange();
 		}
 		else
-			return GetTilesInSquareRange(mid, minReach, maxReach); // temp return value.
+			return GetTilesInDiamondRange(mid, minReach, maxReach); // temp return value.
+	}
+
+	List<GameObject> GetTilesInDiamondRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<GameObject> tilesInRange = new List<GameObject>();
+		tilesInRange.Add(GetTile(mid));
+		for (int i = 0; i < maxReach; i++)
+		{
+			tilesInRange = AddNearbyTiles(tilesInRange);
+		}
+
+		return tilesInRange;
 	}
 
 	List<GameObject> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
@@ -83,7 +99,7 @@ public class TileManager : MonoBehaviour {
 		tilesInRange.Add(GetTile(mid));
 		for (int i = 0; i < maxReach; i++)
 		{
-			tilesInRange = AddNearbyTiles(tilesInRange);
+			tilesInRange = AddNearbySquareTiles(tilesInRange);
 		}
 
 		return tilesInRange;
@@ -232,6 +248,64 @@ public class TileManager : MonoBehaviour {
 			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
 			{
 				newTileList.Add(nearbyRightTile);
+			}
+		}
+
+		return newTileList;
+	}
+
+	List<GameObject> AddNearbySquareTiles(List<GameObject> tileList)
+	{
+		List<GameObject> newTileList = new List<GameObject>();
+		foreach (var tile in tileList)
+		{
+			Vector2 position = tile.GetComponent<Tile>().GetTilePos();
+
+			if (!newTileList.Contains(tile))
+			{
+				newTileList.Add(tile);
+			}
+
+			GameObject nearbyUpTile = GetTile(position + Vector2.up);
+			if (nearbyUpTile != null && !newTileList.Contains(nearbyUpTile))
+			{
+				newTileList.Add(nearbyUpTile);
+			}
+			GameObject nearbyDownTile = GetTile(position + Vector2.down);
+			if (nearbyDownTile != null && !newTileList.Contains(nearbyDownTile))
+			{
+				newTileList.Add(nearbyDownTile);
+			}
+			GameObject nearbyLeftTile = GetTile(position + Vector2.left);
+			if (nearbyLeftTile != null && !newTileList.Contains(nearbyLeftTile))
+			{
+				newTileList.Add(nearbyLeftTile);
+			}
+			GameObject nearbyRightTile = GetTile(position + Vector2.right);
+			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
+			{
+				newTileList.Add(nearbyRightTile);
+			}
+
+			GameObject nearbyUpLeftTile = GetTile(position + Vector2.up + Vector2.left);
+			if (nearbyUpLeftTile != null && !newTileList.Contains(nearbyUpLeftTile))
+			{
+				newTileList.Add(nearbyUpLeftTile);
+			}
+			GameObject nearbyUpRightTile = GetTile(position + Vector2.up + Vector2.right);
+			if (nearbyUpRightTile != null && !newTileList.Contains(nearbyUpRightTile))
+			{
+				newTileList.Add(nearbyUpRightTile);
+			}
+			GameObject nearbyDownLeftTile = GetTile(position + Vector2.down + Vector2.left);
+			if (nearbyDownLeftTile != null && !newTileList.Contains(nearbyDownLeftTile))
+			{
+				newTileList.Add(nearbyDownLeftTile);
+			}
+			GameObject nearbyDownRightTile = GetTile(position + Vector2.down + Vector2.right);
+			if (nearbyDownRightTile != null && !newTileList.Contains(nearbyDownRightTile))
+			{
+				newTileList.Add(nearbyDownRightTile);
 			}
 		}
 
