@@ -46,6 +46,8 @@ public static class SkillLogicFactory
 			return new Reina_2_m_SkillLogic();
 			case "뭉치면 죽는다":
 			return new Reina_5_l_SkillLogic();
+			case "흩어져도 죽는다":
+			return new Reina_5_m_SkillLogic();
 			case "영회피":
 			return new Yeong_0_1_SkillLogic();
 			case "유법":

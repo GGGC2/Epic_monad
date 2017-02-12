@@ -131,7 +131,7 @@ public class DamageCalculator
 		attackDamage = ApplyBonusDamageFromEachSkill(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = casterUnit.GetLearnedPassiveSkillList();
-		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, targetUnit, targetCount);
+		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, appliedSkill, targetUnit, targetCount);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.ratioDamageBonus
