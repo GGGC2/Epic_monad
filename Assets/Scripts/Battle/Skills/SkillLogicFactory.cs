@@ -65,6 +65,9 @@ public static class SkillLogicFactory
 			return new Yeong_0_1_SkillLogic();
 			case "유법":
 			return new Yeong_1_2_SkillLogic();
+			// 카샤스티
+			case "장미 속의 가시":
+			return new Kashyasty_1_r_SkillLogic();
 			default:
 			return new BasePassiveSkillLogic();
 		}

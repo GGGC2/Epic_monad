@@ -16,6 +16,11 @@ public class BasePassiveSkillLogic
 	{
 		return attackDamage;
 	}
+
+	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster)
+	{
+		return attackDamage;
+	}
 	
 	public virtual bool checkEvade()
 	{
