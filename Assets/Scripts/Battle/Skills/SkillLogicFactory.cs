@@ -42,6 +42,8 @@ public static class SkillLogicFactory
 		{
 			case "핀토스의 긍지":
 			return new Reina_0_1_SkillLogic();
+			case "불의 파동":
+			return new Reina_2_m_SkillLogic();
 			case "영회피":
 			return new Yeong_0_1_SkillLogic();
 			case "유법":

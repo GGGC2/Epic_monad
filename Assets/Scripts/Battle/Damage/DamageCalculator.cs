@@ -127,7 +127,12 @@ public class DamageCalculator
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(casterUnit);
 
+		// 해당 기술의 추가데미지 계산
 		attackDamage = ApplyBonusDamageFromEachSkill(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
+		// 특성에 의한 추가데미지
+		List<PassiveSkill> passiveSkills = casterUnit.GetLearnedPassiveSkillList();
+		foreach (var passiveSkill in passiveSkills)
+			attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, targetUnit);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.ratioDamageBonus
