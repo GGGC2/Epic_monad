@@ -18,6 +18,11 @@ public class BaseSkillLogic
 		return attackDamage;
 	}
 
+	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(DamageCalculator.AttackDamage attackDamage, Unit casterUnit, int targetCount)
+	{
+		return attackDamage;
+	}
+
 	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<GameObject> selectedTiles)
 	{
 	}

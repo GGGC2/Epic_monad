@@ -7,6 +7,5 @@ namespace Battle.Skills
 {
 public class Reina_1_l_SkillLogic : BaseSkillLogic {
 
-
 }
 }

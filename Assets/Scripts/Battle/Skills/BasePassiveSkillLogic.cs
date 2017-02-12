@@ -12,11 +12,11 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit target)
+	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit target, int targetCount)
 	{
 		return attackDamage;
 	}
-
+	
 	public virtual bool checkEvade()
 	{
 		return false;

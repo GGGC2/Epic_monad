@@ -3,15 +3,15 @@ using System.Linq;
 
 namespace Battle.Skills
 {
-public class Reina_2_m_SkillLogic : BasePassiveSkillLogic {
+public class Reina_5_l_SkillLogic : BasePassiveSkillLogic {
 
 	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit target, int targetCount)
 	{
-		float damageBounsForPlaneTypeUnit = 1.15f;
-		
-		if (target.GetElement() == Enums.Element.Plant)
-			attackDamage.ratioDamageBonus *= damageBounsForPlaneTypeUnit;
-		
+		float damageBonus = 1.3f;
+
+		if (targetCount >= 3)
+			attackDamage.ratioDamageBonus *= damageBonus;
+
 		return attackDamage;
 	}
 }
