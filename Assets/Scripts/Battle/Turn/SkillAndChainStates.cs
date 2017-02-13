@@ -277,7 +277,7 @@ namespace Battle.Turn
 				List<GameObject> firstRange = GetTilesInFirstRange(battleData);
 
 				//데미지 미리보기
-				Dictionary<GameObject, float> calculatedTotalDamage = DamageCalculator.CalculateTotalAttackDamage(battleData, targetTile, tilesInSkillRange, firstRange);
+				Dictionary<GameObject, float> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
 				foreach (KeyValuePair<GameObject, float> kv in calculatedTotalDamage)
 				{
 					Debug.Log(kv.Key.GetComponent<Unit>().GetName() + " - Damage preview");

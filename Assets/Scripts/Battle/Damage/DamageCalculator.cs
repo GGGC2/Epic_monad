@@ -9,7 +9,7 @@ namespace Battle
 {
 public class DamageCalculator
 {
-	public static Dictionary<GameObject, float> CalculateTotalAttackDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 	{
 		// List<ChainInfo> tempChainList = new List<ChainInfo>();
 		Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
@@ -21,7 +21,7 @@ public class DamageCalculator
 
 		foreach (var chainInfo in allVaildChainInfo)
 		{
-			var damageListOfEachSkill = CalculateAttackDamageOfEachSkill(battleData, chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculateDamageOfEachSkill(battleData, chainInfo, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
@@ -51,7 +51,7 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<GameObject, float> CalculateAttackDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, float> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<GameObject, float>();
 		Skill appliedSkill = chainInfo.GetSkill();
@@ -75,7 +75,7 @@ public class DamageCalculator
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
 			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
-			float actualDamage = targetUnit.GetActualDamage(casterUnitObject.GetComponent<Unit>().GetUnitClass(), attackDamage,
+			float actualDamage = GetActualDamage(targetUnit, casterUnitObject.GetComponent<Unit>().GetUnitClass(), attackDamage,
 				appliedSkill.GetPenetration(), false, true);
 			damageList.Add(targetUnit.gameObject, actualDamage);
 
@@ -202,45 +202,6 @@ public class DamageCalculator
 	private static DamageCalculator.AttackDamage ApplyBonusDamageFromEachSkill(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
 		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
-		/*		
-		switch (appliedSkill.GetName())
-		{
-			// reina_m_12 속성 보너스
-			case "불의 파동":
-				if (targetUnit.GetElement().Equals(Element.Plant))
-				{
-					float[] elementDamageBonus = new float[]{1.1f, 1.2f, 1.3f, 1.4f, 1.5f};
-					return previousDamage * elementDamageBonus[0];
-				}
-				else
-				{
-					return previousDamage;
-				}
-			// yeong_l_18 대상 숫자 보너스
-			case "섬광 찌르기":
-				if (targetCount > 1)
-				{
-					float targetNumberBonus = (float)targetCount*0.1f + 1.0f;
-					return previousDamage * targetNumberBonus;
-				}
-				else
-				{
-					return previousDamage;
-				}
-			case "전자기학":
-				Element tileElement = battleData.tileManager.GetTile(targetUnit.GetPosition()).GetComponent<Tile>().GetTileElement();
-				if (!tileElement.Equals(Element.Metal) && !tileElement.Equals(Element.Water)) 
-				{
-					return previousDamage * 0;
-				}
-				else
-				{
-					return previousDamage;
-				}
-			default:
-			return previousDamage;
-		}
-		*/
 		return attackDamage;
 	}
 
@@ -257,5 +218,79 @@ public class DamageCalculator
 		}
 		return reflectAmount;
 	}
+
+	public static float GetActualDamage(Unit target, UnitClass casterUnitClass, float amount, float penetration, bool isDot, bool isHealth)
+	{
+		float actualDamage = 0.0f;
+		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+
+		// 공격이 물리인지 마법인지 체크
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
+		// 대미지 증가/감소 효과 적용
+		// 보호막 있을 경우 대미지 삭감
+		// 체력 깎임
+		// 체인 해제
+		if (isHealth == true)
+		{
+			if (casterUnitClass == UnitClass.Melee)
+			{
+				// 실제 피해 = 원래 피해 x 200/(200+방어력)
+				actualDamage = amount * 200.0f / (200.0f + target.GetActualStat(Stat.Defense) * (1.0f - penetration));
+				Debug.Log("Actual melee damage without status effect : " + actualDamage);
+			}
+			else if (casterUnitClass == UnitClass.Magic)
+			{
+				actualDamage = amount * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				Debug.Log("Actual magic damage without status effect: " + actualDamage);
+			}
+			else if (casterUnitClass == UnitClass.None)
+			{
+				actualDamage = amount;
+			}
+
+			// sisterna_l_1의 저항력 계산
+			if (penetration == -1.0f)
+			{
+				actualDamage = amount - target.GetActualStat(Stat.Resistance);
+			}
+
+			// 대미지 증감 효과 적용
+			if (target.HasStatusEffect(StatusEffectType.DamageChange))
+			{
+				actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.DamageChange);
+			}
+
+			finalDamage = (int) actualDamage;
+
+			// 보호막에 따른 대미지 삭감
+			if (target.HasStatusEffect(StatusEffectType.Shield))
+			{
+				List<StatusEffect> statusEffectList = target.GetStatusEffectList();
+				int shieldAmount = 0;
+				for (int i = 0; i < statusEffectList.Count; i++)
+				{
+					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					{
+						shieldAmount = statusEffectList[i].GetRemainAmount();
+						if (shieldAmount > finalDamage)
+						{
+							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
+							finalDamage = 0;
+							Debug.Log("Remain Shield Amount : " + statusEffectList[i].GetRemainAmount());
+							break;
+						}
+						else
+						{
+							finalDamage -= shieldAmount;
+							statusEffectList[i].SetToBeRemoved(true);
+						}
+					}
+				}
+				target.UpdateStatusEffect(); // 버그있을듯 (미리보기할때 업데이트 해도 되나?)
+			}
+		}
+		
+		return (float) finalDamage;
+	}	
 }
 }
