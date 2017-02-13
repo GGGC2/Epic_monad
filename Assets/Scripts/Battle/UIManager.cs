@@ -22,6 +22,8 @@ public class UIManager : MonoBehaviour
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
 
+	GameObject notImplementedDebugPanel;
+
 	private void Awake()
 	{
 		apBarUI = GameObject.Find("APBarPanel");
@@ -36,6 +38,8 @@ public class UIManager : MonoBehaviour
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovedUICanvas");
+
+		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 	}
 
 	private void Start()
@@ -235,5 +239,17 @@ public class UIManager : MonoBehaviour
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
 		FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
 		movedUICanvas.transform.position = newPosition;
+	}
+
+	public void AppendNotImplementedLog(String text)
+	{
+		if (notImplementedDebugPanel == null)
+		{
+			Debug.LogError("Cannot find not implemented debug panel\n" + text);
+			return;
+		}
+
+		var debugPanel = notImplementedDebugPanel.GetComponent<NotImplementedDebugPanel>();
+		debugPanel.Append(text);
 	}
 }

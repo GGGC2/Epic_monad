@@ -503,7 +503,7 @@ namespace Battle.Turn
 			{
 				List<PassiveSkill> passiveSkills = target.GetLearnedPassiveSkillList();
 				if (SkillLogicFactory.Get(passiveSkills).checkEvade()) {
-					Debug.LogError("EVASION SUCCESS");
+					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
 					SkillLogicFactory.Get(passiveSkills).triggerEvasionEvent(battleData, target);
 					continue;
 				}
