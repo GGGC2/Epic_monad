@@ -55,6 +55,7 @@ public class StatusEffectInfo {
 			bool isRelative = isRelative = commaParser.ConsumeBool();
 			
 			StatusEffect.ActualElement actualElement = new StatusEffect.ActualElement(statusEffectType, applyStat, isRelative);
+			actualElements.Add(actualElement);
 		}
 	
 		this.statusEffect = new StatusEffect(skillName, 
