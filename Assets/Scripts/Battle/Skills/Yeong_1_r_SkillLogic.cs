@@ -7,7 +7,7 @@ public class Yeong_1_r_SkillLogic : BasePassiveSkillLogic
 	{
 	public override void triggerActiveSkillDamageApplied(Unit yeong)
 	{
-		StatusEffector.AttachStatusEffect(this.passiveSkill, yeong);
+		StatusEffector.AttachStatusEffect(yeong, this.passiveSkill, yeong);
 	}
 }
 }

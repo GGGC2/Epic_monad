@@ -11,7 +11,7 @@ public class PassiveSkill {
 	string owner;
 	int column;
 	string name;
-	List<StatusEffect> statusEffectList = new List<StatusEffect>();
+	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
 	
 	public PassiveSkill(string owner, int column, string name)
 	{
@@ -33,5 +33,5 @@ public class PassiveSkill {
 	public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
-    public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
+    public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
 }

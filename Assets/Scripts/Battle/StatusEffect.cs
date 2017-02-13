@@ -6,15 +6,16 @@ using System.Collections.Generic;
 public class StatusEffect {
 
     // 공유목록
-    class DisplayElement
-    {
-        class FixedElement
-        {
+	public class FixedElement
+	{
+		public class DisplayElement
+		{
             public readonly string name; // 유저에게 보일 이름
             public readonly bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
             public readonly bool isBuff; // 버프일 경우 true
             public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
             public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
+			public readonly int maxPhase; // 상태 이상이 지속가능한 phase
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
@@ -23,9 +24,9 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public FixedElement(string name,  
+            public DisplayElement(string name,  
                   bool isHidden, bool isBuff, bool isInfinite, 
-                  bool isStackable, int maxStack, bool isRemovable, 
+                  bool isStackable, int maxPhase, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
                 this.name = name;
@@ -33,314 +34,173 @@ public class StatusEffect {
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
                 this.isStackable = isStackable;
+				this.maxPhase = maxPhase;
                 this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
                 this.effectName = effectName;
                 this.effectVisualType = effectVisualType;
                 this.effectMoveType = effectMoveType;
             }
-
-            public string GetName() {return name;}
-            public bool GetIsBuff() {return isBuff;}
-            public bool GetIsInfinite() {return isInfinite;}
-            public bool GetIsStackable() {return isStackable;}
-            public bool GetIsRemovable() {return isRemovable;}
-            public string GetEffectName() {return effectName;}
-            public EffectVisualType GetEffectVisualType() {return effectVisualType;}
-            public EffectMoveType GetEffectMoveType() {return effectMoveType;}
         }
-        
-        class FlexibleElement
-        {
-            GameObject caster; // 시전자
-            int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
-            int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
-            // 없애면 터져서 일단 넣어놓음
-            bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
 
-            public FlexibleElement(GameObject caster, int remainStack, int remainPhase, bool toBeRemoved)
+		public class ActualElement
+		{
+            public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류        
+            public readonly Stat amountStat; // 영향을 주는 스탯
+			public readonly bool isRelative;
+
+            public ActualElement(StatusEffectType statusEffectType, Stat amountStat, bool isRelative)
+            {
+                this.statusEffectType = statusEffectType;
+                this.amountStat = amountStat;   
+				this.isRelative = isRelative;
+            }
+		}
+
+		public readonly DisplayElement display;
+		public readonly List<ActualElement> actuals;
+
+		public FixedElement(string name,  
+                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isStackable, int maxPhase, int maxStack, bool isRemovable,
+                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
+		{
+			display = new DisplayElement(name,
+					isHidden, isBuff, isInfinite,
+					isStackable, maxPhase, maxStack, isRemovable,
+					effectName, effectVisualType, effectMoveType);
+
+			actuals = actualEffects;
+		}
+	}
+        
+	public class FlexibleElement
+	{
+		public class DisplayElement
+		{
+			public GameObject caster; // 시전자
+			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
+			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
+			// 없애면 터져서 일단 넣어놓음
+			public bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
+
+            public DisplayElement(GameObject caster, int remainStack, int remainPhase)
             {
                 this.caster = caster;
                 this.remainStack = remainStack;
                 this.remainPhase = remainPhase;
-                this.toBeRemoved = toBeRemoved; 
+                this.toBeRemoved = false; 
             }
+		}
 
-            public GameObject GetCaster() {return caster;}
-            public int GetRemainPhase() {return remainPhase;}
-            public int GetRemainStack() {return remainStack;}
-            public bool GetToBeRemoved() {return toBeRemoved;}
+		public class ActualElement
+		{
+            public int amount; // 영향을 주는 실제 값
+            public int remainAmount; // 남은 수치 (실드 등)
 
-            public void AddRemainPhase(int phase)
-            {
-                remainPhase += phase;
-            }
-            
-            public void SubRemainPhase(int phase)
-            {
-                remainPhase -= phase;
-            }
-            
-            public void DecreaseRemainPhase()
-            {
-                remainPhase --;
-            }
-            
-            public void SetRemainPhase(int phase)
-            {
-                remainPhase = phase;
-            }
-            
-            public void AddRemainStack(int stack)
-            {
-                remainStack += stack;
-            }
-            
-            public void SubRemainStack(int stack)
-            {
-                remainStack -= stack;
-            }
-            
-            public void DecreaseRemainStack()
-            {
-                remainStack --; 
-            }
-            
-            public void SetRemainStack(int stack)
-            {
-                remainStack = stack; 
-            }
-
-            public void SetToBeRemoved(bool toEnd)
-            {
-                toBeRemoved = toEnd;
-            }
-        }
-    
-        FixedElement fixedElement;
-        FlexibleElement flexibleElement;
-
-        public DisplayElement(string name,  
-                  bool isHidden, bool isBuff, bool isInfinite, 
-                  bool isStackable, int maxStack, bool isRemovable,
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
-        {
-            this.fixedElement = new FixedElement(name,  
-                  isHidden, isBuff, isInfinite, 
-                  isStackable, maxStack, isRemovable, 
-                  effectName, effectVisualType, effectMoveType);
-
-            this.flexibleElement = new FlexibleElement(null, 0, 0, false);
-        }
-
-        public string GetName() {return fixedElement.GetName();}
-        public bool GetIsBuff() {return fixedElement.GetIsBuff();}
-        public bool GetIsInfinite() {return fixedElement.GetIsInfinite();}
-        public bool GetIsStackable() {return fixedElement.GetIsStackable();}
-        public bool GetIsRemovable() {return fixedElement.GetIsRemovable();}
-        public string GetEffectName() {return fixedElement.GetEffectName();}
-        public EffectVisualType GetEffectVisualType() {return fixedElement.GetEffectVisualType();}
-        public EffectMoveType GetEffectMoveType() {return fixedElement.GetEffectMoveType();}
-
-        public GameObject GetCaster() {return flexibleElement.GetCaster();}
-        public int GetRemainPhase() {return flexibleElement.GetRemainPhase();}
-        public int GetRemainStack() {return flexibleElement.GetRemainStack();}
-        public bool GetToBeRemoved() {return flexibleElement.GetToBeRemoved();}
-
-        public void AddRemainPhase(int phase)
-        {
-            flexibleElement.AddRemainPhase(phase);
-        }
-        
-        public void SubRemainPhase(int phase)
-        {
-            flexibleElement.SubRemainPhase(phase);
-        }
-        
-        public void DecreaseRemainPhase()
-        {
-            flexibleElement.DecreaseRemainPhase();
-        }
-        
-        public void SetRemainPhase(int phase)
-        {
-            flexibleElement.SetRemainPhase(phase);
-        }
-        
-        public void AddRemainStack(int stack)
-        {
-            flexibleElement.AddRemainStack(stack);
-        }
-        
-        public void SubRemainStack(int stack)
-        {
-            flexibleElement.SubRemainStack(stack);
-        }
-        
-        public void DecreaseRemainStack()
-        {
-            flexibleElement.DecreaseRemainStack(); 
-        }
-        
-        public void SetRemainStack(int stack)
-        {
-            flexibleElement.SetRemainStack(stack); 
-        }
-
-        public void SetToBeRemoved(bool toEnd)
-        {
-            flexibleElement.SetToBeRemoved(toEnd);
-        }
-    }
-    	
-    // 비공유 목록
-    public class ActualElement
-    {
-        class FixedElement
-        {
-            public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류        
-            public readonly Stat amountStat; // 영향을 주는 스탯
-
-            public FixedElement(StatusEffectType statusEffectType, Stat amountStat)
-            {
-                this.statusEffectType = statusEffectType;
-                this.amountStat = amountStat;   
-            }
-
-            public StatusEffectType GetStatusEffectType() {return statusEffectType;}
-            public Stat GetAmountStat() {return amountStat;}
-        }
-
-        class FlexibleElement
-        {
-            int amount; // 영향을 주는 실제 값
-            int remainAmount; // 남은 수치 (실드 등)
-            bool isRelative; // 절대/상대 여부
-
-            public FlexibleElement(int amount, int remainAmount, bool isRelative)
+            public ActualElement(int amount, int remainAmount)
             {
                 this.amount = amount;
                 this.remainAmount = remainAmount;
-                this.isRelative = isRelative;
             }
+		}
 
-            public int GetAmount() {return amount;}
-            public int GetRemainAmount() {return remainAmount;}
-            public bool GetIsRelative() { return isRelative; }
+		public DisplayElement display;
+		public List<ActualElement> actuals;
 
-            public void SetRemainAmount(int newRemainAmount)
-            {
-                remainAmount = newRemainAmount;
-            }
-        }
+		public FlexibleElement(FixedElement fixedElem, GameObject caster)
+		{
+			int maxStack = fixedElem.display.maxStack;
+			int maxPhase = fixedElem.display.maxPhase;
+			display = new DisplayElement(caster, maxStack, maxPhase);
 
-        FixedElement fixedElement;
-        FlexibleElement flexibleElement;
+			List<ActualElement> actuals = new List<ActualElement>();
+			foreach (var fixedActual in fixedElem.actuals) {
+				// not implemented yet
+				int remainAmount = 0;
+				int amount = 0;
+				actuals.Add(new ActualElement(amount, remainAmount));
+			}
+			this.actuals = actuals;
+		}
+	}
 
-        public ActualElement(StatusEffectType statusEffectType, 
-                Stat amountStat, bool isRelative)
-        {
-            this.fixedElement = new FixedElement(statusEffectType, amountStat);
-            this.flexibleElement = new FlexibleElement(0, 0, true);                
-        }
-
-        public StatusEffectType GetStatusEffectType() {return fixedElement.GetStatusEffectType();}
-        public Stat GetAmountStat() {return fixedElement.GetAmountStat();}
-        
-        public int GetAmount() {return GetAmount();}
-        public int GetRemainAmount() {return GetRemainAmount();}
-        public bool GetIsRelative() {return GetIsRelative();}
-
-        public void SetRemainAmount(int newRemainAmount)
-        {
-            flexibleElement.SetRemainAmount(newRemainAmount);
-        }
-    }
-
-    DisplayElement displayElement;
-    List<ActualElement> actualElements;
+    FixedElement fixedElem;
+	FlexibleElement flexible;
 	
-	public StatusEffect(string name,   
-                  bool isHidden, bool isBuff, bool isInfinite, 
-                  bool isStackable, int maxStack, bool isRemovable,
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType,
-                  List<ActualElement> newActualEffects)
+	public StatusEffect(FixedElement fixedElem, GameObject caster)
 	{
-		this.displayElement = new DisplayElement(name,  
-                                                isHidden, isBuff, isInfinite, 
-                                                isStackable, maxStack, isRemovable,
-                                                effectName, effectVisualType, effectMoveType);
-
-        this.actualElements = newActualEffects;
+		this.fixedElem = fixedElem;
+		this.flexible = new FlexibleElement(fixedElem, caster);
     }
 	
-    public string GetName() {return displayElement.GetName();}
-    public bool GetIsBuff() {return displayElement.GetIsBuff();}
-    public bool GetIsInfinite() {return displayElement.GetIsInfinite();}
-    public bool GetIsStackable() {return displayElement.GetIsStackable();}
-    public bool GetIsRemovable() {return displayElement.GetIsRemovable();}
-    public GameObject GetCaster() {return displayElement.GetCaster();}
-    public int GetRemainPhase() {return displayElement.GetRemainPhase();}
-    public int GetRemainStack() {return displayElement.GetRemainStack();}
-    public bool GetToBeRemoved() {return displayElement.GetToBeRemoved();}
-    public string GetEffectName() {return displayElement.GetEffectName();}
-    public EffectVisualType GetEffectVisualType() {return displayElement.GetEffectVisualType();}
-    public EffectMoveType GetEffectMoveType() {return displayElement.GetEffectMoveType();}
+    public string GetName() {return fixedElem.display.name;}
+    public bool GetIsBuff() {return fixedElem.display.isBuff;}
+    public bool GetIsInfinite() {return fixedElem.display.isInfinite;}
+    public bool GetIsStackable() {return fixedElem.display.isStackable;}
+    public bool GetIsRemovable() {return fixedElem.display.isRemovable;}
+    public string GetEffectName() {return fixedElem.display.effectName;}
+    public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
+    public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
+    public GameObject GetCaster() {return flexible.display.caster;}
+    public int GetRemainPhase() {return flexible.display.remainPhase;}
+    public int GetRemainStack() {return flexible.display.remainStack;}
+    public bool GetToBeRemoved() {return flexible.display.toBeRemoved;}
 
-    public StatusEffectType GetStatusEffectType() {return actualElements[0].GetStatusEffectType();}
-    public Stat GetAmountStat() {return actualElements[0].GetAmountStat();}
-    public float GetAmount() {return actualElements[0].GetAmount();}
-    public int GetRemainAmount() {return actualElements[0].GetRemainAmount();}
-    public bool GetIsRelative() {return actualElements[0].GetIsRelative();}
+    public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
+    public Stat GetAmountStat() {return fixedElem.actuals[0].amountStat;}
+    public bool GetIsRelative() {return  fixedElem.actuals[0].isRelative;}
+    public float GetAmount() {return flexible.actuals[0].amount;}
+    public int GetRemainAmount() {return flexible.actuals[0].remainAmount;}
 
     public void SetRemainAmount(int amount)
     {
-        actualElements[0].SetRemainAmount(amount);
+		flexible.actuals[0].remainAmount = amount;
     }
 
     public void AddRemainPhase(int phase)
 	{
-        displayElement.SetRemainPhase(phase);
+		flexible.display.remainPhase += phase;
 	}
 	
 	public void SubRemainPhase(int phase)
 	{
-        displayElement.SetRemainPhase(phase);
+		flexible.display.remainPhase -= phase;
 	}
 	
 	public void DecreaseRemainPhase()
 	{
-		displayElement.DecreaseRemainPhase();
+		flexible.display.remainPhase -= 1;
 	}
     
     public void SetRemainPhase(int phase)
     {
-        displayElement.SetRemainPhase(phase);
+		flexible.display.remainPhase = phase;
     }
     
     public void AddRemainStack(int stack)
     {
-        displayElement.AddRemainStack(stack);
+		flexible.display.remainStack += stack;
     }
     
     public void SubRemainStack(int stack)
     {
-        displayElement.SubRemainStack(stack);
+		flexible.display.remainStack -= stack;
     }
     
     public void DecreaseRemainStack()
     {
-        displayElement.DecreaseRemainStack(); 
+		flexible.display.remainStack -= 1;
     }
     
     public void SetRemainStack(int stack)
     {
-        displayElement.SetRemainStack(stack); 
+		flexible.display.remainStack = stack;
     }
 
     public void SetToBeRemoved(bool toEnd)
     {
-        displayElement.SetToBeRemoved(toEnd);
+		flexible.display.toBeRemoved = toEnd;
     }
 
     public bool IsOfType(StatusEffectType statusEffectType)

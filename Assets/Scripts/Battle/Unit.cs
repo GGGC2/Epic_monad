@@ -309,6 +309,9 @@ public class Unit : MonoBehaviour
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
+			Debug.LogError("Status effect " + statusEffect.GetName());
+			Debug.LogError("isinfinite " + statusEffect.GetIsInfinite());
+			Debug.LogError("remain phase " + statusEffect.GetRemainPhase());
 			if (statusEffect.GetRemainPhase() > 0 && !statusEffect.GetIsInfinite())
 			{
 				statusEffect.DecreaseRemainPhase();

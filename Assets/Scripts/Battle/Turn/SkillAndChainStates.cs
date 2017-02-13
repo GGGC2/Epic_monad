@@ -518,7 +518,7 @@ namespace Battle.Turn
 				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 				if(appliedSkill.GetStatusEffectList().Count > 0)
 				{
-					StatusEffector.AttachStatusEffect(appliedSkill, target);
+					StatusEffector.AttachStatusEffect(unitInChain, appliedSkill, target);
 				}
 
 				unitInChain.ActiveFalseAllBounsText();
@@ -724,7 +724,7 @@ namespace Battle.Turn
 				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 				if(appliedSkill.GetStatusEffectList().Count > 0)
 				{
-					StatusEffector.AttachStatusEffect(appliedSkill, target);
+					StatusEffector.AttachStatusEffect(selectedUnit, appliedSkill, target);
 				}
 				
 				selectedUnit.ActiveFalseAllBounsText();

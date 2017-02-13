@@ -40,7 +40,7 @@ public class Skill {
 	EffectMoveType effectMoveType;
     
     // 상태이상 관련 정보
-    List<StatusEffect> statusEffectList = new List<StatusEffect>();
+    List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
     
 	public Skill(string owner, int column, string name, int[] requireAPArray, int[] cooldownArray, 
                  Dictionary<string, float[]> powerFactor,
@@ -76,7 +76,7 @@ public class Skill {
     {
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
-            StatusEffect statusEffect = statusEffectInfo.GetStatusEffect();
+            StatusEffect.FixedElement statusEffect = statusEffectInfo.GetStatusEffect();
             if(statusEffectInfo.GetSkillName().Equals(this.name))
             {
                 statusEffectList.Add(statusEffectInfo.GetStatusEffect());
@@ -105,5 +105,5 @@ public class Skill {
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
-    public List<StatusEffect> GetStatusEffectList() {return statusEffectList;}
+    public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
 }

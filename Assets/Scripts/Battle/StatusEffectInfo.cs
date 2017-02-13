@@ -8,7 +8,7 @@ public class StatusEffectInfo {
 
 	public string owner;
 	public string skillName;
-	public StatusEffect statusEffect;
+	public StatusEffect.FixedElement statusEffect;
 	
 	public string GetOwner()
 	{
@@ -20,7 +20,7 @@ public class StatusEffectInfo {
 		return skillName;
 	}
 	
-	public StatusEffect GetStatusEffect()
+	public StatusEffect.FixedElement GetStatusEffect()
 	{
 		return statusEffect;
 	}
@@ -37,6 +37,7 @@ public class StatusEffectInfo {
 		bool isBuff = commaParser.ConsumeBool();
         bool isInfinite = commaParser.ConsumeBool();
         bool isStackable = commaParser.ConsumeBool();
+		int maxPhase = commaParser.ConsumeInt();
 		int maxStack = commaParser.ConsumeInt();
         bool isRemovable = commaParser.ConsumeBool();
 
@@ -44,7 +45,7 @@ public class StatusEffectInfo {
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 		
-		List<StatusEffect.ActualElement> actualElements = new List<StatusEffect.ActualElement>();
+		List<StatusEffect.FixedElement.ActualElement> actualElements = new List<StatusEffect.FixedElement.ActualElement>();
 
 		int num = commaParser.ConsumeInt();
 
@@ -54,13 +55,13 @@ public class StatusEffectInfo {
 			Stat applyStat = applyStat = commaParser.ConsumeEnum<Stat>();;
 			bool isRelative = isRelative = commaParser.ConsumeBool();
 			
-			StatusEffect.ActualElement actualElement = new StatusEffect.ActualElement(statusEffectType, applyStat, isRelative);
+			StatusEffect.FixedElement.ActualElement actualElement = new StatusEffect.FixedElement.ActualElement(statusEffectType, applyStat, isRelative);
 			actualElements.Add(actualElement);
 		}
 	
-		this.statusEffect = new StatusEffect(skillName, 
+		this.statusEffect = new StatusEffect.FixedElement(skillName, 
                                              isHidden, isBuff, isInfinite, 
-											 isStackable, maxStack, isRemovable, 
+											 isStackable, maxPhase, maxStack, isRemovable, 
 											 effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}
