@@ -52,5 +52,13 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 
 		return additionalPowerBouns;
 	}
+
+	public override void triggerActiveSkillDamageApplied(Unit yeong)
+	{
+		foreach (var skillLogic in passiveSkills)
+		{
+			skillLogic.triggerActiveSkillDamageApplied(yeong);
+		}
+	}
 }
 }

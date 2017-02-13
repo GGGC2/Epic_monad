@@ -44,33 +44,51 @@ public static class SkillLogicFactory
 
 	private static BasePassiveSkillLogic Get(PassiveSkill passiveSkill)
 	{
+		BasePassiveSkillLogic passiveSkillLogic = null;
 		switch (passiveSkill.GetName())
 		{
 			// 레이나
 			case "핀토스의 긍지":
-			return new Reina_0_1_SkillLogic();
+			passiveSkillLogic = new Reina_0_1_SkillLogic();
+			break;
 			case "불의 파동":
-			return new Reina_2_m_SkillLogic();
+			passiveSkillLogic = new Reina_2_m_SkillLogic();
+			break;
 			case "뭉치면 죽는다":
-			return new Reina_5_l_SkillLogic();
+			passiveSkillLogic = new Reina_5_l_SkillLogic();
+			break;
 			case "흩어져도 죽는다":
-			return new Reina_5_m_SkillLogic();
+			passiveSkillLogic = new Reina_5_m_SkillLogic();
+			break;
 			// 리니안
 			case "연쇄 방전":
-			return new Lenian_5_m_SkillLogic();
+			passiveSkillLogic = new Lenian_5_m_SkillLogic();
+			break;
 			case "입자 가속":
-			return new Lenian_7_r_SkillLogic();
+			passiveSkillLogic = new Lenian_7_r_SkillLogic();
+			break;
 			// 영
 			case "영회피":
-			return new Yeong_0_1_SkillLogic();
+			passiveSkillLogic = new Yeong_0_1_SkillLogic();
+			break;
 			case "유법":
-			return new Yeong_1_2_SkillLogic();
+			passiveSkillLogic = new Yeong_1_2_SkillLogic();
+			break;
+			case "동체 시력":
+			passiveSkillLogic = new Yeong_1_r_SkillLogic();
+			break;
 			// 카샤스티
 			case "장미 속의 가시":
-			return new Kashyasty_1_r_SkillLogic();
+			passiveSkillLogic = new Kashyasty_1_r_SkillLogic();
+			break;
 			default:
-			return new BasePassiveSkillLogic();
+			passiveSkillLogic = new BasePassiveSkillLogic();
+			break;
 		}
+
+		passiveSkillLogic.passiveSkill = passiveSkill;
+
+		return passiveSkillLogic;
 	}
 }
 }

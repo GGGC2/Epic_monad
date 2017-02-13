@@ -543,6 +543,11 @@ namespace Battle.Turn
 
 		private static IEnumerator ApplyDamage(BattleData battleData, Unit unitInChain, Unit target, Skill appliedSkill, int chainCombo, int targetCount, bool isLastTarget)
 		{
+			var passiveSkillsOfAttacker = unitInChain.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkillsOfAttacker).triggerActiveSkillDamageApplied(
+				unitInChain
+			);
+
 			var attackDamage = DamageCalculator.CalculateAttackDamage(battleData, target.gameObject, unitInChain.gameObject, appliedSkill, chainCombo, targetCount);
 			if (attackDamage.directionBonus > 1f) unitInChain.PrintDirectionBonus(attackDamage.directionBonus);
 			if (attackDamage.celestialBonus > 1f) unitInChain.PrintCelestialBonus();

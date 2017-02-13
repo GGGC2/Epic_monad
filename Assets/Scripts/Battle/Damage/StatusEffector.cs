@@ -10,9 +10,18 @@ public static class StatusEffector
 {
 	public static void AttachStatusEffect(Skill appliedSkill, Unit target)
 	{
-		foreach (var statusEffect in appliedSkill.GetStatusEffectList())
-		{
+		AttachStatusEffect(appliedSkill.GetStatusEffectList(), target);
+	}
 
+	public static void AttachStatusEffect(PassiveSkill appliedSkill, Unit target)
+	{
+		AttachStatusEffect(appliedSkill.GetStatusEffectList(), target);
+	}
+
+	private static void AttachStatusEffect(List<StatusEffect> statusEffects, Unit target)
+	{
+		foreach (var statusEffect in statusEffects)
+		{
 			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);

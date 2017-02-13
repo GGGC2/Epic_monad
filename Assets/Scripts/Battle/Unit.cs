@@ -651,6 +651,7 @@ public class Unit : MonoBehaviour
 				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
 			{
 				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
+				passiveSkill.ApplyStatusEffectList(statusEffectInfoList);
 				passiveSkillList.Add(passiveSkill);
 			}
 		}

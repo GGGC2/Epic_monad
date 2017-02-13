@@ -118,6 +118,7 @@ namespace Enums {
         DexturityChange,
 		UsedAPChange,
 		CurrentAPChange,
+		EvasionChange,
 		NoneChange,
         Smite, // 강타: 공격 시 추가 피해
         Silence, // 침묵: 기술 사용 불가

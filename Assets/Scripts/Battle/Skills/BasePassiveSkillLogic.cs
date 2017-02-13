@@ -7,6 +7,8 @@ namespace Battle.Skills
 {
 public class BasePassiveSkillLogic
 {
+	public PassiveSkill passiveSkill = null;
+
 	public virtual float GetAdditionalPowerBouns(Unit caster)
 	{
 		return 0;
@@ -28,6 +30,10 @@ public class BasePassiveSkillLogic
 	}
 
 	public virtual void triggerEvasionEvent(BattleData battleData, Unit unit)
+	{
+	}
+
+	public virtual void triggerActiveSkillDamageApplied(Unit yeong)
 	{
 	}
 }
