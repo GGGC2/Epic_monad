@@ -9,7 +9,7 @@ namespace Battle
 {
 public class DamageCalculator
 {
-	public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	public static Dictionary<GameObject, float> CalculateTotalAttackDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 	{
 		// List<ChainInfo> tempChainList = new List<ChainInfo>();
 		Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
@@ -21,7 +21,7 @@ public class DamageCalculator
 
 		foreach (var chainInfo in allVaildChainInfo)
 		{
-			var damageListOfEachSkill = CalculateDamageOfEachSkill(battleData, chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculateAttackDamageOfEachSkill(battleData, chainInfo, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
@@ -51,7 +51,7 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<GameObject, float> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, float> CalculateAttackDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<GameObject, float>();
 		Skill appliedSkill = chainInfo.GetSkill();
