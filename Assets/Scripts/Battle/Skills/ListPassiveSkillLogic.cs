@@ -31,5 +31,26 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 			skill.triggerEvasionEvent(battleData, unit);
 		}
 	}
+
+	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, Unit target, int targetCount)
+	{;
+		foreach (var skill in passiveSkills)
+		{
+			attackDamage = skill.ApplyBonusDamageFromEachPassive(attackDamage, appliedSkill, target, targetCount);
+		}
+
+		return attackDamage;
+	}
+
+	public override float GetAdditionalPowerBouns(Unit caster)
+	{
+		float additionalPowerBouns = 1.0f;
+		foreach (var skill in passiveSkills)
+		{
+			additionalPowerBouns *= skill.GetAdditionalPowerBouns(caster);
+		}
+
+		return additionalPowerBouns;
+	}
 }
 }

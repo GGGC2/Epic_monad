@@ -375,8 +375,7 @@ public class Unit : MonoBehaviour
 					if (statusEffectType == StatusEffectType.PowerChange)
 					{
 						List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-						foreach (var passiveSkill in passiveSkills)
-							additionalPowerBouns *= SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
+						additionalPowerBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
 					}
 					
 					totalratio *= statusEffect.GetAmount() * additionalPowerBouns;
