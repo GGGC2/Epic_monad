@@ -23,7 +23,10 @@ public static class SkillLogicFactory
 			// 영
 			case "은빛 베기":
 			return new Yeong_1_l_SkillLogic();
-			
+			// 카샤스티
+			case "더블 샷":
+			return new Kashyasty_1_l_SkillLogic();
+
 			case "조화진동":
 			return new HarmonySkillLogic();
 			case "생명력 흡수":
@@ -80,6 +83,9 @@ public static class SkillLogicFactory
 			// 카샤스티
 			case "장미 속의 가시":
 			passiveSkillLogic = new Kashyasty_1_r_SkillLogic();
+			break;
+			case "장미의 사수":
+			passiveSkillLogic = new Kashyasty_2_r_SkillLogic();
 			break;
 			default:
 			passiveSkillLogic = new BasePassiveSkillLogic();
