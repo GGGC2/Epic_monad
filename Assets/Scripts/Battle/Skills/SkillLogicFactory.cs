@@ -80,6 +80,13 @@ public static class SkillLogicFactory
 			case "동체 시력":
 			passiveSkillLogic = new Yeong_1_r_SkillLogic();
 			break;
+			// 에렌
+			case "초월":
+			passiveSkillLogic = new Eren_3_m_SkillLogic();
+			break;
+			case "진형 붕괴":
+			passiveSkillLogic = new Eren_6_m_SkillLogic();
+			break;
 			// 카샤스티
 			case "장미 속의 가시":
 			passiveSkillLogic = new Kashyasty_1_r_SkillLogic();

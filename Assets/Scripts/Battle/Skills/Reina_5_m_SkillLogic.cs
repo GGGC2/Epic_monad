@@ -5,7 +5,7 @@ namespace Battle.Skills
 {
 public class Reina_5_m_SkillLogic : BasePassiveSkillLogic {
 
-	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, Unit target, int targetCount)
+	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
 	{
 		float damageBonus = 1.25f;
 
