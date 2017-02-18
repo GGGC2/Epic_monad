@@ -374,14 +374,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.GetIsRelative()) // 상대값 합산
 				{
-					float additionalPowerBouns = 0;					
-					if (statusEffectType == StatusEffectType.PowerChange)
-					{
-						List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-						additionalPowerBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
-					}
-					
-					totalratio *= statusEffect.GetAmount() * additionalPowerBouns;
+					totalratio *= statusEffect.GetAmount();
 					if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 					{
 						statusEffect.DecreaseRemainStack();
@@ -405,6 +398,16 @@ public class Unit : MonoBehaviour
 				}
 			}
 		}
+
+		// 상대값 효과 합산
+		float additionalPowerBouns = 0;					
+		if (statusEffectType == StatusEffectType.PowerChange)
+		{
+			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+			additionalPowerBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
+		}
+		totalratio *= additionalPowerBouns;
+					
 		
 		this.UpdateStatusEffect();
 

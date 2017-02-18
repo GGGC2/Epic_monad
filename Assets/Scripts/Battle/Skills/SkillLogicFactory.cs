@@ -84,6 +84,9 @@ public static class SkillLogicFactory
 			case "초월":
 			passiveSkillLogic = new Eren_3_m_SkillLogic();
 			break;
+			case "배척받는 자":
+			passiveSkillLogic = new Eren_5_l_SkillLogic();
+			break;
 			case "진형 붕괴":
 			passiveSkillLogic = new Eren_6_m_SkillLogic();
 			break;
