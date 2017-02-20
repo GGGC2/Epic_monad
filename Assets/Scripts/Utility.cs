@@ -124,4 +124,17 @@ public class Utility : MonoBehaviour {
 		
 		else return 1;
 	}
+
+    public static float GetHeightBonus(GameObject attacker, GameObject defender)
+    {
+		// 상대가 낮으면 20% 추가, 상대가 높으면 20% 감소
+        int attackerHeight = attacker.GetComponent<Unit>().GetHeight();
+		int defenderHeight = defender.GetComponent<Unit>().GetHeight();
+
+		if (attackerHeight > defenderHeight)
+			return 1.2f;
+		else if (attackerHeight < defenderHeight)
+			return 0.8f;
+		else return 1;
+    }
 }

@@ -18,6 +18,7 @@ public class Unit : MonoBehaviour
 	GameObject activeArrowIcon;
 	public GameObject celestialBonusTextObject;
 	public GameObject directionBonusTextObject;
+	public GameObject heightBonusTextObject;
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
@@ -209,6 +210,15 @@ public class Unit : MonoBehaviour
 		return celestial;
 	}
 
+	public int GetHeight()
+	{
+		int height = 0;
+		GameObject tile = FindObjectOfType<TileManager>().GetTile(this.GetPosition());
+		height = tile.GetComponent<Tile>().GetTileHeight();
+
+		return height;
+	}
+
 	public string GetNameInCode()
 	{
 		return nameInCode;
@@ -397,13 +407,13 @@ public class Unit : MonoBehaviour
 		}
 
 		// 상대값 효과 합산
-		float additionalPowerBouns = 0;					
+		float additionalPowerBonus = 1.0f;					
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
 			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-			additionalPowerBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBouns(this);
+			additionalPowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBonus(this);
 		}
-		totalratio *= additionalPowerBouns;
+		totalratio *= additionalPowerBonus;
 					
 		
 		this.UpdateStatusEffect();
@@ -680,11 +690,18 @@ public class Unit : MonoBehaviour
 		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 
-	public void ActiveFalseAllBounsText()
+	public void PrintHeightBonus()
+	{
+		heightBonusTextObject.SetActive(true);
+		heightBonusTextObject.GetComponentInChildren<Text>().text = "고저차 보너스 (x1.2)";
+	}
+
+	public void ActiveFalseAllBonusText()
 	{
 		celestialBonusTextObject.SetActive(false);
 		chainBonusTextObject.SetActive(false);
 		directionBonusTextObject.SetActive(false);
+		heightBonusTextObject.SetActive(false);
 	}
 
 	public void PrintChainBonus(int chainCount)
@@ -804,24 +821,22 @@ public class Unit : MonoBehaviour
 		chainBonusTextObject.SetActive(false);
 		celestialBonusTextObject.SetActive(false);
 		directionBonusTextObject.SetActive(false);
+		heightBonusTextObject.SetActive(false);
 	}
 
 	void Awake()
 	{
-		// chainBonusTextObject = transform.Find("ChainText").gameObject;
-		chainBonusTextObject = GameObject.Find("ChainBounsPanel");
+		chainBonusTextObject = GameObject.Find("ChainBonusPanel");
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
-		// celestialBonusTextObject = transform.Find("BonusText").gameObject;
-		celestialBonusTextObject = GameObject.Find("CelestialBounsPanel");
+		celestialBonusTextObject = GameObject.Find("CelestialBonusPanel");
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
-		directionBonusTextObject = GameObject.Find("DirectionBounsPanel");
-		// chainBonusTextObject.SetActive(false);
+		directionBonusTextObject = GameObject.Find("DirectionBonusPanel");
+		heightBonusTextObject = GameObject.Find("HeightBonusPanel");
 		damageTextObject.SetActive(false);
 		recoverTextObject.SetActive(false);
 		activeArrowIcon.SetActive(false);
-		// celestialBonusTextObject.SetActive(false);
 		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();

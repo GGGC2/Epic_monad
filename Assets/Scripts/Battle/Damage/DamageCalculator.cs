@@ -107,6 +107,7 @@ public class DamageCalculator
 		public float valueDamageBonus = 0;
 		public float directionBonus = 1.0f;
 		public float celestialBonus = 1.0f;
+		public float heightBonus = 1.0f;
 		public float chainBonus = 1.0f;
 		public float smiteAmount = 0;
 		public float resultDamage = 0;
@@ -124,6 +125,7 @@ public class DamageCalculator
 		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, casterUnit);
 		attackDamage.directionBonus = DirectionBonus(casterUnitObject, target);
 		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
+		attackDamage.heightBonus = HeightBonus(casterUnitObject, target);
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(casterUnit);
 
@@ -139,6 +141,7 @@ public class DamageCalculator
 									+ attackDamage.smiteAmount) 
 									* attackDamage.directionBonus
 									* attackDamage.celestialBonus
+									* attackDamage.heightBonus
 									* attackDamage.chainBonus;
 
 		return attackDamage;
@@ -179,6 +182,12 @@ public class DamageCalculator
 		float celestialBonus = Utility.GetCelestialBonus(casterUnitObject, target);
 		Debug.Log("celestialBonus : " + celestialBonus);
 		return celestialBonus;
+	}
+
+	private static float HeightBonus(GameObject casterUnitObject, GameObject target) {
+		float heightBonus = Utility.GetHeightBonus(casterUnitObject, target);
+		Debug.Log("heightBonus : " + heightBonus);
+		return heightBonus;
 	}
 
 	private static float ChainComboBonus(BattleData battleData, int chainCombo) {

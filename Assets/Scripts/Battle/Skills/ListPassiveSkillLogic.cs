@@ -42,15 +42,15 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return attackDamage;
 	}
 
-	public override float GetAdditionalPowerBouns(Unit caster)
+	public override float GetAdditionalPowerBonus(Unit caster)
 	{
-		float additionalPowerBouns = 1.0f;
+		float additionalPowerBonus = 1.0f;
 		foreach (var skill in passiveSkills)
 		{
-			additionalPowerBouns *= skill.GetAdditionalPowerBouns(caster);
+			additionalPowerBonus *= skill.GetAdditionalPowerBonus(caster);
 		}
 
-		return additionalPowerBouns;
+		return additionalPowerBonus;
 	}
 
 	public override void triggerActiveSkillDamageApplied(Unit yeong)

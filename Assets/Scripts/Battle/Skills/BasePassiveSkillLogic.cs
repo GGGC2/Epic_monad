@@ -9,7 +9,7 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill = null;
 
-	public virtual float GetAdditionalPowerBouns(Unit caster)
+	public virtual float GetAdditionalPowerBonus(Unit caster)
 	{
 		return 1.0f;
 	}

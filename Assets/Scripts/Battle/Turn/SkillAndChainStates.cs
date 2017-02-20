@@ -521,7 +521,7 @@ namespace Battle.Turn
 					StatusEffector.AttachStatusEffect(unitInChain, appliedSkill, target);
 				}
 
-				unitInChain.ActiveFalseAllBounsText();
+				unitInChain.ActiveFalseAllBonusText();
 			}
 
 			int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(appliedSkill);
@@ -554,6 +554,8 @@ namespace Battle.Turn
 			// '보너스'만 표시하려고 임시로 주석처리.
 			// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
 			if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
+			// 지금은 1.2일때만 표시함.
+			if (attackDamage.heightBonus > 1f) unitInChain.PrintHeightBonus();
 
 			BattleManager battleManager = battleData.battleManager;
 			// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
@@ -727,7 +729,7 @@ namespace Battle.Turn
 					StatusEffector.AttachStatusEffect(selectedUnit, appliedSkill, target);
 				}
 				
-				selectedUnit.ActiveFalseAllBounsText();
+				selectedUnit.ActiveFalseAllBonusText();
 
 				// 상태이상
 				/*

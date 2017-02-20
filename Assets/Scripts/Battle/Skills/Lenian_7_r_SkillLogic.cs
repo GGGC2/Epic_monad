@@ -6,17 +6,17 @@ namespace Battle.Skills
 {
 public class Lenian_7_r_SkillLogic : BasePassiveSkillLogic {
 
-	public override float GetAdditionalPowerBouns(Unit caster)
+	public override float GetAdditionalPowerBonus(Unit caster)
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		List<GameObject> nearbyTilesFromLenian = new List<GameObject>();
 		nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
 
-		float damageBounsPerTile = 0.1f;
+		float damageBonusPerTile = 0.1f;
 		int numberOfMetalTiles = nearbyTilesFromLenian.Count(x => x.GetComponent<Tile>().GetTileElement() == Enums.Element.Metal);
-		float totalPowerBouns = 1.0f + numberOfMetalTiles * damageBounsPerTile;
+		float totalPowerBonus = 1.0f + numberOfMetalTiles * damageBonusPerTile;
 
-		return totalPowerBouns;
+		return totalPowerBonus;
 	}
 }
 }
