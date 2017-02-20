@@ -559,14 +559,15 @@ namespace Battle.Turn
 
 			BattleManager battleManager = battleData.battleManager;
 			// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
+			// fixme : 반사데미지는 다른 데미지 함수로 뺄 것! Damaged 함수 쓰면 원 공격자 스킬의 부가효과도 적용됨.
 			if (target.HasStatusEffect(StatusEffectType.Reflect))
 			{
 				float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target);
-				var reflectCoroutine = unitInChain.Damaged(target.GetUnitClass(), reflectAmount, appliedSkill.GetPenetration(), false, true);
+				var reflectCoroutine = unitInChain.Damaged(appliedSkill, target, reflectAmount, appliedSkill.GetPenetration(), false, true);
 				battleManager.StartCoroutine(reflectCoroutine);
 			}
 
-			var damageCoroutine = target.Damaged(unitInChain.GetUnitClass(), attackDamage.resultDamage, appliedSkill.GetPenetration(), false, true);
+			var damageCoroutine = target.Damaged(appliedSkill, unitInChain, attackDamage.resultDamage, appliedSkill.GetPenetration(), false, true);
 			if (isLastTarget)
 			{
 				yield return battleManager.StartCoroutine(damageCoroutine);

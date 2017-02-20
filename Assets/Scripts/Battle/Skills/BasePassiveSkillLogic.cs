@@ -14,6 +14,11 @@ public class BasePassiveSkillLogic
 		return 1.0f;
 	}
 
+	public virtual float ApplyIgnoreDefenceByEachPassive(float defense, Unit caster, Unit target)
+	{
+		return defense;
+	}
+
 	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
 	{
 		return attackDamage;

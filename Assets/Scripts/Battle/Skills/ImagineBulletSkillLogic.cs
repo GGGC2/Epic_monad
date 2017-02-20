@@ -12,7 +12,7 @@ public class ImagineBulletSkillLogic : BaseSkillLogic {
 		Debug.Log("Casting Imagine bullet");
 		float apDamage = 32.0f;
 		Dictionary<GameObject, float> finalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData));
-		IEnumerator damageAPCoroutine = targetTile.GetUnitOnTile().GetComponent<Unit>().Damaged(UnitClass.None, apDamage, appliedSkill.GetPenetration(), isDot: false, isHealth: false);
+		IEnumerator damageAPCoroutine = targetTile.GetUnitOnTile().GetComponent<Unit>().Damaged(appliedSkill, unitInChain, apDamage, appliedSkill.GetPenetration(), isDot: false, isHealth: false);
 		battleData.battleManager.StartCoroutine(damageAPCoroutine);
 	}
 }

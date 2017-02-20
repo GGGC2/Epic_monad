@@ -53,6 +53,15 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return additionalPowerBonus;
 	}
 
+	public override float ApplyIgnoreDefenceByEachPassive(float defense, Unit caster, Unit target)
+	{
+		foreach (var skill in passiveSkills)
+		{
+			defense = skill.ApplyIgnoreDefenceByEachPassive(defense, caster, target);
+		}
+		return defense;
+	}
+
 	public override void triggerActiveSkillDamageApplied(Unit yeong)
 	{
 		foreach (var skillLogic in passiveSkills)

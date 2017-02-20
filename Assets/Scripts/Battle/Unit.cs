@@ -335,14 +335,6 @@ public class Unit : MonoBehaviour
 
 		for(int i = 0; i < count; i++)
 		{
-			if(statusEffectList[i].GetName().Equals("상자에 든 고양이") && statusEffectList[i].GetToBeRemoved())
-			{
-				float catIsDead = UnityEngine.Random.Range(0.0f, 1.0f);
-				if (catIsDead > 0.2f)
-				{
-					StartCoroutine(Damaged(UnitClass.Magic,statusEffectList[i].GetRemainAmount(), 0.0f, false, true));
-				}
-			}
 			if(!statusEffectList[i].GetToBeRemoved())
 			{
 				newStatusEffectList.Add(statusEffectList[i]);
@@ -421,7 +413,7 @@ public class Unit : MonoBehaviour
 		return data * totalratio + totalvalue;
 	}
 
-	public IEnumerator Damaged(UnitClass unitClass, float amount, float penetration, bool isDot, bool isHealth)
+	public IEnumerator Damaged(Skill appliedSkill, Unit caster, float amount, float penetration, bool isDot, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
 
@@ -433,7 +425,7 @@ public class Unit : MonoBehaviour
 		// 체인 해제
 		if (isHealth == true)
 		{
-			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(this, unitClass, amount, penetration, isDot, isHealth);
+			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(appliedSkill, this, caster, amount, penetration, isDot, isHealth);
 
 			if (finalDamage > -1)
 				currentHealth -= finalDamage;
@@ -481,8 +473,8 @@ public class Unit : MonoBehaviour
 				}
 			}
 
-			// FIXME : 도트데미지는 물뎀인가 마뎀인가? 기획서대로 적용할 것. 언제? 일단 보류중.
-			Damaged(UnitClass.None, totalAmount, 0f, true, false);
+			// FIXME : 도트데미지 처리 메소드 이거 말고 따로 만들 것.
+			// Damaged(UnitClass.None, totalAmount, 0f, true, false);
 		}
 	}
 

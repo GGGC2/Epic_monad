@@ -75,7 +75,7 @@ public class DamageCalculator
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
 			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
-			float actualDamage = GetActualDamage(targetUnit, casterUnitObject.GetComponent<Unit>().GetUnitClass(), attackDamage,
+			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage,
 				appliedSkill.GetPenetration(), false, true);
 			damageList.Add(targetUnit.gameObject, actualDamage);
 
@@ -228,46 +228,53 @@ public class DamageCalculator
 		return reflectAmount;
 	}
 
-	public static float GetActualDamage(Unit target, UnitClass casterUnitClass, float amount, float penetration, bool isDot, bool isHealth)
+	public static float GetActualDamage(Skill appliedSkill, Unit target, Unit caster, float damageAmount, float penetration, bool isDot, bool isHealth)
 	{
-		float actualDamage = 0.0f;
+		float actualDamage = damageAmount;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
 
-		// 공격이 물리인지 마법인지 체크
-		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
 		// 대미지 증가/감소 효과 적용
+		// 공격이 물리인지 마법인지 체크
+		// 기술 / 특성의 추가피해 / 감소 효과
+		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
 		// 보호막 있을 경우 대미지 삭감
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true)
 		{
-			if (casterUnitClass == UnitClass.Melee)
-			{
-				// 실제 피해 = 원래 피해 x 200/(200+방어력)
-				actualDamage = amount * 200.0f / (200.0f + target.GetActualStat(Stat.Defense) * (1.0f - penetration));
-				Debug.Log("Actual melee damage without status effect : " + actualDamage);
-			}
-			else if (casterUnitClass == UnitClass.Magic)
-			{
-				actualDamage = amount * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance) * (1.0f - penetration));
-				Debug.Log("Actual magic damage without status effect: " + actualDamage);
-			}
-			else if (casterUnitClass == UnitClass.None)
-			{
-				actualDamage = amount;
-			}
-
-			// sisterna_l_1의 저항력 계산
-			if (penetration == -1.0f)
-			{
-				actualDamage = amount - target.GetActualStat(Stat.Resistance);
-			}
-
-			// 대미지 증감 효과 적용
+			// 효과로 인한 대미지 증감 효과 적용 - 이거 다시 짤 것
 			if (target.HasStatusEffect(StatusEffectType.DamageChange))
 			{
 				actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.DamageChange);
 			}
+
+			float targetDefense = target.GetActualStat(Stat.Defense);
+			float targetResistance = target.GetActualStat(Stat.Resistance);
+
+			// 기술에 의한 방어/저항 무시
+			// targetDefence = ApplyIgnoreDefenceBySkill(appliedSkill, );
+
+			// 특성에 의한 방어/저항 무시
+			List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
+			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceByEachPassive(targetDefense, caster, target);
+
+			if (caster.GetUnitClass() == UnitClass.Melee)
+			{
+				// 실제 피해 = 원래 피해 x 200/(200+방어력)
+				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Defense) * (1.0f - penetration));
+				Debug.Log("Actual melee damage without status effect : " + actualDamage);
+			}
+			else if (caster.GetUnitClass() == UnitClass.Magic)
+			{
+				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				Debug.Log("Actual magic damage without status effect: " + actualDamage);
+			}
+			else if (caster.GetUnitClass() == UnitClass.None)
+			{
+				// actualDamage = actualDamage;
+			}
+
+			// 기술 특성으로 인한 데미지 증감 효과 - 아직 미구현
 
 			finalDamage = (int) actualDamage;
 
