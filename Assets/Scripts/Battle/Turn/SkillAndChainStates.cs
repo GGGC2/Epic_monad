@@ -337,7 +337,7 @@ namespace Battle.Turn
 					else
 					{
 						battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(ApplySkill(battleData, tilesInSkillRange));
+						yield return battleManager.StartCoroutine(ApplyNonchainSkill(battleData, tilesInSkillRange));
 						// 연계 정보 업데이트
 						battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
 					}
@@ -601,7 +601,7 @@ namespace Battle.Turn
 		}
 
 		// 체인 불가능 스킬일 경우의 스킬 시전 코루틴. 스킬 적용 범위만 받는다.
-		private static IEnumerator ApplySkill(BattleData battleData, List<GameObject> selectedTiles)
+		private static IEnumerator ApplyNonchainSkill(BattleData battleData, List<GameObject> selectedTiles)
 		{
 			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
 			Skill appliedSkill = battleData.SelectedSkill;
