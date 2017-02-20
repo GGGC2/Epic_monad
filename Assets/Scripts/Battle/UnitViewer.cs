@@ -85,17 +85,41 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdatePower(Unit unit)
 	{
-		powerText.text = unit.GetActualStat(Stat.Power).ToString();
+		int actualPower = unit.GetActualStat(Stat.Power);
+		int originPower = unit.GetStat(Stat.Power);
+
+		powerText.color = Color.white;
+		powerText.text = actualPower.ToString();
+		if (actualPower > originPower)
+			powerText.color = Color.green;
+		else if (actualPower < originPower)
+			powerText.color = Color.red;
 	}
 
 	void UpdateDefense(Unit unit)
 	{
-		defenseText.text = unit.GetActualStat(Stat.Defense).ToString();
+		int actualDefense = unit.GetActualStat(Stat.Defense);
+		int originDefense = unit.GetStat(Stat.Defense);
+
+		defenseText.color = Color.white;
+		defenseText.text = actualDefense.ToString();
+		if (actualDefense > originDefense)
+			defenseText.color = Color.green;
+		else if (actualDefense < originDefense)
+			defenseText.color = Color.red;
 	}
 
 	void UpdateResistance(Unit unit)
 	{
-		resistanceText.text = unit.GetActualStat(Stat.Resistance).ToString();
+		int actualResistance = unit.GetActualStat(Stat.Resistance);
+		int originResistance = unit.GetStat(Stat.Resistance);
+
+		resistanceText.color = Color.white;
+		resistanceText.text = actualResistance.ToString();
+		if (actualResistance > originResistance)
+			resistanceText.color = Color.green;
+		else if (actualResistance < originResistance)
+			resistanceText.color = Color.red;
 	}
 
 	void SetClassImage(UnitClass unitClass)

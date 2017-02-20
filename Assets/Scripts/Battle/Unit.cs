@@ -117,11 +117,8 @@ public class Unit : MonoBehaviour
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
 
 		// 능력치 증감 효과 적용
-		if (this.HasStatusEffect(statusChange))
-		{
-			actualStat = (int) GetActualEffect(actualStat, statusChange);
-        }
-
+		actualStat = (int) GetActualEffect(actualStat, statusChange);
+        
         return actualStat;
     }
 
@@ -149,7 +146,7 @@ public class Unit : MonoBehaviour
 	{
 		var learnedSkills =
 			 from skill in skillList
-			 where SkillDB.IsLearned(nameInCode, skill.GetName())
+			// where SkillDB.IsLearned(nameInCode, skill.GetName())
 			 select skill;
 
 		Debug.LogWarning(GetNameInCode() +  " Learnedskils" + learnedSkills.Count());
@@ -375,26 +372,26 @@ public class Unit : MonoBehaviour
 				if (statusEffect.GetIsRelative()) // 상대값 합산
 				{
 					totalratio *= statusEffect.GetAmount();
-					if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-					{
-						statusEffect.DecreaseRemainStack();
-						if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-						{
-							statusEffect.SetToBeRemoved(true);
-						}
-					}	
+					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+					// {
+					// 	statusEffect.DecreaseRemainStack();
+					// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					// 	{
+					// 		statusEffect.SetToBeRemoved(true);
+					// 	}
+					// }	
 				}
 				else // 절대값 합산
 				{
 					totalvalue += statusEffect.GetAmount();
-					if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-					{
-						statusEffect.DecreaseRemainStack();
-						if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-						{
-							statusEffect.SetToBeRemoved(true);
-						}
-					}
+					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+					// {
+					// 	statusEffect.DecreaseRemainStack();
+					// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+					// 	{
+					// 		statusEffect.SetToBeRemoved(true);
+					// 	}
+					// }
 				}
 			}
 		}
@@ -628,11 +625,11 @@ public class Unit : MonoBehaviour
 
 		foreach (var skillInfo in skillInfoList)
 		{
-			if ((skillInfo.GetOwner() == this.nameInCode) &&
-				(skillInfo.GetRequireLevel() <= partyLevel))
+			if ((skillInfo.GetOwner() == this.nameInCode)) //&&
+			//	(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
-					if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
+					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
 					{
 						skill.ApplyStatusEffectList(statusEffectInfoList);
                     	skillList.Add(skill);
@@ -653,6 +650,7 @@ public class Unit : MonoBehaviour
 
 		foreach (var passiveSkillInfo in passiveSkillInfoList)
 		{
+			//Debug.LogError("Passive skill name " + passiveSkillInfo.name);
 			if ((passiveSkillInfo.GetOwner() == this.nameInCode) &&
 				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
 			{
@@ -835,6 +833,22 @@ public class Unit : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.R))
 		{
 			RegenerateActivityPoint();
+		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			String log = name + "\n";
+			foreach (var skill in skillList)
+			{
+				log += skill.GetName() + "\n";
+			}
+			Debug.LogError(log);
+
+			string passiveLog = name + "\n";
+			foreach (var passiveSkill in passiveSkillList)
+			{
+				passiveLog += passiveSkill.GetName() + "\n";
+			}
+			Debug.LogError(passiveLog);
 		}
 	}
 }
