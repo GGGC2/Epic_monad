@@ -19,7 +19,7 @@ public static class SkillLogicFactory
 			return new Reina_4_m_SkillLogic();
 			// 리니안
 			case "전자기 충격":
-			return new Lenian_1_m_SkillLogic();
+			return new Lenien_1_m_SkillLogic();
 			// 영
 			case "은빛 베기":
 			return new Yeong_1_l_SkillLogic();
@@ -65,10 +65,10 @@ public static class SkillLogicFactory
 			break;
 			// 리니안
 			case "연쇄 방전":
-			passiveSkillLogic = new Lenian_5_m_SkillLogic();
+			passiveSkillLogic = new Lenien_5_m_SkillLogic();
 			break;
 			case "입자 가속":
-			passiveSkillLogic = new Lenian_7_r_SkillLogic();
+			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
 			// 영
 			case "영회피":

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Battle.Skills
 {
-public class Lenian_7_r_SkillLogic : BasePassiveSkillLogic {
+public class Lenien_7_r_SkillLogic : BasePassiveSkillLogic {
 
 	public override float GetAdditionalPowerBonus(Unit caster)
 	{

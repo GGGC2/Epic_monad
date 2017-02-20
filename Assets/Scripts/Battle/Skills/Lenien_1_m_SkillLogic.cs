@@ -5,7 +5,7 @@ using Enums;
 
 namespace Battle.Skills
 {
-public class Lenian_1_m_SkillLogic : BaseSkillLogic {
+public class Lenien_1_m_SkillLogic : BaseSkillLogic {
 
 
 }
