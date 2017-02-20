@@ -55,6 +55,8 @@ public class UnitViewer : MonoBehaviour {
 		string concattedText = "";
 		for (int i = 0; i < numberOfEffects; i++)
 		{
+			if (!effectList[i].GetIsBuff())
+				concattedText += "*";
 			concattedText += effectList[i].GetName() + "(" + effectList[i].GetRemainPhase() + ")";
 			if (i < numberOfEffects-1)
 				concattedText += " ";
