@@ -11,7 +11,7 @@ public class BasePassiveSkillLogic
 
 	public virtual float GetAdditionalPowerBouns(Unit caster)
 	{
-		return 0;
+		return 1.0f;
 	}
 
 	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
