@@ -398,7 +398,7 @@ public class Unit : MonoBehaviour
 			}
 		}
 
-		// 상대값 효과 합산
+		// 상대값 공격력 변동 효과 합산
 		float additionalPowerBonus = 1.0f;					
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
@@ -406,6 +406,15 @@ public class Unit : MonoBehaviour
 			additionalPowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
 		}
 		totalRelativeValue *= additionalPowerBonus;
+
+		// 절대값 방어력 변동 효과 합산
+		float additionalDefenseBouns = 0;
+		if (statusEffectType == StatusEffectType.DefenseChange)
+		{
+			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+			additionalDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
+		}
+		totalAbsoluteValue += additionalDefenseBouns;
 					
 		
 		this.UpdateStatusEffect();

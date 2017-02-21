@@ -44,13 +44,23 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 
 	public override float GetAdditionalRelativePowerBonus(Unit caster)
 	{
-		float additionalPowerBonus = 1.0f;
+		float totalAdditionalPowerBonus = 1.0f;
 		foreach (var skill in passiveSkills)
 		{
-			additionalPowerBonus *= skill.GetAdditionalRelativePowerBonus(caster);
+			totalAdditionalPowerBonus *= skill.GetAdditionalRelativePowerBonus(caster);
 		}
 
-		return additionalPowerBonus;
+		return totalAdditionalPowerBonus;
+	}
+
+	public override float GetAdditionalAbsoluteDefenseBonus(Unit caster)
+	{
+		float totalAdditionalDefenseBonus = 0;
+		foreach (var skill in passiveSkills)
+		{
+			totalAdditionalDefenseBonus += skill.GetAdditionalAbsoluteDefenseBonus(caster);
+		}
+		return totalAdditionalDefenseBonus;
 	}
 
 	public override float ApplyIgnoreDefenceByEachPassive(float defense, Unit caster, Unit target)

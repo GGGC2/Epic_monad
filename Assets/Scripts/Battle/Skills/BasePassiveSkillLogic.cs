@@ -16,7 +16,7 @@ public class BasePassiveSkillLogic
 
 	public virtual float GetAdditionalAbsoluteDefenseBonus(Unit caster)
 	{
-		return 1.0f;
+		return 0;
 	}
 
 	public virtual float ApplyIgnoreDefenceByEachPassive(float defense, Unit caster, Unit target)

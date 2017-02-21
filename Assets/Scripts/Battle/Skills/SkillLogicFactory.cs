@@ -95,7 +95,7 @@ public static class SkillLogicFactory
 			break;
 			// 트리아나
 			case "나무 껍질":
-			// passiveSkillLogic = new Triana_2_r_SkillLogic();
+			passiveSkillLogic = new Triana_2_r_SkillLogic();
 			break;
 			// 카샤스티
 			case "장미 속의 가시":
