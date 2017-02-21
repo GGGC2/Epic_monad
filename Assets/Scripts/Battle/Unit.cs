@@ -364,8 +364,8 @@ public class Unit : MonoBehaviour
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
-		float totalvalue = 0.0f; // 절대값
-		float totalratio = 1.0f; // 상대값
+		float totalAbsoluteValue = 0.0f; // 절대값
+		float totalRelativeValue = 1.0f; // 상대값
 
 		foreach (var statusEffect in statusEffectList)
 		{
@@ -373,7 +373,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.GetIsRelative()) // 상대값 합산
 				{
-					totalratio *= statusEffect.GetAmount();
+					totalRelativeValue *= statusEffect.GetAmount();
 					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 					// {
 					// 	statusEffect.DecreaseRemainStack();
@@ -385,7 +385,7 @@ public class Unit : MonoBehaviour
 				}
 				else // 절대값 합산
 				{
-					totalvalue += statusEffect.GetAmount();
+					totalAbsoluteValue += statusEffect.GetAmount();
 					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
 					// {
 					// 	statusEffect.DecreaseRemainStack();
@@ -403,14 +403,14 @@ public class Unit : MonoBehaviour
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
 			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-			additionalPowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalPowerBonus(this);
+			additionalPowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
 		}
-		totalratio *= additionalPowerBonus;
+		totalRelativeValue *= additionalPowerBonus;
 					
 		
 		this.UpdateStatusEffect();
 
-		return data * totalratio + totalvalue;
+		return data * totalRelativeValue + totalAbsoluteValue;
 	}
 
 	public IEnumerator Damaged(Skill appliedSkill, Unit caster, float amount, float penetration, bool isDot, bool isHealth)

@@ -11,7 +11,7 @@ public class Yeong_1_l_SkillLogic : BaseSkillLogic {
 		float damageBonusToMeleeUnit = 1.2f;
 
 		if (targetUnit.GetUnitClass() == UnitClass.Melee)
-			attackDamage.ratioDamageBonus += damageBonusToMeleeUnit;
+			attackDamage.relativeDamageBonus += damageBonusToMeleeUnit;
 		
 		return attackDamage;
 	}

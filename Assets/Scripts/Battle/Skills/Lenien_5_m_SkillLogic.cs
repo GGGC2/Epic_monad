@@ -10,7 +10,7 @@ public class Lenien_5_m_SkillLogic : BasePassiveSkillLogic {
 		float damageBonusPerTarget = 0.05f;
 		
 		float totalDamageBonus = 1.0f + targetCount * damageBonusPerTarget;
-		attackDamage.ratioDamageBonus *= totalDamageBonus;
+		attackDamage.relativeDamageBonus *= totalDamageBonus;
 		
 		return attackDamage;
 	}

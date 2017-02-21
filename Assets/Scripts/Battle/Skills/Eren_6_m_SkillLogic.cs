@@ -16,7 +16,7 @@ public class Eren_6_m_SkillLogic : BasePassiveSkillLogic {
 		int numberOfEnemyUnitsInRange = nearByTilesFromTarget.Count(x => x.GetComponent<Tile>().GetUnitOnTile().GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
 		float totalDamageBonus = damageBonusPerEachEnemyUnit * numberOfEnemyUnitsInRange + 1.0f;
 
-		attackDamage.ratioDamageBonus *= totalDamageBonus;
+		attackDamage.relativeDamageBonus *= totalDamageBonus;
 		
 		return attackDamage;
 	}

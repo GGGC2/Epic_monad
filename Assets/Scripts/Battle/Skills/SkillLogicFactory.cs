@@ -64,6 +64,9 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Reina_5_m_SkillLogic();
 			break;
 			// 리니안
+			case "전도체":
+			passiveSkillLogic = new Lenien_2_r_SkillLogic();
+			break;
 			case "연쇄 방전":
 			passiveSkillLogic = new Lenien_5_m_SkillLogic();
 			break;
@@ -89,6 +92,10 @@ public static class SkillLogicFactory
 			break;
 			case "진형 붕괴":
 			passiveSkillLogic = new Eren_6_m_SkillLogic();
+			break;
+			// 트리아나
+			case "나무 껍질":
+			// passiveSkillLogic = new Triana_2_r_SkillLogic();
 			break;
 			// 카샤스티
 			case "장미 속의 가시":

@@ -10,7 +10,7 @@ public class Eren_3_m_SkillLogic : BasePassiveSkillLogic {
 		float damageBonus = 1.2f;
 		
 		if (target.GetMaxHealth() < caster.GetMaxHealth())
-			attackDamage.ratioDamageBonus *= damageBonus;
+			attackDamage.relativeDamageBonus *= damageBonus;
 		
 		return attackDamage;
 	}

@@ -14,7 +14,7 @@ public class Reina_4_m_SkillLogic : BaseSkillLogic {
 		if (damageBonusToAttackBuff < 1.0f)
 			damageBonusToAttackBuff = 1.0f;
 
-		attackDamage.ratioDamageBonus *= damageBonusToAttackBuff;
+		attackDamage.relativeDamageBonus *= damageBonusToAttackBuff;
 
 		return attackDamage;
 	}

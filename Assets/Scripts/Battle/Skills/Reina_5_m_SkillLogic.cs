@@ -10,7 +10,7 @@ public class Reina_5_m_SkillLogic : BasePassiveSkillLogic {
 		float damageBonus = 1.25f;
 
 		if ((appliedSkill.GetName() == "화염구") && (targetCount == 1))
-			attackDamage.ratioDamageBonus *= damageBonus;
+			attackDamage.relativeDamageBonus *= damageBonus;
 
 		return attackDamage;
 	}

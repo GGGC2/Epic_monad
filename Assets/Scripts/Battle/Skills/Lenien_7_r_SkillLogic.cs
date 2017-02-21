@@ -6,7 +6,7 @@ namespace Battle.Skills
 {
 public class Lenien_7_r_SkillLogic : BasePassiveSkillLogic {
 
-	public override float GetAdditionalPowerBonus(Unit caster)
+	public override float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		List<GameObject> nearbyTilesFromLenian = new List<GameObject>();

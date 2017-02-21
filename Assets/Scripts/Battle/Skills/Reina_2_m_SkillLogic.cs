@@ -10,7 +10,7 @@ public class Reina_2_m_SkillLogic : BasePassiveSkillLogic {
 		float damageBonusForPlaneTypeUnit = 1.15f;
 		
 		if (target.GetElement() == Enums.Element.Plant)
-			attackDamage.ratioDamageBonus *= damageBonusForPlaneTypeUnit;
+			attackDamage.relativeDamageBonus *= damageBonusForPlaneTypeUnit;
 		
 		return attackDamage;
 	}

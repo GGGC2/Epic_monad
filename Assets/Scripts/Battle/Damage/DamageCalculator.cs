@@ -103,8 +103,8 @@ public class DamageCalculator
 	public class AttackDamage
 	{
 		public float baseDamage = 0;
-		public float ratioDamageBonus = 1.0f;
-		public float valueDamageBonus = 0;
+		public float relativeDamageBonus = 1.0f;
+		public float absoluteDamageBonus = 0;
 		public float directionBonus = 1.0f;
 		public float celestialBonus = 1.0f;
 		public float heightBonus = 1.0f;
@@ -136,8 +136,8 @@ public class DamageCalculator
 		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, casterUnit, appliedSkill, targetUnit, targetCount);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
-									* attackDamage.ratioDamageBonus
-									+ attackDamage.valueDamageBonus
+									* attackDamage.relativeDamageBonus
+									+ attackDamage.absoluteDamageBonus
 									+ attackDamage.smiteAmount) 
 									* attackDamage.directionBonus
 									* attackDamage.celestialBonus
