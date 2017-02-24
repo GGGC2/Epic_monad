@@ -156,6 +156,11 @@ public class StatusEffect {
     public float GetAmount() {return flexible.actuals[0].amount;}
     public int GetRemainAmount() {return flexible.actuals[0].remainAmount;}
 
+    public void SetAmount(int amount)
+    {
+        flexible.actuals[0].amount = amount;
+    }
+
     public void SetRemainAmount(int amount)
     {
 		flexible.actuals[0].remainAmount = amount;
