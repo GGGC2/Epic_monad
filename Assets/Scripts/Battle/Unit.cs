@@ -316,7 +316,7 @@ public class Unit : MonoBehaviour
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
-			Debug.LogError("Status effect " + statusEffect.GetName());
+			Debug.LogError("Status effect " + statusEffect.GetOriginSkillName());
 			Debug.LogError("isinfinite " + statusEffect.GetIsInfinite());
 			Debug.LogError("remain phase " + statusEffect.GetRemainPhase());
 			if (statusEffect.GetRemainPhase() > 0 && !statusEffect.GetIsInfinite())
@@ -347,7 +347,7 @@ public class Unit : MonoBehaviour
 	public bool HasStatusEffect(StatusEffect statusEffect)
 	{
 		bool hasStatusEffect = false;
-		if (statusEffectList.Any(k => k.GetName().Equals(statusEffect.GetName())))
+		if (statusEffectList.Any(k => k.GetOriginSkillName().Equals(statusEffect.GetOriginSkillName())))
 			hasStatusEffect = true;
 		return hasStatusEffect;
 	}
