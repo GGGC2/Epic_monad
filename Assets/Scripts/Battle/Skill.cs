@@ -77,7 +77,7 @@ public class Skill {
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
             StatusEffect.FixedElement statusEffect = statusEffectInfo.GetStatusEffect();
-            if(statusEffectInfo.GetSkillName().Equals(this.name))
+            if(statusEffectInfo.GetOriginSkillName().Equals(this.name))
             {
                 statusEffectList.Add(statusEffectInfo.GetStatusEffect());
             }

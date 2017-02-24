@@ -48,7 +48,7 @@ public static class StatusEffector
 				}
 			}
 
-			Debug.Log("Apply " + statusEffect.GetOriginSkillName() + " effect to " + target.name);
+			Debug.Log("Apply " + statusEffect.GetDisplayName() + " effect to " + target.name);
 		}
 	}
 }

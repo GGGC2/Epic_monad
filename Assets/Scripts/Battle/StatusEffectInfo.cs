@@ -16,7 +16,7 @@ public class StatusEffectInfo {
 		return owner;
 	}
 	
-	public string GetSkillName()
+	public string GetOriginSkillName()
 	{
 		return originSkillName;
 	}

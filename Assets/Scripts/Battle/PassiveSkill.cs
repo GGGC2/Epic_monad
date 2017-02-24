@@ -23,7 +23,7 @@ public class PassiveSkill {
 	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
 	{
 		var statusEffectList = statusEffectInfoList
-			.Where(statusEffectInfo => statusEffectInfo.GetSkillName().Equals(this.name))
+			.Where(statusEffectInfo => statusEffectInfo.GetOriginSkillName().Equals(this.name))
 			.Select(statusEffectInfo => statusEffectInfo.GetStatusEffect())
 			.ToList();
 
