@@ -19,7 +19,12 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual float ApplyIgnoreDefenceByEachPassive(float defense, Unit caster, Unit target)
+	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(float defense, Unit caster, Unit target)
+	{
+		return defense;
+	}
+
+	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(float defense, Unit caster, Unit target)
 	{
 		return defense;
 	}
