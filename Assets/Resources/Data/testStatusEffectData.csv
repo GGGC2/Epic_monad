@@ -1,4 +1,4 @@
-owner,skillName,effectName,isHidden,isBuff,isInfinite,isStackable,maxPhase,maxStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountStat,isRelative,statusEffectType_02,amountStat,isRelative,statusEffectType_03,amountStat,isRelative
+owner,originSkillName,displayName,isHidden,isBuff,isInfinite,isStackable,maxPhase,maxStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountStat,isRelative,statusEffectType_02,amountStat,isRelative,statusEffectType_03,amountStat,isRelative
 orchid,강화,강화,FALSE,TRUE,TRUE,TRUE,0,1,FALSE,None,None,None,1,PowerChange,None,FALSE,,,,,,
 orchid,방어력 감소,방어력 감소,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,DefenseChange,None,FALSE,,,,,,
 orchid,특수 효과,특수 효과,FALSE,FALSE,FALSE,TRUE,3,1,FALSE,None,None,None,1,Etc,None,FALSE,,,,,,

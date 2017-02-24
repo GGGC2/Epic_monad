@@ -10,7 +10,8 @@ public class StatusEffect {
 	{
 		public class DisplayElement
 		{
-            public readonly string name; // 유저에게 보일 이름
+            public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
+            public readonly string displayName; // 유저에게 보일 이름
             public readonly bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
             public readonly bool isBuff; // 버프일 경우 true
             public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
@@ -24,12 +25,13 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public DisplayElement(string name,  
+            public DisplayElement(string originSkillName, string displayName,  
                   bool isHidden, bool isBuff, bool isInfinite, 
                   bool isStackable, int maxPhase, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
-                this.name = name;
+                this.originSkillName = originSkillName;
+                this.displayName = displayName;
                 this.isHidden = isHidden;
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
@@ -60,12 +62,12 @@ public class StatusEffect {
 		public readonly DisplayElement display;
 		public readonly List<ActualElement> actuals;
 
-		public FixedElement(string name,  
+		public FixedElement(string originSkillName, string displayName, 
                   bool isHidden, bool isBuff, bool isInfinite, 
                   bool isStackable, int maxPhase, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
 		{
-			display = new DisplayElement(name,
+			display = new DisplayElement(originSkillName, displayName,
 					isHidden, isBuff, isInfinite,
 					isStackable, maxPhase, maxStack, isRemovable,
 					effectName, effectVisualType, effectMoveType);
@@ -134,7 +136,8 @@ public class StatusEffect {
 		this.flexible = new FlexibleElement(fixedElem, caster);
     }
 	
-    public string GetName() {return fixedElem.display.name;}
+    public string GetOriginSkillName() {return fixedElem.display.originSkillName;}
+    public string GetDisplayName() {return fixedElem.display.displayName;}
     public bool GetIsBuff() {return fixedElem.display.isBuff;}
     public bool GetIsInfinite() {return fixedElem.display.isInfinite;}
     public bool GetIsStackable() {return fixedElem.display.isStackable;}
@@ -217,7 +220,7 @@ public class StatusEffect {
     public bool IsSameStatusEffect(StatusEffect statusEffect)
     {
         bool isSameStatusEffect = false;
-        if(this.GetName().Equals(statusEffect.GetName()))
+        if(this.GetOriginSkillName().Equals(statusEffect.GetOriginSkillName()))
         {
             if(this.IsOfType(statusEffect.GetStatusEffectType()))
             {

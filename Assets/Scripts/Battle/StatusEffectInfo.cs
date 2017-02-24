@@ -7,7 +7,8 @@ using System.Collections.Generic;
 public class StatusEffectInfo {
 
 	public string owner;
-	public string skillName;
+	public string originSkillName; // 효과를 유발하는 기술/특성의 이름
+	public string displayName; // 상태창에 표시되는 효과의 이름
 	public StatusEffect.FixedElement statusEffect;
 	
 	public string GetOwner()
@@ -17,9 +18,14 @@ public class StatusEffectInfo {
 	
 	public string GetSkillName()
 	{
-		return skillName;
+		return originSkillName;
 	}
-	
+
+	public string GetDisplayName()
+	{
+		return displayName;
+	}
+
 	public StatusEffect.FixedElement GetStatusEffect()
 	{
 		return statusEffect;
@@ -31,7 +37,8 @@ public class StatusEffectInfo {
 		CommaStringParser commaParser = new CommaStringParser(data);
 
 		this.owner = commaParser.Consume();
-		this.skillName = commaParser.Consume();
+		this.originSkillName = commaParser.Consume();
+		this.displayName = commaParser.Consume();
 
 		bool isHidden = commaParser.ConsumeBool();
 		bool isBuff = commaParser.ConsumeBool();
@@ -59,7 +66,7 @@ public class StatusEffectInfo {
 			actualElements.Add(actualElement);
 		}
 	
-		this.statusEffect = new StatusEffect.FixedElement(skillName, 
+		this.statusEffect = new StatusEffect.FixedElement(originSkillName, displayName,
                                              isHidden, isBuff, isInfinite, 
 											 isStackable, maxPhase, maxStack, isRemovable, 
 											 effectName, effectVisualType, effectMoveType,
