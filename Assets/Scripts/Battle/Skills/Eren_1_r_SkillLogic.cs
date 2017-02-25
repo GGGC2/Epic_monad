@@ -9,9 +9,13 @@ namespace Battle.Skills
 public class Eren_1_r_SkillLogic : BaseSkillLogic {
 	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects)
 	{
-		var statusEffect = statusEffects.Find(se => se.GetDisplayName() == "강타");
-		statusEffect.SetRemainPhase(2);
-		statusEffect.SetAmount(0, 10);
+		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "강타");
+		statusEffect1st.SetRemainPhase(2);
+		statusEffect1st.SetAmount(0, 10);
+
+		var statusEffect2nd = statusEffects.Find(se => se.GetDisplayName() == "저항력 감소");
+		statusEffect2nd.SetRemainPhase(5);
+		statusEffect2nd.SetAmount(0, -100);
 	}
 }
 }
