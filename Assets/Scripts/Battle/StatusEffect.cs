@@ -117,20 +117,20 @@ public class StatusEffect {
 			display = new DisplayElement(caster, maxStack, maxPhase);
 
 			List<ActualElement> actuals = new List<ActualElement>();
-			for (int i = 0; i < actuals.Count; i++)
+			for (int i = 0; i < fixedElem.actuals.Count; i++)
             {
                 if (fixedElem.actuals[i].isRelative)
-                    actuals[i] = new ActualElement(1.0f);
+                    actuals.Add(new ActualElement(1.0f));
                 else
-                    actuals[i] = new ActualElement(0);
+                    actuals.Add(new ActualElement(0));
 
             }
             this.actuals = actuals;
 		}
 	}
 
-    FixedElement fixedElem;
-	FlexibleElement flexible;
+    public FixedElement fixedElem;
+	public FlexibleElement flexible;
 	
 	public StatusEffect(FixedElement fixedElem, GameObject caster)
 	{
@@ -161,6 +161,11 @@ public class StatusEffect {
     public void SetAmount(float amount)
     {
         flexible.actuals[0].amount = amount;
+    }
+
+    public void SetAmount(int index, float amount)
+    {
+        flexible.actuals[index].amount = amount;
     }
 
     public void SetRemainAmount(float amount)

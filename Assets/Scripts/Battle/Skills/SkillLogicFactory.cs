@@ -23,6 +23,9 @@ public static class SkillLogicFactory
 			// 영
 			case "은빛 베기":
 			return new Yeong_1_l_SkillLogic();
+			// 에렌
+			case "광휘":
+			return new Eren_1_r_SkillLogic();
 			// 카샤스티
 			case "더블 샷":
 			return new Kashyasty_1_l_SkillLogic();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Enums;
+using Battle.Skills;
 
 namespace Battle.Damage
 {
@@ -10,20 +11,30 @@ public static class StatusEffector
 {
 	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target)
 	{
-		AttachStatusEffect(caster, appliedSkill.GetStatusEffectList(), target);
-	}
-
-	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
-	{
-		AttachStatusEffect(caster, appliedSkill.GetStatusEffectList(), target);
-	}
-
-	private static void AttachStatusEffect(Unit caster, List<StatusEffect.FixedElement> fixedStatusEffects, Unit target)
-	{
+		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster.gameObject))
 			.ToList();
 
+		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
+
+		AttachStatusEffect(caster, statusEffects, target);
+	}
+
+	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
+	{
+		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
+		List<StatusEffect> statusEffects = fixedStatusEffects
+			.Select(fixedElem => new StatusEffect(fixedElem, caster.gameObject))
+			.ToList();
+
+		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
+
+		AttachStatusEffect(caster, statusEffects, target);
+	}
+
+	private static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
+	{
 		foreach (var statusEffect in statusEffects)
 		{
 			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(

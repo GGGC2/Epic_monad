@@ -7,6 +7,10 @@ namespace Battle.Skills
 {
 public class BaseSkillLogic
 {
+	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects)
+	{
+	}
+
 	public virtual int CalculateAP(BattleData battleData, List<GameObject> selectedTiles)
 	{
 		int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
