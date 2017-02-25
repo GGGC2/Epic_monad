@@ -6,7 +6,7 @@ reina,과충전 상태,과충전 상태,FALSE,FALSE,FALSE,FALSE,1,1,TRUE,None,No
 reina,비전 방패,비전 방패,FALSE,TRUE,FALSE,FALSE,4,1,TRUE,None,None,None,1,Shield,UsedAP,FALSE,,,,,,
 sisterna,파장 분류,파장 분류,FALSE,TRUE,FALSE,FALSE,0,1,TRUE,None,None,None,1,Shield,MaxHealth,FALSE,,,,,,
 sisterna,상자에 든 고양이,상자에 든 고양이,FALSE,FALSE,FALSE,FALSE,1,1,TRUE,None,None,None,1,Faint,Power,FALSE,,,,,,
-sisterna,광휘,강타,FALSE,TRUE,FALSE,FALSE,0,1,TRUE,None,None,None,1,DamageChange,None,FALSE,,,,,,
+sisterna,광휘,강타,FALSE,TRUE,FALSE,FALSE,0,1,TRUE,None,None,None,1,Smite,10,FALSE,,,,,,
 eren,기절,기절,FALSE,FALSE,FALSE,FALSE,1,1,TRUE,None,None,None,1,Faint,None,FALSE,,,,,,
 eren,속박,속박,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,Bind,None,FALSE,,,,,,
 eren,둔화,둔화,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,RequireSkillAPChange,None,FALSE,,,,,,

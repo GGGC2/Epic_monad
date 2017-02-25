@@ -197,13 +197,10 @@ public class DamageCalculator
 	}
 
 	private static float SmiteAmount(Unit casterUnit) {
-		int smiteAmount = 0;
-		if (casterUnit.HasStatusEffect(StatusEffectType.Smite))
-		{
-			// FIXME: smiteAmount(0) is passed wihch is multiplied in GetActualEffect
-			// Always smiteAmount is 0
-			smiteAmount = (int) casterUnit.GetActualEffect((float)smiteAmount, StatusEffectType.Smite);
-		}
+		float smiteAmount = 0;
+		// FIXME: smiteAmount(0) is passed wihch is multiplied in GetActualEffect
+		// Always smiteAmount is 0
+		smiteAmount = casterUnit.GetActualEffect(smiteAmount, StatusEffectType.Smite);
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
@@ -251,12 +248,18 @@ public class DamageCalculator
 			float targetDefense = target.GetActualStat(Stat.Defense);
 			float targetResistance = target.GetActualStat(Stat.Resistance);
 
-			// 기술에 의한 방어/저항 무시
+			// 기술에 의한 방어/저항 무시 (상대값)
 			// targetDefence = ApplyIgnoreDefenceBySkill(appliedSkill, );
 
-			// 특성에 의한 방어/저항 무시
+			// 특성에 의한 방어/저항 무시 (상대값)
 			List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceByEachPassive(targetDefense, caster, target);
+			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(targetDefense, caster, target);
+
+			// 기술에 의한 방어/저항 무시 (절대값)
+			// targetDefence = ApplyIgnoreDefenceBySkill(appliedSkill, );
+
+			// 특성에 의한 방어/저항 무시 (절대값)
+			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(targetDefense, caster, target);
 
 			if (caster.GetUnitClass() == UnitClass.Melee)
 			{
@@ -287,7 +290,7 @@ public class DamageCalculator
 				{
 					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
 					{
-						shieldAmount = statusEffectList[i].GetRemainAmount();
+						shieldAmount = (int)statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
 						{
 							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);

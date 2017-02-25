@@ -97,13 +97,13 @@ public class StatusEffect {
 
 		public class ActualElement
 		{
-            public int amount; // 영향을 주는 실제 값
-            public int remainAmount; // 남은 수치 (실드 등)
+            public float amount; // 영향을 주는 실제 값
+            public float remainAmount; // 남은 수치 (실드 등)
 
-            public ActualElement(int amount, int remainAmount)
+            public ActualElement(float amount)
             {
                 this.amount = amount;
-                this.remainAmount = remainAmount;
+                this.remainAmount = amount; // 초기화
             }
 		}
 
@@ -117,13 +117,15 @@ public class StatusEffect {
 			display = new DisplayElement(caster, maxStack, maxPhase);
 
 			List<ActualElement> actuals = new List<ActualElement>();
-			foreach (var fixedActual in fixedElem.actuals) {
-				// not implemented yet
-				int remainAmount = 0;
-				int amount = 0;
-				actuals.Add(new ActualElement(amount, remainAmount));
-			}
-			this.actuals = actuals;
+			for (int i = 0; i < actuals.Count; i++)
+            {
+                if (fixedElem.actuals[i].isRelative)
+                    actuals[i] = new ActualElement(1.0f);
+                else
+                    actuals[i] = new ActualElement(0);
+
+            }
+            this.actuals = actuals;
 		}
 	}
 
@@ -154,14 +156,14 @@ public class StatusEffect {
     public Stat GetAmountStat() {return fixedElem.actuals[0].amountStat;}
     public bool GetIsRelative() {return  fixedElem.actuals[0].isRelative;}
     public float GetAmount() {return flexible.actuals[0].amount;}
-    public int GetRemainAmount() {return flexible.actuals[0].remainAmount;}
+    public float GetRemainAmount() {return flexible.actuals[0].remainAmount;}
 
-    public void SetAmount(int amount)
+    public void SetAmount(float amount)
     {
         flexible.actuals[0].amount = amount;
     }
 
-    public void SetRemainAmount(int amount)
+    public void SetRemainAmount(float amount)
     {
 		flexible.actuals[0].remainAmount = amount;
     }
