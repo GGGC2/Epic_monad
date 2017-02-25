@@ -369,31 +369,35 @@ public class Unit : MonoBehaviour
 
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (statusEffect.IsOfType(statusEffectType))
+			int num = statusEffect.fixedElem.actuals.Count;
+			for (int i = 0; i < num; i++)
 			{
-				if (statusEffect.GetIsRelative()) // 상대값 합산
+				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					totalRelativeValue *= statusEffect.GetAmount();
-					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-					// {
-					// 	statusEffect.DecreaseRemainStack();
-					// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-					// 	{
-					// 		statusEffect.SetToBeRemoved(true);
-					// 	}
-					// }	
-				}
-				else // 절대값 합산
-				{
-					totalAbsoluteValue += statusEffect.GetAmount();
-					// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-					// {
-					// 	statusEffect.DecreaseRemainStack();
-					// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-					// 	{
-					// 		statusEffect.SetToBeRemoved(true);
-					// 	}
-					// }
+					if (statusEffect.GetIsRelative(i)) // 상대값 합산
+					{
+						totalRelativeValue *= statusEffect.GetAmount(i);
+						// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+						// {
+						// 	statusEffect.DecreaseRemainStack();
+						// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+						// 	{
+						// 		statusEffect.SetToBeRemoved(true);
+						// 	}
+						// }	
+					}
+					else // 절대값 합산
+					{
+						totalAbsoluteValue += statusEffect.GetAmount(i);
+						// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
+						// {
+						// 	statusEffect.DecreaseRemainStack();
+						// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
+						// 	{
+						// 		statusEffect.SetToBeRemoved(true);
+						// 	}
+						// }
+					}
 				}
 			}
 		}

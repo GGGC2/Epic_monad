@@ -153,10 +153,15 @@ public class StatusEffect {
     public bool GetToBeRemoved() {return flexible.display.toBeRemoved;}
 
     public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
+    public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
     public Stat GetAmountStat() {return fixedElem.actuals[0].amountStat;}
+    public Stat GetAmountStat(int index) {return fixedElem.actuals[index].amountStat;} 
     public bool GetIsRelative() {return  fixedElem.actuals[0].isRelative;}
+    public bool GetIsRelative(int index) {return  fixedElem.actuals[index].isRelative;}
     public float GetAmount() {return flexible.actuals[0].amount;}
+    public float GetAmount(int index) {return flexible.actuals[index].amount;}
     public float GetRemainAmount() {return flexible.actuals[0].remainAmount;}
+    public float GetRemainAmount(int index) {return flexible.actuals[index].remainAmount;}
 
     public void SetAmount(float amount)
     {
@@ -228,18 +233,15 @@ public class StatusEffect {
         
         return isOfType;
     }
-    
-    public bool IsSameStatusEffect(StatusEffect statusEffect)
+
+    public bool IsOfType(int index, StatusEffectType statusEffectType)
     {
-        bool isSameStatusEffect = false;
-        if(this.GetOriginSkillName().Equals(statusEffect.GetOriginSkillName()))
-        {
-            if(this.IsOfType(statusEffect.GetStatusEffectType()))
-            {
-                isSameStatusEffect = true;
-            }
-        }
-        
-        return isSameStatusEffect;
+        return statusEffectType.Equals(this.GetStatusEffectType(index));
+    }
+    
+    public bool IsSameStatusEffect(StatusEffect anotherStatusEffect)
+    {
+        return (this.GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
+                (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
     }
 }

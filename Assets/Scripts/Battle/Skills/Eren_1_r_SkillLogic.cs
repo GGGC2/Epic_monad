@@ -12,6 +12,7 @@ public class Eren_1_r_SkillLogic : BaseSkillLogic {
 		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "강타");
 		statusEffect1st.SetRemainPhase(2);
 		statusEffect1st.SetAmount(0, 10);
+		statusEffect1st.SetAmount(1, 46);
 
 		var statusEffect2nd = statusEffects.Find(se => se.GetDisplayName() == "저항력 감소");
 		statusEffect2nd.SetRemainPhase(5);
