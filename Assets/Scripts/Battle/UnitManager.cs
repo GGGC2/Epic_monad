@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enums;
 using Util;
+using Battle.Skills;
 
 public class DeadUnitInfo
 {
@@ -51,6 +52,14 @@ public class UnitManager : MonoBehaviour {
 	public List<GameObject> GetAllUnits()
 	{
 		return units;
+	}
+
+	public void ResetLatelyHitUnits()
+	{
+		foreach (var unit in GetAllUnits())
+		{
+			unit.GetComponent<Unit>().latelyHitUnits.Clear();
+		}
 	}
 
 	public List<GameObject> GetRetreatUnits()
@@ -155,6 +164,13 @@ public class UnitManager : MonoBehaviour {
 
 	public void DeleteDeadUnit(GameObject unitObject)
 	{
+		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
+		foreach (var unit in unitObject.GetComponent<Unit>().latelyHitUnits)
+		{
+			List<PassiveSkill> passiveSkills = unit.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill();
+		}
+
 		units.Remove(unitObject);
 		readiedUnits.Remove(unitObject);
 	}

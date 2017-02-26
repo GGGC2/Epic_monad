@@ -22,6 +22,8 @@ public class Unit : MonoBehaviour
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
+	public List<Unit> latelyHitUnits;
+
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
 
@@ -440,8 +442,11 @@ public class Unit : MonoBehaviour
 		{
 			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(appliedSkill, this, caster, amount, penetration, isDot, isHealth);
 
-			if (finalDamage > -1)
+			if (finalDamage > 0)
+			{
 				currentHealth -= finalDamage;
+				latelyHitUnits.Add(caster);
+			}
 			if (currentHealth < 0)
 				currentHealth = 0;
 

@@ -9,6 +9,14 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill = null;
 
+	public virtual void ApplyStatusEffectByKill()
+	{
+	}
+
+	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects)
+	{
+	}
+
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		return 1.0f;

@@ -9,10 +9,21 @@ namespace Battle
 {
 public class DamageCalculator
 {
-	public static Dictionary<GameObject, float> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	public class DamageInfo
 	{
-		// List<ChainInfo> tempChainList = new List<ChainInfo>();
-		Dictionary<GameObject, float> damageList = new Dictionary<GameObject, float>();
+		public List<Unit> casters;
+		public float damage;
+
+		public DamageInfo(Unit caster, float damage)
+		{
+			this.casters = new List<Unit>();
+			casters.Add(caster);
+			this.damage = damage;
+		}
+	}
+	public static Dictionary<GameObject, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	{
+		Dictionary<GameObject, DamageInfo> damageList = new Dictionary<GameObject, DamageInfo>();
 
 		ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
@@ -30,9 +41,9 @@ public class DamageCalculator
 		return damageList;
 	}
 
-	private static Dictionary<GameObject, float> MergeDamageList(Dictionary<GameObject, float> lhs, Dictionary<GameObject, float> rhs)
+	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> lhs, Dictionary<GameObject, DamageInfo> rhs)
 	{
-		var merged = new Dictionary<GameObject, float>();
+		var merged = new Dictionary<GameObject, DamageInfo>();
 		foreach (var kv in lhs)
 		{
 			merged[kv.Key] = kv.Value;
@@ -41,7 +52,9 @@ public class DamageCalculator
 		{
 			if (merged.ContainsKey(kv.Key))
 			{
-				merged[kv.Key] += rhs[kv.Key];
+				foreach (var caster in rhs[kv.Key].casters)
+					merged[kv.Key].casters.Add(caster);
+				merged[kv.Key].damage += rhs[kv.Key].damage;
 			}
 			else
 			{
@@ -51,23 +64,23 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<GameObject, float> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 	{
-		var damageList = new Dictionary<GameObject, float>();
+		var damageList = new Dictionary<GameObject, DamageInfo>();
 		Skill appliedSkill = chainInfo.GetSkill();
 		if (appliedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth) {
 			return damageList;
 		}
 
 		GameObject casterUnitObject = chainInfo.GetUnit();
-		Unit caterUnit = casterUnitObject.GetComponent<Unit>();			
+		Unit casterUnit = casterUnitObject.GetComponent<Unit>();			
 		List<GameObject> selectedTiles = chainInfo.GetTargetArea();
 
-		Direction oldDirection = caterUnit.GetDirection();
+		Direction oldDirection = casterUnit.GetDirection();
 
 		// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 		if (appliedSkill.GetSkillType() != SkillType.Auto)
-			caterUnit.SetDirection(Utility.GetDirectionToTarget(caterUnit.gameObject, selectedTiles));
+			casterUnit.SetDirection(Utility.GetDirectionToTarget(casterUnit.gameObject, selectedTiles));
 
 		List<GameObject> targets = GetTargetUnits(selectedTiles);
 
@@ -77,13 +90,15 @@ public class DamageCalculator
 			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
 			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage,
 				appliedSkill.GetPenetration(), false, true);
-			damageList.Add(targetUnit.gameObject, actualDamage);
+
+			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
+			damageList.Add(targetUnit.gameObject, damageInfo);
 
 			Debug.Log("Apply " + actualDamage + " damage to " + targetUnit.GetName() + "\n" +
 						"ChainCombo : " + chainCombo);
 		}
 
-		caterUnit.SetDirection(oldDirection);
+		casterUnit.SetDirection(oldDirection);
 		return damageList;
 	}
 
