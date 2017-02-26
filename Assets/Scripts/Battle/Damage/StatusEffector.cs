@@ -41,22 +41,22 @@ public static class StatusEffector
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);
 
+			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
-				alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
-				alreadyAppliedSameEffect.SetRemainStack(statusEffect.GetRemainStack());
-				if (statusEffect.IsOfType(StatusEffectType.Shield))
-					alreadyAppliedSameEffect.SetRemainAmount(
-						(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount()));
+				var statusEffectListOfTarget = target.GetStatusEffectList();
+				statusEffectListOfTarget.Remove(alreadyAppliedSameEffect);
+				statusEffectListOfTarget.Add(statusEffect);
 			}
+			// 동일한 효과가 있지만 스택 가능 -> 1스택 추가
+			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
+			{
+				alreadyAppliedSameEffect.AddRemainStack(1);
+			}
+			// 동일한 효과가 없음 -> 새로 넣음
 			else
 			{
 				target.GetStatusEffectList().Add(statusEffect);
-				if (statusEffect.IsOfType(StatusEffectType.Shield))
-				{
-					target.GetStatusEffectList()[target.GetStatusEffectList().Count].SetRemainAmount
-					((target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount()));
-				}
 			}
 
 			Debug.Log("Apply " + statusEffect.GetDisplayName() + " effect to " + target.name);
