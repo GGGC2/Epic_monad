@@ -9,7 +9,7 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill = null;
 
-	public virtual void ApplyStatusEffectByKill()
+	public virtual void ApplyStatusEffectByKill(Unit caster)
 	{
 	}
 

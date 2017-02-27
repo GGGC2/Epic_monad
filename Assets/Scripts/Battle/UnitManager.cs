@@ -168,7 +168,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in unitObject.GetComponent<Unit>().latelyHitUnits)
 		{
 			List<PassiveSkill> passiveSkills = unit.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill();
+			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(unit);
 		}
 
 		units.Remove(unitObject);

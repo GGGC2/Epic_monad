@@ -178,6 +178,11 @@ public class StatusEffect {
 		flexible.actuals[0].remainAmount = amount;
     }
 
+    public void SetRemainAmount(int index, float amount)
+    {
+		flexible.actuals[index].remainAmount = amount;
+    }
+
     public void AddRemainPhase(int phase)
 	{
 		flexible.display.remainPhase += phase;

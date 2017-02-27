@@ -17,7 +17,7 @@ public class BaseSkillLogic
 		return requireAP;
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyIndividualAdditionalDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount)
+	public virtual DamageCalculator.AttackDamage ApplyAdditionalDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount)
 	{
 		return attackDamage;
 	}

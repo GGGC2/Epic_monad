@@ -221,7 +221,7 @@ public class DamageCalculator
 	}
 
 	private static DamageCalculator.AttackDamage ApplyBonusDamageFromEachSkill(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
-		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyIndividualAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
+		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
 
 		return attackDamage;
 	}

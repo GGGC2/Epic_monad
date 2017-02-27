@@ -11,11 +11,11 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		this.passiveSkills = passiveSkills;
 	}
 
-	public override void ApplyStatusEffectByKill()
+	public override void ApplyStatusEffectByKill(Unit caster)
 	{
 		foreach (var skill in passiveSkills)
 		{
-			skill.ApplyStatusEffectByKill();
+			skill.ApplyStatusEffectByKill(caster);
 		}
 	}
 

@@ -24,6 +24,8 @@ public static class SkillLogicFactory
 			case "은빛 베기":
 			return new Yeong_1_l_SkillLogic();
 			// 에렌
+			case "칠흑의 화살":
+			return new Eren_1_l_SkillLogic();
 			case "광휘":
 			return new Eren_1_r_SkillLogic();
 			// 카샤스티
@@ -48,7 +50,7 @@ public static class SkillLogicFactory
 		return new ListPassiveSkillLogic(passiveSkillLogic);
 	}
 
-	private static BasePassiveSkillLogic Get(PassiveSkill passiveSkill)
+	public static BasePassiveSkillLogic Get(PassiveSkill passiveSkill)
 	{
 		BasePassiveSkillLogic passiveSkillLogic = null;
 		switch (passiveSkill.GetName())
@@ -87,6 +89,9 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Yeong_1_r_SkillLogic();
 			break;
 			// 에렌
+			case "흡수":
+			passiveSkillLogic = new Eren_0_1_SkillLogic();
+			break;
 			case "초월":
 			passiveSkillLogic = new Eren_3_m_SkillLogic();
 			break;

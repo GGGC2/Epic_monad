@@ -28,7 +28,7 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster.gameObject))
 			.ToList();
 
-		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
+		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}
@@ -48,9 +48,16 @@ public static class StatusEffector
 				statusEffectListOfTarget.Remove(alreadyAppliedSameEffect);
 				statusEffectListOfTarget.Add(statusEffect);
 			}
-			// 동일한 효과가 있지만 스택 가능 -> 1스택 추가
+			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
 			{
+				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
+				for (int i = 0; i < num; i++)
+				{
+					alreadyAppliedSameEffect.SetAmount(i, statusEffect.GetAmount(i));
+					alreadyAppliedSameEffect.SetRemainAmount(i, statusEffect.GetAmount(i));
+					alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase()); 
+				}
 				alreadyAppliedSameEffect.AddRemainStack(1);
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
