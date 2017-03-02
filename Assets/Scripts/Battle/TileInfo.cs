@@ -56,7 +56,7 @@ public class TileInfo {
 		if (Int32.TryParse(tileHeightSubstring, out number))
 			this.tileHeight = Convert.ToInt32(tileHeightSubstring);
 		else
-			Debug.LogError ("Undefined tileTypeIndex: <" + tileHeightSubstring + ">" + "at" + tilePosition);
+			Debug.LogError ("Undefined tileHeight: <" + tileHeightSubstring + ">" + "at" + tilePosition);
 
 		// FIXME : 타일 AP 세팅 부분. 임시 구현.
 		if (tileElement == Element.Water)
