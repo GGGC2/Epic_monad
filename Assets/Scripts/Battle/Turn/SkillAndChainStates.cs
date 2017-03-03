@@ -550,12 +550,9 @@ namespace Battle.Turn
 
 			var attackDamage = DamageCalculator.CalculateAttackDamage(battleData, target.gameObject, unitInChain.gameObject, appliedSkill, chainCombo, targetCount);
 			if (attackDamage.directionBonus > 1f) unitInChain.PrintDirectionBonus(attackDamage.directionBonus);
-			if (attackDamage.celestialBonus > 1f) unitInChain.PrintCelestialBonus();
-			// '보너스'만 표시하려고 임시로 주석처리.
-			// else if (celestialBonus == 0.8f) targetUnit.PrintCelestialBonus();
+			if (attackDamage.celestialBonus != 1f) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
 			if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
-			// 지금은 1.2일때만 표시함.
-			if (attackDamage.heightBonus > 1f) unitInChain.PrintHeightBonus();
+			if (attackDamage.heightBonus != 1f) unitInChain.PrintHeightBonus(attackDamage.heightBonus);
 
 			BattleManager battleManager = battleData.battleManager;
 			// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비

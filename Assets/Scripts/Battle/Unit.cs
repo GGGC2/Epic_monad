@@ -686,24 +686,23 @@ public class Unit : MonoBehaviour
 	{
 		directionBonusTextObject.SetActive(true);
 		if (bonus == 1.1f)
-			directionBonusTextObject.GetComponentInChildren<Text>().text = "측면 공격 보너스 (x1.1)";
+			directionBonusTextObject.GetComponentInChildren<Text>().text = "측면 공격 (x" + bonus + ")";
 		else
-			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 보너스 (x1.25)";
-		// Invoke("ActiveFalseAtDelay", 0.5f);
+			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 (x" + bonus + ")";
 	}
 
-	public void PrintCelestialBonus()
+	public void PrintCelestialBonus(float bonus)
 	{
 		celestialBonusTextObject.SetActive(true);
 		// bonusTextObject.GetComponent<TextMesh>().text = "Celestial bonus";
-		celestialBonusTextObject.GetComponentInChildren<Text>().text = "천체속성 보너스 (x1.2)";
+		celestialBonusTextObject.GetComponentInChildren<Text>().text = "천체속성 (x" + bonus + ")";
 		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 
-	public void PrintHeightBonus()
+	public void PrintHeightBonus(float bonus)
 	{
 		heightBonusTextObject.SetActive(true);
-		heightBonusTextObject.GetComponentInChildren<Text>().text = "고저차 보너스 (x1.2)";
+		heightBonusTextObject.GetComponentInChildren<Text>().text = "고저차 (x" + bonus + ")";
 	}
 
 	public void ActiveFalseAllBonusText()
