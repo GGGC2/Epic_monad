@@ -1,9 +1,25 @@
 owner,requireLevel,name,column
 reina,0,핀토스의 긍지,1
-reina,15,불의 파동,2
+reina,8,상처 태우기,1
+reina,8,불의 파동,2
+reina,15,점화,1
+reina,15,잉걸불,2
+reina,15,마력 연쇄,3
 reina,29,뭉치면 죽는다,1
 reina,29,흩어져도 죽는다,2
+reina,36,잿더미,1
+reina,36,흐름 변환,3
+reina,43,열상 낙인,2
+reina,43,에테르 순환,3
+lenien,0,감전,1
+lenien,1,에너지 변환,1
+lenien,8,전도체,3
+lenien,15,피뢰침,1
+lenien,15,정전기 유도,3
 lenien,29,연쇄 방전,2
+lenien,29,자기 부상,3
+lenien,36,에테르 전위,1
+lenien,36,에테르 전위,2
 lenien,43,입자 가속,3
 sisterna,0,흡수,1
 sisterna,0,영회피,1
