@@ -38,6 +38,9 @@ public class Skill {
 	string effectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
+	
+	// 스킬 설명 텍스트
+	string skillDataText;
     
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
@@ -48,7 +51,8 @@ public class Skill {
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 				 SkillApplyType skillApplyType, float[] penetrationArray, 
-				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
+				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType,
+				 string skillDataText)
 	{
 		this.owner = owner;
 		this.column = column;
@@ -70,6 +74,7 @@ public class Skill {
 		this.effectName = effectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
+		this.skillDataText = skillDataText;
 	}
       
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
@@ -105,5 +110,6 @@ public class Skill {
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
+	public string GetSkillDataText() {return skillDataText;}
     public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
 }
