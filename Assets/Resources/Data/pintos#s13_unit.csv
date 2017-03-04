@@ -1,0 +1,30 @@
+Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial
+리니안,lenien,Enemy,11,11,LeftUp,1133,221,50,50,68,Magic,Metal,Moon
+영,yeong,Ally,11,12,RightDown,1133,246,123,50,79,Melee,Metal,Earth
+레이나,reina,Ally,12,13,RightDown,971,197,26,147,65,Magic,Fire,Earth
+에렌,eren,Ally,13,11,RightDown,832,309,75,172,58,Magic,Water,Moon
+카샤스티,kashyasty,Ally,13,12,RightDown,898,246,75,123,61,Magic,Plant,Sun
+트리아나,triana,Ally,13,13,RightDown,1432,143,220,147,65,Melee,Metal,Earth
+제국군 병사,soldier01,Enemy,4,12,LeftUp,300,301,302,303,40,Melee,None,None
+제국군 병사,soldier01,Enemy,5,10,LeftUp,300,301,302,303,41,Melee,None,None
+제국군 병사,soldier01,Enemy,5,14,LeftUp,300,301,302,303,42,Melee,None,None
+제국군 병사,soldier01,Enemy,6,8,LeftUp,300,301,302,303,43,Melee,None,None
+제국군 병사,soldier01,Enemy,6,16,LeftUp,300,301,302,303,44,Melee,None,None
+제국군 병사,soldier01,Enemy,7,18,LeftUp,300,301,302,303,45,Melee,None,None
+제국군 병사,soldier01,Enemy,8,7,LeftUp,300,301,302,303,46,Melee,None,None
+제국군 병사,soldier01,Enemy,10,6,LeftUp,300,301,302,303,47,Melee,None,None
+제국군 병사,soldier01,Enemy,10,19,LeftUp,300,301,302,303,48,Melee,None,None
+제국군 병사,soldier01,Enemy,12,5,LeftUp,300,301,302,303,49,Melee,None,None
+아스터 요원,asterAgent,Enemy,13,18,LeftUp,300,301,302,303,50,Melee,Plant,Sun
+제국군 병사,soldier01,Enemy,14,6,LeftUp,300,301,302,303,51,Melee,None,None
+아스터 요원,asterAgent,Enemy,14,17,LeftUp,300,301,302,303,52,Melee,Plant,Sun
+아스터 요원,asterAgent,Enemy,14,18,LeftUp,300,301,302,303,53,Melee,Plant,Sun
+아스터 요원,asterAgent,Enemy,15,16,LeftUp,300,301,302,303,54,Melee,Plant,Sun
+아스터 요원,asterAgent,Enemy,15,17,LeftUp,300,301,302,303,55,Melee,Plant,Sun
+제국군 병사,soldier01,Enemy,16,7,LeftUp,300,301,302,303,56,Melee,None,None
+아스터 요원,asterAgent,Enemy,16,15,LeftUp,300,301,302,303,57,Melee,Plant,Sun
+아스터 요원,asterAgent,Enemy,16,16,LeftUp,300,301,302,303,58,Melee,Plant,Sun
+제국군 병사,soldier01,Enemy,17,9,LeftUp,300,301,302,303,59,Melee,None,None
+제국군 병사,soldier01,Enemy,17,12,LeftUp,300,301,302,303,60,Melee,None,None
+성직자,cleric,Enemy,18,20,LeftUp,300,301,302,303,61,Magic,None,None
+성직자,cleric,Enemy,19,20,LeftUp,300,301,302,303,62,Magic,None,None
