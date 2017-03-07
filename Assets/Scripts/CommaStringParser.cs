@@ -27,7 +27,7 @@ public class CommaStringParser
 		}
 		catch (FormatException e)
 		{
-			Debug.LogWarning("Cannot parse boolean value " + strValue);
+			Debug.LogError("Cannot parse boolean value " + strValue);
 			return false;
 		}
 	}
@@ -41,7 +41,7 @@ public class CommaStringParser
 		}
 		catch (FormatException e)
 		{
-			Debug.LogWarning("Cannot parse integer value " + strValue);
+			Debug.LogError("Cannot parse integer value " + strValue);
 			return -1;
 		}
 	}
@@ -55,7 +55,7 @@ public class CommaStringParser
 		}
 		catch (FormatException e)
 		{
-			Debug.LogWarning("Cannot parse float value " + strValue);
+			Debug.LogError("Cannot parse float value " + strValue);
 			return -1;
 		}
 	}
@@ -69,7 +69,7 @@ public class CommaStringParser
 		}
 		catch (ArgumentException e)
 		{
-			Debug.LogWarning("Invalid enum value " + beforeParsed + " : " + typeof(T).FullName);
+			Debug.LogError("Invalid enum value " + beforeParsed + " : " + typeof(T).FullName);
 			return default(T); // null
 		}
 	}

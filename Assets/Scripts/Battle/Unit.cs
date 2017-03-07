@@ -811,7 +811,14 @@ public class Unit : MonoBehaviour
 		if (sprites.Length == 0)
 		{
 			Debug.LogError("Cannot find sprite for " + nameInCode);
-			sprites = Resources.LoadAll("UnitImage/notFound");
+			if (side == Side.Ally)
+			{
+				sprites = Resources.LoadAll("UnitImage/notFound");
+			}
+			else
+			{
+				sprites = Resources.LoadAll("UnitImage/notFound_enemy");
+			}
 		}
 		spriteLeftUp = sprites[1] as Sprite;
 		spriteLeftDown = sprites[3] as Sprite;

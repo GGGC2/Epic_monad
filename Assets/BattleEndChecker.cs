@@ -4,26 +4,47 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
+using System;
 
 interface BattleEndCondition
 {
+	string successMessage { get; }
 	bool Check(BattleEndChecker checker);
+}
+
+static class BattleEndConditionExtension
+{
+	public static bool CheckAndPrint(this BattleEndCondition condition, BattleEndChecker checker)
+	{
+		bool result = condition.Check(checker);
+		if (result) {
+			Debug.Log(condition.successMessage);
+		}
+		return result;
+	}
 }
 
 class PhaseChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "Win by phase"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		int currentPhase = checker.BattleData.currentPhase;
-		if (currentPhase > checker.MaxPhase) return true;
+		if (currentPhase > checker.MaxPhase) {
+			Debug.Log("Win by phase");
+			return true;
+		}
 		return false;
 	}
 }
 
 class TargetUnitAllDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+	public string successMessage { get { return "Win by all target die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var targetUnitNames = checker.TargetUnitNames;
@@ -34,6 +55,7 @@ class TargetUnitAllDieChecker : BattleEndCondition
 			where unit.GetComponent<Unit>().GetName() == unitName
 			select unitName;
 		bool allDied = notDiedUnitNames.Count() == 0; 
+
 		return allDied;
 
 		// bool remainAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetAllUnits().Any(y => Equals(y.GetComponent<Unit>().GetName(), x)));
@@ -45,7 +67,9 @@ class TargetUnitAllDieChecker : BattleEndCondition
 // '몇 명이 죽었는지'가 아니라 '몇 명이 남았는지'를 체크함.
 class TargetUnitSomeDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "target unit some die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		int remainNumberOfTargetUnit = checker.BattleData.unitManager.GetAllUnits().Count(x => checker.TargetUnitNames.Contains(x.GetComponent<Unit>().GetName()));
@@ -56,7 +80,9 @@ class TargetUnitSomeDieChecker : BattleEndCondition
 
 class TargetUnitAtLeastOneDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "target unit at least one die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		bool dieAnyTargetUnit = checker.TargetUnitNames.Any(x => checker.BattleData.unitManager.GetDeadUnitsInfo().Any(y => Equals(y.unitName, x)));
@@ -67,7 +93,9 @@ class TargetUnitAtLeastOneDieChecker : BattleEndCondition
 
 class AllyAllDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally all die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Ally);
@@ -79,7 +107,9 @@ class AllyAllDieChecker : BattleEndCondition
 // '몇 명이 죽었는지'가 아니라 '몇 명이 남았는지'를 체크함.
 class AllySomeDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally some die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		int remainNumberOfAlly = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Ally);
@@ -90,7 +120,9 @@ class AllySomeDieChecker : BattleEndCondition
 
 class AllyAtLeastOneDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally at least one die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		bool dieAnyAlly = checker.BattleData.unitManager.GetDeadUnitsInfo().Any(x => x.unitSide == Enums.Side.Ally);
@@ -101,7 +133,9 @@ class AllyAtLeastOneDieChecker : BattleEndCondition
 
 class EnemyAllDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "enemy all die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
@@ -113,7 +147,9 @@ class EnemyAllDieChecker : BattleEndCondition
 // '몇 명이 죽었는지'가 아니라 '몇 명이 남았는지'를 체크함.
 class EnemySomeDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "enemy some die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		int remainNumberOfEnemy = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
@@ -124,7 +160,9 @@ class EnemySomeDieChecker : BattleEndCondition
 
 class EnemyAtLeastOneDieChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "enemy atleast one die"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		bool dieAnyEnemy = checker.BattleData.unitManager.GetDeadUnitsInfo().Any(x => x.unitSide == Enums.Side.Enemy);
@@ -135,7 +173,9 @@ class EnemyAtLeastOneDieChecker : BattleEndCondition
 
 class TargetUnitAllReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "target unit all reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
@@ -147,7 +187,9 @@ class TargetUnitAllReachedChecker : BattleEndCondition
 
 class TargetUnitSomeReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "target unit some reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
@@ -159,7 +201,9 @@ class TargetUnitSomeReachedChecker : BattleEndCondition
 
 class TargetUnitAtLeastOneReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "target unit at least one reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
@@ -171,7 +215,9 @@ class TargetUnitAtLeastOneReachedChecker : BattleEndCondition
 
 class AllyAllReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally all reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
@@ -183,7 +229,9 @@ class AllyAllReachedChecker : BattleEndCondition
 
 class AllySomeReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally some reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
@@ -195,7 +243,9 @@ class AllySomeReachedChecker : BattleEndCondition
 
 class AllyAtLeastOneReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "ally at least one reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
@@ -207,7 +257,9 @@ class AllyAtLeastOneReachedChecker : BattleEndCondition
 
 class EnemyAllReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "enemy all reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Enemy);
@@ -219,7 +271,9 @@ class EnemyAllReachedChecker : BattleEndCondition
 
 class EnemySomeReachedChecker : BattleEndCondition
 {
-	public bool Check(BattleEndChecker checker)
+    public string successMessage { get { return "Enemy some reached"; } }
+
+    public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
 		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Enemy);
@@ -231,6 +285,7 @@ class EnemySomeReachedChecker : BattleEndCondition
 
 class EnemyAtLeastOneReachedChecker : BattleEndCondition
 {
+    public string successMessage { get { return "Enemy at least one reached"; } }
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
@@ -371,8 +426,8 @@ public class BattleEndChecker : MonoBehaviour {
 	void Update () {
 		if (!isBattleEnd)
 		{
-			isBattleWin = battleWinConditions.Any(x => x.Check(this));
-			isBattleLose = battleLoseConditions.Any(x => x.Check(this));
+			isBattleWin = battleWinConditions.Any(x => x.CheckAndPrint(this));
+			isBattleLose = battleLoseConditions.Any(x => x.CheckAndPrint(this));
 			isBattleEnd = isBattleWin || isBattleLose;
 		
 			CheckPushedButton();
