@@ -43,3 +43,6 @@ Thumbs.db
 # ignore per project vimrc
 .vimrc
 .vscode/
+
+# etc
+*.numbers
