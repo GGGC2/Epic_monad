@@ -20,7 +20,7 @@ namespace Enums {
 
 	public enum Side
 	{
-		Ally, Enemy
+		Ally, Enemy, Neutral
 	}
 
 	public enum TileColor // highlighting selected tile

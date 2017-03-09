@@ -63,6 +63,10 @@ public class HealthViewer : MonoBehaviour {
 		{
 			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.cyan;	
 		}
+		if (side == Side.Neutral)
+		{
+			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.gray;
+		}
 		else
 		{
 			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.yellow;
