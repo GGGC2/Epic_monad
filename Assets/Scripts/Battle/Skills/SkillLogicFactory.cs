@@ -18,7 +18,7 @@ public static class SkillLogicFactory
 			case "지옥 불꽃":
 			return new Reina_4_m_SkillLogic();
 			// 리니안
-			case "전자기 충격":
+			case "전자기 충격": case "전자기 충격_test":
 			return new Lenien_1_m_SkillLogic();
 			// 영
 			case "은빛 베기":
@@ -26,7 +26,7 @@ public static class SkillLogicFactory
 			// 에렌
 			case "칠흑의 화살":
 			return new Eren_1_l_SkillLogic();
-			case "광휘":
+			case "광휘": case "광휘_test":
 			return new Eren_1_r_SkillLogic();
 			// 카샤스티
 			case "더블 샷":

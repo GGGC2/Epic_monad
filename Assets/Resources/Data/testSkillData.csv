@@ -12,10 +12,10 @@ reina,1,화염 폭발,2,33 0 0 0 0,0 0 0 0 0,Power,1.0 0.7 0.9 1.1 1.3,Auto,AllD
 reina,1,화염구,1,34 0 0 0 0,0 0 0 0 0,Power,1.1 0 0 0 0,Route,Cross,1,6,0,Square,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,1.1x공격력의 피해를 줍니다.
 lenien,1,전자기 충격,1,28 0 0 0 0,0 0 0 0 0,Power,0.8 0 0 0 0,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,0.8x공격력의 피해를 줍니다.
 lenien,8,하전 파동,1,32 0 0 0 0,0 0 0 0 0,Power,0.1 0 0 0 0,Route,Cross,1,4,0,DiagonalCross,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,0.1x공격력의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 기절(1페이즈)시킵니다.
-sisterna,1,전자기 충격,1,28 0 0 0 0,0 0 0 0 0,Power,0.8 0 0 0 0,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
-sisterna,8,하전 파동,1,32 0 0 0 0,0 0 0 0 0,Power,0.1 0 0 0 0,Route,Cross,1,4,0,DiagonalCross,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
+sisterna,1,전자기 충격_test,1,28 0 0 0 0,0 0 0 0 0,Power,0.8 0 0 0 0,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
+sisterna,8,하전 파동_test,1,32 0 0 0 0,0 0 0 0 0,Power,0.1 0 0 0 0,Route,Cross,1,4,0,DiagonalCross,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
 sisterna,1,은빛 베기,1,24 28 32 36 40,0 0 0 0 0,Power,1.5 0.7 0.9 1.1 1.3,Point,Square,1,7,0,Cross,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
-sisterna,1,광휘,1,24 28 32 36 40,0 0 0 0 0,Power,1 1 1 1 1,Point,Diamond,1,7,0,Diamond,0,1,0,Buff,0 0 0 0 0,-,Area,Move,--
+sisterna,1,광휘_test,1,24 28 32 36 40,0 0 0 0 0,Power,1 1 1 1 1,Point,Diamond,1,7,0,Diamond,0,1,0,Buff,0 0 0 0 0,-,Area,Move,--
 eren,1,칠흑의 화살,2,42 0 0 0 0,0 0 0 0 0,Power,1.0 0 0 0 0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
 eren,1,광휘,3,27 0 0 0 0,2 0 0 0 0,None,0.6 0 0 0 0,Point,Diamond,0,6,0,Diamond,0,0,0,Buff,0 0 0 0 0,YellowBlast,Individual,NonMove,--
 eren,15,죽음의 화살,1,49 0 0 0 0,1 0 0 0 0,Power,0.9 0 0 0 0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Individual,NonMove,--
