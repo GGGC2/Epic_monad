@@ -131,11 +131,18 @@ public class Parser : MonoBehaviour {
 			List<SkillInfo> skillInfos = GetParsedSkillInfo();
 			foreach (SkillInfo skillInfo in skillInfos)
 			{
-				skillInfoByName.Add(skillInfo.skill.GetName(), skillInfo);
+				skillInfoByName.SmartAdd(skillInfo.skill.GetName(), skillInfo);
 			}
 		}
 
-		return skillInfoByName[skillName];
+		if (skillInfoByName.ContainsKey(skillName))
+		{
+			return skillInfoByName[skillName];
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	private static Dictionary<string, List<SkillInfo>> skillInfoByUnit;
@@ -150,7 +157,7 @@ public class Parser : MonoBehaviour {
 			{
 				if (!skillInfoByUnit.ContainsKey(skillInfo.owner))
 				{
-					skillInfoByUnit.Add(skillInfo.owner, new List<SkillInfo>());
+					skillInfoByUnit.SmartAdd(skillInfo.owner, new List<SkillInfo>());
 				}
 
 				skillInfoByUnit[skillInfo.owner].Add(skillInfo);
