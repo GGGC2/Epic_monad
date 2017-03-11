@@ -109,6 +109,13 @@ namespace Enums {
 		Etc
 	}
 
+	public enum StatusEffectCategory
+	{
+		Buff,
+		Debuff,
+		All
+	}
+
 	public enum StatusEffectType
 	{
         MaxHealthChange,

@@ -314,22 +314,6 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void DecreaseRemainPhaseStatusEffect()
-	{
-		foreach (var statusEffect in statusEffectList)
-		{
-			Debug.LogError("Status effect " + statusEffect.GetOriginSkillName());
-			Debug.LogError("isinfinite " + statusEffect.GetIsInfinite());
-			Debug.LogError("remain phase " + statusEffect.GetRemainPhase());
-			if (statusEffect.GetRemainPhase() > 0 && !statusEffect.GetIsInfinite())
-			{
-				statusEffect.DecreaseRemainPhase();
-				if (statusEffect.GetRemainPhase() == 0)
-					statusEffect.SetToBeRemoved(true);
-			}
-		}
-	}
-
 	public void UpdateStatusEffect()
 	{
 		int count = statusEffectList.Count;
@@ -378,27 +362,11 @@ public class Unit : MonoBehaviour
 				{
 					if (statusEffect.GetIsRelative(i)) // 상대값 합산
 					{
-						totalRelativeValue *= statusEffect.GetAmount(i);
-						// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-						// {
-						// 	statusEffect.DecreaseRemainStack();
-						// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-						// 	{
-						// 		statusEffect.SetToBeRemoved(true);
-						// 	}
-						// }	
+						totalRelativeValue *= statusEffect.GetAmount(i);	
 					}
 					else // 절대값 합산
 					{
 						totalAbsoluteValue += statusEffect.GetAmount(i);
-						// if (statusEffect.GetRemainStack() > 0) // 지속 단위가 횟수인 효과의 지속 횟수 감소
-						// {
-						// 	statusEffect.DecreaseRemainStack();
-						// 	if(statusEffect.GetRemainStack() == 0) // 지속 횟수 소진 시 효과 제거
-						// 	{
-						// 		statusEffect.SetToBeRemoved(true);
-						// 	}
-						// }
 					}
 				}
 			}
@@ -426,6 +394,49 @@ public class Unit : MonoBehaviour
 		this.UpdateStatusEffect();
 
 		return data * totalRelativeValue + totalAbsoluteValue;
+	}
+
+	public void UpdateRemainPhaseAtPhaseEnd()
+	{
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (!statusEffect.GetIsInfinite())
+				statusEffect.DecreaseRemainPhase();
+			if (statusEffect.GetRemainPhase() > 0)
+				newStatusEffectList.Add(statusEffect);
+		}
+
+		statusEffectList = newStatusEffectList;
+	}
+
+	public void RemainStatusEffect(Enums.StatusEffectCategory category, int num)
+	{
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+		int remainNum = num;
+		foreach (var statusEffect in statusEffectList)
+		{
+			if (remainNum == 0)
+			{
+				newStatusEffectList.Add(statusEffect);
+				continue;				
+			}
+
+			if (!statusEffect.GetIsRemovable())
+			{
+				newStatusEffectList.Add(statusEffect);
+				continue;
+			}
+
+			if (((category == Enums.StatusEffectCategory.Buff) && (statusEffect.GetIsBuff())) ||
+				((category == Enums.StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff())) ||
+				category == Enums.StatusEffectCategory.All)
+			{
+				num -= 1;
+			}
+		}
+
+		statusEffectList = newStatusEffectList;
 	}
 
 	public IEnumerator Damaged(Skill appliedSkill, Unit caster, float amount, float penetration, bool isDot, bool isHealth)

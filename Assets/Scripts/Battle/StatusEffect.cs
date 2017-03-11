@@ -188,14 +188,14 @@ public class StatusEffect {
 		flexible.display.remainPhase += phase;
 	}
 	
-	public void SubRemainPhase(int phase)
-	{
-		flexible.display.remainPhase -= phase;
-	}
-	
 	public void DecreaseRemainPhase()
 	{
 		flexible.display.remainPhase -= 1;
+	}
+
+    public void DecreaseRemainPhase(int phase)
+	{
+		flexible.display.remainPhase -= phase;
 	}
     
     public void SetRemainPhase(int phase)
@@ -208,16 +208,16 @@ public class StatusEffect {
 		flexible.display.remainStack += stack;
     }
     
-    public void SubRemainStack(int stack)
-    {
-		flexible.display.remainStack -= stack;
-    }
-    
     public void DecreaseRemainStack()
     {
 		flexible.display.remainStack -= 1;
     }
     
+    public void DecreaseRemainStack(int stack)
+    {
+		flexible.display.remainStack -= stack;
+    }
+
     public void SetRemainStack(int stack)
     {
 		flexible.display.remainStack = stack;
