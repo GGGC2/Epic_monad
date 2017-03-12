@@ -116,6 +116,13 @@ namespace Enums {
 		All
 	}
 
+	public enum DirectionCategory
+	{
+		Front,
+		Side,
+		Back
+	}
+
 	public enum StatusEffectType
 	{
         MaxHealthChange,

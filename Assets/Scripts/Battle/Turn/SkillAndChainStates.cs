@@ -549,7 +549,7 @@ namespace Battle.Turn
 			);
 
 			var attackDamage = DamageCalculator.CalculateAttackDamage(battleData, target.gameObject, unitInChain.gameObject, appliedSkill, chainCombo, targetCount);
-			if (attackDamage.directionBonus > 1f) unitInChain.PrintDirectionBonus(attackDamage.directionBonus);
+			if (attackDamage.attackDirection != DirectionCategory.Front) unitInChain.PrintDirectionBonus(attackDamage);
 			if (attackDamage.celestialBonus != 1f) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
 			if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
 			if (attackDamage.heightBonus != 1f) unitInChain.PrintHeightBonus(attackDamage.heightBonus);

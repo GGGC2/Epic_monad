@@ -120,6 +120,7 @@ public class DamageCalculator
 		public float baseDamage = 0;
 		public float relativeDamageBonus = 1.0f;
 		public float absoluteDamageBonus = 0;
+		public DirectionCategory attackDirection = DirectionCategory.Front;
 		public float directionBonus = 1.0f;
 		public float celestialBonus = 1.0f;
 		public float heightBonus = 1.0f;
@@ -139,6 +140,7 @@ public class DamageCalculator
 		AttackDamage attackDamage = new AttackDamage();
 		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, casterUnit);
 		attackDamage.directionBonus = DirectionBonus(casterUnitObject, target);
+		attackDamage.attackDirection = AttackDirection(casterUnitObject, target);
 		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
 		attackDamage.heightBonus = HeightBonus(casterUnitObject, target);
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
@@ -191,6 +193,18 @@ public class DamageCalculator
 		float directionBonus = Utility.GetDirectionBonus(casterUnitObject, target);
 		Debug.Log("directionBonus : " + directionBonus);
 		return directionBonus;
+	}
+
+	private static DirectionCategory AttackDirection(GameObject casterUnitObject, GameObject target)
+	{
+		float directionBonus = Utility.GetDirectionBonus(casterUnitObject, target);
+		Debug.Log("directionBonus : " + directionBonus);
+		if (directionBonus == 1.1f)
+			return DirectionCategory.Side;
+		else if (directionBonus == 1.25f)
+			return DirectionCategory.Back;
+		else
+			return DirectionCategory.Front; 
 	}
 
 	private static float CelestialBonus(GameObject casterUnitObject, GameObject target) {

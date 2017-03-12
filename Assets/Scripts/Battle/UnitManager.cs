@@ -252,7 +252,7 @@ public class UnitManager : MonoBehaviour {
 		LoadSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
-		GenerateUnits ();
+		GenerateUnits();
         GetEnemyUnits();
 	}
 
