@@ -410,7 +410,7 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
-	public void RemainStatusEffect(Enums.StatusEffectCategory category, int num)
+	public void RemoveStatusEffect(Enums.StatusEffectCategory category, int num)
 	{
 		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
 		int remainNum = num;
@@ -422,15 +422,23 @@ public class Unit : MonoBehaviour
 				continue;				
 			}
 
+			// 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
+			if (statusEffect.GetCaster() == this.gameObject)
+			{
+				newStatusEffectList.Add(statusEffect);
+				continue;
+			}
+
 			if (!statusEffect.GetIsRemovable())
 			{
 				newStatusEffectList.Add(statusEffect);
 				continue;
 			}
 
-			if (((category == Enums.StatusEffectCategory.Buff) && (statusEffect.GetIsBuff())) ||
-				((category == Enums.StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff())) ||
-				category == Enums.StatusEffectCategory.All)
+			bool matchIsBuff = (category == Enums.StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
+			bool matchIsDebuff = (category == Enums.StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
+			bool matchAll = category == Enums.StatusEffectCategory.All;
+			if (matchIsBuff || matchIsDebuff || matchAll)
 			{
 				num -= 1;
 			}
@@ -737,9 +745,7 @@ public class Unit : MonoBehaviour
 		if (chainCount < 2)	return;
 
 		chainBonusTextObject.SetActive(true);
-		// chainBonusTextObject.GetComponent<TextMesh>().text = "연계" + chainCount + "단";
 		chainBonusTextObject.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
-		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 
 	public void DisableChainText()
