@@ -35,24 +35,7 @@ public class SkillInfo {
   
 		string name = commaParser.Consume();
 		this.column = commaParser.ConsumeInt();
-		string originRequireAPString = commaParser.Consume();
-        string[] requireAPStringArray = originRequireAPString.Split(' ');
-		int[] requireAPArray = new int[5];
-
-		for(int i = 0; i < 5; i++)
-		{
-			int parsed = 0;
-			try
-			{
-				parsed = Int32.Parse(requireAPStringArray[i]);	
-			}
-			catch
-			{
-				Debug.LogWarning("Parse error in requireAPs : " + originRequireAPString);
-				parsed = -1;				
-			}
-			requireAPArray[i] = parsed;
-		}
+		int requireAP = commaParser.ConsumeInt();
 		string originCooldownString = commaParser.Consume();
 		string[] cooldownStringArray = originCooldownString.Split(' ');
 		int[] cooldownArray = new int[5];
@@ -91,7 +74,7 @@ public class SkillInfo {
 				}
 				catch
 				{
-					Debug.LogWarning("Parse error in powerFactors : " + originRequireAPString);
+					Debug.LogWarning("Parse error in powerFactors : " + requireAP);
 					parsed = -1;
 				}
 				powerFactorArrayArray[i][j] = parsed;
@@ -141,7 +124,7 @@ public class SkillInfo {
 
 		string skillDataText = commaParser.Consume();
 
-		this.skill = new Skill(owner, column, name, requireAPArray, cooldownArray, 
+		this.skill = new Skill(owner, column, name, requireAP, cooldownArray, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,

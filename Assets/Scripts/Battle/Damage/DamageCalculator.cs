@@ -227,8 +227,6 @@ public class DamageCalculator
 
 	private static float SmiteAmount(Unit casterUnit) {
 		float smiteAmount = 0;
-		// FIXME: smiteAmount(0) is passed wihch is multiplied in GetActualEffect
-		// Always smiteAmount is 0
 		smiteAmount = casterUnit.GetActualEffect(smiteAmount, StatusEffectType.Smite);
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
