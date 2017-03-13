@@ -12,7 +12,7 @@ public class Skill {
 	string name;
 	int level;
 	int requireAP;
-	int[] cooldownArray;
+	int cooldown;
 	
 	// damage factors in datatype Dictionary
 	Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
@@ -45,7 +45,7 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
     
-	public Skill(string owner, int column, string name, int requireAP, int[] cooldownArray, 
+	public Skill(string owner, int column, string name, int requireAP, int cooldown, 
                  Dictionary<string, float[]> powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -58,7 +58,7 @@ public class Skill {
 		this.column = column;
 		this.name = name;
 		this.requireAP = requireAP;
-		this.cooldownArray = cooldownArray;
+		this.cooldown = cooldown;
 		this.powerFactor = powerFactor;
 		this.skillType = skillType;
 		this.firstRangeForm = firstRangeForm;
@@ -93,7 +93,7 @@ public class Skill {
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
 	public int GetRequireAP() {return requireAP;}
-	public int GetCooldown() {return cooldownArray[0];}
+	public int GetCooldown() {return cooldown;}
     public Dictionary<string, float[]> GetPowerFactorDict() {return powerFactor;}
 	public float GetPowerFactor(Stat status) {return powerFactor[status.ToString()][0];} 
 	public SkillType GetSkillType() {return skillType;}

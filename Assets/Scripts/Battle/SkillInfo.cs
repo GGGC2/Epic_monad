@@ -36,23 +36,7 @@ public class SkillInfo {
 		string name = commaParser.Consume();
 		this.column = commaParser.ConsumeInt();
 		int requireAP = commaParser.ConsumeInt();
-		string originCooldownString = commaParser.Consume();
-		string[] cooldownStringArray = originCooldownString.Split(' ');
-		int[] cooldownArray = new int[5];
-		for(int i = 0; i < 5; i++)
-		{
-			int parsed = 0;
-			try
-			{
-				parsed = Int32.Parse(cooldownStringArray[i]);			
-			}
-			catch
-			{
-				Debug.LogWarning("Parse error in requireAPs : " + originCooldownString);
-				parsed = -1;				
-			}
-			cooldownArray[i] = parsed;
-		}
+		int cooldown = commaParser.ConsumeInt();
 
         // parsing coefficients for damage calculation
         string originStatTypeString = commaParser.Consume();
@@ -124,7 +108,7 @@ public class SkillInfo {
 
 		string skillDataText = commaParser.Consume();
 
-		this.skill = new Skill(owner, column, name, requireAP, cooldownArray, 
+		this.skill = new Skill(owner, column, name, requireAP, cooldown, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,
