@@ -101,9 +101,12 @@ public class UIManager : MonoBehaviour
 
 			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[i].GetName();
 			skillButton.transform.Find("APText").GetComponent<Text>().text = skillList[i].GetRequireAP().ToString() + " AP";
-			int remainCooldown = skillList[i].GetCooldown();
-			if (remainCooldown > 0)
+			var skillCooldownDict = selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict();
+			if (skillCooldownDict.ContainsKey(skillList[i].GetName()))
+			{
+				int remainCooldown = skillCooldownDict[skillList[i].GetName()];
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "재사용까지 " + remainCooldown + "페이즈";
+			}
 			else
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";
 		}

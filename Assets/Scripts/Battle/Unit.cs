@@ -287,17 +287,39 @@ public class Unit : MonoBehaviour
 		return usedSkillDict;
 	}
 
+	public void AddSkillCooldown(int phase)
+	{
+		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
+		foreach (var skill in skillList)
+		{
+			int cooldown = 0;
+			if (usedSkillDict.ContainsKey(skill.GetName()))
+				cooldown = usedSkillDict[skill.GetName()];
+			newUsedSkillDict.Add(skill.GetName(), cooldown + phase);
+		}
+		usedSkillDict = newUsedSkillDict;
+	}
+
+	public void SubSkillCooldown(int phase)
+	{
+		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
+		foreach (var skill in usedSkillDict)
+		{
+			int updatedCooldown = skill.Value - phase;
+			if (updatedCooldown > 0)
+				newUsedSkillDict.Add(skill.Key, updatedCooldown);
+		}
+		usedSkillDict = newUsedSkillDict;
+	}
+
 	public void UpdateSkillCooldown()
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
-		List<string> usedSkillKeys = new List<string>();
-		foreach (var skill in usedSkillKeys)
+		foreach (var skill in usedSkillDict)
 		{
-			usedSkillDict[skill]--;
-			if (usedSkillDict[skill] != 0)
-			{
-				newUsedSkillDict.Add(skill, usedSkillDict[skill]);
-			}
+			int updatedCooldown = skill.Value - 1;
+			if (updatedCooldown > 0)
+				newUsedSkillDict.Add(skill.Key, updatedCooldown);
 		}
 		usedSkillDict = newUsedSkillDict;
 	}
