@@ -41,24 +41,26 @@ public class DamageCalculator
 		return damageList;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> lhs, Dictionary<GameObject, DamageInfo> rhs)
+	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> leftDamgeList, Dictionary<GameObject, DamageInfo> rightDamageList)
 	{
 		var merged = new Dictionary<GameObject, DamageInfo>();
-		foreach (var kv in lhs)
+		foreach (var damage in leftDamgeList)
 		{
-			merged[kv.Key] = kv.Value;
+			var target = damage.Key;
+			merged[target] = damage.Value;
 		}
-		foreach (var kv in rhs)
+		foreach (var damage in rightDamageList)
 		{
-			if (merged.ContainsKey(kv.Key))
+			var target = damage.Key;
+			if (merged.ContainsKey(target))
 			{
-				foreach (var caster in rhs[kv.Key].casters)
-					merged[kv.Key].casters.Add(caster);
-				merged[kv.Key].damage += rhs[kv.Key].damage;
+				foreach (var caster in rightDamageList[target].casters)
+					merged[target].casters.Add(caster);
+				merged[target].damage += rightDamageList[target].damage;
 			}
 			else
 			{
-				merged[kv.Key] = rhs[kv.Key];
+				merged[target] = rightDamageList[target];
 			}
 		}
 		return merged;
