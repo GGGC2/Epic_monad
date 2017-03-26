@@ -266,7 +266,7 @@ public class DamageCalculator
 		// 체인 해제
 		if (isHealth == true)
 		{
-			// 효과로 인한 대미지 증감 효과 적용 - 이거 다시 짤 것
+			// 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
 			if (target.HasStatusEffect(StatusEffectType.DamageChange))
 			{
 				actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.DamageChange);

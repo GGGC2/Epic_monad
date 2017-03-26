@@ -73,11 +73,6 @@ public class Unit : MonoBehaviour
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
-	public List<StatusEffect> GetAllStatusEffectList()
-	{
-		return statusEffectList;
-	}
-
 	public Sprite GetCurrentSprite()
 	{
 		return GetComponent<SpriteRenderer>().sprite;
@@ -166,6 +161,11 @@ public class Unit : MonoBehaviour
     {
         return statusEffectList;
     }
+
+	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList)
+	{
+		statusEffectList = newStatusEffectList;
+	}
 
 	public int GetMaxHealth()
 	{
@@ -375,6 +375,7 @@ public class Unit : MonoBehaviour
 		float totalAbsoluteValue = 0.0f; // 절대값
 		float totalRelativeValue = 1.0f; // 상대값
 
+		// 효과로 인한 변동값 계산
 		foreach (var statusEffect in statusEffectList)
 		{
 			int num = statusEffect.fixedElem.actuals.Count;
@@ -394,7 +395,7 @@ public class Unit : MonoBehaviour
 			}
 		}
 
-		// 상대값 공격력 변동 효과 합산
+		// 상대값 공격력 변동 특성 영향 합산
 		float additionalPowerBonus = 1.0f;					
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
@@ -403,7 +404,7 @@ public class Unit : MonoBehaviour
 		}
 		totalRelativeValue *= additionalPowerBonus;
 
-		// 절대값 방어력 변동 효과 합산
+		// 절대값 방어력 변동 특성 영향 합산
 		float additionalDefenseBouns = 0;
 		if (statusEffectType == StatusEffectType.DefenseChange)
 		{
@@ -411,7 +412,8 @@ public class Unit : MonoBehaviour
 			additionalDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
 		}
 		totalAbsoluteValue += additionalDefenseBouns;
-					
+
+		// 저항력, 민첩성, 기타등등...추가할 것			
 		
 		this.UpdateStatusEffect();
 
