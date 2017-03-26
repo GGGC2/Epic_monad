@@ -446,7 +446,7 @@ namespace Battle.Turn
 				GameObject focusedTile = chainInfo.GetTargetArea()[0];
 				FocusTile(focusedTile.GetComponent<Tile>());
 				battleData.currentState = CurrentState.ApplySkill;
-				yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo, chainCombo));
+				yield return battleManager.StartCoroutine(ApplyChainableSkill(battleData, chainInfo, chainCombo));
 			}
 
 			battleData.SelectedUnit.DisableChainText();
@@ -479,7 +479,7 @@ namespace Battle.Turn
 		}
 
 		// 체인 가능 스킬일 경우의 스킬 시전 코루틴. 체인 정보와 배수를 받는다.
-		private static IEnumerator ApplySkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+		private static IEnumerator ApplyChainableSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 		{
 			GameObject unitObjectInChain = chainInfo.GetUnit();
 			Unit unitInChain = unitObjectInChain.GetComponent<Unit>();
@@ -534,6 +534,15 @@ namespace Battle.Turn
 					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
 				}
 			}
+
+			// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
+			List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+			newStatusEffectList = unitInChain.GetStatusEffectList().FindAll(x => !(x.GetIsDisposable() &&
+																				(x.GetStatusEffectType() == StatusEffectType.PowerChange ||
+																				x.GetStatusEffectType() == StatusEffectType.DamageChange ||
+																				x.GetStatusEffectType() == StatusEffectType.Smite)));
+			unitInChain.SetStatusEffectList(newStatusEffectList);
+
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
 			yield return new WaitForSeconds(0.5f);
