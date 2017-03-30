@@ -88,8 +88,7 @@ public class DamageCalculator
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
 			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
-			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage,
-				appliedSkill.GetPenetration(), false, true);
+			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage, false, true);
 
 			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
 			damageList.Add(targetUnit.gameObject, damageInfo);
@@ -254,7 +253,7 @@ public class DamageCalculator
 		return reflectAmount;
 	}
 
-	public static float GetActualDamage(Skill appliedSkill, Unit target, Unit caster, float damageAmount, float penetration, bool isDot, bool isHealth)
+	public static float GetActualDamage(Skill appliedSkill, Unit target, Unit caster, float damageAmount, bool isDot, bool isHealth)
 	{
 		float actualDamage = damageAmount;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
@@ -269,11 +268,8 @@ public class DamageCalculator
 		if (isHealth == true)
 		{
 			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
-			if (target.HasStatusEffect(StatusEffectType.DamageChange))
-			{
-				actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.DamageChange);
-			}
-
+			actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.TakenDamageChange);
+			
 			float targetDefense = target.GetActualStat(Stat.Defense);
 			float targetResistance = target.GetActualStat(Stat.Resistance);
 
@@ -297,12 +293,12 @@ public class DamageCalculator
 			if (caster.GetUnitClass() == UnitClass.Melee)
 			{
 				// 실제 피해 = 원래 피해 x 200/(200+방어력)
-				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Defense) * (1.0f - penetration));
+				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Defense));
 				Debug.Log("Actual melee damage without status effect : " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.Magic)
 			{
-				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance) * (1.0f - penetration));
+				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance));
 				Debug.Log("Actual magic damage without status effect: " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.None)
