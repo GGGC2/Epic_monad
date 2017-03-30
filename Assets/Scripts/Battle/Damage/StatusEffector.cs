@@ -16,7 +16,7 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster.gameObject))
 			.ToList();
 
-		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
+		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}
@@ -28,7 +28,7 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster.gameObject))
 			.ToList();
 
-		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects);
+		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}

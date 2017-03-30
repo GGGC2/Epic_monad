@@ -138,7 +138,8 @@ namespace Enums {
         Silence, // 침묵: 기술 사용 불가
         RequireMoveAPChange, // 이동 시 행동력 소모 증감
         RequireSkillAPChange, // 기술 사용 시 행동력 소모 증감
-        DamageChange, // 받는 피해 증감
+        DamageChange, // 주는 데미지 증감
+		TakenDamageChange, // 받는 데미지 증감
         HealChange, // 받는 회복량 증감
         ContinuousDamage, // 지속 대미지
 		ContinuousHeal, // 지속 힐

@@ -11,11 +11,11 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		this.passiveSkills = passiveSkills;
 	}
 
-	public override void ApplyStatusEffectByKill(Unit caster)
+	public override void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
 	{
 		foreach (var skill in passiveSkills)
 		{
-			skill.ApplyStatusEffectByKill(caster);
+			skill.ApplyStatusEffectByKill(hitInfo, deadUnit);
 		}
 	}
 
@@ -41,10 +41,20 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 	}
 
 	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
-	{;
+	{
 		foreach (var skill in passiveSkills)
 		{
 			attackDamage = skill.ApplyBonusDamageFromEachPassive(attackDamage, caster, appliedSkill, target, targetCount);
+		}
+
+		return attackDamage;
+	}
+
+	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	{
+		foreach (var skill in passiveSkills)
+		{
+			attackDamage = skill.ApplyTacticalBonusFromEachPassive(attackDamage, caster, target);
 		}
 
 		return attackDamage;
@@ -87,6 +97,24 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 			defense = skill.ApplyIgnoreDefenceAbsoluteValueByEachPassive(defense, caster, target);
 		}
 		return defense;
+	}
+
+	public override float ApplyIgnoreResistanceRelativeValueByEachPassive(float resistance, Unit caster, Unit target)
+	{
+		foreach (var skill in passiveSkills)
+		{
+			resistance = skill.ApplyIgnoreDefenceRelativeValueByEachPassive(resistance, caster, target);
+		}
+		return resistance;
+	}
+
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(float resistance, Unit caster, Unit target)
+	{
+		foreach (var skill in passiveSkills)
+		{
+			resistance = skill.ApplyIgnoreDefenceAbsoluteValueByEachPassive(resistance, caster, target);
+		}
+		return resistance;
 	}
 
 	public override void triggerActiveSkillDamageApplied(Unit yeong)

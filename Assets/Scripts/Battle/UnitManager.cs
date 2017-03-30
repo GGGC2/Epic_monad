@@ -58,7 +58,7 @@ public class UnitManager : MonoBehaviour {
 	{
 		foreach (var unit in GetAllUnits())
 		{
-			unit.GetComponent<Unit>().latelyHitUnits.Clear();
+			unit.GetComponent<Unit>().latelyHitInfos.Clear();
 		}
 	}
 
@@ -162,17 +162,19 @@ public class UnitManager : MonoBehaviour {
 		Debug.Log("Generate units complete");
 	}
 
-	public void DeleteDeadUnit(GameObject unitObject)
+	public void DeleteDeadUnit(GameObject deadUnitObject)
 	{
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var unit in unitObject.GetComponent<Unit>().latelyHitUnits)
+		foreach (var hitInfo in deadUnitObject.GetComponent<Unit>().latelyHitInfos)
 		{
-			List<PassiveSkill> passiveSkills = unit.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(unit);
+			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnitObject.GetComponent<Unit>());
+
+			SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
 		}
 
-		units.Remove(unitObject);
-		readiedUnits.Remove(unitObject);
+		units.Remove(deadUnitObject);
+		readiedUnits.Remove(deadUnitObject);
 	}
 
 	public void DeleteRetreatUnit(GameObject unitObject)

@@ -151,6 +151,8 @@ public class DamageCalculator
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = casterUnit.GetLearnedPassiveSkillList();
 		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, casterUnit, appliedSkill, targetUnit, targetCount);
+		// 시전자 효과에 의한 추가데미지
+		attackDamage.baseDamage = casterUnit.GetActualEffect(attackDamage.baseDamage, StatusEffectType.DamageChange);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.relativeDamageBonus
@@ -266,7 +268,7 @@ public class DamageCalculator
 		// 체인 해제
 		if (isHealth == true)
 		{
-			// 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
+			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
 			if (target.HasStatusEffect(StatusEffectType.DamageChange))
 			{
 				actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.DamageChange);
@@ -276,17 +278,21 @@ public class DamageCalculator
 			float targetResistance = target.GetActualStat(Stat.Resistance);
 
 			// 기술에 의한 방어/저항 무시 (상대값)
-			// targetDefence = ApplyIgnoreDefenceBySkill(appliedSkill, );
+			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceRelativeValueBySkill(targetDefense, caster, target);
+			targetResistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceRelativeValueBySkill(targetResistance, caster, target);
 
 			// 특성에 의한 방어/저항 무시 (상대값)
 			List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
 			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(targetDefense, caster, target);
+			targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(targetResistance, caster, target);
 
 			// 기술에 의한 방어/저항 무시 (절대값)
-			// targetDefence = ApplyIgnoreDefenceBySkill(appliedSkill, );
+			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceAbsoluteValueBySkill(targetDefense, caster, target);
+			targetResistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceAbsoluteValueBySkill(targetResistance, caster, target);
 
 			// 특성에 의한 방어/저항 무시 (절대값)
 			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(targetDefense, caster, target);
+			targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(targetResistance, caster, target);
 
 			if (caster.GetUnitClass() == UnitClass.Melee)
 			{
@@ -304,11 +310,13 @@ public class DamageCalculator
 				// actualDamage = actualDamage;
 			}
 
-			// 기술 특성으로 인한 데미지 증감 효과 - 아직 미구현
+			// 피격자의 기술 특성으로 인한 데미지 증감 효과 - 아직 미구현
 
+			List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
+			
 			finalDamage = (int) actualDamage;
 
-			// 보호막에 따른 대미지 삭감
+			// 보호막에 따른 대미지 삭감 - 실제로 여기서 실드를 깎으면 안됨. 다른곳으로 옮길 것.
 			if (target.HasStatusEffect(StatusEffectType.Shield))
 			{
 				List<StatusEffect> statusEffectList = target.GetStatusEffectList();

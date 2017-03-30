@@ -100,7 +100,20 @@ public class UIManager : MonoBehaviour
 			}
 
 			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[i].GetName();
-			skillButton.transform.Find("APText").GetComponent<Text>().text = skillList[i].GetRequireAP().ToString() + " AP";
+			
+			Skill skill = skillList[i];
+			Unit caster = selectedUnitObject.GetComponent<Unit>();
+			int originAP = skill.GetRequireAP();
+			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(originAP, caster);			
+			Text apText = skillButton.transform.Find("APText").GetComponent<Text>();
+			apText.text = actualAP.ToString() + " AP";
+			if (originAP < actualAP)
+				apText.color = Color.red;
+			else if (originAP > actualAP)
+				apText.color = Color.green;
+			else
+				apText.color = Color.white;
+
 			var skillCooldownDict = selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict();
 			if (skillCooldownDict.ContainsKey(skillList[i].GetName()))
 			{

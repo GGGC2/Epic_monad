@@ -5,7 +5,7 @@ namespace Battle.Skills
 {
 public class Kashyasty_2_r_SkillLogic : BasePassiveSkillLogic {
 
-	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster)
+	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
 	{
 		//'보너스'에만 2배
 		float additionalCelestialBonus = 2;

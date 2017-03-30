@@ -508,11 +508,13 @@ namespace Battle.Turn
 					continue;
 				}
 
+				// 데미지 적용
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
 					yield return battleManager.StartCoroutine(ApplyDamage(battleData, unitInChain, target, appliedSkill, chainCombo, targets.Count, target == targets.Last()));
 				}
 
+				// 효과 외의 부가 액션 (AP 감소 등)
 				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
 
 				// 기술의 상태이상은 기술이 적용된 후에 붙인다.

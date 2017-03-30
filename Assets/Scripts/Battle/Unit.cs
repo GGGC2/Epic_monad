@@ -9,6 +9,18 @@ using Battle.Skills;
 
 using Save;
 
+public class HitInfo
+{
+	public readonly Unit caster;
+	public readonly Skill skill;
+
+	public HitInfo(Unit caster, Skill skill)
+	{
+		this.caster = caster;
+		this.skill = skill;
+	}
+}
+
 public class Unit : MonoBehaviour
 {
 
@@ -22,7 +34,7 @@ public class Unit : MonoBehaviour
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
-	public List<Unit> latelyHitUnits;
+	public List<HitInfo> latelyHitInfos;
 
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
@@ -109,10 +121,17 @@ public class Unit : MonoBehaviour
         }
     }
 
+	// 이걸 이용해서 코드를 바꾸자
+	class ActualStat
+	{
+		int statValue;
+		List<StatusEffect> appliedStatusEffects;
+	}
+
     public int GetActualStat(Stat stat)
     {
         int actualStat = GetStat(stat);
-        StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString()+"Change");
+        StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString() + "Change");
 
 		// 능력치 증감 효과 적용
 		actualStat = (int) GetActualEffect(actualStat, statusChange);
@@ -413,7 +432,7 @@ public class Unit : MonoBehaviour
 		}
 		totalAbsoluteValue += additionalDefenseBouns;
 
-		// 저항력, 민첩성, 기타등등...추가할 것			
+		// 데미지, 저항력, 민첩성, 기타등등...추가할 것			
 		
 		this.UpdateStatusEffect();
 
@@ -475,10 +494,6 @@ public class Unit : MonoBehaviour
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
 
-		// 공격이 물리인지 마법인지 체크
-		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
-		// 대미지 증가/감소 효과 적용
-		// 보호막 있을 경우 대미지 삭감
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true)
@@ -488,7 +503,7 @@ public class Unit : MonoBehaviour
 			if (finalDamage > 0)
 			{
 				currentHealth -= finalDamage;
-				latelyHitUnits.Add(caster);
+				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
 			}
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -622,6 +637,9 @@ public class Unit : MonoBehaviour
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
         int requireSkillAP = selectedSkill.GetRequireAP();
+
+		// 기술 자체에 붙은 행동력 소모 증감효과 적용
+		requireSkillAP = SkillLogicFactory.Get(selectedSkill).CalculateAP(requireSkillAP, this);
 
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
@@ -841,6 +859,7 @@ public class Unit : MonoBehaviour
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<StatusEffect>();
+		latelyHitInfos = new List<HitInfo>();
 
 		healthViewer.SetInitHealth(maxHealth, side);
 	}

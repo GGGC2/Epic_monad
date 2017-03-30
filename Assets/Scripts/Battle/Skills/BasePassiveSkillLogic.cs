@@ -9,11 +9,11 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill = null;
 
-	public virtual void ApplyStatusEffectByKill(Unit caster)
+	public virtual void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
 	{
 	}
 
-	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects)
+	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
 	{
 	}
 
@@ -37,12 +37,22 @@ public class BasePassiveSkillLogic
 		return defense;
 	}
 
+	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(float resistance, Unit caster, Unit target)
+	{
+		return resistance;
+	}
+
+	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(float resistance, Unit caster, Unit target)
+	{
+		return resistance;
+	}
+
 	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
 	{
 		return attackDamage;
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster)
+	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
 	{
 		return attackDamage;
 	}

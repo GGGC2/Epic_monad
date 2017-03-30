@@ -28,6 +28,8 @@ public static class SkillLogicFactory
 			return new Eren_1_l_SkillLogic();
 			case "광휘": case "광휘_test":
 			return new Eren_1_r_SkillLogic();
+			case "죽음의 화살": case "죽음의 화살_test":
+			return new Eren_3_l_SkillLogic();
 			// 카샤스티
 			case "더블 샷":
 			return new Kashyasty_1_l_SkillLogic();
@@ -59,6 +61,9 @@ public static class SkillLogicFactory
 			case "핀토스의 긍지":
 			passiveSkillLogic = new Reina_0_1_SkillLogic();
 			break;
+			case "상처 태우기":
+			passiveSkillLogic = new Reina_2_l_SkillLogic();
+			break;
 			case "불의 파동":
 			passiveSkillLogic = new Reina_2_m_SkillLogic();
 			break;
@@ -68,7 +73,13 @@ public static class SkillLogicFactory
 			case "흩어져도 죽는다":
 			passiveSkillLogic = new Reina_5_m_SkillLogic();
 			break;
+			case "열상 낙인":
+			passiveSkillLogic = new Reina_7_m_SkillLogic();
+			break;
 			// 리니안
+			case "에너지 변환":
+			passiveSkillLogic = new Lenien_1_l_SkillLogic();
+			break;
 			case "전도체":
 			passiveSkillLogic = new Lenien_2_r_SkillLogic();
 			break;
@@ -100,6 +111,9 @@ public static class SkillLogicFactory
 			break;
 			case "진형 붕괴":
 			passiveSkillLogic = new Eren_6_m_SkillLogic();
+			break;
+			case "압도적인 공포":
+			passiveSkillLogic = new Eren_7_l_SkillLogic();
 			break;
 			// 트리아나
 			case "나무 껍질":

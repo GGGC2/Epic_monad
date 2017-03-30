@@ -7,16 +7,20 @@ using System.Linq;
 namespace Battle.Skills
 {
 public class Eren_1_r_SkillLogic : BaseSkillLogic {
-	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects)
+	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster)
 	{
-		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "강타");
-		statusEffect1st.SetRemainPhase(2);
-		statusEffect1st.SetAmount(0, 10);
-		statusEffect1st.SetAmount(1, 46);
+		StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
+		int stack = 0;
 
-		var statusEffect2nd = statusEffects.Find(se => se.GetDisplayName() == "저항력 감소");
-		statusEffect2nd.SetRemainPhase(5);
-		statusEffect2nd.SetAmount(0, -100);
+		if (uniqueStatusEffect != null)
+			stack = uniqueStatusEffect.GetRemainStack();
+		
+		// 0.6(+흡수 중첩당 0.1)x공격력
+		float amount = (0.6f + (stack * 0.1f)) * caster.GetActualStat(Stat.Power); 
+
+		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "강타");
+		statusEffect1st.SetRemainPhase(999);
+		statusEffect1st.SetAmount(0, amount);
 	}
 }
 }
