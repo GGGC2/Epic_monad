@@ -133,16 +133,20 @@ namespace Enums {
 		UsedAPChange,
 		CurrentAPChange,
 		EvasionChange,
-		NoneChange,
         Smite, // 강타: 공격 시 추가 피해
         Silence, // 침묵: 기술 사용 불가
         RequireMoveAPChange, // 이동 시 행동력 소모 증감
         RequireSkillAPChange, // 기술 사용 시 행동력 소모 증감
         DamageChange, // 주는 데미지 증감
 		TakenDamageChange, // 받는 데미지 증감
+		FireWeakness, // 받는 속성피해 증가
+		WaterWeakness,
+		PlantWeakness,
+		MetalWeakness,
         HealChange, // 받는 회복량 증감
-        ContinuousDamage, // 지속 대미지
-		ContinuousHeal, // 지속 힐
+		Wound, // 내상 : 받는 회복량 감소
+        DamageOverPhase, // 지속 대미지
+		HealOverPhase, // 지속 힐
 		Bind, // 속박: 이동 불가
         Confused, // 혼란: 적과 아군을 반대로 인식
         Faint, // 기절: 턴이 돌아오면 자동 휴식
@@ -150,6 +154,7 @@ namespace Enums {
 		Shield,
 		ConditionalShield, // 조건부 보호막: 특정 조건 만족 시 보호막 발동
 		Reflect, // 반사: 받는 피해의 일부만큼 공격자에게 피해
+		Taunt, // 도발
         Etc // 위 분류에 해당하지 않는 효과
 	}
 }

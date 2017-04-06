@@ -539,11 +539,11 @@ public class Unit : MonoBehaviour
 	{
 		float totalAmount = 0.0f;
 
-		if (this.HasStatusEffect(StatusEffectType.ContinuousDamage))
+		if (this.HasStatusEffect(StatusEffectType.DamageOverPhase))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.IsOfType(StatusEffectType.ContinuousDamage))
+				if (statusEffect.IsOfType(StatusEffectType.DamageOverPhase))
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
@@ -558,11 +558,11 @@ public class Unit : MonoBehaviour
 	{
 		float totalAmount = 0.0f;
 
-		if (this.HasStatusEffect(StatusEffectType.ContinuousHeal))
+		if (this.HasStatusEffect(StatusEffectType.HealOverPhase))
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
-				if (statusEffect.IsOfType(StatusEffectType.ContinuousHeal))
+				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase))
 				{
 					totalAmount += statusEffect.GetAmount();
 				}
