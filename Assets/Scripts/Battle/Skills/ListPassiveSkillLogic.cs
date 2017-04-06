@@ -96,5 +96,10 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 			skillLogic.triggerActiveSkillDamageApplied(yeong);
 		}
 	}
-}
+    public override void triggerDamaged(Unit unit, int damage) {
+        foreach (var skillLogic in passiveSkills) {
+            skillLogic.triggerDamaged(unit, damage);
+        }
+    }
+    }
 }

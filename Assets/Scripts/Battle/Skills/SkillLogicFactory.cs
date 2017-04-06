@@ -38,7 +38,13 @@ public static class SkillLogicFactory
 			return new LifeDrainSkillLogic();
 			case "이매진 블릿":
 			return new ImagineBulletSkillLogic();
-			default:
+            
+            //큐리
+            case "수상한 덩어리":
+            return new Curi_1_m_SkillLogic();
+            case "알칼리 폭탄":
+            return new Curi_2_r_SkillLogic();
+            default:
 			return new BaseSkillLogic();
 		}
 	}
@@ -112,9 +118,21 @@ public static class SkillLogicFactory
 			case "장미의 사수":
 			passiveSkillLogic = new Kashyasty_2_r_SkillLogic();
 			break;
-			default:
+            // 큐리
+            case "호기심":
+            passiveSkillLogic = new Curi_1_1_SkillLogic();
+            break;
+            case "신속 반응":
+            passiveSkillLogic = new Curi_2_1_SkillLogic();
+            break;
+            case "동적 평형":
+            passiveSkillLogic = new Curi_3_1_SkillLogic();
+            break;
+            
+            default:
 			passiveSkillLogic = new BasePassiveSkillLogic();
-			break;
+            break;
+           
 		}
 
 		passiveSkillLogic.passiveSkill = passiveSkill;

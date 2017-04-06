@@ -59,5 +59,9 @@ public class BasePassiveSkillLogic
 	public virtual void triggerActiveSkillDamageApplied(Unit yeong)
 	{
 	}
+    public virtual void triggerDamaged(Unit unit, int damage) 
+    {
+        
+    }
 }
 }
