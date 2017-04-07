@@ -510,7 +510,8 @@ namespace Battle.Turn
 
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
-					yield return battleManager.StartCoroutine(ApplyDamage(battleData, unitInChain, target, appliedSkill, chainCombo, targets.Count, target == targets.Last()));
+                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, unitInChain, target, targets.Count);
+					yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
 				}
 
 				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
@@ -541,14 +542,21 @@ namespace Battle.Turn
 			battleData.alreadyMoved = false;
 		}
 
-		private static IEnumerator ApplyDamage(BattleData battleData, Unit unitInChain, Unit target, Skill appliedSkill, int chainCombo, int targetCount, bool isLastTarget)
+		private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
 		{
+            Unit unitInChain = skillInstanceData.getCaster();
+            Unit target = skillInstanceData.getTarget();
+            Skill appliedSkill = skillInstanceData.getSkill();
+            int targetCount = skillInstanceData.getTargetCount();
+
 			var passiveSkillsOfAttacker = unitInChain.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkillsOfAttacker).triggerActiveSkillDamageApplied(
 				unitInChain
 			);
 
-			var attackDamage = DamageCalculator.CalculateAttackDamage(battleData, target.gameObject, unitInChain.gameObject, appliedSkill, chainCombo, targetCount);
+			DamageCalculator.CalculateAttackDamage(skillInstanceData, battleData, chainCombo);
+            DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();
+
 			if (attackDamage.attackDirection != DirectionCategory.Front) unitInChain.PrintDirectionBonus(attackDamage);
 			if (attackDamage.celestialBonus != 1f) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
 			if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
@@ -635,7 +643,8 @@ namespace Battle.Turn
 				*/
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
-					yield return battleManager.StartCoroutine(ApplyDamage(battleData, selectedUnit, target, appliedSkill, 1, targets.Count, target == targets.Last()));
+                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, selectedUnit, target, targets.Count);
+                    yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, 1, target == targets.Last()));
 				}
 
 				/* 이것도 팩토리로

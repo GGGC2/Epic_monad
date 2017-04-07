@@ -5,14 +5,12 @@ namespace Battle.Skills
 {
 public class Eren_3_m_SkillLogic : BasePassiveSkillLogic {
 
-	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
-	{
+	public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) 
+    {
 		float damageBonus = 1.2f;
 		
-		if (target.GetMaxHealth() < caster.GetMaxHealth())
-			attackDamage.relativeDamageBonus *= damageBonus;
-		
-		return attackDamage;
+		if (skillInstanceData.getTarget().GetMaxHealth() < skillInstanceData.getCaster().GetMaxHealth())
+			skillInstanceData.getDamage().relativeDamageBonus *= damageBonus;
 	}
 }
 }

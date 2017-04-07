@@ -5,9 +5,9 @@ using Enums;
 
 namespace Battle.Skills {
     public class Curi_2_r_SkillLogic : BaseSkillLogic {
-        public override DamageCalculator.AttackDamage ApplyAdditionalDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
+        public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Vector2 targetPosition = targetUnit.GetPosition();
+            Vector2 targetPosition = skillInstanceData.getTarget().GetPosition();
             Tile targetTile =  tileManager.GetTile(targetPosition).GetComponent<Tile>();
 
             List<GameObject> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, Direction.Left);
@@ -20,10 +20,7 @@ namespace Battle.Skills {
                     waterTileCount++;
                 }
             }
-            attackDamage.relativeDamageBonus *= (1 + waterTileCount * 0.1f);
-
-            return attackDamage;
-            
+            skillInstanceData.getDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
         }
     }
 }

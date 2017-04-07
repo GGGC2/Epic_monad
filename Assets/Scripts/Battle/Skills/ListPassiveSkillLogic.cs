@@ -4,26 +4,26 @@ namespace Battle.Skills
 {
 public class ListPassiveSkillLogic : BasePassiveSkillLogic
 {
-	List<BasePassiveSkillLogic> passiveSkills;
+	List<BasePassiveSkillLogic> passiveSkillLogics;
 
-	public ListPassiveSkillLogic(List<BasePassiveSkillLogic> passiveSkills)
+	public ListPassiveSkillLogic(List<BasePassiveSkillLogic> passiveSkillLogics)
 	{
-		this.passiveSkills = passiveSkills;
+		this.passiveSkillLogics = passiveSkillLogics;
 	}
 
 	public override void ApplyStatusEffectByKill(Unit caster)
 	{
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skill.ApplyStatusEffectByKill(caster);
+			skillLogic.ApplyStatusEffectByKill(caster);
 		}
 	}
 
 	public override bool checkEvade()
 	{
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			if (skill.checkEvade())
+			if (skillLogic.checkEvade())
 			{
 				return true;
 			}
@@ -34,28 +34,25 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 
 	public override void triggerEvasionEvent(BattleData battleData, Unit unit)
 	{
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skill.triggerEvasionEvent(battleData, unit);
+			skillLogic.triggerEvasionEvent(battleData, unit);
 		}
 	}
 
-	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
-	{;
-		foreach (var skill in passiveSkills)
+	public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) { 
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			attackDamage = skill.ApplyBonusDamageFromEachPassive(attackDamage, caster, appliedSkill, target, targetCount);
+			skillLogic.ApplyBonusDamageFromEachPassive(skillInstanceData);
 		}
-
-		return attackDamage;
 	}
 
 	public override float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		float totalAdditionalPowerBonus = 1.0f;
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			totalAdditionalPowerBonus *= skill.GetAdditionalRelativePowerBonus(caster);
+			totalAdditionalPowerBonus *= skillLogic.GetAdditionalRelativePowerBonus(caster);
 		}
 
 		return totalAdditionalPowerBonus;
@@ -64,40 +61,40 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 	public override float GetAdditionalAbsoluteDefenseBonus(Unit caster)
 	{
 		float totalAdditionalDefenseBonus = 0;
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			totalAdditionalDefenseBonus += skill.GetAdditionalAbsoluteDefenseBonus(caster);
+			totalAdditionalDefenseBonus += skillLogic.GetAdditionalAbsoluteDefenseBonus(caster);
 		}
 		return totalAdditionalDefenseBonus;
 	}
 
 	public override float ApplyIgnoreDefenceRelativeValueByEachPassive(float defense, Unit caster, Unit target)
 	{
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			defense = skill.ApplyIgnoreDefenceRelativeValueByEachPassive(defense, caster, target);
+			defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(defense, caster, target);
 		}
 		return defense;
 	}
 
 	public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(float defense, Unit caster, Unit target)
 	{
-		foreach (var skill in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			defense = skill.ApplyIgnoreDefenceAbsoluteValueByEachPassive(defense, caster, target);
+			defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(defense, caster, target);
 		}
 		return defense;
 	}
 
 	public override void triggerActiveSkillDamageApplied(Unit yeong)
 	{
-		foreach (var skillLogic in passiveSkills)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
 			skillLogic.triggerActiveSkillDamageApplied(yeong);
 		}
 	}
     public override void triggerDamaged(Unit unit, int damage) {
-        foreach (var skillLogic in passiveSkills) {
+        foreach (var skillLogic in passiveSkillLogics) {
             skillLogic.triggerDamaged(unit, damage);
         }
     }

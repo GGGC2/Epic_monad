@@ -89,7 +89,10 @@ public class DamageCalculator
 		foreach (var target in targets)
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
-			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnitObject.GetComponent<Unit>(), targetUnit, targets.Count);
+			CalculateAttackDamage(skillInstanceData, battleData, chainCombo);
+            float attackDamage = skillInstanceData.getDamage().resultDamage;
+
 			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage,
 				appliedSkill.GetPenetration(), false, true);
 
@@ -131,28 +134,28 @@ public class DamageCalculator
 		public float resultDamage = 0;
 	}
 
-	public static AttackDamage CalculateAttackDamage(BattleData battleData, GameObject target, GameObject casterUnitObject, Skill appliedSkill, int chainCombo, int targetCount)
+	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo)
 	{
-		Unit casterUnit = casterUnitObject.GetComponent<Unit>();
-		Unit targetUnit = target.GetComponent<Unit>();
-		// 방향 체크.
-		Utility.GetDegreeAtAttack(casterUnitObject, target);
-		BattleManager battleManager = battleData.battleManager;
+        Unit caster = skillInstanceData.getCaster();
+        Unit target = skillInstanceData.getTarget();
+        GameObject casterAsGameObject = caster.gameObject;
+        GameObject targetAsGameObject = target.gameObject;
+        AttackDamage attackDamage = skillInstanceData.getDamage();
+        Skill appliedSkill = skillInstanceData.getSkill();
 
-		AttackDamage attackDamage = new AttackDamage();
-		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, casterUnit);
-		attackDamage.directionBonus = DirectionBonus(casterUnitObject, target);
-		attackDamage.attackDirection = AttackDirection(casterUnitObject, target);
-		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
-		attackDamage.heightBonus = HeightBonus(casterUnitObject, target);
+		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
+		attackDamage.directionBonus = DirectionBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.attackDirection = AttackDirection(casterAsGameObject, targetAsGameObject);
+		attackDamage.celestialBonus = CelestialBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.heightBonus = HeightBonus(casterAsGameObject, targetAsGameObject);
 		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
-		attackDamage.smiteAmount = SmiteAmount(casterUnit);
+		attackDamage.smiteAmount = SmiteAmount(caster);
 
 		// 해당 기술의 추가데미지 계산
-		attackDamage = ApplyBonusDamageFromEachSkill(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
+		ApplyBonusDamageFromEachSkill(skillInstanceData);
 		// 특성에 의한 추가데미지
-		List<PassiveSkill> passiveSkills = casterUnit.GetLearnedPassiveSkillList();
-		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, casterUnit, appliedSkill, targetUnit, targetCount);
+		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.relativeDamageBonus
@@ -162,8 +165,6 @@ public class DamageCalculator
 									* attackDamage.celestialBonus
 									* attackDamage.heightBonus
 									* attackDamage.chainBonus;
-
-		return attackDamage;
 	}
 
 	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
@@ -234,10 +235,10 @@ public class DamageCalculator
 		return smiteAmount;
 	}
 
-	private static DamageCalculator.AttackDamage ApplyBonusDamageFromEachSkill(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
-		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
-
-		return attackDamage;
+	private static void ApplyBonusDamageFromEachSkill(SkillInstanceData skillInstanceData) {
+		Skill appliedSkill = skillInstanceData.getSkill();
+        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target)

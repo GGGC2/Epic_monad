@@ -5,14 +5,12 @@ namespace Battle.Skills
 {
 public class Reina_2_m_SkillLogic : BasePassiveSkillLogic {
 
-	public override DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
-	{
+	public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) 
+    {
 		float damageBonusForPlaneTypeUnit = 1.15f;
 		
-		if (target.GetElement() == Enums.Element.Plant)
-			attackDamage.relativeDamageBonus *= damageBonusForPlaneTypeUnit;
-		
-		return attackDamage;
+		if (skillInstanceData.getTarget().GetElement() == Enums.Element.Plant)
+			skillInstanceData.getDamage().relativeDamageBonus *= damageBonusForPlaneTypeUnit;
 	}
 }
 }
