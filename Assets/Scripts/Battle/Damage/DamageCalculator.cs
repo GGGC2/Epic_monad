@@ -9,7 +9,20 @@ namespace Battle
 {
 public class DamageCalculator
 {
-	public class DamageInfo
+    public class AttackDamage {
+        public float baseDamage = 0;
+        public float relativeDamageBonus = 1.0f;
+        public float absoluteDamageBonus = 0;
+        public DirectionCategory attackDirection = DirectionCategory.Front;
+        public float directionBonus = 1.0f;
+        public float celestialBonus = 1.0f;
+        public float heightBonus = 1.0f;
+        public float chainBonus = 1.0f;
+        public float smiteAmount = 0;
+        public float resultDamage = 0;
+    }
+
+    public class DamageInfo
 	{
 		public List<Unit> casters;
 		public float damage;
@@ -21,6 +34,7 @@ public class DamageCalculator
 			this.damage = damage;
 		}
 	}
+
 	public static Dictionary<GameObject, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 	{
 		Dictionary<GameObject, DamageInfo> damageList = new Dictionary<GameObject, DamageInfo>();
@@ -32,7 +46,7 @@ public class DamageCalculator
 
 		foreach (var chainInfo in allVaildChainInfo)
 		{
-			var damageListOfEachSkill = CalculateDamageOfEachSkill(battleData, chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculateDamageOfEachSkill(chainInfo, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
@@ -66,7 +80,7 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<GameObject, DamageInfo>();
 		Skill appliedSkill = chainInfo.GetSkill();
@@ -90,7 +104,7 @@ public class DamageCalculator
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
             SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnitObject.GetComponent<Unit>(), targetUnit, targets.Count);
-			CalculateAttackDamage(skillInstanceData, battleData, chainCombo);
+			CalculateAttackDamage(skillInstanceData, chainCombo);
             float attackDamage = skillInstanceData.getDamage().resultDamage;
 
 			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage,
@@ -120,21 +134,7 @@ public class DamageCalculator
 		return targets;
 	}
 
-	public class AttackDamage
-	{
-		public float baseDamage = 0;
-		public float relativeDamageBonus = 1.0f;
-		public float absoluteDamageBonus = 0;
-		public DirectionCategory attackDirection = DirectionCategory.Front;
-		public float directionBonus = 1.0f;
-		public float celestialBonus = 1.0f;
-		public float heightBonus = 1.0f;
-		public float chainBonus = 1.0f;
-		public float smiteAmount = 0;
-		public float resultDamage = 0;
-	}
-
-	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo)
+	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
         Unit caster = skillInstanceData.getCaster();
         Unit target = skillInstanceData.getTarget();
@@ -148,7 +148,7 @@ public class DamageCalculator
 		attackDamage.attackDirection = AttackDirection(casterAsGameObject, targetAsGameObject);
 		attackDamage.celestialBonus = CelestialBonus(casterAsGameObject, targetAsGameObject);
 		attackDamage.heightBonus = HeightBonus(casterAsGameObject, targetAsGameObject);
-		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
+		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
 		// 해당 기술의 추가데미지 계산
@@ -222,10 +222,19 @@ public class DamageCalculator
 		return heightBonus;
 	}
 
-	private static float ChainComboBonus(BattleData battleData, int chainCombo) {
-		float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
+	private static float ChainComboBonus(int chainCombo) {
+		float chainBonus = GetChainDamageFactorFromChainCombo(chainCombo);
 		Debug.Log("chainBonus : " + chainBonus);
 		return chainBonus;
+	}
+
+	public static float GetChainDamageFactorFromChainCombo(int chainCombo)
+	{
+		if (chainCombo < 2)	return 1.0f;
+		else if (chainCombo == 2) return 1.2f;
+		else if (chainCombo == 3) return 1.5f;
+		else if (chainCombo == 4) return 2.0f;
+		else return 3.0f;  
 	}
 
 	private static float SmiteAmount(Unit casterUnit) {

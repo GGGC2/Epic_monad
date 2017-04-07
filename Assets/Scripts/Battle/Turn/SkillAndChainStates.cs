@@ -554,7 +554,7 @@ namespace Battle.Turn
 				unitInChain
 			);
 
-			DamageCalculator.CalculateAttackDamage(skillInstanceData, battleData, chainCombo);
+			DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
             DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();
 
 			if (attackDamage.attackDirection != DirectionCategory.Front) unitInChain.PrintDirectionBonus(attackDamage);
