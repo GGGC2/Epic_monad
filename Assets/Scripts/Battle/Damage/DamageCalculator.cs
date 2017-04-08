@@ -168,22 +168,11 @@ public class DamageCalculator
 	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
 	{
 		float damage = 0;
-		foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-		{
-			Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-			if (stat.Equals(Stat.UsedAP))
-			{
-				damage += casterUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat);
-			}
-			else if (stat.Equals(Stat.None))
-			{
-				damage += appliedSkill.GetPowerFactor(stat);
-			}
-			else
-			{
-				damage += casterUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat);
-			}
-		}
+		
+		float powerFactor = appliedSkill.GetPowerFactor(Enums.Stat.Power);
+		float powerStat = casterUnit.GetActualStat(Enums.Stat.Power);
+
+		damage = powerFactor * powerStat;
 
 		Debug.Log("baseDamage : " + damage);
 

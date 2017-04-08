@@ -51,7 +51,7 @@ public class CommaStringParser
 		string strValue = Consume();
 		try
 		{
-			return Single.Parse(Consume());
+			return Single.Parse(strValue);
 		}
 		catch (FormatException e)
 		{

@@ -1,35 +1,73 @@
-owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,penetration,effectName,effectVisualType,effectMoveType,skillDataText
-manastone,1,가만히,1,9999,0,Power,0 0 0 0 0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
-soldier01,1,근접공격,1,50,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
-asterAgent,1,섹션스킬,1,50,0,Power,1 1 1 1 1,Auto,Sector,1,1,0,Sector,1,3,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
-monster,1,몬스터의근접공격,1,50,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
-orchid,1,약공격,1,55,0,Power,1 1 1 1 1,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealth,0 0 0 0 0,-,Area,NonMove,--
-orchid,1,중공격,1,42,0,Power,1.5 1.5 1.5 1.5 1.5,Point,Diamond,1,3,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,-,Area,NonMove,--
-orchid,1,강공격,1,60,0,Power,2 2 2 2 2,Point,Diamond,1,1,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Area,NonMove,--
-orchid,1,밀어내기,1,70,0,None,0 0 0 0 0,Auto,Diamond,0,0,0,Sector,1,7,0,Debuff,0 0 0 0 0,-,Area,NonMove,--
-lucius,1,가로베기,1,40,0,Power,1 1 1 1 1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,Melee,Individual,NonMove,범위 내의 적을 베어 피해를 입힙니다.
-reina,1,화염 폭발,2,33,0,Power,1.0 0.7 0.9 1.1 1.3,Auto,AllDirection,1,2,0,AllDirection,1,2,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,1.0x공격력의 피해를 줍니다.
-reina,1,화염구,1,34,0,Power,1.1 0 0 0 0,Route,Cross,1,6,0,Square,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,1.1x공격력의 피해를 줍니다.
-lenien,1,전자기 충격,1,28,0,Power,0.8 0 0 0 0,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,0.8x공격력의 피해를 줍니다.
-lenien,8,하전 파동,1,32,0,Power,0.1 0 0 0 0,Route,Cross,1,4,0,Sector,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,0.1x공격력의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 기절(1페이즈)시킵니다.
-sisterna,1,전자기 충격_test,1,28,4,Power,0.8 0 0 0 0,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
-sisterna,8,하전 파동_test,1,32,0,Power,0.1 0 0 0 0,Route,Cross,1,4,0,Sector,0,2,0,DamageHealth,0 0 0 0 0,YellowBlast,Area,Move,--
-sisterna,1,은빛 베기_test,1,24,0,Power,10 0.7 0.9 1.1 1.3,Point,Square,1,7,0,Cross,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
-sisterna,1,광휘_test,1,24,0,Power,1 1 1 1 1,Point,Diamond,1,7,0,Diamond,0,1,0,Buff,0 0 0 0 0,-,Area,Move,--
-sisterna,1,죽음의 화살_test,1,49,1,Power,1.9 0 0 0 0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Individual,NonMove,--
-eren,1,칠흑의 화살,2,42,0,Power,1.0 0 0 0 0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
-eren,1,광휘,3,27,2,None,0.6 0 0 0 0,Point,Diamond,0,6,0,Diamond,0,0,0,Buff,0 0 0 0 0,YellowBlast,Individual,NonMove,--
-eren,15,죽음의 화살,1,49,1,Power,0.9 0 0 0 0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,0 0 0 0 0,RedBlast,Individual,NonMove,--
-luvericha,1,교향곡:영웅,2,24,0,Power,0.5 0.7 0.9 1.1 1.3,Route,Straight,1,7,0,Diamond,0,2,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
-luvericha,1,사랑의 기쁨,2,24,0,Power,0.5 0.7 0.9 1.1 1.3,Auto,Straight,1,6,0,Straight,1,6,0,DamageHealth,0 0 0 0 0,RedBlast,Area,Move,--
-luvericha,6,정화된 밤,1,10,5,None,0 0 0 0 0,Point,Diamond,0,3,0,Diamond,0,0,0,Etc,0 0 0 0 0,-,Individual,NonMove,--
-luvericha,18,엘리제를 위하여,3,27,0,None,0 0 0 0 0,Auto,Diamond,0,0,0,AllDirection,1,3,0,Buff,0 0 0 0 0,-,Area,NonMove,--
-luvericha,30,에튀드:겨울바람,1,34,3,None,0.2 0.3 0.4 0.5 0.6,Auto,Diamond,0,0,0,Straight,1,5,2,DamageAP,0 0 0 0 0,-,Area,NonMove,--
-luvericha,30,에튀드:추격,2,40,5,None,0.3 0.4 0.5 0.6 0.7,Auto,Diamond,0,0,0,Diamond,0,2,0,HealAP,0 0 0 0 0,-,Area,NonMove,--
-luvericha,30,환상곡,3,42,4,None,0 0 0 0 0,Auto,Diamond,0,0,0,Sector,1,4,0,HealHealth,0 0 0 0 0,-,Area,NonMove,--
-yeong,1,은빛 베기,1,23,0,Power,0.4 0.55 0.7 0.85 1.0,Auto,Diamond,0,0,0,Sector,1,2,0,DamageHealth,0 0 0 0 0,-,Area,NonMove,--
-yeong,6,준비태세,3,6,4,None,0 0 0 0 0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,0 0 0 0 0,-,Individual,NonMove,--
-yeong,12,승부,2,0,6,None,0 0 0 0 0,Point,Diamond,1,3,0,Diamond,0,0,0,Debuff,0 0 0 0 0,-,Individual,NonMove,--
-yeong,18,섬광 찌르기,1,31,0,Power,0.4 0.6 0.8 1.0 1.2,Auto,Diamond,0,0,0,Straight,1,4,0,DamageHealth,0 0 0 0 0,-,Area,NonMove,--
-yeong,30,배후의 습격,1,25,9,Power,1.0 1.4 1.8 2.2 2.6,Point,Cross,1,2,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
-yeong,30,결투,2,24,8,Power,0.8 1.15 1.5 1.85 2.2,Point,Cross,1,3,0,Diamond,0,0,0,DamageHealth,0 0 0 0 0,-,Individual,NonMove,--
+owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,skillDataText
+manastone,1,가만히,1,9999,0,Power,0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+soldier01,1,근접공격,1,50,0,Power,1.0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+asterAgent,1,섹션스킬,1,50,0,Power,1.0,Auto,Sector,1,1,0,Sector,1,3,0,DamageHealth,-,Individual,NonMove,--
+monster,1,몬스터의근접공격,1,50,0,Power,1.0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+orchid,1,약공격,1,55,0,Power,1.0,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealth,-,Area,NonMove,--
+orchid,1,중공격,1,42,0,Power,1.5,Point,Diamond,1,3,0,Diamond,0,1,0,DamageHealth,-,Area,NonMove,--
+orchid,1,강공격,1,60,0,Power,2.0,Point,Diamond,1,1,0,Diamond,0,0,0,DamageHealth,-,Area,NonMove,--
+orchid,1,밀어내기,1,70,0,None,0,Auto,Diamond,0,0,0,Sector,1,7,0,Debuff,-,Area,NonMove,--
+lucius,1,가로베기,1,40,0,Power,1.0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,범위 내의 적을 베어 피해를 입힙니다.
+reina,1,화염 폭발,1,33,0,Power,1.0,Auto,AllDirection,1,2,0,AllDirection,1,2,0,DamageHealth,RedBlast,Area,Move,1.0x공격력의 피해를 줍니다.
+reina,1,화염구,2,34,0,Power,1.1,Route,Cross,1,6,0,Square,0,1,0,DamageHealth,RedBlast,Area,Move,1.1x공격력의 피해를 줍니다.
+reina,22,화염낙진,1,48,5,Power,2.1,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Area,Move,--
+reina,22,지옥불꽃,2,81,6,Power,3.4,Route,Cross,1,5,0,Diamond,0,1,0,DamageHealth,-,Area,Move,--
+reina,29,에테르 과부하,3,0,5,Dexturity,0.2,Self,Diamond,0,0,0,Diamond,0,0,0,HealAP,-,Area,Move,--
+reina,50,대재앙,1,65,6,Power,2.3,Auto,Diamond,1,4,0,Diamond,1,4,0,DamageHealth,-,Area,Move,--
+reina,50,최후의 불꽃,2,110,7,Power,4.5,Route,Cross,1,5,0,Diamond,0,1,0,DamageHealth,-,Area,Move,--
+lenien,1,전자기 충격,2,28,0,Power,0.8,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,YellowBlast,Area,Move,0.8x공격력의 피해를 줍니다.
+lenien,8,하전 파동,2,32,0,Power,0.1,Route,Cross,1,4,0,Sector,0,2,0,DamageHealth,YellowBlast,Area,Move,0.1x공격력의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 기절(1페이즈)시킵니다.
+lenien,22,벼락,2,62,5,Power,1.6,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,—
+lenien,43,축전,1,46,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Area,Move,--
+lenien,50,낙뢰 폭격,2,84,6,Power,2.4,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,--
+sisterna,1,전자기 충격_test,1,28,4,Power,0.8,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,YellowBlast,Area,Move,--
+sisterna,8,하전 파동_test,1,32,0,Power,0.1,Route,Cross,1,4,0,Sector,0,2,0,DamageHealth,YellowBlast,Area,Move,--
+sisterna,1,은빛 베기_test,1,24,0,Power,10,Point,Square,1,7,0,Cross,0,1,0,DamageHealth,RedBlast,Area,Move,--
+sisterna,1,광휘_test,1,24,0,Power,1.0,Point,Diamond,1,7,0,Diamond,0,1,0,Buff,-,Area,Move,--
+sisterna,1,죽음의 화살_test,1,49,1,Power,1.9,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Individual,NonMove,--
+eren,1,칠흑의 화살,2,42,0,Power,1.0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Area,Move,--
+eren,1,광휘,3,27,2,Power,0.6,Point,Diamond,0,6,0,Diamond,0,0,0,Buff,YellowBlast,Individual,NonMove,--
+eren,15,죽음의 화살,1,49,1,Power,0.9,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Individual,NonMove,--
+eren,22,대규모 흡수,1,69,5,Power,1.8,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Area,Move,--
+eren,22,순간 재충전,3,25,5,Power,0,Point,Diamond,0,9,0,Diamond,0,0,0,Buff,-,Area,Move,--
+eren,36,치유의 빛,3,56,5,Power,0.6,Point,Diamond,0,9,0,Diamond,0,0,0,HealHealth,-,Area,Move,—
+eren,50,영혼 소각,1,97,5,Power,2.7,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Area,Move,—
+eren,50,운명의 개척자,3,90,5,Dexturity,0.3,Point,Diamond,0,9,0,Diamond,0,0,0,HealAP,-,Area,Move,--
+luvericha,1,정화된 밤,1,0,1,Power,0,Point,Diamond,0,5,0,Diamond,0,0,0,Buff,-,Area,Move,—
+luvericha,1,사랑의 기쁨,3,39,3,Power,0.7,Auto,Diamond,1,4,0,Diamond,1,4,0,HealHealth,-,Area,Move,—
+luvericha,22,에튀드 : 겨울바람,1,56,1,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--
+luvericha,22,에튀드 : 햇빛,3,65,4,Power,0.7,Auto,Square,1,2,0,Square,1,2,0,Buff,-,Area,NonMove,--
+luvericha,29,소녀의 기도,2,52,0,Power,1.5,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Area,NonMove,--
+luvericha,36,교향곡 : 운명,1,58,1,Power,0,Auto,Sector,1,5,0,Sector,1,5,0,DamageHealth,-,Area,NonMove,—
+luvericha,50,4분 33초,1,93,4,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--
+luvericha,50,환상곡,3,98,4,Power,0.9,Auto,Diamond,1,2,0,Diamond,1,2,0,Buff,-,Area,NonMove,—
+yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,--
+yeong,8,섬광 찌르기,1,51,0,Power,1.2,Auto,Straight,1,3,0,Straight,1,3,0,DamageHealth,-,Individual,NonMove,--
+yeong,22,배후의 습격,1,50,3,Power,1.8,Point,Diamond,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+yeong,29,초감각,3,47,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,--
+yeong,50,배후의 죽음,1,75,3,Power,2.3,Point,Diamond,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+triana,1,열풍,1,35,0,Power,0.9,Auto,Front,1,1,3,Front,1,1,3,DamageHealth,-,Individual,NonMove,—
+triana,1,얼음날,2,27,0,Power,0.9,Auto,Straight,1,2,0,Straight,1,2,0,DamageHealth,-,Individual,NonMove,--
+triana,1,포획,3,34,0,Power,1.0,Route,Cross,1,4,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--
+triana,15,결정화,2,26,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,—
+triana,22,해방 : 폭염,1,61,0,Power,1.9,Auto,Front,1,5,3,Front,1,5,3,DamageHealth,-,Individual,NonMove,—
+triana,22,해방 : 얼음 폭풍,2,63,0,Power,2.4,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Individual,NonMove,—
+triana,22,해방 : 탐식의 덩굴,3,62,0,Power,2.9,Route,AllDirection,1,3,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,—
+triana,50,실체화 : 샐러맨더,1,84,2,Power,3.1,Auto,Front,1,5,3,Front,1,5,3,DamageHealth,-,Individual,NonMove,—
+triana,50,실체화 : 펜릴,2,84,2,Power,3.4,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Individual,NonMove,—
+triana,50,실체화 : 드라이어드,3,84,2,Power,4.1,Route,AllDirection,1,3,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,—
+curi,1,수상한 덩어리,2,34,0,Power,1.0,Point,Diamond,3,5,0,Square,0,1,0,DamageHealth,-,Individual,NonMove,—
+curi,8,알칼리 폭탄,3,50,0,Power,1.0,Point,Diamond,3,6,0,Square,0,1,0,DamageHealth,-,Individual,NonMove,—
+curi,22,산성 혼합물,2,61,4,Power,1.3,Point,Diamond,3,5,0,Diamond,0,2,0,DamageHealth,-,Individual,NonMove,—
+curi,29,도금,3,24,4,Power,0,Point,Diamond,1,5,0,DiagonalCross,0,1,0,Debuff,-,Individual,NonMove,—
+curi,36,유독성 촉매,2,0,1,Power,0.7,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,—
+curi,43,에테르 폭탄,3,78,0,Power,2.4,Point,Diamond,3,6,0,Square,0,1,0,DamageHealth,-,Individual,NonMove,—
+curi,50,초강산 혼합물,2,110,6,Power,3.2,Point,Diamond,3,5,0,Diamond,0,2,0,DamageHealth,-,Individual,NonMove,—
+Eugene,1,얼음 파편,1,0,0,Power,0,Point,Diamond,1,3,0,Diamond,0,1,0,DamageHealth,-,Individual,NonMove,—
+Eugene,1,순백의 방패,2,0,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,—
+Eugene,8,청명수의 축복,1,0,0,Power,0,Point,Diamond,0,4,0,Diamond,0,2,0,Buff,-,Individual,NonMove,—
+Eugene,15,거울 방패,2,0,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,—
+Eugene,22,얼음의 가호,1,0,0,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,-,Individual,NonMove,—
+Eugene,22,백은의 장막,2,0,0,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,—
+Eugene,50,겨울의 가호,1,0,0,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,-,Individual,NonMove,—
+Eugene,50,백은의 오로라,2,0,0,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,—

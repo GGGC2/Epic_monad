@@ -92,6 +92,7 @@ namespace Enums {
 		Sector,
 		Global,
 		Auto,
+		Front,
 		Self
 	}
 
@@ -130,6 +131,7 @@ namespace Enums {
         DefenseChange,
         ResistanceChange,
         DexturityChange,
+		SpeedChange, // 속도 증감
 		UsedAPChange,
 		CurrentAPChange,
 		EvasionChange,

@@ -39,37 +39,8 @@ public class SkillInfo {
 		int cooldown = commaParser.ConsumeInt();
 
         // parsing coefficients for damage calculation
-        string originStatTypeString = commaParser.Consume();
-		string[] statTypeArray = originStatTypeString.Split('/');
-		string originPowerFactorString = commaParser.Consume();
-        string[] powerFactorStringArray = originPowerFactorString.Split('/');
-		float[][] powerFactorArrayArray = new float[powerFactorStringArray.Length][];
-
-        for(int i = 0; i < powerFactorStringArray.Length; i++)
-		{
-			powerFactorArrayArray[i] = new float[5];
-			string[] powerFactorString = powerFactorStringArray[i].Split(' ');
-			for(int j = 0; j < 5; j++)
-			{				
-				float parsed = 0.0f;
-				try
-				{
-					parsed = Convert.ToSingle(powerFactorString[j]);
-				}
-				catch
-				{
-					Debug.LogWarning("Parse error in powerFactors : " + requireAP);
-					parsed = -1;
-				}
-				powerFactorArrayArray[i][j] = parsed;
-			}
-		}
-        
-	    Dictionary<string, float[]> powerFactor = new Dictionary<string, float[]>();
-		for(int i = 0; i < statTypeArray.Length; i++)
-		{
-			powerFactor.Add(statTypeArray[i], powerFactorArrayArray[i]);
-		}
+        string statType = commaParser.Consume();
+		float powerFactor = commaParser.ConsumeFloat();
 		
 		SkillType skillType = commaParser.ConsumeEnum<SkillType>();
 
@@ -84,24 +55,6 @@ public class SkillInfo {
 		int secondWidth = commaParser.ConsumeInt();
 
 		SkillApplyType skillApplyType = commaParser.ConsumeEnum<SkillApplyType>();
-		string originPenetrationString = commaParser.Consume();
-		string[] penetrationStringArray = originPenetrationString.Split(' ');
-		float[] penetrationArray = new float[5];
-		for(int i = 0; i < 5; i++)
-		{
-			int parsed = 0;
-			try
-			{
-				parsed = Int32.Parse(penetrationStringArray[i]);				
-			}
-			catch
-			{
-				Debug.LogWarning("Parse error in penetrations : " + originPenetrationString);
-				parsed = -1;				
-			}
-			penetrationArray[i] = parsed;
-		}
-
 		string effectName = commaParser.Consume();
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
@@ -113,7 +66,7 @@ public class SkillInfo {
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,
 							   secondRangeForm, secondMinReach, secondMaxReach, secondWidth,
-							   skillApplyType, penetrationArray,
+							   skillApplyType,
 							   effectName, effectVisualType, effectMoveType,
 							   skillDataText);
 	}
