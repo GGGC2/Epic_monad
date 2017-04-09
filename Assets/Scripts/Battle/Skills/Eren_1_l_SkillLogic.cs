@@ -7,17 +7,15 @@ using System.Linq;
 namespace Battle.Skills
 {
 public class Eren_1_l_SkillLogic : BaseSkillLogic {
-	public override DamageCalculator.AttackDamage ApplyAdditionalDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount)
-	{
-		StatusEffect uniqueStatusEffect = casterUnit.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
+	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) 
+    {
+		StatusEffect uniqueStatusEffect = skillInstanceData.getCaster().GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
 		
 		if (uniqueStatusEffect != null)
 		{
 			int stack = uniqueStatusEffect.GetRemainStack();
-			attackDamage.baseDamage *= (1.0f + (0.2f * stack));
+			skillInstanceData.getDamage().baseDamage *= (1.0f + (0.2f * stack));
 		}
-
-		return attackDamage;
 	}
 }
 }

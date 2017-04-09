@@ -47,9 +47,8 @@ public class BasePassiveSkillLogic
 		return resistance;
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyBonusDamageFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Skill appliedSkill, Unit target, int targetCount)
+	public virtual void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		return attackDamage;
 	}
 
 	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
@@ -69,5 +68,9 @@ public class BasePassiveSkillLogic
 	public virtual void triggerActiveSkillDamageApplied(Unit yeong)
 	{
 	}
+    public virtual void triggerDamaged(Unit unit, int damage) 
+    {
+        
+    }
 }
 }

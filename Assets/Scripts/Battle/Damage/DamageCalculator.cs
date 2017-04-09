@@ -9,7 +9,20 @@ namespace Battle
 {
 public class DamageCalculator
 {
-	public class DamageInfo
+    public class AttackDamage {
+        public float baseDamage = 0;
+        public float relativeDamageBonus = 1.0f;
+        public float absoluteDamageBonus = 0;
+        public DirectionCategory attackDirection = DirectionCategory.Front;
+        public float directionBonus = 1.0f;
+        public float celestialBonus = 1.0f;
+        public float heightBonus = 1.0f;
+        public float chainBonus = 1.0f;
+        public float smiteAmount = 0;
+        public float resultDamage = 0;
+    }
+
+    public class DamageInfo
 	{
 		public List<Unit> casters;
 		public float damage;
@@ -21,6 +34,7 @@ public class DamageCalculator
 			this.damage = damage;
 		}
 	}
+
 	public static Dictionary<GameObject, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 	{
 		Dictionary<GameObject, DamageInfo> damageList = new Dictionary<GameObject, DamageInfo>();
@@ -32,7 +46,7 @@ public class DamageCalculator
 
 		foreach (var chainInfo in allVaildChainInfo)
 		{
-			var damageListOfEachSkill = CalculateDamageOfEachSkill(battleData, chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculateDamageOfEachSkill(chainInfo, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
@@ -41,30 +55,32 @@ public class DamageCalculator
 		return damageList;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> lhs, Dictionary<GameObject, DamageInfo> rhs)
+	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> leftDamgeList, Dictionary<GameObject, DamageInfo> rightDamageList)
 	{
 		var merged = new Dictionary<GameObject, DamageInfo>();
-		foreach (var kv in lhs)
+		foreach (var damage in leftDamgeList)
 		{
-			merged[kv.Key] = kv.Value;
+			var target = damage.Key;
+			merged[target] = damage.Value;
 		}
-		foreach (var kv in rhs)
+		foreach (var damage in rightDamageList)
 		{
-			if (merged.ContainsKey(kv.Key))
+			var target = damage.Key;
+			if (merged.ContainsKey(target))
 			{
-				foreach (var caster in rhs[kv.Key].casters)
-					merged[kv.Key].casters.Add(caster);
-				merged[kv.Key].damage += rhs[kv.Key].damage;
+				foreach (var caster in rightDamageList[target].casters)
+					merged[target].casters.Add(caster);
+				merged[target].damage += rightDamageList[target].damage;
 			}
 			else
 			{
-				merged[kv.Key] = rhs[kv.Key];
+				merged[target] = rightDamageList[target];
 			}
 		}
 		return merged;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<GameObject, DamageInfo>();
 		Skill appliedSkill = chainInfo.GetSkill();
@@ -87,7 +103,9 @@ public class DamageCalculator
 		foreach (var target in targets)
 		{
 			Unit targetUnit = target.GetComponent<Unit>();
-			float attackDamage = CalculateAttackDamage(battleData, target, casterUnitObject, appliedSkill, chainCombo, targets.Count).resultDamage;
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnitObject.GetComponent<Unit>(), targetUnit, targets.Count);
+			CalculateAttackDamage(skillInstanceData, chainCombo);
+            float attackDamage = skillInstanceData.getDamage().resultDamage;
 			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage, false, true);
 
 			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
@@ -114,44 +132,31 @@ public class DamageCalculator
 		return targets;
 	}
 
-	public class AttackDamage
+	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
-		public float baseDamage = 0;
-		public float relativeDamageBonus = 1.0f;
-		public float absoluteDamageBonus = 0;
-		public DirectionCategory attackDirection = DirectionCategory.Front;
-		public float directionBonus = 1.0f;
-		public float celestialBonus = 1.0f;
-		public float heightBonus = 1.0f;
-		public float chainBonus = 1.0f;
-		public float smiteAmount = 0;
-		public float resultDamage = 0;
-	}
+        Unit caster = skillInstanceData.getCaster();
+        Unit target = skillInstanceData.getTarget();
+        GameObject casterAsGameObject = caster.gameObject;
+        GameObject targetAsGameObject = target.gameObject;
+        AttackDamage attackDamage = skillInstanceData.getDamage();
+        Skill appliedSkill = skillInstanceData.getSkill();
 
-	public static AttackDamage CalculateAttackDamage(BattleData battleData, GameObject target, GameObject casterUnitObject, Skill appliedSkill, int chainCombo, int targetCount)
-	{
-		Unit casterUnit = casterUnitObject.GetComponent<Unit>();
-		Unit targetUnit = target.GetComponent<Unit>();
-		// 방향 체크.
-		Utility.GetDegreeAtAttack(casterUnitObject, target);
-		BattleManager battleManager = battleData.battleManager;
-
-		AttackDamage attackDamage = new AttackDamage();
-		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, casterUnit);
-		attackDamage.directionBonus = DirectionBonus(casterUnitObject, target);
-		attackDamage.attackDirection = AttackDirection(casterUnitObject, target);
-		attackDamage.celestialBonus = CelestialBonus(casterUnitObject, target);
-		attackDamage.heightBonus = HeightBonus(casterUnitObject, target);
-		attackDamage.chainBonus = ChainComboBonus(battleData, chainCombo);
-		attackDamage.smiteAmount = SmiteAmount(casterUnit);
+		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
+		attackDamage.directionBonus = DirectionBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.attackDirection = AttackDirection(casterAsGameObject, targetAsGameObject);
+		attackDamage.celestialBonus = CelestialBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.heightBonus = HeightBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.chainBonus = ChainComboBonus(chainCombo);
+		attackDamage.smiteAmount = SmiteAmount(caster);
 
 		// 해당 기술의 추가데미지 계산
-		attackDamage = ApplyBonusDamageFromEachSkill(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
+		ApplyBonusDamageFromEachSkill(skillInstanceData);
 		// 특성에 의한 추가데미지
-		List<PassiveSkill> passiveSkills = casterUnit.GetLearnedPassiveSkillList();
-		attackDamage = SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(attackDamage, casterUnit, appliedSkill, targetUnit, targetCount);
+		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
 		// 시전자 효과에 의한 추가데미지
-		attackDamage.baseDamage = casterUnit.GetActualEffect(attackDamage.baseDamage, StatusEffectType.DamageChange);
+		attackDamage.baseDamage = caster.GetActualEffect(attackDamage.baseDamage, StatusEffectType.DamageChange);
+		
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.relativeDamageBonus
@@ -161,8 +166,6 @@ public class DamageCalculator
 									* attackDamage.celestialBonus
 									* attackDamage.heightBonus
 									* attackDamage.chainBonus;
-
-		return attackDamage;
 	}
 
 	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
@@ -209,10 +212,19 @@ public class DamageCalculator
 		return heightBonus;
 	}
 
-	private static float ChainComboBonus(BattleData battleData, int chainCombo) {
-		float chainBonus = battleData.GetChainDamageFactorFromChainCombo(chainCombo);
+	private static float ChainComboBonus(int chainCombo) {
+		float chainBonus = GetChainDamageFactorFromChainCombo(chainCombo);
 		Debug.Log("chainBonus : " + chainBonus);
 		return chainBonus;
+	}
+
+	public static float GetChainDamageFactorFromChainCombo(int chainCombo)
+	{
+		if (chainCombo < 2)	return 1.0f;
+		else if (chainCombo == 2) return 1.2f;
+		else if (chainCombo == 3) return 1.5f;
+		else if (chainCombo == 4) return 2.0f;
+		else return 3.0f;  
 	}
 
 	private static float SmiteAmount(Unit casterUnit) {
@@ -222,10 +234,10 @@ public class DamageCalculator
 		return smiteAmount;
 	}
 
-	private static DamageCalculator.AttackDamage ApplyBonusDamageFromEachSkill(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount) {
-		attackDamage = SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(attackDamage, appliedSkill, battleData, casterUnit, targetUnit, targetCount);
-
-		return attackDamage;
+	private static void ApplyBonusDamageFromEachSkill(SkillInstanceData skillInstanceData) {
+		Skill appliedSkill = skillInstanceData.getSkill();
+        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target)

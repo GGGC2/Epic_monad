@@ -214,15 +214,6 @@ public class BattleData
 
 	public APAction previewAPAction;
 
-	public float GetChainDamageFactorFromChainCombo(int chainCombo)
-	{
-		if (chainCombo < 2)	return 1.0f;
-		else if (chainCombo == 2) return 1.2f;
-		else if (chainCombo == 3) return 1.5f;
-		else if (chainCombo == 4) return 2.0f;
-		else return 3.0f;  
-	}
-
 	public Skill SelectedSkill
 	{
 		get {

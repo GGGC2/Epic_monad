@@ -6,14 +6,12 @@ using Enums;
 namespace Battle.Skills
 {
 public class Yeong_1_l_SkillLogic : BaseSkillLogic {
-	public override DamageCalculator.AttackDamage ApplyAdditionalDamage(DamageCalculator.AttackDamage attackDamage, Skill appliedSkill, BattleData battleData, Unit casterUnit, Unit targetUnit, int targetCount)
-	{
+	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) 
+    {
 		float damageBonusToMeleeUnit = 1.2f;
 
-		if (targetUnit.GetUnitClass() == UnitClass.Melee)
-			attackDamage.relativeDamageBonus += damageBonusToMeleeUnit;
-		
-		return attackDamage;
+		if (skillInstanceData.getTarget().GetUnitClass() == UnitClass.Melee)
+			skillInstanceData.getDamage().relativeDamageBonus += damageBonusToMeleeUnit;
 	}
 }
 }

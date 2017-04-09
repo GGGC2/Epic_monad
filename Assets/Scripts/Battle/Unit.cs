@@ -504,6 +504,7 @@ public class Unit : MonoBehaviour
 			{
 				currentHealth -= finalDamage;
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
+                SkillLogicFactory.Get(passiveSkillList).triggerDamaged(this, finalDamage);
 			}
 			if (currentHealth < 0)
 				currentHealth = 0;
