@@ -105,8 +105,10 @@ public class DamageCalculator
 			Unit targetUnit = target.GetComponent<Unit>();
             SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnitObject.GetComponent<Unit>(), targetUnit, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
+
             float attackDamage = skillInstanceData.getDamage().resultDamage;
-			float actualDamage = GetActualDamage(appliedSkill, targetUnit, casterUnitObject.GetComponent<Unit>(), attackDamage, false, true);
+
+			float actualDamage = GetActualDamage(skillInstanceData, false, true);
 
 			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
 			damageList.Add(targetUnit.gameObject, damageInfo);
@@ -253,12 +255,14 @@ public class DamageCalculator
 		}
 		return reflectAmount;
 	}
-
-	public static float GetActualDamage(Skill appliedSkill, Unit target, Unit caster, float damageAmount, bool isDot, bool isHealth)
+    
+	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
 	{
-		float actualDamage = damageAmount;
+		float actualDamage = skillInstanceData.getDamage().resultDamage;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-
+        Skill appliedSkill = skillInstanceData.getSkill();
+        Unit target = skillInstanceData.getTarget();
+        Unit caster = skillInstanceData.getCaster();
 		// 대미지 증가/감소 효과 적용
 		// 공격이 물리인지 마법인지 체크
 		// 기술 / 특성의 추가피해 / 감소 효과
@@ -280,18 +284,22 @@ public class DamageCalculator
 
 			// 특성에 의한 방어/저항 무시 (상대값)
 			List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(targetDefense, caster, target);
-			targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(targetResistance, caster, target);
+			
+            targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, targetDefense); 
+            targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(targetResistance, caster, target);
+           
 
 			// 기술에 의한 방어/저항 무시 (절대값)
 			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceAbsoluteValueBySkill(targetDefense, caster, target);
 			targetResistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceAbsoluteValueBySkill(targetResistance, caster, target);
 
 			// 특성에 의한 방어/저항 무시 (절대값)
-			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(targetDefense, caster, target);
-			targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(targetResistance, caster, target);
+			
+			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, targetDefense);
+            targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(targetResistance, caster, target);
 
-			if (caster.GetUnitClass() == UnitClass.Melee)
+
+            if (caster.GetUnitClass() == UnitClass.Melee)
 			{
 				// 실제 피해 = 원래 피해 x 200/(200+방어력)
 				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Defense));

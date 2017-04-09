@@ -78,40 +78,22 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return totalAdditionalDefenseBonus;
 	}
 
-	public override float ApplyIgnoreDefenceRelativeValueByEachPassive(float defense, Unit caster, Unit target)
+	public override float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(defense, caster, target);
+			defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, defense);
 		}
 		return defense;
 	}
 
-	public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(float defense, Unit caster, Unit target)
+	public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(defense, caster, target);
+			defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, defense);
 		}
 		return defense;
-	}
-
-	public override float ApplyIgnoreResistanceRelativeValueByEachPassive(float resistance, Unit caster, Unit target)
-	{
-		foreach (var skill in passiveSkillLogics)
-		{
-			resistance = skill.ApplyIgnoreDefenceRelativeValueByEachPassive(resistance, caster, target);
-		}
-		return resistance;
-	}
-
-	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(float resistance, Unit caster, Unit target)
-	{
-		foreach (var skill in passiveSkillLogics)
-		{
-			resistance = skill.ApplyIgnoreDefenceAbsoluteValueByEachPassive(resistance, caster, target);
-		}
-		return resistance;
 	}
 
 	public override void triggerActiveSkillDamageApplied(Unit yeong)

@@ -579,11 +579,11 @@ namespace Battle.Turn
 			if (target.HasStatusEffect(StatusEffectType.Reflect))
 			{
 				float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target);
-				var reflectCoroutine = unitInChain.Damaged(appliedSkill, target, reflectAmount, false, true);
+				var reflectCoroutine = unitInChain.Damaged(skillInstanceData, false, true);
 				battleManager.StartCoroutine(reflectCoroutine);
 			}
 
-			var damageCoroutine = target.Damaged(appliedSkill, unitInChain, attackDamage.resultDamage, false, true);
+			var damageCoroutine = target.Damaged(skillInstanceData, false, true);
 			if (isLastTarget)
 			{
 				yield return battleManager.StartCoroutine(damageCoroutine);

@@ -490,15 +490,16 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
-	public IEnumerator Damaged(Skill appliedSkill, Unit caster, float amount, bool isDot, bool isHealth)
+	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-
+        Unit caster = skillInstanceData.getCaster();
+        Skill appliedSkill = skillInstanceData.getSkill();
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true)
 		{
-			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(appliedSkill, this, caster, amount, isDot, isHealth);
+			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isDot, isHealth);
 
 			if (finalDamage > 0)
 			{
@@ -526,7 +527,7 @@ public class Unit : MonoBehaviour
 
 		else
 		{
-			finalDamage = (int) amount;
+			finalDamage = (int) skillInstanceData.getDamage().resultDamage;
 			if (activityPoint >= finalDamage)
 			{
 				activityPoint -= finalDamage;
