@@ -56,15 +56,15 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
-	public void UpdateApBarUI(BattleData battleData, List<GameObject> allUnits) {
+	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) {
 		apBarUI.SetActive(true);
 		apBarUI.GetComponent<APBarPannel>().UpdateAPDisplay(battleData, allUnits);
 	}
 
-	public void SetCommandUIName(GameObject selectedUnitObject)
+	public void SetCommandUIName(Unit selectedUnit)
 	{
 		commandUI.SetActive(true);
-		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnitObject.GetComponent<Unit>().GetName();
+		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetName();
 	}
 
 	public void DisableCommandUI()
@@ -81,10 +81,10 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	public void UpdateSkillInfo(GameObject selectedUnitObject)
+	public void UpdateSkillInfo(Unit selectedUnit)
 	{
 		EnableSkillUI();
-		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetLearnedSkillList();
+		List<Skill> skillList = selectedUnit.GetLearnedSkillList();
 
 		if (skillList.Count > skillButtonCount) {
 			Debug.LogError("Too many skill count " + skillList.Count);
@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour
 			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[i].GetName();
 			
 			Skill skill = skillList[i];
-			Unit caster = selectedUnitObject.GetComponent<Unit>();
+			Unit caster = selectedUnit;
 			int originAP = skill.GetRequireAP();
 			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(originAP, caster);			
 			Text apText = skillButton.transform.Find("APText").GetComponent<Text>();
@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour
 			else
 				apText.color = Color.white;
 
-			var skillCooldownDict = selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict();
+			var skillCooldownDict = selectedUnit.GetUsedSkillDict();
 			if (skillCooldownDict.ContainsKey(skillList[i].GetName()))
 			{
 				int remainCooldown = skillCooldownDict[skillList[i].GetName()];
@@ -125,9 +125,9 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	public void CheckUsableSkill(GameObject selectedUnitObject)
+	public void CheckUsableSkill(Unit selectedUnit)
 	{
-		List<Skill> skillList = selectedUnitObject.GetComponent<Unit>().GetLearnedSkillList();
+		List<Skill> skillList = selectedUnit.GetLearnedSkillList();
 
         Color enabledColor = new Color(1, 1, 1);
         Color disabledColor = new Color(1, 0, 0);
@@ -139,8 +139,8 @@ public class UIManager : MonoBehaviour
             skillButton.interactable = true;
 		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
 
-            if (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() < selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(skillList[i])
-			|| selectedUnitObject.GetComponent<Unit>().GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
+            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[i])
+			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
 			{
                 skillButton.interactable = false;
 			    skillButton.GetComponentInChildren<Text>().color = disabledColor;
@@ -153,12 +153,12 @@ public class UIManager : MonoBehaviour
 		skillUI.SetActive(false);
 	}
 
-	public void SetSkillCheckAP(GameObject selectedUnitObject, Skill selectedSkill)
+	public void SetSkillCheckAP(Unit selectedUnit, Skill selectedSkill)
 	{
 		skillCheckUI.SetActive(true);
-		int requireAP = selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(selectedSkill);
+		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);
 		string newAPText = "소모 AP : " + requireAP + "\n" +
-			"잔여 AP : " + (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - requireAP);
+			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
@@ -173,11 +173,11 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.SetActive(false);
 	}
 
-	public void SetDestCheckUIAP(GameObject selectedUnitObject, int totalUseActivityPoint)
+	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint)
 	{
 		destCheckUI.SetActive(true);
 		string newAPText = "소모 AP : " + totalUseActivityPoint + "\n" +
-			"잔여 AP : " + (selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint() - totalUseActivityPoint);
+			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - totalUseActivityPoint);
 		destCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
@@ -186,7 +186,7 @@ public class UIManager : MonoBehaviour
 		destCheckUI.SetActive(false);
 	}
 
-	public void UpdateUnitViewer(GameObject unitOnTile)
+	public void UpdateUnitViewer(Unit unitOnTile)
 	{
 		unitViewerUI.SetActive(true);
 		unitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(unitOnTile);
@@ -202,10 +202,10 @@ public class UIManager : MonoBehaviour
 		unitViewerUI.SetActive(false);
 	}
 
-	public void SetSelectedUnitViewerUI(GameObject selectedUnitObject)
+	public void SetSelectedUnitViewerUI(Unit selectedUnit)
 	{
 		selectedUnitViewerUI.SetActive(true);
-		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnitObject);
+		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}
 
 	public void DisableSelectedUnitViewerUI()

@@ -38,12 +38,12 @@ public class ChainList : MonoBehaviour {
 				List<GameObject> newRouteTiles = GetRouteTiles(chainInfo.GetRouteArea());
 				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1].GetComponent<Tile>();
 				Skill skill = chainInfo.GetSkill();
-				GameObject unit = chainInfo.GetUnit();
+				Unit unit = chainInfo.GetUnit();
 				List<GameObject> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
 																	newCenterTile.GetTilePos(),
 																	skill.GetSecondMinReach(),
 																	skill.GetSecondMaxReach(),
-																	unit.GetComponent<Unit>().GetDirection());
+																	unit.GetDirection());
 
 				ChainInfo newChainInfo = new ChainInfo(unit, newCenterTile, newTargetTiles, skill, chainInfo.GetRouteArea());
 				newChainList.Add(newChainInfo);
@@ -55,7 +55,7 @@ public class ChainList : MonoBehaviour {
 		return newChainList;
 	}
 
-	public static void AddChains(GameObject unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> firstRange)
+	public static void AddChains(Unit unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
@@ -65,14 +65,14 @@ public class ChainList : MonoBehaviour {
 		SetChargeEffectToUnit(unit);
 	}
 
-	static void SetChargeEffectToUnit(GameObject unit)
+	static void SetChargeEffectToUnit(Unit unit)
 	{
 		GameObject effect = Instantiate(Resources.Load("Effect/Waiting")) as GameObject;
 		unit.GetComponent<Unit>().SetChargeEffect(effect);
 	}
 
 	// 자신이 건 체인 삭제.
-	public static void RemoveChainsFromUnit(GameObject unit)
+	public static void RemoveChainsFromUnit(Unit unit)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
@@ -86,13 +86,13 @@ public class ChainList : MonoBehaviour {
 		RemoveChargeEffectToUnit(unit);
 	}
 
-	static void RemoveChargeEffectToUnit(GameObject unit)
+	static void RemoveChargeEffectToUnit(Unit unit)
 	{
-		unit.GetComponent<Unit>().RemoveChargeEffect();
+		unit.RemoveChargeEffect();
 	}
 
 	// 해당 영역에 체인을 대기중인 모든 정보 추출 (같은 진영만)
-	public static List<ChainInfo> GetAllChainInfoToTargetArea(GameObject unit, List<GameObject> targetArea)
+	public static List<ChainInfo> GetAllChainInfoToTargetArea(Unit unit, List<GameObject> targetArea)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
@@ -100,7 +100,7 @@ public class ChainList : MonoBehaviour {
 		foreach (var chainInfo in chainList)
 		{
 			// 공격범위 안의 유닛이 서로 겹치거나, 체인을 건 본인일 경우 추가.
-			if (((unit.GetComponent<Unit>().GetSide() == chainInfo.GetUnit().GetComponent<Unit>().GetSide())
+			if (((unit.GetSide() == chainInfo.GetUnit().GetSide())
 				 && (chainInfo.Overlapped(targetArea)))
 				 || (chainInfo.GetUnit() == unit))
 			{
@@ -112,11 +112,11 @@ public class ChainList : MonoBehaviour {
 	}
 
 	// 서로 다른 모든 체인 유닛 추출
-	public static List<GameObject> GetAllUnitsInChainList(List<ChainInfo> chainInfoList)
+	public static List<Unit> GetAllUnitsInChainList(List<ChainInfo> chainInfoList)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		List<GameObject> units = new List<GameObject>();
+		List<Unit> units = new List<Unit>();
 		foreach (var chainInfo in chainInfoList)
 		{
 			if (!units.Contains(chainInfo.GetUnit()));

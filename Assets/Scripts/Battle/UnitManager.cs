@@ -11,9 +11,8 @@ public class DeadUnitInfo
 	public readonly string unitName;
 	public readonly Side unitSide;
 
-	public DeadUnitInfo(GameObject unitObject)
+	public DeadUnitInfo(Unit unit)
 	{
-		Unit unit = unitObject.GetComponent<Unit>();
 		unitName = unit.GetName();
 		unitSide = unit.GetSide();
 	}
@@ -24,9 +23,8 @@ public class RetreatUnitInfo
 	public readonly string unitName;
 	public readonly Side unitSide;
 
-	public RetreatUnitInfo(GameObject unitObject)
+	public RetreatUnitInfo(Unit unit)
 	{
-		Unit unit = unitObject.GetComponent<Unit>();
 		unitName = unit.GetName();
 		unitSide = unit.GetSide();
 	}
@@ -41,15 +39,15 @@ public class UnitManager : MonoBehaviour {
     List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
 
 	public GameObject unitPrefab;
-	List<GameObject> units = new List<GameObject>();
-	List<GameObject> readiedUnits = new List<GameObject>();
-	List<GameObject> deadUnits = new List<GameObject>();
-	List<GameObject> retreatUnits = new List<GameObject>();
-    List<GameObject> enemyUnits = new List<GameObject>();
+	List<Unit> units = new List<Unit>();
+	List<Unit> readiedUnits = new List<Unit>();
+	List<Unit> deadUnits = new List<Unit>();
+	List<Unit> retreatUnits = new List<Unit>();
+    List<Unit> enemyUnits = new List<Unit>();
 	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
 	List<RetreatUnitInfo> retreatUnitsInfo = new List<RetreatUnitInfo>();
 
-	public List<GameObject> GetAllUnits()
+	public List<Unit> GetAllUnits()
 	{
 		return units;
 	}
@@ -58,17 +56,17 @@ public class UnitManager : MonoBehaviour {
 	{
 		foreach (var unit in GetAllUnits())
 		{
-			unit.GetComponent<Unit>().latelyHitInfos.Clear();
+			unit.latelyHitInfos.Clear();
 		}
 	}
 
-	public List<GameObject> GetRetreatUnits()
+	public List<Unit> GetRetreatUnits()
 	{
 		retreatUnits.Clear();
 		foreach (var unit in units)
 		{
-			float percentHealth = 100f * (float)unit.GetComponent<Unit>().GetCurrentHealth() / (float)unit.GetComponent<Unit>().GetMaxHealth();
-			if (((percentHealth <= 10) && (unit.GetComponent<Unit>().GetCurrentHealth() > 0)) ||
+			float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
+			if (((percentHealth <= 10) && (unit.GetCurrentHealth() > 0)) ||
 				(retreatUnits.Contains(unit)))
 				retreatUnits.Add(unit);
 		}
@@ -90,13 +88,13 @@ public class UnitManager : MonoBehaviour {
 		return retreatUnitsInfo;
 	}
 
-	public List<GameObject> GetDeadUnits()
+	public List<Unit> GetDeadUnits()
 	{
 		// 죽은 유닛들을 체크.
 		deadUnits.Clear();
 		foreach (var unit in units)
 		{
-			if ((unit.GetComponent<Unit>().GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
+			if ((unit.GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
 				deadUnits.Add(unit);
 		}
 
@@ -138,12 +136,12 @@ public class UnitManager : MonoBehaviour {
 
 		foreach (var unitInfo in unitInfoList)
 		{
-			GameObject unit = Instantiate(unitPrefab) as GameObject;
+			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
-			unit.GetComponent<Unit>().ApplyUnitInfo(unitInfo);
-			unit.GetComponent<Unit>().ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
+			unit.ApplyUnitInfo(unitInfo);
+			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
 
-			Vector2 initPosition = unit.GetComponent<Unit>().GetInitPosition();
+			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
 			// Vector3 respawnPos = tilePosition + new Vector3(0,0,5f);
 			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
@@ -151,7 +149,7 @@ public class UnitManager : MonoBehaviour {
 			// Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f,
 			// 								 tileHeight * (initPosition.y - initPosition.x) * 0.5f,
 			// 								 (initPosition.y - initPosition.x) * 0.1f - 5f);
-			unit.transform.position = respawnPos;
+			unit.gameObject.transform.position = respawnPos;
 
 			GameObject tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.GetComponent<Tile>().SetUnitOnTile(unit);
@@ -162,59 +160,59 @@ public class UnitManager : MonoBehaviour {
 		Debug.Log("Generate units complete");
 	}
 
-	public void DeleteDeadUnit(GameObject deadUnitObject)
+	public void DeleteDeadUnit(Unit deadUnit)
 	{
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnitObject.GetComponent<Unit>().latelyHitInfos)
+		foreach (var hitInfo in deadUnit.latelyHitInfos)
 		{
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnitObject.GetComponent<Unit>());
+			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
 
 			SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
 		}
 
-		units.Remove(deadUnitObject);
-		readiedUnits.Remove(deadUnitObject);
+		units.Remove(deadUnit);
+		readiedUnits.Remove(deadUnit);
 	}
 
-	public void DeleteRetreatUnit(GameObject unitObject)
+	public void DeleteRetreatUnit(Unit retreateUnit)
 	{
-		units.Remove(unitObject);
-		readiedUnits.Remove(unitObject);
+		units.Remove(retreateUnit);
+		readiedUnits.Remove(retreateUnit);
 	}
 
-	public List<GameObject> GetUpdatedReadiedUnits()
+	public List<Unit> GetUpdatedReadiedUnits()
 	{
 		readiedUnits.Clear();
 		// check each unit and add all readied units.
 		foreach (var unit in units)
 		{
-			if (unit.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActivityPoint)
+			if (unit.GetCurrentActivityPoint() >= standardActivityPoint)
 			{
 				readiedUnits.Add(unit);
-				Debug.Log(unit.GetComponent<Unit>().GetName() + " is readied");
+				Debug.Log(unit.GetName() + " is readied");
 			}
 		}
 
 		// AP가 큰 순서대로 소팅.
-		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
+		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
-			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetCurrentActivityPoint()),
-			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
-			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
+			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
 		return readiedUnits;
 	}
 
-    public List<GameObject> GetEnemyUnits()
+    public List<Unit> GetEnemyUnits()
     {
         foreach (var unit in units)
         {
-            if (unit.GetComponent<Unit>().GetSide() == Side.Enemy)
+            if (unit.GetSide() == Side.Enemy)
             {
                 enemyUnits.Add(unit);
-                Debug.Log(unit.GetComponent<Unit>().GetName() + " is enemy");
+                Debug.Log(unit.GetName() + " is enemy");
             }
         }
         return enemyUnits;
@@ -262,27 +260,27 @@ public class UnitManager : MonoBehaviour {
 	void Update () {
 
 		int standardActivityPoint = GetStandardActivityPoint();
-		List<GameObject> currentTurnUnits =
-			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() >= standardActivityPoint);
-		List<GameObject> nextTurnUnits =
-			units.FindAll(go => go.GetComponent<Unit>().GetCurrentActivityPoint() < standardActivityPoint);
+		List<Unit> currentTurnUnits =
+			units.FindAll(go => go.GetCurrentActivityPoint() >= standardActivityPoint);
+		List<Unit> nextTurnUnits =
+			units.FindAll(go => go.GetCurrentActivityPoint() < standardActivityPoint);
 
-		currentTurnUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
+		currentTurnUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
-			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetCurrentActivityPoint()),
-			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
-			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
+			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
-		nextTurnUnits.Sort(SortHelper.Chain(new List<Comparison<GameObject>>
+		nextTurnUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
-			SortHelper.CompareBy<GameObject>(go => {
-					int currentAP = go.GetComponent<Unit>().GetCurrentActivityPoint();
-					int recover = go.GetComponent<Unit>().GetActualStat(Stat.Dexturity);
+			SortHelper.CompareBy<Unit>(go => {
+					int currentAP = go.GetCurrentActivityPoint();
+					int recover = go.GetActualStat(Stat.Dexturity);
 					return currentAP + recover;
 			}),
-			SortHelper.CompareBy<GameObject>(go => go.GetComponent<Unit>().GetActualStat(Stat.Dexturity)),
-			SortHelper.CompareBy<GameObject>(go => go.GetInstanceID())
+			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
 	   // 유닛 전체에 대해서도 소팅. 변경점이 있을때마다 반영된다.

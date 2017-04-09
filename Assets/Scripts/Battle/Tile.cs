@@ -14,7 +14,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public int APAtStandardHeight;
 	public int height;
 	Vector2 position;
-	GameObject unitOnTile = null;
+	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public bool isHighlight;
 	public List<Color> colors;
@@ -58,7 +58,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public bool IsUnitOnTile ()	{	return !(unitOnTile == null);	}
 
-	public void SetUnitOnTile(GameObject unit)	{	unitOnTile = unit;	}
+	public void SetUnitOnTile(Unit unit)	{	unitOnTile = unit;	}
 
 	/* Tile painting related */
 	public void PaintTile(TileColor tileColor)
@@ -94,7 +94,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 
-	public GameObject GetUnitOnTile ()
+	public Unit GetUnitOnTile ()
 	{
 		return unitOnTile;
 	}

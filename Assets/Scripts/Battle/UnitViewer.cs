@@ -30,9 +30,8 @@ public class UnitViewer : MonoBehaviour {
 	// FIXME : 버프/디버프 표시 임시로 텍스트로.
 	Text statusEffectText;
 
-	public void UpdateUnitViewer(GameObject unitObject)
+	public void UpdateUnitViewer(Unit unit)
 	{
-		Unit unit = unitObject.GetComponent<Unit>();
 		unitImage.sprite = unit.GetDefaultSprite();
 		nameText.text = unit.GetName();
 		SetClassImage(unit.GetUnitClass());

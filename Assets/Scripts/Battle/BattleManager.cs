@@ -48,7 +48,7 @@ public class BattleManager : MonoBehaviour
 		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
 
-		battleData.selectedUnitObject = null;
+		battleData.selectedUnit = null;
 
 		battleData.currentPhase = 0;
 
@@ -62,9 +62,9 @@ public class BattleManager : MonoBehaviour
 		return battleData.currentPhase;
 	}
 
-	public GameObject GetSelectedUnit()
+	public Unit GetSelectedUnit()
 	{
-		return battleData.selectedUnitObject;
+		return battleData.selectedUnit;
 	}
 
 	void InitCameraPosition()
@@ -82,8 +82,8 @@ public class BattleManager : MonoBehaviour
 			{
 				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-				battleData.selectedUnitObject = battleData.readiedUnits[0];
-				if (battleData.SelectedUnit.GetSide() == Side.Enemy)
+				battleData.selectedUnit = battleData.readiedUnits[0];
+				if (battleData.selectedUnit.GetSide() == Side.Enemy)
 				{
 					yield return AIStates.StartAI(battleData);
 				}
@@ -91,7 +91,7 @@ public class BattleManager : MonoBehaviour
 				{
 					yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
 				}
-				battleData.selectedUnitObject = null;
+				battleData.selectedUnit = null;
 
 				battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
 				yield return null;
@@ -101,25 +101,25 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	IEnumerator ActionAtTurn(GameObject unit)
+	IEnumerator ActionAtTurn(Unit unit)
 	{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetComponent<Unit>().GetName() + "'s turn");
-		battleData.selectedUnitObject = unit;
+		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
-		ChainList.RemoveChainsFromUnit(battleData.selectedUnitObject); // 턴이 돌아오면 자신이 건 체인 삭제.
+		ChainList.RemoveChainsFromUnit(battleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 		battleData.currentState = CurrentState.FocusToUnit;
 
-		battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnitObject);
-		battleData.selectedUnitObject.GetComponent<Unit>().SetActive();
+		battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
+		battleData.selectedUnit.SetActive();
 
 		yield return StartCoroutine(FocusToUnit(battleData));
 
 		battleData.uiManager.DisableSelectedUnitViewerUI();
-		if (battleData.selectedUnitObject != null)
-			battleData.selectedUnitObject.GetComponent<Unit>().SetInactive();
+		if (battleData.selectedUnit != null)
+			battleData.selectedUnit.SetInactive();
 	}
 
 	static void CheckStandbyPossible(BattleData battleData)
@@ -128,8 +128,8 @@ public class BattleManager : MonoBehaviour
 
 		foreach (var unit in battleData.unitManager.GetAllUnits())
 		{
-			if ((unit != battleData.selectedUnitObject) &&
-			(unit.GetComponent<Unit>().GetCurrentActivityPoint() > battleData.selectedUnitObject.GetComponent<Unit>().GetCurrentActivityPoint()))
+			if ((unit != battleData.selectedUnit) &&
+			(unit.GetComponent<Unit>().GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
 			{
 				isPossible = true;
 			}
@@ -142,8 +142,8 @@ public class BattleManager : MonoBehaviour
 	{
 		bool isPossible = false;
 
-		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffect(StatusEffectType.Silence) ||
-					 battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffect(StatusEffectType.Faint));
+		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Silence) ||
+					 battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint));
 
 		GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
@@ -152,18 +152,17 @@ public class BattleManager : MonoBehaviour
 	{
 		bool isPossible = false;
 
-		isPossible = !(battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffect(StatusEffectType.Bind) ||
-					 battleData.selectedUnitObject.GetComponent<Unit>().HasStatusEffect(StatusEffectType.Faint) ||
+		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
+					 battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint) ||
 					 battleData.alreadyMoved);
 
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
+    
 
-	List<GameObject> deadUnits = new List<GameObject>();
-
-	public static IEnumerator FadeOutEffect(GameObject unitObject, float time)
+	public static IEnumerator FadeOutEffect(Unit unit, float time)
 	{
-		SpriteRenderer sr = unitObject.GetComponent<SpriteRenderer>();
+		SpriteRenderer sr = unit.gameObject.GetComponent<SpriteRenderer>();
 		for (int i = 0; i < 10; i++)
 		{
 			sr.color -= new Color(0, 0, 0, 0.1f);
@@ -175,16 +174,16 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (GameObject deadUnit in battleData.deadUnits)
+		foreach (Unit deadUnit in battleData.deadUnits)
 		{
-			if (deadUnit == battleData.selectedUnitObject)
+			if (deadUnit == battleData.selectedUnit)
 				continue;
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetComponent<Unit>().GetName() + " is dead");
-			Destroy(deadUnit);
+			Destroy(deadUnit.gameObject);
 		}
 	}
 
@@ -192,14 +191,14 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (GameObject retreatUnit in battleData.retreatUnits)
+		foreach (Unit retreatUnit in battleData.retreatUnits)
 		{
-			if (retreatUnit == battleData.selectedUnitObject)
+			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetComponent<Unit>().GetName() + " retreats");
-			Destroy(retreatUnit);
+			Destroy(retreatUnit.gameObject);
 		}
 	}
 
@@ -214,37 +213,37 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
 			yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
 
-			if (battleData.retreatUnits.Contains(battleData.selectedUnitObject))
+			if (battleData.retreatUnits.Contains(battleData.selectedUnit))
 			{
-				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
-				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnitObject);
+				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
+				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
 				Debug.Log("SelectedUnit retreats");
-				Destroy(battleData.selectedUnitObject);
+				Destroy(battleData.selectedUnit.gameObject);
 				yield break;
 			}
 
-			if (battleData.deadUnits.Contains(battleData.selectedUnitObject))
+			if (battleData.deadUnits.Contains(battleData.selectedUnit))
 			{
-				battleData.selectedUnitObject.GetComponent<SpriteRenderer>().color = Color.red;
-				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnitObject, 1));
-				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnitObject);
+				battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
+				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
 				Debug.Log("SelectedUnit is dead");
-				Destroy(battleData.selectedUnitObject);
+				Destroy(battleData.selectedUnit.gameObject);
 				yield break;
 			}
 
 			battleData.unitManager.ResetLatelyHitUnits();
 
 			Camera.main.transform.position = new Vector3(
-				battleData.selectedUnitObject.transform.position.x,
-				battleData.selectedUnitObject.transform.position.y,
+				battleData.selectedUnit.gameObject.transform.position.x,
+				battleData.selectedUnit.gameObject.transform.position.y,
 				-10);
 
-			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnitObject.transform.position);
+			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnit.gameObject.transform.position);
 
-			battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnitObject);
+			battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
 
-			battleData.uiManager.SetCommandUIName(battleData.selectedUnitObject);
+			battleData.uiManager.SetCommandUIName(battleData.selectedUnit);
 			CheckStandbyPossible(battleData);
 			CheckMovePossible(battleData);
 			CheckSkillPossible(battleData);

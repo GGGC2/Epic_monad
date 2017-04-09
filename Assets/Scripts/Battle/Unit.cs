@@ -282,7 +282,7 @@ public class Unit : MonoBehaviour
 		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(after.GetTilePos());
 		SetDirection(direction);
-		after.SetUnitOnTile(this.gameObject);
+		after.SetUnitOnTile(this);
 		this.activityPoint = snapshotAp;
 	}
 
@@ -292,7 +292,7 @@ public class Unit : MonoBehaviour
 		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(after.GetTilePos());
 		SetDirection(direction);
-		after.SetUnitOnTile(this.gameObject);
+		after.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
 	}
 
@@ -351,7 +351,7 @@ public class Unit : MonoBehaviour
 		if (statusEffect.IsOfType(StatusEffectType.Faint) ||
 			statusEffect.IsOfType(StatusEffectType.Silence))
 		{
-			ChainList.RemoveChainsFromUnit(gameObject);
+			ChainList.RemoveChainsFromUnit(this);
 		}
 	}
 
@@ -518,7 +518,7 @@ public class Unit : MonoBehaviour
 			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
 			if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
-				ChainList.RemoveChainsFromUnit(gameObject);
+				ChainList.RemoveChainsFromUnit(this);
 
 			// 데미지 표시되는 시간.
 			yield return new WaitForSeconds(1);
@@ -670,7 +670,7 @@ public class Unit : MonoBehaviour
 		currentTile.GetComponent<Tile>().SetUnitOnTile(null);
 		transform.position = destTile.transform.position + new Vector3(0, 0, -5f);
 		SetPosition(destTile.GetComponent<Tile>().GetTilePos());
-		destTile.GetComponent<Tile>().SetUnitOnTile(gameObject);
+		destTile.GetComponent<Tile>().SetUnitOnTile(this);
 	}
 
 	public void UpdateSpriteByDirection()

@@ -35,13 +35,13 @@ public class DamageCalculator
 		}
 	}
 
-	public static Dictionary<GameObject, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	public static Dictionary<Unit, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
 	{
-		Dictionary<GameObject, DamageInfo> damageList = new Dictionary<GameObject, DamageInfo>();
+		Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 
-		ChainList.AddChains(battleData.selectedUnitObject, centerTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
+		ChainList.AddChains(battleData.selectedUnit, centerTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
-		List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnitObject, tilesInSkillRange);
+		List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnit, tilesInSkillRange);
 		int chainCombo = allVaildChainInfo.Count;
 
 		foreach (var chainInfo in allVaildChainInfo)
@@ -50,14 +50,14 @@ public class DamageCalculator
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
-		ChainList.RemoveChainsFromUnit(battleData.selectedUnitObject);
+		ChainList.RemoveChainsFromUnit(battleData.selectedUnit);
 
 		return damageList;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> MergeDamageList(Dictionary<GameObject, DamageInfo> leftDamgeList, Dictionary<GameObject, DamageInfo> rightDamageList)
+	private static Dictionary<Unit, DamageInfo> MergeDamageList(Dictionary<Unit, DamageInfo> leftDamgeList, Dictionary<Unit, DamageInfo> rightDamageList)
 	{
-		var merged = new Dictionary<GameObject, DamageInfo>();
+		var merged = new Dictionary<Unit, DamageInfo>();
 		foreach (var damage in leftDamgeList)
 		{
 			var target = damage.Key;
@@ -80,30 +80,28 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<GameObject, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<Unit, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
 	{
-		var damageList = new Dictionary<GameObject, DamageInfo>();
+		var damageList = new Dictionary<Unit, DamageInfo>();
 		Skill appliedSkill = chainInfo.GetSkill();
 		if (appliedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth) {
 			return damageList;
 		}
-
-		GameObject casterUnitObject = chainInfo.GetUnit();
-		Unit casterUnit = casterUnitObject.GetComponent<Unit>();			
+        
+		Unit casterUnit = chainInfo.GetUnit().GetComponent<Unit>();			
 		List<GameObject> selectedTiles = chainInfo.GetTargetArea();
 
 		Direction oldDirection = casterUnit.GetDirection();
 
 		// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 		if (appliedSkill.GetSkillType() != SkillType.Auto)
-			casterUnit.SetDirection(Utility.GetDirectionToTarget(casterUnit.gameObject, selectedTiles));
+			casterUnit.SetDirection(Utility.GetDirectionToTarget(casterUnit, selectedTiles));
 
-		List<GameObject> targets = GetTargetUnits(selectedTiles);
+		List<Unit> targets = GetTargetUnits(selectedTiles);
 
 		foreach (var target in targets)
 		{
-			Unit targetUnit = target.GetComponent<Unit>();
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnitObject.GetComponent<Unit>(), targetUnit, targets.Count);
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, target, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
             float attackDamage = skillInstanceData.getDamage().resultDamage;
@@ -111,9 +109,9 @@ public class DamageCalculator
 			float actualDamage = GetActualDamage(skillInstanceData, false, true);
 
 			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
-			damageList.Add(targetUnit.gameObject, damageInfo);
+			damageList.Add(target, damageInfo);
 
-			Debug.Log("Apply " + actualDamage + " damage to " + targetUnit.GetName() + "\n" +
+			Debug.Log("Apply " + actualDamage + " damage to " + target.GetName() + "\n" +
 						"ChainCombo : " + chainCombo);
 		}
 
@@ -121,8 +119,8 @@ public class DamageCalculator
 		return damageList;
 	}
 
-	private static List<GameObject> GetTargetUnits(List<GameObject> targetTiles) {
-		var targets = new List<GameObject>();
+	private static List<Unit> GetTargetUnits(List<GameObject> targetTiles) {
+		var targets = new List<Unit>();
 		foreach (var tileObject in targetTiles)
 		{
 			Tile tile = tileObject.GetComponent<Tile>();
@@ -138,16 +136,14 @@ public class DamageCalculator
 	{
         Unit caster = skillInstanceData.getCaster();
         Unit target = skillInstanceData.getTarget();
-        GameObject casterAsGameObject = caster.gameObject;
-        GameObject targetAsGameObject = target.gameObject;
         AttackDamage attackDamage = skillInstanceData.getDamage();
         Skill appliedSkill = skillInstanceData.getSkill();
 
 		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
-		attackDamage.directionBonus = DirectionBonus(casterAsGameObject, targetAsGameObject);
-		attackDamage.attackDirection = AttackDirection(casterAsGameObject, targetAsGameObject);
-		attackDamage.celestialBonus = CelestialBonus(casterAsGameObject, targetAsGameObject);
-		attackDamage.heightBonus = HeightBonus(casterAsGameObject, targetAsGameObject);
+		attackDamage.directionBonus = DirectionBonus(caster, target);
+		attackDamage.attackDirection = AttackDirection(caster, target);
+		attackDamage.celestialBonus = CelestialBonus(caster, target);
+		attackDamage.heightBonus = HeightBonus(caster, target);
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
@@ -184,15 +180,15 @@ public class DamageCalculator
 		return damage;
 	}
 
-	private static float DirectionBonus(GameObject casterUnitObject, GameObject target) {
-		float directionBonus = Utility.GetDirectionBonus(casterUnitObject, target);
+	private static float DirectionBonus(Unit caster, Unit target) {
+		float directionBonus = Utility.GetDirectionBonus(caster, target);
 		Debug.Log("directionBonus : " + directionBonus);
 		return directionBonus;
 	}
 
-	private static DirectionCategory AttackDirection(GameObject casterUnitObject, GameObject target)
+	private static DirectionCategory AttackDirection(Unit caster, Unit target)
 	{
-		float directionBonus = Utility.GetDirectionBonus(casterUnitObject, target);
+		float directionBonus = Utility.GetDirectionBonus(caster, target);
 		Debug.Log("directionBonus : " + directionBonus);
 		if (directionBonus == 1.1f)
 			return DirectionCategory.Side;
@@ -202,14 +198,14 @@ public class DamageCalculator
 			return DirectionCategory.Front; 
 	}
 
-	private static float CelestialBonus(GameObject casterUnitObject, GameObject target) {
-		float celestialBonus = Utility.GetCelestialBonus(casterUnitObject, target);
+	private static float CelestialBonus(Unit caster, Unit target) {
+		float celestialBonus = Utility.GetCelestialBonus(caster, target);
 		Debug.Log("celestialBonus : " + celestialBonus);
 		return celestialBonus;
 	}
 
-	private static float HeightBonus(GameObject casterUnitObject, GameObject target) {
-		float heightBonus = Utility.GetHeightBonus(casterUnitObject, target);
+	private static float HeightBonus(Unit caster, Unit target) {
+		float heightBonus = Utility.GetHeightBonus(caster, target);
 		Debug.Log("heightBonus : " + heightBonus);
 		return heightBonus;
 	}

@@ -9,11 +9,11 @@ namespace Battle.Turn
 {
 	public class UdongNoodle
 	{
-		public static Vector2 FindNearestEnemy(List<GameObject> movableTiles, List<GameObject> units, GameObject mainUnit)
+		public static Vector2 FindNearestEnemy(List<GameObject> movableTiles, List<Unit> units, Unit mainUnit)
 		{
 			Side otherSide;
 
-			if (mainUnit.GetComponent<Unit>().GetSide() == Side.Ally)
+			if (mainUnit.GetSide() == Side.Ally)
 			{
 				otherSide = Side.Enemy;
 			}
@@ -23,9 +23,8 @@ namespace Battle.Turn
 			}
 
 			var positions = from tileGO in movableTiles
-					from unitGO in units
+					from unit in units
 					let tile = tileGO.GetComponent<Tile>()
-					let unit = unitGO.GetComponent<Unit>()
 					where unit.GetSide() == otherSide
 					let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
 					orderby distance
@@ -36,14 +35,14 @@ namespace Battle.Turn
 			{
 				return availablePositions[0];
 			}
-			return mainUnit.GetComponent<Unit>().GetPosition();
+			return mainUnit.GetPosition();
 		}
 
-		public static Tile FindEnemyTile(List<GameObject> activeTileRange, GameObject mainUnit)
+		public static Tile FindEnemyTile(List<GameObject> activeTileRange, Unit mainUnit)
 		{
 			Side otherSide;
 
-			if (mainUnit.GetComponent<Unit>().GetSide() == Side.Ally)
+			if (mainUnit.GetSide() == Side.Ally)
 			{
 				otherSide = Side.Enemy;
 			}
@@ -55,7 +54,7 @@ namespace Battle.Turn
 			var tilesHaveEnemy = from tileGO in activeTileRange
 								 let tile = tileGO.GetComponent<Tile>()
 								 where tile.GetUnitOnTile() != null
-								 let unit = tile.GetUnitOnTile().GetComponent<Unit>()
+								 let unit = tile.GetUnitOnTile()
 								 where unit.GetSide() == otherSide
 								 select tile;
 
@@ -74,23 +73,21 @@ namespace Battle.Turn
         //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
         //
 
-        public static Vector2 CalculateDestination(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+        public static Vector2 CalculateDestination(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
             // Destination calculation algorithm
             //
             // If it's far from (>3) manastone, go to the nearest manastone
             // Else if it's close to player (<=4), go to the nearest player
             // Else pick a random tile from moveable tiles that are close (<=2) to manastone
-
-            Unit mainunit = mainUnitObject.GetComponent<Unit>();
+            
             float distanceFromNearestManastone = float.PositiveInfinity;
-            foreach (GameObject unitObject in unitObjects)
+            foreach (Unit unit in units)
             {
-                Unit unit = unitObject.GetComponent<Unit>();
                 if (unit.GetNameInCode() != "manastone")
                 {
                     continue;
                 }
-                float distance = Vector2.Distance(mainunit.GetPosition(), unit.GetPosition());
+                float distance = Vector2.Distance(mainUnit.GetPosition(), unit.GetPosition());
                 if (distanceFromNearestManastone > distance)
                 {
                     distanceFromNearestManastone = distance;
@@ -100,17 +97,16 @@ namespace Battle.Turn
 
             if (distanceFromNearestManastone > 3)
             {
-                return FindNearestManastone(movableTileObjects, unitObjects, mainUnitObject);
+                return FindNearestManastone(movableTileObjects, units, mainUnit);
             }
 
 
             float distanceFromNearestPlayer = float.PositiveInfinity;
-            foreach (GameObject unitObject in unitObjects) {
-                Unit unit = unitObject.GetComponent<Unit>();
+            foreach (Unit unit in units) {
                 if (unit.GetSide() != Side.Ally) {
                     continue;
                 }
-                float distance = Vector2.Distance(mainunit.GetPosition(), unit.GetPosition());
+                float distance = Vector2.Distance(mainUnit.GetPosition(), unit.GetPosition());
                 if (distanceFromNearestPlayer > distance) {
                     distanceFromNearestPlayer = distance;
                 }
@@ -119,15 +115,14 @@ namespace Battle.Turn
 
             if (distanceFromNearestPlayer <= 4)
             {
-                return FindNearestPlayer(movableTileObjects, unitObjects, mainUnitObject);
+                return FindNearestPlayer(movableTileObjects, units, mainUnit);
             }
 
             List<Tile> nearManastoneTiles = new List<Tile>();
             foreach (GameObject movableTileObject in movableTileObjects) {
                 Tile movableTile = movableTileObject.GetComponent<Tile>();
 
-                foreach (GameObject unitObject in unitObjects) {
-                    Unit unit = unitObject.GetComponent<Unit>();
+                foreach (Unit unit in units) {
                     if (unit.GetNameInCode() != "manastone") {
                         continue;
                     }
@@ -146,13 +141,12 @@ namespace Battle.Turn
 
         }
 
-        public static Vector2 FindNearestManastone(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+        public static Vector2 FindNearestManastone(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
 
 
             var positions = from tileGO in movableTileObjects
-                            from unitGO in unitObjects
+                            from unit in units
                             let tile = tileGO.GetComponent<Tile>()
-                            let unit = unitGO.GetComponent<Unit>()
                             where unit.GetNameInCode() == "manastone"
                             let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
                             orderby distance
@@ -162,16 +156,15 @@ namespace Battle.Turn
             if (availablePositions.Count > 0) {
                 return availablePositions[0];
             }
-            return mainUnitObject.GetComponent<Unit>().GetPosition();
+            return mainUnit.GetPosition();
         }
 
-        public static Vector2 FindNearestPlayer(List<GameObject> movableTileObjects, List<GameObject> unitObjects, GameObject mainUnitObject) {
+        public static Vector2 FindNearestPlayer(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
 
 
             var positions = from tileGO in movableTileObjects
-                            from unitGO in unitObjects
+                            from unit in units
                             let tile = tileGO.GetComponent<Tile>()
-                            let unit = unitGO.GetComponent<Unit>()
                             where unit.GetSide() == Side.Ally
                             let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
                             orderby distance
@@ -181,7 +174,7 @@ namespace Battle.Turn
             if (availablePositions.Count > 0) {
                 return availablePositions[0];
             }
-            return mainUnitObject.GetComponent<Unit>().GetPosition();
+            return mainUnit.GetPosition();
         }
     }
 
@@ -189,8 +182,8 @@ namespace Battle.Turn
 	{
 		public static bool Skill1Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSeletedSkillByUser = 1;
 			Skill selectedSkill = battleData.SelectedSkill;
@@ -214,8 +207,8 @@ namespace Battle.Turn
 
 		public static bool Skill2Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSeletedSkillByUser = 2;
 			Skill selectedSkill = battleData.SelectedSkill;
@@ -242,8 +235,8 @@ namespace Battle.Turn
 
 		public static bool Skill3Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSeletedSkillByUser = 3;
 			Skill selectedSkill = battleData.SelectedSkill;
@@ -267,8 +260,8 @@ namespace Battle.Turn
 
 		public static Direction? Skill4AvailableDirection(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnitObject.GetComponent<Unit>().GetDirection();
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			if (selectedUnit.activityPoint < 70)
 			{
@@ -305,7 +298,7 @@ namespace Battle.Turn
 
 		public static IEnumerator Skill4Knockback(BattleData battleData)
 		{
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSeletedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
@@ -364,7 +357,7 @@ namespace Battle.Turn
 				nothingTodo = false;
 				battleData.uiManager.SetSkillNamePanelUI(battleData.SelectedSkill.GetName());
 				Debug.LogError("Skill 4 available " + skill4AvailableDirection.Value);
-				battleData.SelectedUnit.SetDirection(skill4AvailableDirection.Value);
+				battleData.selectedUnit.SetDirection(skill4AvailableDirection.Value);
 				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 4));
 				yield return battleManager.StartCoroutine(Skill4Knockback(battleData));
 				battleData.uiManager.ResetSkillNamePanelUI();
@@ -381,7 +374,7 @@ namespace Battle.Turn
 	{
 		public static IEnumerator StartAI(BattleData battleData)
 		{
-			Unit currentUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Unit currentUnit = battleData.selectedUnit;
 			BattleManager battleManager = battleData.battleManager;
 			if (currentUnit.GetNameInCode() == "orchid")
 			{
@@ -398,7 +391,7 @@ namespace Battle.Turn
 
 			yield return battleManager.StartCoroutine(AIDIe(battleData));
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnitObject);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
 			List<GameObject> movableTiles = new List<GameObject>();
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 			{
@@ -407,23 +400,23 @@ namespace Battle.Turn
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-		    Unit currentUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+		    Unit currentUnit = battleData.selectedUnit;
 		    Vector2 destPosition;
 
             if (currentUnit.GetNameInCode() == "monster")
 		    {
                 // stage 3 달팽이 몬스터 temp AI
 		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
-		            battleData.selectedUnitObject);
+		            battleData.selectedUnit);
 		    }
 			if (currentUnit.GetNameInCode() == "orchid")
 			{
-				destPosition = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
+				destPosition = battleData.selectedUnit.GetPosition();
 			}
 		    else
 		    {
                 // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
-                destPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnitObject);
+                destPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
             }
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
@@ -458,22 +451,22 @@ namespace Battle.Turn
 			yield return battleManager.StartCoroutine(BattleManager.DestroyRetreatUnits(battleData));
 			yield return battleManager.StartCoroutine(BattleManager.DestroyDeadUnits(battleData));
 
-			if (battleData.retreatUnits.Contains(battleData.selectedUnitObject))
+			if (battleData.retreatUnits.Contains(battleData.selectedUnit))
 			{
-				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnitObject, 1));
-				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnitObject);
+				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnit, 1));
+				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
 				Debug.Log("SelectedUnit retreats");
-				GameObject.Destroy(battleData.selectedUnitObject);
+				GameObject.Destroy(battleData.selectedUnit.gameObject);
 				yield break;
 			}
 
-			if (battleData.deadUnits.Contains(battleData.selectedUnitObject))
+			if (battleData.deadUnits.Contains(battleData.selectedUnit))
 			{
-				battleData.selectedUnitObject.GetComponent<SpriteRenderer>().color = Color.red;
-				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnitObject, 1));
-				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnitObject);
+				battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnit, 1));
+				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
 				Debug.Log("SelectedUnit is dead");
-				GameObject.Destroy(battleData.selectedUnitObject);
+				GameObject.Destroy(battleData.selectedUnit.gameObject);
 				yield break;
 			}
 		}
@@ -493,12 +486,12 @@ namespace Battle.Turn
 			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
 			{
 				battleData.currentState = CurrentState.SelectSkillApplyDirection;
-				yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
+				yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnit.GetDirection()));
 			}
 			else
 			{
 				battleData.currentState = CurrentState.SelectSkillApplyPoint;
-				yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnitObject.GetComponent<Unit>().GetDirection()));
+				yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnit.GetDirection()));
 			}
 
 			battleData.previewAPAction = null;
@@ -509,7 +502,7 @@ namespace Battle.Turn
 		{
 			Direction beforeDirection = originalDirection;
 			List<GameObject> selectedTiles = new List<GameObject>();
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Unit selectedUnit = battleData.selectedUnit;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -518,7 +511,7 @@ namespace Battle.Turn
 														selectedSkill.GetSecondMaxReach(),
 														selectedUnit.GetDirection());
 
-			Tile selectedTile = UdongNoodle.FindEnemyTile(selectedTiles, battleData.selectedUnitObject);
+			Tile selectedTile = UdongNoodle.FindEnemyTile(selectedTiles, battleData.selectedUnit);
 
 			if (selectedTile == null)
 			{
@@ -535,7 +528,7 @@ namespace Battle.Turn
 			List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
 			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
-			FocusUnit(battleData.SelectedUnit);
+			FocusUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
 			battleData.uiManager.ResetSkillNamePanelUI();
@@ -544,11 +537,11 @@ namespace Battle.Turn
 		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
 		{
 			Direction beforeDirection = originalDirection;
-			Unit selectedUnit = battleData.selectedUnitObject.GetComponent<Unit>();
+			Unit selectedUnit = battleData.selectedUnit;
 
 			while (battleData.currentState == CurrentState.SelectSkillApplyPoint)
 			{
-				Vector2 selectedUnitPos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
+				Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
 
 				List<GameObject> activeRange = new List<GameObject>();
 				Skill selectedSkill = battleData.SelectedSkill;
@@ -557,9 +550,9 @@ namespace Battle.Turn
 														selectedUnitPos,
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
-														battleData.selectedUnitObject.GetComponent<Unit>().GetDirection());
+														battleData.selectedUnit.GetDirection());
 
-				Tile selectedTile = UdongNoodle.FindEnemyTile(activeRange, battleData.selectedUnitObject);
+				Tile selectedTile = UdongNoodle.FindEnemyTile(activeRange, battleData.selectedUnit);
 
 				if (selectedTile == null)
 				{
@@ -581,7 +574,7 @@ namespace Battle.Turn
 				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
 				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
-				FocusUnit(battleData.SelectedUnit);
+				FocusUnit(battleData.selectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
 				battleData.uiManager.ResetSkillNamePanelUI();
 			}
@@ -617,10 +610,10 @@ namespace Battle.Turn
 		private static List<GameObject> GetTilesInFirstRange(BattleData battleData)
 		{
 			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-																battleData.SelectedUnit.GetPosition(),
+																battleData.selectedUnit.GetPosition(),
 																battleData.SelectedSkill.GetFirstMinReach(),
 																battleData.SelectedSkill.GetFirstMaxReach(),
-																battleData.SelectedUnit.GetDirection());
+																battleData.selectedUnit.GetDirection());
 
 			return firstRange;
 		}

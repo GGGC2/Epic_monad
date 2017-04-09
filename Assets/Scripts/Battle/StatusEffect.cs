@@ -85,13 +85,13 @@ public class StatusEffect {
 	{
 		public class DisplayElement
 		{
-			public GameObject caster; // 시전자
+			public Unit caster; // 시전자
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
 			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
 			// 없애면 터져서 일단 넣어놓음
 			public bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
 
-            public DisplayElement(GameObject caster, int remainStack, int remainPhase)
+            public DisplayElement(Unit caster, int remainStack, int remainPhase)
             {
                 this.caster = caster;
                 this.remainStack = remainStack;
@@ -115,7 +115,7 @@ public class StatusEffect {
 		public DisplayElement display;
 		public List<ActualElement> actuals;
 
-		public FlexibleElement(FixedElement fixedElem, GameObject caster)
+		public FlexibleElement(FixedElement fixedElem, Unit caster)
 		{
 			int maxStack = fixedElem.display.maxStack;
 			int maxPhase = fixedElem.display.maxPhase;
@@ -137,7 +137,7 @@ public class StatusEffect {
     public FixedElement fixedElem;
 	public FlexibleElement flexible;
 	
-	public StatusEffect(FixedElement fixedElem, GameObject caster)
+	public StatusEffect(FixedElement fixedElem, Unit caster)
 	{
 		this.fixedElem = fixedElem;
 		this.flexible = new FlexibleElement(fixedElem, caster);
@@ -153,7 +153,7 @@ public class StatusEffect {
     public string GetEffectName() {return fixedElem.display.effectName;}
     public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
     public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
-    public GameObject GetCaster() {return flexible.display.caster;}
+    public Unit GetCaster() {return flexible.display.caster;}
     public int GetRemainPhase() {return flexible.display.remainPhase;}
     public int GetRemainStack() {return flexible.display.remainStack;}
     public bool GetToBeRemoved() {return flexible.display.toBeRemoved;}

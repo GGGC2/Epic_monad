@@ -5,23 +5,23 @@ namespace BattleUI.APBarPannels
 {
 	public class UnitWrapper
 	{
-		GameObject unitGO = null;
+		Unit unit = null;
 		bool isPreview = false;
 
-		public UnitWrapper(GameObject unit, bool isPreview)
+		public UnitWrapper(Unit unit, bool isPreview)
 		{
-			this.unitGO = unit;
+			this.unit = unit;
 			this.isPreview = isPreview;
 		}
 
 		public Unit GetUnit()
 		{
-			return unitGO.GetComponent<Unit>();
+			return unit;
 		}
 
 		public GameObject GetGameObject()
 		{
-			return unitGO;
+			return unit.gameObject;
 		}
 
 		// Preview unit has indication arrow, So distinguish from others
@@ -33,17 +33,17 @@ namespace BattleUI.APBarPannels
 
 	public class UnitWrapperFactory
 	{
-		GameObject selectedUnit = null;
+		Unit selectedUnit = null;
 
-		public UnitWrapperFactory(GameObject selectedUnit)
+		public UnitWrapperFactory(Unit selectedUnit)
 		{
 			this.selectedUnit = selectedUnit;
 		}
 
-		public List<UnitWrapper> WrapUnits(List<GameObject> units)
+		public List<UnitWrapper> WrapUnits(List<Unit> units)
 		{
 			List<UnitWrapper> wrappedUnits = new List<UnitWrapper>();
-			foreach (GameObject unit in units)
+			foreach (Unit unit in units)
 			{
 				wrappedUnits.Add(new UnitWrapper(unit, unit == selectedUnit));
 			}

@@ -10,7 +10,7 @@ public class LifeDrainSkillLogic : BaseSkillLogic {
 	public override void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<GameObject> selectedTiles)
 	{
 		Unit target = targetTile.GetUnitOnTile().GetComponent<Unit>();
-		int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target.gameObject].damage;
+		int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target].damage;
 		int targetCurrentHealth = target.GetCurrentHealth();
 		float recoverFactor = 0.3f;
 		int recoverAmount = (int) ((float) finalDamage * recoverFactor);

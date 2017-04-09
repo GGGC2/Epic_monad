@@ -33,7 +33,7 @@ namespace Battle.Turn
 		{
 			while (battleData.currentState == CurrentState.SelectMovingPoint)
 			{
-				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnitObject);
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
 				List<GameObject> movableTiles = new List<GameObject>();
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				{
@@ -69,7 +69,7 @@ namespace Battle.Turn
 				// FIXME : 어딘가로 옮겨야 할 텐데...
 				GameObject destTile = battleData.tileManager.GetTile(battleData.move.selectedTilePosition);
 				List<GameObject> destPath = movableTilesWithPath[battleData.move.selectedTilePosition].path;
-				Vector2 currentTilePos = battleData.selectedUnitObject.GetComponent<Unit>().GetPosition();
+				Vector2 currentTilePos = battleData.selectedUnit.GetPosition();
 				Vector2 distanceVector = battleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 				int totalUseActivityPoint = movableTilesWithPath[battleData.move.selectedTilePosition].requireActivityPoint;
@@ -97,7 +97,7 @@ namespace Battle.Turn
 				battleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
 				// UI를 띄우고
 				battleData.uiManager.EnableSelectDirectionUI();
-				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnitObject, totalUseActivityPoint);
+				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnit, totalUseActivityPoint);
 
 				// 카메라를 옮기고
 				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
@@ -122,7 +122,7 @@ namespace Battle.Turn
 				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
 				{
 					battleData.move.moveCount -= distance;
-					Camera.main.transform.position = new Vector3(battleData.selectedUnitObject.transform.position.x, battleData.selectedUnitObject.transform.position.y, -10);
+					Camera.main.transform.position = new Vector3(battleData.selectedUnit.gameObject.transform.position.x, battleData.selectedUnit.gameObject.transform.position.y, -10);
 					battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 					battleData.uiManager.DisableSelectDirectionUI();
 					battleData.uiManager.DisableDestCheckUI();
@@ -146,7 +146,7 @@ namespace Battle.Turn
 			CaptureMoveSnapshot(battleData);
 
 			Tile beforeTile = battleData.SelectedUnitTile;
-			Unit unit = battleData.SelectedUnit;
+			Unit unit = battleData.selectedUnit;
 			Tile nextTile = destTileGO.GetComponent<Tile>();
 			unit.ApplyMove(beforeTile, nextTile, directionAtDest, totalUseActivityPoint);
 
@@ -166,8 +166,8 @@ namespace Battle.Turn
 			Debug.Log("Capture move snapshot");
 			BattleData.MoveSnapshopt snapshot = new BattleData.MoveSnapshopt();
 			snapshot.tile = battleData.SelectedUnitTile;
-			snapshot.ap = battleData.SelectedUnit.activityPoint;
-			snapshot.direction = battleData.SelectedUnit.direction;
+			snapshot.ap = battleData.selectedUnit.activityPoint;
+			snapshot.direction = battleData.selectedUnit.direction;
 			battleData.moveSnapshot = snapshot;
 		}
 
@@ -175,7 +175,7 @@ namespace Battle.Turn
 		{
 			Debug.Log("Restore move snapshot");
 			var snapshot = battleData.moveSnapshot;
-			Unit unit = battleData.SelectedUnit;
+			Unit unit = battleData.selectedUnit;
 			Tile beforeTile = battleData.SelectedUnitTile;
 			Tile nextTile = snapshot.tile;
 			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);

@@ -41,7 +41,7 @@ namespace BattleUI
 			Debug.Assert(defaultBigProfileSprite != null, "Cannot find 'default big'sprite");
 		}
 
-		public void UpdateAPDisplay(BattleData battleData, List<GameObject> allUnits)
+		public void UpdateAPDisplay(BattleData battleData, List<Unit> allUnits)
 		{
 			Debug.Assert(allUnits.Count > 0);
 			UnitManager unitManager = battleData.unitManager;
@@ -49,7 +49,7 @@ namespace BattleUI
 
 			Clear();
 
-			GameObject selectedUnit = battleData.selectedUnitObject;
+			Unit selectedUnit = battleData.selectedUnit;
 
 			if (selectedUnit == null)
 			{
@@ -62,7 +62,7 @@ namespace BattleUI
 			UnitWrapperFactory wrapperFactory = new UnitWrapperFactory(selectedUnit);
 			List<UnitWrapper> otherUnits = wrapperFactory.WrapUnits(allUnits);
 
-			if (selectedUnit == otherUnits[0].GetGameObject() && battleData.previewAPAction == null)
+			if (selectedUnit == otherUnits[0].GetUnit() && battleData.previewAPAction == null)
 			{
 				otherUnits.RemoveAt(0);
 			}
@@ -79,11 +79,10 @@ namespace BattleUI
 			SetSeperateBar(battleData, standardActivityPoint, otherUnits);
 		}
 
-		private void SetBigProfile(GameObject unitGO)
+		private void SetBigProfile(Unit unit)
 		{
 			bigProfile.GetComponent<Image>().enabled = true;
-
-			Unit unit = unitGO.GetComponent<Unit>();
+            
 			bigProfile.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
 
 			GameObject apTextGO = bigProfile.transform.Find("apText").gameObject;

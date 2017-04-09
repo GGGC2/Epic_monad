@@ -42,7 +42,7 @@ public class BaseSkillLogic
 
 	public virtual int CalculateAP(BattleData battleData, List<GameObject> selectedTiles)
 	{
-		int requireAP = battleData.selectedUnitObject.GetComponent<Unit>().GetActualRequireSkillAP(battleData.SelectedSkill);
+		int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(battleData.SelectedSkill);
 		return requireAP;
 	}
 
@@ -65,10 +65,10 @@ public class BaseSkillLogic
 		if (direction.HasValue) {
 			realDirection = direction.Value;
 		} else {
-			realDirection = battleData.SelectedUnit.GetDirection();
+			realDirection = battleData.selectedUnit.GetDirection();
 		}
 		var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-															battleData.SelectedUnit.GetPosition(),
+															battleData.selectedUnit.GetPosition(),
 															battleData.SelectedSkill.GetFirstMinReach(),
 															battleData.SelectedSkill.GetFirstMaxReach(),
 															realDirection);

@@ -197,10 +197,10 @@ public class BattleData
 	// 이동을 취소하기 위해서 필요
 	public MoveSnapshopt moveSnapshot;
 
-	public GameObject selectedUnitObject; // 현재 턴의 유닛
-	public List<GameObject> readiedUnits = new List<GameObject>();
-	public List<GameObject> deadUnits = new List<GameObject>();
-	public List<GameObject> retreatUnits = new List<GameObject>();
+	public Unit selectedUnit; // 현재 턴의 유닛
+	public List<Unit> readiedUnits = new List<Unit>();
+	public List<Unit> deadUnits = new List<Unit>();
+	public List<Unit> retreatUnits = new List<Unit>();
 	
 	public List<ChainInfo> chainList = new List<ChainInfo>();
 
@@ -217,14 +217,14 @@ public class BattleData
 	public Skill SelectedSkill
 	{
 		get {
-			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfSeletedSkillByUser - 1];
+			return selectedUnit.GetSkillList()[indexOfSeletedSkillByUser - 1];
 		}
 	}
 
 	public Skill PreSelectedSkill
 	{
 		get {
-			return selectedUnitObject.GetComponent<Unit>().GetSkillList()[indexOfPreSelectedSkillByUser - 1];
+			return selectedUnit.GetSkillList()[indexOfPreSelectedSkillByUser - 1];
 		}
 	}
 
@@ -235,17 +235,10 @@ public class BattleData
 		}
 	}
 
-	public Unit SelectedUnit
-	{
-		get {
-			return selectedUnitObject.GetComponent<Unit>();
-		}
-	}
-
 	public Tile SelectedUnitTile
 	{
 		get {
-			return tileManager.GetTile(SelectedUnit.GetPosition()).GetComponent<Tile>();
+			return tileManager.GetTile(selectedUnit.GetPosition()).GetComponent<Tile>();
 		}
 	}
 
@@ -253,7 +246,7 @@ public class BattleData
 	{
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetUnit() == unit.gameObject)
+			if (chainInfo.GetUnit() == unit)
 			{
 				return chainInfo;
 			}
@@ -268,7 +261,7 @@ public class BattleData
 		{
 			if (chainInfo.GetTargetArea().Contains(tile.gameObject))
 			{
-				resultUnits.Add(chainInfo.GetUnit().GetComponent<Unit>());
+				resultUnits.Add(chainInfo.GetUnit());
 			}
 		}
 

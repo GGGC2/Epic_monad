@@ -6,10 +6,10 @@ using Enums;
 
 public class Utility : MonoBehaviour {
 
-	public static Direction GetMouseDirectionByUnit(GameObject unit)
+	public static Direction GetMouseDirectionByUnit(Unit unit)
 	{
 		Direction mouseDirectionByUnit;
-		Vector2 unitPosition = unit.transform.position;
+		Vector2 unitPosition = unit.gameObject.transform.position;
 		
 		string directionString = "";
 		Vector2 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3 (Input.mousePosition.x,Input.mousePosition.y,0));
@@ -29,15 +29,15 @@ public class Utility : MonoBehaviour {
 		return mouseDirectionByUnit;
 	}
 
-	public static float GetDegreeToTarget(GameObject unit, Vector2 targetPosition)
+	public static float GetDegreeToTarget(Unit unit, Vector2 targetPosition)
 	{
-		Vector2 unitPosition = unit.GetComponent<Unit>().GetPosition();
+		Vector2 unitPosition = unit.GetPosition();
 		float deltaDegree = Mathf.Atan2(targetPosition.y - unitPosition.y, targetPosition.x - unitPosition.x) * Mathf.Rad2Deg;
 		
 		return deltaDegree;
 	}
 	
-	public static Direction GetDirectionToTarget(GameObject unit, List<GameObject> selectedTiles)
+	public static Direction GetDirectionToTarget(Unit unit, List<GameObject> selectedTiles)
 	{
 		Vector2 averagePos = new Vector2(0, 0);
 		foreach (var tile in selectedTiles)
@@ -49,7 +49,7 @@ public class Utility : MonoBehaviour {
 		return GetDirectionToTarget(unit, averagePos);
 	}
 	
-	public static Direction GetDirectionToTarget(GameObject unit, Vector2 targetPosition)
+	public static Direction GetDirectionToTarget(Unit unit, Vector2 targetPosition)
 	{
 		float deltaDegree = GetDegreeToTarget(unit, targetPosition);
 		
@@ -65,14 +65,13 @@ public class Utility : MonoBehaviour {
 		}
 	}
 	
-	public static float GetDegreeAtAttack(GameObject unitObject, GameObject targetObject)
+	public static float GetDegreeAtAttack(Unit unit, Unit target)
 	{
-		if (unitObject == targetObject) return 180;
+		if (unit == target) return 180;
 		
-		float deltaDegreeAtLook = GetDegreeToTarget(unitObject, targetObject.GetComponent<Unit>().GetPosition());
+		float deltaDegreeAtLook = GetDegreeToTarget(unit, target.GetPosition());
 		
 		float targetDegree;
-		Unit target = targetObject.GetComponent<Unit>();
 		if (target.GetDirection() == Direction.RightDown) targetDegree = 0;
 		else if (target.GetDirection() == Direction.RightUp) targetDegree = 90;
 		else if (target.GetDirection() == Direction.LeftUp) targetDegree = -180;
@@ -87,20 +86,20 @@ public class Utility : MonoBehaviour {
 		return deltaDegreeAtAttack;
 	}
 	
-	public static float GetDirectionBonus(GameObject unitObject, GameObject targetObject)
+	public static float GetDirectionBonus(Unit unit, Unit target)
 	{
-		if (targetObject.GetComponent<Unit>() == null) return 1;
+		if (target == null) return 1;
 		
-		float deltaDegreeAtAttack = GetDegreeAtAttack(unitObject, targetObject);
+		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
 		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;
 		else if ((deltaDegreeAtAttack < 135) || (deltaDegreeAtAttack > 225)) return 1.1f;
 		else return 1;
 	}
 	
-	public static float GetCelestialBonus(GameObject attacker, GameObject defender)
+	public static float GetCelestialBonus(Unit attacker, Unit defender)
 	{
-		Celestial attackerCelestial = attacker.GetComponent<Unit>().GetCelestial();
-		Celestial defenderCelestial = defender.GetComponent<Unit>().GetCelestial();
+		Celestial attackerCelestial = attacker.GetCelestial();
+		Celestial defenderCelestial = defender.GetCelestial();
 		
 		// Earth > Sun > Moon > Earth
 		if (attackerCelestial == Celestial.Sun)
@@ -125,11 +124,11 @@ public class Utility : MonoBehaviour {
 		else return 1;
 	}
 
-    public static float GetHeightBonus(GameObject attacker, GameObject defender)
+    public static float GetHeightBonus(Unit attacker, Unit defender)
     {
 		// 상대가 낮으면 20% 추가, 상대가 높으면 20% 감소
-        int attackerHeight = attacker.GetComponent<Unit>().GetHeight();
-		int defenderHeight = defender.GetComponent<Unit>().GetHeight();
+        int attackerHeight = attacker.GetHeight();
+		int defenderHeight = defender.GetHeight();
 
 		if (attackerHeight > defenderHeight)
 			return 1.2f;
