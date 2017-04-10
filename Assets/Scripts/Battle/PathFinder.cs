@@ -19,7 +19,7 @@ public class PathFinder {
 	
 	public static Dictionary<Vector2, TileWithPath> CalculatePath(Unit unit)
 	{
-		Dictionary<Vector2, GameObject> tiles = GameObject.FindObjectOfType<TileManager>().GetAllTiles();
+		Dictionary<Vector2, Tile> tiles = GameObject.FindObjectOfType<TileManager>().GetAllTiles();
 		Vector2 unitPosition = unit.GetPosition();
 
 		Queue<TileTuple> tileQueue = new Queue<TileTuple>();
@@ -48,24 +48,22 @@ public class PathFinder {
 		return tilesWithPath;
 	}
 	
-	static void SearchNearbyTile(Dictionary<Vector2, GameObject> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
+	static void SearchNearbyTile(Dictionary<Vector2, Tile> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
 								 Queue<TileTuple> tileQueue, Unit unit, Vector2 tilePosition, Vector2 nearbyTilePosition)
 	{
 		// if, 타일이 존재하지 않거나, 타일 위에 다른 유닛이 있거나, 다음타일과의 단차가 2 이상이거나,
 		// 타일까지 드는 ap가 remain ap보다 큰 경우 고려하지 않음.
 		if (!tiles.ContainsKey(nearbyTilePosition)) return;
 		
-		GameObject nearbyTileObject = tiles[nearbyTilePosition];
-		Tile nearbyTile = nearbyTileObject.GetComponent<Tile>();
+		Tile nearbyTile = tiles[nearbyTilePosition];
 		if (nearbyTile.IsUnitOnTile()) return;
 
-		GameObject currentTileObject = tiles[tilePosition];
-		int deltaHeight = Mathf.Abs(currentTileObject.GetComponent<Tile>().GetTileHeight()
-							- nearbyTileObject.GetComponent<Tile>().GetTileHeight());
+		Tile currentTile = tiles[tilePosition];
+		int deltaHeight = Mathf.Abs(currentTile.GetTileHeight() - nearbyTile.GetTileHeight());
 		if (deltaHeight >= 2) return;
 
 		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];
-		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTileObject, prevTileWithPath);
+		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath);
 		int remainAP = unit.GetCurrentActivityPoint();
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
 		// 필요 행동력(이동) 증감 효과 적용

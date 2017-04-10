@@ -13,7 +13,7 @@ public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 		float baseAmountPerLevel = 42;
 
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-		Tile tileUnderTarget = tileManager.GetTile(target.GetPosition()).GetComponent<Tile>();
+		Tile tileUnderTarget = tileManager.GetTile(target.GetPosition());
 		if (tileUnderTarget.GetTileElement() == Enums.Element.Water)
 			defense -= baseAmountPerLevel + (ignoreAmountPerLevel * partyLevel);
 

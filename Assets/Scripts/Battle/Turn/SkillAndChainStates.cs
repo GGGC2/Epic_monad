@@ -126,9 +126,9 @@ namespace Battle.Turn
 		}
 
 		// *주의 : ChainList.cs에서 같은 이름의 함수를 수정할 것!!
-		public static List<GameObject> GetRouteTiles(List<GameObject> tiles)
+		public static List<Tile> GetRouteTiles(List<Tile> tiles)
 		{
-			List<GameObject> newRouteTiles = new List<GameObject>();
+			List<Tile> newRouteTiles = new List<Tile>();
 			foreach (var tile in tiles)
 			{
 				// 타일 단차에 의한 부분(미구현)
@@ -138,7 +138,7 @@ namespace Battle.Turn
 				// 첫 유닛을 만난 경우
 				// 이번 타일을 마지막으로 종료한다.
 				newRouteTiles.Add(tile);
-				if (tile.GetComponent<Tile>().IsUnitOnTile())
+				if (tile.IsUnitOnTile())
 					break;
 			}
 
@@ -164,8 +164,7 @@ namespace Battle.Turn
 				));
 				battleData.battleManager.StopCoroutine(update);
 				battleData.isWaitingUserInput = false;
-
-				List<GameObject> selectedTiles = new List<GameObject>();
+                
 				battleData.tileManager.DepaintAllTiles(TileColor.Red);
 
 				if (battleData.triggers.rightClicked.Triggered ||
@@ -183,7 +182,7 @@ namespace Battle.Turn
 					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route)
 					{
 						var firstRange = GetTilesInFirstRange(battleData);
-						var destTileAtRoute = GetRouteTiles(firstRange).Last().GetComponent<Tile>();
+						var destTileAtRoute = GetRouteTiles(firstRange).Last();
 						yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
 					}
 					else
@@ -228,7 +227,7 @@ namespace Battle.Turn
 			{
 				Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
 
-				List<GameObject> activeRange = new List<GameObject>();
+				List<Tile> activeRange = new List<Tile>();
 				Skill selectedSkill = battleData.SelectedSkill;
 				activeRange = GetTilesInFirstRange(battleData);
 
@@ -272,15 +271,15 @@ namespace Battle.Turn
 			{
 				FocusTile(targetTile);
 
-				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
+				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
 				battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
-				List<GameObject> firstRange = GetTilesInFirstRange(battleData);
+				List<Tile> firstRange = GetTilesInFirstRange(battleData);
 
 				//데미지 미리보기
 				Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
 				foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage)
 				{
-					Debug.Log(kv.Key.GetComponent<Unit>().GetName() + " - Damage preview");
+					Debug.Log(kv.Key.GetName() + " - Damage preview");
 					kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
 				}
 
@@ -369,7 +368,7 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
-		private static List<GameObject> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
+		private static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 		{
 			Direction realDirection;
 			if (direction.HasValue) {
@@ -386,16 +385,16 @@ namespace Battle.Turn
 			return firstRange;
 		}
 
-		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile)
+		private static List<Tile> GetTilesInSkillRange(BattleData battleData, Tile targetTile)
 		{
 				Skill selectedSkill = battleData.SelectedSkill;
-				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
 																			battleData.selectedUnit.GetDirection());
 				if (selectedSkill.GetSkillType() == SkillType.Auto)
-					selectedTiles.Remove(targetTile.gameObject);
+					selectedTiles.Remove(targetTile);
 				Debug.Log("NO. of tiles selected : "+selectedTiles.Count);
 				return selectedTiles;
 		}
@@ -411,7 +410,7 @@ namespace Battle.Turn
 			foreach (var unit in battleData.unitManager.GetAllUnits())
 			{
 				if ((unit != battleData.selectedUnit) &&
-				(unit.GetComponent<Unit>().GetCurrentActivityPoint() > remainAPAfterChain))
+				(unit.GetCurrentActivityPoint() > remainAPAfterChain))
 				{
 					isPossible = true;
 				}
@@ -429,7 +428,7 @@ namespace Battle.Turn
 		}
 
 		
-		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<Tile> tilesInSkillRange, List<Tile> firstRange)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			// 자기 자신을 체인 리스트에 추가.
@@ -443,8 +442,8 @@ namespace Battle.Turn
 
 			foreach (var chainInfo in allVaildChainInfo)
 			{
-				GameObject focusedTile = chainInfo.GetTargetArea()[0];
-				FocusTile(focusedTile.GetComponent<Tile>());
+				Tile focusedTile = chainInfo.GetTargetArea()[0];
+				FocusTile(focusedTile);
 				battleData.currentState = CurrentState.ApplySkill;
 				yield return battleManager.StartCoroutine(ApplyChainableSkill(battleData, chainInfo, chainCombo));
 			}
@@ -452,12 +451,13 @@ namespace Battle.Turn
 			battleData.selectedUnit.DisableChainText();
 		}
 
-		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<GameObject> selectedTiles, List<GameObject> firstRange)
+		private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<Tile> selectedTiles, List<Tile> firstRange)
 		{
 			// 방향 돌리기.
 			battleData.selectedUnit.SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnit, selectedTiles));
 
-			int requireAP = SkillLogicFactory.Get(battleData.SelectedSkill).CalculateAP(battleData, selectedTiles);
+            int originAP = battleData.SelectedSkill.GetRequireAP();
+			int requireAP = SkillLogicFactory.Get(battleData.SelectedSkill).CalculateAP(originAP, battleData.selectedUnit);
 			battleData.selectedUnit.UseActivityPoint(requireAP);
 
 			// 스킬 쿨다운 기록
@@ -484,7 +484,7 @@ namespace Battle.Turn
 			Unit unitInChain = chainInfo.GetUnit();
 			Skill appliedSkill = chainInfo.GetSkill();
 			Tile targetTile = chainInfo.GetCenterTile();
-			List<GameObject> selectedTiles = chainInfo.GetTargetArea();
+			List<Tile> selectedTiles = chainInfo.GetTargetArea();
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 			if (appliedSkill.GetSkillType() != SkillType.Auto)
@@ -594,9 +594,9 @@ namespace Battle.Turn
 			}
 		}
 
-		private static List<GameObject> ReselectTilesByRoute(BattleData battleData, List<GameObject> selectedTiles)
+		private static List<Tile> ReselectTilesByRoute(BattleData battleData, List<Tile> selectedTiles)
 		{
-			List<GameObject> reselectTiles = new List<GameObject>();
+			List<Tile> reselectTiles = new List<Tile>();
 			//단차 제외하고 구현.
 			Vector2 startPos = battleData.selectedUnit.GetPosition();
 			// Vector2 endPos = ; 
@@ -604,22 +604,21 @@ namespace Battle.Turn
 			return reselectTiles;
 		}
 
-		private static List<Unit> GetUnitsOnTiles(List<GameObject> tiles)
+		private static List<Unit> GetUnitsOnTiles(List<Tile> tiles)
 		{
 			List<Unit> units = new List<Unit>();
-			foreach (var tileObject in tiles)
+			foreach (var tile in tiles)
 			{
-				Tile tile = tileObject.GetComponent<Tile>();
 				if (tile.IsUnitOnTile())
 				{
-					units.Add(tile.GetUnitOnTile().GetComponent<Unit>());
+					units.Add(tile.GetUnitOnTile());
 				}
 			}
 			return units;
 		}
 
 		// 체인 불가능 스킬일 경우의 스킬 시전 코루틴. 스킬 적용 범위만 받는다.
-		private static IEnumerator ApplyNonchainSkill(BattleData battleData, List<GameObject> selectedTiles)
+		private static IEnumerator ApplyNonchainSkill(BattleData battleData, List<Tile> selectedTiles)
 		{
 			Unit selectedUnit = battleData.selectedUnit;
 			Skill appliedSkill = battleData.SelectedSkill;
@@ -738,7 +737,7 @@ namespace Battle.Turn
 				}
 				*/
 
-				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, selectedUnit, selectedTiles[0].GetComponent<Tile>(), selectedTiles);
+				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, selectedUnit, selectedTiles[0], selectedTiles);
 
 				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 				if(appliedSkill.GetStatusEffectList().Count > 0)
@@ -839,7 +838,7 @@ namespace Battle.Turn
 			battleData.alreadyMoved = false;
 		}
 
-		private static IEnumerator ApplySkillEffect(Skill appliedSkill, Unit unit, List<GameObject> selectedTiles)
+		private static IEnumerator ApplySkillEffect(Skill appliedSkill, Unit unit, List<Tile> selectedTiles)
 		{
 			string effectName = appliedSkill.GetEffectName();
 			if (effectName == "-")
@@ -858,7 +857,7 @@ namespace Battle.Turn
 				Vector3 endPos = new Vector3(0, 0, 0);
 				foreach (var tile in selectedTiles)
 				{
-					endPos += tile.transform.position;
+					endPos += tile.gameObject.transform.position;
 				}
 				endPos = endPos / (float)selectedTiles.Count;
 
@@ -900,7 +899,7 @@ namespace Battle.Turn
 				List<Vector3> targetPosList = new List<Vector3>();
 				foreach (var tileObject in selectedTiles)
 				{
-					Tile tile = tileObject.GetComponent<Tile>();
+					Tile tile = tileObject;
 					if (tile.IsUnitOnTile())
 					{
 						targetPosList.Add(tile.GetUnitOnTile().transform.position);

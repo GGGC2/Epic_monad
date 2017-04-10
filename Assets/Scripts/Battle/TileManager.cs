@@ -9,17 +9,17 @@ public class TileManager : MonoBehaviour {
 
 	public GameObject tilePrefab;
 
-	Dictionary<Vector2, GameObject> tiles = new Dictionary<Vector2, GameObject>();
+	Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
 
 	float tileImageHeight = 0.5f*100/100;
 	float tileImageWidth = 0.5f*200/100;
 
-	public Dictionary<Vector2, GameObject> GetAllTiles()
+	public Dictionary<Vector2, Tile> GetAllTiles()
 	{
 		return tiles;
 	}
 
-	public GameObject GetTile(int x, int y)
+	public Tile GetTile(int x, int y)
 	{
 		Vector2 key = new Vector2 (x, y);
 		if (tiles.ContainsKey(key))
@@ -28,7 +28,7 @@ public class TileManager : MonoBehaviour {
 			return null;
 	}
 
-	public GameObject GetTile(Vector2 position)
+	public Tile GetTile(Vector2 position)
 	{
 		Vector2 key = position;
 		if (tiles.ContainsKey(key))
@@ -39,11 +39,11 @@ public class TileManager : MonoBehaviour {
 
 	public Vector3 GetTilePos(Vector2 position)
 	{
-		GameObject tile = GetTile(position);
+		Tile tile = GetTile(position);
 		return tile.transform.position;
 	}
 
-	public List<GameObject> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir)
+	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		if (form == RangeForm.Diamond)
 		{
@@ -81,9 +81,9 @@ public class TileManager : MonoBehaviour {
 			return GetTilesInDiamondRange(mid, minReach, maxReach); // temp return value.
 	}
 
-	List<GameObject> GetTilesInDiamondRange(Vector2 mid, int minReach, int maxReach)
+	List<Tile> GetTilesInDiamondRange(Vector2 mid, int minReach, int maxReach)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 		tilesInRange.Add(GetTile(mid));
 		for (int i = 0; i < maxReach; i++)
 		{
@@ -93,9 +93,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
+	List<Tile> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 		tilesInRange.Add(GetTile(mid));
 		for (int i = 0; i < maxReach; i++)
 		{
@@ -105,9 +105,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
+	List<Tile> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 
 		for(int i = minReach; i < maxReach+1; i++)
 		{
@@ -121,9 +121,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
+	List<Tile> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
 		minReach = Math.Max(1, minReach);
@@ -136,9 +136,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
+	List<Tile> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
 		minReach = Math.Max(1, minReach);
@@ -150,9 +150,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
+	List<Tile> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 
 		if (minReach == 0) tilesInRange.Add(GetTile(mid));
 		minReach = Math.Max(1, minReach);
@@ -162,9 +162,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
+	List<Tile> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 부채꼴 방향과 수직인 벡터
 
 		for(int i = 0; i < maxReach; i++)
@@ -183,9 +183,9 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	List<GameObject> GetTilesInGlobalRange()
+	List<Tile> GetTilesInGlobalRange()
 	{
-		List<GameObject> tilesInRange = new List<GameObject>();
+		List<Tile> tilesInRange = new List<Tile>();
 		foreach (var key in tiles.Keys)
 		{
 			tilesInRange.Add(tiles[key]);
@@ -194,21 +194,21 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
-	public void PaintTiles(List<GameObject> tiles, TileColor color)
+	public void PaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
-			tile.GetComponent<Tile>().PaintTile(color);
-			tile.GetComponent<Tile>().SetPreSelected(true);
+			tile.PaintTile(color);
+			tile.SetPreSelected(true);
 		}
 	}
 
-	public void DepaintTiles(List<GameObject> tiles, TileColor color)
+	public void DepaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
-			tile.GetComponent<Tile>().DepaintTile(color);
-			tile.GetComponent<Tile>().SetPreSelected(false);
+			tile.DepaintTile(color);
+			tile.SetPreSelected(false);
 		}
 	}
 
@@ -217,34 +217,34 @@ public class TileManager : MonoBehaviour {
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}
 
-	List<GameObject> AddNearbyTiles(List<GameObject> tileList)
+	List<Tile> AddNearbyTiles(List<Tile> tileList)
 	{
-		List<GameObject> newTileList = new List<GameObject>();
+		List<Tile> newTileList = new List<Tile>();
 		foreach (var tile in tileList)
 		{
-			Vector2 position = tile.GetComponent<Tile>().GetTilePos();
+			Vector2 position = tile.GetTilePos();
 
 			if (!newTileList.Contains(tile))
 			{
 				newTileList.Add(tile);
 			}
 
-			GameObject nearbyUpTile = GetTile(position + Vector2.up);
+			Tile nearbyUpTile = GetTile(position + Vector2.up);
 			if (nearbyUpTile != null && !newTileList.Contains(nearbyUpTile))
 			{
 				newTileList.Add(nearbyUpTile);
 			}
-			GameObject nearbyDownTile = GetTile(position + Vector2.down);
+			Tile nearbyDownTile = GetTile(position + Vector2.down);
 			if (nearbyDownTile != null && !newTileList.Contains(nearbyDownTile))
 			{
 				newTileList.Add(nearbyDownTile);
 			}
-			GameObject nearbyLeftTile = GetTile(position + Vector2.left);
+			Tile nearbyLeftTile = GetTile(position + Vector2.left);
 			if (nearbyLeftTile != null && !newTileList.Contains(nearbyLeftTile))
 			{
 				newTileList.Add(nearbyLeftTile);
 			}
-			GameObject nearbyRightTile = GetTile(position + Vector2.right);
+			Tile nearbyRightTile = GetTile(position + Vector2.right);
 			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
 			{
 				newTileList.Add(nearbyRightTile);
@@ -254,55 +254,55 @@ public class TileManager : MonoBehaviour {
 		return newTileList;
 	}
 
-	List<GameObject> AddNearbySquareTiles(List<GameObject> tileList)
+	List<Tile> AddNearbySquareTiles(List<Tile> tileList)
 	{
-		List<GameObject> newTileList = new List<GameObject>();
+		List<Tile> newTileList = new List<Tile>();
 		foreach (var tile in tileList)
 		{
-			Vector2 position = tile.GetComponent<Tile>().GetTilePos();
+			Vector2 position = tile.GetTilePos();
 
 			if (!newTileList.Contains(tile))
 			{
 				newTileList.Add(tile);
 			}
 
-			GameObject nearbyUpTile = GetTile(position + Vector2.up);
+			Tile nearbyUpTile = GetTile(position + Vector2.up);
 			if (nearbyUpTile != null && !newTileList.Contains(nearbyUpTile))
 			{
 				newTileList.Add(nearbyUpTile);
 			}
-			GameObject nearbyDownTile = GetTile(position + Vector2.down);
+			Tile nearbyDownTile = GetTile(position + Vector2.down);
 			if (nearbyDownTile != null && !newTileList.Contains(nearbyDownTile))
 			{
 				newTileList.Add(nearbyDownTile);
 			}
-			GameObject nearbyLeftTile = GetTile(position + Vector2.left);
+			Tile nearbyLeftTile = GetTile(position + Vector2.left);
 			if (nearbyLeftTile != null && !newTileList.Contains(nearbyLeftTile))
 			{
 				newTileList.Add(nearbyLeftTile);
 			}
-			GameObject nearbyRightTile = GetTile(position + Vector2.right);
+			Tile nearbyRightTile = GetTile(position + Vector2.right);
 			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
 			{
 				newTileList.Add(nearbyRightTile);
 			}
 
-			GameObject nearbyUpLeftTile = GetTile(position + Vector2.up + Vector2.left);
+			Tile nearbyUpLeftTile = GetTile(position + Vector2.up + Vector2.left);
 			if (nearbyUpLeftTile != null && !newTileList.Contains(nearbyUpLeftTile))
 			{
 				newTileList.Add(nearbyUpLeftTile);
 			}
-			GameObject nearbyUpRightTile = GetTile(position + Vector2.up + Vector2.right);
+			Tile nearbyUpRightTile = GetTile(position + Vector2.up + Vector2.right);
 			if (nearbyUpRightTile != null && !newTileList.Contains(nearbyUpRightTile))
 			{
 				newTileList.Add(nearbyUpRightTile);
 			}
-			GameObject nearbyDownLeftTile = GetTile(position + Vector2.down + Vector2.left);
+			Tile nearbyDownLeftTile = GetTile(position + Vector2.down + Vector2.left);
 			if (nearbyDownLeftTile != null && !newTileList.Contains(nearbyDownLeftTile))
 			{
 				newTileList.Add(nearbyDownLeftTile);
 			}
-			GameObject nearbyDownRightTile = GetTile(position + Vector2.down + Vector2.right);
+			Tile nearbyDownRightTile = GetTile(position + Vector2.down + Vector2.right);
 			if (nearbyDownRightTile != null && !newTileList.Contains(nearbyDownRightTile))
 			{
 				newTileList.Add(nearbyDownRightTile);
@@ -374,9 +374,9 @@ public class TileManager : MonoBehaviour {
 		int i = (int)tilePosition.x;
 
 		// FIXME : 높이 보정치 추가할 것.
-		GameObject tile = Instantiate(tilePrefab, new Vector3(tileImageWidth * (j+i) * 0.5f, tileImageHeight * (j-i+tileHeight) * 0.5f, (j-i) * 0.1f), Quaternion.identity) as GameObject;
-		tile.GetComponent<Tile>().SetTilePos(i, j);
-		tile.GetComponent<Tile>().SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight);
+		Tile tile = Instantiate(tilePrefab, new Vector3(tileImageWidth * (j+i) * 0.5f, tileImageHeight * (j-i+tileHeight) * 0.5f, (j-i) * 0.1f), Quaternion.identity).GetComponent<Tile>();
+		tile.SetTilePos(i, j);
+		tile.SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight);
 		tiles.Add(new Vector2(i, j), tile);
 	}
 

@@ -71,7 +71,7 @@ public class UnitViewer : MonoBehaviour {
 		elementBuffIcon.SetActive(false);
 		elementDebuffIcon.SetActive(false);
 
-		if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetComponent<Tile>().GetTileElement())
+		if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement())
 		{
 			elementBuffIcon.SetActive(true);
 		}

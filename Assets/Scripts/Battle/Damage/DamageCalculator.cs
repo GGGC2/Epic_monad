@@ -35,7 +35,7 @@ public class DamageCalculator
 		}
 	}
 
-	public static Dictionary<Unit, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<GameObject> tilesInSkillRange, List<GameObject> firstRange)
+	public static Dictionary<Unit, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<Tile> tilesInSkillRange, List<Tile> firstRange)
 	{
 		Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 
@@ -88,8 +88,8 @@ public class DamageCalculator
 			return damageList;
 		}
         
-		Unit casterUnit = chainInfo.GetUnit().GetComponent<Unit>();			
-		List<GameObject> selectedTiles = chainInfo.GetTargetArea();
+		Unit casterUnit = chainInfo.GetUnit();			
+		List<Tile> selectedTiles = chainInfo.GetTargetArea();
 
 		Direction oldDirection = casterUnit.GetDirection();
 
@@ -119,11 +119,10 @@ public class DamageCalculator
 		return damageList;
 	}
 
-	private static List<Unit> GetTargetUnits(List<GameObject> targetTiles) {
+	private static List<Unit> GetTargetUnits(List<Tile> targetTiles) {
 		var targets = new List<Unit>();
-		foreach (var tileObject in targetTiles)
+		foreach (var tile in targetTiles)
 		{
-			Tile tile = tileObject.GetComponent<Tile>();
 			if (tile.IsUnitOnTile())
 			{
 				targets.Add(tile.GetUnitOnTile());

@@ -34,7 +34,7 @@ namespace Battle.Turn
 			while (battleData.currentState == CurrentState.SelectMovingPoint)
 			{
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
-				List<GameObject> movableTiles = new List<GameObject>();
+				List<Tile> movableTiles = new List<Tile>();
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				{
 					movableTiles.Add(movableTileWithPath.Value.tile);
@@ -67,8 +67,8 @@ namespace Battle.Turn
 				}
 
 				// FIXME : 어딘가로 옮겨야 할 텐데...
-				GameObject destTile = battleData.tileManager.GetTile(battleData.move.selectedTilePosition);
-				List<GameObject> destPath = movableTilesWithPath[battleData.move.selectedTilePosition].path;
+				Tile destTile = battleData.tileManager.GetTile(battleData.move.selectedTilePosition);
+				List<Tile> destPath = movableTilesWithPath[battleData.move.selectedTilePosition].path;
 				Vector2 currentTilePos = battleData.selectedUnit.GetPosition();
 				Vector2 distanceVector = battleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
@@ -85,14 +85,14 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(BattleData battleData, GameObject destTile, List<GameObject> destPath, int totalUseActivityPoint, int distance)
+		private static IEnumerator CheckDestination(BattleData battleData, Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance)
 		{
 			while (battleData.currentState == CurrentState.CheckDestination)
 			{
 				// 목표지점만 푸른색으로 표시
 				// List<GameObject> destTileList = new List<GameObject>();
 				// destTileList.Add(destTile);
-				List<GameObject> destTileList = destPath;
+				List<Tile> destTileList = destPath;
 				destTileList.Add(destTile);
 				battleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
 				// UI를 띄우고
@@ -141,14 +141,13 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTile(BattleData battleData, GameObject destTileGO, Direction directionAtDest, int totalUseActivityPoint)
+		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction directionAtDest, int totalUseActivityPoint)
 		{
 			CaptureMoveSnapshot(battleData);
 
 			Tile beforeTile = battleData.SelectedUnitTile;
 			Unit unit = battleData.selectedUnit;
-			Tile nextTile = destTileGO.GetComponent<Tile>();
-			unit.ApplyMove(beforeTile, nextTile, directionAtDest, totalUseActivityPoint);
+			unit.ApplyMove(beforeTile, destTile, directionAtDest, totalUseActivityPoint);
 
 			battleData.previewAPAction = null;
 			battleData.currentState = CurrentState.FocusToUnit;

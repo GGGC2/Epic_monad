@@ -37,12 +37,12 @@ public class Utility : MonoBehaviour {
 		return deltaDegree;
 	}
 	
-	public static Direction GetDirectionToTarget(Unit unit, List<GameObject> selectedTiles)
+	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles)
 	{
 		Vector2 averagePos = new Vector2(0, 0);
 		foreach (var tile in selectedTiles)
 		{
-			averagePos += tile.GetComponent<Tile>().GetTilePos();
+			averagePos += tile.GetTilePos();
 		}
 		averagePos = averagePos / (float)selectedTiles.Count;
 		

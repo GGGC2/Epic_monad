@@ -8,14 +8,13 @@ namespace Battle.Skills {
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             Vector2 targetPosition = skillInstanceData.getTarget().GetPosition();
-            Tile targetTile =  tileManager.GetTile(targetPosition).GetComponent<Tile>();
+            Tile targetTile =  tileManager.GetTile(targetPosition);
 
-            List<GameObject> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, Direction.Left);
+            List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, Direction.Left);
 
             int waterTileCount = 0;
 
-            foreach(GameObject tileAsGameObject in tileList) {
-                Tile tile = tileAsGameObject.GetComponent<Tile>();
+            foreach(Tile tile in tileList) {
                 if(tile.GetTileElement() == Enums.Element.Water) {
                     waterTileCount++;
                 }

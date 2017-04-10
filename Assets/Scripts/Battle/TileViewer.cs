@@ -10,16 +10,15 @@ public class TileViewer : MonoBehaviour {
 	Text apText;
 	Image elementImage;
 
-	public void UpdateTileViewer(GameObject tile)
+	public void UpdateTileViewer(Tile tile)
 	{
-		Tile tileInfo = tile.GetComponent<Tile>();
 		if (tileImage == null) {
 			
 			Debug.LogError("TileImage is not exist : " + gameObject.GetInstanceID());
 		}
-		tileImage.sprite = tile.GetComponent<SpriteRenderer>().sprite;
-		nameText.text = tileInfo.GetTileName();
-	    int requiredAP = tileInfo.GetRequireAPAtTile();
+		tileImage.sprite = tile.gameObject.GetComponent<SpriteRenderer>().sprite;
+		nameText.text = tile.GetTileName();
+	    int requiredAP = tile.GetRequireAPAtTile();
 	    int unclimbableAP = 200;
 	    if (requiredAP < unclimbableAP)
 	    {
@@ -30,7 +29,7 @@ public class TileViewer : MonoBehaviour {
 	        apText.text = "-";
 	    }
 
-        SetElementImage(tileInfo.GetTileElement());
+        SetElementImage(tile.GetTileElement());
 	}
 
 	void SetElementImage(Element element)

@@ -6,7 +6,7 @@ namespace Battle.Skills {
 
         public override float GetAdditionalRelativePowerBonus(Unit caster) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Tile casterTile = tileManager.GetTile(caster.GetPosition()).GetComponent<Tile>();
+            Tile casterTile = tileManager.GetTile(caster.GetPosition());
 
             if (casterTile.GetTileElement()== Enums.Element.Fire) {
                 //TODO: 신속 효과가 추가될 시 수정

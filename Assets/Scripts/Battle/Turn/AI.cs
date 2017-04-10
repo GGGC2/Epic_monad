@@ -9,7 +9,7 @@ namespace Battle.Turn
 {
 	public class UdongNoodle
 	{
-		public static Vector2 FindNearestEnemy(List<GameObject> movableTiles, List<Unit> units, Unit mainUnit)
+		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit)
 		{
 			Side otherSide;
 
@@ -22,9 +22,8 @@ namespace Battle.Turn
 				otherSide = Side.Ally;
 			}
 
-			var positions = from tileGO in movableTiles
+			var positions = from tile in movableTiles
 					from unit in units
-					let tile = tileGO.GetComponent<Tile>()
 					where unit.GetSide() == otherSide
 					let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
 					orderby distance
@@ -38,7 +37,7 @@ namespace Battle.Turn
 			return mainUnit.GetPosition();
 		}
 
-		public static Tile FindEnemyTile(List<GameObject> activeTileRange, Unit mainUnit)
+		public static Tile FindEnemyTile(List<Tile> activeTileRange, Unit mainUnit)
 		{
 			Side otherSide;
 
@@ -51,8 +50,7 @@ namespace Battle.Turn
 				otherSide = Side.Ally;
 			}
 
-			var tilesHaveEnemy = from tileGO in activeTileRange
-								 let tile = tileGO.GetComponent<Tile>()
+			var tilesHaveEnemy = from tile in activeTileRange
 								 where tile.GetUnitOnTile() != null
 								 let unit = tile.GetUnitOnTile()
 								 where unit.GetSide() == otherSide
@@ -73,7 +71,7 @@ namespace Battle.Turn
         //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
         //
 
-        public static Vector2 CalculateDestination(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
+        public static Vector2 CalculateDestination(List<Tile> movableTiles, List<Unit> units, Unit mainUnit) {
             // Destination calculation algorithm
             //
             // If it's far from (>3) manastone, go to the nearest manastone
@@ -97,7 +95,7 @@ namespace Battle.Turn
 
             if (distanceFromNearestManastone > 3)
             {
-                return FindNearestManastone(movableTileObjects, units, mainUnit);
+                return FindNearestManastone(movableTiles, units, mainUnit);
             }
 
 
@@ -115,12 +113,11 @@ namespace Battle.Turn
 
             if (distanceFromNearestPlayer <= 4)
             {
-                return FindNearestPlayer(movableTileObjects, units, mainUnit);
+                return FindNearestPlayer(movableTiles, units, mainUnit);
             }
 
             List<Tile> nearManastoneTiles = new List<Tile>();
-            foreach (GameObject movableTileObject in movableTileObjects) {
-                Tile movableTile = movableTileObject.GetComponent<Tile>();
+            foreach (Tile movableTile in movableTiles) {
 
                 foreach (Unit unit in units) {
                     if (unit.GetNameInCode() != "manastone") {
@@ -141,12 +138,11 @@ namespace Battle.Turn
 
         }
 
-        public static Vector2 FindNearestManastone(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
+        public static Vector2 FindNearestManastone(List<Tile> movableTiles, List<Unit> units, Unit mainUnit) {
 
 
-            var positions = from tileGO in movableTileObjects
+            var positions = from tile in movableTiles
                             from unit in units
-                            let tile = tileGO.GetComponent<Tile>()
                             where unit.GetNameInCode() == "manastone"
                             let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
                             orderby distance
@@ -159,12 +155,11 @@ namespace Battle.Turn
             return mainUnit.GetPosition();
         }
 
-        public static Vector2 FindNearestPlayer(List<GameObject> movableTileObjects, List<Unit> units, Unit mainUnit) {
+        public static Vector2 FindNearestPlayer(List<Tile> movableTiles, List<Unit> units, Unit mainUnit) {
 
 
-            var positions = from tileGO in movableTileObjects
+            var positions = from tile in movableTiles
                             from unit in units
-                            let tile = tileGO.GetComponent<Tile>()
                             where unit.GetSide() == Side.Ally
                             let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
                             orderby distance
@@ -188,19 +183,18 @@ namespace Battle.Turn
 			battleData.indexOfSeletedSkillByUser = 1;
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			List<GameObject> selectedTiles = new List<GameObject>();
+			List<Tile> selectedTiles = new List<Tile>();
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 														selectedUnit.GetPosition(),
 														selectedSkill.GetSecondMinReach(),
 														selectedSkill.GetSecondMaxReach(),
 														selectedUnit.GetDirection());
 
-			var enemies = from tileGO in selectedTiles
-					let tile = tileGO.GetComponent<Tile>()
-					let unitGO = tile.GetUnitOnTile()
-					where unitGO != null
-					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
-					select unitGO;
+			var enemies = from tile in selectedTiles
+					let unit = tile.GetUnitOnTile()
+					where unit != null
+					where unit.GetSide() == Side.Ally
+					select unit;
 
 			return enemies.Count() >= 2;
 		}
@@ -213,7 +207,7 @@ namespace Battle.Turn
 			battleData.indexOfSeletedSkillByUser = 2;
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			List<GameObject> selectedTiles = new List<GameObject>();
+			List<Tile> selectedTiles = new List<Tile>();
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 														selectedUnit.GetPosition(),
 														selectedSkill.GetFirstMinReach(),
@@ -222,13 +216,12 @@ namespace Battle.Turn
 
 			TileManager tileManager = battleData.tileManager;
 			var enemiesNearEachOther =
-					from tileGO in selectedTiles
-					let tile = tileGO.GetComponent<Tile>()
-					let nearTileGOs = tileManager.GetTilesInRange(RangeForm.Diamond, tile.GetTilePos(), 0, 1, Direction.Down)
-					let nearTileUnits = nearTileGOs.Select(tileGO2 => tileGO2.GetComponent<Tile>().GetUnitOnTile())
-					let nearUnits = nearTileUnits.Where(unitGO => unitGO != null && unitGO.GetComponent<Unit>().GetSide() == Side.Ally)
+					from tile in selectedTiles
+					let nearTiles = tileManager.GetTilesInRange(RangeForm.Diamond, tile.GetTilePos(), 0, 1, Direction.Down)
+					let nearTileUnits = nearTiles.Select(tile2 => tile2.GetUnitOnTile())
+					let nearUnits = nearTileUnits.Where(unit => unit != null && unit.GetSide() == Side.Ally)
 					where nearUnits.Count() >= 2
-					select tileGO;
+					select tile;
 
 			return enemiesNearEachOther.Count() > 0;
 		}
@@ -241,19 +234,18 @@ namespace Battle.Turn
 			battleData.indexOfSeletedSkillByUser = 3;
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			List<GameObject> selectedTiles = new List<GameObject>();
+			List<Tile> selectedTiles = new List<Tile>();
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 														selectedUnit.GetPosition(),
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
 														selectedUnit.GetDirection());
 
-			var enemies = from tileGO in selectedTiles
-					let tile = tileGO.GetComponent<Tile>()
-					let unitGO = tile.GetUnitOnTile()
-					where unitGO != null
-					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
-					select unitGO;
+			var enemies = from tile in selectedTiles
+					let unit = tile.GetUnitOnTile()
+					where unit != null
+					where unit.GetSide() == Side.Ally
+					select unit;
 
 			return enemies.Count() > 0;
 		}
@@ -271,7 +263,7 @@ namespace Battle.Turn
 			battleData.indexOfSeletedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
 
-			List<GameObject> selectedTiles = new List<GameObject>();
+			List<Tile> selectedTiles = new List<Tile>();
 
 			foreach (Direction direction in new List<Direction> { Direction.LeftUp, Direction.LeftDown, Direction.RightUp, Direction.RightDown})
 			{
@@ -281,12 +273,11 @@ namespace Battle.Turn
 														selectedSkill.GetSecondMaxReach(),
 														direction);
 
-				var enemies = from tileGO in selectedTiles
-						let tile = tileGO.GetComponent<Tile>()
-						let unitGO = tile.GetUnitOnTile()
-						where unitGO != null
-						where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
-						select unitGO;
+				var enemies = from tile in selectedTiles
+						let unit = tile.GetUnitOnTile()
+						where unit != null
+						where unit.GetSide() == Side.Ally
+						select unit;
 
 				if (enemies.Count() > 0)
 				{
@@ -309,20 +300,19 @@ namespace Battle.Turn
 													selectedSkill.GetSecondMaxReach(),
 													selectedUnit.GetDirection());
 
-			var enemies = from tileGO in selectedTiles
-					let tile = tileGO.GetComponent<Tile>()
-					let unitGO = tile.GetUnitOnTile()
-					where unitGO != null
-					where unitGO.GetComponent<Unit>().GetSide() == Side.Ally
-					select unitGO;
+			var enemies = from tile in selectedTiles
+					let unit = tile.GetUnitOnTile()
+					where unit != null
+					where unit.GetSide() == Side.Ally
+					select unit;
 
 			foreach (var enemy in enemies)
 			{
 				Vector2 dirVec = battleData.tileManager.ToVector2(selectedUnit.GetDirection());
 				BattleManager battleManager = battleData.battleManager;
 
-				GameObject targetTile = battleData.tileManager.GetTile(enemy.GetComponent<Unit>().GetPosition() + dirVec * 3);
-				enemy.GetComponent<Unit>().GetKnockedBack(battleData, targetTile);
+				Tile targetTile = battleData.tileManager.GetTile(enemy.GetPosition() + dirVec * 3);
+				enemy.GetKnockedBack(battleData, targetTile);
 
 				yield return new WaitForSeconds(0.5f);
 			}
@@ -392,7 +382,7 @@ namespace Battle.Turn
 			yield return battleManager.StartCoroutine(AIDIe(battleData));
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
-			List<GameObject> movableTiles = new List<GameObject>();
+			List<Tile> movableTiles = new List<Tile>();
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 			{
 				movableTiles.Add(movableTileWithPath.Value.tile);
@@ -420,8 +410,8 @@ namespace Battle.Turn
             }
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
-            GameObject destTile = battleData.tileManager.GetTile(destPosition);
-			List<GameObject> destPath = movableTilesWithPath[destPosition].path;
+            Tile destTile = battleData.tileManager.GetTile(destPosition);
+			List<Tile> destPath = movableTilesWithPath[destPosition].path;
 			Vector2 currentTilePos = currentUnit.GetPosition();
 			Vector2 distanceVector = destPosition - currentTilePos;
 			int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
@@ -430,7 +420,7 @@ namespace Battle.Turn
 			// battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			battleData.currentState = CurrentState.CheckDestination;
 
-			List<GameObject> destTileList = destPath;
+			List<Tile> destTileList = destPath;
 			destTileList.Add(destTile);
 
 			// 카메라를 옮기고
@@ -501,7 +491,7 @@ namespace Battle.Turn
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
 		{
 			Direction beforeDirection = originalDirection;
-			List<GameObject> selectedTiles = new List<GameObject>();
+			List<Tile> selectedTiles = new List<Tile>();
 			Unit selectedUnit = battleData.selectedUnit;
 			Skill selectedSkill = battleData.SelectedSkill;
 
@@ -525,7 +515,7 @@ namespace Battle.Turn
 			BattleManager battleManager = battleData.battleManager;
 			battleData.currentState = CurrentState.CheckApplyOrChain;
 
-			List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+			List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
 			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
 			FocusUnit(battleData.selectedUnit);
@@ -543,7 +533,7 @@ namespace Battle.Turn
 			{
 				Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
 
-				List<GameObject> activeRange = new List<GameObject>();
+				List<Tile> activeRange = new List<Tile>();
 				Skill selectedSkill = battleData.SelectedSkill;
 				activeRange = 
 					battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
@@ -571,7 +561,7 @@ namespace Battle.Turn
 				BattleManager battleManager = battleData.battleManager;
 				battleData.currentState = CurrentState.CheckApplyOrChain;
 
-				List<GameObject> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
 
 				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
 				FocusUnit(battleData.selectedUnit);
@@ -585,10 +575,10 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
-		private static List<GameObject> GetTilesInSkillRange(BattleData battleData, Tile targetTile, Unit selectedUnit = null)
+		private static List<Tile> GetTilesInSkillRange(BattleData battleData, Tile targetTile, Unit selectedUnit = null)
 		{
 				Skill selectedSkill = battleData.SelectedSkill;
-				List<GameObject> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
@@ -601,13 +591,13 @@ namespace Battle.Turn
 					}
 					else
 					{
-						selectedTiles.Remove(targetTile.gameObject);
+						selectedTiles.Remove(targetTile);
 					}
 				}
 				return selectedTiles;
 		}
 
-		private static List<GameObject> GetTilesInFirstRange(BattleData battleData)
+		private static List<Tile> GetTilesInFirstRange(BattleData battleData)
 		{
 			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
 																battleData.selectedUnit.GetPosition(),

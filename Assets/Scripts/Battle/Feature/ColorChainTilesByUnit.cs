@@ -18,7 +18,7 @@ namespace Battle.Feature
 				return;
 			}
 
-			List<GameObject> targetArea = chainInfo.GetTargetArea();
+			List<Tile> targetArea = chainInfo.GetTargetArea();
 			battleData.tileManager.PaintTiles(targetArea, TileColor.Yellow);
 		}
 
@@ -33,7 +33,7 @@ namespace Battle.Feature
 				return;
 			}
 
-			List<GameObject> targetArea = chainInfo.GetTargetArea();
+			List<Tile> targetArea = chainInfo.GetTargetArea();
 			battleData.tileManager.DepaintTiles(targetArea, TileColor.Yellow);
 		}
 	}

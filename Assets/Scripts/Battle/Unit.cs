@@ -234,8 +234,8 @@ public class Unit : MonoBehaviour
 	public int GetHeight()
 	{
 		int height = 0;
-		GameObject tile = FindObjectOfType<TileManager>().GetTile(this.GetPosition());
-		height = tile.GetComponent<Tile>().GetTileHeight();
+		Tile tile = FindObjectOfType<TileManager>().GetTile(this.GetPosition());
+		height = tile.GetTileHeight();
 
 		return height;
 	}
@@ -466,7 +466,7 @@ public class Unit : MonoBehaviour
 			}
 
 			// 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
-			if (statusEffect.GetCaster() == this.gameObject)
+			if (statusEffect.GetCaster() == this)
 			{
 				newStatusEffectList.Add(statusEffect);
 				continue;
@@ -664,13 +664,13 @@ public class Unit : MonoBehaviour
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
 
-	public void GetKnockedBack(BattleData battleData, GameObject destTile)
+	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{
-		GameObject currentTile = battleData.tileManager.GetTile(GetPosition());
-		currentTile.GetComponent<Tile>().SetUnitOnTile(null);
-		transform.position = destTile.transform.position + new Vector3(0, 0, -5f);
-		SetPosition(destTile.GetComponent<Tile>().GetTilePos());
-		destTile.GetComponent<Tile>().SetUnitOnTile(this);
+		Tile currentTile = battleData.tileManager.GetTile(GetPosition());
+		currentTile.SetUnitOnTile(null);
+		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
+		SetPosition(destTile.GetTilePos());
+		destTile.SetUnitOnTile(this);
 	}
 
 	public void UpdateSpriteByDirection()

@@ -28,7 +28,7 @@ public class APText : MonoBehaviour {
 			// 현재 턴인 유닛에게 강조표시.
 			if (battleManager.GetSelectedUnit() == unit)
 				newText += "> ";
-			string unitText = unit.GetComponent<Unit>().name + " : " + unit.GetComponent<Unit>().GetCurrentActivityPoint() + "\n";
+			string unitText = unit.name + " : " + unit.GetCurrentActivityPoint() + "\n";
 			newText += unitText;
 		}
 		text.text = newText;

@@ -130,7 +130,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		BattleData battleData = battleManager.battleData;
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Show(unitOnTile.GetComponent<Unit>());
+			ColorChainTilesByUnit.Show(unitOnTile);
 
 			List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
 			foreach (Unit unit in unitsTargetThisTile)
@@ -143,7 +143,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
 		}
 
-		FindObjectOfType<UIManager>().SetTileViewer(gameObject);
+		FindObjectOfType<UIManager>().SetTileViewer(this);
 
 		if (isPreSeleted)
 		{
@@ -159,7 +159,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Hide(unitOnTile.GetComponent<Unit>());
+			ColorChainTilesByUnit.Hide(unitOnTile);
 		}
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();

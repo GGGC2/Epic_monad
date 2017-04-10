@@ -151,8 +151,8 @@ public class UnitManager : MonoBehaviour {
 			// 								 (initPosition.y - initPosition.x) * 0.1f - 5f);
 			unit.gameObject.transform.position = respawnPos;
 
-			GameObject tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-			tileUnderUnit.GetComponent<Tile>().SetUnitOnTile(unit);
+			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+			tileUnderUnit.SetUnitOnTile(unit);
 
 			units.Add(unit);
 		}
@@ -223,13 +223,13 @@ public class UnitManager : MonoBehaviour {
 		// Decrease each buff & debuff phase
 		foreach (var unit in units)
 		{
-			unit.GetComponent<Unit>().UpdateRemainPhaseAtPhaseEnd();
-			unit.GetComponent<Unit>().UpdateStatusEffect();
-			unit.GetComponent<Unit>().UpdateSkillCooldown();
+			unit.UpdateRemainPhaseAtPhaseEnd();
+			unit.UpdateStatusEffect();
+			unit.UpdateSkillCooldown();
 		}
 
 		foreach (var unit in units)
-			unit.GetComponent<Unit>().RegenerateActivityPoint();
+			unit.RegenerateActivityPoint();
 	}
 
 	void LoadSkills()

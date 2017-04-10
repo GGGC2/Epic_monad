@@ -24,16 +24,16 @@ public class ChainText : MonoBehaviour {
 		foreach (var chainInfo in battleManager.GetChainList())
 		{
 			// 현재 턴인 유닛에게 강조표시.
-			if (!chainInfo.GetTargetArea().Any(k => k.GetComponent<Tile>().IsUnitOnTile()))
-				newText += chainInfo.GetUnit().GetComponent<Unit>().GetName() + " >> \n";
+			if (!chainInfo.GetTargetArea().Any(k => k.IsUnitOnTile()))
+				newText += chainInfo.GetUnit().GetName() + " >> \n";
 			else
 			{
-				string unitName = chainInfo.GetUnit().GetComponent<Unit>().GetName();
+				string unitName = chainInfo.GetUnit().GetName();
 				foreach (var tileObject in chainInfo.GetTargetArea())
 				{
 					if (tileObject.GetComponent<Tile>().IsUnitOnTile())
 					{
-						newText += unitName + " >> " + tileObject.GetComponent<Tile>().GetUnitOnTile().GetComponent<Unit>().GetName() + "\n";
+						newText += unitName + " >> " + tileObject.GetUnitOnTile().GetName() + "\n";
 					}
 				}
 			}

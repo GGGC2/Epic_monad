@@ -8,13 +8,13 @@ public class ChainInfo {
 	// 시전자, 중심, 영역, 시전스킬 + 경로형 여부, 경로범위
 	Unit unit;
 	Tile centerTile;
-	List<GameObject> targetArea;
-	List<GameObject> firstRange;
+	List<Tile> targetArea;
+	List<Tile> firstRange;
 	Skill skill;
 
-	List<GameObject> routeArea;
+	List<Tile> routeArea;
 
-	public ChainInfo (Unit unit, Tile centerTile, List<GameObject> secondRange, Skill skill, List<GameObject> firstRange)
+	public ChainInfo (Unit unit, Tile centerTile, List<Tile> secondRange, Skill skill, List<Tile> firstRange)
 	{
 		this.unit = unit;
 		this.centerTile = centerTile;
@@ -26,34 +26,34 @@ public class ChainInfo {
 	
 	public Unit GetUnit() {	return unit;	}
 	public Tile GetCenterTile() {	return centerTile;	}
-	public List<GameObject> GetTargetArea() {	return targetArea;	}
+	public List<Tile> GetTargetArea() {	return targetArea;	}
 	public Skill GetSkill() {	return skill;	}
 	public bool IsRouteType() {	return skill.GetSkillType() == Enums.SkillType.Route;	}
-	public List<GameObject> GetRouteArea()
+	public List<Tile> GetRouteArea()
 	{
 		if (!IsRouteType())
 		{
 			Debug.LogError("Invaild access - not route type skill");
-			return new List<GameObject>();
+			return new List<Tile>();
 		}
 		else
 			return firstRange;
 	}
 	
-	public bool Overlapped(List<GameObject> anotherTargetArea)
+	public bool Overlapped(List<Tile> anotherTargetArea)
 	{
 		List<Unit> anotherTargets = new List<Unit>();
 		foreach (var anotherTargetTile in anotherTargetArea)
 		{
-			if (anotherTargetTile.GetComponent<Tile>().IsUnitOnTile())
-				anotherTargets.Add(anotherTargetTile.GetComponent<Tile>().GetUnitOnTile());
+			if (anotherTargetTile.IsUnitOnTile())
+				anotherTargets.Add(anotherTargetTile.GetUnitOnTile());
 		}
 		
 		List<Unit> targets = new List<Unit>();
 		foreach (var targetTile in targetArea)
 		{
-			if (targetTile.GetComponent<Tile>().IsUnitOnTile())
-				targets.Add(targetTile.GetComponent<Tile>().GetUnitOnTile());
+			if (targetTile.IsUnitOnTile())
+				targets.Add(targetTile.GetUnitOnTile());
 		}
 
 		foreach (var anotherTarget in anotherTargets)

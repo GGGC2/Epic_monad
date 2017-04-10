@@ -9,11 +9,11 @@ public class Lenien_7_r_SkillLogic : BasePassiveSkillLogic {
 	public override float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-		List<GameObject> nearbyTilesFromLenian = new List<GameObject>();
+		List<Tile> nearbyTilesFromLenian = new List<Tile>();
 		nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
 
 		float damageBonusPerTile = 0.1f;
-		int numberOfMetalTiles = nearbyTilesFromLenian.Count(x => x.GetComponent<Tile>().GetTileElement() == Enums.Element.Metal);
+		int numberOfMetalTiles = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
 		float totalPowerBonus = 1.0f + numberOfMetalTiles * damageBonusPerTile;
 
 		return totalPowerBonus;

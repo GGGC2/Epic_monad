@@ -40,7 +40,7 @@ public class BaseSkillLogic
 		return resistance;
 	}
 
-	public virtual int CalculateAP(BattleData battleData, List<GameObject> selectedTiles)
+	public virtual int CalculateAP(BattleData battleData, List<Tile> selectedTiles)
 	{
 		int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(battleData.SelectedSkill);
 		return requireAP;
@@ -55,11 +55,11 @@ public class BaseSkillLogic
 		return skillInstanceData.getDamage();
 	}
 
-	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<GameObject> selectedTiles)
+	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<Tile> selectedTiles)
 	{
 	}
 
-	public static List<GameObject> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
+	public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;
 		if (direction.HasValue) {

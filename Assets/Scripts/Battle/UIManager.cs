@@ -213,7 +213,7 @@ public class UIManager : MonoBehaviour
 		selectedUnitViewerUI.SetActive(false);
 	}
 
-	public void SetTileViewer(GameObject tile)
+	public void SetTileViewer(Tile tile)
 	{
 		tileViewerUI.SetActive(true);
 		FindObjectOfType<TileViewer>().UpdateTileViewer(tile);

@@ -52,7 +52,7 @@ class TargetUnitAllDieChecker : BattleEndCondition
 		var notDiedUnitNames =
 			from unitName in targetUnitNames
 			from unit in allUnits
-			where unit.GetComponent<Unit>().GetName() == unitName
+			where unit.GetName() == unitName
 			select unitName;
 		bool allDied = notDiedUnitNames.Count() == 0; 
 
@@ -72,7 +72,7 @@ class TargetUnitSomeDieChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		int remainNumberOfTargetUnit = checker.BattleData.unitManager.GetAllUnits().Count(x => checker.TargetUnitNames.Contains(x.GetComponent<Unit>().GetName()));
+		int remainNumberOfTargetUnit = checker.BattleData.unitManager.GetAllUnits().Count(x => checker.TargetUnitNames.Contains(x.GetName()));
 		if (remainNumberOfTargetUnit < checker.MinNumberOfTargetUnit) return true;
 		return false;
 	}
@@ -98,7 +98,7 @@ class AllyAllDieChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Ally);
+		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetSide() == Enums.Side.Ally);
 		if (!remainAnyAlly) return true;
 		return false;
 	}
@@ -112,7 +112,7 @@ class AllySomeDieChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		int remainNumberOfAlly = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Ally);
+		int remainNumberOfAlly = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Ally);
 		if (remainNumberOfAlly < checker.MinNumberOfAlly) return true;
 		return false;
 	}
@@ -138,7 +138,7 @@ class EnemyAllDieChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
+		bool remainAnyAlly = checker.BattleData.unitManager.GetAllUnits().Any(x => x.GetSide() == Enums.Side.Enemy);
 		if (!remainAnyAlly) return true;
 		return false;
 	}
@@ -152,7 +152,7 @@ class EnemySomeDieChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		int remainNumberOfEnemy = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetComponent<Unit>().GetSide() == Enums.Side.Enemy);
+		int remainNumberOfEnemy = checker.BattleData.unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
 		if (remainNumberOfEnemy < checker.MinNumberOfEnemy) return true;
 		return false;
 	}
@@ -178,8 +178,8 @@ class TargetUnitAllReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
-		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetComponent<Unit>().GetPosition()));
+		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetName()));
+		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetPosition()));
 		if (reachedTargetUnits == targetUnits.Count) return true;
 		return false;
 	}
@@ -192,8 +192,8 @@ class TargetUnitSomeReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
-		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetComponent<Unit>().GetPosition()));
+		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetName()));
+		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetPosition()));
 		if (reachedTargetUnits >= checker.MinNumberOfReachedTargetUnit) return true;
 		return false;
 	}
@@ -206,8 +206,8 @@ class TargetUnitAtLeastOneReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetComponent<Unit>().GetName()));
-		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetComponent<Unit>().GetPosition()));
+		var targetUnits = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => checker.ReachedTargetUnitNames.Contains(unit.GetName()));
+		var reachedTargetUnits = targetUnits.Count(targetUnit => checker.TargetTiles.Contains(targetUnit.GetPosition()));
 		if (reachedTargetUnits > 0) return true;
 		return false;
 	}
@@ -220,8 +220,8 @@ class AllyAllReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
-		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetComponent<Unit>().GetPosition()));
+		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
+		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetPosition()));
 		if (reachedAllies == allies.Count) return true;
 		return false;
 	}
@@ -234,8 +234,8 @@ class AllySomeReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
-		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetComponent<Unit>().GetPosition()));
+		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
+		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetPosition()));
 		if (reachedAllies >= checker.MinNumberOfReachedAlly) return true;
 		return false;
 	}
@@ -248,8 +248,8 @@ class AllyAtLeastOneReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Ally);
-		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetComponent<Unit>().GetPosition()));
+		var allies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
+		var reachedAllies = allies.Count(ally => checker.TargetTiles.Contains(ally.GetPosition()));
 		if (reachedAllies > 0) return true;
 		return false;
 	}
@@ -262,8 +262,8 @@ class EnemyAllReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Enemy);
-		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetComponent<Unit>().GetPosition()));
+		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Enemy);
+		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetPosition()));
 		if (reachedEnemies == enemies.Count) return true;
 		return false;
 	}
@@ -276,8 +276,8 @@ class EnemySomeReachedChecker : BattleEndCondition
     public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Enemy);
-		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetComponent<Unit>().GetPosition()));
+		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Enemy);
+		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetPosition()));
 		if (reachedEnemies >= checker.MinNumberOfReachedEnemy) return true;
 		return false;
 	}
@@ -289,8 +289,8 @@ class EnemyAtLeastOneReachedChecker : BattleEndCondition
 	public bool Check(BattleEndChecker checker)
 	{
 		if (checker.isBattleEnd) return false;
-		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetComponent<Unit>().GetSide() == Side.Enemy);
-		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetComponent<Unit>().GetPosition()));
+		var enemies = checker.BattleData.unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Enemy);
+		var reachedEnemies = enemies.Count(enemy => checker.TargetTiles.Contains(enemy.GetPosition()));
 		if (reachedEnemies > 0) return true;
 		return false;
 	}

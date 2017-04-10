@@ -13,13 +13,13 @@ public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		Vector2 deadUnitPos = deadUnit.GetPosition();
 
-		List<GameObject> applyArea = tileManager.GetTilesInRange(RangeForm.Diamond, deadUnitPos, 1, 2, Direction.LeftDown);
+		List<Tile> applyArea = tileManager.GetTilesInRange(RangeForm.Diamond, deadUnitPos, 1, 2, Direction.LeftDown);
 		List<Unit> targets = new List<Unit>();
-		foreach (var tileObj in applyArea)
+		foreach (var tile in applyArea)
 		{
-			if (tileObj.GetComponent<Tile>().IsUnitOnTile())
+			if (tile.IsUnitOnTile())
 			{
-				Unit target = tileObj.GetComponent<Tile>().GetUnitOnTile().GetComponent<Unit>();
+				Unit target = tile.GetUnitOnTile();
 				if (target.GetSide() == Side.Enemy)
 				{
 					targets.Add(target);

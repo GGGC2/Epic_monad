@@ -6,9 +6,9 @@ public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
 	// *주의 : SkillAndChainStates.cs에서 같은 이름의 함수를 수정할 것!!
-	public static List<GameObject> GetRouteTiles(List<GameObject> tiles)
+	public static List<Tile> GetRouteTiles(List<Tile> tiles)
 	{
-		List<GameObject> newRouteTiles = new List<GameObject>();
+		List<Tile> newRouteTiles = new List<Tile>();
 		foreach (var tile in tiles)
 		{
 			// 타일 단차에 의한 부분(미구현)
@@ -18,7 +18,7 @@ public class ChainList : MonoBehaviour {
 			// 첫 유닛을 만난 경우
 			// 이번 타일을 마지막으로 종료한다.
 			newRouteTiles.Add(tile);
-			if (tile.GetComponent<Tile>().IsUnitOnTile())
+			if (tile.IsUnitOnTile())
 				break;
 		}
 
@@ -35,11 +35,11 @@ public class ChainList : MonoBehaviour {
 		{
 			if (chainInfo.IsRouteType())
 			{
-				List<GameObject> newRouteTiles = GetRouteTiles(chainInfo.GetRouteArea());
-				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1].GetComponent<Tile>();
+				List<Tile> newRouteTiles = Battle.Turn.SkillAndChainStates.GetRouteTiles(chainInfo.GetRouteArea());
+				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1];
 				Skill skill = chainInfo.GetSkill();
 				Unit unit = chainInfo.GetUnit();
-				List<GameObject> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
+				List<Tile> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
 																	newCenterTile.GetTilePos(),
 																	skill.GetSecondMinReach(),
 																	skill.GetSecondMaxReach(),
@@ -55,7 +55,7 @@ public class ChainList : MonoBehaviour {
 		return newChainList;
 	}
 
-	public static void AddChains(Unit unit, Tile targetTile, List<GameObject> targetArea, Skill skill, List<GameObject> firstRange)
+	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, Skill skill, List<Tile> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
@@ -68,7 +68,7 @@ public class ChainList : MonoBehaviour {
 	static void SetChargeEffectToUnit(Unit unit)
 	{
 		GameObject effect = Instantiate(Resources.Load("Effect/Waiting")) as GameObject;
-		unit.GetComponent<Unit>().SetChargeEffect(effect);
+		unit.SetChargeEffect(effect);
 	}
 
 	// 자신이 건 체인 삭제.
@@ -79,7 +79,7 @@ public class ChainList : MonoBehaviour {
 		ChainInfo deleteChainInfo = chainList.Find(x => x.GetUnit() == unit);
 
 		if (deleteChainInfo == null)
-			Debug.LogWarning(unit.GetComponent<Unit>().GetName() + "'s chainInfo is null");
+			Debug.LogWarning(unit.GetName() + "'s chainInfo is null");
 		else
 			chainList.Remove(deleteChainInfo);
 
@@ -92,7 +92,7 @@ public class ChainList : MonoBehaviour {
 	}
 
 	// 해당 영역에 체인을 대기중인 모든 정보 추출 (같은 진영만)
-	public static List<ChainInfo> GetAllChainInfoToTargetArea(Unit unit, List<GameObject> targetArea)
+	public static List<ChainInfo> GetAllChainInfoToTargetArea(Unit unit, List<Tile> targetArea)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 

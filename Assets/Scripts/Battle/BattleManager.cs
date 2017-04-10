@@ -105,7 +105,7 @@ public class BattleManager : MonoBehaviour
 	{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-		Debug.Log(unit.GetComponent<Unit>().GetName() + "'s turn");
+		Debug.Log(unit.GetName() + "'s turn");
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
@@ -129,7 +129,7 @@ public class BattleManager : MonoBehaviour
 		foreach (var unit in battleData.unitManager.GetAllUnits())
 		{
 			if ((unit != battleData.selectedUnit) &&
-			(unit.GetComponent<Unit>().GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
+			(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
 			{
 				isPossible = true;
 			}
@@ -182,7 +182,7 @@ public class BattleManager : MonoBehaviour
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
-			Debug.Log(deadUnit.GetComponent<Unit>().GetName() + " is dead");
+			Debug.Log(deadUnit.GetName() + " is dead");
 			Destroy(deadUnit.gameObject);
 		}
 	}
@@ -197,7 +197,7 @@ public class BattleManager : MonoBehaviour
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
-			Debug.Log(retreatUnit.GetComponent<Unit>().GetName() + " retreats");
+			Debug.Log(retreatUnit.GetName() + " retreats");
 			Destroy(retreatUnit.gameObject);
 		}
 	}

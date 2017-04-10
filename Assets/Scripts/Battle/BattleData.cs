@@ -231,14 +231,14 @@ public class BattleData
 	public Tile SelectedTile
 	{
 		get {
-			return tileManager.GetTile(move.selectedTilePosition).GetComponent<Tile>();
+			return tileManager.GetTile(move.selectedTilePosition);
 		}
 	}
 
 	public Tile SelectedUnitTile
 	{
 		get {
-			return tileManager.GetTile(selectedUnit.GetPosition()).GetComponent<Tile>();
+			return tileManager.GetTile(selectedUnit.GetPosition());
 		}
 	}
 
@@ -259,7 +259,7 @@ public class BattleData
 		List<Unit> resultUnits = new List<Unit>();
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetTargetArea().Contains(tile.gameObject))
+			if (chainInfo.GetTargetArea().Contains(tile))
 			{
 				resultUnits.Add(chainInfo.GetUnit());
 			}
