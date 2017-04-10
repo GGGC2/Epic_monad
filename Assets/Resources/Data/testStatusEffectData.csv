@@ -43,6 +43,7 @@ triana,나무 껍질,방어력 상승,FALSE,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,N
 curi,호기심,공격력 증가,FALSE,TRUE,FALSE,FALSE,FALSE,5,1,FALSE,None,None,None,1,PowerChange,15,TRUE,,,,,,
 curi,신속 반응,속도 상승,FALSE,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,None,None,None,1,SpeedChange,20,TRUE,,,,,,
 curi,가연성 부착물,가연성 부착물,FALSE,FALSE,TRUE,FALSE,TRUE,9999,1,TRUE,None,None,None,1,Etc,0,FALSE,,,,,,
+curi,알칼리 폭탄,기절,FALSE,FALSE,FALSE,FALSE,FALSE,1,1,TRUE,None,None,None,1,faint,0,FALSE,,,,,,
 curi,조연성 부착물,화속성 약점,FALSE,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,FireWeakness,20,TRUE,,,,,,
 curi,산성 혼합물,산성 혼합물,FALSE,FALSE,FALSE,FALSE,FALSE,3,1,TRUE,None,None,None,3,DefenseChange,0,TRUE,ResistanceChange,0,TRUE,DamageOverPhase,3,FALSE
 curi,재결정,공격력 증가,FALSE,TRUE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,PowerChange,25,TRUE,,,,,,
