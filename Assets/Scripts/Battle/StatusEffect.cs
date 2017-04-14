@@ -4,11 +4,15 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class StatusEffect {
+    public FixedElement fixedElem;
+    public FlexibleElement flexibleElem;
 
     // 공유목록
-	public class FixedElement
-	{
-		public class DisplayElement
+    public class FixedElement {
+
+        public readonly DisplayElement display;
+        public readonly List<ActualElement> actuals;
+        public class DisplayElement
 		{
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
@@ -62,9 +66,6 @@ public class StatusEffect {
             }
 		}
 
-		public readonly DisplayElement display;
-		public readonly List<ActualElement> actuals;
-
 		public FixedElement(string originSkillName, string displayName, 
                   bool isHidden, bool isBuff, bool isInfinite, 
                   bool isStackable, bool isDisposable,
@@ -81,9 +82,11 @@ public class StatusEffect {
 		}
 	}
         
-	public class FlexibleElement
-	{
-		public class DisplayElement
+	public class FlexibleElement {
+
+        public DisplayElement display;
+        public List<ActualElement> actuals;
+        public class DisplayElement
 		{
 			public Unit caster; // 시전자
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
@@ -112,9 +115,6 @@ public class StatusEffect {
             }
 		}
 
-		public DisplayElement display;
-		public List<ActualElement> actuals;
-
 		public FlexibleElement(FixedElement fixedElem, Unit caster)
 		{
 			int maxStack = fixedElem.display.maxStack;
@@ -133,14 +133,11 @@ public class StatusEffect {
             this.actuals = actuals;
 		}
 	}
-
-    public FixedElement fixedElem;
-	public FlexibleElement flexible;
 	
 	public StatusEffect(FixedElement fixedElem, Unit caster)
 	{
 		this.fixedElem = fixedElem;
-		this.flexible = new FlexibleElement(fixedElem, caster);
+		this.flexibleElem = new FlexibleElement(fixedElem, caster);
     }
 	
     public string GetOriginSkillName() {return fixedElem.display.originSkillName;}
@@ -153,10 +150,10 @@ public class StatusEffect {
     public string GetEffectName() {return fixedElem.display.effectName;}
     public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
     public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
-    public Unit GetCaster() {return flexible.display.caster;}
-    public int GetRemainPhase() {return flexible.display.remainPhase;}
-    public int GetRemainStack() {return flexible.display.remainStack;}
-    public bool GetToBeRemoved() {return flexible.display.toBeRemoved;}
+    public Unit GetCaster() {return flexibleElem.display.caster;}
+    public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
+    public int GetRemainStack() {return flexibleElem.display.remainStack;}
+    public bool GetToBeRemoved() {return flexibleElem.display.toBeRemoved;}
 
     public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
     public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
@@ -164,74 +161,74 @@ public class StatusEffect {
     public Stat GetAmountStat(int index) {return fixedElem.actuals[index].amountStat;} 
     public bool GetIsRelative() {return  fixedElem.actuals[0].isRelative;}
     public bool GetIsRelative(int index) {return  fixedElem.actuals[index].isRelative;}
-    public float GetAmount() {return flexible.actuals[0].amount;}
-    public float GetAmount(int index) {return flexible.actuals[index].amount;}
-    public float GetRemainAmount() {return flexible.actuals[0].remainAmount;}
-    public float GetRemainAmount(int index) {return flexible.actuals[index].remainAmount;}
+    public float GetAmount() {return flexibleElem.actuals[0].amount;}
+    public float GetAmount(int index) {return flexibleElem.actuals[index].amount;}
+    public float GetRemainAmount() {return flexibleElem.actuals[0].remainAmount;}
+    public float GetRemainAmount(int index) {return flexibleElem.actuals[index].remainAmount;}
 
     public void SetAmount(float amount)
     {
-        flexible.actuals[0].amount = amount;
+        flexibleElem.actuals[0].amount = amount;
     }
 
     public void SetAmount(int index, float amount)
     {
-        flexible.actuals[index].amount = amount;
+        flexibleElem.actuals[index].amount = amount;
     }
 
     public void SetRemainAmount(float amount)
     {
-		flexible.actuals[0].remainAmount = amount;
+		flexibleElem.actuals[0].remainAmount = amount;
     }
 
     public void SetRemainAmount(int index, float amount)
     {
-		flexible.actuals[index].remainAmount = amount;
+		flexibleElem.actuals[index].remainAmount = amount;
     }
 
     public void AddRemainPhase(int phase)
 	{
-		flexible.display.remainPhase += phase;
+		flexibleElem.display.remainPhase += phase;
 	}
 	
 	public void DecreaseRemainPhase()
 	{
-		flexible.display.remainPhase -= 1;
+		flexibleElem.display.remainPhase -= 1;
 	}
 
     public void DecreaseRemainPhase(int phase)
 	{
-		flexible.display.remainPhase -= phase;
+		flexibleElem.display.remainPhase -= phase;
 	}
     
     public void SetRemainPhase(int phase)
     {
-		flexible.display.remainPhase = phase;
+		flexibleElem.display.remainPhase = phase;
     }
     
     public void AddRemainStack(int stack)
     {
-		flexible.display.remainStack += stack;
+		flexibleElem.display.remainStack += stack;
     }
     
     public void DecreaseRemainStack()
     {
-		flexible.display.remainStack -= 1;
+		flexibleElem.display.remainStack -= 1;
     }
     
     public void DecreaseRemainStack(int stack)
     {
-		flexible.display.remainStack -= stack;
+		flexibleElem.display.remainStack -= stack;
     }
 
     public void SetRemainStack(int stack)
     {
-		flexible.display.remainStack = stack;
+		flexibleElem.display.remainStack = stack;
     }
 
     public void SetToBeRemoved(bool toEnd)
     {
-		flexible.display.toBeRemoved = toEnd;
+		flexibleElem.display.toBeRemoved = toEnd;
     }
 
     public bool IsOfType(StatusEffectType statusEffectType)

@@ -254,11 +254,9 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
 			
 			battleData.unitManager.ResetLatelyHitUnits();
-			//
-			// **
-			//
+			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			
-			if (IsCurrentUnitDie(battleData))
+			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
 
 			Camera.main.transform.position = new Vector3(

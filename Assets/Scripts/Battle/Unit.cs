@@ -230,16 +230,16 @@ public class Unit : MonoBehaviour
 	{
 		return celestial;
 	}
+    
+    public Tile GetTile() {
+        return FindObjectOfType<TileManager>().GetTile(position);
+    }
 
 	public int GetHeight()
 	{
-		int height = 0;
-		Tile tile = FindObjectOfType<TileManager>().GetTile(this.GetPosition());
-		height = tile.GetTileHeight();
-
-		return height;
-	}
-
+		return GetTile().GetTileHeight();
+    }
+    
 	public string GetNameInCode()
 	{
 		return nameInCode;
@@ -286,15 +286,15 @@ public class Unit : MonoBehaviour
 		this.activityPoint = snapshotAp;
 	}
 
-	public void ApplyMove(Tile before, Tile after, Direction direction, int costAp)
+	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
 	{
-		before.SetUnitOnTile(null);
-		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
-		SetPosition(after.GetTilePos());
+		tileBefore.SetUnitOnTile(null);
+		transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
+		SetPosition(tileAfter.GetTilePos());
 		SetDirection(direction);
-		after.SetUnitOnTile(this);
+		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
-	}
+    }
 
 	public Vector2 GetPosition()
 	{
@@ -666,7 +666,7 @@ public class Unit : MonoBehaviour
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{
-		Tile currentTile = battleData.tileManager.GetTile(GetPosition());
+		Tile currentTile = GetTile();
 		currentTile.SetUnitOnTile(null);
 		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
 		SetPosition(destTile.GetTilePos());

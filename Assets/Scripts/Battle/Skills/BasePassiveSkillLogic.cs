@@ -72,5 +72,11 @@ public class BasePassiveSkillLogic
     {
         
     }
+    public virtual void triggerStart(Unit caster) {
+        
+    }
+    public virtual void triggerActionEnd(Unit caster) {
+        
+    }
 }
 }
