@@ -16,7 +16,7 @@ public class BaseSkillLogic
 	{		
 	}
 
-	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster)
+	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
 	{
 	}
 

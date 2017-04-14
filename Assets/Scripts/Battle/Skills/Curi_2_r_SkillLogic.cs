@@ -2,24 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Enums;
+using Battle.Damage;
 
 namespace Battle.Skills {
     public class Curi_2_r_SkillLogic : BaseSkillLogic {
-        public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
+        private List<Tile> TilesAroundTarget(Unit target) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Vector2 targetPosition = skillInstanceData.getTarget().GetPosition();
-            Tile targetTile =  tileManager.GetTile(targetPosition);
-
+            Vector2 targetPosition = target.GetPosition();
+            Tile targetTile = tileManager.GetTile(targetPosition);
             List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, Direction.Left);
+            return tileList;
+        }
+        public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
+            List<Tile> tileList = TilesAroundTarget(skillInstanceData.getTarget());
 
             int waterTileCount = 0;
-
             foreach(Tile tile in tileList) {
-                if(tile.GetTileElement() == Enums.Element.Water) {
+                if(tile.GetTileElement() == Enums.Element.Water)
                     waterTileCount++;
-                }
             }
             skillInstanceData.getDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
         }
+        public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target) {
+            List<Tile> tileList = TilesAroundTarget(target);
+            bool isAllTileWater = true;
+            foreach (Tile tile in tileList) {
+                if (tile.GetTileElement() != Enums.Element.Water)
+                    isAllTileWater = false;
+            }
+
+            var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "알칼리 폭탄");
+            if (!isAllTileWater) {
+                statusEffects.Remove(statusEffect1st);
+            }
+
+        }
+
     }
 }
