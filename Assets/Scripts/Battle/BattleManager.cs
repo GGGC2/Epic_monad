@@ -202,37 +202,64 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
+	static bool IsSelectedUnitRetraitOrDie(BattleData battleData)
+	{
+		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
+		{
+			return true;
+		}
+
+		if (battleData.deadUnits.Contains(battleData.selectedUnit))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	static IEnumerator UpdateRetraitAndDeadUnits(BattleData battleData, BattleManager battleManager)
+	{
+		battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
+		battleData.deadUnits = battleData.unitManager.GetDeadUnits();
+
+		yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
+		yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
+
+		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
+		{
+			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
+			battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
+			Debug.Log("SelectedUnit retreats");
+			Destroy(battleData.selectedUnit.gameObject);
+			yield break;
+		}
+
+		if (battleData.deadUnits.Contains(battleData.selectedUnit))
+		{
+			battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
+			battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
+			Debug.Log("SelectedUnit is dead");
+			Destroy(battleData.selectedUnit.gameObject);
+			yield break;
+		}
+	}
+
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
 		while (battleData.currentState == CurrentState.FocusToUnit)
 		{
 			BattleManager battleManager = battleData.battleManager;
-			battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
-			battleData.deadUnits = battleData.unitManager.GetDeadUnits();
-
-			yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
-			yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
-
-			if (battleData.retreatUnits.Contains(battleData.selectedUnit))
-			{
-				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
-				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
-				Debug.Log("SelectedUnit retreats");
-				Destroy(battleData.selectedUnit.gameObject);
-				yield break;
-			}
-
-			if (battleData.deadUnits.Contains(battleData.selectedUnit))
-			{
-				battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-				yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
-				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
-				Debug.Log("SelectedUnit is dead");
-				Destroy(battleData.selectedUnit.gameObject);
-				yield break;
-			}
-
+			
+			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
+			
 			battleData.unitManager.ResetLatelyHitUnits();
+			//
+			// **
+			//
+			
+			if (IsSelectedUnitRetraitOrDie(battleData))
+				yield break;
 
 			Camera.main.transform.position = new Vector3(
 				battleData.selectedUnit.gameObject.transform.position.x,
