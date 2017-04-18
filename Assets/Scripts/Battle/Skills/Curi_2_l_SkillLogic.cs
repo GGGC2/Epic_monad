@@ -1,18 +1,27 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Battle.Skills {
     public class Curi_2_1_SkillLogic : BasePassiveSkillLogic {
+        public override void triggerActionEnd(Unit caster) {
+            Tile currentTile = caster.GetTile();
+            Enums.Element elementOfTile = currentTile.GetTileElement();
+            List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
+            StatusEffect statusEffectFromThisSkill = null;
 
-        public override float GetAdditionalRelativePowerBonus(Unit caster) {
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Tile casterTile = tileManager.GetTile(caster.GetPosition());
+            foreach(var statusEffect in statusEffectList) {
+                if(statusEffect.fixedElem.display.displayName == "신속 반응") {
+                    statusEffectFromThisSkill = statusEffect;
+                }
+            }
 
-            if (casterTile.GetTileElement()== Enums.Element.Fire) {
-                //TODO: 신속 효과가 추가될 시 수정
-                return 1.2f;
-            } 
-            else return 1.0f;
+            if(elementOfTile != Enums.Element.Fire) {
+                statusEffectFromThisSkill.SetToBeRemoved(true);
+            }
+            else if(elementOfTile == Enums.Element.Fire) {
+                statusEffectFromThisSkill.SetToBeRemoved(false);
+            }
         }
     }
 }

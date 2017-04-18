@@ -60,6 +60,12 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+    public void TriggerPassiveSkillsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).triggerActionEnd(unit);
+        }
+    }
+
 	public List<Unit> GetRetreatUnits()
 	{
 		retreatUnits.Clear();
@@ -140,6 +146,7 @@ public class UnitManager : MonoBehaviour {
 
 			unit.ApplyUnitInfo(unitInfo);
 			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
+            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).triggerStart(unit);
 
 			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);

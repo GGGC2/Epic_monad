@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Linq;
+using Battle.Damage;
+using System.Collections.Generic;
 
 namespace Battle.Skills {
     public class Curi_1_1_SkillLogic : BasePassiveSkillLogic {
 
-        public override float GetAdditionalRelativePowerBonus(Unit caster) {
-            if (MonoBehaviour.FindObjectOfType<BattleManager>().battleData.currentPhase <= 5) {
-                return 1.15f;
-            }
-            else return 1.0f;
+        public override void triggerStart(Unit caster) {
+            StatusEffector.AttachStatusEffect(caster, this.passiveSkill, caster);
+        }
+        public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target) {
+            statusEffects[0].SetRemainStack(1);
+            statusEffects[0].SetRemainPhase(5);
         }
     }
 }

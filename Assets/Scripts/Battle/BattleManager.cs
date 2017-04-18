@@ -254,9 +254,7 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
 			
 			battleData.unitManager.ResetLatelyHitUnits();
-			//
-			// **
-			//
+			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
