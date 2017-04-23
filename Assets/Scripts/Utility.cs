@@ -136,4 +136,9 @@ public class Utility : MonoBehaviour {
 			return 0.8f;
 		else return 1;
     }
+
+	public static int GetDistance(Vector2 position1, Vector2 position2)
+	{
+		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
+	}
 }

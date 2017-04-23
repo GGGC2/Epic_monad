@@ -21,7 +21,7 @@ public static class SkillLogicFactory
 			case "전자기 충격": case "전자기 충격_test":
 			return new Lenien_1_m_SkillLogic();
 			// 영
-			case "은빛 베기":
+			case "은빛 베기": case "은빛 베기_test":
 			return new Yeong_1_l_SkillLogic();
 			// 에렌
 			case "칠흑의 화살":
@@ -96,7 +96,7 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
 			// 영
-			case "영회피":
+			case "방랑자":
 			passiveSkillLogic = new Yeong_0_1_SkillLogic();
 			break;
 			case "유법":

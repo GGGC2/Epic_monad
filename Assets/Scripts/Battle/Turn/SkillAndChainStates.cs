@@ -500,27 +500,34 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
+				int totalEvasionChance = 0; 
 				List<PassiveSkill> passiveSkills = target.GetLearnedPassiveSkillList();
-				if (SkillLogicFactory.Get(passiveSkills).checkEvade()) {
+				totalEvasionChance = SkillLogicFactory.Get(passiveSkills).GetEvasionChance();
+				
+				int randomNumber = UnityEngine.Random.Range(0, 100);
+				
+				if (totalEvasionChance > randomNumber) {
 					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
 					SkillLogicFactory.Get(passiveSkills).triggerEvasionEvent(battleData, target);
 					continue;
 				}
-
-				// 데미지 적용
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+				else 
 				{
-                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, unitInChain, target, targets.Count);
-					yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
-				}
+					// 데미지 적용
+					if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+					{
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, unitInChain, target, targets.Count);
+						yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+					}
 
-				// 효과 외의 부가 액션 (AP 감소 등)
-				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
+					// 효과 외의 부가 액션 (AP 감소 등)
+					SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
 
-				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
-				if(appliedSkill.GetStatusEffectList().Count > 0)
-				{
-					StatusEffector.AttachStatusEffect(unitInChain, appliedSkill, target);
+					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
+					if(appliedSkill.GetStatusEffectList().Count > 0)
+					{
+						StatusEffector.AttachStatusEffect(unitInChain, appliedSkill, target);
+					}
 				}
 
 				unitInChain.ActiveFalseAllBonusText();

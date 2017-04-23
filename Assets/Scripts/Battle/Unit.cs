@@ -44,13 +44,13 @@ public class Unit : MonoBehaviour
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
-	// 사용한 스킬 정보 저장.
+	// 사용한 스킬 정보 저장(쿨타임 산정용).
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
-    // 상태이상 리스트
+    // 효과 리스트
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
 
-	// FIXME : temp values
+	// 유닛 배치할때만 사용
 	Vector2 initPosition;
 
 	// Base stats. FIXME : 지금은 수동으로 셋팅.
@@ -74,6 +74,8 @@ public class Unit : MonoBehaviour
 
 	// Variable values.
 	public Vector2 position;
+	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
+	public Vector2 startPositionOfPhase;
 	public Direction direction;
 	public int currentHealth;
 	public int activityPoint;
@@ -301,6 +303,11 @@ public class Unit : MonoBehaviour
 		return position;
 	}
 
+	public Vector2 GetStartPositionOfPhase()
+	{
+		return startPositionOfPhase;
+	}
+
 	public Dictionary<string, int> GetUsedSkillDict()
 	{
 		return usedSkillDict;
@@ -451,6 +458,11 @@ public class Unit : MonoBehaviour
 		}
 
 		statusEffectList = newStatusEffectList;
+	}
+
+	public void UpdateStartPosition()
+	{
+		startPositionOfPhase = this.GetPosition();
 	}
 
 	public void RemoveStatusEffect(Enums.StatusEffectCategory category, int num)
@@ -850,6 +862,7 @@ public class Unit : MonoBehaviour
 		gameObject.name = nameInCode;
 
 		position = initPosition;
+		startPositionOfPhase = position;
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
 		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();

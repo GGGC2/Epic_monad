@@ -233,6 +233,7 @@ public class UnitManager : MonoBehaviour {
 			unit.UpdateRemainPhaseAtPhaseEnd();
 			unit.UpdateStatusEffect();
 			unit.UpdateSkillCooldown();
+			unit.UpdateStartPosition();
 		}
 
 		foreach (var unit in units)

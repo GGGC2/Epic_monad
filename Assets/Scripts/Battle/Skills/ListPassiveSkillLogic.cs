@@ -19,17 +19,15 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override bool checkEvade()
+	public override int GetEvasionChance()
 	{
+		int totalEvasionChance = 0;
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			if (skillLogic.checkEvade())
-			{
-				return true;
-			}
+			totalEvasionChance += skillLogic.GetEvasionChance();
 		}
 
-		return false;
+		return totalEvasionChance;
 	}
 
 	public override void triggerEvasionEvent(BattleData battleData, Unit unit)
@@ -37,6 +35,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		foreach (var skillLogic in passiveSkillLogics)
 		{
 			skillLogic.triggerEvasionEvent(battleData, unit);
+		}
+	}
+
+	public override void triggerActionEnd(Unit caster)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.triggerActionEnd(caster);
 		}
 	}
 

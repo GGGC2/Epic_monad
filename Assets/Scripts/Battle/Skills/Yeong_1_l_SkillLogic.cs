@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using Enums;
 
 namespace Battle.Skills
@@ -8,10 +9,16 @@ namespace Battle.Skills
 public class Yeong_1_l_SkillLogic : BaseSkillLogic {
 	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) 
     {
-		float damageBonusToMeleeUnit = 1.2f;
+		float damageBonus = 1.2f;
 
-		if (skillInstanceData.getTarget().GetUnitClass() == UnitClass.Melee)
-			skillInstanceData.getDamage().relativeDamageBonus += damageBonusToMeleeUnit;
+		List<StatusEffect> statusEffects = skillInstanceData.getCaster().GetStatusEffectList();
+		bool isUniquePassiveActive = statusEffects.Any(x => x.GetOriginSkillName() == "방랑자");
+		statusEffects.ForEach(x => Debug.Log("origin : " + x.GetOriginSkillName()));
+		Debug.LogWarning("isUniquePassiveActive : " + isUniquePassiveActive);
+		if (isUniquePassiveActive)
+			skillInstanceData.getDamage().relativeDamageBonus *= damageBonus;
+
+		Debug.Log("Total relative bonus : " + skillInstanceData.getDamage().relativeDamageBonus);
 	}
 }
 }

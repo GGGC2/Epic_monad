@@ -163,6 +163,8 @@ public class DamageCalculator
 									* attackDamage.celestialBonus
 									* attackDamage.heightBonus
 									* attackDamage.chainBonus;
+
+		Debug.Log("resultDamage : " + attackDamage.resultDamage);
 	}
 
 	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
@@ -233,8 +235,8 @@ public class DamageCalculator
 
 	private static void ApplyBonusDamageFromEachSkill(SkillInstanceData skillInstanceData) {
 		Skill appliedSkill = skillInstanceData.getSkill();
+		Debug.LogWarning("ApplyAdd'damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
-        
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target)

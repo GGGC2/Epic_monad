@@ -56,9 +56,9 @@ public class BasePassiveSkillLogic
 		return attackDamage;
 	}
 	
-	public virtual bool checkEvade()
+	public virtual int GetEvasionChance()
 	{
-		return false;
+		return 0;
 	}
 
 	public virtual void triggerEvasionEvent(BattleData battleData, Unit unit)
