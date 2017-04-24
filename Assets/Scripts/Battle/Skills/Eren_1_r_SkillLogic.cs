@@ -18,7 +18,7 @@ public class Eren_1_r_SkillLogic : BaseSkillLogic {
 		// 0.6(+흡수 중첩당 0.1)x공격력
 		float amount = (0.6f + (stack * 0.1f)) * caster.GetActualStat(Stat.Power); 
 
-		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "강타");
+		var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "광휘");
 		statusEffect1st.SetRemainPhase(999);
 		statusEffect1st.SetAmount(0, amount);
 	}

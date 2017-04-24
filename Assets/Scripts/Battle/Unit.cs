@@ -517,7 +517,7 @@ public class Unit : MonoBehaviour
 			{
 				currentHealth -= finalDamage;
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
-                SkillLogicFactory.Get(passiveSkillList).triggerDamaged(this, finalDamage);
+                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage);
 			}
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -617,7 +617,7 @@ public class Unit : MonoBehaviour
 		recoverTextObject.SetActive(false);
 	}
 
-	public IEnumerator RecoverAP(int amount)
+	public IEnumerator RecoverActionPoint(int amount)
 	{
 		activityPoint += amount;
 
@@ -632,13 +632,13 @@ public class Unit : MonoBehaviour
 
 	}
 
-	public void RegenerateActivityPoint()
+	public void RegenerateActionPoint()
 	{
-		activityPoint = GetRegeneratedActivityPoint();
+		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
 	}
 
-	public int GetRegeneratedActivityPoint()
+	public int GetRegeneratedActionPoint()
 	{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
@@ -938,7 +938,7 @@ public class Unit : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.R))
 		{
-			RegenerateActivityPoint();
+			RegenerateActionPoint();
 		}
 		if (Input.GetKeyDown(KeyCode.L))
 		{

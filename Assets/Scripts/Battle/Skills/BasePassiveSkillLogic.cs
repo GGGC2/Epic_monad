@@ -61,22 +61,29 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual void triggerEvasionEvent(BattleData battleData, Unit unit)
+	public virtual void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 	}
 
-	public virtual void triggerActiveSkillDamageApplied(Unit yeong)
+	public virtual void TriggerActiveSkillDamageApplied(Unit yeong)
 	{
 	}
-    public virtual void triggerDamaged(Unit unit, int damage) 
-    {
-        
+
+    public virtual void TriggerDamaged(Unit unit, int damage) 
+    {        
     }
-    public virtual void triggerStart(Unit caster) {
-        
+
+    public virtual void TriggerStart(Unit caster) 
+	{		
+	}    
+
+    public virtual void TriggerActionEnd(Unit caster) 
+	{    
     }
-    public virtual void triggerActionEnd(Unit caster) {
-        
-    }
+
+	public virtual void TriggerRest(Unit caster)
+	{
+
+	}
 }
 }

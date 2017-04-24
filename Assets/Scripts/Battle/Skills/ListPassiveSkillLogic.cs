@@ -30,19 +30,19 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return totalEvasionChance;
 	}
 
-	public override void triggerEvasionEvent(BattleData battleData, Unit unit)
+	public override void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.triggerEvasionEvent(battleData, unit);
+			skillLogic.TriggerEvasionEvent(battleData, caster, target);
 		}
 	}
 
-	public override void triggerActionEnd(Unit caster)
+	public override void TriggerActionEnd(Unit caster)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.triggerActionEnd(caster);
+			skillLogic.TriggerActionEnd(caster);
 		}
 	}
 
@@ -102,16 +102,16 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return defense;
 	}
 
-	public override void triggerActiveSkillDamageApplied(Unit yeong)
+	public override void TriggerActiveSkillDamageApplied(Unit yeong)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.triggerActiveSkillDamageApplied(yeong);
+			skillLogic.TriggerActiveSkillDamageApplied(yeong);
 		}
 	}
-    public override void triggerDamaged(Unit unit, int damage) {
+    public override void TriggerDamaged(Unit unit, int damage) {
         foreach (var skillLogic in passiveSkillLogics) {
-            skillLogic.triggerDamaged(unit, damage);
+            skillLogic.TriggerDamaged(unit, damage);
         }
     }
     }

@@ -100,7 +100,7 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Yeong_0_1_SkillLogic();
 			break;
 			case "유법":
-			passiveSkillLogic = new Yeong_1_2_SkillLogic();
+			passiveSkillLogic = new Yeong_1_m_SkillLogic();
 			break;
 			case "동체 시력":
 			passiveSkillLogic = new Yeong_1_r_SkillLogic();

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Enums;
+using System.Collections.Generic;
+using Battle.Skills;
 
 public class RestAndRecover {
 	public static int GetRestCostAP(BattleData battleData)
@@ -19,6 +21,10 @@ public class RestAndRecover {
 
 		BattleManager battleManager = battleData.battleManager;
 		yield return battleManager.StartCoroutine(recoverHealthCoroutine);
+
+		// 휴식시 발동되는 특성
+		List<PassiveSkill> passiveSkillList = battleData.selectedUnit.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkillList).TriggerRest(battleData.selectedUnit);
 
 		Debug.Log("Rest. Using " + usingActivityPointToRest + "AP and recover " + recoverHealthDuringRest + " HP");
 

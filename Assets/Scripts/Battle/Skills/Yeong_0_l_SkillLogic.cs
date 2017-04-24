@@ -5,7 +5,7 @@ namespace Battle.Skills
 {
 public class Yeong_0_1_SkillLogic : BasePassiveSkillLogic {
 
-	public override void triggerActionEnd(Unit caster)
+	public override void TriggerActionEnd(Unit caster)
 	{
 		Vector2 currentPosition = caster.GetPosition();
 		Vector2 startPosition = caster.GetStartPositionOfPhase();

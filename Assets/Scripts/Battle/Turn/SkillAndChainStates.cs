@@ -501,14 +501,15 @@ namespace Battle.Turn
 			foreach (var target in targets)
 			{
 				int totalEvasionChance = 0; 
-				List<PassiveSkill> passiveSkills = target.GetLearnedPassiveSkillList();
-				totalEvasionChance = SkillLogicFactory.Get(passiveSkills).GetEvasionChance();
+				List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
+				totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
 				
 				int randomNumber = UnityEngine.Random.Range(0, 100);
 				
 				if (totalEvasionChance > randomNumber) {
 					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
-					SkillLogicFactory.Get(passiveSkills).triggerEvasionEvent(battleData, target);
+					// (타겟이) 회피 성공했을 경우 추가 효과
+					SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, unitInChain, target);
 					continue;
 				}
 				else 
@@ -567,7 +568,7 @@ namespace Battle.Turn
             int targetCount = skillInstanceData.getTargetCount();
 
 			var passiveSkillsOfAttacker = unitInChain.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkillsOfAttacker).triggerActiveSkillDamageApplied(
+			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(
 				unitInChain
 			);
 
