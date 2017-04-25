@@ -508,12 +508,23 @@ namespace Battle.Turn
 				
 				if (totalEvasionChance > randomNumber) {
 					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = unitInChain.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					unitInChain.SetStatusEffectList(statusEffectListAfterEvade);
+
 					// (타겟이) 회피 성공했을 경우 추가 효과
 					SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, unitInChain, target);
 					continue;
 				}
 				else 
 				{
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = unitInChain.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					unitInChain.SetStatusEffectList(statusEffectListAfterEvade);
+
 					// 데미지 적용
 					if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 					{

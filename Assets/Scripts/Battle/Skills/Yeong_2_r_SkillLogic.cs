@@ -3,7 +3,7 @@ using Battle.Damage;
 
 namespace Battle.Skills
 {
-public class Yeong_1_r_SkillLogic : BasePassiveSkillLogic
+public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 {
 	public override void TriggerActiveSkillDamageApplied(Unit yeong)
 	{

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Battle.Skills {
     public class Curi_2_1_SkillLogic : BasePassiveSkillLogic {
-        public override void triggerActionEnd(Unit caster) {
+        public override void TriggerActionEnd(Unit caster) {
             Tile currentTile = caster.GetTile();
             Enums.Element elementOfTile = currentTile.GetTileElement();
             List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
