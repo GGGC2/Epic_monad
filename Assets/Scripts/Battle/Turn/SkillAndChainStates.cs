@@ -543,6 +543,9 @@ namespace Battle.Turn
 				}
 
 				unitInChain.ActiveFalseAllBonusText();
+
+				// 사이사이에도 특성 발동 조건을 체크해준다.
+				battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			}
 
 			int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(appliedSkill);

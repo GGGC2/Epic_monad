@@ -102,6 +102,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return defense;
 	}
 
+	public override void TriggerOffensiveActiveSkillApplied(Unit caster)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerOffensiveActiveSkillApplied(caster);
+		}
+	}
+
 	public override void TriggerActiveSkillDamageApplied(Unit yeong)
 	{
 		foreach (var skillLogic in passiveSkillLogics)

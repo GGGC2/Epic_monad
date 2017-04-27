@@ -396,6 +396,24 @@ public class Unit : MonoBehaviour
 		return hasStatusEffect;
 	}
 
+	public float GetSpeed()
+	{
+		int speedValue = 100;
+		foreach (var statusEffect in statusEffectList)
+		{
+			int num = statusEffect.fixedElem.actuals.Count;
+			for (int i = 0; i < num; i++)
+			{
+				if (statusEffect.IsOfType(i, StatusEffectType.SpeedChange))
+				{
+					speedValue += (int)statusEffect.GetAmount(i);	
+				}
+			}
+		}
+
+		return (float)speedValue / 100;
+	}
+
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
 		float totalAbsoluteValue = 0.0f; // 절대값
@@ -502,6 +520,18 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
+	// 반사데미지
+	public IEnumerator DamagedByReflection()
+	{
+		yield return null;
+	}
+
+	// 지속데미지
+	public IEnumerator DamagedByDot()
+	{
+		yield return null;
+	}
+
 	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
@@ -595,17 +625,18 @@ public class Unit : MonoBehaviour
 		}
 
 		// 초과회복량 차감
-		if (currentHealth + (int)amount > maxHealth)
+		int actualAmount = (int)amount;
+		if (currentHealth + actualAmount > maxHealth)
 		{
-			amount = (int)amount - (currentHealth + (int)amount - maxHealth);
+			actualAmount = actualAmount - (currentHealth + actualAmount - maxHealth);
 		}
 
-		currentHealth += (int) amount;
+		currentHealth += actualAmount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
 		recoverTextObject.SetActive(true);
-		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+		recoverTextObject.GetComponent<TextMesh>().text = ((int)amount).ToString();
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 

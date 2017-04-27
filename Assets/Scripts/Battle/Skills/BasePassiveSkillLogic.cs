@@ -65,6 +65,10 @@ public class BasePassiveSkillLogic
 	{
 	}
 
+	public virtual void TriggerOffensiveActiveSkillApplied(Unit caster)
+	{		
+	}
+
 	public virtual void TriggerActiveSkillDamageApplied(Unit yeong)
 	{
 	}

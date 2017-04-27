@@ -253,6 +253,7 @@ public class BattleManager : MonoBehaviour
 			
 			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
 			
+			// 매 액션이 끝날때마다 갱신하는 특성 조건들
 			battleData.unitManager.ResetLatelyHitUnits();
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			
