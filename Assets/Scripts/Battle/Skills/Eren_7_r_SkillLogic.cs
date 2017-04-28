@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Battle.Skills
 {
-public class Eren_5_l_SkillLogic : BasePassiveSkillLogic {
+public class Eren_7_r_SkillLogic : BasePassiveSkillLogic {
 
 	public override void TriggerActionEnd(Unit eren)
 	{
@@ -14,11 +14,15 @@ public class Eren_5_l_SkillLogic : BasePassiveSkillLogic {
 
 	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit eren, Unit target) 
 	{
-		float powerBonusPerBuff = 0.02f;
+		StatusEffect uniqueStatusEffect = eren.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
+		int stack = 0;
+		if (uniqueStatusEffect != null)
+			stack = uniqueStatusEffect.GetRemainStack();
+		int speedBonusPerBuff = 7;
 		UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-		int numberOfRemainEnemies = unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
-		float amount = numberOfRemainEnemies * powerBonusPerBuff + 1;
-
+		
+		int amount = stack * speedBonusPerBuff;
+		
 		statusEffects[0].SetAmount(amount);
 	}
 }
