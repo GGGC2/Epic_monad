@@ -6,7 +6,7 @@ using Battle.Damage;
 namespace Battle.Skills {
     public class Curi_2_1_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerActionEnd(Unit caster) {
-            Tile currentTile = caster.GetTile();
+            Tile currentTile = caster.GetTileUnderUnit();
             Enums.Element elementOfTile = currentTile.GetTileElement();
             List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
 

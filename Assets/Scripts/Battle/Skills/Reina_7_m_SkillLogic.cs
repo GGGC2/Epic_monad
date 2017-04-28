@@ -14,7 +14,7 @@ public class Reina_7_m_SkillLogic : BasePassiveSkillLogic {
 		float amount = numberOfBuffFromOtherUnits * bonusPerBuff;
 		
 		// 10 * 갯수 %
-		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "화속성 약점");
+		var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "화속성 약점");
 		if (amount <= 0)
 			statusEffects.Remove(statusEffect1st);
 		else

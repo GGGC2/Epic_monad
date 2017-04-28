@@ -13,7 +13,7 @@ public class Reina_3_m_SkillLogic : BasePassiveSkillLogic {
 		float amount = caster.GetActualStat(Enums.Stat.Power) * powerFactor;
 		
 		// 10 * 갯수 %
-		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "내상");
+		var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "내상");
 		if (tileManager.GetTile(target.GetPosition()).GetTileElement() != Enums.Element.Plant)
 			statusEffects.Remove(statusEffect1st);
 		else

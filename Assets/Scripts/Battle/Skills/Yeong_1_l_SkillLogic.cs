@@ -11,7 +11,7 @@ public class Yeong_1_l_SkillLogic : BaseSkillLogic {
     {
 		float damageBonus = 1.2f;
 
-		List<StatusEffect> statusEffects = skillInstanceData.getCaster().GetStatusEffectList();
+		List<StatusEffect> statusEffects = skillInstanceData.GetCaster().GetStatusEffectList();
 		bool isUniquePassiveActive = statusEffects.Any(x => x.GetOriginSkillName() == "방랑자");
 		statusEffects.ForEach(x => Debug.Log("origin : " + x.GetOriginSkillName()));
 		Debug.LogWarning("isUniquePassiveActive : " + isUniquePassiveActive);

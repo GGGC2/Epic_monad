@@ -110,16 +110,33 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override void TriggerActiveSkillDamageApplied(Unit yeong)
+	public override void TriggerUsingSkill(Unit caster)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.TriggerActiveSkillDamageApplied(yeong);
+			skillLogic.TriggerUsingSkill(caster);
 		}
 	}
-    public override void TriggerDamaged(Unit unit, int damage) {
+
+	public override void TriggerOnPhaseStart(Unit caster) 
+	{		
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerOnPhaseStart(caster);
+		}
+	}
+
+	public override void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerActiveSkillDamageApplied(caster, target);
+		}
+	}
+
+    public override void TriggerDamaged(Unit target, int damage, Unit caster) {
         foreach (var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerDamaged(unit, damage);
+            skillLogic.TriggerDamaged(target, damage, caster);
         }
     }
     }

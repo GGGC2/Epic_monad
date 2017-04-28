@@ -69,15 +69,23 @@ public class BasePassiveSkillLogic
 	{		
 	}
 
-	public virtual void TriggerActiveSkillDamageApplied(Unit yeong)
+	public virtual void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
 	{
 	}
 
-    public virtual void TriggerDamaged(Unit unit, int damage) 
+	public virtual void TriggerUsingSkill(Unit caster)
+	{		
+	}
+
+    public virtual void TriggerDamaged(Unit target, int damage, Unit caster) 
     {        
     }
 
     public virtual void TriggerStart(Unit caster) 
+	{		
+	}
+
+	public virtual void TriggerOnPhaseStart(Unit caster) 
 	{		
 	}    
 

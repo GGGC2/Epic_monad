@@ -105,6 +105,9 @@ public static class SkillLogicFactory
 			case "동체 시력":
 			passiveSkillLogic = new Yeong_1_r_SkillLogic();
 			break;
+			case "기척 감지":
+			passiveSkillLogic = new Yeong_2_r_SkillLogic();
+			break;
 			// 에렌
 			case "흡수":
 			passiveSkillLogic = new Eren_0_1_SkillLogic();

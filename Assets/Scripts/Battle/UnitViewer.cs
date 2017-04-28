@@ -59,7 +59,10 @@ public class UnitViewer : MonoBehaviour {
 			concattedText += effectList[i].GetDisplayName();
 			if (effectList[i].GetIsStackable())
 				concattedText += "[" + effectList[i].GetRemainStack() +"]";
-			concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+			if (effectList[i].GetRemainPhase() < 500)
+				concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+			else
+				concattedText += "(--)";
 			if (i < numberOfEffects-1)
 				concattedText += " ";
 		}

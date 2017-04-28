@@ -15,7 +15,7 @@ public class Reina_2_l_SkillLogic : BasePassiveSkillLogic {
 		if (amount > 100) amount = 100;
 
 		// 10 * 갯수 %
-		var statusEffect1st = statusEffects.Find(se => se.GetDisplayName() == "내상");
+		var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "내상");
 		if (amount <= 0)
 			statusEffects.Remove(statusEffect1st);
 		else

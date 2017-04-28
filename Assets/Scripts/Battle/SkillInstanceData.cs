@@ -19,7 +19,7 @@ public class SkillInstanceData : MonoBehaviour {
 
     public Battle.DamageCalculator.AttackDamage getDamage() { return damage; }
     public Skill getSkill() { return skill; }
-    public Unit getCaster() { return caster; }
+    public Unit GetCaster() { return caster; }
     public Unit getTarget() { return target; }
     public int getTargetCount() { return targetCount; }
 }

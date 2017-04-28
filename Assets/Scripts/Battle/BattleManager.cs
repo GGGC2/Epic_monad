@@ -484,9 +484,16 @@ public class BattleManager : MonoBehaviour
 	{
 		Debug.Log("Phase End.");
 
+		battleData.unitManager.EndPhase();
+		yield return new WaitForSeconds(0.5f);
+	}
+
+	IEnumerator StartPhaseOnGameManager()
+	{
 		battleData.currentPhase++;
 
-		battleData.unitManager.EndPhase();
+		battleData.unitManager.StartPhase();
+
 		yield return new WaitForSeconds(0.5f);
 	}
 }

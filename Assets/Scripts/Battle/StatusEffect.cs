@@ -249,7 +249,7 @@ public class StatusEffect {
     
     public bool IsSameStatusEffect(StatusEffect anotherStatusEffect)
     {
-        return (this.GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
+        return (this.GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
                 (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
     }
 }

@@ -225,6 +225,15 @@ public class UnitManager : MonoBehaviour {
         return enemyUnits;
     }
 
+	public void StartPhase()
+	{
+		foreach (var unit in units)
+		{
+			unit.UpdateStartPosition();
+			unit.ApplyTriggerOnPhaseStart();
+		}
+	}
+
 	public void EndPhase()
 	{
 		// Decrease each buff & debuff phase
@@ -233,7 +242,7 @@ public class UnitManager : MonoBehaviour {
 			unit.UpdateRemainPhaseAtPhaseEnd();
 			unit.UpdateStatusEffect();
 			unit.UpdateSkillCooldown();
-			unit.UpdateStartPosition();
+			
 		}
 
 		foreach (var unit in units)

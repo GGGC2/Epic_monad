@@ -133,7 +133,7 @@ public class DamageCalculator
 
 	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
-        Unit caster = skillInstanceData.getCaster();
+        Unit caster = skillInstanceData.GetCaster();
         Unit target = skillInstanceData.getTarget();
         AttackDamage attackDamage = skillInstanceData.getDamage();
         Skill appliedSkill = skillInstanceData.getSkill();
@@ -259,7 +259,7 @@ public class DamageCalculator
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Skill appliedSkill = skillInstanceData.getSkill();
         Unit target = skillInstanceData.getTarget();
-        Unit caster = skillInstanceData.getCaster();
+        Unit caster = skillInstanceData.GetCaster();
 		// 대미지 증가/감소 효과 적용
 		// 공격이 물리인지 마법인지 체크
 		// 기술 / 특성의 추가피해 / 감소 효과

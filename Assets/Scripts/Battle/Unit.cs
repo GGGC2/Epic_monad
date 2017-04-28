@@ -233,13 +233,13 @@ public class Unit : MonoBehaviour
 		return celestial;
 	}
     
-    public Tile GetTile() {
+    public Tile GetTileUnderUnit() {
         return FindObjectOfType<TileManager>().GetTile(position);
     }
 
 	public int GetHeight()
 	{
-		return GetTile().GetTileHeight();
+		return GetTileUnderUnit().GetTileHeight();
     }
     
 	public string GetNameInCode()
@@ -535,7 +535,7 @@ public class Unit : MonoBehaviour
 	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-        Unit caster = skillInstanceData.getCaster();
+        Unit caster = skillInstanceData.GetCaster();
         Skill appliedSkill = skillInstanceData.getSkill();
 		// 체력 깎임
 		// 체인 해제
@@ -547,7 +547,7 @@ public class Unit : MonoBehaviour
 			{
 				currentHealth -= finalDamage;
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
-                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage);
+                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, skillInstanceData.GetCaster());
 			}
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -707,9 +707,15 @@ public class Unit : MonoBehaviour
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
 
+	public void ApplyTriggerOnPhaseStart()
+	{
+		List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
+	}
+
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{
-		Tile currentTile = GetTile();
+		Tile currentTile = GetTileUnderUnit();
 		currentTile.SetUnitOnTile(null);
 		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
 		SetPosition(destTile.GetTilePos());

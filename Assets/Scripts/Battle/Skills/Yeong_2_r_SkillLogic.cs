@@ -8,7 +8,7 @@ namespace Battle.Skills
 {
 public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 {
-	public override void TriggerActiveSkillDamageApplied(Unit yeong)
+	public override void TriggerActionEnd(Unit yeong)
 	{
 		UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
@@ -16,12 +16,21 @@ public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 		Vector2 unitPosition = yeong.GetPosition();
 		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
 
-		int numberOfNearbyEnemies = nearbyTiles.Count(x => x.GetUnitOnTile().GetSide() == Side.Enemy);
-		List<StatusEffect> statusEffectList = yeong.GetStatusEffectList();
-
-		if (numberOfNearbyEnemies > 0)
+		List<Unit> nearbyUnits = new List<Unit>();
+		foreach (var tile in nearbyTiles)
 		{
-			statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "신속 반응");
+			if (tile.IsUnitOnTile())
+				nearbyUnits.Add(tile.GetUnitOnTile());
+		}
+
+		int numberOfNearbyEnemies = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
+
+		Debug.Log("numberOfNearbyEnemies : " + numberOfNearbyEnemies);
+
+		if (numberOfNearbyEnemies == 0)
+		{
+			List<StatusEffect> statusEffectList = yeong.GetStatusEffectList();
+			statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "기척 감지");
             yeong.SetStatusEffectList(statusEffectList);
 		}
 		else
@@ -38,10 +47,17 @@ public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 		Vector2 unitPosition = caster.GetPosition();
 		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
 
-		int numberOfNearbyEnemies = nearbyTiles.Count(x => x.GetUnitOnTile().GetSide() == Side.Enemy);
-		int amount = 5 * numberOfNearbyEnemies;
+		List<Unit> nearbyUnits = new List<Unit>();
+		foreach (var tile in nearbyTiles)
+		{
+			if (tile.IsUnitOnTile())
+				nearbyUnits.Add(tile.GetUnitOnTile());
+		}
 
-    	statusEffects[0].SetAmount(amount);
+		int numberOfNearbyEnemies = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
+
+		statusEffects[0].SetRemainStack(numberOfNearbyEnemies);
+    	statusEffects[0].SetAmount(5);
     }
 }
 }
