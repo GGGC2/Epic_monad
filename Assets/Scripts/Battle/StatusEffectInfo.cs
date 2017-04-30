@@ -44,7 +44,7 @@ public class StatusEffectInfo {
 		bool isBuff = commaParser.ConsumeBool();
         bool isInfinite = commaParser.ConsumeBool();
         bool isStackable = commaParser.ConsumeBool();
-		bool isDisposable = commaParser.ConsumeBool();
+		bool isOnce = commaParser.ConsumeBool();
 		int maxPhase = commaParser.ConsumeInt();
 		int maxStack = commaParser.ConsumeInt();
         bool isRemovable = commaParser.ConsumeBool();
@@ -69,7 +69,7 @@ public class StatusEffectInfo {
 	
 		this.statusEffect = new StatusEffect.FixedElement(originSkillName, displayName,
                                              isHidden, isBuff, isInfinite, 
-											 isStackable, isDisposable,
+											 isStackable, isOnce,
 											 maxPhase, maxStack, isRemovable, 
 											 effectName, effectVisualType, effectMoveType,
 											 actualElements);

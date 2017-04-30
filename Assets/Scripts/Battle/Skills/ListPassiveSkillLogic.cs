@@ -84,6 +84,24 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return totalAdditionalDefenseBonus;
 	}
 
+	public override float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, resistance);
+		}
+		return resistance;
+	}
+
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, resistance);
+		}
+		return resistance;
+	}
+
 	public override float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
 	{
 		foreach (var skillLogic in passiveSkillLogics)

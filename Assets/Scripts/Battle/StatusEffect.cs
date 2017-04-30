@@ -20,7 +20,7 @@ public class StatusEffect {
             public readonly bool isBuff; // 버프일 경우 true
             public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
             public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
-            public readonly bool isDisposable; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
+            public readonly bool isOnce; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
 			public readonly int maxPhase; // 상태 이상이 지속가능한 phase
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
@@ -32,7 +32,7 @@ public class StatusEffect {
 
             public DisplayElement(string originSkillName, string displayName,  
                   bool isHidden, bool isBuff, bool isInfinite, 
-                  bool isStackable, bool isDisposable,
+                  bool isStackable, bool isOnce,
                   int maxPhase, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
@@ -42,7 +42,7 @@ public class StatusEffect {
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
                 this.isStackable = isStackable;
-                this.isDisposable = isDisposable;
+                this.isOnce = isOnce;
 				this.maxPhase = maxPhase;
                 this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
@@ -68,13 +68,13 @@ public class StatusEffect {
 
 		public FixedElement(string originSkillName, string displayName, 
                   bool isHidden, bool isBuff, bool isInfinite, 
-                  bool isStackable, bool isDisposable,
+                  bool isStackable, bool isOnce,
                   int maxPhase, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
 		{
 			display = new DisplayElement(originSkillName, displayName,
 					isHidden, isBuff, isInfinite,
-					isStackable, isDisposable,
+					isStackable, isOnce,
                     maxPhase, maxStack, isRemovable,
 					effectName, effectVisualType, effectMoveType);
 
@@ -145,7 +145,7 @@ public class StatusEffect {
     public bool GetIsBuff() {return fixedElem.display.isBuff;}
     public bool GetIsInfinite() {return fixedElem.display.isInfinite;}
     public bool GetIsStackable() {return fixedElem.display.isStackable;}
-    public bool GetIsDisposable() {return fixedElem.display.isDisposable;}
+    public bool GetIsOnce() {return fixedElem.display.isOnce;}
     public bool GetIsRemovable() {return fixedElem.display.isRemovable;}
     public string GetEffectName() {return fixedElem.display.effectName;}
     public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
