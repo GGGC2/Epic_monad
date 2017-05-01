@@ -8,7 +8,8 @@ public class Lenien_3_r_SkillLogic : BasePassiveSkillLogic {
 
 	public override void TriggerDamaged(Unit lenien, int damage, Unit attacker)
 	{
-		StatusEffector.AttachStatusEffect(lenien, this.passiveSkill, attacker);
+		if (attacker.GetElement() == Enums.Element.Metal)
+			StatusEffector.AttachStatusEffect(lenien, this.passiveSkill, attacker);
 	}
 }
 }
