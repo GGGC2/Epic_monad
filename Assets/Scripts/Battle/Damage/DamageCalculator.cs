@@ -299,12 +299,12 @@ public class DamageCalculator
             if (caster.GetUnitClass() == UnitClass.Melee)
 			{
 				// 실제 피해 = 원래 피해 x 200/(200+방어력)
-				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Defense));
+				actualDamage = actualDamage * 200.0f / (200.0f + targetDefense);
 				Debug.Log("Actual melee damage without status effect : " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.Magic)
 			{
-				actualDamage = actualDamage * 200.0f / (200.0f + target.GetActualStat(Stat.Resistance));
+				actualDamage = actualDamage * 200.0f / (200.0f + targetResistance);
 				Debug.Log("Actual magic damage without status effect: " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.None)
@@ -312,10 +312,6 @@ public class DamageCalculator
 				// actualDamage = actualDamage;
 			}
 
-			// 피격자의 기술 특성으로 인한 데미지 증감 효과 - 아직 미구현
-
-			List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
-			
 			finalDamage = (int) actualDamage;
 
 			// 보호막에 따른 대미지 삭감 - 실제로 여기서 실드를 깎으면 안됨. 다른곳으로 옮길 것.
