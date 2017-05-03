@@ -1,6 +1,6 @@
 Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial
-¸¶·Â¼®,manastone,Enemy,8,8,LeftDown,70,0,20,20,0,Melee,Plant,Earth
-¸®´Ï¾È,lenien,Ally,3,1,RightUp,458,73,51,28,53,Magic,Water,Sun
-·¹ÀÌ³ª,reina,Ally,2,1,RightUp,350,70,0,50,50,Magic,Fire,Earth
-·¹ÀÌ³ª,reina,Ally,4,1,RightUp,350,70,0,50,50,Magic,Fire,Earth
-¸®´Ï¾È,lenien,Ally,3,2,RightUp,458,73,51,28,53,Magic,Water,Sun
+ì—í…Œë¥´ ìˆ˜ì •,manastone,Enemy,8,8,LeftDown,70,0,20,20,0,Melee,Plant,Earth
+ë¦¬ë‹ˆì•ˆ,lenien,Ally,3,1,RightUp,458,73,51,28,53,Magic,Water,Sun
+ë ˆì´ë‚˜,reina,Ally,2,1,RightUp,350,70,0,50,50,Magic,Fire,Earth
+ë ˆì´ë‚˜,reina,Ally,4,1,RightUp,350,70,0,50,50,Magic,Fire,Earth
+ë¦¬ë‹ˆì•ˆ,lenien,Ally,3,2,RightUp,458,73,51,28,53,Magic,Water,Sun
