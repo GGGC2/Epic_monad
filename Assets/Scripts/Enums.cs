@@ -126,7 +126,6 @@ namespace Enums {
 
 	public enum StatusEffectType
 	{
-        MaxHealthChange,
         PowerChange,
         DefenseChange,
         ResistanceChange,
@@ -145,9 +144,9 @@ namespace Enums {
 		WaterWeakness,
 		PlantWeakness,
 		MetalWeakness,
-        HealChange, // 받는 회복량 증감
-		Wound, // 내상 : 받는 회복량 감소
-        DamageOverPhase, // 지속 대미지
+		HealChange, // 주는 회복량 증감
+        TakenHealChange, // 받는 회복량 증감
+		DamageOverPhase, // 지속 대미지
 		HealOverPhase, // 지속 힐
 		Bind, // 속박: 이동 불가
         Confused, // 혼란: 적과 아군을 반대로 인식
@@ -157,6 +156,26 @@ namespace Enums {
 		ConditionalShield, // 조건부 보호막: 특정 조건 만족 시 보호막 발동
 		Reflect, // 반사: 받는 피해의 일부만큼 공격자에게 피해
 		Taunt, // 도발
+		MeleeImmune, // 물리 면역
+		MagicImmune, // 마법 면역
         Etc // 위 분류에 해당하지 않는 효과
+	}
+
+	public enum StatusEffectVar
+	{
+		None,
+		Power,
+		BuffFromOther, // 레이나 : 다른유닛에게서 받은 강화효과 수
+		Level,
+		MetalTile, // 리니안 : 주변 사각 1타일 금속타일 수
+		NearbyEnemy, // 영 : 주변 반경 2타일 내 적의 수
+		NearestUnit, // 큐리 : 가장 가까운 유닛으로부터의 거리
+		LostHpPercent, // 잃은 체력 %
+		CurrentHp, // 현재 체력
+		RemainEnemy, // 에렌 : 남은 적의 수
+		Absorption, // 에렌 : 흡수 중첩 수
+		Absorption_1r, // 에렌 : 광휘-강타 연산 (0.6(+흡수 중첩당 0.1)x공격력)
+		DamagedAlly, // 루베리카 : 남은 체력 40% 이하인 아군 수		
+		Etc // 기타 변수
 	}
 }

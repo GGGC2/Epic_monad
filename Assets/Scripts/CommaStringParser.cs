@@ -32,6 +32,22 @@ public class CommaStringParser
 		}
 	}
 
+	 // true / false / none 처리용. 디폴트로 인식할 스트링과 그 결과값을 받는다.
+	public bool ConsumeBool(string defaultValue, bool result)
+	{
+		string strValue = Consume();
+		try
+		{
+			if (strValue == defaultValue) return result;
+			return bool.Parse(strValue);
+		}
+		catch (FormatException e)
+		{
+			Debug.LogError("Cannot parse boolean value " + strValue);
+			return false;
+		}
+	}
+
 	public int ConsumeInt()
 	{
 		string strValue = Consume();
@@ -51,6 +67,22 @@ public class CommaStringParser
 		string strValue = Consume();
 		try
 		{
+			return Single.Parse(strValue);
+		}
+		catch (FormatException e)
+		{
+			Debug.LogError("Cannot parse float value " + strValue);
+			return -1;
+		}
+	}
+
+	// 기본값이 있는 float 변수 파싱용. ConsumeString과 동일.
+	public float ConsumeFloat(string defaultValue, float f)
+	{
+		string strValue = Consume();
+		try
+		{	
+			if (strValue == defaultValue) return f;
 			return Single.Parse(strValue);
 		}
 		catch (FormatException e)

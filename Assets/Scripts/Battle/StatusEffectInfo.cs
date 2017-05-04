@@ -33,19 +33,18 @@ public class StatusEffectInfo {
 	
 	public StatusEffectInfo(string data)
 	{
-		Debug.Log(data);
+		// Debug.Log(data);
 		CommaStringParser commaParser = new CommaStringParser(data);
 
 		this.owner = commaParser.Consume();
 		this.originSkillName = commaParser.Consume();
 		this.displayName = commaParser.Consume();
 
-		bool isHidden = commaParser.ConsumeBool();
 		bool isBuff = commaParser.ConsumeBool();
         bool isInfinite = commaParser.ConsumeBool();
         bool isStackable = commaParser.ConsumeBool();
 		bool isOnce = commaParser.ConsumeBool();
-		int maxPhase = commaParser.ConsumeInt();
+		int defaultPhase = commaParser.ConsumeInt();
 		int maxStack = commaParser.ConsumeInt();
         bool isRemovable = commaParser.ConsumeBool();
 
@@ -60,17 +59,26 @@ public class StatusEffectInfo {
 		for (int i = 0; i < num; i++)
 		{
 			StatusEffectType statusEffectType = commaParser.ConsumeEnum<StatusEffectType>();;
-			Stat applyStat = applyStat = commaParser.ConsumeEnum<Stat>();;
-			bool isRelative = isRelative = commaParser.ConsumeBool();
-			
-			StatusEffect.FixedElement.ActualElement actualElement = new StatusEffect.FixedElement.ActualElement(statusEffectType, applyStat, isRelative);
+
+			StatusEffectVar statusEffectVar = commaParser.ConsumeEnum<StatusEffectVar>();
+			float statusEffectCoef = commaParser.ConsumeFloat("X", 0);
+			float statusEffectBase = commaParser.ConsumeFloat("X", 0);
+
+			bool isMultifly = commaParser.ConsumeBool("ㅜNONE", false);
+
+			StatusEffect.FixedElement.ActualElement actualElement = 
+				new StatusEffect.FixedElement.ActualElement(statusEffectType, 
+															statusEffectVar,
+															statusEffectCoef,
+															statusEffectBase, 
+															isMultifly);
 			actualElements.Add(actualElement);
 		}
-	
+
 		this.statusEffect = new StatusEffect.FixedElement(originSkillName, displayName,
-                                             isHidden, isBuff, isInfinite, 
+                                             isBuff, isInfinite, 
 											 isStackable, isOnce,
-											 maxPhase, maxStack, isRemovable, 
+											 defaultPhase, maxStack, isRemovable, 
 											 effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}

@@ -334,7 +334,6 @@ public class DamageCalculator
 						else
 						{
 							finalDamage -= shieldAmount;
-							statusEffectList[i].SetToBeRemoved(true);
 						}
 					}
 				}

@@ -369,10 +369,10 @@ public class Unit : MonoBehaviour
 
 		for(int i = 0; i < count; i++)
 		{
-			if(!statusEffectList[i].GetToBeRemoved())
-			{
-				newStatusEffectList.Add(statusEffectList[i]);
-			}
+			// if(!statusEffectList[i].GetToBeRemoved())
+			// {
+			// 	newStatusEffectList.Add(statusEffectList[i]);
+			// }
 		}
 		statusEffectList = newStatusEffectList;
 	}
@@ -619,9 +619,9 @@ public class Unit : MonoBehaviour
 	public IEnumerator RecoverHealth(float amount)
 	{
 		// 회복량 증감 효과 적용
-		if (this.HasStatusEffect(StatusEffectType.HealChange))
+		if (this.HasStatusEffect(StatusEffectType.TakenHealChange))
 		{
-			amount = GetActualEffect(amount, StatusEffectType.HealChange);
+			amount = GetActualEffect(amount, StatusEffectType.TakenHealChange);
 		}
 
 		// 초과회복량 차감

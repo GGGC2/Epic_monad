@@ -2,6 +2,7 @@ using Enums;
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class StatusEffect {
     public FixedElement fixedElem;
@@ -16,12 +17,11 @@ public class StatusEffect {
 		{
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
-            public readonly bool isHidden; // 효과 아이콘이 표시될지 (특성으로 얻은 효과의 경우 표시되지 않음(true))
             public readonly bool isBuff; // 버프일 경우 true
             public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
             public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
             public readonly bool isOnce; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
-			public readonly int maxPhase; // 상태 이상이 지속가능한 phase
+			public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
@@ -31,19 +31,18 @@ public class StatusEffect {
             public readonly EffectMoveType effectMoveType;
 
             public DisplayElement(string originSkillName, string displayName,  
-                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isBuff, bool isInfinite, 
                   bool isStackable, bool isOnce,
-                  int maxPhase, int maxStack, bool isRemovable, 
+                  int defaultPhase, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
-                this.isHidden = isHidden;
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
                 this.isStackable = isStackable;
                 this.isOnce = isOnce;
-				this.maxPhase = maxPhase;
+				this.defaultPhase = defaultPhase;
                 this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
                 this.effectName = effectName;
@@ -54,28 +53,37 @@ public class StatusEffect {
 
 		public class ActualElement
 		{
-            public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류        
-            public readonly Stat amountStat; // 영향을 주는 스탯
-			public readonly bool isRelative;
+            public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류 
 
-            public ActualElement(StatusEffectType statusEffectType, Stat amountStat, bool isRelative)
+            // var * coef + base
+            public readonly StatusEffectVar seVar;
+            public readonly float seCoef;
+            public readonly float seBase;
+
+            public readonly bool isMultifly;
+
+            public ActualElement(StatusEffectType statusEffectType, 
+                                 StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase, 
+                                 bool isMultifly)
             {
                 this.statusEffectType = statusEffectType;
-                this.amountStat = amountStat;   
-				this.isRelative = isRelative;
+                this.seVar = statusEffectVar;
+                this.seCoef = statusEffectCoef;
+                this.seBase = statusEffectBase;
+				this.isMultifly = isMultifly;
             }
 		}
 
 		public FixedElement(string originSkillName, string displayName, 
-                  bool isHidden, bool isBuff, bool isInfinite, 
+                  bool isBuff, bool isInfinite, 
                   bool isStackable, bool isOnce,
-                  int maxPhase, int maxStack, bool isRemovable,
+                  int defaultPhase, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
 		{
 			display = new DisplayElement(originSkillName, displayName,
-					isHidden, isBuff, isInfinite,
+					isBuff, isInfinite,
 					isStackable, isOnce,
-                    maxPhase, maxStack, isRemovable,
+                    defaultPhase, maxStack, isRemovable,
 					effectName, effectVisualType, effectMoveType);
 
 			actuals = actualEffects;
@@ -91,15 +99,12 @@ public class StatusEffect {
 			public Unit caster; // 시전자
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
 			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
-			// 없애면 터져서 일단 넣어놓음
-			public bool toBeRemoved; // 지속 단위가 0일 때, 또는 특정 조건에 의해 효과가 사라져야 할 경우 true로 바뀜
-
+			
             public DisplayElement(Unit caster, int remainStack, int remainPhase)
             {
                 this.caster = caster;
                 this.remainStack = remainStack;
                 this.remainPhase = remainPhase;
-                this.toBeRemoved = false; 
             }
 		}
 
@@ -108,9 +113,9 @@ public class StatusEffect {
             public float amount; // 영향을 주는 실제 값
             public float remainAmount; // 남은 수치 (실드 등)
 
-            public ActualElement(float amount)
+            public ActualElement(FixedElement.ActualElement aeInFixed, Unit caster)
             {
-                this.amount = amount;
+                this.amount = CalculateAmount(aeInFixed, caster);
                 this.remainAmount = amount; // 초기화
             }
 		}
@@ -118,17 +123,13 @@ public class StatusEffect {
 		public FlexibleElement(FixedElement fixedElem, Unit caster)
 		{
 			int maxStack = fixedElem.display.maxStack;
-			int maxPhase = fixedElem.display.maxPhase;
-			display = new DisplayElement(caster, maxStack, maxPhase);
+			int defaultPhase = fixedElem.display.defaultPhase;
+			display = new DisplayElement(caster, maxStack, defaultPhase);
 
 			List<ActualElement> actuals = new List<ActualElement>();
 			for (int i = 0; i < fixedElem.actuals.Count; i++)
             {
-                if (fixedElem.actuals[i].isRelative)
-                    actuals.Add(new ActualElement(1.0f));
-                else
-                    actuals.Add(new ActualElement(0));
-
+                actuals.Add(new ActualElement(fixedElem.actuals[i], caster));
             }
             this.actuals = actuals;
 		}
@@ -153,14 +154,11 @@ public class StatusEffect {
     public Unit GetCaster() {return flexibleElem.display.caster;}
     public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
     public int GetRemainStack() {return flexibleElem.display.remainStack;}
-    public bool GetToBeRemoved() {return flexibleElem.display.toBeRemoved;}
-
+    
     public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
     public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
-    public Stat GetAmountStat() {return fixedElem.actuals[0].amountStat;}
-    public Stat GetAmountStat(int index) {return fixedElem.actuals[index].amountStat;} 
-    public bool GetIsRelative() {return  fixedElem.actuals[0].isRelative;}
-    public bool GetIsRelative(int index) {return  fixedElem.actuals[index].isRelative;}
+    public bool GetIsRelative() {return  fixedElem.actuals[0].isMultifly;}
+    public bool GetIsRelative(int index) {return  fixedElem.actuals[index].isMultifly;}
     public float GetAmount() {return flexibleElem.actuals[0].amount;}
     public float GetAmount(int index) {return flexibleElem.actuals[index].amount;}
     public float GetRemainAmount() {return flexibleElem.actuals[0].remainAmount;}
@@ -226,11 +224,6 @@ public class StatusEffect {
 		flexibleElem.display.remainStack = stack;
     }
 
-    public void SetToBeRemoved(bool toEnd)
-    {
-		flexibleElem.display.toBeRemoved = toEnd;
-    }
-
     public bool IsOfType(StatusEffectType statusEffectType)
     {
         bool isOfType = false;
@@ -251,5 +244,116 @@ public class StatusEffect {
     {
         return (this.GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
                 (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
+    }
+
+    public static float CalculateAmount(FixedElement.ActualElement fixedelem, Unit caster)
+    {
+        float seVar = GetSEVar(fixedelem.seVar, caster);
+        float seCoef = fixedelem.seCoef;
+        float seBase = fixedelem.seBase;
+
+        float result = seVar * seCoef + seBase;
+
+        return result;
+    }
+
+    public static float GetSEVar(StatusEffectVar seVarEnum, Unit caster)
+    {
+        float result = 0;
+
+        switch (seVarEnum)
+        {
+            case StatusEffectVar.Absorption:
+                StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
+                int stack = 0;
+                if (uniqueStatusEffect != null)
+        			stack = uniqueStatusEffect.GetRemainStack();
+                result = stack;
+            break;
+    
+            case StatusEffectVar.Absorption_1r: // (0.6 + (흡수 중첩당 0.1)) * 공격력
+                StatusEffect uniqueStatusEffect1 = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
+                int stack1 = 0;
+                if (uniqueStatusEffect1 != null)
+        			stack = uniqueStatusEffect1.GetRemainStack();
+
+                float power = caster.GetActualStat(Stat.Power);
+
+                result = (0.6f + (float)stack1 * 0.1f) + power;
+            break;
+
+            case StatusEffectVar.BuffFromOther:
+                result = caster.GetStatusEffectList().Count(
+						x => x.GetIsBuff() && (x.GetCaster() != caster));
+            break;
+
+            case StatusEffectVar.CurrentHp:
+                result = (float)caster.GetCurrentHealth();
+            break;
+
+            case StatusEffectVar.DamagedAlly: // 남은 체력 40% 이하인 아군 수
+                UnitManager unitManager1 = MonoBehaviour.FindObjectOfType<UnitManager>();
+                result = unitManager1.GetAllUnits().Count(x => (x.GetSide() == Enums.Side.Ally) && 
+                                                            ((float)x.GetCurrentHealth()/(float)x.GetMaxHealth() <= 40));
+            break;
+
+            case StatusEffectVar.Level:
+                result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
+            break;
+
+            case StatusEffectVar.LostHpPercent:
+                result = 100f - (100 * ((float)caster.GetCurrentHealth()/(float)caster.GetMaxHealth()));
+            break;
+
+            case StatusEffectVar.MetalTile:
+                TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+	        	List<Tile> nearbyTilesFromLenian = new List<Tile>();
+		        nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
+                result = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
+            break;
+
+            case StatusEffectVar.NearbyEnemy:
+                UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+    		    TileManager tileManager1 = MonoBehaviour.FindObjectOfType<TileManager>();
+        		Vector2 unitPosition = caster.GetPosition();
+                List<Tile> nearbyTiles = tileManager1.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
+
+                List<Unit> nearbyUnits = new List<Unit>();
+                foreach (var tile in nearbyTiles)
+                {
+                    if (tile.IsUnitOnTile())
+                        nearbyUnits.Add(tile.GetUnitOnTile());
+                }
+
+        		result = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
+            break;
+
+            case StatusEffectVar.NearestUnit:
+                UnitManager unitManager3 = MonoBehaviour.FindObjectOfType<UnitManager>();
+                List<Unit> exceptItself = unitManager3.GetAllUnits().FindAll(x => x.GetNameInCode() == "curi");
+                
+                result = exceptItself.Min(x => Utility.GetDistance(caster.GetPosition(), x.GetPosition()));
+                if (result > 25) result = 25;
+            break;
+
+            case StatusEffectVar.Power:
+                result = caster.GetActualStat(Stat.Power);
+            break;
+
+            case StatusEffectVar.RemainEnemy:
+                UnitManager unitManager2 = MonoBehaviour.FindObjectOfType<UnitManager>();
+                result = unitManager2.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
+            break;
+
+            case StatusEffectVar.None:
+                result = 0;
+            break;
+
+            default:
+                result = 0;
+            break;
+        }
+
+        return result;
     }
 }
