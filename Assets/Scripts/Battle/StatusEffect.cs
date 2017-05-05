@@ -261,98 +261,84 @@ public class StatusEffect {
     {
         float result = 0;
 
-        switch (seVarEnum)
+        if (seVarEnum == StatusEffectVar.Absorption)
         {
-            case StatusEffectVar.Absorption:
-                StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
-                int stack = 0;
-                if (uniqueStatusEffect != null)
-        			stack = uniqueStatusEffect.GetRemainStack();
-                result = stack;
-            break;
-    
-            case StatusEffectVar.Absorption_1r: // (0.6 + (흡수 중첩당 0.1)) * 공격력
-                StatusEffect uniqueStatusEffect1 = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
-                int stack1 = 0;
-                if (uniqueStatusEffect1 != null)
-        			stack = uniqueStatusEffect1.GetRemainStack();
-
-                float power = caster.GetActualStat(Stat.Power);
-
-                result = (0.6f + (float)stack1 * 0.1f) + power;
-            break;
-
-            case StatusEffectVar.BuffFromOther:
-                result = caster.GetStatusEffectList().Count(
-						x => x.GetIsBuff() && (x.GetCaster() != caster));
-            break;
-
-            case StatusEffectVar.CurrentHp:
-                result = (float)caster.GetCurrentHealth();
-            break;
-
-            case StatusEffectVar.DamagedAlly: // 남은 체력 40% 이하인 아군 수
-                UnitManager unitManager1 = MonoBehaviour.FindObjectOfType<UnitManager>();
-                result = unitManager1.GetAllUnits().Count(x => (x.GetSide() == Enums.Side.Ally) && 
-                                                            ((float)x.GetCurrentHealth()/(float)x.GetMaxHealth() <= 40));
-            break;
-
-            case StatusEffectVar.Level:
-                result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
-            break;
-
-            case StatusEffectVar.LostHpPercent:
-                result = 100f - (100 * ((float)caster.GetCurrentHealth()/(float)caster.GetMaxHealth()));
-            break;
-
-            case StatusEffectVar.MetalTile:
-                TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-	        	List<Tile> nearbyTilesFromLenian = new List<Tile>();
-		        nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
-                result = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
-            break;
-
-            case StatusEffectVar.NearbyEnemy:
-                UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-    		    TileManager tileManager1 = MonoBehaviour.FindObjectOfType<TileManager>();
-        		Vector2 unitPosition = caster.GetPosition();
-                List<Tile> nearbyTiles = tileManager1.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
-
-                List<Unit> nearbyUnits = new List<Unit>();
-                foreach (var tile in nearbyTiles)
-                {
-                    if (tile.IsUnitOnTile())
-                        nearbyUnits.Add(tile.GetUnitOnTile());
-                }
-
-        		result = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
-            break;
-
-            case StatusEffectVar.NearestUnit:
-                UnitManager unitManager3 = MonoBehaviour.FindObjectOfType<UnitManager>();
-                List<Unit> exceptItself = unitManager3.GetAllUnits().FindAll(x => x.GetNameInCode() == "curi");
-                
-                result = exceptItself.Min(x => Utility.GetDistance(caster.GetPosition(), x.GetPosition()));
-                if (result > 25) result = 25;
-            break;
-
-            case StatusEffectVar.Power:
-                result = caster.GetActualStat(Stat.Power);
-            break;
-
-            case StatusEffectVar.RemainEnemy:
-                UnitManager unitManager2 = MonoBehaviour.FindObjectOfType<UnitManager>();
-                result = unitManager2.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
-            break;
-
-            case StatusEffectVar.None:
-                result = 0;
-            break;
-
-            default:
-                result = 0;
-            break;
+            StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
+            int stack = 0;
+            if (uniqueStatusEffect != null)
+                stack = uniqueStatusEffect.GetRemainStack();
+            result = stack;
         }
+        else if (seVarEnum == StatusEffectVar.Absorption_1r)
+        {
+            StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
+            int stack = 0;
+            if (uniqueStatusEffect != null)
+                stack = uniqueStatusEffect.GetRemainStack();
+
+            float power = caster.GetActualStat(Stat.Power);
+
+            result = (0.6f + (float)stack * 0.1f) + power;
+        }
+        else if (seVarEnum == StatusEffectVar.BuffFromOther)
+        {
+            result = caster.GetStatusEffectList().Count(
+                    x => x.GetIsBuff() && (x.GetCaster() != caster));
+        }
+        else if (seVarEnum == StatusEffectVar.CurrentHp)
+            result = (float)caster.GetCurrentHealth();
+        else if (seVarEnum == StatusEffectVar.DamagedAlly)
+        {
+            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+            result = unitManager.GetAllUnits().Count(x => (x.GetSide() == Enums.Side.Ally) && 
+                                                        ((float)x.GetCurrentHealth()/(float)x.GetMaxHealth() <= 40));
+        }
+        else if (seVarEnum == StatusEffectVar.Level)
+            result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
+        else if (seVarEnum == StatusEffectVar.LostHpPercent)
+            result = 100f - (100 * ((float)caster.GetCurrentHealth()/(float)caster.GetMaxHealth()));
+        else if (seVarEnum == StatusEffectVar.MetalTile)
+        {
+            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+            List<Tile> nearbyTilesFromLenian = new List<Tile>();
+            nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
+            result = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
+        }
+        else if (seVarEnum == StatusEffectVar.NearbyEnemy)
+        {
+            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+            Vector2 unitPosition = caster.GetPosition();
+            List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
+
+            List<Unit> nearbyUnits = new List<Unit>();
+            foreach (var tile in nearbyTiles)
+            {
+                if (tile.IsUnitOnTile())
+                    nearbyUnits.Add(tile.GetUnitOnTile());
+            }
+
+            result = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
+        }
+        else if (seVarEnum == StatusEffectVar.NearestUnit)
+        {
+            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+            List<Unit> exceptItself = unitManager.GetAllUnits().FindAll(x => x.GetNameInCode() == "curi");
+            
+            result = exceptItself.Min(x => Utility.GetDistance(caster.GetPosition(), x.GetPosition()));
+            if (result > 25) result = 25;
+        }
+        else if (seVarEnum == StatusEffectVar.Power)
+            result = caster.GetActualStat(Stat.Power);
+        else if (seVarEnum == StatusEffectVar.RemainEnemy)
+        {
+            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+            result = unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
+        }
+        else if (seVarEnum == StatusEffectVar.None)
+            result = 0;        
+        else
+            result = 0;
 
         return result;
     }
