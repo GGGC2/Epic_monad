@@ -97,6 +97,7 @@ public class CommaStringParser
 		string beforeParsed = Consume();
 		try 
 		{
+			if (beforeParsed == "X" || beforeParsed == "O") return (T)Enum.Parse(typeof(T), "None");
 			return (T)Enum.Parse(typeof(T), beforeParsed);
 		}
 		catch (ArgumentException e)

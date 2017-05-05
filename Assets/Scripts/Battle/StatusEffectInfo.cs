@@ -64,7 +64,7 @@ public class StatusEffectInfo {
 			float statusEffectCoef = commaParser.ConsumeFloat("X", 0);
 			float statusEffectBase = commaParser.ConsumeFloat("X", 0);
 
-			bool isMultifly = commaParser.ConsumeBool("ㅜNONE", false);
+			bool isMultifly = commaParser.ConsumeBool("NONE", false);
 
 			StatusEffect.FixedElement.ActualElement actualElement = 
 				new StatusEffect.FixedElement.ActualElement(statusEffectType, 

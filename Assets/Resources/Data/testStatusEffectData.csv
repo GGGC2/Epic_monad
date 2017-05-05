@@ -44,7 +44,7 @@ curi,도금,기절,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,Faint,X,X,X
 curi,도금,방어력 상승,TRUE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,MeleeImmune,X,X,X,NONE,,,,,,,,,,
 curi,유독성 촉매,강타,TRUE,TRUE,FALSE,TRUE,9999,1,TRUE,None,None,None,1,Smite,Level,0.7,0,FALSE,,,,,,,,,,
 curi,에테르 폭탄,침묵,FALSE,FALSE,FALSE,FALSE,1,1,TRUE,None,None,None,1,Silence,X,X,X,NONE,,,,,,,,,,
-curi,제한 구역,공격력 상승,TRUE,TRUE,FALSE,FALSE,9999,9999,FALSE,,,,1,PowerChange,NearestUnit,4,0,TRUE,,,,,,,,,,
+curi,제한 구역,공격력 상승,TRUE,TRUE,FALSE,FALSE,9999,9999,FALSE,None,None,None,1,PowerChange,NearestUnit,4,0,TRUE,,,,,,,,,,
 curi,초강산 혼합물,초강산 혼합물,FALSE,FALSE,FALSE,FALSE,3,1,TRUE,None,None,None,3,DefenseChange,Level,-1.7,-132,FALSE,ResistanceChange,Level,-1.7,-132,FALSE,DamageOverPhase,CurrentHp,0.08,0,NONE
 eugene,순백의 방패,저항력 상승,TRUE,FALSE,FALSE,FALSE,3,1,TRUE,None,None,None,2,DefenseChange,O,0,10,FALSE,Etc,O,0,0,NONE,,,,,
 eugene,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,HealOverPhase,O,0,10,NONE,,,,,,,,,,
@@ -53,6 +53,6 @@ luvericha,위기상황,속도 상승,TRUE,TRUE,TRUE,FALSE,9999,9999,FALSE,None,N
 luvericha,수호의 오오라,방어력 및 저항력 상승,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,None,None,None,2,DefenseChange,Level,0.3,24,FALSE,ResistanceChange,Level,0.3,24,FALSE,,,,,
 luvericha,에튀드 : 햇빛,지속 회복,TRUE,FALSE,FALSE,FALSE,3,1,TRUE,None,None,None,1,HealOverPhase,Power,0.7,0,NONE,,,,,,,,,,
 luvericha,소녀의 기도,보호막,TRUE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,2,Shield,Power,1.5,0,FALSE,Etc,X,X,X,NONE,,,,,
-luvericha,헌신,헌신,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,,,,1,HealChange,LostHpPercent,0.5,0,TRUE,,,,,,,,,,
+luvericha,헌신,헌신,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,None,None,None,1,HealChange,LostHpPercent,0.5,0,TRUE,,,,,,,,,,
 luvericha,4분 33초,침묵,FALSE,FALSE,FALSE,FALSE,2,1,TRUE,None,None,None,1,Silence,X,X,X,NONE,,,,,,,,,,
 luvericha,환상곡,환상곡,TRUE,FALSE,FALSE,FALSE,3,1,TRUE,None,None,None,2,HealOverPhase,Power,0.9,0,FALSE,TakenHealChange,0,0,15,TRUE,,,,,
