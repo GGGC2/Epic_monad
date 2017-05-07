@@ -50,6 +50,7 @@ public class UnitViewer : MonoBehaviour {
 	void UpdateEffect(Unit unit)
 	{
 		List<StatusEffect> effectList = unit.GetStatusEffectList();
+		// Debug.Log(unit.GetName() + " has " + effectList.Count + " se");
 		int numberOfEffects = effectList.Count;
 		string concattedText = "";
 		for (int i = 0; i < numberOfEffects; i++)

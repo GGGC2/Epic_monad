@@ -364,17 +364,7 @@ public class Unit : MonoBehaviour
 
 	public void UpdateStatusEffect()
 	{
-		int count = statusEffectList.Count;
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-
-		for(int i = 0; i < count; i++)
-		{
-			// if(!statusEffectList[i].GetToBeRemoved())
-			// {
-			// 	newStatusEffectList.Add(statusEffectList[i]);
-			// }
-		}
-		statusEffectList = newStatusEffectList;
+		
 	}
 
 	// searching certain StatusEffect
@@ -390,7 +380,7 @@ public class Unit : MonoBehaviour
 	public bool HasStatusEffect(StatusEffectType statusEffectType)
 	{
 		bool hasStatusEffect = false;
-		if (statusEffectList.Any(k => k.IsOfType(statusEffectType)))
+		if (statusEffectList.Any(se => se.fixedElem.actuals.Any(elem => elem.statusEffectType == statusEffectType)))
 			hasStatusEffect = true;
 
 		return hasStatusEffect;
@@ -459,7 +449,7 @@ public class Unit : MonoBehaviour
 
 		// 데미지, 저항력, 민첩성, 기타등등...추가할 것			
 		
-		this.UpdateStatusEffect();
+		// this.UpdateStatusEffect();
 
 		return data * totalRelativeValue + totalAbsoluteValue;
 	}

@@ -337,7 +337,7 @@ public class DamageCalculator
 						}
 					}
 				}
-				target.UpdateStatusEffect(); // 버그있을듯 (미리보기할때 업데이트 해도 되나?)
+				// target.UpdateStatusEffect(); // 버그있을듯 (미리보기할때 업데이트 해도 되나?)
 			}
 		}
 		

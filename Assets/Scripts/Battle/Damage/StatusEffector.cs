@@ -44,6 +44,7 @@ public static class StatusEffector
 			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
+				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				var statusEffectListOfTarget = target.GetStatusEffectList();
 				statusEffectListOfTarget.Remove(alreadyAppliedSameEffect);
 				statusEffectListOfTarget.Add(statusEffect);
@@ -51,6 +52,7 @@ public static class StatusEffector
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
 			{
+				Debug.Log("Add same SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++)
 				{
@@ -63,10 +65,9 @@ public static class StatusEffector
 			// 동일한 효과가 없음 -> 새로 넣음
 			else
 			{
+				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				target.GetStatusEffectList().Add(statusEffect);
 			}
-
-			Debug.Log("Apply " + statusEffect.GetDisplayName() + " effect to " + target.name);
 		}
 	}
 }
