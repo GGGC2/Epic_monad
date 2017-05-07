@@ -53,14 +53,12 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		foreach (var skill in passiveSkillLogics)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			attackDamage = skill.ApplyTacticalBonusFromEachPassive(attackDamage, caster, target);
+			skillLogic.ApplyTacticalBonusFromEachPassive(skillInstanceData);
 		}
-
-		return attackDamage;
 	}
 
 	public override float GetAdditionalRelativePowerBonus(Unit caster)

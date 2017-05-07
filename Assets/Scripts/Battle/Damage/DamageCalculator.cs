@@ -153,7 +153,8 @@ public class DamageCalculator
 		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
 		// 시전자 효과에 의한 추가데미지
 		attackDamage.baseDamage = caster.GetActualEffect(attackDamage.baseDamage, StatusEffectType.DamageChange);
-		
+		// 특성에 의한 전략보너스 추가
+		SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.relativeDamageBonus

@@ -51,9 +51,8 @@ public class BasePassiveSkillLogic
 	{
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	public virtual void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		return attackDamage;
 	}
 	
 	public virtual int GetEvasionChance()
