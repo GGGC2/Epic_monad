@@ -586,10 +586,6 @@ namespace Battle.Turn
             Skill appliedSkill = skillInstanceData.getSkill();
             int targetCount = skillInstanceData.getTargetCount();
 
-			// 대상에게 데미지를 줄때 발동하는 공격자 특성
-			var passiveSkillsOfAttacker = unitInChain.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(unitInChain, target);
-
 			DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
             DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();
 

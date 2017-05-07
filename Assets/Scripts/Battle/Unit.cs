@@ -537,6 +537,12 @@ public class Unit : MonoBehaviour
 			{
 				currentHealth -= finalDamage;
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
+		
+				// 대상에게 데미지를 줄때 발동하는 공격자 특성
+				var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
+				SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
+
+				// 데미지를 받을 때 발동하는 피격자 특성
                 SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, skillInstanceData.GetCaster());
 			}
 			if (currentHealth < 0)
