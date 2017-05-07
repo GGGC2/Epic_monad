@@ -5,9 +5,9 @@ namespace Battle.Skills
 {
 public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 
-	public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
 	{
-        Unit target = skillInstanceData.getTarget();
+		Unit target = skillInstanceData.getTarget();
 		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
 		float ignoreAmountPerLevel = 0.6f;
 		float baseAmountPerLevel = 42;
@@ -15,9 +15,9 @@ public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		Tile tileUnderTarget = tileManager.GetTile(target.GetPosition());
 		if (tileUnderTarget.GetTileElement() == Enums.Element.Water)
-			defense -= baseAmountPerLevel + (ignoreAmountPerLevel * partyLevel);
-
-		return defense;
+			resistance -= baseAmountPerLevel + (ignoreAmountPerLevel * partyLevel);
+		
+		return resistance;
 	}
 }
 }
