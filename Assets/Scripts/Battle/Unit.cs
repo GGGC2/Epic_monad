@@ -751,14 +751,16 @@ public class Unit : MonoBehaviour
 		this.celestial = unitInfo.celestial;
 	}
 
-	public void ApplySkillList(List<SkillInfo> skillInfoList, List<StatusEffectInfo> statusEffectInfoList, List<PassiveSkillInfo> passiveSkillInfoList)
+	public void ApplySkillList(List<SkillInfo> skillInfoList, 
+							   List<StatusEffectInfo> statusEffectInfoList, 
+							   List<PassiveSkillInfo> passiveSkillInfoList)
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
 
 		foreach (var skillInfo in skillInfoList)
 		{
-			if ((skillInfo.GetOwner() == this.nameInCode)) //&&
-			//	(skillInfo.GetRequireLevel() <= partyLevel))
+			if ((skillInfo.GetOwner() == this.nameInCode) &&
+				(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
 					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))

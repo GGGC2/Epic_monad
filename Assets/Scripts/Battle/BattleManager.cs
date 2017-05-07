@@ -15,15 +15,6 @@ public class BattleManager : MonoBehaviour
 		public int level;
 	}
 
-	public int GetLevelInfoFromJson()
-	{
-		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
-		string jsonString = jsonTextAsset.text;
-		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
-
-		return levelData.level;
-	}
-
 	public int GetPartyLevel()
 	{
 		return battleData.partyLevel;
@@ -42,10 +33,20 @@ public class BattleManager : MonoBehaviour
 		battleData.battleManager = this;
 	}
 
+	public int GetLevelInfoFromJson()
+	{
+		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
+		string jsonString = jsonTextAsset.text;
+		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
+
+		return levelData.level;
+	}
+
 	// Use this for initialization
 	void Start()
 	{
 		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
+		battleData.partyLevel = GetLevelInfoFromJson();
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
 
 		battleData.selectedUnit = null;
