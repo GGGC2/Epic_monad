@@ -28,14 +28,14 @@ public class CameraMover : MonoBehaviour {
 		// move by mouse.
 		Vector3 mousePosition = Input.mousePosition;
 
-		if (mousePosition.x < Screen.width*0.1f)
+		if (mousePosition.x < Screen.width*0.01f)
 			MoveCameraToDirection(Vector3.left);
-		else if (mousePosition.x > Screen.width*0.9f)
+		else if (mousePosition.x > Screen.width*0.99f)
 			MoveCameraToDirection(Vector3.right);
 
-		if (mousePosition.y < Screen.height*0.1f)
+		if (mousePosition.y < Screen.height*0.01f)
 			MoveCameraToDirection(Vector3.down);
-		else if (mousePosition.y > Screen.height*0.9f)
+		else if (mousePosition.y > Screen.height*0.99f)
 			MoveCameraToDirection(Vector3.up);
 
 		// move by keyboard.
