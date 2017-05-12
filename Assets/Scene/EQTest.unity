@@ -1141,6 +1141,16 @@ Prefab:
       propertyPath: m_Type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000014216977198, guid: 7b31d8b3909a94fa2924b998afc11978,
+        type: 2}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014216977198, guid: 7b31d8b3909a94fa2924b998afc11978,
+        type: 2}
+      propertyPath: m_FontData.m_MaxSize
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
   m_IsPrefabParent: 0
@@ -2361,6 +2371,21 @@ Prefab:
       value: 
       objectReference: {fileID: 21300004, guid: b5c94a852c5ce4854bae271ab4d92255,
         type: 3}
+    - target: {fileID: 114000014216977198, guid: 7b31d8b3909a94fa2924b998afc11978,
+        type: 2}
+      propertyPath: m_FontData.m_BestFit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014216977198, guid: 7b31d8b3909a94fa2924b998afc11978,
+        type: 2}
+      propertyPath: m_FontData.m_MinSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014216977198, guid: 7b31d8b3909a94fa2924b998afc11978,
+        type: 2}
+      propertyPath: m_FontData.m_MaxSize
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
   m_IsPrefabParent: 0

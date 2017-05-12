@@ -64,6 +64,7 @@ public class UnitViewer : MonoBehaviour {
 				concattedText += "(" + effectList[i].GetRemainPhase() + ")";
 			else
 				concattedText += "(--)";
+			concattedText += (int)effectList[i].GetAmount();
 			if (i < numberOfEffects-1)
 				concattedText += " ";
 		}
