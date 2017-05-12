@@ -1,10 +1,16 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using Battle.Damage;
 
 namespace Battle.Skills
 {
 public class Reina_7_m_SkillLogic : BasePassiveSkillLogic {
+
+	public override void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
+	{
+		StatusEffector.AttachStatusEffect(caster, this.passiveSkill, target);
+	}
 
 	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)	
 	{
