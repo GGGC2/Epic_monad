@@ -33,9 +33,44 @@ public static class StatusEffector
 		AttachStatusEffect(caster, statusEffects, target);
 	}
 
+	private static bool IsValidAtZero(StatusEffectType seType)
+	{
+		if (seType == StatusEffectType.Silence || 
+			seType == StatusEffectType.Bind || 
+			seType == StatusEffectType.Confused || 
+			seType == StatusEffectType.Faint || 
+			seType == StatusEffectType.Retire || 
+			seType == StatusEffectType.Taunt || 
+			seType == StatusEffectType.MeleeImmune || 
+			seType == StatusEffectType.MagicImmune || 
+			seType == StatusEffectType.AllImmune || 
+			seType == StatusEffectType.Etc)
+			return true;
+		else
+			return false; 
+	}
+
+	private static bool IsValid(StatusEffect se)
+	{
+		int elems = se.fixedElem.actuals.Count;
+		for (int i = 0; i < elems; i++)
+		{
+			if (!IsValidAtZero(se.GetStatusEffectType(i)) && se.GetAmount(i) == 0)
+				return false;
+		}
+		return true;
+	}
+
 	private static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
 	{
+		List<StatusEffect> validStatusEffects = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffects)
+		{
+			if (IsValid(statusEffect))
+				validStatusEffects.Add(statusEffect);
+		}
+
+		foreach (var statusEffect in validStatusEffects)
 		{
 			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
