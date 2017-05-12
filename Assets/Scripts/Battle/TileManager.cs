@@ -98,16 +98,9 @@ public class TileManager : MonoBehaviour {
 			exceptTiles = AddNearbyTiles(exceptTiles);
 		}
 
-		List<Tile> newTilesInRange = new List<Tile>();
-		foreach (var tile in tilesInRange)
-		{
-			if (!exceptTiles.Contains(tile))
-				newTilesInRange.Add(tile);		
-		}
-		tilesInRange = newTilesInRange;
-		// tilesInRange.Except(exceptTiles);
+		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
 
-		return tilesInRange;
+		return resultTiles;
 	}
 
 	List<Tile> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
@@ -127,16 +120,9 @@ public class TileManager : MonoBehaviour {
 			exceptTiles = AddNearbySquareTiles(exceptTiles);
 		}
 
-		List<Tile> newTilesInRange = new List<Tile>();
-		foreach (var tile in tilesInRange)
-		{
-			if (!exceptTiles.Contains(tile))
-				newTilesInRange.Add(tile);		
-		}
-		tilesInRange = newTilesInRange;
-		// tilesInRange.Except(exceptTiles);
+		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
 
-		return tilesInRange;
+		return resultTiles;
 	}
 
 	List<Tile> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
@@ -231,16 +217,9 @@ public class TileManager : MonoBehaviour {
 			}
 		}
 
-		List<Tile> newTilesInRange = new List<Tile>();
-		foreach (var tile in tilesInRange)
-		{
-			if (!exceptTiles.Contains(tile))
-				newTilesInRange.Add(tile);		
-		}
-		tilesInRange = newTilesInRange;
-		// tilesInRange.Except(exceptTiles);
+		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
 
-		return tilesInRange;
+		return resultTiles;
 	}
 
 	List<Tile> GetTilesInGlobalRange()
