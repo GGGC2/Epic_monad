@@ -339,7 +339,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					if (statusEffect.GetIsRelative(i)) // 상대값 합산
+					if (statusEffect.GetIsMultifly(i)) // 상대값 합산
 					{
 						totalRelativeValue *= statusEffect.GetAmount(i);	
 					}
@@ -505,6 +505,7 @@ public class Unit : MonoBehaviour
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
+				int actuals = statusEffect.fixedElem.actuals.Count;
 				if (statusEffect.IsOfType(StatusEffectType.DamageOverPhase))
 				{
 					totalAmount += statusEffect.GetAmount();

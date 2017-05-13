@@ -161,8 +161,8 @@ public class StatusEffect {
     
     public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
     public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
-    public bool GetIsRelative() {return  fixedElem.actuals[0].isMultifly;}
-    public bool GetIsRelative(int index) {return  fixedElem.actuals[index].isMultifly;}
+    public bool GetIsMultifly() {return  fixedElem.actuals[0].isMultifly;}
+    public bool GetIsMultifly(int index) {return  fixedElem.actuals[index].isMultifly;}
     public float GetAmount() {return flexibleElem.actuals[0].amount;}
     public float GetAmount(int index) {return flexibleElem.actuals[index].amount;}
     public float GetRemainAmount() {return flexibleElem.actuals[0].remainAmount;}
@@ -285,8 +285,8 @@ public class StatusEffect {
                 stack = uniqueStatusEffect.GetRemainStack();
 
             float power = caster.GetActualStat(Stat.Power);
-
-            result = (0.6f + (float)stack * 0.1f) * power;
+            Debug.Log("Power : " + power);
+            result = (0.6f + (float)stack * 0.1f) * power; Debug.Log("Result : " + result);
         }
         else if (seVarEnum == StatusEffectVar.BuffFromOther)
         {

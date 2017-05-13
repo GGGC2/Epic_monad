@@ -155,6 +155,8 @@ namespace Enums {
 		Shield,
 		ConditionalShield, // 조건부 보호막: 특정 조건 만족 시 보호막 발동
 		Reflect, // 반사: 받는 피해의 일부만큼 공격자에게 피해
+		MeleeReflect,
+		MagicReflect,
 		Taunt, // 도발
 		MeleeImmune, // 물리 면역
 		MagicImmune, // 마법 면역
