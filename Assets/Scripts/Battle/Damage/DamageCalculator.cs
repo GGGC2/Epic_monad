@@ -312,7 +312,7 @@ public class DamageCalculator
 
 			finalDamage = (int) actualDamage;
 
-			// 보호막에 따른 대미지 삭감 - 실제로 여기서 실드를 깎으면 안됨. 다른곳으로 옮길 것.
+			// 보호막에 따른 대미지 삭감 - 실제 실드는 깎이지 않음
 			if (target.HasStatusEffect(StatusEffectType.Shield))
 			{
 				List<StatusEffect> statusEffectList = target.GetStatusEffectList();
