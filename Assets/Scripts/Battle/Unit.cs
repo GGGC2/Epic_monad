@@ -40,6 +40,7 @@ public class Unit : MonoBehaviour
 	string nameInCode; // 영어이름
 
 	Side side; // 진영. 적/아군
+	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않는다.
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
@@ -141,25 +142,11 @@ public class Unit : MonoBehaviour
         return actualStat;
     }
 
-	public void SetActive()
-	{
-		activeArrowIcon.SetActive(true);
-	}
+	public void SetActive() { activeArrowIcon.SetActive(true); }
+	public void SetInactive() { activeArrowIcon.SetActive(false); }
+	public Vector2 GetInitPosition() { return initPosition; }
 
-	public void SetInactive()
-	{
-		activeArrowIcon.SetActive(false);
-	}
-
-	public Vector2 GetInitPosition()
-	{
-		return initPosition;
-	}
-
-	public List<Skill> GetSkillList()
-	{
-		return skillList;
-	}
+	public List<Skill> GetSkillList() { return skillList; }
 
 	public List<Skill> GetLearnedSkillList()
 	{
@@ -178,89 +165,24 @@ public class Unit : MonoBehaviour
 		return passiveSkillList;
 	}
 
-    public List<StatusEffect> GetStatusEffectList()
-    {
-        return statusEffectList;
-    }
-
-	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList)
-	{
-		statusEffectList = newStatusEffectList;
-	}
-
-	public int GetMaxHealth()
-	{
-		return maxHealth;
-	}
-
-    public int GetCurrentHealth()
-	{
-		return currentHealth;
-	}
-
-	public int GetCurrentActivityPoint()
-	{
-		return activityPoint;
-	}
-
-	public void SetUnitClass(UnitClass unitClass)
-	{
-		this.unitClass = unitClass;
-	}
-
-	public UnitClass GetUnitClass()
-	{
-		return unitClass;
-	}
-
-	public void SetElement(Element element)
-	{
-		this.element = element;
-	}
-
-	public Element GetElement()
-	{
-		return element;
-	}
-
-	public void SetCelestial(Celestial celestial)
-	{
-		this.celestial = celestial;
-	}
-
-	public Celestial GetCelestial()
-	{
-		return celestial;
-	}
-    
-    public Tile GetTileUnderUnit() {
-        return FindObjectOfType<TileManager>().GetTile(position);
-    }
-
-	public int GetHeight()
-	{
-		return GetTileUnderUnit().GetTileHeight();
-    }
-    
-	public string GetNameInCode()
-	{
-		return nameInCode;
-	}
-
-	public string GetName()
-	{
-		return name;
-	}
-
-	public void SetName(string name)
-	{
-		this.name = name;
-	}
-
-	public Side GetSide()
-	{
-		return side;
-	}
+    public List<StatusEffect> GetStatusEffectList() { return statusEffectList; }
+	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
+	public int GetMaxHealth() { return maxHealth; }
+    public int GetCurrentHealth() { return currentHealth; }
+	public int GetCurrentActivityPoint() { return activityPoint; }
+	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
+	public UnitClass GetUnitClass() { return unitClass; }
+	public void SetElement(Element element) { this.element = element; }
+	public Element GetElement() { return element; }
+	public void SetCelestial(Celestial celestial) { this.celestial = celestial; }
+	public Celestial GetCelestial() { return celestial; }
+    public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
+	public int GetHeight() { return GetTileUnderUnit().GetTileHeight(); }
+	public string GetNameInCode() { return nameInCode; }
+	public string GetName() { return name; }
+	public void SetName(string name) { this.name = name; }
+	public Side GetSide() { return side; }	
+	public bool IsObject() { return isObject; }
 
 	public void SetDirection(Direction direction)
 	{
@@ -748,6 +670,7 @@ public class Unit : MonoBehaviour
 		this.unitClass = unitInfo.unitClass;
 		this.element = unitInfo.element;
 		this.celestial = unitInfo.celestial;
+		this.isObject = unitInfo.isObject;
 	}
 
 	public void ApplySkillList(List<SkillInfo> skillInfoList, 

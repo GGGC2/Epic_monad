@@ -156,6 +156,9 @@ public class DamageCalculator
 		// 특성에 의한 전략보너스 추가
 		SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
 
+		// '지형지물'은 방향 보너스를 받지 않음
+		if (target.IsObject()) attackDamage.directionBonus = 1.0f;
+
 		attackDamage.resultDamage = (attackDamage.baseDamage
 									* attackDamage.relativeDamageBonus
 									+ attackDamage.absoluteDamageBonus

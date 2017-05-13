@@ -17,6 +17,7 @@ public class UnitInfo {
 	public UnitClass unitClass;
 	public Element element;
 	public Celestial celestial;
+	public bool isObject;
 	
 	public UnitInfo (string data)
 	{
@@ -36,5 +37,6 @@ public class UnitInfo {
 		this.unitClass = commaParser.ConsumeEnum<UnitClass>();
 		this.element = commaParser.ConsumeEnum<Element>();
 		this.celestial = commaParser.ConsumeEnum<Celestial>();
+		this.isObject = commaParser.ConsumeBool();
 	}
 }
