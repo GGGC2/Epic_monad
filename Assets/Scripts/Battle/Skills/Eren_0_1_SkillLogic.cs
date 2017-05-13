@@ -12,11 +12,5 @@ public class Eren_0_1_SkillLogic : BasePassiveSkillLogic {
 	{
 		StatusEffector.AttachStatusEffect(hitInfo.caster, this.passiveSkill, hitInfo.caster);
 	}
-
-	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
-	{
-		statusEffects[0].SetRemainStack(1);
-		statusEffects[0].SetRemainPhase(3);
-	}
 }
 }
