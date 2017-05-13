@@ -136,6 +136,8 @@ public class Unit : MonoBehaviour
         int actualStat = GetStat(stat);
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString() + "Change");
 
+		actualStat = (int)ApplyTileElement(actualStat, stat);
+
 		// 능력치 증감 효과 적용
 		actualStat = (int) GetActualEffect(actualStat, statusChange);
         
@@ -324,6 +326,24 @@ public class Unit : MonoBehaviour
 		}
 
 		return (float)speedValue / 100;
+	}
+
+	public float ApplyTileElement(float statValue, Stat stat)
+	{
+		// 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
+		if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire)
+		{
+			if (stat == Stat.Power)
+				statValue *= 1.2f;
+		}
+
+		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+		if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal)
+		{
+			if (stat == Stat.Defense || stat == Stat.Resistance)
+				statValue += 30;
+		}
+		return statValue;
 	}
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
