@@ -464,7 +464,7 @@ public class Unit : MonoBehaviour
 		yield return null;
 	}
 
-	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
+	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Unit caster = skillInstanceData.GetCaster();
@@ -473,7 +473,7 @@ public class Unit : MonoBehaviour
 		// 체인 해제
 		if (isHealth == true)
 		{
-			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isDot, isHealth);
+			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth);
 
 			if (finalDamage > 0)
 			{
@@ -497,8 +497,8 @@ public class Unit : MonoBehaviour
 
 			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
-			if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
-				ChainList.RemoveChainsFromUnit(this);
+			// 체인 해제
+			ChainList.RemoveChainsFromUnit(this);
 
 			// 데미지 표시되는 시간.
 			yield return new WaitForSeconds(1);
