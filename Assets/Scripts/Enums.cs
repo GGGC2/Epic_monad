@@ -165,6 +165,8 @@ namespace Enums {
 	public enum StatusEffectVar
 	{
 		None,
+		Once,
+		Stack, // 스택 비례일 경우
 		Power,
 		BuffFromOther, // 레이나 : 다른유닛에게서 받은 강화효과 수
 		Level,

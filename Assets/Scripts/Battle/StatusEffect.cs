@@ -22,6 +22,7 @@ public class StatusEffect {
             public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
             public readonly bool isOnce; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
 			public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
+            public readonly StatusEffectVar stackVar; // 한번에 쌓이는 스택 수
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
@@ -33,7 +34,7 @@ public class StatusEffect {
             public DisplayElement(string originSkillName, string displayName,  
                   bool isBuff, bool isInfinite, 
                   bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool isRemovable, 
+                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable, 
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
             {
                 this.originSkillName = originSkillName;
@@ -43,6 +44,7 @@ public class StatusEffect {
                 this.isStackable = isStackable;
                 this.isOnce = isOnce;
 				this.defaultPhase = defaultPhase;
+                this.stackVar = stackVar;
                 this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
                 this.effectName = effectName;
@@ -77,13 +79,13 @@ public class StatusEffect {
 		public FixedElement(string originSkillName, string displayName, 
                   bool isBuff, bool isInfinite, 
                   bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool isRemovable,
+                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
 		{
 			display = new DisplayElement(originSkillName, displayName,
 					isBuff, isInfinite,
 					isStackable, isOnce,
-                    defaultPhase, maxStack, isRemovable,
+                    defaultPhase, stackVar, maxStack, isRemovable,
 					effectName, effectVisualType, effectMoveType);
 
 			actuals = actualEffects;
@@ -100,10 +102,10 @@ public class StatusEffect {
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
 			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
 			
-            public DisplayElement(Unit caster, int remainStack, int remainPhase)
+            public DisplayElement(Unit caster, StatusEffectVar remainStack, int remainPhase)
             {
                 this.caster = caster;
-                this.remainStack = remainStack;
+                this.remainStack = (int)GetSEVar(remainStack, caster);
                 this.remainPhase = remainPhase;
             }
 		}
@@ -113,9 +115,9 @@ public class StatusEffect {
             public float amount; // 영향을 주는 실제 값
             public float remainAmount; // 남은 수치 (실드 등)
 
-            public ActualElement(FixedElement.ActualElement aeInFixed, Unit caster)
+            public ActualElement(int stack, FixedElement.ActualElement aeInFixed, Unit caster)
             {
-                this.amount = CalculateAmount(aeInFixed, caster);
+                this.amount = CalculateAmount(stack, aeInFixed, caster);
                 this.remainAmount = amount; // 초기화
             }
 		}
@@ -123,13 +125,15 @@ public class StatusEffect {
 		public FlexibleElement(FixedElement fixedElem, Unit caster)
 		{
 			int maxStack = fixedElem.display.maxStack;
+            StatusEffectVar stackVar = fixedElem.display.stackVar;
+            int stack = (int)GetSEVar(stackVar, caster);
 			int defaultPhase = fixedElem.display.defaultPhase;
-			display = new DisplayElement(caster, maxStack, defaultPhase);
+			display = new DisplayElement(caster, stackVar, defaultPhase);
 
 			List<ActualElement> actuals = new List<ActualElement>();
 			for (int i = 0; i < fixedElem.actuals.Count; i++)
             {
-                actuals.Add(new ActualElement(fixedElem.actuals[i], caster));
+                actuals.Add(new ActualElement(stack, fixedElem.actuals[i], caster));
             }
             this.actuals = actuals;
 		}
@@ -246,11 +250,15 @@ public class StatusEffect {
                 (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
     }
 
-    public static float CalculateAmount(FixedElement.ActualElement fixedelem, Unit caster)
+    public static float CalculateAmount(int stack, FixedElement.ActualElement fixedElem, Unit caster)
     {
-        float seVar = GetSEVar(fixedelem.seVar, caster);
-        float seCoef = fixedelem.seCoef;
-        float seBase = fixedelem.seBase;
+        float seVar;
+        if (fixedElem.seVar == StatusEffectVar.Stack)
+            seVar = stack;
+        else
+            seVar = GetSEVar(fixedElem.seVar, caster);
+        float seCoef = fixedElem.seCoef;
+        float seBase = fixedElem.seBase;
 
         float result = seVar * seCoef + seBase;
 
@@ -278,7 +286,7 @@ public class StatusEffect {
 
             float power = caster.GetActualStat(Stat.Power);
 
-            result = (0.6f + (float)stack * 0.1f) + power;
+            result = (0.6f + (float)stack * 0.1f) * power;
         }
         else if (seVarEnum == StatusEffectVar.BuffFromOther)
         {
@@ -336,7 +344,9 @@ public class StatusEffect {
             result = unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
         }
         else if (seVarEnum == StatusEffectVar.None)
-            result = 0;        
+            result = 0;     
+        else if (seVarEnum == StatusEffectVar.Once)
+            result = 1;   
         else
             result = 0;
 

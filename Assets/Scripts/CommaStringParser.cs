@@ -98,7 +98,8 @@ public class CommaStringParser
 		try 
 		{
 			if (beforeParsed == "X" || beforeParsed == "O") return (T)Enum.Parse(typeof(T), "None");
-			return (T)Enum.Parse(typeof(T), beforeParsed);
+			else if (beforeParsed == "-") return (T)Enum.Parse(typeof(T), "Once");
+			else return (T)Enum.Parse(typeof(T), beforeParsed);
 		}
 		catch (ArgumentException e)
 		{
