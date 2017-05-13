@@ -106,7 +106,7 @@ public class DamageCalculator
 
             float attackDamage = skillInstanceData.getDamage().resultDamage;
 
-			float actualDamage = GetActualDamage(skillInstanceData, false, true);
+			float actualDamage = GetActualDamage(skillInstanceData, true);
 
 			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
 			damageList.Add(target, damageInfo);
@@ -255,7 +255,7 @@ public class DamageCalculator
 		return reflectAmount;
 	}
     
-	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
+	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isHealth)
 	{
 		float actualDamage = skillInstanceData.getDamage().resultDamage;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
@@ -267,8 +267,7 @@ public class DamageCalculator
 		// 기술 / 특성의 추가피해 / 감소 효과
 		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
 		// 보호막 있을 경우 대미지 삭감
-		// 체력 깎임
-		// 체인 해제
+		// 최종데미지 산출
 		if (isHealth == true)
 		{
 			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
@@ -325,10 +324,7 @@ public class DamageCalculator
 						shieldAmount = (int)statusEffectList[i].GetRemainAmount();
 						if (shieldAmount > finalDamage)
 						{
-							statusEffectList[i].SetRemainAmount(shieldAmount - finalDamage);
 							finalDamage = 0;
-							Debug.Log("Remain Shield Amount : " + statusEffectList[i].GetRemainAmount());
-							break;
 						}
 						else
 						{
@@ -336,7 +332,6 @@ public class DamageCalculator
 						}
 					}
 				}
-				// target.UpdateStatusEffect(); // 버그있을듯 (미리보기할때 업데이트 해도 되나?)
 			}
 		}
 		
