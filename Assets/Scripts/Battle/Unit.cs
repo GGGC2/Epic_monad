@@ -648,15 +648,18 @@ public class Unit : MonoBehaviour
 	{
 		activityPoint += amount;
 
-		recoverTextObject.SetActive(true);
-		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+		damageTextObject.SetActive(true);
+		damageTextObject.GetComponent<CustomWorldText>().text = amount.ToString();
+
+		// recoverTextObject.SetActive(true);
+		// recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
 
 		// healthViewer.UpdateCurrentActivityPoint(currentHealth, maxHealth);
 
 		// 회복량 표시되는 시간.
 		yield return new WaitForSeconds(1);
-		recoverTextObject.SetActive(false);
-
+		// recoverTextObject.SetActive(false);
+		damageTextObject.SetActive(false);
 	}
 
 	public void RegenerateActionPoint()
