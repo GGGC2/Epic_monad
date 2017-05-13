@@ -317,21 +317,21 @@ public class DamageCalculator
 			{
 				List<StatusEffect> statusEffectList = target.GetStatusEffectList();
 				int shieldAmount = 0;
-				for (int i = 0; i < statusEffectList.Count; i++)
+				foreach (var se in statusEffectList)
 				{
-					if (statusEffectList[i].IsOfType(StatusEffectType.Shield))
+					int actuals = se.fixedElem.actuals.Count;
+					for (int i = 0; i < actuals; i++)
 					{
-						shieldAmount = (int)statusEffectList[i].GetRemainAmount();
-						if (shieldAmount > finalDamage)
+						if (se.IsOfType(i, StatusEffectType.Shield))
 						{
-							finalDamage = 0;
-						}
-						else
-						{
-							finalDamage -= shieldAmount;
+							shieldAmount += (int)se.GetRemainAmount(i);
 						}
 					}
 				}
+				if (shieldAmount > finalDamage)
+					finalDamage = 0;
+				else
+					finalDamage -= shieldAmount;
 			}
 		}
 		

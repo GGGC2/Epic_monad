@@ -660,104 +660,11 @@ namespace Battle.Turn
 
 			foreach (var target in targets)
 			{
-				/* 팩토리로
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP)
-				{
-					// luvericha_l_30
-					if (appliedSkill.GetName().Equals("에튀드:겨울바람"))
-					{
-						int apDamage = target.GetCurrentActivityPoint()*(int)appliedSkill.GetPowerFactor(Stat.None, appliedSkill.GetLevel());
-						var damageCoroutine = target.Damaged(UnitClass.None, apDamage, 0.0f, false, false);
-						battleManager.StartCoroutine(damageCoroutine);
-					}
-				}
-				*/
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
                     SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, selectedUnit, target, targets.Count);
                     yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, 1, target == targets.Last()));
 				}
-
-				/* 이것도 팩토리로
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth)
-				{
-					// 스킬 기본 계수 계산
-					float actualAmount = 0.0f;
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						if (stat.Equals(Stat.UsedAP))
-						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else if (stat.Equals(Stat.None))
-						{
-							actualAmount += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else
-						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-					}
-
-					var recoverAmount = (int) actualAmount;
-					// luvericha_r_1 회복량 조건 체크
-					if (appliedSkill.GetName().Equals("사랑의 기쁨") && target.GetNameInCode().Equals("luvericha"))
-					{
-						recoverAmount = recoverAmount / 2;
-					}
-					var recoverHealthCoroutine = target.RecoverHealth(recoverAmount);
-					Debug.Log("recoverAmount : " + actualAmount);
-
-					if (target == targets[targets.Count-1])
-					{
-						yield return battleManager.StartCoroutine(recoverHealthCoroutine);
-					}
-					else
-					{
-						battleManager.StartCoroutine(recoverHealthCoroutine);
-					}
-
-					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
-				}
-				
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP)
-				{
-					// 스킬 기본 계수 계산
-					float actualAmount = 0.0f;
-					foreach (var powerFactor in appliedSkill.GetPowerFactorDict().Keys)
-					{
-						Stat stat = (Stat)Enum.Parse(typeof(Stat), powerFactor);
-						if (stat.Equals(Stat.UsedAP))
-						{
-							actualAmount += selectedUnit.GetActualRequireSkillAP(appliedSkill) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else if (stat.Equals(Stat.None))
-						{
-							actualAmount += appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-						else
-						{
-							actualAmount += selectedUnit.GetActualStat(stat) * appliedSkill.GetPowerFactor(stat, appliedSkill.GetLevel());
-						}
-					}
-
-					var recoverAmount = (int) actualAmount;
-					var recoverAPCoroutine = target.RecoverAP(recoverAmount);
-					Debug.Log("recoverAmount : " + actualAmount);
-
-					if (target == targets[targets.Count-1])
-					{
-						yield return battleManager.StartCoroutine(recoverAPCoroutine);
-					}
-					else
-					{
-						battleManager.StartCoroutine(recoverAPCoroutine);
-					}
-
-					Debug.Log("Apply " + recoverAmount + " heal to " + target.GetName());
-				}
-				*/
 
 				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, selectedUnit, selectedTiles[0], selectedTiles);
 
@@ -768,78 +675,6 @@ namespace Battle.Turn
 				}
 				
 				selectedUnit.ActiveFalseAllBonusText();
-
-				// 상태이상
-				/*
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.Buff)
-				{
-					if (appliedSkill.GetName().Equals("순간 재충전"))
-					{
-						target.GetUsedSkillDict().Clear();
-					}
-					else if(appliedSkill.GetStatusEffectList().Count > 0)
-					{
-						foreach (var statusEffect in appliedSkill.GetStatusEffectList())
-						{
-							// luvericha_m_1 조건 체크
-							if (appliedSkill.GetName().Equals("교향곡:영웅") && target.GetNameInCode().Equals("luvericha")) continue;
-
-							bool isInList = false;
-							for (int i = 0; i < target.GetStatusEffectList().Count; i++)
-							{
-								if(statusEffect.IsSameStatusEffect(target.GetStatusEffectList()[i]))
-								{
-									isInList = true;
-									target.GetStatusEffectList()[i].SetRemainPhase(statusEffect.GetRemainPhase());
-									target.GetStatusEffectList()[i].SetRemainStack(statusEffect.GetRemainStack());
-									if (statusEffect.IsOfType(StatusEffectType.Shield))
-										target.GetStatusEffectList()[i].SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-									break;
-								}
-							}
-							if (!isInList)
-							{
-								if(statusEffect.IsOfType(StatusEffectType.Shield))
-								{
-									// luvericha_r_18 보호막 수치 계산
-									if (appliedSkill.GetName().Equals("엘리제를 위하여"))
-									{
-										statusEffect.SetRemainAmount((int)(selectedUnit.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-									}
-									// reina_r_30 보호막 수치 계산
-									else if(appliedSkill.GetName().Equals("마법 보호막"))
-									{
-										statusEffect.SetRemainAmount((int)((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
-									}
-									else
-									{
-										statusEffect.SetRemainAmount((int)(target.GetActualStat(statusEffect.GetAmountStat())*statusEffect.GetAmount(statusEffect.GetLevel())));
-									}
-								}
-								target.GetStatusEffectList().Add(statusEffect);
-							}
-
-							Debug.Log("Apply " + statusEffect.GetName() + " effect to " + target.name);
-							Debug.Log("Amount : " + ((float)selectedUnit.GetActualRequireSkillAP(appliedSkill) * statusEffect.GetAmount(statusEffect.GetLevel())));
-						}
-					}
-					yield return null;
-				}
-				// 스킬팩토리에서 처리 가능
-				// luvericha_l_6 스킬 효과
-				if (appliedSkill.GetName().Equals("정화된 밤"))
-				{
-					for (int i = 0; i < target.GetStatusEffectList().Count; i++)
-					{
-						if(target.GetStatusEffectList()[i].GetIsRemovable())
-						{
-							target.GetStatusEffectList().RemoveAt(i);
-							break;
-						}
-					}
-					
-				}
-				*/
 			}
 
 			// battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
