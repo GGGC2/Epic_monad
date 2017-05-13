@@ -159,11 +159,8 @@ public class DamageCalculator
 		// '지형지물'은 방향 보너스를 받지 않음
 		if (target.IsObject()) attackDamage.directionBonus = 1.0f;
 
-		attackDamage.resultDamage = (attackDamage.baseDamage
-									+ attackDamage.smiteAmount
-									* attackDamage.relativeDamageBonus
-									+ attackDamage.absoluteDamageBonus
-									) 
+		attackDamage.resultDamage = ((attackDamage.baseDamage + attackDamage.smiteAmount)
+									* attackDamage.relativeDamageBonus + attackDamage.absoluteDamageBonus) 
 									* attackDamage.directionBonus
 									* attackDamage.celestialBonus
 									* attackDamage.heightBonus
