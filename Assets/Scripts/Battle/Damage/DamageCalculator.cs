@@ -160,9 +160,10 @@ public class DamageCalculator
 		if (target.IsObject()) attackDamage.directionBonus = 1.0f;
 
 		attackDamage.resultDamage = (attackDamage.baseDamage
+									+ attackDamage.smiteAmount
 									* attackDamage.relativeDamageBonus
 									+ attackDamage.absoluteDamageBonus
-									+ attackDamage.smiteAmount) 
+									) 
 									* attackDamage.directionBonus
 									* attackDamage.celestialBonus
 									* attackDamage.heightBonus
