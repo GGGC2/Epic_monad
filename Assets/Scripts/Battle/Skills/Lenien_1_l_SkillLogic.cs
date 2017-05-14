@@ -5,11 +5,11 @@ namespace Battle.Skills
 {
 public class Lenien_1_l_SkillLogic : BasePassiveSkillLogic {
 
-	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		int casterHeight = caster.GetHeight();
-		int targetHeight = target.GetHeight();
-
+		int casterHeight = skillInstanceData.GetCaster().GetHeight();
+		int targetHeight = skillInstanceData.getTarget().GetHeight();
+        DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();
 		// 피해량이 높이차 * 15% 만큼 상승
 		if (casterHeight > targetHeight)
 		{
@@ -17,8 +17,6 @@ public class Lenien_1_l_SkillLogic : BasePassiveSkillLogic {
 
 			attackDamage.heightBonus += additionalHeightBonus;
 		}
-
-		return attackDamage;
 	}
 }
 }

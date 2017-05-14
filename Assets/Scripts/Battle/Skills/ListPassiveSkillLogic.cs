@@ -19,24 +19,30 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override bool checkEvade()
+	public override int GetEvasionChance()
 	{
+		int totalEvasionChance = 0;
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			if (skillLogic.checkEvade())
-			{
-				return true;
-			}
+			totalEvasionChance += skillLogic.GetEvasionChance();
 		}
 
-		return false;
+		return totalEvasionChance;
 	}
 
-	public override void triggerEvasionEvent(BattleData battleData, Unit unit)
+	public override void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.triggerEvasionEvent(battleData, unit);
+			skillLogic.TriggerEvasionEvent(battleData, caster, target);
+		}
+	}
+
+	public override void TriggerActionEnd(Unit caster)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerActionEnd(caster);
 		}
 	}
 
@@ -47,14 +53,12 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		foreach (var skill in passiveSkillLogics)
+		foreach (var skillLogic in passiveSkillLogics)
 		{
-			attackDamage = skill.ApplyTacticalBonusFromEachPassive(attackDamage, caster, target);
+			skillLogic.ApplyTacticalBonusFromEachPassive(skillInstanceData);
 		}
-
-		return attackDamage;
 	}
 
 	public override float GetAdditionalRelativePowerBonus(Unit caster)
@@ -78,6 +82,24 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return totalAdditionalDefenseBonus;
 	}
 
+	public override float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, resistance);
+		}
+		return resistance;
+	}
+
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, resistance);
+		}
+		return resistance;
+	}
+
 	public override float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
@@ -96,16 +118,41 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return defense;
 	}
 
-	public override void triggerActiveSkillDamageApplied(Unit yeong)
+	public override void TriggerOffensiveActiveSkillApplied(Unit caster)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.triggerActiveSkillDamageApplied(yeong);
+			skillLogic.TriggerOffensiveActiveSkillApplied(caster);
 		}
 	}
-    public override void triggerDamaged(Unit unit, int damage) {
+
+	public override void TriggerUsingSkill(Unit caster)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerUsingSkill(caster);
+		}
+	}
+
+	public override void TriggerOnPhaseStart(Unit caster) 
+	{		
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerOnPhaseStart(caster);
+		}
+	}
+
+	public override void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
+	{
+		foreach (var skillLogic in passiveSkillLogics)
+		{
+			skillLogic.TriggerActiveSkillDamageApplied(caster, target);
+		}
+	}
+
+    public override void TriggerDamaged(Unit target, int damage, Unit caster) {
         foreach (var skillLogic in passiveSkillLogics) {
-            skillLogic.triggerDamaged(unit, damage);
+            skillLogic.TriggerDamaged(target, damage, caster);
         }
     }
     }

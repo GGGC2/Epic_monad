@@ -62,7 +62,7 @@ public class UnitManager : MonoBehaviour {
 
     public void TriggerPassiveSkillsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
-            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).triggerActionEnd(unit);
+            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerActionEnd(unit);
         }
     }
 
@@ -146,7 +146,7 @@ public class UnitManager : MonoBehaviour {
 
 			unit.ApplyUnitInfo(unitInfo);
 			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
-            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).triggerStart(unit);
+            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerStart(unit);
 
 			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -225,6 +225,15 @@ public class UnitManager : MonoBehaviour {
         return enemyUnits;
     }
 
+	public void StartPhase()
+	{
+		foreach (var unit in units)
+		{
+			unit.UpdateStartPosition();
+			unit.ApplyTriggerOnPhaseStart();
+		}
+	}
+
 	public void EndPhase()
 	{
 		// Decrease each buff & debuff phase
@@ -233,10 +242,11 @@ public class UnitManager : MonoBehaviour {
 			unit.UpdateRemainPhaseAtPhaseEnd();
 			unit.UpdateStatusEffect();
 			unit.UpdateSkillCooldown();
+			
 		}
 
 		foreach (var unit in units)
-			unit.RegenerateActivityPoint();
+			unit.RegenerateActionPoint();
 	}
 
 	void LoadSkills()

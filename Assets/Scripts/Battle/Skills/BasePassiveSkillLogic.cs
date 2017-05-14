@@ -37,12 +37,12 @@ public class BasePassiveSkillLogic
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(float resistance, Unit caster, Unit target)
+	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
 	{
 		return resistance;
 	}
 
-	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(float resistance, Unit caster, Unit target)
+	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
 	{
 		return resistance;
 	}
@@ -51,32 +51,50 @@ public class BasePassiveSkillLogic
 	{
 	}
 
-	public virtual DamageCalculator.AttackDamage ApplyTacticalBonusFromEachPassive(DamageCalculator.AttackDamage attackDamage, Unit caster, Unit target)
+	public virtual void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
-		return attackDamage;
 	}
 	
-	public virtual bool checkEvade()
+	public virtual int GetEvasionChance()
 	{
-		return false;
+		return 0;
 	}
 
-	public virtual void triggerEvasionEvent(BattleData battleData, Unit unit)
+	public virtual void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 	}
 
-	public virtual void triggerActiveSkillDamageApplied(Unit yeong)
+	public virtual void TriggerOffensiveActiveSkillApplied(Unit caster)
+	{		
+	}
+
+	public virtual void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
 	{
 	}
-    public virtual void triggerDamaged(Unit unit, int damage) 
-    {
-        
+
+	public virtual void TriggerUsingSkill(Unit caster)
+	{		
+	}
+
+    public virtual void TriggerDamaged(Unit target, int damage, Unit caster) 
+    {        
     }
-    public virtual void triggerStart(Unit caster) {
-        
+
+    public virtual void TriggerStart(Unit caster) 
+	{		
+	}
+
+	public virtual void TriggerOnPhaseStart(Unit caster) 
+	{		
+	}    
+
+    public virtual void TriggerActionEnd(Unit caster) 
+	{    
     }
-    public virtual void triggerActionEnd(Unit caster) {
-        
-    }
+
+	public virtual void TriggerRest(Unit caster)
+	{
+
+	}
 }
 }

@@ -9,7 +9,7 @@ namespace Battle.Skills
 public class Eren_1_l_SkillLogic : BaseSkillLogic {
 	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) 
     {
-		StatusEffect uniqueStatusEffect = skillInstanceData.getCaster().GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
+		StatusEffect uniqueStatusEffect = skillInstanceData.GetCaster().GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
 		
 		if (uniqueStatusEffect != null)
 		{

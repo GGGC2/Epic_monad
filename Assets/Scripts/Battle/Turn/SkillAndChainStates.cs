@@ -481,69 +481,96 @@ namespace Battle.Turn
 		// 체인 가능 스킬일 경우의 스킬 시전 코루틴. 체인 정보와 배수를 받는다.
 		private static IEnumerator ApplyChainableSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
 		{
-			Unit unitInChain = chainInfo.GetUnit();
+			Unit caster = chainInfo.GetUnit();
 			Skill appliedSkill = chainInfo.GetSkill();
 			Tile targetTile = chainInfo.GetCenterTile();
 			List<Tile> selectedTiles = chainInfo.GetTargetArea();
 
 			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 			if (appliedSkill.GetSkillType() != SkillType.Auto)
-				unitInChain.SetDirection(Utility.GetDirectionToTarget(unitInChain, selectedTiles));
+				caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
 
 			// 자신의 체인 정보 삭제.
-			ChainList.RemoveChainsFromUnit(unitInChain);
+			ChainList.RemoveChainsFromUnit(caster);
 
 			BattleManager battleManager = battleData.battleManager;
-			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, unitInChain, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
 
 			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
 			foreach (var target in targets)
 			{
-				List<PassiveSkill> passiveSkills = target.GetLearnedPassiveSkillList();
-				if (SkillLogicFactory.Get(passiveSkills).checkEvade()) {
+				int totalEvasionChance = 0; 
+				List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
+				totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
+				
+				int randomNumber = UnityEngine.Random.Range(0, 100);
+				
+				if (totalEvasionChance > randomNumber) {
 					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
-					SkillLogicFactory.Get(passiveSkills).triggerEvasionEvent(battleData, target);
+
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					caster.SetStatusEffectList(statusEffectListAfterEvade);
+
+					// (타겟이) 회피 성공했을 경우 추가 효과
+					SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
 					continue;
 				}
-
-				// 데미지 적용
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+				else 
 				{
-                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, unitInChain, target, targets.Count);
-					yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					caster.SetStatusEffectList(statusEffectListAfterEvade);
+
+					// 데미지 적용
+					if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+					{
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, target, targets.Count);
+						yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+					}
+
+					// 효과 외의 부가 액션 (AP 감소 등)
+					SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, targetTile, selectedTiles);
+
+					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
+					if(appliedSkill.GetStatusEffectList().Count > 0)
+					{
+						StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+					}
 				}
 
-				// 효과 외의 부가 액션 (AP 감소 등)
-				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, unitInChain, targetTile, selectedTiles);
+				caster.ActiveFalseAllBonusText();
 
-				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
-				if(appliedSkill.GetStatusEffectList().Count > 0)
-				{
-					StatusEffector.AttachStatusEffect(unitInChain, appliedSkill, target);
-				}
-
-				unitInChain.ActiveFalseAllBonusText();
+				// 사이사이에도 특성 발동 조건을 체크해준다.
+				battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			}
 
 			int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(appliedSkill);
-			if (unitInChain == battleData.selectedUnit)
+			
+			// 기술 사용 시 적용되는 특성
+			List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster);
+
+			if (caster == battleData.selectedUnit)
 			{
-				unitInChain.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+				caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
 				// 스킬 쿨다운 기록
 				if (appliedSkill.GetCooldown() > 0)
 				{
-					unitInChain.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
+					caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
 				}
 			}
 
 			// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
 			List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-			newStatusEffectList = unitInChain.GetStatusEffectList().FindAll(x => !(x.GetIsDisposable() &&
+			newStatusEffectList = caster.GetStatusEffectList().FindAll(x => !(x.GetIsOnce() &&
 																				(x.GetStatusEffectType() == StatusEffectType.PowerChange ||
 																				x.GetStatusEffectType() == StatusEffectType.DamageChange ||
 																				x.GetStatusEffectType() == StatusEffectType.Smite)));
-			unitInChain.SetStatusEffectList(newStatusEffectList);
+			caster.SetStatusEffectList(newStatusEffectList);
 
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
@@ -554,15 +581,10 @@ namespace Battle.Turn
 
 		private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
 		{
-            Unit unitInChain = skillInstanceData.getCaster();
+            Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.getTarget();
             Skill appliedSkill = skillInstanceData.getSkill();
             int targetCount = skillInstanceData.getTargetCount();
-
-			var passiveSkillsOfAttacker = unitInChain.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkillsOfAttacker).triggerActiveSkillDamageApplied(
-				unitInChain
-			);
 
 			DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
             DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();

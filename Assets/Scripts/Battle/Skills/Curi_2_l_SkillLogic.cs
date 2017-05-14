@@ -1,26 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using Battle.Damage;
 
 namespace Battle.Skills {
     public class Curi_2_1_SkillLogic : BasePassiveSkillLogic {
-        public override void triggerActionEnd(Unit caster) {
-            Tile currentTile = caster.GetTile();
+        public override void TriggerActionEnd(Unit caster) {
+            Tile currentTile = caster.GetTileUnderUnit();
             Enums.Element elementOfTile = currentTile.GetTileElement();
             List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
-            StatusEffect statusEffectFromThisSkill = null;
-
-            foreach(var statusEffect in statusEffectList) {
-                if(statusEffect.fixedElem.display.displayName == "신속 반응") {
-                    statusEffectFromThisSkill = statusEffect;
-                }
-            }
 
             if(elementOfTile != Enums.Element.Fire) {
-                statusEffectFromThisSkill.SetToBeRemoved(true);
+                statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "신속 반응");
+                caster.SetStatusEffectList(statusEffectList);
             }
             else if(elementOfTile == Enums.Element.Fire) {
-                statusEffectFromThisSkill.SetToBeRemoved(false);
+                StatusEffector.AttachStatusEffect(caster, this.passiveSkill, caster);
             }
         }
     }

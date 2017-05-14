@@ -15,15 +15,6 @@ public class BattleManager : MonoBehaviour
 		public int level;
 	}
 
-	public int GetLevelInfoFromJson()
-	{
-		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
-		string jsonString = jsonTextAsset.text;
-		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
-
-		return levelData.level;
-	}
-
 	public int GetPartyLevel()
 	{
 		return battleData.partyLevel;
@@ -42,10 +33,20 @@ public class BattleManager : MonoBehaviour
 		battleData.battleManager = this;
 	}
 
+	public int GetLevelInfoFromJson()
+	{
+		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
+		string jsonString = jsonTextAsset.text;
+		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
+
+		return levelData.level;
+	}
+
 	// Use this for initialization
 	void Start()
 	{
 		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
+		battleData.partyLevel = GetLevelInfoFromJson();
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
 
 		battleData.selectedUnit = null;
@@ -76,6 +77,8 @@ public class BattleManager : MonoBehaviour
 	{
 		while (true)
 		{
+			yield return StartCoroutine(StartPhaseOnGameManager());
+
 			battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
 
 			while (battleData.readiedUnits.Count != 0)
@@ -253,6 +256,7 @@ public class BattleManager : MonoBehaviour
 			
 			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
 			
+			// 매 액션이 끝날때마다 갱신하는 특성 조건들
 			battleData.unitManager.ResetLatelyHitUnits();
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 			
@@ -483,9 +487,16 @@ public class BattleManager : MonoBehaviour
 	{
 		Debug.Log("Phase End.");
 
+		battleData.unitManager.EndPhase();
+		yield return new WaitForSeconds(0.5f);
+	}
+
+	IEnumerator StartPhaseOnGameManager()
+	{
 		battleData.currentPhase++;
 
-		battleData.unitManager.EndPhase();
+		battleData.unitManager.StartPhase();
+
 		yield return new WaitForSeconds(0.5f);
 	}
 }

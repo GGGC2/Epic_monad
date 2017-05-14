@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Battle.Skills {
     public class Curi_1_1_SkillLogic : BasePassiveSkillLogic {
 
-        public override void triggerStart(Unit caster) {
+        public override void TriggerStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, this.passiveSkill, caster);
         }
         public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target) {

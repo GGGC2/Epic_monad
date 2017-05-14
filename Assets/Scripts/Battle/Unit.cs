@@ -40,17 +40,18 @@ public class Unit : MonoBehaviour
 	string nameInCode; // 영어이름
 
 	Side side; // 진영. 적/아군
+	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않는다.
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
-	// 사용한 스킬 정보 저장.
+	// 사용한 스킬 정보 저장(쿨타임 산정용).
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
-    // 상태이상 리스트
+    // 효과 리스트
     List<StatusEffect> statusEffectList = new List<StatusEffect>();
 
-	// FIXME : temp values
+	// 유닛 배치할때만 사용
 	Vector2 initPosition;
 
 	// Base stats. FIXME : 지금은 수동으로 셋팅.
@@ -74,6 +75,8 @@ public class Unit : MonoBehaviour
 
 	// Variable values.
 	public Vector2 position;
+	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
+	public Vector2 startPositionOfPhase;
 	public Direction direction;
 	public int currentHealth;
 	public int activityPoint;
@@ -133,31 +136,19 @@ public class Unit : MonoBehaviour
         int actualStat = GetStat(stat);
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString() + "Change");
 
+		actualStat = (int)ApplyTileElement(actualStat, stat);
+
 		// 능력치 증감 효과 적용
 		actualStat = (int) GetActualEffect(actualStat, statusChange);
         
         return actualStat;
     }
 
-	public void SetActive()
-	{
-		activeArrowIcon.SetActive(true);
-	}
+	public void SetActive() { activeArrowIcon.SetActive(true); }
+	public void SetInactive() { activeArrowIcon.SetActive(false); }
+	public Vector2 GetInitPosition() { return initPosition; }
 
-	public void SetInactive()
-	{
-		activeArrowIcon.SetActive(false);
-	}
-
-	public Vector2 GetInitPosition()
-	{
-		return initPosition;
-	}
-
-	public List<Skill> GetSkillList()
-	{
-		return skillList;
-	}
+	public List<Skill> GetSkillList() { return skillList; }
 
 	public List<Skill> GetLearnedSkillList()
 	{
@@ -176,89 +167,24 @@ public class Unit : MonoBehaviour
 		return passiveSkillList;
 	}
 
-    public List<StatusEffect> GetStatusEffectList()
-    {
-        return statusEffectList;
-    }
-
-	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList)
-	{
-		statusEffectList = newStatusEffectList;
-	}
-
-	public int GetMaxHealth()
-	{
-		return maxHealth;
-	}
-
-    public int GetCurrentHealth()
-	{
-		return currentHealth;
-	}
-
-	public int GetCurrentActivityPoint()
-	{
-		return activityPoint;
-	}
-
-	public void SetUnitClass(UnitClass unitClass)
-	{
-		this.unitClass = unitClass;
-	}
-
-	public UnitClass GetUnitClass()
-	{
-		return unitClass;
-	}
-
-	public void SetElement(Element element)
-	{
-		this.element = element;
-	}
-
-	public Element GetElement()
-	{
-		return element;
-	}
-
-	public void SetCelestial(Celestial celestial)
-	{
-		this.celestial = celestial;
-	}
-
-	public Celestial GetCelestial()
-	{
-		return celestial;
-	}
-    
-    public Tile GetTile() {
-        return FindObjectOfType<TileManager>().GetTile(position);
-    }
-
-	public int GetHeight()
-	{
-		return GetTile().GetTileHeight();
-    }
-    
-	public string GetNameInCode()
-	{
-		return nameInCode;
-	}
-
-	public string GetName()
-	{
-		return name;
-	}
-
-	public void SetName(string name)
-	{
-		this.name = name;
-	}
-
-	public Side GetSide()
-	{
-		return side;
-	}
+    public List<StatusEffect> GetStatusEffectList() { return statusEffectList; }
+	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
+	public int GetMaxHealth() { return maxHealth; }
+    public int GetCurrentHealth() { return currentHealth; }
+	public int GetCurrentActivityPoint() { return activityPoint; }
+	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
+	public UnitClass GetUnitClass() { return unitClass; }
+	public void SetElement(Element element) { this.element = element; }
+	public Element GetElement() { return element; }
+	public void SetCelestial(Celestial celestial) { this.celestial = celestial; }
+	public Celestial GetCelestial() { return celestial; }
+    public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
+	public int GetHeight() { return GetTileUnderUnit().GetTileHeight(); }
+	public string GetNameInCode() { return nameInCode; }
+	public string GetName() { return name; }
+	public void SetName(string name) { this.name = name; }
+	public Side GetSide() { return side; }	
+	public bool IsObject() { return isObject; }
 
 	public void SetDirection(Direction direction)
 	{
@@ -299,6 +225,11 @@ public class Unit : MonoBehaviour
 	public Vector2 GetPosition()
 	{
 		return position;
+	}
+
+	public Vector2 GetStartPositionOfPhase()
+	{
+		return startPositionOfPhase;
 	}
 
 	public Dictionary<string, int> GetUsedSkillDict()
@@ -357,17 +288,7 @@ public class Unit : MonoBehaviour
 
 	public void UpdateStatusEffect()
 	{
-		int count = statusEffectList.Count;
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-
-		for(int i = 0; i < count; i++)
-		{
-			if(!statusEffectList[i].GetToBeRemoved())
-			{
-				newStatusEffectList.Add(statusEffectList[i]);
-			}
-		}
-		statusEffectList = newStatusEffectList;
+		
 	}
 
 	// searching certain StatusEffect
@@ -383,10 +304,46 @@ public class Unit : MonoBehaviour
 	public bool HasStatusEffect(StatusEffectType statusEffectType)
 	{
 		bool hasStatusEffect = false;
-		if (statusEffectList.Any(k => k.IsOfType(statusEffectType)))
+		if (statusEffectList.Any(se => se.fixedElem.actuals.Any(elem => elem.statusEffectType == statusEffectType)))
 			hasStatusEffect = true;
 
 		return hasStatusEffect;
+	}
+
+	public float GetSpeed()
+	{
+		int speedValue = 100;
+		foreach (var statusEffect in statusEffectList)
+		{
+			int num = statusEffect.fixedElem.actuals.Count;
+			for (int i = 0; i < num; i++)
+			{
+				if (statusEffect.IsOfType(i, StatusEffectType.SpeedChange))
+				{
+					speedValue += (int)statusEffect.GetAmount(i);	
+				}
+			}
+		}
+
+		return (float)speedValue / 100;
+	}
+
+	public float ApplyTileElement(float statValue, Stat stat)
+	{
+		// 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
+		if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire)
+		{
+			if (stat == Stat.Power)
+				statValue *= 1.2f;
+		}
+
+		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+		if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal)
+		{
+			if (stat == Stat.Defense || stat == Stat.Resistance)
+				statValue += 30;
+		}
+		return statValue;
 	}
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
@@ -402,7 +359,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					if (statusEffect.GetIsRelative(i)) // 상대값 합산
+					if (statusEffect.GetIsMultifly(i)) // 상대값 합산
 					{
 						totalRelativeValue *= statusEffect.GetAmount(i);	
 					}
@@ -434,7 +391,7 @@ public class Unit : MonoBehaviour
 
 		// 데미지, 저항력, 민첩성, 기타등등...추가할 것			
 		
-		this.UpdateStatusEffect();
+		// this.UpdateStatusEffect();
 
 		return data * totalRelativeValue + totalAbsoluteValue;
 	}
@@ -451,6 +408,11 @@ public class Unit : MonoBehaviour
 		}
 
 		statusEffectList = newStatusEffectList;
+	}
+
+	public void UpdateStartPosition()
+	{
+		startPositionOfPhase = this.GetPosition();
 	}
 
 	public void RemoveStatusEffect(Enums.StatusEffectCategory category, int num)
@@ -490,10 +452,22 @@ public class Unit : MonoBehaviour
 		statusEffectList = newStatusEffectList;
 	}
 
+	// 반사데미지
+	public IEnumerator DamagedByReflection()
+	{
+		yield return null;
+	}
+
+	// 지속데미지
+	public IEnumerator DamagedByDot()
+	{
+		yield return null;
+	}
+
 	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-        Unit caster = skillInstanceData.getCaster();
+        Unit caster = skillInstanceData.GetCaster();
         Skill appliedSkill = skillInstanceData.getSkill();
 		// 체력 깎임
 		// 체인 해제
@@ -505,7 +479,13 @@ public class Unit : MonoBehaviour
 			{
 				currentHealth -= finalDamage;
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
-                SkillLogicFactory.Get(passiveSkillList).triggerDamaged(this, finalDamage);
+		
+				// 대상에게 데미지를 줄때 발동하는 공격자 특성
+				var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
+				SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
+
+				// 데미지를 받을 때 발동하는 피격자 특성
+                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, skillInstanceData.GetCaster());
 			}
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -545,6 +525,7 @@ public class Unit : MonoBehaviour
 		{
 			foreach (var statusEffect in statusEffectList)
 			{
+				int actuals = statusEffect.fixedElem.actuals.Count;
 				if (statusEffect.IsOfType(StatusEffectType.DamageOverPhase))
 				{
 					totalAmount += statusEffect.GetAmount();
@@ -577,23 +558,24 @@ public class Unit : MonoBehaviour
 	public IEnumerator RecoverHealth(float amount)
 	{
 		// 회복량 증감 효과 적용
-		if (this.HasStatusEffect(StatusEffectType.HealChange))
+		if (this.HasStatusEffect(StatusEffectType.TakenHealChange))
 		{
-			amount = GetActualEffect(amount, StatusEffectType.HealChange);
+			amount = GetActualEffect(amount, StatusEffectType.TakenHealChange);
 		}
 
 		// 초과회복량 차감
-		if (currentHealth + (int)amount > maxHealth)
+		int actualAmount = (int)amount;
+		if (currentHealth + actualAmount > maxHealth)
 		{
-			amount = (int)amount - (currentHealth + (int)amount - maxHealth);
+			actualAmount = actualAmount - (currentHealth + actualAmount - maxHealth);
 		}
 
-		currentHealth += (int) amount;
+		currentHealth += actualAmount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
 		recoverTextObject.SetActive(true);
-		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+		recoverTextObject.GetComponent<TextMesh>().text = ((int)amount).ToString();
 
 		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
@@ -605,28 +587,31 @@ public class Unit : MonoBehaviour
 		recoverTextObject.SetActive(false);
 	}
 
-	public IEnumerator RecoverAP(int amount)
+	public IEnumerator RecoverActionPoint(int amount)
 	{
 		activityPoint += amount;
 
-		recoverTextObject.SetActive(true);
-		recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
+		damageTextObject.SetActive(true);
+		damageTextObject.GetComponent<CustomWorldText>().text = amount.ToString();
+
+		// recoverTextObject.SetActive(true);
+		// recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
 
 		// healthViewer.UpdateCurrentActivityPoint(currentHealth, maxHealth);
 
 		// 회복량 표시되는 시간.
 		yield return new WaitForSeconds(1);
-		recoverTextObject.SetActive(false);
-
+		// recoverTextObject.SetActive(false);
+		damageTextObject.SetActive(false);
 	}
 
-	public void RegenerateActivityPoint()
+	public void RegenerateActionPoint()
 	{
-		activityPoint = GetRegeneratedActivityPoint();
+		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
 	}
 
-	public int GetRegeneratedActivityPoint()
+	public int GetRegeneratedActionPoint()
 	{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
@@ -664,9 +649,15 @@ public class Unit : MonoBehaviour
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 	}
 
+	public void ApplyTriggerOnPhaseStart()
+	{
+		List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
+	}
+
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{
-		Tile currentTile = GetTile();
+		Tile currentTile = GetTileUnderUnit();
 		currentTile.SetUnitOnTile(null);
 		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
 		SetPosition(destTile.GetTilePos());
@@ -700,16 +691,19 @@ public class Unit : MonoBehaviour
 		this.unitClass = unitInfo.unitClass;
 		this.element = unitInfo.element;
 		this.celestial = unitInfo.celestial;
+		this.isObject = unitInfo.isObject;
 	}
 
-	public void ApplySkillList(List<SkillInfo> skillInfoList, List<StatusEffectInfo> statusEffectInfoList, List<PassiveSkillInfo> passiveSkillInfoList)
+	public void ApplySkillList(List<SkillInfo> skillInfoList, 
+							   List<StatusEffectInfo> statusEffectInfoList, 
+							   List<PassiveSkillInfo> passiveSkillInfoList)
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
 
 		foreach (var skillInfo in skillInfoList)
 		{
-			if ((skillInfo.GetOwner() == this.nameInCode)) //&&
-			//	(skillInfo.GetRequireLevel() <= partyLevel))
+			if ((skillInfo.GetOwner() == this.nameInCode) &&
+				(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
 					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
@@ -850,6 +844,7 @@ public class Unit : MonoBehaviour
 		gameObject.name = nameInCode;
 
 		position = initPosition;
+		startPositionOfPhase = position;
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
 		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();
@@ -925,7 +920,7 @@ public class Unit : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.R))
 		{
-			RegenerateActivityPoint();
+			RegenerateActionPoint();
 		}
 		if (Input.GetKeyDown(KeyCode.L))
 		{

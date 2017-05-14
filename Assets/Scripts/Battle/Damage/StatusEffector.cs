@@ -16,7 +16,7 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster))
 			.ToList();
 
-		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
+		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}
@@ -28,14 +28,49 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster))
 			.ToList();
 
-		SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
+		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}
 
+	private static bool IsValidAtZero(StatusEffectType seType)
+	{
+		if (seType == StatusEffectType.Silence || 
+			seType == StatusEffectType.Bind || 
+			seType == StatusEffectType.Confused || 
+			seType == StatusEffectType.Faint || 
+			seType == StatusEffectType.Retire || 
+			seType == StatusEffectType.Taunt || 
+			seType == StatusEffectType.MeleeImmune || 
+			seType == StatusEffectType.MagicImmune || 
+			seType == StatusEffectType.AllImmune || 
+			seType == StatusEffectType.Etc)
+			return true;
+		else
+			return false; 
+	}
+
+	private static bool IsValid(StatusEffect se)
+	{
+		int elems = se.fixedElem.actuals.Count;
+		for (int i = 0; i < elems; i++)
+		{
+			if (!IsValidAtZero(se.GetStatusEffectType(i)) && se.GetAmount(i) == 0)
+				return false;
+		}
+		return true;
+	}
+
 	private static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
 	{
+		List<StatusEffect> validStatusEffects = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffects)
+		{
+			if (IsValid(statusEffect))
+				validStatusEffects.Add(statusEffect);
+		}
+
+		foreach (var statusEffect in validStatusEffects)
 		{
 			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
@@ -44,6 +79,7 @@ public static class StatusEffector
 			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
+				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				var statusEffectListOfTarget = target.GetStatusEffectList();
 				statusEffectListOfTarget.Remove(alreadyAppliedSameEffect);
 				statusEffectListOfTarget.Add(statusEffect);
@@ -51,6 +87,7 @@ public static class StatusEffector
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
 			{
+				Debug.Log("Add same SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++)
 				{
@@ -63,10 +100,9 @@ public static class StatusEffector
 			// 동일한 효과가 없음 -> 새로 넣음
 			else
 			{
+				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
 				target.GetStatusEffectList().Add(statusEffect);
 			}
-
-			Debug.Log("Apply " + statusEffect.GetDisplayName() + " effect to " + target.name);
 		}
 	}
 }

@@ -33,9 +33,10 @@ public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
 
 	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
 	{
-		statusEffects[0].SetRemainStack(1);
-		statusEffects[0].SetRemainPhase(999);
-		statusEffects[0].SetAmount(10);
+		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
+		int amount = (int)(27 + partyLevel * 0.3f);
+
+		statusEffects[0].SetAmount(amount);
 	}
 }
 }

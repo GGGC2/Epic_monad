@@ -1,0 +1,4 @@
+Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+에테르 수정,manastone,Enemy,8,8,LeftDown,70,0,20,20,0,Melee,Plant,Earth,true
+리니안,lenien,Ally,3,1,RightUp,458,73,51,28,53,Magic,Water,Sun,false
+리니안,lenien,Ally,3,5,LeftDown,458,73,51,28,53,Magic,Water,Sun,false

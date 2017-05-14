@@ -89,6 +89,8 @@ public class Utility : MonoBehaviour {
 	public static float GetDirectionBonus(Unit unit, Unit target)
 	{
 		if (target == null) return 1;
+
+		if (target.IsObject()) return 1; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
 		
 		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
 		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;
@@ -136,4 +138,9 @@ public class Utility : MonoBehaviour {
 			return 0.8f;
 		else return 1;
     }
+
+	public static int GetDistance(Vector2 position1, Vector2 position2)
+	{
+		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
+	}
 }

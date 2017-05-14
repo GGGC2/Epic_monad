@@ -5,9 +5,9 @@ namespace Battle.Skills
 {
 public class Eren_2_l_SkillLogic : BasePassiveSkillLogic {
 
-	public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
 	{
-        Unit caster = skillInstanceData.getCaster();
+		Unit caster = skillInstanceData.GetCaster();
 		// 27 + (lv * 0.3 * stack)
 		StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
 		int stack = 0;
@@ -17,9 +17,8 @@ public class Eren_2_l_SkillLogic : BasePassiveSkillLogic {
 		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
 		float baseAmountPerLevel = 27;
 
-		defense -= baseAmountPerLevel + (partyLevel * ignoreAmountPerStack * stack);
-
-		return defense;
+		resistance -= baseAmountPerLevel + (partyLevel * ignoreAmountPerStack * stack);
+		return resistance;
 	}
 }
 }

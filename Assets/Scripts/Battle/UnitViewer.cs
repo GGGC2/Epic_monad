@@ -50,16 +50,21 @@ public class UnitViewer : MonoBehaviour {
 	void UpdateEffect(Unit unit)
 	{
 		List<StatusEffect> effectList = unit.GetStatusEffectList();
+		// Debug.Log(unit.GetName() + " has " + effectList.Count + " se");
 		int numberOfEffects = effectList.Count;
 		string concattedText = "";
 		for (int i = 0; i < numberOfEffects; i++)
 		{
 			if (!effectList[i].GetIsBuff())
-				concattedText += "*";
+				concattedText += "d_";
 			concattedText += effectList[i].GetDisplayName();
 			if (effectList[i].GetIsStackable())
 				concattedText += "[" + effectList[i].GetRemainStack() +"]";
-			concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+			if (effectList[i].GetRemainPhase() < 500)
+				concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+			else
+				concattedText += "(--)";
+			concattedText += (int)effectList[i].GetAmount();
 			if (i < numberOfEffects-1)
 				concattedText += " ";
 		}
