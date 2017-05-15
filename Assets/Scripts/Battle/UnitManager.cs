@@ -175,7 +175,8 @@ public class UnitManager : MonoBehaviour {
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
 
-			SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
+			if (hitInfo.skill != null)
+				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
 		}
 
 		units.Remove(deadUnit);

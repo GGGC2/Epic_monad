@@ -188,6 +188,11 @@ public class StatusEffect {
 		flexibleElem.actuals[index].remainAmount = amount;
     }
 
+    public void SubAmount(int index, float amount)
+    {
+        flexibleElem.actuals[index].remainAmount -= amount;
+    }
+
     public void AddRemainPhase(int phase)
 	{
 		flexibleElem.display.remainPhase += phase;
