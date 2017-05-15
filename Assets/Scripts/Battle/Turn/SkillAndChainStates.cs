@@ -269,7 +269,7 @@ namespace Battle.Turn
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
-				FocusTile(targetTile);
+				BattleManager.MoveCameraToPosition(targetTile.GetTilePos());
 
 				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
 				battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
@@ -299,7 +299,7 @@ namespace Battle.Turn
 				if (battleData.triggers.rightClicked.Triggered ||
 				    battleData.triggers.cancelClicked.Triggered)
 				{
-					FocusUnit(battleData.selectedUnit);
+					BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 					battleData.uiManager.DisableSkillCheckUI();
 					battleData.selectedUnit.SetDirection(originalDirection);
 					if (selectedSkill.GetSkillType() != SkillType.Point)
@@ -327,7 +327,7 @@ namespace Battle.Turn
 					 || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff)
 					{
 						yield return ApplyChain(battleData, targetTile, tilesInSkillRange, firstRange);
-						FocusUnit(battleData.selectedUnit);
+						BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 						battleData.currentState = CurrentState.FocusToUnit;
 						// 연계 정보 업데이트
 						battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
@@ -356,16 +356,6 @@ namespace Battle.Turn
 				}
 			}
 			yield return null;
-		}
-
-		private static void FocusTile(Tile focusTile)
-		{
-			Camera.main.transform.position = new Vector3(focusTile.transform.position.x, focusTile.transform.position.y, -10);
-		}
-
-		private static void FocusUnit(Unit unit)
-		{
-			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
 		private static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
@@ -443,7 +433,7 @@ namespace Battle.Turn
 			foreach (var chainInfo in allVaildChainInfo)
 			{
 				Tile focusedTile = chainInfo.GetTargetArea()[0];
-				FocusTile(focusedTile);
+				BattleManager.MoveCameraToPosition(focusedTile.GetTilePos());
 				battleData.currentState = CurrentState.ApplySkill;
 				yield return battleManager.StartCoroutine(ApplyChainableSkill(battleData, chainInfo, chainCombo));
 			}
@@ -471,7 +461,7 @@ namespace Battle.Turn
 			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 			yield return new WaitForSeconds(0.5f);
 
-			Camera.main.transform.position = new Vector3(battleData.selectedUnit.gameObject.transform.position.x, battleData.selectedUnit.gameObject.transform.position.y, -10);
+			BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.Standby;
 			battleData.alreadyMoved = false;
 			BattleManager battleManager = battleData.battleManager;
@@ -690,7 +680,7 @@ namespace Battle.Turn
 
 			yield return new WaitForSeconds(0.5f);
 
-			Camera.main.transform.position = new Vector3(battleData.selectedUnit.gameObject.transform.position.x, battleData.selectedUnit.gameObject.transform.position.y, -10);
+			BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = false;
 		}

@@ -615,6 +615,8 @@ public class Unit : MonoBehaviour
 			{
 				if (se.IsOfType(i, StatusEffectType.DamageOverPhase))
 				{
+					BattleManager.MoveCameraToUnit(this);
+
 					float damage = se.GetAmount(i);
 					Unit caster = se.GetCaster();
 					yield return StartCoroutine(DamagedByDot(damage, caster));

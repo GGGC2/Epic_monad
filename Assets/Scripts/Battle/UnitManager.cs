@@ -226,6 +226,14 @@ public class UnitManager : MonoBehaviour {
         return enemyUnits;
     }
 
+	public IEnumerator ApplyEachDOT()
+	{
+		foreach (var unit in units)
+		{
+			yield return StartCoroutine(unit.ApplyDamageOverPhase());
+		}
+	}
+
 	public void StartPhase()
 	{
 		foreach (var unit in units)
