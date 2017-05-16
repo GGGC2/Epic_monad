@@ -100,7 +100,7 @@ namespace Battle.Turn
 				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnit, totalUseActivityPoint);
 
 				// 카메라를 옮기고
-				Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
+				BattleManager.MoveCameraToPosition((Vector2)destTile.transform.position);
 				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
 				// 클릭 대기
 
@@ -122,7 +122,7 @@ namespace Battle.Turn
 				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
 				{
 					battleData.move.moveCount -= distance;
-					Camera.main.transform.position = new Vector3(battleData.selectedUnit.gameObject.transform.position.x, battleData.selectedUnit.gameObject.transform.position.y, -10);
+					BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 					battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 					battleData.uiManager.DisableSelectDirectionUI();
 					battleData.uiManager.DisableDestCheckUI();

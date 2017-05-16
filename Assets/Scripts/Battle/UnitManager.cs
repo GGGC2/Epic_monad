@@ -186,7 +186,8 @@ public class UnitManager : MonoBehaviour {
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
 
-			SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
+			if (hitInfo.skill != null)
+				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
 		}
 
 		units.Remove(deadUnit);
@@ -235,6 +236,14 @@ public class UnitManager : MonoBehaviour {
         }
         return enemyUnits;
     }
+
+	public IEnumerator ApplyEachDOT()
+	{
+		foreach (var unit in units)
+		{
+			yield return StartCoroutine(unit.ApplyDamageOverPhase());
+		}
+	}
 
 	public void StartPhase()
 	{

@@ -248,6 +248,22 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
+	public static void MoveCameraToUnit(Unit unit)
+	{
+		Camera.main.transform.position = new Vector3(
+				unit.gameObject.transform.position.x,
+				unit.gameObject.transform.position.y,
+				-10);
+	}
+
+	public static void MoveCameraToPosition(Vector2 position)
+	{
+		Camera.main.transform.position = new Vector3(
+				position.x,
+				position.y,
+				-10);	
+	}
+
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
 		while (battleData.currentState == CurrentState.FocusToUnit)
@@ -263,10 +279,7 @@ public class BattleManager : MonoBehaviour
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
 
-			Camera.main.transform.position = new Vector3(
-				battleData.selectedUnit.gameObject.transform.position.x,
-				battleData.selectedUnit.gameObject.transform.position.y,
-				-10);
+			MoveCameraToUnit(battleData.selectedUnit);			
 
 			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnit.gameObject.transform.position);
 
@@ -496,6 +509,7 @@ public class BattleManager : MonoBehaviour
 		battleData.currentPhase++;
 
 		battleData.unitManager.StartPhase();
+		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);
 	}

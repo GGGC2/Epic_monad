@@ -459,12 +459,99 @@ public class Unit : MonoBehaviour
 	}
 
 	// 지속데미지
-	public IEnumerator DamagedByDot()
+	public IEnumerator DamagedByDot(float damage, Unit caster)
 	{
+		float originDotDamage = damage; // 최종 대미지 (정수로 표시되는)
+        
+		float defense = GetActualStat(Stat.Defense);
+		float resistance = GetActualStat(Stat.Resistance);
+
+		if (caster.GetUnitClass() == UnitClass.Melee)
+		{
+			// 실제 피해 = 원래 피해 x 200/(200+방어력)
+			originDotDamage = originDotDamage * 200.0f / (200.0f + defense);
+			Debug.Log("Actual melee DOT damage : " + originDotDamage);
+		}
+		else if (caster.GetUnitClass() == UnitClass.Magic)
+		{
+			originDotDamage = originDotDamage * 200.0f / (200.0f + resistance);
+			Debug.Log("Actual magic DOT damage effect: " + originDotDamage);
+		}
+		else if (caster.GetUnitClass() == UnitClass.None)
+		{
+			// actualDamage = actualDamage;
+		}	
+
+		// 실드 차감. 먼저 걸린 실드부터 차감.
+		foreach (var se in statusEffectList)
+		{
+			int actuals = se.fixedElem.actuals.Count;
+			for (int i = 0; i < actuals; i++)
+			{
+				if (se.GetStatusEffectType(i) == StatusEffectType.Shield)
+				{
+					float remainShieldAmount = se.GetRemainAmount(i);
+					if (remainShieldAmount >= originDotDamage)
+					{
+						se.SubAmount(i, originDotDamage);
+						originDotDamage = 0;
+					}
+					else
+					{
+						se.SubAmount(i, remainShieldAmount);
+						originDotDamage -= remainShieldAmount;
+					}
+				}
+			}
+
+			if (originDotDamage == 0) break;
+		}
+
+		// 0이 된 실드 제거
+		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+		foreach (var se in statusEffectList)
+		{
+			bool isEmptyShield = false;
+			int actuals = se.fixedElem.actuals.Count;
+			for (int i = 0; i < actuals; i++)
+			{
+				if (se.GetStatusEffectType(i) == StatusEffectType.Shield &&
+					se.GetRemainAmount(i) == 0)
+				{
+					isEmptyShield = true;
+				}
+			}
+
+			if (!isEmptyShield)
+				newStatusEffectList.Add(se);
+		}
+		SetStatusEffectList(newStatusEffectList);
+
+		int finalDamage = (int)originDotDamage;
+
+		if (finalDamage > 0)
+		{
+			currentHealth -= finalDamage;
+			latelyHitInfos.Add(new HitInfo(caster, null));
+		}
+		if (currentHealth < 0)
+			currentHealth = 0;
+
+		Debug.Log("Damage dealt by DOT : " + finalDamage);
+
+		damageTextObject.SetActive(true);
+		damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+
+		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+
+		// 데미지 표시되는 시간.
+		yield return new WaitForSeconds(0.5f);
+		damageTextObject.SetActive(false);
+
 		yield return null;
 	}
 
-	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isDot, bool isHealth)
+	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isHealth)
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Unit caster = skillInstanceData.GetCaster();
@@ -473,11 +560,15 @@ public class Unit : MonoBehaviour
 		// 체인 해제
 		if (isHealth == true)
 		{
-			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isDot, isHealth);
+			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth);
 
 			if (finalDamage > 0)
 			{
 				currentHealth -= finalDamage;
+
+				if (currentHealth < 0)
+					currentHealth = 0;
+				
 				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
 		
 				// 대상에게 데미지를 줄때 발동하는 공격자 특성
@@ -487,8 +578,6 @@ public class Unit : MonoBehaviour
 				// 데미지를 받을 때 발동하는 피격자 특성
                 SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, skillInstanceData.GetCaster());
 			}
-			if (currentHealth < 0)
-				currentHealth = 0;
 
 			Debug.Log("Damage dealt : "+finalDamage);
 
@@ -497,8 +586,8 @@ public class Unit : MonoBehaviour
 
 			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
 
-			if (!isDot) // 도트데미지가 아니면 체인이 해제됨.
-				ChainList.RemoveChainsFromUnit(this);
+			// 체인 해제
+			ChainList.RemoveChainsFromUnit(this);
 
 			// 데미지 표시되는 시간.
 			yield return new WaitForSeconds(1);
@@ -517,24 +606,25 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void ApplyDamageOverPhase()
+	public IEnumerator ApplyDamageOverPhase()
 	{
-		float totalAmount = 0.0f;
-
-		if (this.HasStatusEffect(StatusEffectType.DamageOverPhase))
+		foreach (var se in statusEffectList)
 		{
-			foreach (var statusEffect in statusEffectList)
+			int actuals = se.fixedElem.actuals.Count;
+			for (int i = 0; i < actuals; i++)
 			{
-				int actuals = statusEffect.fixedElem.actuals.Count;
-				if (statusEffect.IsOfType(StatusEffectType.DamageOverPhase))
+				if (se.IsOfType(i, StatusEffectType.DamageOverPhase))
 				{
-					totalAmount += statusEffect.GetAmount();
+					BattleManager.MoveCameraToUnit(this);
+
+					float damage = se.GetAmount(i);
+					Unit caster = se.GetCaster();
+					yield return StartCoroutine(DamagedByDot(damage, caster));
 				}
 			}
-
-			// FIXME : 도트데미지 처리 메소드 이거 말고 따로 만들 것.
-			// Damaged(UnitClass.None, totalAmount, 0f, true, false);
 		}
+
+		yield return null;
 	}
 
 	public void ApplyHealOverPhase()
@@ -558,10 +648,7 @@ public class Unit : MonoBehaviour
 	public IEnumerator RecoverHealth(float amount)
 	{
 		// 회복량 증감 효과 적용
-		if (this.HasStatusEffect(StatusEffectType.TakenHealChange))
-		{
-			amount = GetActualEffect(amount, StatusEffectType.TakenHealChange);
-		}
+		amount = GetActualEffect(amount, StatusEffectType.TakenHealChange);
 
 		// 초과회복량 차감
 		int actualAmount = (int)amount;
