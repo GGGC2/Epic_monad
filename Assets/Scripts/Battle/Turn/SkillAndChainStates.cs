@@ -583,7 +583,6 @@ namespace Battle.Turn
 		{
             Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.getTarget();
-            Skill appliedSkill = skillInstanceData.getSkill();
             int targetCount = skillInstanceData.getTargetCount();
 
 			DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);

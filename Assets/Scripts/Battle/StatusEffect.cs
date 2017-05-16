@@ -15,6 +15,7 @@ public class StatusEffect {
         public readonly List<ActualElement> actuals;
         public class DisplayElement
 		{
+            public readonly Skill originSkill;
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
             public readonly bool isBuff; // 버프일 경우 true
@@ -99,11 +100,15 @@ public class StatusEffect {
         public class DisplayElement
 		{
 			public Unit caster; // 시전자
+            public Skill originSkill;
+            public PassiveSkill originPassiveSkill;
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
 			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
 			
-            public DisplayElement(Unit caster, StatusEffectVar remainStack, int remainPhase)
+            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, StatusEffectVar remainStack, int remainPhase)
             {
+                this.originSkill = originSkill;
+                this.originPassiveSkill = originPassiveSkill;
                 this.caster = caster;
                 this.remainStack = (int)GetSEVar(remainStack, caster);
                 this.remainPhase = remainPhase;
@@ -122,13 +127,13 @@ public class StatusEffect {
             }
 		}
 
-		public FlexibleElement(FixedElement fixedElem, Unit caster)
+		public FlexibleElement(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill)
 		{
 			int maxStack = fixedElem.display.maxStack;
             StatusEffectVar stackVar = fixedElem.display.stackVar;
             int stack = (int)GetSEVar(stackVar, caster);
 			int defaultPhase = fixedElem.display.defaultPhase;
-			display = new DisplayElement(caster, stackVar, defaultPhase);
+			display = new DisplayElement(caster, originSkill, originPassiveSkill, stackVar, defaultPhase);
 
 			List<ActualElement> actuals = new List<ActualElement>();
 			for (int i = 0; i < fixedElem.actuals.Count; i++)
@@ -139,10 +144,10 @@ public class StatusEffect {
 		}
 	}
 	
-	public StatusEffect(FixedElement fixedElem, Unit caster)
+	public StatusEffect(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill)
 	{
 		this.fixedElem = fixedElem;
-		this.flexibleElem = new FlexibleElement(fixedElem, caster);
+		this.flexibleElem = new FlexibleElement(fixedElem, caster, originSkill, originPassiveSkill);
     }
 	
     public string GetOriginSkillName() {return fixedElem.display.originSkillName;}
@@ -155,6 +160,7 @@ public class StatusEffect {
     public string GetEffectName() {return fixedElem.display.effectName;}
     public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
     public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
+    public Skill GetOriginSkill() { return flexibleElem.display.originSkill;}
     public Unit GetCaster() {return flexibleElem.display.caster;}
     public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
     public int GetRemainStack() {return flexibleElem.display.remainStack;}

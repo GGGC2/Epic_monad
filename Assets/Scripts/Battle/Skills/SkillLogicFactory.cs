@@ -239,8 +239,17 @@ public static class SkillLogicFactory
             case "신속 반응":
             passiveSkillLogic = new Curi_2_1_SkillLogic();
             break;
+            case "가연성 부착물":
+            passiveSkillLogic = new Curi_2_m_SkillLogic();
+            break;
+            case "조연성 부착물":
+            passiveSkillLogic = new Curi_3_m_SkillLogic();
+            break;
             case "동적 평형":
             passiveSkillLogic = new Curi_3_1_SkillLogic();
+            break;
+            case "환원":
+            passiveSkillLogic = new Curi_3_r_SkillLogic();
             break;
             
             default:

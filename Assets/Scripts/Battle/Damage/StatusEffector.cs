@@ -13,7 +13,7 @@ public static class StatusEffector
 	{
 		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster))
+			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
 			.ToList();
 
 		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster);
@@ -25,7 +25,7 @@ public static class StatusEffector
 	{
 		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster))
+			.Select(fixedElem => new StatusEffect(fixedElem, caster, null, appliedSkill))
 			.ToList();
 
 		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
@@ -72,6 +72,11 @@ public static class StatusEffector
 
 		foreach (var statusEffect in validStatusEffects)
 		{
+            List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
+            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(target, statusEffect)==false) {
+                continue;
+            }
+
 			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);

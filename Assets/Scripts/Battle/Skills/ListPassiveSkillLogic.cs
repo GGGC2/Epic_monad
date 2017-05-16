@@ -155,5 +155,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
             skillLogic.TriggerDamaged(target, damage, caster);
         }
     }
+    public override bool TriggerStatusEffectApplied(Unit unit, StatusEffect statusEffect) {
+        bool ignored = false;
+        foreach (var skillLogic in passiveSkillLogics) {
+            if(skillLogic.TriggerStatusEffectApplied(unit, statusEffect)) {
+                ignored = true;
+            }
+        }
+        return ignored;
     }
+}
 }
