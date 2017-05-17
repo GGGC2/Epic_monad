@@ -7,7 +7,7 @@ using System.Linq;
 namespace Battle.Skills
 {
 public class Eren_6_r_SkillLogic : BaseSkillLogic {
-	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster)
+	public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
 	{
 		StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
 		int stack = 0;

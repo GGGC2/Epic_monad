@@ -16,9 +16,16 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
 			.ToList();
 
-		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster);
-
-		AttachStatusEffect(caster, statusEffects, target);
+        //SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
+        bool ignoreStatusEffect = false;
+        foreach(var statusEffect in statusEffects) {
+            if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+                ignoreStatusEffect = true;
+            }
+        }
+        if(ignoreStatusEffect == false) {
+            AttachStatusEffect(caster, statusEffects, target);
+        }
 	}
 
 	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
@@ -28,7 +35,7 @@ public static class StatusEffector
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, null, appliedSkill))
 			.ToList();
 
-		// SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
+		//SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
 
 		AttachStatusEffect(caster, statusEffects, target);
 	}
@@ -73,7 +80,11 @@ public static class StatusEffector
 		foreach (var statusEffect in validStatusEffects)
 		{
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
-            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(target, statusEffect)==false) {
+            List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
+            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target)==false) {
+                continue;
+            }
+            if(SkillLogicFactory.Get(casterPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target)==false) {
                 continue;
             }
 

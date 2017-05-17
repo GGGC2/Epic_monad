@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
 public class BasePassiveSkillLogic
 {
-	public PassiveSkill passiveSkill = null;
+	public PassiveSkill passiveSkill;
 
 	public virtual void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
 	{
@@ -80,7 +80,7 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(Unit unit, StatusEffect statusEffect) //unit에게 StatusEffect가 적용될 때 발동. false이면 해당 StatusEffect를 무시.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit에게 StatusEffect가 적용될 때 발동. false이면 해당 StatusEffect를 무시.
     {
         return true;
     }
@@ -91,7 +91,11 @@ public class BasePassiveSkillLogic
 
 	public virtual void TriggerOnPhaseStart(Unit caster) 
 	{		
-	}    
+	}
+    
+    public virtual void TriggerOnPhaseEnd(Unit caster) 
+    {
+    }    
 
     public virtual void TriggerActionEnd(Unit caster) 
 	{    

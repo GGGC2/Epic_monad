@@ -267,6 +267,10 @@ public class UnitManager : MonoBehaviour {
 
 		foreach (var unit in units)
 			unit.RegenerateActionPoint();
+        foreach (var unit in units)
+        {
+            unit.ApplyTriggerOnPhaseEnd();
+        }
 	}
 
 	void LoadSkills()

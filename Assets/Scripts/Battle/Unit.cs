@@ -738,9 +738,15 @@ public class Unit : MonoBehaviour
 
 	public void ApplyTriggerOnPhaseStart()
 	{
-		List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+		List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
 	}
+
+    public void ApplyTriggerOnPhaseEnd()
+    {
+        List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
+        SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseEnd(this);
+    }
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{

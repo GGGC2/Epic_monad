@@ -21,7 +21,7 @@ namespace Battle.Skills {
                         Unit secondaryTarget = tile.GetUnitOnTile();
                         SkillInstanceData skillInstanceData = new SkillInstanceData(damage, 
                             statusEffect.GetOriginSkill(), caster, secondaryTarget, 1);
-                        yield return secondaryTarget.Damaged(skillInstanceData, false, true);
+                        yield return secondaryTarget.Damaged(skillInstanceData, true);
                     }
                 }
             }

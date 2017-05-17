@@ -7,6 +7,7 @@ namespace Battle.Skills
 {
 public class BaseSkillLogic
 {
+    public Skill skill;
 	public virtual int CalculateAP(int originAP, Unit caster)
 	{
 		return originAP;
@@ -59,6 +60,9 @@ public class BaseSkillLogic
 	{
 	}
 
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        return true;
+    }
 	public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;
