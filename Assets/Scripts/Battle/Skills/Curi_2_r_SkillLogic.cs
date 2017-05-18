@@ -21,20 +21,15 @@ namespace Battle.Skills {
             }
             skillInstanceData.getDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
         }
-        public override void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
             List<Tile> tileList = TilesAroundTarget(target);
             bool isAllTileWater = true;
             foreach (Tile tile in tileList) {
                 if (tile.GetTileElement() != Enums.Element.Water)
                     isAllTileWater = false;
             }
-
-            var statusEffect1st = statusEffects.Find(se => se.GetOriginSkillName() == "알칼리 폭탄");
-            if (!isAllTileWater) {
-                statusEffects.Remove(statusEffect1st);
-            }
-
+            if(!isAllTileWater) return false;
+            return true;
         }
-
     }
 }

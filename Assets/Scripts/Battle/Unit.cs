@@ -415,41 +415,28 @@ public class Unit : MonoBehaviour
 		startPositionOfPhase = this.GetPosition();
 	}
 
-	public void RemoveStatusEffect(Enums.StatusEffectCategory category, int num)
+	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
 	{
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-		int remainNum = num;
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (remainNum == 0)
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;				
-			}
+			if (num == 0)   break;	
 
 			// 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
-			if (statusEffect.GetCaster() == this)
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;
-			}
+			if (statusEffect.GetCaster() == this)   continue;
 
-			if (!statusEffect.GetIsRemovable())
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;
-			}
+			if (!statusEffect.GetIsRemovable())     continue;
 
-			bool matchIsBuff = (category == Enums.StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
-			bool matchIsDebuff = (category == Enums.StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
-			bool matchAll = category == Enums.StatusEffectCategory.All;
+			bool matchIsBuff = (category == StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
+			bool matchIsDebuff = (category == StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
+			bool matchAll = (category == StatusEffectCategory.All);
 			if (matchIsBuff || matchIsDebuff || matchAll)
 			{
-				num -= 1;
+                if (SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerStatusEffectRemoved(statusEffect, this)) {
+                    statusEffectList.Remove(statusEffect);
+                    num -= 1;
+                }
 			}
 		}
-
-		statusEffectList = newStatusEffectList;
 	}
 
 	// 반사데미지

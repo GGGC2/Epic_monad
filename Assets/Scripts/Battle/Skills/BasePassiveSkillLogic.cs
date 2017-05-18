@@ -80,11 +80,15 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit에게 StatusEffect가 적용될 때 발동. false이면 해당 StatusEffect를 무시.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit에게 StatusEffect가 적용될 때 발동. false를 리턴할 시 해당 StatusEffect를 무시.
     {
         return true;
     }
 
+    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit의 StatusEffect가 사라질 때 발동. false를 리턴할 시 해당 StatusEffect가 사라지지 않음.
+    {
+        return true;
+    }
     public virtual void TriggerStart(Unit caster) 
 	{		
 	}

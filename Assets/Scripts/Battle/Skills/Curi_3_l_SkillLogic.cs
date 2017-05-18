@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Linq;
-
+﻿
 namespace Battle.Skills {
     public class Curi_3_1_SkillLogic : BasePassiveSkillLogic {
 

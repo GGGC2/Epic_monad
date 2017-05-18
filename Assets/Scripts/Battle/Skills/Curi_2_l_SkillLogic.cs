@@ -13,7 +13,7 @@ namespace Battle.Skills {
                 caster.SetStatusEffectList(statusEffectList);
             }
             else if(elementOfTile == Enums.Element.Fire) {
-                StatusEffector.AttachStatusEffect(caster, this.passiveSkill, caster);
+                StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
             }
         }
     }
