@@ -60,7 +60,8 @@ public class BaseSkillLogic
 	{
 	}
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
+    {
         return true;
     }
 	public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)

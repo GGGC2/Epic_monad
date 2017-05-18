@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Linq;
-using Battle.Damage;
+﻿using Battle.Damage;
 using System.Collections.Generic;
 
 namespace Battle.Skills {

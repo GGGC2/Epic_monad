@@ -256,7 +256,7 @@ public class TileManager : MonoBehaviour {
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}
 
-	List<Tile> AddNearbyTiles(List<Tile> tileList)
+	public List<Tile> AddNearbyTiles(List<Tile> tileList)
 	{
 		List<Tile> newTileList = new List<Tile>();
 		foreach (var tile in tileList)
@@ -293,7 +293,7 @@ public class TileManager : MonoBehaviour {
 		return newTileList;
 	}
 
-	List<Tile> AddNearbySquareTiles(List<Tile> tileList)
+	public List<Tile> AddNearbySquareTiles(List<Tile> tileList)
 	{
 		List<Tile> newTileList = new List<Tile>();
 		foreach (var tile in tileList)

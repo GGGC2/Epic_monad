@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using Battle.Damage;
-
+﻿
 namespace Battle.Skills {
     public class Curi_3_m_SkillLogic : BasePassiveSkillLogic {
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {

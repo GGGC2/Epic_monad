@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enums;
-using System.Linq;
-using Battle.Damage;
 
 namespace Battle.Skills { 
     public class Curi_2_m_SkillLogic : BasePassiveSkillLogic {

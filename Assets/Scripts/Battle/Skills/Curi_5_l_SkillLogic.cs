@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using Enums;
-using Battle.Damage;
+﻿using Battle.Damage;
 
 namespace Battle.Skills {
     public class Curi_5_l_SkillLogic : BasePassiveSkillLogic {

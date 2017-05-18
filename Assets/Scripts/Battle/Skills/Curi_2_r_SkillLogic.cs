@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Enums;
-using Battle.Damage;
 
 namespace Battle.Skills {
     public class Curi_2_r_SkillLogic : BaseSkillLogic {
