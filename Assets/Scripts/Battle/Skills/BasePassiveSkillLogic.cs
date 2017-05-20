@@ -104,7 +104,10 @@ public class BasePassiveSkillLogic
     public virtual void TriggerActionEnd(Unit caster) 
 	{    
     }
-
+    
+    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        return null;
+    }
 	public virtual void TriggerRest(Unit caster)
 	{
 

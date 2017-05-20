@@ -162,6 +162,7 @@ public class StatusEffect {
     public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
     public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
     public Skill GetOriginSkill() { return flexibleElem.display.originSkill;}
+    public PassiveSkill GetOriginPassiveSkill() { return flexibleElem.display.originPassiveSkill; }
     public Unit GetCaster() {return flexibleElem.display.caster;}
     public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
     public int GetRemainStack() {return flexibleElem.display.remainStack;}

@@ -64,7 +64,12 @@ public class BaseSkillLogic
     {
         return true;
     }
-	public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
+
+    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        return null;
+    }
+
+    public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;
 		if (direction.HasValue) {
