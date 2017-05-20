@@ -16,7 +16,7 @@ namespace Battle.Skills {
 
             int waterTileCount = 0;
             foreach(Tile tile in tileList) {
-                if(tile.GetTileElement() == Enums.Element.Water)
+                if(tile.GetTileElement() == Element.Water)
                     waterTileCount++;
             }
             skillInstanceData.GetDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
@@ -25,7 +25,7 @@ namespace Battle.Skills {
             List<Tile> tileList = TilesAroundTarget(target);
             bool isAllTileWater = true;
             foreach (Tile tile in tileList) {
-                if (tile.GetTileElement() != Enums.Element.Water)
+                if (tile.GetTileElement() != Element.Water)
                     isAllTileWater = false;
             }
             if(!isAllTileWater) return false;

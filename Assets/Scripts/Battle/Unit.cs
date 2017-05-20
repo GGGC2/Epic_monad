@@ -77,6 +77,9 @@ public class Unit : MonoBehaviour
 	public Vector2 position;
 	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
 	public Vector2 startPositionOfPhase;
+    //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
+    public bool hasMovedThisTurn;
+
 	public Direction direction;
 	public int currentHealth;
 	public int activityPoint;
@@ -214,6 +217,7 @@ public class Unit : MonoBehaviour
 
 	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
 	{
+        hasMovedThisTurn = true;
 		tileBefore.SetUnitOnTile(null);
 		transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(tileAfter.GetTilePos());
@@ -413,6 +417,7 @@ public class Unit : MonoBehaviour
 	public void UpdateStartPosition()
 	{
 		startPositionOfPhase = this.GetPosition();
+        hasMovedThisTurn = false;
 	}
 
 	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
