@@ -104,6 +104,7 @@ public class StatusEffect {
             public PassiveSkill originPassiveSkill;
 			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
 			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
+            public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
 			
             public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, StatusEffectVar remainStack, int remainPhase)
             {
@@ -164,6 +165,7 @@ public class StatusEffect {
     public Unit GetCaster() {return flexibleElem.display.caster;}
     public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
     public int GetRemainStack() {return flexibleElem.display.remainStack;}
+    public Element GetElement() {return flexibleElem.display.element;}
     
     public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
     public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
@@ -222,21 +224,36 @@ public class StatusEffect {
     public void AddRemainStack(int stack)
     {
 		flexibleElem.display.remainStack += stack;
+        if(flexibleElem.display.remainStack > fixedElem.display.maxStack) {
+            flexibleElem.display.remainStack = fixedElem.display.maxStack;
+        }
     }
     
     public void DecreaseRemainStack()
     {
 		flexibleElem.display.remainStack -= 1;
+        if (flexibleElem.display.remainStack < 0) {
+            flexibleElem.display.remainStack = 0;
+        }
     }
     
     public void DecreaseRemainStack(int stack)
     {
 		flexibleElem.display.remainStack -= stack;
+        if (flexibleElem.display.remainStack < 0) {
+            flexibleElem.display.remainStack = 0;
+        }
     }
 
     public void SetRemainStack(int stack)
     {
 		flexibleElem.display.remainStack = stack;
+        if (flexibleElem.display.remainStack > fixedElem.display.maxStack) {
+            flexibleElem.display.remainStack = fixedElem.display.maxStack;
+        }
+        if (flexibleElem.display.remainStack < 0) {
+            flexibleElem.display.remainStack = 0;
+        }
     }
 
     public bool IsOfType(StatusEffectType statusEffectType)

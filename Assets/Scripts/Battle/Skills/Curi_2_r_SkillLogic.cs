@@ -12,14 +12,14 @@ namespace Battle.Skills {
             return tileList;
         }
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
-            List<Tile> tileList = TilesAroundTarget(skillInstanceData.getTarget());
+            List<Tile> tileList = TilesAroundTarget(skillInstanceData.GetMainTarget());
 
             int waterTileCount = 0;
             foreach(Tile tile in tileList) {
                 if(tile.GetTileElement() == Enums.Element.Water)
                     waterTileCount++;
             }
-            skillInstanceData.getDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
+            skillInstanceData.GetDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
         }
         public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
             List<Tile> tileList = TilesAroundTarget(target);

@@ -14,13 +14,19 @@ namespace Battle.Skills {
 
                 TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
                 List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, Direction.Left);
+
+                List<Unit> damagedUnitList = new List<Unit>();
+                damagedUnitList.Add(target);
                 foreach(Tile tile in tileList) {
                     if(tile.IsUnitOnTile()) {
                         Unit secondaryTarget = tile.GetUnitOnTile();
-                        SkillInstanceData skillInstanceData = new SkillInstanceData(damage, 
-                            statusEffect.GetOriginSkill(), caster, secondaryTarget, 1);
-                        yield return secondaryTarget.Damaged(skillInstanceData, true);
+                        damagedUnitList.Add(secondaryTarget);
                     }
+                }
+                SkillInstanceData skillInstanceData = new SkillInstanceData(damage, statusEffect.GetOriginSkill(),
+                    caster, damagedUnitList, target, damagedUnitList.Count);
+                foreach (var secondaryTarget in damagedUnitList) {
+                    yield return secondaryTarget.Damaged(skillInstanceData, true);
                 }
             }
         }

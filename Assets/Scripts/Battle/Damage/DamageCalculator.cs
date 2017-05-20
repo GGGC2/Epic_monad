@@ -101,10 +101,10 @@ public class DamageCalculator
 
 		foreach (var target in targets)
 		{
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, target, targets.Count);
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, targets, target, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
-            float attackDamage = skillInstanceData.getDamage().resultDamage;
+            float attackDamage = skillInstanceData.GetDamage().resultDamage;
 
 			float actualDamage = GetActualDamage(skillInstanceData, true);
 
@@ -134,9 +134,9 @@ public class DamageCalculator
 	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
         Unit caster = skillInstanceData.GetCaster();
-        Unit target = skillInstanceData.getTarget();
-        AttackDamage attackDamage = skillInstanceData.getDamage();
-        Skill appliedSkill = skillInstanceData.getSkill();
+        Unit target = skillInstanceData.GetMainTarget();
+        AttackDamage attackDamage = skillInstanceData.GetDamage();
+        Skill appliedSkill = skillInstanceData.GetSkill();
 
 		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 		attackDamage.directionBonus = DirectionBonus(caster, target);
@@ -236,7 +236,7 @@ public class DamageCalculator
 	}
 
 	private static void ApplyBonusDamageFromEachSkill(SkillInstanceData skillInstanceData) {
-		Skill appliedSkill = skillInstanceData.getSkill();
+		Skill appliedSkill = skillInstanceData.GetSkill();
 		Debug.LogWarning("ApplyAdd'damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 	}
@@ -257,10 +257,10 @@ public class DamageCalculator
     
 	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isHealth)
 	{
-		float actualDamage = skillInstanceData.getDamage().resultDamage;
+		float actualDamage = skillInstanceData.GetDamage().resultDamage;
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-        Skill appliedSkill = skillInstanceData.getSkill();
-        Unit target = skillInstanceData.getTarget();
+        Skill appliedSkill = skillInstanceData.GetSkill();
+        Unit target = skillInstanceData.GetMainTarget();
         Unit caster = skillInstanceData.GetCaster();
 		// 대미지 증가/감소 효과 적용
 		// 공격이 물리인지 마법인지 체크

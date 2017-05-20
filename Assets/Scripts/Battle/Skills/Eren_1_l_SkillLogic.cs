@@ -14,7 +14,7 @@ public class Eren_1_l_SkillLogic : BaseSkillLogic {
 		if (uniqueStatusEffect != null)
 		{
 			int stack = uniqueStatusEffect.GetRemainStack();
-			skillInstanceData.getDamage().baseDamage *= (1.0f + (0.2f * stack));
+			skillInstanceData.GetDamage().baseDamage *= (1.0f + (0.2f * stack));
 		}
 	}
 }

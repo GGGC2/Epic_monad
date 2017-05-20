@@ -53,7 +53,7 @@ public class BaseSkillLogic
 
 	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
 	{
-		return skillInstanceData.getDamage();
+		return skillInstanceData.GetDamage();
 	}
 
 	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<Tile> selectedTiles)

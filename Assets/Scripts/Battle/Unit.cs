@@ -542,7 +542,7 @@ public class Unit : MonoBehaviour
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Unit caster = skillInstanceData.GetCaster();
-        Skill appliedSkill = skillInstanceData.getSkill();
+        Skill appliedSkill = skillInstanceData.GetSkill();
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true)
@@ -583,7 +583,7 @@ public class Unit : MonoBehaviour
 
 		else
 		{
-			finalDamage = (int) skillInstanceData.getDamage().resultDamage;
+			finalDamage = (int) skillInstanceData.GetDamage().resultDamage;
 			if (activityPoint >= finalDamage)
 			{
 				activityPoint -= finalDamage;

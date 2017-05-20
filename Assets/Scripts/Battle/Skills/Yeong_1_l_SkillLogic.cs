@@ -16,9 +16,9 @@ public class Yeong_1_l_SkillLogic : BaseSkillLogic {
 		statusEffects.ForEach(x => Debug.Log("origin : " + x.GetOriginSkillName()));
 		Debug.LogWarning("isUniquePassiveActive : " + isUniquePassiveActive);
 		if (isUniquePassiveActive)
-			skillInstanceData.getDamage().relativeDamageBonus *= damageBonus;
+			skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
 
-		Debug.Log("Total relative bonus : " + skillInstanceData.getDamage().relativeDamageBonus);
+		Debug.Log("Total relative bonus : " + skillInstanceData.GetDamage().relativeDamageBonus);
 	}
 }
 }
