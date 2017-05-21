@@ -70,8 +70,11 @@ public class UnitManager : MonoBehaviour {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
             foreach(StatusEffect statusEffect in statusEffectList) {
-                if(statusEffect.GetDisplayName()=="가연성 부착물") {
-                    yield return new Curi_2_m_SkillLogic().Trigger(unit, statusEffect);
+                if(statusEffect.GetOriginSkill()!=null) {
+                    yield return SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                }
+                if(statusEffect.GetOriginPassiveSkill()!=null) {
+                    yield return SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
                 }
             }
         }
