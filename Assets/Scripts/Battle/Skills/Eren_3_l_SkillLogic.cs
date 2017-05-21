@@ -9,9 +9,9 @@ namespace Battle.Skills
 public class Eren_3_l_SkillLogic : BaseSkillLogic {
 	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData)
 	{
-		Unit target = skillInstanceData.getTarget();
+		Unit target = skillInstanceData.GetMainTarget();
 		float damagedRatio = 1.0f - ((float)target.GetCurrentHealth()/(float)target.GetMaxHealth());
-		skillInstanceData.getDamage().baseDamage *= (1.0f + damagedRatio);
+		skillInstanceData.GetDamage().baseDamage *= (1.0f + damagedRatio);
 	}
 
 	public override void OnKill(HitInfo hitInfo)

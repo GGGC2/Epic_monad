@@ -7,7 +7,7 @@ public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 
 	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
 	{
-		Unit target = skillInstanceData.getTarget();
+		Unit target = skillInstanceData.GetMainTarget();
 		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
 		float ignoreAmountPerLevel = 0.6f;
 		float baseAmountPerLevel = 42;

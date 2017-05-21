@@ -7,6 +7,7 @@ namespace Battle.Skills
 {
 public class BaseSkillLogic
 {
+    public Skill skill;
 	public virtual int CalculateAP(int originAP, Unit caster)
 	{
 		return originAP;
@@ -16,7 +17,7 @@ public class BaseSkillLogic
 	{		
 	}
 
-	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster)
+	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
 	{
 	}
 
@@ -52,13 +53,17 @@ public class BaseSkillLogic
 
 	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
 	{
-		return skillInstanceData.getDamage();
+		return skillInstanceData.GetDamage();
 	}
 
 	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<Tile> selectedTiles)
 	{
 	}
 
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
+    {
+        return true;
+    }
 	public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;

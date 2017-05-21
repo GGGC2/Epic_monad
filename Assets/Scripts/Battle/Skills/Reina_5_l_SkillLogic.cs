@@ -9,8 +9,8 @@ public class Reina_5_l_SkillLogic : BasePassiveSkillLogic {
     {
 		float damageBonus = 1.3f;
 
-		if ((skillInstanceData.getSkill().GetName() == "화염 폭발") && (skillInstanceData.getTargetCount() >= 3))
-			skillInstanceData.getDamage().relativeDamageBonus *= damageBonus;
+		if ((skillInstanceData.GetSkill().GetName() == "화염 폭발") && (skillInstanceData.GetTargetCount() >= 3))
+			skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
 	}
 }
 }

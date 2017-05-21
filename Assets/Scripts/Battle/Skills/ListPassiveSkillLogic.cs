@@ -142,7 +142,13 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
+    public override void TriggerOnPhaseEnd(Unit caster) {
+        foreach (var skillLogic in passiveSkillLogics) {
+            skillLogic.TriggerOnPhaseEnd(caster);
+        }
+    }
+
+        public override void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
@@ -155,5 +161,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
             skillLogic.TriggerDamaged(target, damage, caster);
         }
     }
+    public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        bool ignored = false;
+        foreach (var skillLogic in passiveSkillLogics) {
+            if(skillLogic.TriggerStatusEffectApplied(statusEffect, caster, target)) {
+                ignored = true;
+            }
+        }
+        return ignored;
     }
+}
 }

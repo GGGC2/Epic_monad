@@ -66,6 +66,17 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
+    public IEnumerator TriggerStatusEffectsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
+            foreach(StatusEffect statusEffect in statusEffectList) {
+                if(statusEffect.GetDisplayName()=="가연성 부착물") {
+                    yield return new Curi_2_m_SkillLogic().Trigger(unit, statusEffect);
+                }
+            }
+        }
+    }
+
 	public List<Unit> GetRetreatUnits()
 	{
 		retreatUnits.Clear();
@@ -256,6 +267,10 @@ public class UnitManager : MonoBehaviour {
 
 		foreach (var unit in units)
 			unit.RegenerateActionPoint();
+        foreach (var unit in units)
+        {
+            unit.ApplyTriggerOnPhaseEnd();
+        }
 	}
 
 	void LoadSkills()

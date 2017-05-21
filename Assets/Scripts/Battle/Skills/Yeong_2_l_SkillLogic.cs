@@ -25,7 +25,7 @@ public class Yeong_2_l_SkillLogic : BaseSkillLogic {
 		}
 
 		float damageBonus = (float)(100 + totalEvasion) / 100;
-		skillInstanceData.getDamage().relativeDamageBonus *= damageBonus;
+		skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
 
 		Debug.Log("Evasion : " + totalEvasion + '\n' + "damage bonus : " + damageBonus);
 	}

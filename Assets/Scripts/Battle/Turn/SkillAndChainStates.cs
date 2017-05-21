@@ -518,7 +518,7 @@ namespace Battle.Turn
 					// 데미지 적용
 					if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 					{
-						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, target, targets.Count);
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
 						yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
 					}
 
@@ -572,12 +572,11 @@ namespace Battle.Turn
 		private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
 		{
             Unit unitInChain = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.getTarget();
-            Skill appliedSkill = skillInstanceData.getSkill();
-            int targetCount = skillInstanceData.getTargetCount();
+            Unit target = skillInstanceData.GetMainTarget();
+            int targetCount = skillInstanceData.GetTargetCount();
 
 			DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
-            DamageCalculator.AttackDamage attackDamage = skillInstanceData.getDamage();
+            DamageCalculator.AttackDamage attackDamage = skillInstanceData.GetDamage();
 
 			if (attackDamage.attackDirection != DirectionCategory.Front) unitInChain.PrintDirectionBonus(attackDamage);
 			if (attackDamage.celestialBonus != 1f) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
@@ -652,7 +651,7 @@ namespace Battle.Turn
 			{
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
 				{
-                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, selectedUnit, target, targets.Count);
+                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, selectedUnit, targets, target, targets.Count);
                     yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, 1, target == targets.Last()));
 				}
 

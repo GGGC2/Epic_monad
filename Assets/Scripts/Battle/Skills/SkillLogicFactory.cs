@@ -9,65 +9,87 @@ public static class SkillLogicFactory
 {
 	public static BaseSkillLogic Get(Skill skill)
 	{
+        BaseSkillLogic skillLogic;
 		switch (skill.GetName()) {
 			// 레이나
 			case "화염 폭발":
-			return new Reina_1_l_SkillLogic();
+			skillLogic = new Reina_1_l_SkillLogic();
+            break;
 			case "화염구":
-			return new Reina_1_m_SkillLogic();
+			skillLogic = new Reina_1_m_SkillLogic();
+            break;
 			// case "마력 연쇄":
 			// return new Reina_3_r_SkillLogic();
 			case "지옥 불꽃":
-			return new Reina_4_m_SkillLogic();
+            skillLogic = new Reina_4_m_SkillLogic();
+            break;
 			// case "에테르 과부하":
 			// return new Reina_5_r_SkillLogic();
 			
 			// 리니안
 			case "전자기 충격": case "전자기 충격_test":
-			return new Lenien_1_m_SkillLogic();
+            skillLogic = new Lenien_1_m_SkillLogic();
+            break;
 			// case "하전 파동":
 			// return new Lenien_2_m_SkillLogic();
 			case "축전":
-			return new Lenien_7_l_SkillLogic();
+            skillLogic = new Lenien_7_l_SkillLogic();
+            break;
 			
 			// 영
 			case "은빛 베기": case "은빛 베기_test":
-			return new Yeong_1_l_SkillLogic();
+            skillLogic = new Yeong_1_l_SkillLogic();
+            break;
 			case "섬광 찌르기":
-			return new Yeong_2_l_SkillLogic();
+            skillLogic = new Yeong_2_l_SkillLogic();
+            break;
 			case "초감각":
-			return new Yeong_5_r_SkillLogic();
+            skillLogic = new Yeong_5_r_SkillLogic();
+            break;
 
 			// 에렌
 			case "칠흑의 화살":
-			return new Eren_1_l_SkillLogic();
+            skillLogic = new Eren_1_l_SkillLogic();
+            break;
 			case "광휘": case "광휘_test":
-			return new Eren_1_r_SkillLogic();
+            skillLogic = new Eren_1_r_SkillLogic();
+            break;
 			case "죽음의 화살": case "죽음의 화살_test":
-			return new Eren_3_l_SkillLogic();
+            skillLogic = new Eren_3_l_SkillLogic();
+            break;
 			case "치유의 빛":
-			return new Eren_6_r_SkillLogic();
+            skillLogic = new Eren_6_r_SkillLogic();
+            break;
 			
 			// 카샤스티
 			case "더블 샷":
-			return new Kashyasty_1_l_SkillLogic();
+            skillLogic = new Kashyasty_1_l_SkillLogic();
+            break;
 
 			// Not used
 			case "조화진동":
-			return new HarmonySkillLogic();
+            skillLogic = new HarmonySkillLogic();
+            break;
 			case "생명력 흡수":
-			return new LifeDrainSkillLogic();
+            skillLogic = new LifeDrainSkillLogic();
+            break;
 			case "이매진 블릿":
-			return new ImagineBulletSkillLogic();
+            skillLogic = new ImagineBulletSkillLogic();
+            break;
             
             //큐리
             case "수상한 덩어리":
-            return new Curi_1_m_SkillLogic();
+            skillLogic = new Curi_1_m_SkillLogic();
+            break;
             case "알칼리 폭탄":
-            return new Curi_2_r_SkillLogic();
+            skillLogic = new Curi_2_r_SkillLogic();
+            break;
             default:
-			return new BaseSkillLogic();
+            skillLogic = new BaseSkillLogic();
+            break;
 		}
+        skillLogic.skill = skill;
+        return skillLogic;
 	}
 
 	public static BasePassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
@@ -239,8 +261,17 @@ public static class SkillLogicFactory
             case "신속 반응":
             passiveSkillLogic = new Curi_2_1_SkillLogic();
             break;
+            case "가연성 부착물":
+            passiveSkillLogic = new Curi_2_m_SkillLogic();
+            break;
+            case "조연성 부착물":
+            passiveSkillLogic = new Curi_3_m_SkillLogic();
+            break;
             case "동적 평형":
             passiveSkillLogic = new Curi_3_1_SkillLogic();
+            break;
+            case "환원":
+            passiveSkillLogic = new Curi_3_r_SkillLogic();
             break;
             
             default:

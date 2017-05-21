@@ -77,6 +77,9 @@ public class Unit : MonoBehaviour
 	public Vector2 position;
 	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
 	public Vector2 startPositionOfPhase;
+    //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
+    public bool hasMovedThisTurn;
+
 	public Direction direction;
 	public int currentHealth;
 	public int activityPoint;
@@ -214,6 +217,7 @@ public class Unit : MonoBehaviour
 
 	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
 	{
+        hasMovedThisTurn = true;
 		tileBefore.SetUnitOnTile(null);
 		transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(tileAfter.GetTilePos());
@@ -413,43 +417,31 @@ public class Unit : MonoBehaviour
 	public void UpdateStartPosition()
 	{
 		startPositionOfPhase = this.GetPosition();
+        hasMovedThisTurn = false;
 	}
 
-	public void RemoveStatusEffect(Enums.StatusEffectCategory category, int num)
+	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
 	{
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-		int remainNum = num;
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (remainNum == 0)
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;				
-			}
+			if (num == 0)   break;	
 
 			// 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
-			if (statusEffect.GetCaster() == this)
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;
-			}
+			if (statusEffect.GetCaster() == this)   continue;
 
-			if (!statusEffect.GetIsRemovable())
-			{
-				newStatusEffectList.Add(statusEffect);
-				continue;
-			}
+			if (!statusEffect.GetIsRemovable())     continue;
 
-			bool matchIsBuff = (category == Enums.StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
-			bool matchIsDebuff = (category == Enums.StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
-			bool matchAll = category == Enums.StatusEffectCategory.All;
+			bool matchIsBuff = (category == StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
+			bool matchIsDebuff = (category == StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
+			bool matchAll = (category == StatusEffectCategory.All);
 			if (matchIsBuff || matchIsDebuff || matchAll)
 			{
-				num -= 1;
+                if (SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerStatusEffectRemoved(statusEffect, this)) {
+                    statusEffectList.Remove(statusEffect);
+                    num -= 1;
+                }
 			}
 		}
-
-		statusEffectList = newStatusEffectList;
 	}
 
 	// 반사데미지
@@ -555,7 +547,7 @@ public class Unit : MonoBehaviour
 	{
 		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Unit caster = skillInstanceData.GetCaster();
-        Skill appliedSkill = skillInstanceData.getSkill();
+        Skill appliedSkill = skillInstanceData.GetSkill();
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true)
@@ -596,7 +588,7 @@ public class Unit : MonoBehaviour
 
 		else
 		{
-			finalDamage = (int) skillInstanceData.getDamage().resultDamage;
+			finalDamage = (int) skillInstanceData.GetDamage().resultDamage;
 			if (activityPoint >= finalDamage)
 			{
 				activityPoint -= finalDamage;
@@ -738,9 +730,15 @@ public class Unit : MonoBehaviour
 
 	public void ApplyTriggerOnPhaseStart()
 	{
-		List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+		List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
 	}
+
+    public void ApplyTriggerOnPhaseEnd()
+    {
+        List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
+        SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseEnd(this);
+    }
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
 	{
