@@ -19,6 +19,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public bool isHighlight;
 	public List<Color> colors;
 
+	public SpriteRenderer arrowRenderer;
+	public List<Sprite> arrows;
+
 	bool isPreSeleted = false;
 
 	public void SetPreSelected(bool input)	{	isPreSeleted = input;	}
@@ -227,31 +230,21 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	// override object.Equals
 	public override bool Equals (object obj)
-	{
-		//
-		// See the full list of guidelines at
-		//   http://go.microsoft.com/fwlink/?LinkID=85237
-		// and also the guidance for operator== at
-		//   http://go.microsoft.com/fwlink/?LinkId=85238
-		//
-		
+	{		
 		if (obj == null || GetType() != obj.GetType())
 		{
 			return false;
 		}
 		
-		// TODO: write your implementation of Equals() here
 		Tile tileObj = (Tile)obj;
 		if (this.GetTilePos() == tileObj.GetTilePos()) 
-		// {Debug.Log("TileA : " + this.GetTilePos() + " TileB : " + tileObj.GetTilePos());
-		return true;//}
+		return true;
 		else return false;
 	}
 	
 	// override object.GetHashCode
 	public override int GetHashCode()
 	{
-		// TODO: write your implementation of GetHashCode() here
 		return (int)this.position.x * 1000 + (int)this.position.y;
 	}
 }
