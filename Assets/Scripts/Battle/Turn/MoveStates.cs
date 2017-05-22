@@ -100,7 +100,7 @@ namespace Battle.Turn
 				battleData.uiManager.SetDestCheckUIAP(battleData.selectedUnit, totalUseActivityPoint);
 
 				// 카메라를 옮기고
-				BattleManager.MoveCameraToPosition((Vector2)destTile.transform.position);
+				BattleManager.MoveCameraToTile(destTile);
 				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
 				// 클릭 대기
 

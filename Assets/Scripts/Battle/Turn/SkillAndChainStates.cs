@@ -269,7 +269,7 @@ namespace Battle.Turn
 		{
 			while (battleData.currentState == CurrentState.CheckApplyOrChain)
 			{
-				BattleManager.MoveCameraToPosition(targetTile.GetTilePos());
+				BattleManager.MoveCameraToTile(targetTile);
 
 				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
 				battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
@@ -433,7 +433,7 @@ namespace Battle.Turn
 			foreach (var chainInfo in allVaildChainInfo)
 			{
 				Tile focusedTile = chainInfo.GetTargetArea()[0];
-				BattleManager.MoveCameraToPosition(focusedTile.GetTilePos());
+				BattleManager.MoveCameraToTile(focusedTile);
 				battleData.currentState = CurrentState.ApplySkill;
 				yield return battleManager.StartCoroutine(ApplyChainableSkill(battleData, chainInfo, chainCombo));
 			}

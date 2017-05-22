@@ -256,6 +256,14 @@ public class BattleManager : MonoBehaviour
 				-10);
 	}
 
+	public static void MoveCameraToTile(Tile tile)
+	{
+		Camera.main.transform.position = new Vector3(
+				tile.gameObject.transform.position.x,
+				tile.gameObject.transform.position.y,
+				-10);	
+	}
+
 	public static void MoveCameraToPosition(Vector2 position)
 	{
 		Camera.main.transform.position = new Vector3(
