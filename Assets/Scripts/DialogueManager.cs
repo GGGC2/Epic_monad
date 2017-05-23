@@ -322,7 +322,7 @@ public class DialogueManager : MonoBehaviour {
 			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
 		}
-		else if (dialogueDataList[line].GetCommandType() == "sound_effect")
+		else if (dialogueDataList[line].GetCommandType() == "se")
 		{
 			// Not implement yet.
 		}

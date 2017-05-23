@@ -61,7 +61,7 @@ public class DialogueData{
 				{
 					commandSubType = stringList[2];
 				}
-				else if (commandType == "sound_effect")
+				else if (commandType == "se")
 				{
 					// subtype : se file name.
 					commandSubType = stringList[2];
