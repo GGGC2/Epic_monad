@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using WorldMap;
+using DG.Tweening;
 
 public class SceneLoader : MonoBehaviour {
 	// public string nextSceneName;
@@ -37,22 +38,33 @@ public class SceneLoader : MonoBehaviour {
 	
 	IEnumerator Start()
 	{
+		Debug.Log("Load new scene");
+		Time.timeScale = 0;
+
 		fadeoutScreenObject.SetActive(true);
-		for (int i = 0; i < 20; i++)
+		var img = fadeoutScreenObject.GetComponent<Image>();
+		img.color = Color.black;
+		var tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
+		while(tween.IsPlaying())
 		{
-			fadeoutScreenObject.GetComponent<Image>().color -= new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.05f);
+			yield return null;
 		}
+
 		fadeoutScreenObject.SetActive(false);
+
+		Time.timeScale = 1.0f;
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
 	{
+		Time.timeScale = 0;
+
 		fadeoutScreenObject.SetActive(true);
-		for (int i = 0; i < 20; i++)
+		var img = fadeoutScreenObject.GetComponent<Image>();
+		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
+		while(tween.IsPlaying())
 		{
-			fadeoutScreenObject.GetComponent<Image>().color += new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.05f);
+			yield return null;
 		}
 
 		SceneData.nextStageName = nextSceneName;
@@ -63,11 +75,14 @@ public class SceneLoader : MonoBehaviour {
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
 	{
+		Time.timeScale = 0;
+
 		fadeoutScreenObject.SetActive(true);
-		for (int i = 0; i < 20; i++)
+		var img = fadeoutScreenObject.GetComponent<Image>();
+		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
+		while(tween.IsPlaying())
 		{
-			fadeoutScreenObject.GetComponent<Image>().color += new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.05f);
+			yield return null;
 		}
 
 		SceneData.nextDialogueName = nextScriptFileName;
@@ -78,11 +93,14 @@ public class SceneLoader : MonoBehaviour {
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)
 	{
+		Time.timeScale = 0;
+
 		fadeoutScreenObject.SetActive(true);
-		for (int i = 0; i < 20; i++)
+		var img = fadeoutScreenObject.GetComponent<Image>();
+		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
+		while(tween.IsPlaying())
 		{
-			fadeoutScreenObject.GetComponent<Image>().color += new Color(0,0,0,0.05f);
-			yield return new WaitForSeconds(0.05f);
+			yield return null;
 		}
 
 		// need use save data

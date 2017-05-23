@@ -222,6 +222,8 @@ public class DialogueManager : MonoBehaviour {
 			}
 		}
 
+		yield return new WaitForSeconds(0.01f);
+
 		ActiveAdventureUI();
 	}
 
