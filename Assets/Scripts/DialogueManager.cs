@@ -56,7 +56,7 @@ public class DialogueManager : MonoBehaviour {
 			}
 			else if (dialogueDataList[i].GetCommandType() == "load_script")
 			{
-				// InactiveAdventureUI();
+				//InactiveAdventureUI();
 				string nextScriptName = dialogueDataList[i].GetCommandSubType();
 				FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
 				return;
