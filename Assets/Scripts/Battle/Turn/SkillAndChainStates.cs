@@ -454,9 +454,7 @@ namespace Battle.Turn
 
 			// 스킬 쿨다운 기록
 			if (battleData.SelectedSkill.GetCooldown() > 0)
-			{
 				battleData.selectedUnit.GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown());
-			}
 
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnit, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
@@ -472,6 +470,7 @@ namespace Battle.Turn
 
         private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> selectedTiles, bool isChainable, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
+            List<Unit> targets = GetUnitsOnTiles(selectedTiles);
             /*
             // 경로형 스킬의 경우 대상 범위 재지정
             if (appliedSkill.GetSkillType() == SkillType.Route)
@@ -485,35 +484,9 @@ namespace Battle.Turn
                 ChainList.RemoveChainsFromUnit(caster);
 
             yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
-            List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
             foreach (var target in targets) {
-                List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
-                int totalEvasionChance = 0;
-                totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
-
-                int randomNumber = UnityEngine.Random.Range(0, 100);
-
-                if (isChainable && totalEvasionChance > randomNumber) { 
-                    battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
-
-                    // 회피 효과 해제
-                    List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
-                    statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
-                    caster.SetStatusEffectList(statusEffectListAfterEvade);
-
-                    // (타겟이) 회피 성공했을 경우 추가 효과
-                    SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
-                    continue;
-                }
-                else {
-                    if (isChainable) {
-                        // 회피 효과 해제
-                        List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
-                        statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
-                        caster.SetStatusEffectList(statusEffectListAfterEvade);
-                    }
-
+                if (!isChainable || CheckEvasion(battleData, caster, target)) { 
                     // 데미지 적용
                     if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                         SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
@@ -540,10 +513,9 @@ namespace Battle.Turn
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
                 caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
-                                                    // 스킬 쿨다운 기록
-                if (appliedSkill.GetCooldown() > 0) {
+                // 스킬 쿨다운 기록
+                if (appliedSkill.GetCooldown() > 0) 
                     caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
-                }
             }
 
             // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
@@ -555,11 +527,31 @@ namespace Battle.Turn
                                                                                     x.GetStatusEffectType() == StatusEffectType.Smite)));
                 caster.SetStatusEffectList(newStatusEffectList);
             }
-
             battleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
             yield return new WaitForSeconds(0.5f);
             battleData.alreadyMoved = false;
+        }
+
+        private static bool CheckEvasion(BattleData battleData, Unit caster, Unit target) {
+            List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
+            int totalEvasionChance = 0;
+            totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
+
+            int randomNumber = UnityEngine.Random.Range(0, 100);
+
+            // 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
+            List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+            statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+            caster.SetStatusEffectList(statusEffectListAfterEvade);
+
+            if (totalEvasionChance > randomNumber) {
+                battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+                // (타겟이) 회피 성공했을 경우 추가 효과
+                SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
+                return true;
+            }
+            else return false;
         }
 
         private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
