@@ -5,9 +5,9 @@ using Enums;
 using UnityEngine;
 
 namespace Battle.Skills
-{
+{/*
 public class LifeDrainSkillLogic : BaseSkillLogic {
-	public override void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<Tile> selectedTiles)
+	public override void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain,  List<Tile> selectedTiles)
 	{
 		Unit target = targetTile.GetUnitOnTile();
 		int finalDamage = (int)DamageCalculator.CalculateTotalDamage(battleData, targetTile, selectedTiles, GetTilesInFirstRange(battleData))[target].damage;
@@ -18,5 +18,5 @@ public class LifeDrainSkillLogic : BaseSkillLogic {
 		var recoverCoroutine = unitInChain.RecoverHealth(recoverAmount);
 		battleData.battleManager.StartCoroutine(recoverCoroutine);
 	}
-}
+}*/
 }
