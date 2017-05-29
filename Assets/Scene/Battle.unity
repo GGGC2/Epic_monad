@@ -2901,15 +2901,15 @@ Prefab:
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: mapData
       value: 
-      objectReference: {fileID: 4900000, guid: b9610dff2f49d44bc9bd991ad078a953, type: 3}
+      objectReference: {fileID: 4900000, guid: 1a933926a248348cb9e4a025b706ba50, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: unitData
       value: 
-      objectReference: {fileID: 4900000, guid: cb303f77513b243b1b8cc45b272741e1, type: 3}
+      objectReference: {fileID: 4900000, guid: 27d72ba83af934bea9963b30b10cf732, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: battleEndConditionData
       value: 
-      objectReference: {fileID: 4900000, guid: 074bf6e7f9c7c441989ae602c790e941, type: 3}
+      objectReference: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5, type: 3}
     m_RemovedComponents:
     - {fileID: 11427906, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
@@ -3563,3 +3563,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effd5ecd7fbddcf488eb2664b3d79aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseMoveActive: 1
+  keyboardMoveActive: 1
