@@ -616,12 +616,12 @@ Prefab:
     - target: {fileID: 224293697882651610, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 224552149302785000, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 224345047662127418, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
@@ -630,12 +630,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22466926, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 224612215251901280, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 224534782989527638, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
@@ -742,6 +742,48 @@ Prefab:
       propertyPath: m_FontData.m_MaxSize
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 1624998128669316, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillApText
+      objectReference: {fileID: 0}
+    - target: {fileID: 1330876439546418, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillApDefaultText
+      objectReference: {fileID: 0}
+    - target: {fileID: 1296788630629392, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillRange1DefaultText
+      objectReference: {fileID: 0}
+    - target: {fileID: 118738, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillRange2DefaultText
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541519569564066, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1541519569564066, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillRange2Image
+      objectReference: {fileID: 0}
+    - target: {fileID: 1533768254575060, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillRange1Image
+      objectReference: {fileID: 0}
+    - target: {fileID: 1804057414657440, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillRange1Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521226608745490, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
+      propertyPath: m_Name
+      value: SkillCooldownText
+      objectReference: {fileID: 0}
+    - target: {fileID: 114474915516412808, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e8e7fa18b090c4b20aca941fdd232dbd,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
   m_IsPrefabParent: 0
