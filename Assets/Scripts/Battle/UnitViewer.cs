@@ -134,9 +134,9 @@ public class UnitViewer : MonoBehaviour {
 	void SetClassImage(UnitClass unitClass)
 	{
 		if (unitClass == UnitClass.Melee)
-			classImage.sprite = Resources.Load("Icon/meleeClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load("Icon/Stat/meleeClass", typeof(Sprite)) as Sprite;
 		else if (unitClass == UnitClass.Magic)
-			classImage.sprite = Resources.Load("Icon/magicClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load("Icon/Stat/magicClass", typeof(Sprite)) as Sprite;
 		else
 			classImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
 	}
@@ -144,13 +144,13 @@ public class UnitViewer : MonoBehaviour {
 	void SetElementImage(Element element)
 	{
 		if (element == Element.Fire)
-			elementImage.sprite = Resources.Load("Icon/fire", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
 		else if (element == Element.Water)
-			elementImage.sprite = Resources.Load("Icon/water", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/water", typeof(Sprite)) as Sprite;
 		else if (element == Element.Plant)
-			elementImage.sprite = Resources.Load("Icon/plant", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/plant", typeof(Sprite)) as Sprite;
 		else if (element == Element.Metal)
-			elementImage.sprite = Resources.Load("Icon/metal", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
 		else
 			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
 	}
@@ -158,11 +158,11 @@ public class UnitViewer : MonoBehaviour {
 	void SetCelestialImage(Celestial celestial)
 	{
 		if (celestial == Celestial.Sun)
-			celestialImage.sprite = Resources.Load("Icon/sun", typeof(Sprite)) as Sprite;
+			celestialImage.sprite = Resources.Load("Icon/Celestial/sun", typeof(Sprite)) as Sprite;
 		else if (celestial == Celestial.Moon)
-			celestialImage.sprite = Resources.Load("Icon/moon", typeof(Sprite)) as Sprite;
+			celestialImage.sprite = Resources.Load("Icon/Celestial/moon", typeof(Sprite)) as Sprite;
 		else if (celestial == Celestial.Earth)
-			celestialImage.sprite = Resources.Load("Icon/earth", typeof(Sprite)) as Sprite;
+			celestialImage.sprite = Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
 		else
 			celestialImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
 	}
