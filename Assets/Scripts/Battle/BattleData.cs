@@ -174,7 +174,7 @@ public class BattleData
 
 	public Vector2? preSelectedTilePosition;
 	public int indexOfPreSelectedSkillByUser = 0;
-	public int indexOfSelectedSkillByUser = 0;
+	public int indexOfSeletedSkillByUser = 0;
 	public bool isWaitingUserInput = false;
 	public bool enemyUnitSelected = false;
 
@@ -217,7 +217,7 @@ public class BattleData
 	public Skill SelectedSkill
 	{
 		get {
-			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
+			return selectedUnit.GetSkillList()[indexOfSeletedSkillByUser - 1];
 		}
 	}
 
