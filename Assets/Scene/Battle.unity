@@ -854,6 +854,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11497390, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0ae45c432456d4da8ba8d2e7789ffae0,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
   m_IsPrefabParent: 0
@@ -1895,6 +1900,11 @@ Prefab:
       propertyPath: m_Name
       value: UnitViewerPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 11497390, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 094d4f523252440ad9cbb47f74399726,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7b31d8b3909a94fa2924b998afc11978, type: 2}
   m_IsPrefabParent: 0
