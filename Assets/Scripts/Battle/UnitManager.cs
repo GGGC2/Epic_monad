@@ -242,9 +242,14 @@ public class UnitManager : MonoBehaviour {
 
 	public IEnumerator ApplyEachDOT()
 	{
-		foreach (var unit in units)
+		List<Unit> unitList = new List<Unit>();
+		units.ForEach(x => unitList.Add(x));
+		foreach (var unit in unitList)
 		{
-			yield return StartCoroutine(unit.ApplyDamageOverPhase());
+			if (unit != null)
+				yield return StartCoroutine(unit.ApplyDamageOverPhase());
+			else
+				yield return null;
 		}
 	}
 

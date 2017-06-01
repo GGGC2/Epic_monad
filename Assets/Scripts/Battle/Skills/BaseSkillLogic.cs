@@ -56,7 +56,7 @@ public class BaseSkillLogic
 		return skillInstanceData.GetDamage();
 	}
 
-	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, List<Tile> selectedTiles)
+	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, Tile targetTile, List<Tile> selectedTiles)
 	{
 	}
 

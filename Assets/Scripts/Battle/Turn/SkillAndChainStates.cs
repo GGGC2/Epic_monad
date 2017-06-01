@@ -38,7 +38,7 @@ namespace Battle.Turn
 				battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
 
 				battleData.isWaitingUserInput = true;
-				battleData.indexOfSelectedSkillByUser = 0;
+				battleData.indexOfSeletedSkillByUser = 0;
 
 				var update = UpdatePreviewAP(battleData);
 				battleData.battleManager.StartCoroutine(update);
@@ -336,11 +336,9 @@ namespace Battle.Turn
 					else
 					{
 						battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, tilesInSkillRange, false, 1));
-                        BattleManager.MoveCameraToUnit(battleData.selectedUnit);
-                        battleData.currentState = CurrentState.FocusToUnit;
-                        // 연계 정보 업데이트
-                        battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
+						yield return battleManager.StartCoroutine(ApplyNonchainSkill(battleData, tilesInSkillRange));
+						// 연계 정보 업데이트
+						battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
 					}
 				}
 				else if (battleData.skillApplyCommand == SkillApplyCommand.Chain)
@@ -437,7 +435,7 @@ namespace Battle.Turn
 				Tile focusedTile = chainInfo.GetTargetArea()[0];
 				BattleManager.MoveCameraToTile(focusedTile);
 				battleData.currentState = CurrentState.ApplySkill;
-				yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo.GetUnit(), chainInfo.GetSkill(), chainInfo.GetTargetArea(), true, chainCombo));
+				yield return battleManager.StartCoroutine(ApplyChainableSkill(battleData, chainInfo, chainCombo));
 			}
 
 			battleData.selectedUnit.DisableChainText();
@@ -454,11 +452,13 @@ namespace Battle.Turn
 
 			// 스킬 쿨다운 기록
 			if (battleData.SelectedSkill.GetCooldown() > 0)
+			{
 				battleData.selectedUnit.GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown());
+			}
 
 			// 체인 목록에 추가.
 			ChainList.AddChains(battleData.selectedUnit, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
-			battleData.indexOfSelectedSkillByUser = 0; // return to init value.
+			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 			yield return new WaitForSeconds(0.5f);
 
 			BattleManager.MoveCameraToUnit(battleData.selectedUnit);
@@ -468,93 +468,109 @@ namespace Battle.Turn
 			yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
 		}
 
-        private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> selectedTiles, bool isChainable, int chainCombo) {
-            BattleManager battleManager = battleData.battleManager;
-            List<Unit> targets = GetUnitsOnTiles(selectedTiles);
-            /*
-            // 경로형 스킬의 경우 대상 범위 재지정
-            if (appliedSkill.GetSkillType() == SkillType.Route)
-                selectedTiles = ReselectTilesByRoute(battleData, selectedTiles);
-            */
-            // 시전 방향으로 유닛의 바라보는 방향을 돌림.
-            if (appliedSkill.GetSkillType() != SkillType.Auto)
-                caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
+		// 체인 가능 스킬일 경우의 스킬 시전 코루틴. 체인 정보와 배수를 받는다.
+		private static IEnumerator ApplyChainableSkill(BattleData battleData, ChainInfo chainInfo, int chainCombo)
+		{
+			Unit caster = chainInfo.GetUnit();
+			Skill appliedSkill = chainInfo.GetSkill();
+			Tile targetTile = chainInfo.GetCenterTile();
+			List<Tile> selectedTiles = chainInfo.GetTargetArea();
 
-            if (isChainable)
-                ChainList.RemoveChainsFromUnit(caster);
+			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
+			if (appliedSkill.GetSkillType() != SkillType.Auto)
+				caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
 
-            yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
+			// 자신의 체인 정보 삭제.
+			ChainList.RemoveChainsFromUnit(caster);
 
-            foreach (var target in targets) {
-                if (!isChainable || CheckEvasion(battleData, caster, target)) { 
-                    // 데미지 적용
-                    if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
-                        yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
-                    }
+			BattleManager battleManager = battleData.battleManager;
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
 
-                    // 효과 외의 부가 액션 (AP 감소 등)
-                    SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, selectedTiles);
+			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
 
-                    // 기술의 상태이상은 기술이 적용된 후에 붙인다.
-                    if (appliedSkill.GetStatusEffectList().Count > 0) 
-                        StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
-                }
-                caster.ActiveFalseAllBonusText();
-                // 사이사이에도 특성 발동 조건을 체크해준다.
-                battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+			foreach (var target in targets)
+			{
+				int totalEvasionChance = 0; 
+				List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
+				totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
+				
+				int randomNumber = UnityEngine.Random.Range(0, 100);
+				
+				if (totalEvasionChance > randomNumber) {
+					battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					caster.SetStatusEffectList(statusEffectListAfterEvade);
+
+					// (타겟이) 회피 성공했을 경우 추가 효과
+					SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
+					continue;
+				}
+				else 
+				{
+					// 회피 효과 해제
+					List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
+					statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
+					caster.SetStatusEffectList(statusEffectListAfterEvade);
+
+					// 데미지 적용
+					if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+					{
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
+						yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+					}
+
+					// 효과 외의 부가 액션 (AP 감소 등)
+					SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, targetTile, selectedTiles);
+
+					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
+					if(appliedSkill.GetStatusEffectList().Count > 0)
+					{
+						StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+					}
+				}
+
+				caster.ActiveFalseAllBonusText();
+
+				// 사이사이에도 특성 발동 조건을 체크해준다.
+				battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
                 battleData.unitManager.TriggerStatusEffectsAtActionEnd();
-            }
+			}
 
-            // 기술 사용 시 적용되는 특성
-            List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
-            SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster);
+			int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(appliedSkill);
+			
+			// 기술 사용 시 적용되는 특성
+			List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster);
 
-            if (caster == battleData.selectedUnit) {
-                int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
-                caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
-                // 스킬 쿨다운 기록
-                if (appliedSkill.GetCooldown() > 0) 
-                    caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
-            }
+			if (caster == battleData.selectedUnit)
+			{
+				caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+				// 스킬 쿨다운 기록
+				if (appliedSkill.GetCooldown() > 0)
+				{
+					caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
+				}
+			}
 
-            // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
-            if (isChainable) {
-                List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-                newStatusEffectList = caster.GetStatusEffectList().FindAll(x => !(x.GetIsOnce() &&
-                                                                                    (x.GetStatusEffectType() == StatusEffectType.PowerChange ||
-                                                                                    x.GetStatusEffectType() == StatusEffectType.DamageChange ||
-                                                                                    x.GetStatusEffectType() == StatusEffectType.Smite)));
-                caster.SetStatusEffectList(newStatusEffectList);
-            }
-            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
+			// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
+			List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+			newStatusEffectList = caster.GetStatusEffectList().FindAll(x => !(x.GetIsOnce() &&
+																				(x.GetStatusEffectType() == StatusEffectType.PowerChange ||
+																				x.GetStatusEffectType() == StatusEffectType.DamageChange ||
+																				x.GetStatusEffectType() == StatusEffectType.Smite)));
+			caster.SetStatusEffectList(newStatusEffectList);
 
-            yield return new WaitForSeconds(0.5f);
-            battleData.alreadyMoved = false;
-        }
+			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
 
-        private static bool CheckEvasion(BattleData battleData, Unit caster, Unit target) {
-            List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
-            int totalEvasionChance = 0;
-            totalEvasionChance = SkillLogicFactory.Get(passiveSkillsOfTarget).GetEvasionChance();
+			yield return new WaitForSeconds(0.5f);
 
-            int randomNumber = UnityEngine.Random.Range(0, 100);
+			battleData.alreadyMoved = false;
+		}
 
-            // 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
-            List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
-            statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
-            caster.SetStatusEffectList(statusEffectListAfterEvade);
-
-            if (totalEvasionChance > randomNumber) {
-                battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
-                // (타겟이) 회피 성공했을 경우 추가 효과
-                SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
-                return true;
-            }
-            else return false;
-        }
-
-        private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
+		private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget)
 		{
             Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
@@ -611,6 +627,62 @@ namespace Battle.Turn
 				}
 			}
 			return units;
+		}
+
+		// 체인 불가능 스킬일 경우의 스킬 시전 코루틴. 스킬 적용 범위만 받는다.
+		private static IEnumerator ApplyNonchainSkill(BattleData battleData, List<Tile> selectedTiles)
+		{
+			Unit selectedUnit = battleData.selectedUnit;
+			Skill appliedSkill = battleData.SelectedSkill;
+			BattleManager battleManager = battleData.battleManager;
+
+			// 경로형 스킬의 경우 대상 범위 재지정
+			if (appliedSkill.GetSkillType() == SkillType.Route)
+				selectedTiles = ReselectTilesByRoute(battleData, selectedTiles);			
+			
+			// 시전 방향으로 유닛의 바라보는 방향을 돌림.
+			if (appliedSkill.GetSkillType() != SkillType.Auto)
+				selectedUnit.SetDirection(Utility.GetDirectionToTarget(selectedUnit, selectedTiles));
+
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, battleData.selectedUnit, selectedTiles));
+
+			List<Unit> targets = GetUnitsOnTiles(selectedTiles);
+
+			foreach (var target in targets)
+			{
+				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth)
+				{
+                    SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, selectedUnit, targets, target, targets.Count);
+                    yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, 1, target == targets.Last()));
+				}
+
+				SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, selectedUnit, selectedTiles[0], selectedTiles);
+
+				// 기술의 상태이상은 기술이 적용된 후에 붙인다.
+				if(appliedSkill.GetStatusEffectList().Count > 0)
+				{
+					StatusEffector.AttachStatusEffect(selectedUnit, appliedSkill, target);
+				}
+				
+				selectedUnit.ActiveFalseAllBonusText();
+			}
+
+			// battleData.tileManager.DepaintTiles(selectedTiles, TileColor.Red);
+
+			int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(appliedSkill);
+			selectedUnit.UseActivityPoint(requireAP);
+			// 스킬 쿨다운 기록
+			if (appliedSkill.GetCooldown() > 0)
+			{
+				selectedUnit.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
+			}
+			battleData.indexOfSeletedSkillByUser = 0; // return to init value.
+
+			yield return new WaitForSeconds(0.5f);
+
+			BattleManager.MoveCameraToUnit(battleData.selectedUnit);
+			battleData.currentState = CurrentState.FocusToUnit;
+			battleData.alreadyMoved = false;
 		}
 
 		private static IEnumerator ApplySkillEffect(Skill appliedSkill, Unit unit, List<Tile> selectedTiles)

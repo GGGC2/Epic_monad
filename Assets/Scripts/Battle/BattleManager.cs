@@ -391,7 +391,7 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackSkillIndex(int index)
 	{
-		battleData.indexOfSelectedSkillByUser = index;
+		battleData.indexOfSeletedSkillByUser = index;
 		battleData.triggers.skillSelected.Trigger();
 		Debug.Log(index + "th skill is selected");
 	}

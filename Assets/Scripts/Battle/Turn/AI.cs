@@ -180,7 +180,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSelectedSkillByUser = 1;
+			battleData.indexOfSeletedSkillByUser = 1;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -204,7 +204,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSelectedSkillByUser = 2;
+			battleData.indexOfSeletedSkillByUser = 2;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -231,7 +231,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSelectedSkillByUser = 3;
+			battleData.indexOfSeletedSkillByUser = 3;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -260,7 +260,7 @@ namespace Battle.Turn
 				return null;
 			}
 
-			battleData.indexOfSelectedSkillByUser = 4;
+			battleData.indexOfSeletedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -291,7 +291,7 @@ namespace Battle.Turn
 		{
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSelectedSkillByUser = 4;
+			battleData.indexOfSeletedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			var selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -463,13 +463,30 @@ namespace Battle.Turn
 
 		public static IEnumerator AIAttack(BattleData battleData)
 		{
-			return AIAttack(battleData, 1);
+			int selectedSkillIndex = 1;
+			battleData.indexOfSeletedSkillByUser = selectedSkillIndex;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			int currentAP = battleData.selectedUnit.GetCurrentActivityPoint();
+			int requireAP = battleData.SelectedSkill.GetRequireAP();
+
+			bool enoughAP = currentAP >= requireAP;
+
+			if (enoughAP) {
+				return AIAttack(battleData, selectedSkillIndex);
+			} else {
+				return PassTurn();
+			}
+		}
+
+		public static IEnumerator PassTurn()
+		{
+			yield return new WaitForSeconds(0.5f);
 		}
 
 		public static IEnumerator AIAttack(BattleData battleData, int selectedSkillIndex)
 		{
 			BattleManager battleManager = battleData.battleManager;
-			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
