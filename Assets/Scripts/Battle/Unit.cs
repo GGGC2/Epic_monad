@@ -419,7 +419,15 @@ public class Unit : MonoBehaviour
 		startPositionOfPhase = this.GetPosition();
         hasMovedThisTurn = false;
 	}
-
+    
+    public void RemoveStatusEffect(StatusEffect statusEffect) {
+        statusEffectList.Remove(statusEffect);
+        SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if(originSkill != null) {
+            SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
+        }
+    }
 	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
 	{
 		foreach (var statusEffect in statusEffectList)

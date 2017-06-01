@@ -29,12 +29,12 @@ namespace Battle.Skills {
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
             }
             else if(allTargetsHaveSameElement) {
-                caster.GetStatusEffectList().Remove(originalStatusEffect);
+                caster.RemoveStatusEffect(originalStatusEffect);
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
                 caster.GetStatusEffectList().Find(se => se.GetOriginSkillName()=="정제").flexibleElem.display.element = element;
             }
             else 
-                caster.GetStatusEffectList().Remove(originalStatusEffect);
+                caster.RemoveStatusEffect(originalStatusEffect);
         }
     }
 }
