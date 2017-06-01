@@ -67,7 +67,7 @@ public static class SkillLogicFactory
             break;
 
 			// Not used
-			case "조화진동":
+			/*case "조화진동":
             skillLogic = new HarmonySkillLogic();
             break;
 			case "생명력 흡수":
@@ -75,7 +75,7 @@ public static class SkillLogicFactory
             break;
 			case "이매진 블릿":
             skillLogic = new ImagineBulletSkillLogic();
-            break;
+            break;*/
             
             //큐리
             case "수상한 덩어리":
