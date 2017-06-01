@@ -37,7 +37,7 @@ public class TitleForNexon : MonoBehaviour
 			"lucius"
 		};
 
-		ShowWorldMap();
+		FindObjectOfType<SceneLoader>().LoadNextDialogueScene("Scene#0-1");
 	}
 
 	public void OnHighLevelClicked()
