@@ -1,4 +1,4 @@
-*	bg	Garden
+﻿*	bg	Garden
 *	bgm	Script_Fun
 blank	-	-	제국력 518년 1월 18일, 하스켈 저택
 lucius	-	루키어스	그 자세가 아니야, 루시안. 잘 봐.
@@ -16,6 +16,7 @@ lucian	-	루시안	......그랬더니 형이 날 죽였잖아?
 lucius	-	루키어스	......!!!
 
 *	bg	Dark
+*	bgm	Script_Prelude
 blank	-	-	(효과음 : 쿵)
 lucius	-	루키어스	(공포)아아아아악!
 blank	-	-	한동안 잠잠하다 싶었는데, 또 그 꿈을 꿨다. 그들을 만나기로 한 날이라 그런 걸까.
