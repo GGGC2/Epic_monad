@@ -13,8 +13,7 @@ public class StatusEffect {
 
         public readonly DisplayElement display;
         public readonly List<ActualElement> actuals;
-        public class DisplayElement
-		{
+        public class DisplayElement {
             public readonly Skill originSkill;
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
@@ -22,7 +21,7 @@ public class StatusEffect {
             public readonly bool isInfinite; // 페이즈 지속 제한이 없을 경우 true
             public readonly bool isStackable; // 상태 이상 중첩이 가능한 경우 true
             public readonly bool isOnce; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
-			public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
+            public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
             public readonly StatusEffectVar stackVar; // 한번에 쌓이는 스택 수
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
@@ -32,19 +31,18 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public DisplayElement(string originSkillName, string displayName,  
-                  bool isBuff, bool isInfinite, 
+            public DisplayElement(string originSkillName, string displayName,
+                  bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
-                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable, 
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType)
-            {
+                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
+                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
                 this.isBuff = isBuff;
                 this.isInfinite = isInfinite;
                 this.isStackable = isStackable;
                 this.isOnce = isOnce;
-				this.defaultPhase = defaultPhase;
+                this.defaultPhase = defaultPhase;
                 this.stackVar = stackVar;
                 this.maxStack = maxStack;
                 this.isRemovable = isRemovable;
@@ -54,8 +52,7 @@ public class StatusEffect {
             }
         }
 
-		public class ActualElement
-		{
+        public class ActualElement {
             public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류 
 
             // var * coef + base
@@ -65,189 +62,142 @@ public class StatusEffect {
 
             public readonly bool isMultifly;
 
-            public ActualElement(StatusEffectType statusEffectType, 
-                                 StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase, 
-                                 bool isMultifly)
-            {
+            public ActualElement(StatusEffectType statusEffectType,
+                                 StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase,
+                                 bool isMultifly) {
                 this.statusEffectType = statusEffectType;
                 this.seVar = statusEffectVar;
                 this.seCoef = statusEffectCoef;
                 this.seBase = statusEffectBase;
-				this.isMultifly = isMultifly;
+                this.isMultifly = isMultifly;
             }
-		}
+        }
 
-		public FixedElement(string originSkillName, string displayName, 
-                  bool isBuff, bool isInfinite, 
+        public FixedElement(string originSkillName, string displayName,
+                  bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
                   int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
-		{
-			display = new DisplayElement(originSkillName, displayName,
-					isBuff, isInfinite,
-					isStackable, isOnce,
+                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
+            display = new DisplayElement(originSkillName, displayName,
+                    isBuff, isInfinite,
+                    isStackable, isOnce,
                     defaultPhase, stackVar, maxStack, isRemovable,
-					effectName, effectVisualType, effectMoveType);
+                    effectName, effectVisualType, effectMoveType);
 
-			actuals = actualEffects;
-		}
-	}
-        
-	public class FlexibleElement {
+            actuals = actualEffects;
+        }
+    }
+
+    public class FlexibleElement {
 
         public DisplayElement display;
         public List<ActualElement> actuals;
-        public class DisplayElement
-		{
-			public Unit caster; // 시전자
+        public class DisplayElement {
+            public Unit caster; // 시전자
             public Skill originSkill;
             public PassiveSkill originPassiveSkill;
-			public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
-			public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
+            public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
+            public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
             public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
-			
-            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, StatusEffectVar remainStack, int remainPhase)
-            {
+            public Unit memorizedunit;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
+
+            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, StatusEffectVar remainStack, int remainPhase) {
                 this.originSkill = originSkill;
                 this.originPassiveSkill = originPassiveSkill;
                 this.caster = caster;
                 this.remainStack = (int)GetSEVar(remainStack, caster);
                 this.remainPhase = remainPhase;
             }
-		}
+        }
 
-		public class ActualElement
-		{
+        public class ActualElement {
             public float amount; // 영향을 주는 실제 값
             public float remainAmount; // 남은 수치 (실드 등)
 
-            public ActualElement(int stack, FixedElement.ActualElement aeInFixed, Unit caster)
-            {
+            public ActualElement(int stack, FixedElement.ActualElement aeInFixed, Unit caster) {
                 this.amount = CalculateAmount(stack, aeInFixed, caster);
                 this.remainAmount = amount; // 초기화
             }
-		}
+        }
 
-		public FlexibleElement(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill)
-		{
-			int maxStack = fixedElem.display.maxStack;
+        public FlexibleElement(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+            int maxStack = fixedElem.display.maxStack;
             StatusEffectVar stackVar = fixedElem.display.stackVar;
             int stack = (int)GetSEVar(stackVar, caster);
-			int defaultPhase = fixedElem.display.defaultPhase;
-			display = new DisplayElement(caster, originSkill, originPassiveSkill, stackVar, defaultPhase);
+            int defaultPhase = fixedElem.display.defaultPhase;
+            display = new DisplayElement(caster, originSkill, originPassiveSkill, stackVar, defaultPhase);
 
-			List<ActualElement> actuals = new List<ActualElement>();
-			for (int i = 0; i < fixedElem.actuals.Count; i++)
-            {
+            List<ActualElement> actuals = new List<ActualElement>();
+            for (int i = 0; i < fixedElem.actuals.Count; i++) {
                 actuals.Add(new ActualElement(stack, fixedElem.actuals[i], caster));
             }
             this.actuals = actuals;
-		}
-	}
-	
-	public StatusEffect(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill)
-	{
-		this.fixedElem = fixedElem;
-		this.flexibleElem = new FlexibleElement(fixedElem, caster, originSkill, originPassiveSkill);
+        }
     }
-	
-    public string GetOriginSkillName() {return fixedElem.display.originSkillName;}
-    public string GetDisplayName() {return fixedElem.display.displayName;}
-    public bool GetIsBuff() {return fixedElem.display.isBuff;}
-    public bool GetIsInfinite() {return fixedElem.display.isInfinite;}
-    public bool GetIsStackable() {return fixedElem.display.isStackable;}
-    public bool GetIsOnce() {return fixedElem.display.isOnce;}
-    public bool GetIsRemovable() {return fixedElem.display.isRemovable;}
-    public string GetEffectName() {return fixedElem.display.effectName;}
-    public EffectVisualType GetEffectVisualType() {return fixedElem.display.effectVisualType;}
-    public EffectMoveType GetEffectMoveType() {return fixedElem.display.effectMoveType;}
-    public Skill GetOriginSkill() { return flexibleElem.display.originSkill;}
+
+    public StatusEffect(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+        this.fixedElem = fixedElem;
+        this.flexibleElem = new FlexibleElement(fixedElem, caster, originSkill, originPassiveSkill);
+    }
+
+    public string GetOriginSkillName() { return fixedElem.display.originSkillName; }
+    public string GetDisplayName() { return fixedElem.display.displayName; }
+    public bool GetIsBuff() { return fixedElem.display.isBuff; }
+    public bool GetIsInfinite() { return fixedElem.display.isInfinite; }
+    public bool GetIsStackable() { return fixedElem.display.isStackable; }
+    public bool GetIsOnce() { return fixedElem.display.isOnce; }
+    public bool GetIsRemovable() { return fixedElem.display.isRemovable; }
+    public string GetEffectName() { return fixedElem.display.effectName; }
+    public EffectVisualType GetEffectVisualType() { return fixedElem.display.effectVisualType; }
+    public EffectMoveType GetEffectMoveType() { return fixedElem.display.effectMoveType; }
+    public Skill GetOriginSkill() { return flexibleElem.display.originSkill; }
     public PassiveSkill GetOriginPassiveSkill() { return flexibleElem.display.originPassiveSkill; }
-    public Unit GetCaster() {return flexibleElem.display.caster;}
-    public int GetRemainPhase() {return flexibleElem.display.remainPhase;}
-    public int GetRemainStack() {return flexibleElem.display.remainStack;}
-    public Element GetElement() {return flexibleElem.display.element;}
-    
-    public StatusEffectType GetStatusEffectType() {return fixedElem.actuals[0].statusEffectType;}
-    public StatusEffectType GetStatusEffectType(int index) {return fixedElem.actuals[index].statusEffectType;}
-    public bool GetIsMultifly() {return  fixedElem.actuals[0].isMultifly;}
-    public bool GetIsMultifly(int index) {return  fixedElem.actuals[index].isMultifly;}
-    public float GetAmount() {return flexibleElem.actuals[0].amount;}
-    public float GetAmount(int index) {return flexibleElem.actuals[index].amount;}
-    public float GetRemainAmount() {return flexibleElem.actuals[0].remainAmount;}
-    public float GetRemainAmount(int index) {return flexibleElem.actuals[index].remainAmount;}
+    public Unit GetCaster() { return flexibleElem.display.caster; }
+    public int GetRemainPhase() { return flexibleElem.display.remainPhase; }
+    public int GetRemainStack() { return flexibleElem.display.remainStack; }
+    public Element GetElement() { return flexibleElem.display.element; }
+    public Unit GetMemorizedUnit() { return flexibleElem.display.memorizedunit; }
 
-    public void SetAmount(float amount)
-    {
-        flexibleElem.actuals[0].amount = amount;
-    }
+    public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
+    public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
+    public bool GetIsMultifly() { return fixedElem.actuals[0].isMultifly; }
+    public bool GetIsMultifly(int index) { return fixedElem.actuals[index].isMultifly; }
+    public float GetAmount() { return flexibleElem.actuals[0].amount; }
+    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
+    public float GetRemainAmount() { return flexibleElem.actuals[0].remainAmount; }
+    public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
 
-    public void SetAmount(int index, float amount)
-    {
-        flexibleElem.actuals[index].amount = amount;
-    }
-
-    public void SetRemainAmount(float amount)
-    {
-		flexibleElem.actuals[0].remainAmount = amount;
-    }
-
-    public void SetRemainAmount(int index, float amount)
-    {
-		flexibleElem.actuals[index].remainAmount = amount;
-    }
-
-    public void SubAmount(int index, float amount)
-    {
-        flexibleElem.actuals[index].remainAmount -= amount;
-    }
-
-    public void AddRemainPhase(int phase)
-	{
-		flexibleElem.display.remainPhase += phase;
-	}
-	
-	public void DecreaseRemainPhase()
-	{
-		flexibleElem.display.remainPhase -= 1;
-	}
-
-    public void DecreaseRemainPhase(int phase)
-	{
-		flexibleElem.display.remainPhase -= phase;
-	}
-    
-    public void SetRemainPhase(int phase)
-    {
-		flexibleElem.display.remainPhase = phase;
-    }
-    
-    public void AddRemainStack(int stack)
-    {
+    public void SetAmount(float amount) { flexibleElem.actuals[0].amount = amount; }
+    public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
+    public void SetRemainAmount(float amount) { flexibleElem.actuals[0].remainAmount = amount; }
+    public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
+    public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
+    public void AddRemainPhase(int phase) { flexibleElem.display.remainPhase += phase; }
+    public void DecreaseRemainPhase() { flexibleElem.display.remainPhase -= 1; }
+    public void DecreaseRemainPhase(int phase) { flexibleElem.display.remainPhase -= phase; }
+    public void SetRemainPhase(int phase) { flexibleElem.display.remainPhase = phase; }
+    public void AddRemainStack(int stack) { 
 		flexibleElem.display.remainStack += stack;
         if(flexibleElem.display.remainStack > fixedElem.display.maxStack) {
             flexibleElem.display.remainStack = fixedElem.display.maxStack;
         }
     }
     
-    public void DecreaseRemainStack()
-    {
+    public void DecreaseRemainStack() { 
 		flexibleElem.display.remainStack -= 1;
         if (flexibleElem.display.remainStack < 0) {
             flexibleElem.display.remainStack = 0;
         }
     }
     
-    public void DecreaseRemainStack(int stack)
-    {
+    public void DecreaseRemainStack(int stack) {
 		flexibleElem.display.remainStack -= stack;
         if (flexibleElem.display.remainStack < 0) {
             flexibleElem.display.remainStack = 0;
         }
     }
 
-    public void SetRemainStack(int stack)
-    {
+    public void SetRemainStack(int stack) {
 		flexibleElem.display.remainStack = stack;
         if (flexibleElem.display.remainStack > fixedElem.display.maxStack) {
             flexibleElem.display.remainStack = fixedElem.display.maxStack;
@@ -257,8 +207,7 @@ public class StatusEffect {
         }
     }
 
-    public bool IsOfType(StatusEffectType statusEffectType)
-    {
+    public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
         if (statusEffectType.Equals(this.GetStatusEffectType()))
         {
@@ -268,19 +217,16 @@ public class StatusEffect {
         return isOfType;
     }
 
-    public bool IsOfType(int index, StatusEffectType statusEffectType)
-    {
+    public bool IsOfType(int index, StatusEffectType statusEffectType) {
         return statusEffectType.Equals(this.GetStatusEffectType(index));
     }
     
-    public bool IsSameStatusEffect(StatusEffect anotherStatusEffect)
-    {
+    public bool IsSameStatusEffect(StatusEffect anotherStatusEffect) {
         return (this.GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
                 (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
     }
 
-    public static float CalculateAmount(int stack, FixedElement.ActualElement fixedElem, Unit caster)
-    {
+    public static float CalculateAmount(int stack, FixedElement.ActualElement fixedElem, Unit caster) {
         float seVar;
         if (fixedElem.seVar == StatusEffectVar.Stack)
             seVar = stack;
@@ -294,8 +240,7 @@ public class StatusEffect {
         return result;
     }
 
-    public static float GetSEVar(StatusEffectVar seVarEnum, Unit caster)
-    {
+    public static float GetSEVar(StatusEffectVar seVarEnum, Unit caster) {
         float result = 0;
 
         if (seVarEnum == StatusEffectVar.Absorption)

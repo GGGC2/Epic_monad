@@ -1,5 +1,4 @@
 ﻿using Battle.Damage;
-using System.Collections.Generic;
 
 namespace Battle.Skills {
     public class Curi_1_1_SkillLogic : BasePassiveSkillLogic {

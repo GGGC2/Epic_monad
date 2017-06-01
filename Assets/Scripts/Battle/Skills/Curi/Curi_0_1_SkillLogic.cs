@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Enums;
+﻿using Enums;
 using Battle.Damage;
 
 namespace Battle.Skills {
@@ -36,9 +33,8 @@ namespace Battle.Skills {
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
                 caster.GetStatusEffectList().Find(se => se.GetOriginSkillName()=="정제").flexibleElem.display.element = element;
             }
-            else {
+            else 
                 caster.GetStatusEffectList().Remove(originalStatusEffect);
-            }
         }
     }
 }
