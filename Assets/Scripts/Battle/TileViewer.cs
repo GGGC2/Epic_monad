@@ -35,13 +35,13 @@ public class TileViewer : MonoBehaviour {
 	void SetElementImage(Element element)
 	{
 		if (element == Element.Fire)
-			elementImage.sprite = Resources.Load("Icon/fire", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
 		else if (element == Element.Water)
-			elementImage.sprite = Resources.Load("Icon/water", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/water", typeof(Sprite)) as Sprite;
 		else if (element == Element.Plant)
-			elementImage.sprite = Resources.Load("Icon/plant", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/plant", typeof(Sprite)) as Sprite;
 		else if (element == Element.Metal)
-			elementImage.sprite = Resources.Load("Icon/metal", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
 		else
 			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
 	}

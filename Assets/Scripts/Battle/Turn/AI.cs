@@ -463,13 +463,30 @@ namespace Battle.Turn
 
 		public static IEnumerator AIAttack(BattleData battleData)
 		{
-			return AIAttack(battleData, 1);
+			int selectedSkillIndex = 1;
+			battleData.indexOfSeletedSkillByUser = selectedSkillIndex;
+			Skill selectedSkill = battleData.SelectedSkill;
+
+			int currentAP = battleData.selectedUnit.GetCurrentActivityPoint();
+			int requireAP = battleData.SelectedSkill.GetRequireAP();
+
+			bool enoughAP = currentAP >= requireAP;
+
+			if (enoughAP) {
+				return AIAttack(battleData, selectedSkillIndex);
+			} else {
+				return PassTurn();
+			}
+		}
+
+		public static IEnumerator PassTurn()
+		{
+			yield return new WaitForSeconds(0.5f);
 		}
 
 		public static IEnumerator AIAttack(BattleData battleData, int selectedSkillIndex)
 		{
 			BattleManager battleManager = battleData.battleManager;
-			battleData.indexOfSeletedSkillByUser = selectedSkillIndex;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
