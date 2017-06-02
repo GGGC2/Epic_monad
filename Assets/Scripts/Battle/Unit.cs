@@ -641,7 +641,6 @@ public class Unit : MonoBehaviour
 				}
 			}
 		}
-
 		RecoverHealth(totalAmount);
 	}
 
@@ -740,7 +739,12 @@ public class Unit : MonoBehaviour
 	{
 		List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
-	}
+        foreach (StatusEffect statusEffect in statusEffectList) {
+            if (statusEffect.GetOriginSkill() != null) {
+                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);
+            }
+        }
+    }
 
     public void ApplyTriggerOnPhaseEnd()
     {

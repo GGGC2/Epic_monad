@@ -253,6 +253,13 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+    public void ApplyEachHeal() {
+        foreach(var unit in units) {
+            if(unit != null)
+                unit.ApplyHealOverPhase();
+        }
+    }
+
 	public void StartPhase()
 	{
 		foreach (var unit in units)

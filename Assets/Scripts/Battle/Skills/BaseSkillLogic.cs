@@ -69,6 +69,9 @@ public class BaseSkillLogic
         return true;
     }
 
+    public virtual void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) {
+
+    }
     public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
         return null;
     }
