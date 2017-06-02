@@ -10,6 +10,13 @@ public class SceneLoader : MonoBehaviour {
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
+	public void GoToTitle()
+	{
+		if (FindObjectOfType<DialogueManager>() != null)
+			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
+	}
+
 	public void LoadNextBattleScene(string nextSceneName)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
@@ -85,10 +92,18 @@ public class SceneLoader : MonoBehaviour {
 			yield return null;
 		}
 
-		SceneData.nextDialogueName = nextScriptFileName;
-		Debug.Log("input next dialogue - " + SceneData.nextDialogueName);
+		if (nextScriptFileName == "Title")
+		{
+			Time.timeScale = 1.0f;
+			SceneManager.LoadScene("title");
+		}
+		else
+		{
+			SceneData.nextDialogueName = nextScriptFileName;
+			Debug.Log("input next dialogue - " + SceneData.nextDialogueName);
 
-		SceneManager.LoadScene("dialogue");
+			SceneManager.LoadScene("dialogue");
+		}
 	}
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)

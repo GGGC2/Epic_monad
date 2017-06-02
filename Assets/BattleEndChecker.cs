@@ -441,7 +441,7 @@ public class BattleEndChecker : MonoBehaviour {
 				}
 				else
 					Debug.Log("Lose");
-					FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
+					FindObjectOfType<SceneLoader>().GoToTitle();
 			}
 		}
 	}
