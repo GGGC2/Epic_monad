@@ -60,16 +60,16 @@ public class StatusEffect {
             public readonly float seCoef;
             public readonly float seBase;
 
-            public readonly bool isMultifly;
+            public readonly bool isMultiply;
 
             public ActualElement(StatusEffectType statusEffectType,
                                  StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase,
-                                 bool isMultifly) {
+                                 bool isMultiply) {
                 this.statusEffectType = statusEffectType;
                 this.seVar = statusEffectVar;
                 this.seCoef = statusEffectCoef;
                 this.seBase = statusEffectBase;
-                this.isMultifly = isMultifly;
+                this.isMultiply = isMultiply;
             }
         }
 
@@ -160,8 +160,8 @@ public class StatusEffect {
 
     public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
-    public bool GetIsMultifly() { return fixedElem.actuals[0].isMultifly; }
-    public bool GetIsMultifly(int index) { return fixedElem.actuals[index].isMultifly; }
+    public bool GetIsMultiply() { return fixedElem.actuals[0].isMultiply; }
+    public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetAmount() { return flexibleElem.actuals[0].amount; }
     public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
     public float GetRemainAmount() { return flexibleElem.actuals[0].remainAmount; }

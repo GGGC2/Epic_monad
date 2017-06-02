@@ -29,7 +29,7 @@ namespace Battle.Turn {
                 battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
-                battleData.indexOfSeletedSkillByUser = 0;
+                battleData.indexOfSelectedSkillByUser = 0;
 
                 var update = UpdatePreviewAP(battleData);
                 battleData.battleManager.StartCoroutine(update);
@@ -403,7 +403,7 @@ namespace Battle.Turn {
 
             // 체인 목록에 추가.
             ChainList.AddChains(battleData.selectedUnit, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
-            battleData.indexOfSeletedSkillByUser = 0; // return to init value.
+            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
             yield return new WaitForSeconds(0.5f);
 
             BattleManager.MoveCameraToUnit(battleData.selectedUnit);
@@ -472,7 +472,7 @@ namespace Battle.Turn {
                                                                                     x.GetStatusEffectType() == StatusEffectType.Smite)));
                 caster.SetStatusEffectList(newStatusEffectList);
             }
-            battleData.indexOfSeletedSkillByUser = 0; // return to init value.
+            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
             yield return new WaitForSeconds(0.5f);
             battleData.alreadyMoved = false;

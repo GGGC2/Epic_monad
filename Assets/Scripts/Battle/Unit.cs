@@ -363,7 +363,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					if (statusEffect.GetIsMultifly(i)) // 상대값 합산
+					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
 					{
 						totalRelativeValue *= statusEffect.GetAmount(i);	
 					}

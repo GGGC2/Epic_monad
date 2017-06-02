@@ -180,7 +180,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSeletedSkillByUser = 1;
+			battleData.indexOfSelectedSkillByUser = 1;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -204,7 +204,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSeletedSkillByUser = 2;
+			battleData.indexOfSelectedSkillByUser = 2;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -231,7 +231,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSeletedSkillByUser = 3;
+			battleData.indexOfSelectedSkillByUser = 3;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -260,7 +260,7 @@ namespace Battle.Turn
 				return null;
 			}
 
-			battleData.indexOfSeletedSkillByUser = 4;
+			battleData.indexOfSelectedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			List<Tile> selectedTiles = new List<Tile>();
@@ -291,7 +291,7 @@ namespace Battle.Turn
 		{
 			Unit selectedUnit = battleData.selectedUnit;
 
-			battleData.indexOfSeletedSkillByUser = 4;
+			battleData.indexOfSelectedSkillByUser = 4;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			var selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -464,7 +464,7 @@ namespace Battle.Turn
 		public static IEnumerator AIAttack(BattleData battleData)
 		{
 			int selectedSkillIndex = 1;
-			battleData.indexOfSeletedSkillByUser = selectedSkillIndex;
+			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			Skill selectedSkill = battleData.SelectedSkill;
 
 			int currentAP = battleData.selectedUnit.GetCurrentActivityPoint();
