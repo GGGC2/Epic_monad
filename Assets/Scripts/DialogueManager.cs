@@ -75,6 +75,11 @@ public class DialogueManager : MonoBehaviour {
 				FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 				return;
 			}
+			else if (dialogueDataList[i].GetCommandType() == "load_title")
+			{
+				FindObjectOfType<SceneLoader>().GoToTitle();
+				return;
+			}
 		}
 		ActiveAdventureUI();
 	}
