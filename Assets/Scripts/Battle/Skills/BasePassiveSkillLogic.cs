@@ -72,7 +72,7 @@ public class BasePassiveSkillLogic
 	{
 	}
 
-	public virtual void TriggerUsingSkill(Unit caster)
+	public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets)
 	{		
 	}
 

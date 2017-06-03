@@ -126,11 +126,11 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-	public override void TriggerUsingSkill(Unit caster)
+	public override void TriggerUsingSkill(Unit caster, List<Unit> targets)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.TriggerUsingSkill(caster);
+			skillLogic.TriggerUsingSkill(caster, targets);
 		}
 	}
 
