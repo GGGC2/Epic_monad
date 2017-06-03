@@ -241,7 +241,7 @@ public class DamageCalculator
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 	}
 
-	public static float CalculateReflectDamage(float attackDamage, Unit target, UnitClass damageType)
+	public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)
 	{
 		float reflectAmount = 0;
 		foreach (var statusEffect in target.GetStatusEffectList())
@@ -251,6 +251,7 @@ public class DamageCalculator
                                 (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect)
 			{
+                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
 				reflectAmount = reflectAmount + attackDamage * statusEffect.GetAmount();
 				break;
 			}

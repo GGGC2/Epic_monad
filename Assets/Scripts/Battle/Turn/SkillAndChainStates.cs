@@ -531,7 +531,7 @@ namespace Battle.Turn {
                                 (target.HasStatusEffect(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 
             if (canReflect) {
-                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, damageType);
+                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
 
                 DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
                 reflectAttackDamage.resultDamage = reflectAmount;
