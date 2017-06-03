@@ -60,7 +60,21 @@ public static class SkillLogicFactory
 			case "치유의 빛":
             skillLogic = new Eren_6_r_SkillLogic();
             break;
-			
+
+            //유진
+            case "얼음 파편":
+            skillLogic = new Eugene_1_l_SkillLogic();
+            break;
+            case "순백의 방패":
+            skillLogic = new Eugene_1_m_SkillLogic();
+            break;
+            case "청명수의 축복":
+            skillLogic = new Eugene_2_l_SkillLogic();
+            break;
+            case "거울 방패":
+            skillLogic = new Eugene_3_m_SkillLogic();
+            break;
+
 			// 카샤스티
 			case "더블 샷":
             skillLogic = new Kashyasty_1_l_SkillLogic();
@@ -83,6 +97,18 @@ public static class SkillLogicFactory
             break;
             case "알칼리 폭탄":
             skillLogic = new Curi_2_r_SkillLogic();
+            break;
+            case "산성 혼합물":
+            skillLogic = new Curi_4_m_SkillLogic();
+            break;
+            case "도금":
+            skillLogic = new Curi_5_r_SkillLogic();
+            break;
+            case "유독성 촉매":
+            skillLogic = new Curi_6_m_SkillLogic();
+            break;
+            case "에테르 폭탄":
+            skillLogic = new Curi_7_r_SkillLogic();
             break;
             default:
             skillLogic = new BaseSkillLogic();
@@ -241,6 +267,26 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Eren_7_l_SkillLogic();
 			break;
 
+            //유진
+            case "색다른 휴식":
+            passiveSkillLogic = new Eugene_2_r_SkillLogic();
+            break;
+            case "여행자의 발걸음":
+            passiveSkillLogic = new Eugene_3_r_SkillLogic();
+            break;
+            case "순수한 물":
+            passiveSkillLogic = new Eugene_5_l_SkillLogic();
+            break;
+            case "은의 지평선":
+            passiveSkillLogic = new Eugene_5_m_SkillLogic();
+            break;
+            case "순은의 매듭":
+            passiveSkillLogic = new Eugene_6_m_SkillLogic();
+            break;
+            case "청명수의 은총":
+            passiveSkillLogic = new Eugene_7_l_SkillLogic();
+            break;
+
 			// 트리아나
 			case "나무 껍질":
 			passiveSkillLogic = new Triana_2_r_SkillLogic();
@@ -253,8 +299,11 @@ public static class SkillLogicFactory
 			case "장미의 사수":
 			passiveSkillLogic = new Kashyasty_2_r_SkillLogic();
 			break;
-			
+
             // 큐리
+            case "정제":
+            passiveSkillLogic = new Curi_0_1_SkillLogic();
+            break;
             case "호기심":
             passiveSkillLogic = new Curi_1_1_SkillLogic();
             break;
@@ -273,7 +322,12 @@ public static class SkillLogicFactory
             case "환원":
             passiveSkillLogic = new Curi_3_r_SkillLogic();
             break;
-            
+            case "재결정":
+            passiveSkillLogic = new Curi_5_l_SkillLogic();
+            break;
+            case "제한 구역":
+            passiveSkillLogic = new Curi_7_l_SkillLogic();
+            break;
             default:
 			passiveSkillLogic = new BasePassiveSkillLogic();
             break;
