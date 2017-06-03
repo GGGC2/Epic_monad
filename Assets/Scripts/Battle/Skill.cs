@@ -10,7 +10,7 @@ public class Skill : MonoBehaviour{
 	string owner;
 	int column;
 	string name;
-	int level;
+	int requireLevel;
 	int requireAP;
 	int cooldown;
 	
@@ -44,7 +44,7 @@ public class Skill : MonoBehaviour{
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
     
-	public Skill(string owner, int column, string name, int level, int requireAP, int cooldown, 
+	public Skill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 
                  float powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -56,7 +56,7 @@ public class Skill : MonoBehaviour{
 		this.owner = owner;
 		this.column = column;
 		this.name = name;
-        this.level = level;
+        this.requireLevel = requireLevel;
 		this.requireAP = requireAP;
 		this.cooldown = cooldown;
 		this.powerFactor = powerFactor;
@@ -96,7 +96,7 @@ public class Skill : MonoBehaviour{
 	public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
-    public int GetLevel() { return level;}
+    public int GetLequireLevel() { return requireLevel;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}
 	public float GetPowerFactor(Stat status) {return powerFactor;} 
