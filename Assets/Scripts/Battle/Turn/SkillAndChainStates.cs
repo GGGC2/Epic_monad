@@ -279,6 +279,11 @@ namespace Battle.Turn {
 
                 BattleManager battleManager = battleData.battleManager;
                 if (battleData.skillApplyCommand == SkillApplyCommand.Apply) {
+                    // 데미지 미리보기 해제.
+                    foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
+                        kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
+                    }
+
                     battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                     // 체인이 가능한 스킬일 경우. 체인 발동.
                     // 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
@@ -301,6 +306,11 @@ namespace Battle.Turn {
                         battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
                     }
                 } else if (battleData.skillApplyCommand == SkillApplyCommand.Chain) {
+                    // 데미지 미리보기 해제.
+                    foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
+                        kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
+                    }
+
                     battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                     battleData.currentState = CurrentState.ChainAndStandby;
                     yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, tilesInSkillRange, firstRange));
