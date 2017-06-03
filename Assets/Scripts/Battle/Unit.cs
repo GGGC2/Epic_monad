@@ -166,7 +166,6 @@ public class Unit : MonoBehaviour
 
 	public List<PassiveSkill> GetLearnedPassiveSkillList()
 	{
-		// Learn passive skill is not implemented yet
 		return passiveSkillList;
 	}
 
@@ -737,19 +736,21 @@ public class Unit : MonoBehaviour
 
 	public void ApplyTriggerOnPhaseStart()
 	{
-		List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
-		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
+		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
         foreach (StatusEffect statusEffect in statusEffectList) {
             if (statusEffect.GetOriginSkill() != null) {
                 SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);
             }
         }
     }
+    
+    public void ApplyTriggerOnStart() {
+        SkillLogicFactory.Get(passiveSkillList).TriggerStart(this);
+    }
 
     public void ApplyTriggerOnPhaseEnd()
     {
-        List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
-        SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseEnd(this);
+        SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)

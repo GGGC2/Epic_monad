@@ -509,7 +509,7 @@ public class BattleManager : MonoBehaviour
 	{
 		Debug.Log("Phase End.");
 
-		battleData.unitManager.EndPhase();
+		battleData.unitManager.EndPhase(battleData.currentPhase);
 		yield return new WaitForSeconds(0.5f);
 	}
 
@@ -517,7 +517,7 @@ public class BattleManager : MonoBehaviour
 	{
 		battleData.currentPhase++;
 
-		battleData.unitManager.StartPhase();
+		battleData.unitManager.StartPhase(battleData.currentPhase);
         battleData.unitManager.ApplyEachHeal();
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 

@@ -148,9 +148,8 @@ public class UnitManager : MonoBehaviour {
 
 	public void GenerateUnits ()
 	{
-		// TileManager tileManager = GetComponent<TileManager>();
-		float tileWidth = 0.5f*200/100;
-		float tileHeight = 0.5f*100/100;
+		//float tileWidth = 0.5f*200/100;
+		//float tileHeight = 0.5f*100/100;
 
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 
@@ -160,7 +159,6 @@ public class UnitManager : MonoBehaviour {
 
 			unit.ApplyUnitInfo(unitInfo);
 			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
-            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerStart(unit);
 
 			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -260,16 +258,19 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-	public void StartPhase()
+	public void StartPhase(int phase)
 	{
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart();
+            if(phase <= 2) {
+                unit.ApplyTriggerOnStart();
+            }
 		}
 	}
 
-	public void EndPhase()
+	public void EndPhase(int phase)
 	{
 		// Decrease each buff & debuff phase
 		foreach (var unit in units)
