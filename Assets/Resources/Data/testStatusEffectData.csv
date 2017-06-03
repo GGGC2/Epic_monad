@@ -37,8 +37,8 @@ curi,정제,정제,TRUE,TRUE,TRUE,FALSE,9999,-,5,TRUE,None,None,None,1,Etc,Stack
 curi,호기심,공격력 증가,TRUE,FALSE,FALSE,FALSE,5,-,1,FALSE,None,None,None,1,PowerChange,O,0,15,TRUE,,,,,,,,,,
 curi,신속 반응,속도 상승,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,1,SpeedChange,O,0,20,FALSE,,,,,,,,,,
 curi,수상한 덩어리,가연성 부착물,FALSE,TRUE,FALSE,TRUE,9999,-,1,TRUE,None,None,None,1,Etc,Power,0.3,0,NONE,,,,,,,,,,
-curi,알칼리 폭탄,기절,FALSE,FALSE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,Faint,X,X,X,NONE,,,,,,,,,,
 curi,수상한 덩어리,화속성 약점,FALSE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,FireWeakness,O,0,20,TRUE,,,,,,,,,,
+curi,알칼리 폭탄,기절,FALSE,FALSE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,Faint,X,X,X,NONE,,,,,,,,,,
 curi,산성 혼합물,산성 혼합물,FALSE,FALSE,FALSE,FALSE,3,-,1,TRUE,None,None,None,3,DefenseChange,Level,-1.4,-106,FALSE,ResistanceChange,Level,-1.4,-106,FALSE,DamageOverPhase,Power,0.3,0,NONE
 curi,재결정,공격력 증가,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,PowerChange,O,0,25,TRUE,,,,,,,,,,
 curi,도금,기절,FALSE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,Faint,X,X,X,NONE,,,,,,,,,,
