@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Skill {
+public class Skill : MonoBehaviour{
 
 	// base info.
 	string owner;
@@ -44,7 +44,7 @@ public class Skill {
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
     
-	public Skill(string owner, int column, string name, int requireAP, int cooldown, 
+	public Skill(string owner, int column, string name, int level, int requireAP, int cooldown, 
                  float powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
@@ -56,6 +56,7 @@ public class Skill {
 		this.owner = owner;
 		this.column = column;
 		this.name = name;
+        this.level = level;
 		this.requireAP = requireAP;
 		this.cooldown = cooldown;
 		this.powerFactor = powerFactor;
@@ -77,12 +78,17 @@ public class Skill {
       
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
     {
+        int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
-            StatusEffect.FixedElement statusEffect = statusEffectInfo.GetStatusEffect();
-            if(statusEffectInfo.GetOriginSkillName().Equals(this.name))
-            {
-                statusEffectList.Add(statusEffectInfo.GetStatusEffect());
+            if(statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <=  partyLevel) {
+                StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+                foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
+                    if(statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName) {
+                        statusEffectList.Remove(statusEffect);  //강화된 statusEffect로 대체
+                    }
+                }
+                statusEffectList.Add(statusEffectToAdd);
             }
         }
     }
@@ -90,6 +96,7 @@ public class Skill {
 	public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
+    public int GetLevel() { return level;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}
 	public float GetPowerFactor(Stat status) {return powerFactor;} 

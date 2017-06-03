@@ -795,11 +795,11 @@ public class Unit : MonoBehaviour
 							   List<StatusEffectInfo> statusEffectInfoList, 
 							   List<PassiveSkillInfo> passiveSkillInfoList)
 	{
-		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
+		int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
 
 		foreach (var skillInfo in skillInfoList)
 		{
-			if ((skillInfo.GetOwner() == this.nameInCode) &&
+			if ((skillInfo.GetOwner() == nameInCode) &&
 				(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
@@ -825,7 +825,7 @@ public class Unit : MonoBehaviour
 		foreach (var passiveSkillInfo in passiveSkillInfoList)
 		{
 			//Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-			if ((passiveSkillInfo.GetOwner() == this.nameInCode) &&
+			if ((passiveSkillInfo.GetOwner() == nameInCode) &&
 				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
 			{
 				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
