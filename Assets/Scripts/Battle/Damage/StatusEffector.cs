@@ -11,16 +11,24 @@ public static class StatusEffector
 {
 	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target)
 	{
-		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
+        List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
 			.ToList();
-
         //SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
         bool ignoreStatusEffect = false;
         foreach(var statusEffect in statusEffects) {
+            List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
+            foreach(StatusEffect targetStatusEffect in targetStatusEffectList) {
+                if((targetStatusEffect.GetOriginSkill() != null && SkillLogicFactory.Get(targetStatusEffect.GetOriginSkill()).
+                        TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false)) {
+                    ignoreStatusEffect = true; 
+                    Debug.Log(statusEffect.GetDisplayName()+ " ignored by "+targetStatusEffect.GetOriginSkillName()+" of "+target.GetName());
+                }
+            }
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
                 ignoreStatusEffect = true;
+                Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
             }
         }
         if(ignoreStatusEffect == false) {
@@ -82,9 +90,7 @@ public static class StatusEffector
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
             List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
             if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target)==false) {
-                continue;
-            }
-            if(SkillLogicFactory.Get(casterPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target)==false) {
+                Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetName());
                 continue;
             }
 

@@ -70,6 +70,11 @@ public class PathFinder {
 		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
 		{
 			requireAP = (int)(unit.GetActualEffect((float) requireAP, StatusEffectType.RequireMoveAPChange));
+            foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
+                if(statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange && statusEffect.GetIsOnce() == true) {
+                    unit.RemoveStatusEffect(statusEffect);
+                }
+            }
 		}
 		if (requireAP > remainAP) return;
 		

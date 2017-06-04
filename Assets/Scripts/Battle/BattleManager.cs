@@ -391,7 +391,7 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackSkillIndex(int index)
 	{
-		battleData.indexOfSeletedSkillByUser = index;
+		battleData.indexOfSelectedSkillByUser = index;
 		battleData.triggers.skillSelected.Trigger();
 		Debug.Log(index + "th skill is selected");
 	}
@@ -509,7 +509,7 @@ public class BattleManager : MonoBehaviour
 	{
 		Debug.Log("Phase End.");
 
-		battleData.unitManager.EndPhase();
+		battleData.unitManager.EndPhase(battleData.currentPhase);
 		yield return new WaitForSeconds(0.5f);
 	}
 
@@ -517,7 +517,8 @@ public class BattleManager : MonoBehaviour
 	{
 		battleData.currentPhase++;
 
-		battleData.unitManager.StartPhase();
+		battleData.unitManager.StartPhase(battleData.currentPhase);
+        battleData.unitManager.ApplyEachHeal();
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);

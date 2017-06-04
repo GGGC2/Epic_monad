@@ -14,6 +14,9 @@ public class StatusEffect {
         public readonly DisplayElement display;
         public readonly List<ActualElement> actuals;
         public class DisplayElement {
+            public readonly bool toBeReplaced;  //상위의 강화 스킬이 있는 경우 true. 큐리의 '가연성 부착물'과 '조연성 부착물' 스킬 같은 경우 
+                                                //csv 파일에 같은 originSkillName을 가지고 있는데, 이 때 둘 중 하나만 읽어야 하므로 '가연성 부착물'
+                                                //statusEffect는 읽지 않게 하기 위함.
             public readonly Skill originSkill;
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
@@ -31,11 +34,12 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public DisplayElement(string originSkillName, string displayName,
+            public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
                   int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
+                this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
                 this.isBuff = isBuff;
@@ -60,25 +64,25 @@ public class StatusEffect {
             public readonly float seCoef;
             public readonly float seBase;
 
-            public readonly bool isMultifly;
+            public readonly bool isMultiply;
 
             public ActualElement(StatusEffectType statusEffectType,
                                  StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase,
-                                 bool isMultifly) {
+                                 bool isMultiply) {
                 this.statusEffectType = statusEffectType;
                 this.seVar = statusEffectVar;
                 this.seCoef = statusEffectCoef;
                 this.seBase = statusEffectBase;
-                this.isMultifly = isMultifly;
+                this.isMultiply = isMultiply;
             }
         }
 
-        public FixedElement(string originSkillName, string displayName,
+        public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
                   int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
-            display = new DisplayElement(originSkillName, displayName,
+            display = new DisplayElement(toBeReplaced, originSkillName, displayName,
                     isBuff, isInfinite,
                     isStackable, isOnce,
                     defaultPhase, stackVar, maxStack, isRemovable,
@@ -140,6 +144,7 @@ public class StatusEffect {
         this.flexibleElem = new FlexibleElement(fixedElem, caster, originSkill, originPassiveSkill);
     }
 
+    public bool GetToBeReplaced() { return fixedElem.display.toBeReplaced; }
     public string GetOriginSkillName() { return fixedElem.display.originSkillName; }
     public string GetDisplayName() { return fixedElem.display.displayName; }
     public bool GetIsBuff() { return fixedElem.display.isBuff; }
@@ -160,8 +165,8 @@ public class StatusEffect {
 
     public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
-    public bool GetIsMultifly() { return fixedElem.actuals[0].isMultifly; }
-    public bool GetIsMultifly(int index) { return fixedElem.actuals[index].isMultifly; }
+    public bool GetIsMultiply() { return fixedElem.actuals[0].isMultiply; }
+    public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetAmount() { return flexibleElem.actuals[0].amount; }
     public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
     public float GetRemainAmount() { return flexibleElem.actuals[0].remainAmount; }
@@ -222,8 +227,9 @@ public class StatusEffect {
     }
     
     public bool IsSameStatusEffect(StatusEffect anotherStatusEffect) {
-        return (this.GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
-                (this.GetCaster().Equals(anotherStatusEffect.GetCaster())));
+        return (GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
+                    GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
+                    GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
 
     public static float CalculateAmount(int stack, FixedElement.ActualElement fixedElem, Unit caster) {

@@ -241,14 +241,19 @@ public class DamageCalculator
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 	}
 
-	public static float CalculateReflectDamage(float attackDamage, Unit target)
+	public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)
 	{
-		float reflectAmount = attackDamage;
+		float reflectAmount = 0;
 		foreach (var statusEffect in target.GetStatusEffectList())
 		{
-			if (statusEffect.IsOfType(StatusEffectType.Reflect))
+            bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
+                                (statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
+                                (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
+			if (canReflect)
 			{
-				reflectAmount = reflectAmount * statusEffect.GetAmount();
+                if(statusEffect.GetOriginSkill() != null)
+                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
+				reflectAmount = reflectAmount + attackDamage * statusEffect.GetAmount();
 				break;
 			}
 		}

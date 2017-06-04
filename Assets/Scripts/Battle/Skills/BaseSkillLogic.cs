@@ -69,10 +69,17 @@ public class BaseSkillLogic
         return true;
     }
 
-    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-        return null;
+    public virtual void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) {
+    }
+    public virtual void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
     }
 
+    public virtual void TriggerStatusEffectAtReflection(Unit target, StatusEffect statusEffect, Unit reflectTarget) {
+        
+    }
+    public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, StatusEffect statusEffect, StatusEffect appliedStatusEffect) {
+        return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
+    }
     public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;

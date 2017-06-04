@@ -71,11 +71,7 @@ public class BasePassiveSkillLogic
 	public virtual void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
 	{
 	}
-
-	public virtual void TriggerUsingSkill(Unit caster)
-	{		
-	}
-
+    
     public virtual void TriggerDamaged(Unit target, int damage, Unit caster) 
     {        
     }
@@ -89,24 +85,22 @@ public class BasePassiveSkillLogic
     {
         return true;
     }
-    public virtual void TriggerStart(Unit caster) 
-	{		
+    public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
+    }
+
+    public virtual void TriggerStart(Unit caster) {		
 	}
 
-	public virtual void TriggerOnPhaseStart(Unit caster) 
-	{		
+	public virtual void TriggerOnPhaseStart(Unit caster) {		
 	}
     
-    public virtual void TriggerOnPhaseEnd(Unit caster) 
-    {
+    public virtual void TriggerOnPhaseEnd(Unit caster) {
     }    
 
-    public virtual void TriggerActionEnd(Unit caster) 
-	{    
+    public virtual void TriggerActionEnd(Unit caster) {    
     }
     
-    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-        return null;
+    public virtual void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
     }
 	public virtual void TriggerRest(Unit caster)
 	{

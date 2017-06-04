@@ -29,7 +29,7 @@ namespace Battle.Turn {
                 battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
-                battleData.indexOfSeletedSkillByUser = 0;
+                battleData.indexOfSelectedSkillByUser = 0;
 
                 var update = UpdatePreviewAP(battleData);
                 battleData.battleManager.StartCoroutine(update);
@@ -415,7 +415,7 @@ namespace Battle.Turn {
 
             // 체인 목록에 추가.
             ChainList.AddChains(battleData.selectedUnit, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
-            battleData.indexOfSeletedSkillByUser = 0; // return to init value.
+            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
             yield return new WaitForSeconds(0.5f);
 
             BattleManager.MoveCameraToUnit(battleData.selectedUnit);
@@ -465,7 +465,7 @@ namespace Battle.Turn {
 
             // 기술 사용 시 적용되는 특성
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
-            SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster);
+            SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster, targets);
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
@@ -484,7 +484,7 @@ namespace Battle.Turn {
                                                                                     x.GetStatusEffectType() == StatusEffectType.Smite)));
                 caster.SetStatusEffectList(newStatusEffectList);
             }
-            battleData.indexOfSeletedSkillByUser = 0; // return to init value.
+            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
             yield return new WaitForSeconds(0.5f);
             battleData.alreadyMoved = false;
@@ -513,6 +513,7 @@ namespace Battle.Turn {
         private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget) {
             Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
+            Skill appliedSkill = skillInstanceData.GetSkill();
             int targetCount = skillInstanceData.GetTargetCount();
 
             DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
@@ -526,9 +527,21 @@ namespace Battle.Turn {
             BattleManager battleManager = battleData.battleManager;
             // targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
             // fixme : 반사데미지는 다른 데미지 함수로 뺄 것! Damaged 함수 쓰면 원 공격자 스킬의 부가효과도 적용됨.
-            if (target.HasStatusEffect(StatusEffectType.Reflect)) {
-                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target);
-                var reflectCoroutine = unitInChain.Damaged(skillInstanceData, true);
+            UnitClass damageType = unitInChain.GetUnitClass();
+            bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
+                                (target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
+                                (target.HasStatusEffect(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
+
+            if (canReflect) {
+                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
+
+                DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
+                reflectAttackDamage.resultDamage = reflectAmount;
+                List<Unit> reflectTargetList = new List<Unit>();
+                reflectTargetList.Add(unitInChain);
+                SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
+                                                            reflectTargetList, unitInChain, 1);
+                var reflectCoroutine = unitInChain.Damaged(reflectInstanceData, true);
                 battleManager.StartCoroutine(reflectCoroutine);
             }
 

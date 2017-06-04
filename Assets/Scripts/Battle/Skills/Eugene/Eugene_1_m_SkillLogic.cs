@@ -22,7 +22,7 @@ namespace Battle.Skills {
             if (statusEffect.GetIsInfinite() == true)  return false;  //오오라 효과는 적용하지 않음
             return true;
         }
-        public override IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
             Skill originSkill = statusEffect.GetOriginSkill();
             Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(target, statusEffect);
             foreach (var kv in unitInRangeDictionary) {
@@ -32,8 +32,7 @@ namespace Battle.Skills {
                 if (alreadyAppliedEffect != null && kv.Value == false) {            //원래 오오라 범위 안에 있었는데 액션 이후 벗어난 경우
                     alreadyAppliedEffect.DecreaseRemainStack();
                 } else {
-                    StatusEffect.FixedElement fixedElementOfAuraStatusEffect = skill.GetStatusEffectList().Find(se => (se.display.originSkillName == "순백의 방패"
-                                                        && se.actuals[0].statusEffectType != StatusEffectType.Aura));
+                    StatusEffect.FixedElement fixedElementOfAuraStatusEffect = skill.GetStatusEffectList().Find(se => se.actuals[0].statusEffectType != StatusEffectType.Aura);
                     StatusEffect auraStatusEffect = new StatusEffect(fixedElementOfAuraStatusEffect, statusEffect.GetCaster(), originSkill, null);
                     auraStatusEffect.flexibleElem.display.memorizedunit = target;
                     if (alreadyAppliedEffect == null) {                             //원래 오오라 효과를 받지 않았던 대상이 범위 안으로 들어왔을 경우
@@ -43,7 +42,6 @@ namespace Battle.Skills {
                     }
                 }
             }
-            yield return null;
         }
         public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
             Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(target, statusEffect);

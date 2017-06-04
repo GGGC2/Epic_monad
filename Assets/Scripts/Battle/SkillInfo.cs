@@ -30,11 +30,11 @@ public class SkillInfo {
 	{
 		CommaStringParser commaParser = new CommaStringParser(data);
 
-		this.owner = commaParser.Consume();
-        this.requireLevel = commaParser.ConsumeInt();
+		owner = commaParser.Consume();
+        requireLevel = commaParser.ConsumeInt();
   
 		string name = commaParser.Consume();
-		this.column = commaParser.ConsumeInt();
+		column = commaParser.ConsumeInt();
 		int requireAP = commaParser.ConsumeInt();
 		int cooldown = commaParser.ConsumeInt();
 
@@ -61,7 +61,7 @@ public class SkillInfo {
 
 		string skillDataText = commaParser.Consume();
 
-		this.skill = new Skill(owner, column, name, requireAP, cooldown, 
+		this.skill = new Skill(owner, column, name, requireLevel, requireAP, cooldown, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,

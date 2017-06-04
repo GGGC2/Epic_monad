@@ -33,6 +33,6 @@ public class PassiveSkillInfo {
 	}
 
 	public PassiveSkill GetSkill() {
-		return new PassiveSkill(owner, column, name);
+		return new PassiveSkill(owner, column, name, requireLevel);
 	}
 }

@@ -66,17 +66,22 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator TriggerStatusEffectsAtActionEnd() {
+    public void TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            foreach(StatusEffect statusEffect in statusEffectList) {
+            List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+            foreach (StatusEffect statusEffect in statusEffectList) {
                 if(statusEffect.GetOriginSkill()!=null) {
-                    yield return SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
                 }
                 if(statusEffect.GetOriginPassiveSkill()!=null) {
-                    yield return SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                    SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                }
+                if(statusEffect.GetRemainStack() != 0) {
+                    newStatusEffectList.Add(statusEffect);
                 }
             }
+            unit.SetStatusEffectList(newStatusEffectList);
         }
     }
 
@@ -148,9 +153,8 @@ public class UnitManager : MonoBehaviour {
 
 	public void GenerateUnits ()
 	{
-		// TileManager tileManager = GetComponent<TileManager>();
-		float tileWidth = 0.5f*200/100;
-		float tileHeight = 0.5f*100/100;
+		//float tileWidth = 0.5f*200/100;
+		//float tileHeight = 0.5f*100/100;
 
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 
@@ -160,7 +164,6 @@ public class UnitManager : MonoBehaviour {
 
 			unit.ApplyUnitInfo(unitInfo);
 			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
-            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerStart(unit);
 
 			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -253,16 +256,26 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-	public void StartPhase()
+    public void ApplyEachHeal() {
+        foreach(var unit in units) {
+            if(unit != null)
+                unit.ApplyHealOverPhase();
+        }
+    }
+
+	public void StartPhase(int phase)
 	{
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart();
+            if(phase <= 2) {
+                unit.ApplyTriggerOnStart();
+            }
 		}
 	}
 
-	public void EndPhase()
+	public void EndPhase(int phase)
 	{
 		// Decrease each buff & debuff phase
 		foreach (var unit in units)

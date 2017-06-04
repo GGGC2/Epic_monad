@@ -166,7 +166,6 @@ public class Unit : MonoBehaviour
 
 	public List<PassiveSkill> GetLearnedPassiveSkillList()
 	{
-		// Learn passive skill is not implemented yet
 		return passiveSkillList;
 	}
 
@@ -363,9 +362,9 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					if (statusEffect.GetIsMultifly(i)) // 상대값 합산
+					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
 					{
-						totalRelativeValue *= statusEffect.GetAmount(i);	
+						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;	
 					}
 					else // 절대값 합산
 					{
@@ -419,7 +418,15 @@ public class Unit : MonoBehaviour
 		startPositionOfPhase = this.GetPosition();
         hasMovedThisTurn = false;
 	}
-
+    
+    public void RemoveStatusEffect(StatusEffect statusEffect) {
+        statusEffectList.Remove(statusEffect);
+        SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if(originSkill != null) {
+            SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
+        }
+    }
 	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
 	{
 		foreach (var statusEffect in statusEffectList)
@@ -633,7 +640,6 @@ public class Unit : MonoBehaviour
 				}
 			}
 		}
-
 		RecoverHealth(totalAmount);
 	}
 
@@ -730,14 +736,21 @@ public class Unit : MonoBehaviour
 
 	public void ApplyTriggerOnPhaseStart()
 	{
-		List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
-		SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseStart(this);
-	}
+		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
+        foreach (StatusEffect statusEffect in statusEffectList) {
+            if (statusEffect.GetOriginSkill() != null) {
+                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);
+            }
+        }
+    }
+    
+    public void ApplyTriggerOnStart() {
+        SkillLogicFactory.Get(passiveSkillList).TriggerStart(this);
+    }
 
     public void ApplyTriggerOnPhaseEnd()
     {
-        List<PassiveSkill> passiveSkills = GetLearnedPassiveSkillList();
-        SkillLogicFactory.Get(passiveSkills).TriggerOnPhaseEnd(this);
+        SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)
@@ -783,17 +796,17 @@ public class Unit : MonoBehaviour
 							   List<StatusEffectInfo> statusEffectInfoList, 
 							   List<PassiveSkillInfo> passiveSkillInfoList)
 	{
-		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
+		int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
 
 		foreach (var skillInfo in skillInfoList)
 		{
-			if ((skillInfo.GetOwner() == this.nameInCode) &&
+			if ((skillInfo.GetOwner() == nameInCode) &&
 				(skillInfo.GetRequireLevel() <= partyLevel))
                 {
                     Skill skill = skillInfo.GetSkill();
 					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
 					{
-						skill.ApplyStatusEffectList(statusEffectInfoList);
+						skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
                     	skillList.Add(skill);
 					}
                 }
@@ -813,11 +826,11 @@ public class Unit : MonoBehaviour
 		foreach (var passiveSkillInfo in passiveSkillInfoList)
 		{
 			//Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-			if ((passiveSkillInfo.GetOwner() == this.nameInCode) &&
+			if ((passiveSkillInfo.GetOwner() == nameInCode) &&
 				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
 			{
 				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
-				passiveSkill.ApplyStatusEffectList(statusEffectInfoList);
+				passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
 				passiveSkillList.Add(passiveSkill);
 			}
 		}
