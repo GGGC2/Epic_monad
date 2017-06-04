@@ -46,7 +46,7 @@ public class UnitManager : MonoBehaviour {
     List<Unit> enemyUnits = new List<Unit>();
 	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
 	List<RetreatUnitInfo> retreatUnitsInfo = new List<RetreatUnitInfo>();
-
+    
 	public List<Unit> GetAllUnits()
 	{
 		return units;
@@ -71,17 +71,32 @@ public class UnitManager : MonoBehaviour {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
             List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
             foreach (StatusEffect statusEffect in statusEffectList) {
-                if(statusEffect.GetOriginSkill()!=null) {
-                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                }
-                if(statusEffect.GetOriginPassiveSkill()!=null) {
-                    SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                }
-                if(statusEffect.GetRemainStack() != 0) {
+                Skill skill = statusEffect.GetOriginSkill();
+                PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
+                if(skill != null)
+                    SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                if(passiveSkill != null)
+                    SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                if(statusEffect.GetRemainStack() != 0)
+                    newStatusEffectList.Add(statusEffect);
+            }
+            unit.SetStatusEffectList(newStatusEffectList);
+        }
+    }
+
+    public void UpdateStatusEffectsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
+            List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+            foreach(StatusEffect statusEffect in statusEffectList) {
+                if (statusEffect.GetRemainStack() != 0) {
+                    for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+                        float statusEffectVar = statusEffect.GetStatusEffectVar(i, unit);
+                        statusEffect.CalculateAmount(i, statusEffectVar);
+                    }
                     newStatusEffectList.Add(statusEffect);
                 }
             }
-            unit.SetStatusEffectList(newStatusEffectList);
         }
     }
 

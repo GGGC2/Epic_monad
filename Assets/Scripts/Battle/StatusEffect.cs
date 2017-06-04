@@ -1,8 +1,7 @@
 using Enums;
-using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
+using Battle.Skills;
 
 public class StatusEffect {
     public FixedElement fixedElem;
@@ -105,12 +104,12 @@ public class StatusEffect {
             public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
             public Unit memorizedunit;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
 
-            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, StatusEffectVar remainStack, int remainPhase) {
+            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
                 this.originSkill = originSkill;
                 this.originPassiveSkill = originPassiveSkill;
                 this.caster = caster;
-                this.remainStack = (int)GetSEVar(remainStack, caster);
-                this.remainPhase = remainPhase;
+                this.remainStack = 1;
+                this.remainPhase = defaultPhase;
             }
         }
 
@@ -118,30 +117,32 @@ public class StatusEffect {
             public float amount; // 영향을 주는 실제 값
             public float remainAmount; // 남은 수치 (실드 등)
 
-            public ActualElement(int stack, FixedElement.ActualElement aeInFixed, Unit caster) {
-                this.amount = CalculateAmount(stack, aeInFixed, caster);
+            public ActualElement(float amount) {
+                this.amount = amount;
                 this.remainAmount = amount; // 초기화
             }
         }
 
-        public FlexibleElement(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+        public FlexibleElement(StatusEffect statusEffect, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+            StatusEffect.FixedElement fixedElem = statusEffect.fixedElem;
             int maxStack = fixedElem.display.maxStack;
-            StatusEffectVar stackVar = fixedElem.display.stackVar;
-            int stack = (int)GetSEVar(stackVar, caster);
             int defaultPhase = fixedElem.display.defaultPhase;
-            display = new DisplayElement(caster, originSkill, originPassiveSkill, stackVar, defaultPhase);
+            display = new DisplayElement(caster, originSkill, originPassiveSkill, maxStack, defaultPhase);
 
-            List<ActualElement> actuals = new List<ActualElement>();
+            this.actuals = new List<ActualElement>();
             for (int i = 0; i < fixedElem.actuals.Count; i++) {
-                actuals.Add(new ActualElement(stack, fixedElem.actuals[i], caster));
+                actuals.Add(new ActualElement(0));
             }
-            this.actuals = actuals;
         }
     }
 
     public StatusEffect(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
         this.fixedElem = fixedElem;
-        this.flexibleElem = new FlexibleElement(fixedElem, caster, originSkill, originPassiveSkill);
+        this.flexibleElem = new FlexibleElement(this, caster, originSkill, originPassiveSkill);
+        for(int i = 0; i<fixedElem.actuals.Count; i++) {
+            float statusEffectVar = GetStatusEffectVar(i, caster);
+            CalculateAmount(i, statusEffectVar);
+        }
     }
 
     public bool GetToBeReplaced() { return fixedElem.display.toBeReplaced; }
@@ -232,104 +233,28 @@ public class StatusEffect {
                     GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
 
-    public static float CalculateAmount(int stack, FixedElement.ActualElement fixedElem, Unit caster) {
-        float seVar;
-        if (fixedElem.seVar == StatusEffectVar.Stack)
-            seVar = stack;
-        else
-            seVar = GetSEVar(fixedElem.seVar, caster);
-        float seCoef = fixedElem.seCoef;
-        float seBase = fixedElem.seBase;
-
-        float result = seVar * seCoef + seBase;
-
-        return result;
+    public void CalculateAmount(float statusEffectVar) {
+        flexibleElem.actuals[0].amount = statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase;
     }
-
-    public static float GetSEVar(StatusEffectVar seVarEnum, Unit caster) {
+    public void CalculateAmount(int i, float statusEffectVar) {
+        flexibleElem.actuals[i].amount = statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase;
+    }
+    
+    public float GetStatusEffectVar(int i, Unit caster) {
         float result = 0;
-
-        if (seVarEnum == StatusEffectVar.Absorption)
-        {
-            StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
-            int stack = 0;
-            if (uniqueStatusEffect != null)
-                stack = uniqueStatusEffect.GetRemainStack();
-            result = stack;
-        }
-        else if (seVarEnum == StatusEffectVar.Absorption_1r)
-        {
-            StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
-            int stack = 0;
-            if (uniqueStatusEffect != null)
-                stack = uniqueStatusEffect.GetRemainStack();
-
-            float power = caster.GetActualStat(Stat.Power);
-            Debug.Log("Power : " + power);
-            result = (0.6f + (float)stack * 0.1f) * power; Debug.Log("Result : " + result);
-        }
-        else if (seVarEnum == StatusEffectVar.BuffFromOther)
-        {
-            result = caster.GetStatusEffectList().Count(
-                    x => x.GetIsBuff() && (x.GetCaster() != caster));
-        }
-        else if (seVarEnum == StatusEffectVar.CurrentHp)
-            result = (float)caster.GetCurrentHealth();
-        else if (seVarEnum == StatusEffectVar.DamagedAlly)
-        {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            result = unitManager.GetAllUnits().Count(x => (x.GetSide() == Enums.Side.Ally) && 
-                                                        ((float)x.GetCurrentHealth()/(float)x.GetMaxHealth() <= 40));
-        }
-        else if (seVarEnum == StatusEffectVar.Level)
+        StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
+        if (seVarEnum == StatusEffectVar.Level)
             result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
-            result = 100f - (100 * ((float)caster.GetCurrentHealth()/(float)caster.GetMaxHealth()));
-        else if (seVarEnum == StatusEffectVar.MetalTile)
-        {
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            List<Tile> nearbyTilesFromLenian = new List<Tile>();
-            nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
-            result = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
-        }
-        else if (seVarEnum == StatusEffectVar.NearbyEnemy)
-        {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Vector2 unitPosition = caster.GetPosition();
-            List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
-
-            List<Unit> nearbyUnits = new List<Unit>();
-            foreach (var tile in nearbyTiles)
-            {
-                if (tile.IsUnitOnTile())
-                    nearbyUnits.Add(tile.GetUnitOnTile());
-            }
-
-            result = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
-        }
-        /*else if (seVarEnum == StatusEffectVar.NearestUnit)
-        {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            List<Unit> exceptItself = unitManager.GetAllUnits().FindAll(x => x.GetNameInCode() == "curi");
-            
-            result = exceptItself.Min(x => Utility.GetDistance(caster.GetPosition(), x.GetPosition()));
-            if (result > 25) result = 25;
-        }*/
+            result = 100f - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
         else if (seVarEnum == StatusEffectVar.Power)
             result = caster.GetActualStat(Stat.Power);
-        else if (seVarEnum == StatusEffectVar.RemainEnemy)
-        {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            result = unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
+        else {
+            if(GetOriginSkill() != null)
+                result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster);
+            if(GetOriginPassiveSkill() != null)
+                result = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster);
         }
-        else if (seVarEnum == StatusEffectVar.None)
-            result = 0;     
-        else if (seVarEnum == StatusEffectVar.Once)
-            result = 1;   
-        else
-            result = 0;
-
         return result;
     }
 }

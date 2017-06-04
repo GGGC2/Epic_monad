@@ -168,20 +168,10 @@ namespace Enums {
 	public enum StatusEffectVar
 	{
 		None,
-		Once,
 		Stack, // 스택 비례일 경우
 		Power,
-		BuffFromOther, // 레이나 : 다른유닛에게서 받은 강화효과 수
 		Level,
-		MetalTile, // 리니안 : 주변 사각 1타일 금속타일 수
-		NearbyEnemy, // 영 : 주변 반경 2타일 내 적의 수
-		NearestUnit, // 큐리 : 가장 가까운 유닛으로부터의 거리
 		LostHpPercent, // 잃은 체력 %
-		CurrentHp, // 현재 체력
-		RemainEnemy, // 에렌 : 남은 적의 수
-		Absorption, // 에렌 : 흡수 중첩 수
-		Absorption_1r, // 에렌 : 광휘-강타 연산 (0.6(+흡수 중첩당 0.1)x공격력)
-		DamagedAlly, // 루베리카 : 남은 체력 40% 이하인 아군 수		
 		Etc // 기타 변수
 	}
 }

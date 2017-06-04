@@ -88,8 +88,7 @@ public static class StatusEffector
 		foreach (var statusEffect in validStatusEffects)
 		{
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
-            List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target)==false) {
+            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetName());
                 continue;
             }

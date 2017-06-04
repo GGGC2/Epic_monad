@@ -75,11 +75,12 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator InstantiateTurnManager()
 	{
+        yield return new WaitForSeconds(0.5f);  //unitManager가 load될 때까지 기다림.
 		while (true)
 		{
 			yield return StartCoroutine(StartPhaseOnGameManager());
 
-			battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
+            battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
 
 			while (battleData.readiedUnits.Count != 0)
 			{
@@ -284,6 +285,7 @@ public class BattleManager : MonoBehaviour
 			battleData.unitManager.ResetLatelyHitUnits();
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
             battleData.unitManager.TriggerStatusEffectsAtActionEnd();
+            battleData.unitManager.UpdateStatusEffectsAtActionEnd();
 			
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
