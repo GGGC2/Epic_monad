@@ -17,10 +17,6 @@ public class BaseSkillLogic
 	{		
 	}
 
-	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
-	{
-	}
-
 	public virtual float ApplyIgnoreDefenceRelativeValueBySkill(float defense, Unit caster, Unit target)
 	{
 		return defense;

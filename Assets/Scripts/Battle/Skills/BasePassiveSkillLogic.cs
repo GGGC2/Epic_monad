@@ -13,10 +13,6 @@ public class BasePassiveSkillLogic
 	{
 	}
 
-	public virtual void SetAmountToEachStatusEffect(List<StatusEffect> statusEffects, Unit caster, Unit target)
-	{
-	}
-
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		return 1.0f;

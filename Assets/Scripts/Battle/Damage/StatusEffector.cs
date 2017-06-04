@@ -15,7 +15,6 @@ public static class StatusEffector
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
 			.ToList();
-        //SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
         bool ignoreStatusEffect = false;
         foreach(var statusEffect in statusEffects) {
             List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
@@ -42,9 +41,6 @@ public static class StatusEffector
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, null, appliedSkill))
 			.ToList();
-
-		//SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
-
 		AttachStatusEffect(caster, statusEffects, target);
 	}
 
