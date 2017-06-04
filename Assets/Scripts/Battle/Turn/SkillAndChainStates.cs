@@ -506,7 +506,7 @@ namespace Battle.Turn {
             if (totalEvasionChance > randomNumber) {
                 battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
                 // (타겟이) 회피 성공했을 경우 추가 효과
-                SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerEvasionEvent(battleData, caster, target);
+                SkillLogicFactory.Get(passiveSkillsOfTarget).TriggerOnEvasionEvent(battleData, caster, target);
                 return true;
             } else return false;
         }
@@ -521,9 +521,9 @@ namespace Battle.Turn {
             DamageCalculator.AttackDamage attackDamage = skillInstanceData.GetDamage();
 
             if (attackDamage.attackDirection != DirectionCategory.Front) unitInChain.PrintDirectionBonus(attackDamage);
-            if (attackDamage.celestialBonus != 1f) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
-            if (attackDamage.chainBonus > 1f) unitInChain.PrintChainBonus(chainCombo);
-            if (attackDamage.heightBonus != 1f) unitInChain.PrintHeightBonus(attackDamage.heightBonus);
+            if (attackDamage.celestialBonus != 1) unitInChain.PrintCelestialBonus(attackDamage.celestialBonus);
+            if (attackDamage.chainBonus > 1) unitInChain.PrintChainBonus(chainCombo);
+            if (attackDamage.heightBonus != 1) unitInChain.PrintHeightBonus(attackDamage.heightBonus);
 
             BattleManager battleManager = battleData.battleManager;
             // targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비

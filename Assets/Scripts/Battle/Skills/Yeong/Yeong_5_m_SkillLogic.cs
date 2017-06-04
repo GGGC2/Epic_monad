@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
 public class Yeong_5_m_SkillLogic : BasePassiveSkillLogic {
 
-	public override void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit yeong)
+	public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit yeong)
 	{
 		int amount = (int)(yeong.GetActualStat(Stat.Dexturity) * 0.3f);
 		yeong.RecoverActionPoint(amount);

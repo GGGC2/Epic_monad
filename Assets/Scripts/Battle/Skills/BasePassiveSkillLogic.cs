@@ -59,7 +59,7 @@ public class BasePassiveSkillLogic
         return 0;
     }
 
-	public virtual void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
+	public virtual void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 	}
 
@@ -87,7 +87,7 @@ public class BasePassiveSkillLogic
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
     }
 
-    public virtual void TriggerStart(Unit caster) {		
+    public virtual void TriggerOnStart(Unit caster) {		
 	}
 
 	public virtual void TriggerOnPhaseStart(Unit caster) {		
@@ -96,7 +96,7 @@ public class BasePassiveSkillLogic
     public virtual void TriggerOnPhaseEnd(Unit caster) {
     }    
 
-    public virtual void TriggerActionEnd(Unit caster) {    
+    public virtual void TriggerOnActionEnd(Unit caster) {    
     }
     
     public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //false를 리턴할 시 해당 statusEffect가 사라짐.

@@ -246,7 +246,7 @@ public class StatusEffect {
         if (seVarEnum == StatusEffectVar.Level)
             result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
-            result = 100f - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
+            result = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
         else if (seVarEnum == StatusEffectVar.Power)
             result = caster.GetActualStat(Stat.Power);
         else {

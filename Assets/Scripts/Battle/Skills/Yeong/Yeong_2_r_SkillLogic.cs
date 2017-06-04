@@ -7,7 +7,7 @@ using System.Linq;
 namespace Battle.Skills
 {
     public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic {
-        public override void TriggerStart(Unit caster) {
+        public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit unit) {

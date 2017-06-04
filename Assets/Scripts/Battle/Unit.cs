@@ -745,7 +745,7 @@ public class Unit : MonoBehaviour
     }
     
     public void ApplyTriggerOnStart() {
-        SkillLogicFactory.Get(passiveSkillList).TriggerStart(this);
+        SkillLogicFactory.Get(passiveSkillList).TriggerOnStart(this);
     }
 
     public void ApplyTriggerOnPhaseEnd()

@@ -89,11 +89,11 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		return totalEvasionChance;
 	}
 
-	public override void TriggerEvasionEvent(BattleData battleData, Unit caster, Unit target)
+	public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
 		foreach (var skillLogic in passiveSkillLogics)
 		{
-			skillLogic.TriggerEvasionEvent(battleData, caster, target);
+			skillLogic.TriggerOnEvasionEvent(battleData, caster, target);
 		}
 	}
 
@@ -145,9 +145,9 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
 		}
 	}
 
-    public override void TriggerStart(Unit caster) {
+    public override void TriggerOnStart(Unit caster) {
         foreach(var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerStart(caster);
+            skillLogic.TriggerOnStart(caster);
         }
     }
 
@@ -164,9 +164,9 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
         }
     }
 
-    public override void TriggerActionEnd(Unit caster) {
+    public override void TriggerOnActionEnd(Unit caster) {
         foreach (var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerActionEnd(caster);
+            skillLogic.TriggerOnActionEnd(caster);
         }
     }
 

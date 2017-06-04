@@ -8,7 +8,7 @@ namespace Battle.Skills
 {
     public class Yeong_3_r_SkillLogic : BasePassiveSkillLogic
     {
-	    public override void TriggerActionEnd(Unit yeong)
+	    public override void TriggerOnActionEnd(Unit yeong)
 	    {
 		    float percentRemainHealth = (float)yeong.GetCurrentHealth()/(float)yeong.GetMaxHealth();		
 		    int stack = (int)(percentRemainHealth * 20);

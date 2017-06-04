@@ -8,7 +8,7 @@ namespace Battle.Skills
 {
 public class Lenien_5_r_SkillLogic : BasePassiveSkillLogic {
 
-	public override void TriggerActionEnd(Unit lenien)
+	public override void TriggerOnActionEnd(Unit lenien)
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		

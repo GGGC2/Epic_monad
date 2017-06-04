@@ -62,7 +62,7 @@ public class UnitManager : MonoBehaviour {
 
     public void TriggerPassiveSkillsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
-            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerActionEnd(unit);
+            SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
         }
     }
 
@@ -285,7 +285,7 @@ public class UnitManager : MonoBehaviour {
 		{
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart();
-            if(phase <= 2) {
+            if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }
 		}
