@@ -364,7 +364,7 @@ public class Unit : MonoBehaviour
 				{
 					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
 					{
-						totalRelativeValue *= statusEffect.GetAmount(i);	
+						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;	
 					}
 					else // 절대값 합산
 					{

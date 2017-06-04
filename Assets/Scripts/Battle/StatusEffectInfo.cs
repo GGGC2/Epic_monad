@@ -8,12 +8,14 @@ public class StatusEffectInfo {
 
 	string owner;
     int requireLevel;
+    bool toBeReplaced;
 	string originSkillName; // 효과를 유발하는 기술/특성의 이름
 	string displayName; // 상태창에 표시되는 효과의 이름
 	StatusEffect.FixedElement statusEffect;
 	
 	public string GetOwner(){ return owner; }
     public int GetRequireLevel() { return requireLevel; }
+    public bool GetToBeReplaced() { return toBeReplaced; }
     public string GetOriginSkillName() { return originSkillName; }
     public string GetDisplayName() { return displayName; }
     public StatusEffect.FixedElement GetStatusEffect() { return statusEffect; }
@@ -25,6 +27,7 @@ public class StatusEffectInfo {
 
 		owner = commaParser.Consume();
         requireLevel = commaParser.ConsumeInt();
+        toBeReplaced = commaParser.ConsumeBool();
 		originSkillName = commaParser.Consume();
 		displayName = commaParser.Consume();
 
@@ -64,7 +67,7 @@ public class StatusEffectInfo {
 			actualElements.Add(actualElement);
 		}
 
-		this.statusEffect = new StatusEffect.FixedElement(originSkillName, displayName,
+		this.statusEffect = new StatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isBuff, isInfinite, 
 											 isStackable, isOnce,
 											 defaultPhase, stackVar, maxStack, isRemovable, 

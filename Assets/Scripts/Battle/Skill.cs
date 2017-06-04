@@ -85,7 +85,8 @@ public class Skill{
 
                 List<StatusEffect.FixedElement> newStatusEffectList = new List<StatusEffect.FixedElement>(statusEffectList);
                 foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
-                    if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName) {
+                    if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName &&
+                            statusEffect.display.toBeReplaced) {
                         newStatusEffectList.Remove(statusEffect);
                     }
                 }

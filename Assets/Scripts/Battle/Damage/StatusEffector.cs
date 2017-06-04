@@ -20,8 +20,8 @@ public static class StatusEffector
         foreach(var statusEffect in statusEffects) {
             List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
             foreach(StatusEffect targetStatusEffect in targetStatusEffectList) {
-                if(SkillLogicFactory.Get(targetStatusEffect.GetOriginSkill()).TriggerStatusEffectWhenStatusEffectApplied(target, 
-                                            targetStatusEffect, statusEffect) == false) {
+                if((targetStatusEffect.GetOriginSkill() != null && SkillLogicFactory.Get(targetStatusEffect.GetOriginSkill()).
+                        TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false)) {
                     ignoreStatusEffect = true; 
                     Debug.Log(statusEffect.GetDisplayName()+ " ignored by "+targetStatusEffect.GetOriginSkillName()+" of "+target.GetName());
                 }
