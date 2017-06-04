@@ -14,7 +14,7 @@ public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 
 		Vector2 unitPosition = yeong.GetPosition();
-		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
+		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, 0, Direction.LeftUp);
 
 		List<Unit> nearbyUnits = new List<Unit>();
 		foreach (var tile in nearbyTiles)
@@ -45,7 +45,7 @@ public class Yeong_2_r_SkillLogic : BasePassiveSkillLogic
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 
 		Vector2 unitPosition = caster.GetPosition();
-		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
+		List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, 0, Direction.LeftUp);
 
 		List<Unit> nearbyUnits = new List<Unit>();
 		foreach (var tile in nearbyTiles)

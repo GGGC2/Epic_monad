@@ -283,7 +283,7 @@ public class StatusEffect {
         {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             List<Tile> nearbyTilesFromLenian = new List<Tile>();
-            nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, caster.GetDirection());
+            nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, caster.GetPosition(), 0, 1, 0, caster.GetDirection());
             result = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
         }
         else if (seVarEnum == StatusEffectVar.NearbyEnemy)
@@ -291,7 +291,7 @@ public class StatusEffect {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             Vector2 unitPosition = caster.GetPosition();
-            List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, Direction.LeftUp);
+            List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, 0, Direction.LeftUp);
 
             List<Unit> nearbyUnits = new List<Unit>();
             foreach (var tile in nearbyTiles)

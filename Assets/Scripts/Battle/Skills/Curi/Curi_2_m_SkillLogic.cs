@@ -13,7 +13,7 @@ namespace Battle.Skills {
                 damage.resultDamage = 0.3f * caster.GetStat(Stat.Power);
 
                 TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-                List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, Direction.Left);
+                List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, 0, Direction.Left);
 
                 List<Unit> damagedUnitList = new List<Unit>();
                 damagedUnitList.Add(target);

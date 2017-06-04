@@ -16,7 +16,7 @@ public class Lenien_7_r_SkillLogic : BasePassiveSkillLogic {
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		List<Tile> nearbyTilesFromLenian = new List<Tile>();
-		nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, lenien.GetPosition(), 0, 1, lenien.GetDirection());
+		nearbyTilesFromLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, lenien.GetPosition(), 0, 1, 0, lenien.GetDirection());
 
 		float damageBonusPerTile = 0.1f;
 		int numberOfMetalTiles = nearbyTilesFromLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);

@@ -25,7 +25,7 @@ namespace Battle.Skills
             {
                 Vector2 unitPosition = caster.GetPosition();
                 TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-                List<Tile> targetArea = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 2, Direction.LeftUp);
+                List<Tile> targetArea = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 2, 0, Direction.LeftUp);
                 List<Unit> targets = new List<Unit>();
                 targetArea.ForEach(x =>
                 {

@@ -8,7 +8,7 @@ namespace Battle.Skills {
         private Dictionary<Unit, bool> TagUnitInRange(Unit target, StatusEffect statusEffect) {   //각 unit이 target이 가진 오오라 범위 안에 있을 경우 true 태그를 닮.
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            List<Tile> auraRange = tileManager.GetTilesInRange(RangeForm.Diamond, target.position, 0, (int)statusEffect.GetAmount(), Direction.Down);
+            List<Tile> auraRange = tileManager.GetTilesInRange(RangeForm.Diamond, target.position, 0, (int)statusEffect.GetAmount(), 0, Direction.Down);
             Dictionary<Unit, bool> unitDictionary = new Dictionary<Unit, bool>();
             foreach (var unit in unitManager.GetAllUnits()) {
                 if (auraRange.Contains(unit.GetTileUnderUnit())) unitDictionary.Add(unit, true);

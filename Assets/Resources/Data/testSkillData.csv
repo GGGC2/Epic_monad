@@ -7,7 +7,7 @@ orchid,1,약공격,1,55,0,Power,1.0,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealt
 orchid,1,중공격,1,42,0,Power,1.5,Point,Diamond,1,3,0,Diamond,0,1,0,DamageHealth,-,Area,NonMove,--
 orchid,1,강공격,1,60,0,Power,2.0,Point,Diamond,1,1,0,Diamond,0,0,0,DamageHealth,-,Area,NonMove,--
 orchid,1,밀어내기,1,70,0,None,0,Auto,Diamond,0,0,0,Sector,1,7,0,Debuff,-,Area,NonMove,--
-lucius,1,가로베기,1,40,0,Power,1.0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,범위 내의 적을 베어 피해를 입힙니다.
+lucius,1,가로베기,1,28,0,Power,1.0,Auto,Front,1,1,3,Front,1,1,3,DamageHealth,Melee,Individual,NonMove,1.0x공격력의 피해를 줍니다.
 reina,1,화염 폭발,1,33,0,Power,1.0,Auto,AllDirection,1,2,0,AllDirection,1,2,0,DamageHealth,RedBlast,Area,Move,1.0x공격력의 피해를 줍니다.
 reina,1,화염구,2,34,0,Power,1.1,Route,Straight,1,6,0,Square,0,1,0,DamageHealth,RedBlast,Area,Move,1.1x공격력의 피해를 줍니다.
 reina,22,화염낙진,1,48,5,Power,2.1,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Area,Move,--
@@ -20,11 +20,6 @@ lenien,8,하전 파동,2,32,0,Power,0.1,Route,Straight,1,4,0,Sector,0,2,0,Damage
 lenien,22,벼락,2,62,5,Power,1.6,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,—
 lenien,43,축전,1,46,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Area,Move,--
 lenien,50,낙뢰 폭격,2,84,6,Power,2.4,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,--
-sisterna,1,전자기 충격_test,1,28,4,Power,0.8,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,YellowBlast,Area,Move,--
-sisterna,8,하전 파동_test,1,32,0,Power,0.1,Route,Cross,1,4,0,Sector,0,2,0,DamageHealth,YellowBlast,Area,Move,--
-sisterna,1,은빛 베기_test,1,24,0,Power,10,Point,Square,1,7,0,Cross,0,1,0,DamageHealth,RedBlast,Area,Move,--
-sisterna,1,광휘_test,1,24,0,Power,1.0,Point,Diamond,1,7,0,Diamond,0,1,0,Buff,-,Area,Move,--
-sisterna,1,죽음의 화살_test,1,49,1,Power,1.9,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Individual,NonMove,--
 eren,1,칠흑의 화살,2,42,0,Power,1.0,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Area,Move,--
 eren,1,광휘,3,27,2,Power,0.6,Point,Diamond,0,6,0,Diamond,0,0,0,Buff,YellowBlast,Individual,NonMove,--
 eren,15,죽음의 화살,1,49,1,Power,0.9,Point,Diamond,1,6,0,Diamond,0,1,0,DamageHealth,RedBlast,Individual,NonMove,--

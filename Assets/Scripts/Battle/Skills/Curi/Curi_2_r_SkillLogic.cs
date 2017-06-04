@@ -8,7 +8,7 @@ namespace Battle.Skills {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             Vector2 targetPosition = target.GetPosition();
             Tile targetTile = tileManager.GetTile(targetPosition);
-            List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, Direction.Left);
+            List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, targetPosition, 0, 1, 0, Direction.Left);
             return tileList;
         }
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
