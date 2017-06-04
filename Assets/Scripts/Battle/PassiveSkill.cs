@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class PassiveSkill : MonoBehaviour{
+public class PassiveSkill {
 
 	// base info.
 	string owner;
@@ -22,11 +22,10 @@ public class PassiveSkill : MonoBehaviour{
         this.requireLevel = requireLevel;
 	}
 
-	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
+	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
 	{
-        int partylevel = FindObjectOfType<BattleManager>().GetPartyLevel();
         foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
-            if (statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <= partylevel) {
+            if (statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <= partyLevel) {
                 StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
                 foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
                     if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName) {

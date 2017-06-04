@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Skill : MonoBehaviour{
+public class Skill{
 
 	// base info.
 	string owner;
@@ -76,9 +76,8 @@ public class Skill : MonoBehaviour{
 		this.skillDataText = skillDataText;
 	}
       
-    public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList)
+    public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
     {
-        int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
         foreach (var statusEffectInfo in statusEffectInfoList)
         {
             if(statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <=  partyLevel) {

@@ -11,10 +11,14 @@ public static class StatusEffector
 {
 	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target)
 	{
-		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
-		List<StatusEffect> statusEffects = fixedStatusEffects
+        List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
+        List<StatusEffect> statusEffects = new List<StatusEffect>();
+        foreach (StatusEffect.FixedElement fixedElem in fixedStatusEffects) {
+            statusEffects.Add(new StatusEffect(fixedElem, caster, appliedSkill, null));
+        }
+		/*List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
-			.ToList();
+			.ToList();*/
 
         //SkillLogicFactory.Get(appliedSkill).SetAmountToEachStatusEffect(statusEffects, caster, target);
         bool ignoreStatusEffect = false;

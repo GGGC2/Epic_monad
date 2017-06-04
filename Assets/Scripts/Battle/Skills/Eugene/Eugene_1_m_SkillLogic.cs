@@ -22,7 +22,7 @@ namespace Battle.Skills {
             if (statusEffect.GetIsInfinite() == true)  return false;  //오오라 효과는 적용하지 않음
             return true;
         }
-        public override IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
             Skill originSkill = statusEffect.GetOriginSkill();
             Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(target, statusEffect);
             foreach (var kv in unitInRangeDictionary) {
@@ -42,7 +42,6 @@ namespace Battle.Skills {
                     }
                 }
             }
-            yield return null;
         }
         public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
             Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(target, statusEffect);

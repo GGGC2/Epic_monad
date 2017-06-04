@@ -4,7 +4,7 @@ using Enums;
 namespace Battle.Skills {
     public class Eugene_2_l_SkillLogic : BaseSkillLogic {   //statusEffect에 스킬에 붙은 패시브 효과를 저장할 방법이 (현재로썬) 없기 때문에,
                                                             //스킬에 붙은 패시브 효과에 대한 로직도 그 스킬의 SkillLogic에 만들어야 함.
-        public override IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //순수한 물 skillLogic
+        public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //순수한 물 skillLogic
             if (statusEffect.fixedElem.actuals.Count >= 2) {    //순수한 물 스킬을 배웠을 경우
                 /* 기본 힐량을 a라 하고 배수를 1.2라 할 때, 초기엔 statusEffect의 각 ActualElement의 amount가 a, 1.2로 설정되어있음.
                  * 물 타일로 이동할 때는 각각의 amount를 1.2a와 1/1.2 로 만듦.
@@ -20,7 +20,6 @@ namespace Battle.Skills {
                     statusEffect.SetAmount(1, 1.0f / coefficient);
                 }
             }
-            return null;
         }
         public override void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) { //청명수의 은총 skillLogic
             if (statusEffect.fixedElem.actuals.Count >= 3) {    //청명수의 은총 스킬을 배웠을 경우

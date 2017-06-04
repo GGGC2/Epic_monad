@@ -170,9 +170,9 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
         }
     }
 
-    public override IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+    public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
         foreach (var skillLogic in passiveSkillLogics) {
-            yield return skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect);
+            skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect);
         }
     }
 

@@ -806,7 +806,7 @@ public class Unit : MonoBehaviour
                     Skill skill = skillInfo.GetSkill();
 					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
 					{
-						skill.ApplyStatusEffectList(statusEffectInfoList);
+						skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
                     	skillList.Add(skill);
 					}
                 }
@@ -830,7 +830,7 @@ public class Unit : MonoBehaviour
 				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
 			{
 				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
-				passiveSkill.ApplyStatusEffectList(statusEffectInfoList);
+				passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
 				passiveSkillList.Add(passiveSkill);
 			}
 		}

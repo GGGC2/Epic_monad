@@ -66,17 +66,22 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator TriggerStatusEffectsAtActionEnd() {
+    public void TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            foreach(StatusEffect statusEffect in statusEffectList) {
+            List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+            foreach (StatusEffect statusEffect in statusEffectList) {
                 if(statusEffect.GetOriginSkill()!=null) {
-                    yield return SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
                 }
                 if(statusEffect.GetOriginPassiveSkill()!=null) {
-                    yield return SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                    SkillLogicFactory.Get(statusEffect.GetOriginPassiveSkill()).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                }
+                if(statusEffect.GetRemainStack() != 0) {
+                    newStatusEffectList.Add(statusEffect);
                 }
             }
+            unit.SetStatusEffectList(newStatusEffectList);
         }
     }
 

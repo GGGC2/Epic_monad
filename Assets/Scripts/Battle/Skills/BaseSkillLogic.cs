@@ -70,10 +70,8 @@ public class BaseSkillLogic
     }
 
     public virtual void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) {
-
     }
-    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-        return null;
+    public virtual void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
     }
 
     public virtual void TriggerStatusEffectAtReflection(Unit target, StatusEffect statusEffect, Unit reflectTarget) {
