@@ -94,6 +94,7 @@ public class BaseSkillLogic
 															battleData.selectedUnit.GetPosition(),
 															battleData.SelectedSkill.GetFirstMinReach(),
 															battleData.SelectedSkill.GetFirstMaxReach(),
+															battleData.SelectedSkill.GetFirstWidth(),
 															realDirection);
 
 		return firstRange;

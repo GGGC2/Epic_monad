@@ -188,6 +188,7 @@ namespace Battle.Turn
 														selectedUnit.GetPosition(),
 														selectedSkill.GetSecondMinReach(),
 														selectedSkill.GetSecondMaxReach(),
+														selectedSkill.GetSecondWidth(),
 														selectedUnit.GetDirection());
 
 			var enemies = from tile in selectedTiles
@@ -212,12 +213,13 @@ namespace Battle.Turn
 														selectedUnit.GetPosition(),
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
+														selectedSkill.GetFirstWidth(),
 														selectedUnit.GetDirection());
 
 			TileManager tileManager = battleData.tileManager;
 			var enemiesNearEachOther =
 					from tile in selectedTiles
-					let nearTiles = tileManager.GetTilesInRange(RangeForm.Diamond, tile.GetTilePos(), 0, 1, Direction.Down)
+					let nearTiles = tileManager.GetTilesInRange(RangeForm.Diamond, tile.GetTilePos(), 0, 1, 0, Direction.Down)
 					let nearTileUnits = nearTiles.Select(tile2 => tile2.GetUnitOnTile())
 					let nearUnits = nearTileUnits.Where(unit => unit != null && unit.GetSide() == Side.Ally)
 					where nearUnits.Count() >= 2
@@ -239,6 +241,7 @@ namespace Battle.Turn
 														selectedUnit.GetPosition(),
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
+														selectedSkill.GetFirstWidth(),
 														selectedUnit.GetDirection());
 
 			var enemies = from tile in selectedTiles
@@ -271,6 +274,7 @@ namespace Battle.Turn
 														selectedUnit.GetPosition(),
 														selectedSkill.GetSecondMinReach(),
 														selectedSkill.GetSecondMaxReach(),
+														selectedSkill.GetSecondWidth(),
 														direction);
 
 				var enemies = from tile in selectedTiles
@@ -298,6 +302,7 @@ namespace Battle.Turn
 													selectedUnit.GetPosition(),
 													selectedSkill.GetSecondMinReach(),
 													selectedSkill.GetSecondMaxReach(),
+													selectedSkill.GetSecondWidth(),
 													selectedUnit.GetDirection());
 
 			var enemies = from tile in selectedTiles
@@ -516,6 +521,7 @@ namespace Battle.Turn
 														selectedUnit.GetPosition(),
 														selectedSkill.GetSecondMinReach(),
 														selectedSkill.GetSecondMaxReach(),
+														selectedSkill.GetSecondWidth(),
 														selectedUnit.GetDirection());
 
 			Tile selectedTile = UdongNoodle.FindEnemyTile(selectedTiles, battleData.selectedUnit);
@@ -557,6 +563,7 @@ namespace Battle.Turn
 														selectedUnitPos,
 														selectedSkill.GetFirstMinReach(),
 														selectedSkill.GetFirstMaxReach(),
+														selectedSkill.GetFirstWidth(),
 														battleData.selectedUnit.GetDirection());
 
 				Tile selectedTile = UdongNoodle.FindEnemyTile(activeRange, battleData.selectedUnit);
@@ -599,6 +606,7 @@ namespace Battle.Turn
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),
 																			selectedSkill.GetSecondMaxReach(),
+																			selectedSkill.GetSecondWidth(),
 																			selectedUnit.GetDirection());
 				if (selectedSkill.GetSkillType() == SkillType.Auto)
 				{
@@ -620,6 +628,7 @@ namespace Battle.Turn
 																battleData.selectedUnit.GetPosition(),
 																battleData.SelectedSkill.GetFirstMinReach(),
 																battleData.SelectedSkill.GetFirstMaxReach(),
+																battleData.SelectedSkill.GetFirstWidth(),
 																battleData.selectedUnit.GetDirection());
 
 			return firstRange;

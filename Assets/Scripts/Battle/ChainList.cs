@@ -43,6 +43,7 @@ public class ChainList : MonoBehaviour {
 																	newCenterTile.GetTilePos(),
 																	skill.GetSecondMinReach(),
 																	skill.GetSecondMaxReach(),
+																	skill.GetSecondWidth(),
 																	unit.GetDirection());
 
 				ChainInfo newChainInfo = new ChainInfo(unit, newCenterTile, newTargetTiles, skill, chainInfo.GetRouteArea());

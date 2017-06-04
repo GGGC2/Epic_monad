@@ -13,7 +13,7 @@ public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		Vector2 deadUnitPos = deadUnit.GetPosition();
 
-		List<Tile> applyArea = tileManager.GetTilesInRange(RangeForm.Diamond, deadUnitPos, 1, 2, Direction.LeftDown);
+		List<Tile> applyArea = tileManager.GetTilesInRange(RangeForm.Diamond, deadUnitPos, 1, 2, 0, Direction.LeftDown);
 		List<Unit> targets = new List<Unit>();
 		foreach (var tile in applyArea)
 		{

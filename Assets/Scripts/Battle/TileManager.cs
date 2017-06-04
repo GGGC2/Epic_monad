@@ -43,7 +43,7 @@ public class TileManager : MonoBehaviour {
 		return tile.transform.position;
 	}
 
-	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, Direction dir)
+	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
 		if (form == RangeForm.Diamond)
 		{
@@ -68,6 +68,10 @@ public class TileManager : MonoBehaviour {
 		else if (form == RangeForm.AllDirection)
 		{
 			return GetTilesInAllDirectionRange(mid, minReach, maxReach);
+		}
+		else if (form == RangeForm.Front)
+		{
+			return GetTilesInFrontRange(mid, minReach, maxReach, width, dir);
 		}
 		else if (form == RangeForm.Sector)
 		{
@@ -138,6 +142,8 @@ public class TileManager : MonoBehaviour {
 			}
 		}
 
+		tilesInRange = tilesInRange.FindAll(t => t != null);
+
 		return tilesInRange;
 	}
 
@@ -151,6 +157,8 @@ public class TileManager : MonoBehaviour {
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
+
+		tilesInRange = tilesInRange.FindAll(t => t != null);
 
 		// Debug.Log("No. of selected tiles : " + tilesInRange.Count);
 		return tilesInRange;
@@ -167,6 +175,8 @@ public class TileManager : MonoBehaviour {
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
 
+		tilesInRange = tilesInRange.FindAll(t => t != null);
+
 		return tilesInRange;
 	}
 
@@ -178,6 +188,45 @@ public class TileManager : MonoBehaviour {
 		minReach = Math.Max(1, minReach);
 		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach,maxReach)).ToList();
 		tilesInRange = tilesInRange.Concat(GetTilesInDiagonalCrossRange(mid, minReach, maxReach)).ToList();
+
+		tilesInRange = tilesInRange.FindAll(t => t != null);
+
+		return tilesInRange;
+	}
+
+	List<Tile> GetTilesInFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
+	{
+		List<Tile> tilesInRange = new List<Tile>();
+		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 바라보는 방향과 수직인 벡터
+
+		for (int i = minReach; i <= maxReach; i++)
+		{
+			Vector2 centerPos = mid + ToVector2(dir) * i;
+			tilesInRange.Add(GetTile(centerPos));
+			int subwidth = 0;
+			for (int j = width; j > 1; j -= 2)
+			{
+				subwidth += 1;
+				if (mid.x == centerPos.x)
+				{
+					// x좌표로 펼친다
+					Vector2 leftSide = centerPos + new Vector2(subwidth, 0);
+					tilesInRange.Add(GetTile(leftSide));
+					Vector2 rightSide = centerPos + new Vector2(-subwidth, 0);
+					tilesInRange.Add(GetTile(rightSide));
+				}
+				else
+				{
+					// y좌표로 펼친다
+					Vector2 leftSide = centerPos + new Vector2(0, subwidth);
+					tilesInRange.Add(GetTile(leftSide));
+					Vector2 rightSide = centerPos + new Vector2(0, -subwidth);
+					tilesInRange.Add(GetTile(rightSide));
+				} 
+			}
+		}
+
+		tilesInRange = tilesInRange.FindAll(t => t != null);
 
 		return tilesInRange;
 	}
@@ -219,20 +268,6 @@ public class TileManager : MonoBehaviour {
 		}
 
 		List<Tile> exceptTiles = new List<Tile>();
-		// if (minReach > 0)
-		// 	exceptTiles.Add(GetTile(mid));
-		// for(int i = 1; i < minReach; i++)
-		// {
-		// 	int j = i-1;
-		// 	Vector2 position = mid + ToVector2(dir)*(i+1);
-		// 	exceptTiles.Add(GetTile(position));
-		// 	while(j > 0)
-		// 	{
-		// 		exceptTiles.Add(GetTile(position + perpendicular*j));
-		// 		exceptTiles.Add(GetTile(position - perpendicular*j));
-		// 		j--;
-		// 	}
-		// }
 
 		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
 

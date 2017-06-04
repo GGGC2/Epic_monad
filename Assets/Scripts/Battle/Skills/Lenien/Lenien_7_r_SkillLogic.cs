@@ -11,7 +11,7 @@ namespace Battle.Skills
         }
         public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit unit) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            List<Tile> nearbyTilesOfLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, unit.GetPosition(), 0, 1, unit.GetDirection());
+            List<Tile> nearbyTilesOfLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, unit.GetPosition(), 0, 1, 0, unit.GetDirection());
             return nearbyTilesOfLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
         }
     }

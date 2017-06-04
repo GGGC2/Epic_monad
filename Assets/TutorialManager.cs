@@ -9,10 +9,15 @@ public class TutorialManager : MonoBehaviour {
 	readonly int maxIndex = 9;
 
 	public Image image;
+	CameraMover cm;
 
 	// Use this for initialization
 	void Start () {
 		index = 1;
+
+		cm = FindObjectOfType<CameraMover>();
+		cm.mouseMoveActive = false;
+		cm.keyboardMoveActive = false;
 	}
 	
 	// Update is called once per frame
@@ -29,6 +34,8 @@ public class TutorialManager : MonoBehaviour {
 		}
 		else if (index == maxIndex)
 		{
+			cm.mouseMoveActive = true;
+			cm.keyboardMoveActive = true;
 			gameObject.SetActive(false);
 		}
 			

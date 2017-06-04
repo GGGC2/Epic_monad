@@ -335,6 +335,7 @@ namespace Battle.Turn {
                                                                 battleData.selectedUnit.GetPosition(),
                                                                 battleData.SelectedSkill.GetFirstMinReach(),
                                                                 battleData.SelectedSkill.GetFirstMaxReach(),
+                                                                battleData.SelectedSkill.GetFirstWidth(),
                                                                 realDirection);
 
             return firstRange;
@@ -346,6 +347,7 @@ namespace Battle.Turn {
                                                                         targetTile.GetTilePos(),
                                                                         selectedSkill.GetSecondMinReach(),
                                                                         selectedSkill.GetSecondMaxReach(),
+                                                                        selectedSkill.GetSecondWidth(),
                                                                         battleData.selectedUnit.GetDirection());
             if (selectedSkill.GetSkillType() == SkillType.Auto)
                 selectedTiles.Remove(targetTile);
