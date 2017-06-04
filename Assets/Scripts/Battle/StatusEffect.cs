@@ -308,14 +308,14 @@ public class StatusEffect {
 
             result = nearbyUnits.Count(x => x.GetSide() == Side.Enemy);
         }
-        else if (seVarEnum == StatusEffectVar.NearestUnit)
+        /*else if (seVarEnum == StatusEffectVar.NearestUnit)
         {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             List<Unit> exceptItself = unitManager.GetAllUnits().FindAll(x => x.GetNameInCode() == "curi");
             
             result = exceptItself.Min(x => Utility.GetDistance(caster.GetPosition(), x.GetPosition()));
             if (result > 25) result = 25;
-        }
+        }*/
         else if (seVarEnum == StatusEffectVar.Power)
             result = caster.GetActualStat(Stat.Power);
         else if (seVarEnum == StatusEffectVar.RemainEnemy)

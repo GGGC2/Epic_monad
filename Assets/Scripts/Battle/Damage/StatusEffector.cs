@@ -68,11 +68,11 @@ public static class StatusEffector
 	private static bool IsValid(StatusEffect se)
 	{
 		int elems = se.fixedElem.actuals.Count;
-		for (int i = 0; i < elems; i++)
+		/*for (int i = 0; i < elems; i++)
 		{
 			if (!IsValidAtZero(se.GetStatusEffectType(i)) && se.GetAmount(i) == 0)
 				return false;
-		}
+		}*/
 		return true;
 	}
 
