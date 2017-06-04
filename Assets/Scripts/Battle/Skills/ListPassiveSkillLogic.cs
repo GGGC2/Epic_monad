@@ -118,23 +118,23 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
     }
 
     public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
-        bool ignored = true;
+        bool ignored = false;
         foreach (var skillLogic in passiveSkillLogics) {
             if (!skillLogic.TriggerStatusEffectApplied(statusEffect, caster, target)) {
-                ignored = false;
+                ignored = true;
             }
         }
-        return ignored;
+        return !ignored;
     }
 
     public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) {
-        bool ignored = true;
+        bool ignored = false;
         foreach (var skillLogic in passiveSkillLogics) {
             if (!skillLogic.TriggerStatusEffectRemoved(statusEffect, unit)) {
-                ignored = false;
+                ignored = true;
             }
         }
-        return ignored;
+        return !ignored;
     }
 
     public override void TriggerUsingSkill(Unit caster, List<Unit> targets)

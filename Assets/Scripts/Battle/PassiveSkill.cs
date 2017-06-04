@@ -27,11 +27,15 @@ public class PassiveSkill {
         foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
             if (statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <= partyLevel) {
                 StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+
+                List<StatusEffect.FixedElement> newStatusEffectList = new List<StatusEffect.FixedElement>(statusEffectList);
                 foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
                     if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName) {
-                        statusEffectList.Remove(statusEffect);  //강화된 statusEffect로 대체
+                       newStatusEffectList.Remove(statusEffect);  //강화된 statusEffect로 대체
                     }
                 }
+                statusEffectList = newStatusEffectList;
+
                 statusEffectList.Add(statusEffectToAdd);
             }
         }
