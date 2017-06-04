@@ -11,7 +11,7 @@ namespace Battle.Skills {
                 Tile tileUnderUnit = target.GetTileUnderUnit();
                 if (tileUnderUnit.GetTileElement() == Element.Fire) {
                     TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-                    List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, Direction.Left);
+                    List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, 0, Direction.Left);
                     DamageCalculator.AttackDamage damage = new DamageCalculator.AttackDamage();
                     damage.resultDamage = statusEffect.GetAmount();
 
