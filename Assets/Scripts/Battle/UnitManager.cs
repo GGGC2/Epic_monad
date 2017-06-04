@@ -71,13 +71,14 @@ public class UnitManager : MonoBehaviour {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
             List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
             foreach (StatusEffect statusEffect in statusEffectList) {
+                bool toBeRemoved = false;
                 Skill skill = statusEffect.GetOriginSkill();
                 PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
                 if(skill != null)
-                    SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                    toBeRemoved = !SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
                 if(passiveSkill != null)
-                    SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                if(statusEffect.GetRemainStack() != 0)
+                    toBeRemoved = !SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
+                if(!toBeRemoved)
                     newStatusEffectList.Add(statusEffect);
             }
             unit.SetStatusEffectList(newStatusEffectList);

@@ -170,10 +170,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
         }
     }
 
-    public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+    public override bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        bool toBeRemoved = false;
         foreach (var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect);
+            if(!skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect)) {
+                toBeRemoved = true;
+            }
         }
+        return !toBeRemoved;
     }
 
     public override void TriggerRest(Unit caster) {

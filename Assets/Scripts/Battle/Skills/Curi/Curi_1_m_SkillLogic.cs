@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Skills {
     public class Curi_1_m_SkillLogic : BaseSkillLogic {
-        public override void TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) { //'가연성 부착물' 스킬로직
+        public override bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) { //'가연성 부착물' 스킬로직
             if (statusEffect.GetDisplayName() == "가연성 부착물") {
                 Unit caster = statusEffect.GetCaster();
                 Tile tileUnderUnit = target.GetTileUnderUnit();
@@ -29,9 +29,11 @@ namespace Battle.Skills {
                     foreach (var secondaryTarget in damagedUnitList) {
                         secondaryTarget.currentHealth -= (int)DamageCalculator.GetActualDamage(skillInstanceData, true);
                     }
-                    statusEffect.DecreaseRemainStack();
+                    return false;
                 }
+                return true;
             }
+            return true;
         }
     }
 }

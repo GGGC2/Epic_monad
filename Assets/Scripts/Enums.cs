@@ -168,6 +168,7 @@ namespace Enums {
 	public enum StatusEffectVar
 	{
 		None,
+        Once,
 		Stack, // 스택 비례일 경우
 		Power,
 		Level,
