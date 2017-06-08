@@ -180,9 +180,14 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
         return !toBeRemoved;
     }
 
-    public override void TriggerRest(Unit caster) {
+    public override void TriggerOnRest(Unit caster) {
         foreach(var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerRest(caster);
+            skillLogic.TriggerOnRest(caster);
+        }
+    }
+    public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+        foreach(var skillLogic in passiveSkillLogics) {
+            skillLogic.TriggerStatusEffectsOnRest(target, statusEffect);
         }
     }
     }

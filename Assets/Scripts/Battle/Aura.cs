@@ -19,20 +19,28 @@ class Aura{
     }
     public static bool Update(Unit owner, StatusEffect statusEffect) {
         Skill originSkill = statusEffect.GetOriginSkill();
+        PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
         Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(owner, statusEffect);
         foreach (var kv in unitInRangeDictionary) {
             Unit unit = kv.Key;
             if(unit == owner)   continue;
             StatusEffect alreadyAppliedEffect = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == originSkill
+                                                    && se.GetOriginPassiveSkill() == originPassiveSkill
                                                     && se.GetStatusEffectType() != StatusEffectType.Aura));
             if (alreadyAppliedEffect != null && kv.Value == false) {                    //원래 오오라 범위 안에 있었는데 액션 이후 벗어난 경우
                 alreadyAppliedEffect.DecreaseRemainStack();
                 alreadyAppliedEffect.GetMemorizedUnits().Remove(owner);
             } else if(kv.Value == true){
-                StatusEffect.FixedElement fixedElementOfAuraStatusEffect = originSkill.GetStatusEffectList().Find(se => se.actuals[0].statusEffectType != StatusEffectType.Aura);
-                    
+                StatusEffect.FixedElement fixedElementOfAuraStatusEffect = null;
+                if (originSkill != null)
+                    fixedElementOfAuraStatusEffect = originSkill.GetStatusEffectList().Find(se => 
+                                                        se.actuals[0].statusEffectType != StatusEffectType.Aura);
+                if (originPassiveSkill != null)
+                    fixedElementOfAuraStatusEffect = originPassiveSkill.GetStatusEffectList().Find(se =>
+                                                        se.actuals[0].statusEffectType != StatusEffectType.Aura);
+
                 if (alreadyAppliedEffect == null) {                                     //원래 오오라 효과를 받지 않았던 대상이 범위 안으로 들어왔을 경우
-                    StatusEffect auraStatusEffect = new StatusEffect(fixedElementOfAuraStatusEffect, statusEffect.GetCaster(), originSkill, null);
+                    StatusEffect auraStatusEffect = new StatusEffect(fixedElementOfAuraStatusEffect, statusEffect.GetCaster(), originSkill, originPassiveSkill);
                     auraStatusEffect.GetMemorizedUnits().Add(owner); 
                     unit.GetStatusEffectList().Add(auraStatusEffect);
                 } else if (!alreadyAppliedEffect.GetMemorizedUnits().Contains(owner)) {  //원래 오오라 효과를 받고 있었는데, 그 효과가 이 오오라를 가진 유닛으로 인한 것이 아닌 경우
@@ -57,6 +65,7 @@ class Aura{
                 Unit unit = kv.Key;
                 if (kv.Value == true) {
                     StatusEffect statusEffectToRemove = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == statusEffect.GetOriginSkill()
+                                                        && se.GetOriginPassiveSkill() == statusEffect.GetOriginPassiveSkill()
                                                         && se.GetStatusEffectType() != StatusEffectType.Aura));
                     if (statusEffectToRemove != null) {
                         statusEffectToRemove.DecreaseRemainStack();

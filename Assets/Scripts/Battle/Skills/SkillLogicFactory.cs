@@ -289,8 +289,14 @@ public static class SkillLogicFactory
             case "순은의 매듭":
             passiveSkillLogic = new Eugene_6_m_SkillLogic();
             break;
+            case "야영 전문가":
+            passiveSkillLogic = new Eugene_6_r_SkillLogic();
+            break;
             case "청명수의 은총":
             passiveSkillLogic = new Eugene_7_l_SkillLogic();
+            break;
+            case "길잡이":
+            passiveSkillLogic = new Eugene_7_r_SkillLogic();
             break;
 
 			// 트리아나

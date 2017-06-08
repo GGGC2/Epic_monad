@@ -12,21 +12,29 @@ public class RestAndRecover {
 
 	public static IEnumerator Run(BattleData battleData)
 	{
+        Unit unit = battleData.selectedUnit;
 		int usingActivityPointToRest = GetRestCostAP(battleData);
-		int maxHealthOfUnit = battleData.selectedUnit.GetStat(Stat.MaxHealth);
+		int maxHealthOfUnit = unit.GetStat(Stat.MaxHealth);
 		int level = battleData.partyLevel;
 		Debug.Log("Float : " + ((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest));
 		Debug.Log("Int : " + (int)((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest));
 		int recoverHealthDuringRest = (int)((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest);
-		battleData.selectedUnit.UseActivityPoint(usingActivityPointToRest);
-		IEnumerator recoverHealthCoroutine = battleData.selectedUnit.RecoverHealth(recoverHealthDuringRest);
+		unit.UseActivityPoint(usingActivityPointToRest);
+		IEnumerator recoverHealthCoroutine = unit.RecoverHealth(recoverHealthDuringRest);
 
 		BattleManager battleManager = battleData.battleManager;
 		yield return battleManager.StartCoroutine(recoverHealthCoroutine);
 
-		// 휴식시 발동되는 특성
-		List<PassiveSkill> passiveSkillList = battleData.selectedUnit.GetLearnedPassiveSkillList();
-		SkillLogicFactory.Get(passiveSkillList).TriggerRest(battleData.selectedUnit);
+		// 휴식시 발동되는 특성 및 statusEffect
+		List<PassiveSkill> passiveSkillList = unit.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkillList).TriggerOnRest(unit);
+        List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
+        foreach(StatusEffect statusEffect in statusEffectList) {
+            PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
+            if(passiveSkill != null) {
+                SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsOnRest(unit, statusEffect);
+            }
+        }
 
 		Debug.Log("Rest. Using " + usingActivityPointToRest + "AP and recover " + recoverHealthDuringRest + " HP");
 

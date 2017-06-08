@@ -102,9 +102,9 @@ public class BasePassiveSkillLogic
     public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //false를 리턴할 시 해당 statusEffect가 사라짐.
         return true;
     }
-	public virtual void TriggerRest(Unit caster)
-	{
-
+	public virtual void TriggerOnRest(Unit caster) {
 	}
+    public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+    }
 }
 }

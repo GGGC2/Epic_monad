@@ -56,9 +56,14 @@ eugene,8,true,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,-,1,TRU
 eugene,29,true,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,2,HealOverPhase,Power,0.7,0,NONE,Etc,O,0,1.2,TRUE,,,,,
 eugene,43,false,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,3,HealOverPhase,Power,0.7,0,NONE,Etc,O,0,1.2,TRUE,Etc,O,0,0,NONE
 eugene,15,false,거울 방패,마법 반사,TRUE,FALSE,FALSE,TRUE,9999,-,1,TRUE,None,None,None,1,MagicReflect,O,0,100,TRUE,,,,,,,,,,
-eugene,15,false,여행자의 발걸음,이동 시 행동력 소모 감소,TRUE,TRUE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,RequireMoveAPChange,O,0,-20,TRUE,,,,,,,,,,
-eugene,22,true,얼음의 가호,마법 반사,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,2,MagicReflect,O,0,35,TRUE,Etc,O,0,6,TRUE,,,,,
+eugene,15,true,여행자의 발걸음,이동 시 행동력 소모 감소,TRUE,TRUE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,RequireMoveAPChange,O,0,-20,TRUE,,,,,,,,,,
+eugene,43,false,길잡이,길잡이,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,1,Aura,O,0,2,NONE,,,,,,,,,,
+eugene,43,false,길잡이,길잡이_aura,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,1,Etc,O,0,0,TRUE,,,,,,,,,,
+eugene,43,false,길잡이,이동 시 행동력 소모 감소,TRUE,TRUE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,RequireMoveAPChange,O,0,-20,TRUE,,,,,,,,,,
+eugene,22,true,얼음의 가호,마법 반사,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,2,MagicReflect,O,0,35,TRUE,Etc,O,0,6,TRUE,,,,,,
 eugene,50,false,겨울의 가호,마법 반사,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,3,MagicReflect,O,0,60,TRUE,Etc,O,0,10,TRUE,Etc,O,0,1,NONE
+eugene,36,false,야영 전문가,야영 전문가,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,1,Aura,O,0,2,NONE,,,,,,,,,,
+eugene,36,false,야영 전문가,야영 전문가_aura,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,1,Etc,O,0,1,NONE,,,,,,,,,,
 luvericha,8,false,위기상황,속도 상승,TRUE,TRUE,TRUE,FALSE,9999,-,99,FALSE,None,None,None,1,SpeedChange,O,10,0,FALSE,,,,,,,,,,
 luvericha,15,false,수호의 오오라,수호의 오오라,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,None,None,None,2,DefenseChange,Level,0.3,24,FALSE,ResistanceChange,Level,0.3,24,FALSE,,,,,
 luvericha,22,false,에튀드 : 햇빛,지속 회복,TRUE,FALSE,FALSE,FALSE,3,-,1,TRUE,None,None,None,1,HealOverPhase,Power,0.7,0,NONE,,,,,,,,,,
