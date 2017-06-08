@@ -29,7 +29,7 @@ namespace Battle.Skills {
                     caster.RemoveStatusEffect(originalStatusEffect);
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
                 caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제").flexibleElem.display.element = element;
-            } else
+            } else if(originalStatusEffect != null)
                 caster.RemoveStatusEffect(originalStatusEffect);
         }
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {

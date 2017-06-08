@@ -17,8 +17,9 @@ public class Lenien_5_r_SkillLogic : BasePassiveSkillLogic {
 		else
 		{
 			List<StatusEffect> statusEffectList = lenien.GetStatusEffectList();
-			statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "자기 부상");
-			lenien.SetStatusEffectList(statusEffectList);
+            StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "자기 부상");
+            if(statusEffect != null)
+                lenien.RemoveStatusEffect(statusEffect);
 		}
 	} 
 }

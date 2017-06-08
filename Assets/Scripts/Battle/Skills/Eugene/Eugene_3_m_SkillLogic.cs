@@ -7,7 +7,7 @@ namespace Battle.Skills {
             StatusEffect statusEffectToChange = statusEffectList.Find(se => (se.GetOriginSkillName() == "순백의 방패"
                                         && se.GetStatusEffectType() == Enums.StatusEffectType.Aura));
             if(statusEffectToChange != null) {
-                target.GetStatusEffectList().Remove(statusEffectToChange);
+                target.RemoveStatusEffect(statusEffectToChange);
                 return true;
             }
             else return false;

@@ -24,21 +24,20 @@ public class PassiveSkill {
 
 	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
 	{
+        StatusEffect.FixedElement previousStatusEffect = null;
         foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
+            StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if (statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <= partyLevel) {
-                StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
 
-                List<StatusEffect.FixedElement> newStatusEffectList = new List<StatusEffect.FixedElement>(statusEffectList);
-                foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
-                    if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName &&
-                            statusEffect.display.toBeReplaced) {
-                       newStatusEffectList.Remove(statusEffect);  //강화된 statusEffect로 대체
-                    }
+                if (previousStatusEffect != null && previousStatusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName
+                    && previousStatusEffect.display.toBeReplaced) { //이전의 previousStatusEffect에 대해서만 대체 여부를 확인함.
+                                                                    //즉, 대체되어야 하는 StatusEffect는 csv 파일에서 바로 다음 줄에 만들어야 함.
+                    statusEffectList.Remove(previousStatusEffect);
                 }
-                statusEffectList = newStatusEffectList;
 
                 statusEffectList.Add(statusEffectToAdd);
             }
+            previousStatusEffect = statusEffectToAdd;
         }
 	}
 

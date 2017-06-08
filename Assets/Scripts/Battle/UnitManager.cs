@@ -69,7 +69,7 @@ public class UnitManager : MonoBehaviour {
     public void TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
+            List<StatusEffect> statusEffectsToRemove = new List<StatusEffect>();
             foreach (StatusEffect statusEffect in statusEffectList) {
                 bool toBeRemoved = false;
                 Skill skill = statusEffect.GetOriginSkill();
@@ -78,25 +78,32 @@ public class UnitManager : MonoBehaviour {
                     toBeRemoved = !SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
                 if(passiveSkill != null)
                     toBeRemoved = !SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                if(!toBeRemoved)
-                    newStatusEffectList.Add(statusEffect);
+                if(toBeRemoved)
+                    statusEffectsToRemove.Add(statusEffect);
             }
-            unit.SetStatusEffectList(newStatusEffectList);
+            foreach(StatusEffect statusEffect in statusEffectsToRemove) 
+                unit.RemoveStatusEffect(statusEffect);
         }
     }
 
     public void UpdateStatusEffectsAtActionEnd() {
-        foreach(var unit in GetAllUnits()) {
-            List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-            foreach(StatusEffect statusEffect in statusEffectList) {
+        foreach (var unit in GetAllUnits()) {
+            foreach (StatusEffect statusEffect in unit.GetStatusEffectList()) {
+                if(statusEffect.GetStatusEffectType() == StatusEffectType.Aura) {
+                    Aura.Update(unit, statusEffect);
+                }
+            }
+        }
+        foreach (var unit in GetAllUnits()) {
+            foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
                         float statusEffectVar = statusEffect.GetStatusEffectVar(i, unit);
                         statusEffect.CalculateAmount(i, statusEffectVar);
                     }
-                    newStatusEffectList.Add(statusEffect);
                 }
+                else
+                    unit.RemoveStatusEffect(statusEffect);
             }
         }
     }
@@ -297,7 +304,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateRemainPhaseAtPhaseEnd();
-			unit.UpdateStatusEffect();
+			unit.UpdateStatusEffectAtPhaseEnd();
 			unit.UpdateSkillCooldown();
 			
 		}

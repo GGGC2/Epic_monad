@@ -289,7 +289,7 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void UpdateStatusEffect()
+	public void UpdateStatusEffectAtPhaseEnd()
 	{
 		
 	}
@@ -401,16 +401,13 @@ public class Unit : MonoBehaviour
 
 	public void UpdateRemainPhaseAtPhaseEnd()
 	{
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (!statusEffect.GetIsInfinite())
 				statusEffect.DecreaseRemainPhase();
-			if (statusEffect.GetRemainPhase() > 0)
-				newStatusEffectList.Add(statusEffect);
+			if (statusEffect.GetRemainPhase() <= 0)
+				RemoveStatusEffect(statusEffect);
 		}
-
-		statusEffectList = newStatusEffectList;
 	}
 
 	public void UpdateStartPosition()
@@ -420,11 +417,16 @@ public class Unit : MonoBehaviour
 	}
     
     public void RemoveStatusEffect(StatusEffect statusEffect) {
-        statusEffectList.Remove(statusEffect);
-        SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
+        bool toBeRemoved = true;
+        
+        toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
         Skill originSkill = statusEffect.GetOriginSkill();
         if(originSkill != null) {
-            SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
+            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
+        }
+        if(toBeRemoved) {
+            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
+            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
         }
     }
 	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
@@ -444,7 +446,7 @@ public class Unit : MonoBehaviour
 			if (matchIsBuff || matchIsDebuff || matchAll)
 			{
                 if (SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerStatusEffectRemoved(statusEffect, this)) {
-                    statusEffectList.Remove(statusEffect);
+                    RemoveStatusEffect(statusEffect);
                     num -= 1;
                 }
 			}
@@ -507,24 +509,23 @@ public class Unit : MonoBehaviour
 		}
 
 		// 0이 된 실드 제거
-		List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-		foreach (var se in statusEffectList)
+		List<StatusEffect> statusEffectsToRemove = new List<StatusEffect>();
+		foreach (StatusEffect se in statusEffectList)
 		{
 			bool isEmptyShield = false;
 			int actuals = se.fixedElem.actuals.Count;
 			for (int i = 0; i < actuals; i++)
 			{
 				if (se.GetStatusEffectType(i) == StatusEffectType.Shield &&
-					se.GetRemainAmount(i) == 0)
-				{
+					se.GetRemainAmount(i) == 0) {
 					isEmptyShield = true;
 				}
 			}
-
-			if (!isEmptyShield)
-				newStatusEffectList.Add(se);
+			if (isEmptyShield)
+				statusEffectsToRemove.Add(se);
 		}
-		SetStatusEffectList(newStatusEffectList);
+        foreach(StatusEffect statusEffect in statusEffectsToRemove) 
+		    RemoveStatusEffect(statusEffect);
 
 		int finalDamage = (int)originDotDamage;
 

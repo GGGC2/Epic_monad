@@ -9,7 +9,7 @@ public class Reina_3_l_SkillLogic : BasePassiveSkillLogic {
 	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)	
 	{
 		int numberOfBuffFromOtherUnits = skillInstanceData.GetCaster().GetStatusEffectList().Count(
-						x => x.GetIsBuff() && (x.GetCaster() != skillInstanceData.GetCaster().gameObject));
+						x => x.GetIsBuff() && (x.GetCaster() != skillInstanceData.GetCaster()));
 
 		// 갯수 * {40 + (레벨 * 0.5)} %
 		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();

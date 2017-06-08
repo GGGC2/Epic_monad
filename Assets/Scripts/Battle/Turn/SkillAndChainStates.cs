@@ -478,12 +478,12 @@ namespace Battle.Turn {
 
             // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
             if (isChainable) {
-                List<StatusEffect> newStatusEffectList = new List<StatusEffect>();
-                newStatusEffectList = caster.GetStatusEffectList().FindAll(x => !(x.GetIsOnce() &&
+                List<StatusEffect> statusEffectsToRemove = caster.GetStatusEffectList().FindAll(x => (x.GetIsOnce() &&
                                                                                     (x.GetStatusEffectType() == StatusEffectType.PowerChange ||
                                                                                     x.GetStatusEffectType() == StatusEffectType.DamageChange ||
                                                                                     x.GetStatusEffectType() == StatusEffectType.Smite)));
-                caster.SetStatusEffectList(newStatusEffectList);
+                foreach(StatusEffect statusEffect in statusEffectsToRemove)
+                    caster.RemoveStatusEffect(statusEffect);
             }
             battleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
@@ -499,9 +499,9 @@ namespace Battle.Turn {
             int randomNumber = UnityEngine.Random.Range(0, 100);
 
             // 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
-            List<StatusEffect> statusEffectListAfterEvade = new List<StatusEffect>();
-            statusEffectListAfterEvade = caster.GetStatusEffectList().FindAll(x => !(x.IsOfType(StatusEffectType.EvasionChange)));
-            caster.SetStatusEffectList(statusEffectListAfterEvade);
+            List<StatusEffect> statusEffectsToRemove =  caster.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
+            foreach(StatusEffect statusEffect in statusEffectsToRemove)
+                caster.RemoveStatusEffect(statusEffect);
 
             if (totalEvasionChance > randomNumber) {
                 battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");

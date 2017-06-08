@@ -16,8 +16,9 @@ namespace Battle.Skills
 		    if (stack == 0)
 		    {
 			    List<StatusEffect> statusEffectList = yeong.GetStatusEffectList();
-			    statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "위험 돌파");
-                yeong.SetStatusEffectList(statusEffectList);
+                StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "위험 돌파");
+                if(statusEffect != null)
+                    yeong.RemoveStatusEffect(statusEffect);
 		    }
 		    else
 		    {

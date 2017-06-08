@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillInstanceData : MonoBehaviour {
+public class SkillInstanceData {
     Battle.DamageCalculator.AttackDamage damage;
     Skill skill;
     Unit caster;

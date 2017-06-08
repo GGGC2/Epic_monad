@@ -10,8 +10,9 @@ namespace Battle.Skills {
             List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
 
             if(elementOfTile != Element.Fire) {
-                statusEffectList = statusEffectList.FindAll(x => x.GetOriginSkillName() != "신속 반응");
-                caster.SetStatusEffectList(statusEffectList);
+                StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "신속 반응");
+                if(statusEffect != null)
+                    caster.RemoveStatusEffect(statusEffect);
             }
             else if(elementOfTile == Element.Fire) {
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);

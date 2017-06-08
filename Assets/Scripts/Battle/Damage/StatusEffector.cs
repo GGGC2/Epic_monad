@@ -15,8 +15,9 @@ public static class StatusEffector
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
 			.ToList();
-        bool ignoreStatusEffect = false;
+        List<StatusEffect> newStatusEffects = new List<StatusEffect>();
         foreach(var statusEffect in statusEffects) {
+            bool ignoreStatusEffect = false;
             List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
             foreach(StatusEffect targetStatusEffect in targetStatusEffectList) {
                 if((targetStatusEffect.GetOriginSkill() != null && SkillLogicFactory.Get(targetStatusEffect.GetOriginSkill()).
@@ -29,10 +30,10 @@ public static class StatusEffector
                 ignoreStatusEffect = true;
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
             }
+            if(ignoreStatusEffect == false)
+                newStatusEffects.Add(statusEffect);
         }
-        if(ignoreStatusEffect == false) {
-            AttachStatusEffect(caster, statusEffects, target);
-        }
+        AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
 	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
@@ -97,9 +98,9 @@ public static class StatusEffector
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
 				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
-				var statusEffectListOfTarget = target.GetStatusEffectList();
-				statusEffectListOfTarget.Remove(alreadyAppliedSameEffect);
-				statusEffectListOfTarget.Add(statusEffect);
+                List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                newStatusEffectList.Add(statusEffect);
+                target.SetStatusEffectList(newStatusEffectList);
 			}
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
@@ -118,8 +119,10 @@ public static class StatusEffector
 			else
 			{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
-				target.GetStatusEffectList().Add(statusEffect);
-			}
+                List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
+                newStatusEffectList.Add(statusEffect);
+                target.SetStatusEffectList(newStatusEffectList);
+            }
 		}
 	}
 }

@@ -78,22 +78,20 @@ public class Skill{
       
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
     {
-        foreach (var statusEffectInfo in statusEffectInfoList)
-        {
-            if(statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <=  partyLevel) {
-                StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+        StatusEffect.FixedElement previousStatusEffect = null;
+        foreach (var statusEffectInfo in statusEffectInfoList) {
+            StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+            if (statusEffectInfo.GetOriginSkillName().Equals(name) && statusEffectInfo.GetRequireLevel() <=  partyLevel) {
 
-                List<StatusEffect.FixedElement> newStatusEffectList = new List<StatusEffect.FixedElement>(statusEffectList);
-                foreach (StatusEffect.FixedElement statusEffect in statusEffectList) {
-                    if (statusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName &&
-                            statusEffect.display.toBeReplaced) {
-                        newStatusEffectList.Remove(statusEffect);
-                    }
+                if(previousStatusEffect != null && previousStatusEffect.display.originSkillName == statusEffectToAdd.display.originSkillName 
+                    && previousStatusEffect.display.toBeReplaced) { //이전의 previousStatusEffect에 대해서만 대체 여부를 확인함.
+                                                                    //즉, 대체되어야 하는 StatusEffect는 csv 파일에서 바로 다음 줄에 만들어야 함.
+                    statusEffectList.Remove(previousStatusEffect);
                 }
-                statusEffectList = newStatusEffectList;
 
                 statusEffectList.Add(statusEffectToAdd);
             }
+            previousStatusEffect = statusEffectToAdd;
         }
     }
 
