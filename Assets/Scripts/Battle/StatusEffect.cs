@@ -102,7 +102,7 @@ public class StatusEffect {
             public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
             public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
             public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
-            public Unit memorizedunit;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
+            public List<Unit> memorizedUnits;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
 
             public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
                 this.originSkill = originSkill;
@@ -110,6 +110,7 @@ public class StatusEffect {
                 this.caster = caster;
                 this.remainStack = 1;
                 this.remainPhase = defaultPhase;
+                this.memorizedUnits = new List<Unit>();
             }
         }
 
@@ -162,7 +163,7 @@ public class StatusEffect {
     public int GetRemainPhase() { return flexibleElem.display.remainPhase; }
     public int GetRemainStack() { return flexibleElem.display.remainStack; }
     public Element GetElement() { return flexibleElem.display.element; }
-    public Unit GetMemorizedUnit() { return flexibleElem.display.memorizedunit; }
+    public List<Unit> GetMemorizedUnits() { return flexibleElem.display.memorizedUnits; }
 
     public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
@@ -234,10 +235,10 @@ public class StatusEffect {
     }
 
     public void CalculateAmount(float statusEffectVar) {
-        flexibleElem.actuals[0].amount = statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase;
+        flexibleElem.actuals[0].amount = (statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase) * GetRemainStack();
     }
     public void CalculateAmount(int i, float statusEffectVar) {
-        flexibleElem.actuals[i].amount = statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase;
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
     }
     
     public float GetStatusEffectVar(int i, Unit caster) {
