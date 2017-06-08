@@ -223,6 +223,11 @@ public class Unit : MonoBehaviour
 		SetDirection(direction);
 		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
+        foreach (StatusEffect statusEffect in GetStatusEffectList()) {
+            if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange && statusEffect.GetIsOnce() == true) {
+                RemoveStatusEffect(statusEffect);
+            }
+        }
     }
 
 	public Vector2 GetPosition()
@@ -364,7 +369,7 @@ public class Unit : MonoBehaviour
 				{
 					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
 					{
-						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;	
+						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;
 					}
 					else // 절대값 합산
 					{
@@ -445,10 +450,8 @@ public class Unit : MonoBehaviour
 			bool matchAll = (category == StatusEffectCategory.All);
 			if (matchIsBuff || matchIsDebuff || matchAll)
 			{
-                if (SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerStatusEffectRemoved(statusEffect, this)) {
-                    RemoveStatusEffect(statusEffect);
-                    num -= 1;
-                }
+                RemoveStatusEffect(statusEffect);
+                num -= 1;
 			}
 		}
 	}
@@ -627,7 +630,7 @@ public class Unit : MonoBehaviour
 		yield return null;
 	}
 
-	public void ApplyHealOverPhase()
+	public IEnumerator ApplyHealOverPhase()
 	{
 		float totalAmount = 0.0f;
 
@@ -641,7 +644,9 @@ public class Unit : MonoBehaviour
 				}
 			}
 		}
-		RecoverHealth(totalAmount);
+        if(totalAmount != 0)
+		    yield return RecoverHealth(totalAmount);
+        else yield return null;
 	}
 
 	public IEnumerator RecoverHealth(float amount)

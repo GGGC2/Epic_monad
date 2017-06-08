@@ -543,7 +543,7 @@ namespace Battle.Turn {
                 SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
                                                             reflectTargetList, unitInChain, 1);
                 var reflectCoroutine = unitInChain.Damaged(reflectInstanceData, true);
-                battleManager.StartCoroutine(reflectCoroutine);
+                yield return battleManager.StartCoroutine(reflectCoroutine);
             }
 
             var damageCoroutine = target.Damaged(skillInstanceData, true);

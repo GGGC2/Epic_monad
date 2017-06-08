@@ -266,11 +266,10 @@ public class UnitManager : MonoBehaviour {
         return enemyUnits;
     }
 
-	public IEnumerator ApplyEachDOT()
-	{
-		List<Unit> unitList = new List<Unit>();
-		units.ForEach(x => unitList.Add(x));
-		foreach (var unit in unitList)
+	public IEnumerator ApplyEachDOT() {
+        List<Unit> unitList = new List<Unit>();
+        units.ForEach(x => unitList.Add(x));
+        foreach (var unit in unitList)
 		{
 			if (unit != null)
 				yield return StartCoroutine(unit.ApplyDamageOverPhase());
@@ -279,10 +278,13 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-    public void ApplyEachHeal() {
-        foreach(var unit in units) {
+    public IEnumerator ApplyEachHeal() {
+        List<Unit> unitList = new List<Unit>();
+        units.ForEach(x => unitList.Add(x));
+        foreach (var unit in unitList) {
             if(unit != null)
-                unit.ApplyHealOverPhase();
+                yield return unit.ApplyHealOverPhase();
+            else yield return null;
         }
     }
 

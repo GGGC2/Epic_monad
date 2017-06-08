@@ -253,8 +253,10 @@ public class DamageCalculator
 			{
                 if(statusEffect.GetOriginSkill() != null)
                     SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
-				reflectAmount = reflectAmount + attackDamage * statusEffect.GetAmount();
-				break;
+                if (statusEffect.GetIsOnce() == true)
+                    target.RemoveStatusEffect(statusEffect);
+                reflectAmount += attackDamage * statusEffect.GetAmount()/100;
+                break;
 			}
 		}
 		return reflectAmount;

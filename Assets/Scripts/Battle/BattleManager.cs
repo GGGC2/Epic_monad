@@ -520,7 +520,7 @@ public class BattleManager : MonoBehaviour
 		battleData.currentPhase++;
 
 		battleData.unitManager.StartPhase(battleData.currentPhase);
-        battleData.unitManager.ApplyEachHeal();
+        yield return StartCoroutine(battleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);

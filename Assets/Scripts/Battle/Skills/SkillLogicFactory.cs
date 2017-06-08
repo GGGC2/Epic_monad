@@ -74,6 +74,12 @@ public static class SkillLogicFactory
             case "거울 방패":
             skillLogic = new Eugene_3_m_SkillLogic();
             break;
+            case "얼음의 가호":
+            skillLogic = new Eugene_4_l_SkillLogic();
+            break;
+            case "겨울의 가호":
+            skillLogic = new Eugene_8_l_SkillLogic();
+            break;
 
 			// 카샤스티
 			case "더블 샷":

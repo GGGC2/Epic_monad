@@ -42,10 +42,14 @@ public class PathFinder {
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.down);
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.left);
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right);
-		}		
-		//// queue가 비었으면 loop를 탈출.		
-		
-		return tilesWithPath;
+		}
+        //// queue가 비었으면 loop를 탈출.		
+        if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange)) {
+            foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
+                tileWithPath.requireActivityPoint = (int)(unit.GetActualEffect((float)tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
+            }
+        }
+        return tilesWithPath;
 	}
 	
 	static void SearchNearbyTile(Dictionary<Vector2, Tile> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
@@ -70,11 +74,6 @@ public class PathFinder {
 		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
 		{
 			requireAP = (int)(unit.GetActualEffect((float) requireAP, StatusEffectType.RequireMoveAPChange));
-            foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
-                if(statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange && statusEffect.GetIsOnce() == true) {
-                    unit.RemoveStatusEffect(statusEffect);
-                }
-            }
 		}
 		if (requireAP > remainAP) return;
 		
