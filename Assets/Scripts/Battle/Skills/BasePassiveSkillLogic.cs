@@ -103,7 +103,9 @@ public class BasePassiveSkillLogic
         return true;
     }
 	public virtual void TriggerOnRest(Unit caster) {
-	}
+    }
+    public virtual void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
+    }
     public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
     }
 }

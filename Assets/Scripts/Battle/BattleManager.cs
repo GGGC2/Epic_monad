@@ -6,6 +6,7 @@ using Enums;
 using LitJson;
 using System;
 using Battle.Turn;
+using Battle.Skills;
 
 public class BattleManager : MonoBehaviour
 {
@@ -110,6 +111,9 @@ public class BattleManager : MonoBehaviour
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetName() + "'s turn");
+        foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
+            SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
+        }
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.

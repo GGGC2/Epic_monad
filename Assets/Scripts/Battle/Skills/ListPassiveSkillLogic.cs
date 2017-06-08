@@ -185,10 +185,15 @@ public class ListPassiveSkillLogic : BasePassiveSkillLogic
             skillLogic.TriggerOnRest(caster);
         }
     }
-    public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
-        foreach(var skillLogic in passiveSkillLogics) {
-            skillLogic.TriggerStatusEffectsOnRest(target, statusEffect);
+    public override void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
+        foreach (var skillLogic in passiveSkillLogics) {
+            skillLogic.TriggerOnTurnStart(caster, turnStarter);
         }
+    }
+    public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+    foreach(var skillLogic in passiveSkillLogics) {
+        skillLogic.TriggerStatusEffectsOnRest(target, statusEffect);
+    }
     }
     }
 }
