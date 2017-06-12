@@ -48,71 +48,54 @@ public class DialogueManager : MonoBehaviour {
 				break;
 			}
 			
-			if (dialogueDataList[i].GetCommandType() == "adv_start")
+			if(HandleSceneChange(dialogueDataList[i]) != "else")
 			{
-				ActiveAdventureUI();
-				LoadAdventureObjects();
-				return;
-			}
-			else if (dialogueDataList[i].GetCommandType() == "load_script")
-			{
-				//InactiveAdventureUI();
-				string nextScriptName = dialogueDataList[i].GetCommandSubType();
-				FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
-				return;
-			}
-			else if (dialogueDataList[i].GetCommandType() == "load_battle")
-			{
-				// InactiveAdventureUI();
-				string nextSceneName = dialogueDataList[i].GetCommandSubType();
-				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
-				return;
-			}
-			else if (dialogueDataList[i].GetCommandType() == "load_worldmap")
-			{
-				// InactiveAdventureUI();
-				string nextStoryName = dialogueDataList[i].GetCommandSubType();
-				FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
-				return;
-			}
-			else if (dialogueDataList[i].GetCommandType() == "load_title")
-			{
-				FindObjectOfType<SceneLoader>().GoToTitle();
 				return;
 			}
 		}
 		ActiveAdventureUI();
 	}
 
-	void HandleCommand()
+	string HandleSceneChange (DialogueData Data)
 	{
-		if (dialogueDataList[line].GetCommandType() == "adv_start")
+		if (Data.GetCommandType () == "adv_start") 
 		{
-			ActiveAdventureUI();
-			LoadAdventureObjects();
-			return;
+			ActiveAdventureUI ();
+			LoadAdventureObjects ();
+			return Data.GetCommandType();
 		}
-		else if (dialogueDataList[line].GetCommandType() == "load_script")
+		else if (Data.GetCommandType () == "load_script") 
 		{
-			// InactiveAdventureUI();
-			string nextScriptName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
+			string nextScriptName = Data.GetCommandSubType ();
+			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
+			return Data.GetCommandType();
 		}
-		else if (dialogueDataList[line].GetCommandType() == "load_battle")
+		else if (Data.GetCommandType () == "load_battle") 
 		{
-			// InactiveAdventureUI();
-			string nextSceneName = dialogueDataList[line].GetCommandSubType();
+			string nextSceneName = Data.GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+			return Data.GetCommandType();
 		}
-		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
+		else if(Data.GetCommandType() == "load_worldmap")
 		{
-			// InactiveAdventureUI();
-			string nextStoryName = dialogueDataList[line].GetCommandSubType();
+			string nextStoryName = Data.GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
+			return Data.GetCommandType();
 		}
-		else if (dialogueDataList[line].GetCommandType() == "load_title")
+		else if(Data.GetCommandType() == "load_title")
 		{
 			SceneManager.LoadScene("title");
+			return Data.GetCommandType();
+		}
+		return "else";
+	}
+
+	void HandleCommand()
+	{
+		string CommandType = HandleSceneChange(dialogueDataList[line]);
+		if(CommandType != "else")
+		{
+			return;
 		}
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{
@@ -187,11 +170,6 @@ public class DialogueManager : MonoBehaviour {
 		{
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
 		}
-	}
-
-	void HandleSceneChange (DialogueData Data)
-	{
-
 	}
 
 	public void ReadEndLine()
