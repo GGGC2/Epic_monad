@@ -174,7 +174,7 @@ public class DialogueManager : MonoBehaviour {
 
 	public void ReadEndLine()
 	{
-		StartCoroutine (PrintLinesFrom (endLine));
+		StartCoroutine (PrintLinesFrom (endLine-1));
 	}
 
 	public void ActiveSkipQuestionUI()
@@ -224,7 +224,6 @@ public class DialogueManager : MonoBehaviour {
             }
         }
 
-		Debug.Log(objects.Length);
 		for (int i = objectIndex; i < objects.Length; i++)
 		{
 			objects[i].SetActive(false);
@@ -371,14 +370,9 @@ public class DialogueManager : MonoBehaviour {
 			isWaitingMouseInput = false;
 		}
 	}
-	
-	// Use this for initialization
-	void Start () {
+
+	void Start () 
+	{
 		Initialize();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }
