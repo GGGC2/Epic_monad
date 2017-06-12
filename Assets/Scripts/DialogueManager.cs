@@ -84,6 +84,121 @@ public class DialogueManager : MonoBehaviour {
 		ActiveAdventureUI();
 	}
 
+	void HandleCommand()
+	{
+		if (dialogueDataList[line].GetCommandType() == "adv_start")
+		{
+			ActiveAdventureUI();
+			LoadAdventureObjects();
+			return;
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_script")
+		{
+			// InactiveAdventureUI();
+			string nextScriptName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_battle")
+		{
+			// InactiveAdventureUI();
+			string nextSceneName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
+		{
+			// InactiveAdventureUI();
+			string nextStoryName = dialogueDataList[line].GetCommandSubType();
+			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
+		}
+		else if (dialogueDataList[line].GetCommandType() == "load_title")
+		{
+			SceneManager.LoadScene("title");
+		}
+		else if (dialogueDataList[line].GetCommandType() == "appear")
+		{
+			if (dialogueDataList[line].GetCommandSubType() == "left")
+			{
+				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+				if (loadedSprite != null) 
+				{
+					leftUnit = dialogueDataList[line].GetNameInCode();               
+					leftPortrait.sprite = loadedSprite;
+					isLeftUnitOld = false;
+				}
+			}
+			else if (dialogueDataList[line].GetCommandSubType() == "right")
+			{
+				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+				if (loadedSprite != null) 
+				{      
+					rightUnit = dialogueDataList[line].GetNameInCode();         
+					rightPortrait.sprite = loadedSprite;
+					isLeftUnitOld = true;
+				}
+			}
+			else
+			{
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
+			}
+		}
+		else if (dialogueDataList[line].GetCommandType() == "disappear")
+		{
+			string commandSubType = dialogueDataList[line].GetCommandSubType();
+			if (commandSubType == "left" || commandSubType == leftUnit)
+			{
+				leftUnit = null;
+				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = false;
+			}
+			else if (commandSubType == "right" || commandSubType == rightUnit)
+			{
+				rightUnit = null;
+				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = true;
+			}
+			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
+			else if (dialogueDataList[line].GetCommandSubType() == "all")
+			{
+				leftUnit = null;
+				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightUnit = null;
+				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				isLeftUnitOld = false;
+			}
+			else
+			{
+				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
+			}
+		}
+		else if (dialogueDataList[line].GetCommandType() == "bgm")
+		{
+			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
+		}
+		else if (dialogueDataList[line].GetCommandType() == "bg")
+		{
+			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
+			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
+		}
+		else if (dialogueDataList[line].GetCommandType() == "se")
+		{
+			// Not implement yet.
+		}
+		else
+		{
+			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
+		}
+	}
+
+	void HandleSceneChange (DialogueData Data)
+	{
+
+	}
+
+	public void ReadEndLine()
+	{
+		StartCoroutine (PrintLinesFrom (endLine));
+	}
+
 	public void ActiveSkipQuestionUI()
 	{
 		skipQuestionUI.SetActive(true);
@@ -230,111 +345,6 @@ public class DialogueManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.01f);
 
 		ActiveAdventureUI();
-	}
-
-	void HandleCommand()
-	{
-		if (dialogueDataList[line].GetCommandType() == "adv_start")
-		{
-			ActiveAdventureUI();
-			LoadAdventureObjects();
-			return;
-		}
-		else if (dialogueDataList[line].GetCommandType() == "load_script")
-		{
-			// InactiveAdventureUI();
-			string nextScriptName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextScriptName);
-		}
-		else if (dialogueDataList[line].GetCommandType() == "load_battle")
-		{
-			// InactiveAdventureUI();
-			string nextSceneName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
-		}
-		else if (dialogueDataList[line].GetCommandType() == "load_worldmap")
-		{
-			// InactiveAdventureUI();
-			string nextStoryName = dialogueDataList[line].GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
-		}
-		else if (dialogueDataList[line].GetCommandType() == "load_title")
-		{
-			SceneManager.LoadScene("title");
-		}
-		else if (dialogueDataList[line].GetCommandType() == "appear")
-		{
-			if (dialogueDataList[line].GetCommandSubType() == "left")
-			{
-				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{
-					leftUnit = dialogueDataList[line].GetNameInCode();               
-					leftPortrait.sprite = loadedSprite;
-					isLeftUnitOld = false;
-				}
-			}
-			else if (dialogueDataList[line].GetCommandSubType() == "right")
-			{
-				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{      
-					rightUnit = dialogueDataList[line].GetNameInCode();         
-					rightPortrait.sprite = loadedSprite;
-					isLeftUnitOld = true;
-				}
-			}
-			else
-			{
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "disappear")
-		{
-			string commandSubType = dialogueDataList[line].GetCommandSubType();
-			if (commandSubType == "left" || commandSubType == leftUnit)
-			{
-				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-				isLeftUnitOld = false;
-			}
-			else if (commandSubType == "right" || commandSubType == rightUnit)
-			{
-				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-				isLeftUnitOld = true;
-			}
-			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-			else if (dialogueDataList[line].GetCommandSubType() == "all")
-			{
-				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-				isLeftUnitOld = false;
-			}
-			else
-			{
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bgm")
-		{
-			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bg")
-		{
-			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
-			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
-		}
-		else if (dialogueDataList[line].GetCommandType() == "se")
-		{
-			// Not implement yet.
-		}
-		else
-		{
-			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
-		}
 	}
 
 	void HandleDialogue()

@@ -1,4 +1,4 @@
-*	bg	PartyRoom
+﻿*	bg	PartyRoom
 *	bgm	Script_Normal
 blank	-	-	제국력 518년 1월 18일, 황궁 연회장
 blank	-	-	장내는 연회와 어울리지 않게 비교적 차분한 분위기로 가라앉은 채, 병풍 역할에 그쳐야 할 악단의 연주보다도 낮은 소리로 짧은 대화만 들려오고 있었다.
@@ -50,3 +50,4 @@ blank	-	-	그 끔찍한 사고의 진상을 알고 있는 몇 명에 포함되�
 
 **	끝내기	 
 *	load_script	Scene#1-2
+*	load_battle	Stage01

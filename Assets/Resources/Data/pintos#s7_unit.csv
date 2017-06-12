@@ -1,6 +1,0 @@
-Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial
-오키드,orchid,Enemy,30,23,LeftUp,4500,325,432,432,40,Melee,Plant,Earth,
-시스터나,sisterna,Ally,25,23,RightDown,1737,304,74,74,78,Magic,Water,Sun,
-레이나,reina,Ally,25,24,RightDown,1489,276,42,204,74,Magic,Fire,Earth,
-에렌,eren,Ally,25,22,RightDown,1241,385,107,237,66,Magic,Fire,Earth,
-루베리카,luvericha,Ally,25,21,RightDown,1613,249,107,172,74,Magic,Fire,Earth,

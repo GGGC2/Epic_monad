@@ -1,4 +1,4 @@
-*	bg	MeetingRoom
+﻿*	bg	MeetingRoom
 *	bgm	Epic_Normal
 blank	-	-	(효과음 : 심장소리)
 blank	-	-	심장이 미친 듯이 뛴다.
@@ -31,3 +31,4 @@ blank	-	-	(효과음 : 폭발)
 blank	-	-	그 말과 동시에 연회장 한가운데에서 큰 폭발이 일어났고, 그들은 정말로 하스켈과 핀토스의 구분 없이 무차별적인 공격을 가했다.
 lucius	-	루키어스	(외침)뭔가 오해가 있는 것 같은데! 황궁은 구조가 복잡할 테니 각자 출구를 찾는 게 낫습니다. 일단 흩어지죠!
 *	load_script	Scene#1-4
+*	load_battle	Stage01

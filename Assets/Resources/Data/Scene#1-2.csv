@@ -1,4 +1,4 @@
-*	bg	MeetingRoom
+﻿*	bg	MeetingRoom
 *	bgm	Epic_Monarch
 blank	-	-	제국력 518년 1월 18일, 황궁 연회장
 blank	-	-	본래 휴일이어야 할 오늘, 아스터 집행관들은 집행부장 노엘의 집합 명령을 받고 회의실에 모였다.
@@ -17,3 +17,4 @@ json	-	제이선	부르셨습니까.
 noel	-	노엘	활약을 기대한다, 라고 국장님이 전달해 달라더군.
 json	-	제이선	......알겠습니다.
 *	load_script	Scene#1-3
+*	load_battle	Stage01
