@@ -445,12 +445,14 @@ public class TileManager : MonoBehaviour {
 		else return Vector2.right+Vector2.down;
 	}
 
+	public bool isTileGenerationFinished = false;
 	public void GenerateTiles (List<TileInfo> tileInfoList)
 	{
 		foreach (var tileInfo in tileInfoList)
 		{
 			GenerateTile(tileInfo);
 		}
+		isTileGenerationFinished = true;
 	}
 
 	void GenerateTile (TileInfo tileInfo)
@@ -473,17 +475,8 @@ public class TileManager : MonoBehaviour {
 		tiles.Add(new Vector2(i, j), tile);
 	}
 
-	void Awake () {
+	void Awake () 
+	{
 		GenerateTiles(Parser.GetParsedTileInfo());
-	}
-
-	// Use this for initialization
-	void Start () {
-
-	}
-
-	// Update is called once per frame
-	void Update () {
-
 	}
 }

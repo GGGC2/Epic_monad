@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
 		apBarUI = GameObject.Find("APBarPanel");
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
-		skillCheckUI = GameObject.Find("SkillCheckPanel");
+		skillCheckUI = GameObject.Find("ApplyOrWaitPanel");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
@@ -56,7 +56,8 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
-	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) {
+	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) 
+	{
 		apBarUI.SetActive(true);
 		apBarUI.GetComponent<APBarPannel>().UpdateAPDisplay(battleData, allUnits);
 	}

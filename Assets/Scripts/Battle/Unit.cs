@@ -212,6 +212,7 @@ public class Unit : MonoBehaviour
 		SetDirection(direction);
 		after.SetUnitOnTile(this);
 		this.activityPoint = snapshotAp;
+		unitManager.UpdateUnitOrder();
 	}
 
 	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
@@ -339,6 +340,10 @@ public class Unit : MonoBehaviour
 	public float ApplyTileElement(float statValue, Stat stat)
 	{
 		// 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
+		if(GetTileUnderUnit() == null)
+		{
+			Debug.Log("Null tile Unit's " + transform.position);
+		}
 		if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire)
 		{
 			if (stat == Stat.Power)
@@ -607,6 +612,7 @@ public class Unit : MonoBehaviour
 			else activityPoint = 0;
 			Debug.Log(GetName() + " loses " + finalDamage + "AP.");
 		}
+		unitManager.UpdateUnitOrder();
 	}
 
 	public IEnumerator ApplyDamageOverPhase()
@@ -694,12 +700,14 @@ public class Unit : MonoBehaviour
 		yield return new WaitForSeconds(1);
 		// recoverTextObject.SetActive(false);
 		damageTextObject.SetActive(false);
+		unitManager.UpdateUnitOrder();
 	}
 
 	public void RegenerateActionPoint()
 	{
 		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
+		unitManager.UpdateUnitOrder();
 	}
 
 	public int GetRegeneratedActionPoint()
@@ -738,6 +746,7 @@ public class Unit : MonoBehaviour
 	{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
+		unitManager.UpdateUnitOrder();
 	}
 
 	public void ApplyTriggerOnPhaseStart()
@@ -943,6 +952,7 @@ public class Unit : MonoBehaviour
 		// 				   + (actualDexturityInitialGrowth * partyLevel) + actualDexturityStandardValue);
 	}
 
+	UnitManager unitManager;
 	void Initialize()
 	{
 		gameObject.name = nameInCode;
@@ -951,7 +961,8 @@ public class Unit : MonoBehaviour
 		startPositionOfPhase = position;
 		UpdateSpriteByDirection();
 		currentHealth = maxHealth;
-		activityPoint = (int)(dexturity * 0.5f) + FindObjectOfType<UnitManager>().GetStandardActivityPoint();
+		unitManager = FindObjectOfType<UnitManager>();
+		activityPoint = (int)(dexturity * 0.5f) + unitManager.GetStandardActivityPoint();
 		if (dexturity == 0)
 		{
 			// Manastone is not move
@@ -1019,7 +1030,6 @@ public class Unit : MonoBehaviour
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.R))

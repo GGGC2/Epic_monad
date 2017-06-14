@@ -43,7 +43,6 @@ public class BattleManager : MonoBehaviour
 		return levelData.level;
 	}
 
-	// Use this for initialization
 	void Start()
 	{
 		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
@@ -55,8 +54,6 @@ public class BattleManager : MonoBehaviour
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
-
-		StartCoroutine(InstantiateTurnManager());
 	}
 
 	public int GetCurrentPhase()
@@ -74,9 +71,8 @@ public class BattleManager : MonoBehaviour
 		Camera.main.transform.position = new Vector3(0, 0, -10);
 	}
 
-	IEnumerator InstantiateTurnManager()
+	public IEnumerator InstantiateTurnManager()
 	{
-        yield return new WaitForSeconds(0.5f);  //unitManager가 load될 때까지 기다림.
 		while (true)
 		{
 			yield return StartCoroutine(StartPhaseOnGameManager());
@@ -108,6 +104,7 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator ActionAtTurn(Unit unit)
 	{
+		Debug.Log("ActionAtTurn Called.");
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetName() + "'s turn");
@@ -143,6 +140,7 @@ public class BattleManager : MonoBehaviour
 			}
 		}
 
+		// Debug.Log("standbyButton : " + GameObject.Find("StandbyButton"));
 		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
 	}
 
@@ -279,6 +277,7 @@ public class BattleManager : MonoBehaviour
 
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
+		Debug.Log("FocusToUnit Called.");
 		while (battleData.currentState == CurrentState.FocusToUnit)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -294,7 +293,7 @@ public class BattleManager : MonoBehaviour
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
 
-			MoveCameraToUnit(battleData.selectedUnit);			
+			MoveCameraToUnit(battleData.selectedUnit);
 
 			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnit.gameObject.transform.position);
 
@@ -307,13 +306,9 @@ public class BattleManager : MonoBehaviour
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			if (battleData.alreadyMoved) {
-				yield return battleManager.StartCoroutine(
-					EventTrigger.WaitOr(
-						battleData.triggers.actionCommand,
-						battleData.triggers.rightClicked
-					)
-				);
+			if (battleData.alreadyMoved) 
+			{
+				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.actionCommand, battleData.triggers.rightClicked));
 			} else {
 				yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
 			}
@@ -442,7 +437,10 @@ public class BattleManager : MonoBehaviour
 	public void CallbackDirection(String directionString)
 	{
 		if (!battleData.isWaitingUserInput)
+		{
+			Debug.LogError("is NOT waiting user input!");
 			return;
+		}
 
 		if (directionString == "LeftUp")
 			battleData.move.selectedDirection = Direction.LeftUp;
@@ -452,7 +450,7 @@ public class BattleManager : MonoBehaviour
 			battleData.move.selectedDirection = Direction.RightUp;
 		else if (directionString == "RightDown")
 			battleData.move.selectedDirection = Direction.RightDown;
-
+		
 		battleData.triggers.selectedDirectionByUser.Trigger();
 		battleData.uiManager.DisableSelectDirectionUI();
 	}

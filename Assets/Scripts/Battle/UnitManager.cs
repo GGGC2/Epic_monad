@@ -204,6 +204,7 @@ public class UnitManager : MonoBehaviour {
 			units.Add(unit);
 		}
 
+		//UpdateUnitOrder();
 		Debug.Log("Generate units complete");
 	}
 
@@ -334,32 +335,32 @@ public class UnitManager : MonoBehaviour {
         statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
     }
 
-	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		LoadSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
 		GenerateUnits();
         GetEnemyUnits();
+		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
-	// Update is called once per frame
-	void Update () {
-
+	public void UpdateUnitOrder ()
+	{
 		int standardActivityPoint = GetStandardActivityPoint();
-		List<Unit> currentTurnUnits =
+		List<Unit> currentPhaseUnits =
 			units.FindAll(go => go.GetCurrentActivityPoint() >= standardActivityPoint);
-		List<Unit> nextTurnUnits =
+		List<Unit> nextPhaseUnits =
 			units.FindAll(go => go.GetCurrentActivityPoint() < standardActivityPoint);
 
-		currentTurnUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
+		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
 			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
-		nextTurnUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
+		nextPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => {
 					int currentAP = go.GetCurrentActivityPoint();
@@ -372,7 +373,7 @@ public class UnitManager : MonoBehaviour {
 
 	   // 유닛 전체에 대해서도 소팅. 변경점이 있을때마다 반영된다.
 		units.Clear();
-		units.AddRange(currentTurnUnits);
-		units.AddRange(nextTurnUnits);
+		units.AddRange(currentPhaseUnits);
+		units.AddRange(nextPhaseUnits);
 	}
 }
