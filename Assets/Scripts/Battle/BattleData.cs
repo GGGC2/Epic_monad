@@ -13,7 +13,7 @@ public enum CurrentState
 
 public enum ActionCommand
 {
-	Waiting, Move, Attack, Rest, Standby, Cancel
+	Waiting, Move, Skill, Rest, Standby, Cancel
 }
 
 public enum SkillApplyCommand

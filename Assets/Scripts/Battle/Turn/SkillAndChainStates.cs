@@ -130,8 +130,8 @@ namespace Battle.Turn {
             Unit selectedUnit = battleData.selectedUnit;
             Skill selectedSkill = battleData.SelectedSkill;
 
-            while (true) {
-
+            while (true) 
+            {
                 battleData.isWaitingUserInput = true;
                 var update = UpdateRangeSkillMouseDirection(battleData);
                 battleData.battleManager.StartCoroutine(update);
@@ -257,6 +257,7 @@ namespace Battle.Turn {
                     battleData.triggers.rightClicked,
                     battleData.triggers.skillApplyCommandChanged
                 ));
+                //무한루프 발생 가능 영역 시작
                 battleData.tileManager.DepaintTiles(tilesInSkillRange, TileColor.Red);
 
                 if (battleData.triggers.rightClicked.Triggered ||
@@ -441,7 +442,7 @@ namespace Battle.Turn {
                 ChainList.RemoveChainsFromUnit(caster);
 
             yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
-
+            
             foreach (var target in targets) {
                 if (!isChainable || !CheckEvasion(battleData, caster, target)) {
                     // 데미지 적용
@@ -635,6 +636,7 @@ namespace Battle.Turn {
                     particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
                     GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
                 }
+
                 if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
                 {
                     Vector3 midPos = new Vector3(0, 0, 0);
@@ -647,8 +649,9 @@ namespace Battle.Turn {
                     particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
                     GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
                 }
-
+                //Debug.Log("Doubt area Start");
                 yield return new WaitForSeconds(0.5f);
+                Debug.Log("Doubt area End");
             }
         }
     }

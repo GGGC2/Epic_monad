@@ -323,7 +323,7 @@ public class BattleManager : MonoBehaviour
 				battleData.currentState = CurrentState.SelectMovingPoint;
 				yield return battleManager.StartCoroutine(MoveStates.SelectMovingPointState(battleData));
 			}
-			else if (battleData.triggers.actionCommand.Data == ActionCommand.Attack)
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Skill)
 			{
 				battleData.currentState = CurrentState.SelectSkill;
 				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
@@ -351,7 +351,7 @@ public class BattleManager : MonoBehaviour
 	public void CallbackAttackCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
-		battleData.triggers.actionCommand.Trigger(ActionCommand.Attack);
+		battleData.triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
 	public void CallbackRestCommand()

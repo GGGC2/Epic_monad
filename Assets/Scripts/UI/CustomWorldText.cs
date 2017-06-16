@@ -31,7 +31,18 @@ public class CustomWorldText : MonoBehaviour
 		RIGHT
 	}
 
-	void OnEnable () {
+	void OnEnable () 
+	{
+		/*DestroyAllChilds();
+		GenerateTextInstances();
+		RePosition();
+
+		StartCoroutine(CheckValueChanged());*/
+	}
+
+	//OnEnable은 AddComponent에서도 불리는 것 같아서 다른 이름의 함수로 대체
+	public void ActWhenOnEnable()
+	{
 		DestroyAllChilds();
 		GenerateTextInstances();
 		RePosition();
@@ -87,7 +98,8 @@ public class CustomWorldText : MonoBehaviour
 	{
 		var parentRectTransform = GetComponent<RectTransform>();
 
-		for (int i=0; i < text.Length; i++) {
+		for (int i=0; i < text.Length; i++)
+		{
 			var rectTransform = characterInstances[i].GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = parentRectTransform.anchoredPosition;
 

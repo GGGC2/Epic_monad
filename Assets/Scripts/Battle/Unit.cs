@@ -23,7 +23,6 @@ public class HitInfo
 
 public class Unit : MonoBehaviour
 {
-
 	public GameObject chainBonusTextObject;
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
@@ -590,6 +589,7 @@ public class Unit : MonoBehaviour
 			Debug.Log("Damage dealt : "+finalDamage);
 
 			damageTextObject.SetActive(true);
+			damageTextObject.GetComponent<CustomWorldText>().ActWhenOnEnable();
 			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
 
 			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
