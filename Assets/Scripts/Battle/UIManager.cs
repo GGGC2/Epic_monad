@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
 	GameObject unitViewerUI;
 	GameObject selectedUnitViewerUI;
 	GameObject tileViewerUI;
-	GameObject selectDirectionUI;
+	SelectDirectionUI selectDirectionUI;
 	GameObject cancelButtonUI;
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
-		selectDirectionUI = GameObject.Find("SelectDirectionUI");
+		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovedUICanvas");
@@ -51,7 +51,7 @@ public class UIManager : MonoBehaviour
 		unitViewerUI.SetActive(false);
 		selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
-		selectDirectionUI.SetActive(false);
+		selectDirectionUI.gameObject.SetActive(false);
 		cancelButtonUI.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
@@ -227,12 +227,13 @@ public class UIManager : MonoBehaviour
 
 	public void EnableSelectDirectionUI()
 	{
-		selectDirectionUI.SetActive(true);
+		selectDirectionUI.gameObject.SetActive(true);
+		selectDirectionUI.HighlightArrowButton();
 	}
 
 	public void DisableSelectDirectionUI()
 	{
-		selectDirectionUI.SetActive(false);
+		selectDirectionUI.gameObject.SetActive(false);
 	}
 
 	public void EnableCancelButtonUI()

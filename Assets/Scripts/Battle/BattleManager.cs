@@ -277,7 +277,6 @@ public class BattleManager : MonoBehaviour
 
 	public static IEnumerator FocusToUnit(BattleData battleData)
 	{
-		Debug.Log("FocusToUnit Called.");
 		while (battleData.currentState == CurrentState.FocusToUnit)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -306,12 +305,11 @@ public class BattleManager : MonoBehaviour
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-			if (battleData.alreadyMoved) 
-			{
+			//이미 이동했으면 이동 빼고, 아니면 이동을 포함한 모든 종류의 actionCommand를 기다림
+			if (battleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.actionCommand, battleData.triggers.rightClicked));
-			} else {
+			else
 				yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
-			}
 
 			if (battleData.alreadyMoved && battleData.triggers.rightClicked.Triggered)
 			{

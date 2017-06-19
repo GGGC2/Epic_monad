@@ -202,12 +202,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		colors = new List<Color>();
 	}
 
-	// Use this for initialization
-	void Start () {
-
-	}
-
-	// Update is called once per frame
 	void Update ()
 	{
 		sprite.color = mixColors(colors);
