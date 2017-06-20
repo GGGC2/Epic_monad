@@ -10,6 +10,11 @@ namespace BattleUI
 		Text skillDataText;
 		Text skillRange1Text;
 		Text skillCooldownText;
+		Image range1Image;
+
+		//Enums.RangeForm과 값이 정확히 맞아야 함
+		public Sprite[] RangeFormIcons;
+		public Sprite transparent;
 
 		public void Start()
 		{
@@ -22,6 +27,7 @@ namespace BattleUI
 			skillCooldownText.text = "";
 			skillDataText = GameObject.Find("SkillDataText").GetComponent<Text>();
 			skillDataText.text = "";
+			range1Image = GameObject.Find("SkillRange1Image").GetComponent<Image>();
 		}
 
 		public void CallbackSkillIndex(int index)
@@ -36,11 +42,21 @@ namespace BattleUI
 			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
 			
 			skillApText.text = preSelectedSkill.GetRequireAP().ToString();
-			skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
+			
 			int cooldown = preSelectedSkill.GetCooldown();
 			if (cooldown > 0)
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
 			skillDataText.text = preSelectedSkill.GetSkillDataText();
+			
+			if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
+			{
+				range1Image.sprite = transparent;
+			}
+			else
+			{
+				skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
+				range1Image.sprite = RangeFormIcons[(int)preSelectedSkill.GetFirstRangeForm()];
+			}
 		}
 
 		public void CallbackPointerExitSkillIndex(int index)
@@ -50,6 +66,7 @@ namespace BattleUI
 			skillRange1Text.text = "";
 			skillCooldownText.text = "";
 			skillDataText.text = "";
+			range1Image.sprite = transparent;
 		}
 
 		public void CallbackSkillUICancel()

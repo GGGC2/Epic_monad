@@ -61,7 +61,7 @@ public class TileManager : MonoBehaviour {
 		{
 			return GetTilesInCrossRange(mid, minReach, maxReach);
 		}
-		else if (form == RangeForm.DiagonalCross)
+		else if (form == RangeForm.Diagonal)
 		{
 			return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
 		}

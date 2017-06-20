@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -529,6 +529,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 577268682}
     m_Modifications:
+    - target: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: RangeFormIcons.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 224149642880910660, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
         type: 2}
       propertyPath: m_LocalPosition.x
@@ -619,6 +624,36 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: transparent
+      value: 
+      objectReference: {fileID: 21300000, guid: 3373c79ee81354e64b614ef455ba7c9a,
+        type: 3}
+    - target: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: RangeFormIcons.Array.data[0]
+      value: 
+      objectReference: {fileID: 21300000, guid: e8e7fa18b090c4b20aca941fdd232dbd,
+        type: 3}
+    - target: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: RangeFormIcons.Array.data[1]
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8da38b61bd345f6928b52e3bd90bcd,
+        type: 3}
+    - target: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: RangeFormIcons.Array.data[2]
+      value: 
+      objectReference: {fileID: 21300000, guid: 8463a8d977cd645ea8cbc4281f7cc06f,
+        type: 3}
+    - target: {fileID: 114474915516412808, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3373c79ee81354e64b614ef455ba7c9a,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cc512d0c47c6641d6a69a15b7eb4e8a4, type: 2}
   m_IsPrefabParent: 0

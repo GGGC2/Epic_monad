@@ -82,17 +82,15 @@ namespace Enums {
 
 	public enum RangeForm
 	{
+		Front,
+		AllDirection,
+		Straight,
 		Diamond,
 		Square,
-		Straight,
-		Diagonal,
 		Cross,
-        DiagonalCross,
-		AllDirection,
+        Diagonal,
 		Sector,
 		Global,
-		Auto,
-		Front,
 		Self
 	}
 
