@@ -64,7 +64,7 @@ public class StageManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		Debug.Log(SceneData.nextDialogueName);
+		//Debug.Log(SceneData.nextDialogueName);
 		if (SceneData.nextStageName != null)
 		{
 			string nextStageName = SceneData.nextStageName;

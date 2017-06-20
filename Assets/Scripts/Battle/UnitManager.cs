@@ -307,14 +307,18 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateRemainPhaseAtPhaseEnd();
-			unit.UpdateStatusEffectAtPhaseEnd();
+			//unit.UpdateStatusEffectAtPhaseEnd();
 			unit.UpdateSkillCooldown();
-			
 		}
 
 		foreach (var unit in units)
+		{
 			unit.RegenerateActionPoint();
-        foreach (var unit in units)
+		}
+		//행동력 회복시킨 후 순서 정렬하는 역할
+		UpdateUnitOrder();
+
+		foreach (var unit in units)
         {
             unit.ApplyTriggerOnPhaseEnd();
         }

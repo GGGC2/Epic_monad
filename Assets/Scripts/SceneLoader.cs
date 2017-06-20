@@ -45,7 +45,7 @@ public class SceneLoader : MonoBehaviour {
 	
 	IEnumerator Start()
 	{
-		Debug.Log("Load new scene");
+		//Debug.Log("Load new scene");
 		Time.timeScale = 0;
 
 		fadeoutScreenObject.SetActive(true);

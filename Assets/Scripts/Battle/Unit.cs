@@ -707,7 +707,6 @@ public class Unit : MonoBehaviour
 	{
 		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
-		unitManager.UpdateUnitOrder();
 	}
 
 	public int GetRegeneratedActionPoint()
