@@ -257,7 +257,7 @@ namespace Battle.Turn {
                     battleData.triggers.rightClicked,
                     battleData.triggers.skillApplyCommandChanged
                 ));
-                //무한루프 발생 가능 영역 시작
+                
                 battleData.tileManager.DepaintTiles(tilesInSkillRange, TileColor.Red);
 
                 if (battleData.triggers.rightClicked.Triggered ||
@@ -396,6 +396,7 @@ namespace Battle.Turn {
                 Tile focusedTile = chainInfo.GetTargetArea()[0];
                 BattleManager.MoveCameraToTile(focusedTile);
                 battleData.currentState = CurrentState.ApplySkill;
+                chainInfo.GetUnit().HideChainIcon();
                 yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo.GetUnit(), chainInfo.GetSkill(), chainInfo.GetTargetArea(), true, chainCombo));
             }
 
