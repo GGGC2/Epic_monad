@@ -13,5 +13,10 @@ namespace Battle.Skills {
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, turnStarter);
             }
         }
+        public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect stautsEffect) {
+            StatusEffect statusEffectToRemove = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "길잡이");
+            if (statusEffectToRemove != null)
+                target.RemoveStatusEffect(statusEffectToRemove);
+        }
     }
 }

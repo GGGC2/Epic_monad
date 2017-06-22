@@ -73,6 +73,7 @@ public class BattleManager : MonoBehaviour
 
 	public IEnumerator InstantiateTurnManager()
 	{
+        yield return new WaitForSeconds(0.5f);
 		while (true)
 		{
 			yield return StartCoroutine(StartPhaseOnGameManager());

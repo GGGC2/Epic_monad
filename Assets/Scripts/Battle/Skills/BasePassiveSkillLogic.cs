@@ -108,5 +108,7 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
     }
+    public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
+    }
 }
 }

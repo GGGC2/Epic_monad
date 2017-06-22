@@ -469,6 +469,11 @@ namespace Battle.Turn {
             // 기술 사용 시 적용되는 특성
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
             SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster, targets);
+            foreach(var statusEffect in caster.GetStatusEffectList()) {
+                PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
+                if(originPassiveSkill != null)
+                    SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
+            }
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);

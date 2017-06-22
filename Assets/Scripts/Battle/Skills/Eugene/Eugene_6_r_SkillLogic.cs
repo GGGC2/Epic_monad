@@ -1,5 +1,6 @@
 ﻿using Enums;
 using Battle.Damage;
+using UnityEngine;
 
 namespace Battle.Skills {
     class Eugene_6_r_SkillLogic : BasePassiveSkillLogic{
@@ -7,16 +8,19 @@ namespace Battle.Skills {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
-            Aura.TriggerOnApplied(statusEffect, caster, target);
+            if (statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
+                Aura.TriggerOnApplied(statusEffect, caster, target);
             return true;
         }
         public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
-            Aura.TriggerOnRemoved(target, statusEffect);
+            if(statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
+                Aura.TriggerOnRemoved(target, null, statusEffect);
             return true;
         }
         public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
-            if(!statusEffect.IsOfType(StatusEffectType.Aura))
+            if (!statusEffect.IsOfType(StatusEffectType.Aura)) {
                 target.RemoveStatusEffect(StatusEffectCategory.Debuff, 1);
+            }
         }
     }
 }
