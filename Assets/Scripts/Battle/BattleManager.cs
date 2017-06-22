@@ -147,12 +147,23 @@ public class BattleManager : MonoBehaviour
 
 	static void CheckSkillPossible(BattleData battleData)
 	{
+        Unit caster = battleData.selectedUnit;
 		bool isPossible = false;
 
-		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Silence) ||
-					 battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint));
+		isPossible = !(caster.HasStatusEffect(StatusEffectType.Silence) ||
+					 caster.HasStatusEffect(StatusEffectType.Faint));
 
-		GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
+        Tile tileUnderCaster = caster.GetTileUnderUnit();
+        foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
+            Skill originSkill = tileStatusEffect.GetOriginSkill();
+            if (originSkill != null) {
+                if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
+                    isPossible = false;
+                }
+            }
+        }
+
+        GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
 
 	static void CheckMovePossible(BattleData battleData)

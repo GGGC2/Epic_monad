@@ -77,8 +77,14 @@ public static class SkillLogicFactory
             case "얼음의 가호":
             skillLogic = new Eugene_4_l_SkillLogic();
             break;
+            case "백은의 장막":
+            skillLogic = new Eugene_4_m_SkillLogic();
+            break;
             case "겨울의 가호":
             skillLogic = new Eugene_8_l_SkillLogic();
+            break;
+            case "백은의 오로라":
+            skillLogic = new Eugene_8_m_SkillLogic();
             break;
 
 			// 카샤스티

@@ -233,6 +233,7 @@ namespace Battle.Turn {
 
         public static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection) {
             while (battleData.currentState == CurrentState.CheckApplyOrChain) {
+                Unit caster = battleData.selectedUnit;
                 BattleManager.MoveCameraToTile(targetTile);
 
                 List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
@@ -249,7 +250,7 @@ namespace Battle.Turn {
                 bool isChainPossible = CheckChainPossible(battleData);
                 battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
                 Skill selectedSkill = battleData.SelectedSkill;
-                battleData.uiManager.SetSkillCheckAP(battleData.selectedUnit, selectedSkill);
+                battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
 
                 battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
@@ -262,9 +263,9 @@ namespace Battle.Turn {
 
                 if (battleData.triggers.rightClicked.Triggered ||
                     battleData.triggers.cancelClicked.Triggered) {
-                    BattleManager.MoveCameraToUnit(battleData.selectedUnit);
+                    BattleManager.MoveCameraToUnit(caster);
                     battleData.uiManager.DisableSkillCheckUI();
-                    battleData.selectedUnit.SetDirection(originalDirection);
+                    caster.SetDirection(originalDirection);
                     if (selectedSkill.GetSkillType() != SkillType.Point)
                         battleData.currentState = CurrentState.SelectSkillApplyDirection;
                     else
@@ -292,7 +293,7 @@ namespace Battle.Turn {
                     if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
                      || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff) {
                         yield return ApplyChain(battleData, targetTile, tilesInSkillRange, firstRange);
-                        BattleManager.MoveCameraToUnit(battleData.selectedUnit);
+                        BattleManager.MoveCameraToUnit(caster);
                         battleData.currentState = CurrentState.FocusToUnit;
                         // 연계 정보 업데이트
                         battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
@@ -300,8 +301,8 @@ namespace Battle.Turn {
                     // 체인이 불가능한 스킬일 경우, 그냥 발동.
                     else {
                         battleData.currentState = CurrentState.ApplySkill;
-                        yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, tilesInSkillRange, false, 1));
-                        BattleManager.MoveCameraToUnit(battleData.selectedUnit);
+                        yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, tilesInSkillRange, false, 1));
+                        BattleManager.MoveCameraToUnit(caster);
                         battleData.currentState = CurrentState.FocusToUnit;
                         // 연계 정보 업데이트
                         battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
@@ -358,13 +359,14 @@ namespace Battle.Turn {
 
         private static bool CheckChainPossible(BattleData battleData) {
             bool isPossible = false;
+            Unit caster = battleData.selectedUnit;
 
             // ap 조건으로 체크.
-            int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(battleData.SelectedSkill);
-            int remainAPAfterChain = battleData.selectedUnit.GetCurrentActivityPoint() - requireAP;
+            int requireAP = caster.GetActualRequireSkillAP(battleData.SelectedSkill);
+            int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
             foreach (var unit in battleData.unitManager.GetAllUnits()) {
-                if ((unit != battleData.selectedUnit) &&
+                if ((unit != caster) &&
                 (unit.GetCurrentActivityPoint() > remainAPAfterChain)) {
                     isPossible = true;
                 }
@@ -376,7 +378,16 @@ namespace Battle.Turn {
                 isPossible = false;
             }
             Debug.Log("Skill Apply Type : " + battleData.SelectedSkill.GetSkillApplyType());
-
+            
+            Tile tileUnderCaster = caster.GetTileUnderUnit();
+            foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
+                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                if (originSkill != null) {
+                    if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
+                        isPossible = false;
+                    }
+                }
+            }
             return isPossible;
         }
 
@@ -448,9 +459,9 @@ namespace Battle.Turn {
                 if (tile.IsUnitOnTile()) {
                     Unit target = tile.GetUnitOnTile();
                     if (!isChainable || !CheckEvasion(battleData, caster, target)) {
+                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
                         // 데미지 적용
                         if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-                            SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
                             yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
                         }
 
@@ -458,8 +469,18 @@ namespace Battle.Turn {
                         SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, selectedTiles);
 
                         // 기술의 상태이상은 기술이 적용된 후에 붙인다.
-                        if (appliedSkill.GetStatusEffectList().Count > 0)
-                            StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+                        if (appliedSkill.GetStatusEffectList().Count > 0) {
+                            bool ignored = false;
+                            foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
+                                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                                if (originSkill != null) {
+                                    if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(skillInstanceData, tile, tileStatusEffect))
+                                        ignored = true;
+                                }
+                            }
+                            if(!ignored)
+                                StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+                        }
                     }
                     caster.ActiveFalseAllBonusText();
                     // 사이사이에도 특성 발동 조건을 체크해준다.

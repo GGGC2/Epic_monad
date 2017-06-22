@@ -76,6 +76,15 @@ public class BaseSkillLogic
     public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, StatusEffect statusEffect, StatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
     }
+    public virtual bool TriggerTileStatusEffectWhenUnitTryToChain(Tile tile, TileStatusEffect tileStatusEffect) {
+        return true;    //false를 리턴할 경우 해당 타일 위의 유닛은 연계 대기를 할 수 없다.
+    }
+    public virtual bool TriggerTileStatusEffectWhenUnitTryToUseSkill(Tile tile, TileStatusEffect tileStatusEffect) {
+        return true;    //false를 리턴할 경우 해당 타일 위의 유닛은 스킬을 사용할 수 없다.
+    }
+    public virtual bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(SkillInstanceData skillInstanceData, Tile tile, TileStatusEffect tileStatusEffect) {
+        return true;    //false를 리턴할 경우 해당 타일 위의 유닛에게 적용되는 statusEffect는 무시된다.
+    }
     public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;

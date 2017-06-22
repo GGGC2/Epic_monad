@@ -139,7 +139,7 @@ public class Unit : MonoBehaviour
         StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString() + "Change");
 
 		actualStat = (int)ApplyTileElement(actualStat, stat);
-
+        actualStat = (int)ApplyTileStatusEffect(actualStat, stat);
 		// 능력치 증감 효과 적용
 		actualStat = (int) GetActualEffect(actualStat, statusChange);
         
@@ -357,6 +357,23 @@ public class Unit : MonoBehaviour
 		}
 		return statValue;
 	}
+    public float ApplyTileStatusEffect(float statValue, Stat stat) {
+        Tile tile = GetTileUnderUnit();
+        List<TileStatusEffect> tileStatusEffectList = tile.GetStatusEffectList();
+        foreach(var tileStatusEffect in tileStatusEffectList) {
+            for(int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++) {
+                StatusEffectType type = tileStatusEffect.fixedElem.actuals[i].statusEffectType;
+                bool isMatch = ((type == StatusEffectType.PowerChange && stat == Stat.Power) ||
+                                (type == StatusEffectType.DefenseChange && stat == Stat.Defense) ||
+                                (type == StatusEffectType.ResistanceChange && stat == Stat.Resistance));
+                if(isMatch && tileStatusEffect.fixedElem.actuals[i].isMultiply) 
+                    statValue *= 1 + tileStatusEffect.GetAmount(i) / 100;
+                if(isMatch && !tileStatusEffect.fixedElem.actuals[i].isMultiply) 
+                    statValue += tileStatusEffect.GetAmount(i);
+            }
+        }
+        return statValue;
+    }
 
 	public float GetActualEffect(float data, StatusEffectType statusEffectType)
 	{
