@@ -89,13 +89,13 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdateAp(Unit unit)
 	{
-		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetActualStat(Stat.Dexturity) + ")";
+		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Dexturity) + ")";
 	}
 
 	void UpdatePower(Unit unit)
 	{
-		int actualPower = unit.GetActualStat(Stat.Power);
-		int originPower = unit.GetStat(Stat.Power);
+		int actualPower = unit.GetStat(Stat.Power);
+		int originPower = unit.GetBaseStat(Stat.Power);
 
 		powerText.color = Color.white;
 		powerText.text = actualPower.ToString();
@@ -107,8 +107,8 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdateDefense(Unit unit)
 	{
-		int actualDefense = unit.GetActualStat(Stat.Defense);
-		int originDefense = unit.GetStat(Stat.Defense);
+		int actualDefense = unit.GetStat(Stat.Defense);
+		int originDefense = unit.GetBaseStat(Stat.Defense);
 
 		defenseText.color = Color.white;
 		defenseText.text = actualDefense.ToString();
@@ -120,8 +120,8 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdateResistance(Unit unit)
 	{
-		int actualResistance = unit.GetActualStat(Stat.Resistance);
-		int originResistance = unit.GetStat(Stat.Resistance);
+		int actualResistance = unit.GetStat(Stat.Resistance);
+		int originResistance = unit.GetBaseStat(Stat.Resistance);
 
 		resistanceText.color = Color.white;
 		resistanceText.text = actualResistance.ToString();

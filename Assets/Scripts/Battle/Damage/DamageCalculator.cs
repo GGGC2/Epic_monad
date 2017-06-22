@@ -152,7 +152,7 @@ public class DamageCalculator
 		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
 		// 시전자 효과에 의한 추가데미지
-		attackDamage.baseDamage = caster.GetActualEffect(attackDamage.baseDamage, StatusEffectType.DamageChange);
+		attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
 		// 특성에 의한 전략보너스 추가
 		SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
 
@@ -173,8 +173,8 @@ public class DamageCalculator
 	{
 		float damage = 0;
 		
-		float powerFactor = appliedSkill.GetPowerFactor(Enums.Stat.Power);
-		float powerStat = casterUnit.GetActualStat(Enums.Stat.Power);
+		float powerFactor = appliedSkill.GetPowerFactor(Stat.Power);
+		float powerStat = casterUnit.GetStat(Stat.Power);
 
 		damage = powerFactor * powerStat;
 
@@ -230,7 +230,7 @@ public class DamageCalculator
 
 	private static float SmiteAmount(Unit casterUnit) {
 		float smiteAmount = 0;
-		smiteAmount = casterUnit.GetActualEffect(smiteAmount, StatusEffectType.Smite);
+		smiteAmount = casterUnit.CalculateActualAmount(smiteAmount, StatusEffectType.Smite);
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
@@ -278,10 +278,10 @@ public class DamageCalculator
 		if (isHealth == true)
 		{
 			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
-			actualDamage = target.GetActualEffect(actualDamage, StatusEffectType.TakenDamageChange);
+			actualDamage = target.CalculateActualAmount(actualDamage, StatusEffectType.TakenDamageChange);
 			
-			float targetDefense = target.GetActualStat(Stat.Defense);
-			float targetResistance = target.GetActualStat(Stat.Resistance);
+			float targetDefense = target.GetStat(Stat.Defense);
+			float targetResistance = target.GetStat(Stat.Resistance);
 			
 			// 기술에 의한 방어/저항 무시 (상대값)
 			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceRelativeValueBySkill(targetDefense, caster, target);

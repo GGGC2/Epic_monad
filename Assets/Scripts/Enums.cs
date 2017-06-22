@@ -173,4 +173,32 @@ namespace Enums {
 		LostHpPercent, // 잃은 체력 %
 		Etc // 기타 변수
 	}
+    public class EnumConverter {
+        public static Stat GetCorrespondingStat(StatusEffectType statusEffectType) {
+            switch (statusEffectType) {
+            case StatusEffectType.PowerChange:
+                return Stat.Power;
+            case StatusEffectType.DefenseChange:
+                return Stat.Defense;
+            case StatusEffectType.ResistanceChange:
+                return Stat.Resistance;
+            case StatusEffectType.DexturityChange:
+                return Stat.Dexturity;
+            }
+            return Stat.None;
+        }
+        public static StatusEffectType GetCorrespondingStatusEffectType(Stat stat) {
+            switch (stat) {
+            case Stat.Power:
+                return StatusEffectType.PowerChange;
+            case Stat.Defense:
+                return StatusEffectType.DefenseChange;
+            case Stat.Resistance:
+                return StatusEffectType.ResistanceChange;
+            case Stat.Dexturity:
+                return StatusEffectType.DexturityChange;
+            }
+            return StatusEffectType.Etc;
+        }
+    }
 }

@@ -101,7 +101,9 @@ public static class StatusEffector
                 List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
-			}
+                target.updateStats(alreadyAppliedSameEffect, false, true);
+                target.updateStats(statusEffect, true, false);
+            }
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
 			{
@@ -122,6 +124,7 @@ public static class StatusEffector
                 List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
+                target.updateStats(statusEffect, true, false);
             }
 		}
 	}

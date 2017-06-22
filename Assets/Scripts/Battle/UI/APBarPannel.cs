@@ -234,7 +234,7 @@ namespace BattleUI
 			Sprite sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
 			if (sprite == null)
 			{
-				Debug.LogWarning("Cannot find sprite for " + unit.GetName() + "(" + unit.GetNameInCode() + ")");
+				//Debug.LogWarning("Cannot find sprite for " + unit.GetName() + "(" + unit.GetNameInCode() + ")");
 				sprite = notFoundProfileSprite;
 			}
 
@@ -295,7 +295,7 @@ namespace BattleUI
 			thisTurnUnits.Sort(SortHelper.Chain(new List<Comparison<UnitWrapper>>
 			{
 				SortHelper.CompareBy<UnitWrapper>(wrapper => GetActivityPoint(battleData, wrapper)),
-				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetActualStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Dexturity)),
 				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
 			}, reverse:true));
 
@@ -303,10 +303,10 @@ namespace BattleUI
 			{
 				SortHelper.CompareBy<UnitWrapper>(wrapper => {
 					int ap = GetActivityPoint(battleData, wrapper);
-					int recover = wrapper.GetUnit().GetActualStat(Stat.Dexturity);
+					int recover = wrapper.GetUnit().GetStat(Stat.Dexturity);
 					return ap + recover;
 				}),
-				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetActualStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Dexturity)),
 				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
 			}, reverse:true));
 

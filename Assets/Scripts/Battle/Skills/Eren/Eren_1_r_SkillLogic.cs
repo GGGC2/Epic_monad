@@ -12,7 +12,7 @@ public class Eren_1_r_SkillLogic : BaseSkillLogic {
             int stack = 0;
             if (AbsorptionStatusEffect != null)
                 stack = AbsorptionStatusEffect.GetRemainStack();
-            float power = caster.GetActualStat(Stat.Power);
+            float power = caster.GetStat(Stat.Power);
 
             statusEffect.CalculateAmount(stack);
             statusEffect.SetAmount(statusEffect.GetAmount() * power);

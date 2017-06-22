@@ -46,7 +46,7 @@ public class PathFinder {
         //// queue가 비었으면 loop를 탈출.		
         if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange)) {
             foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
-                tileWithPath.requireActivityPoint = (int)(unit.GetActualEffect((float)tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
+                tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount((float)tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
             }
         }
         return tilesWithPath;
@@ -73,7 +73,7 @@ public class PathFinder {
 		// 필요 행동력(이동) 증감 효과 적용
 		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
 		{
-			requireAP = (int)(unit.GetActualEffect((float) requireAP, StatusEffectType.RequireMoveAPChange));
+			requireAP = (int)(unit.CalculateActualAmount((float) requireAP, StatusEffectType.RequireMoveAPChange));
 		}
 		if (requireAP > remainAP) return;
 		

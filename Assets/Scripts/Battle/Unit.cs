@@ -53,19 +53,20 @@ public class Unit : MonoBehaviour
 	// 유닛 배치할때만 사용
 	Vector2 initPosition;
 
-	// Base stats. FIXME : 지금은 수동으로 셋팅.
-	float baseHealth; // 체력
-	float basePower; // 공격력
-	float baseDefense; // 방어력
-	float baseResistance; // 저항력
-	float baseDexturity; // 행동력
+	// Base stats.
+	int baseHealth; // 체력
+	int basePower; // 공격력
+	int baseDefense; // 방어력
+	int baseResistance; // 저항력
+	int baseDexturity; // 행동력
+    Dictionary<Stat, int> baseStats;
 
-	// Applied stats.
-	int maxHealth;
-	int power;
-	int defense;
-	int resistance;
-	int dexturity;
+    ActualStat actualHealth;
+    ActualStat actualPower;
+    ActualStat actualDefense;
+    ActualStat actualResistance;
+    ActualStat actualDexturity;
+    Dictionary<Stat, ActualStat> actualStats;
 
 	// type.
 	UnitClass unitClass;
@@ -114,36 +115,55 @@ public class Unit : MonoBehaviour
 
     public int GetStat(Stat stat)
     {
-        if(stat == Stat.MaxHealth) {return maxHealth;}
-        else if(stat == Stat.Power) {return power;}
-        else if(stat == Stat.Defense) {return defense;}
-        else if(stat == Stat.Resistance) {return resistance;}
-        else if (stat == Stat.Dexturity) {return dexturity;}
-        else
-        {
-          Debug.LogWarning("Cannot get stat of " + stat);
-          return 1;
+        if(actualStats.ContainsKey(stat))
+            return actualStats[stat].value;
+        return 0;
+    }
+    public int GetBaseStat(Stat stat) {
+        if(baseStats.ContainsKey(stat))
+            return baseStats[stat];
+        return 0;
+    }
+    
+	class ActualStat
+	{
+		public int value;
+        public Stat stat;
+		public List<StatusEffect> appliedStatusEffects;
+
+        public ActualStat(int value, Stat stat) {
+            this.value = value;
+            this.stat = stat;
+            this.appliedStatusEffects = new List<StatusEffect>();
+        }
+	}
+
+    public void updateStats() {
+        foreach(var actualStat in actualStats.Values) {
+            actualStat.value = (int)CalculateActualStats(actualStat.stat);
+        }
+    }
+    public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
+        List<ActualStat> statsToUpdate = new List<ActualStat>();
+        for(int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+            StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
+            Stat statTypeToUpdate = EnumConverter.GetCorrespondingStat(type);
+            if(statTypeToUpdate != Stat.None)
+                statsToUpdate.Add(actualStats[statTypeToUpdate]);
+        }
+        for(int i = 0; i< statsToUpdate.Count; i++) {
+            if(isApplied)       statsToUpdate[i].appliedStatusEffects.Add(statusEffect);
+            else if(isRemoved)  statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
+
+            statsToUpdate[i].value = (int)CalculateActualStats(statsToUpdate[i].stat);
         }
     }
 
-	// 이걸 이용해서 코드를 바꾸자
-	class ActualStat
-	{
-		int statValue;
-		List<StatusEffect> appliedStatusEffects;
-	}
-
-    public int GetActualStat(Stat stat)
-    {
-        int actualStat = GetStat(stat);
-        StatusEffectType statusChange = (StatusEffectType)Enum.Parse(typeof(StatusEffectType), stat.ToString() + "Change");
-
-		actualStat = (int)ApplyTileElement(actualStat, stat);
-        actualStat = (int)ApplyTileStatusEffect(actualStat, stat);
-		// 능력치 증감 효과 적용
-		actualStat = (int) GetActualEffect(actualStat, statusChange);
-        
-        return actualStat;
+    public float CalculateActualStats(Stat statType) {
+        float result = ApplyTileElement(baseStats[statType], statType);
+        result = ApplyTileStatusEffect(result, statType);
+        result = CalculateActualAmount(result, EnumConverter.GetCorrespondingStatusEffectType(statType));
+        return result;
     }
 
 	public void SetActive() { activeArrowIcon.SetActive(true); }
@@ -170,7 +190,7 @@ public class Unit : MonoBehaviour
 
     public List<StatusEffect> GetStatusEffectList() { return statusEffectList; }
 	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
-	public int GetMaxHealth() { return maxHealth; }
+	public int GetMaxHealth() { return actualHealth.value; }
     public int GetCurrentHealth() { return currentHealth; }
 	public int GetCurrentActivityPoint() { return activityPoint; }
 	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
@@ -228,6 +248,7 @@ public class Unit : MonoBehaviour
                 RemoveStatusEffect(statusEffect);
             }
         }
+        updateStats();
     }
 
 	public Vector2 GetPosition()
@@ -370,7 +391,7 @@ public class Unit : MonoBehaviour
         return statValue;
     }
 
-	public float GetActualEffect(float data, StatusEffectType statusEffectType)
+	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
 	{
 		float totalAbsoluteValue = 0.0f; // 절대값
 		float totalRelativeValue = 1.0f; // 상대값
@@ -448,6 +469,7 @@ public class Unit : MonoBehaviour
         if(toBeRemoved) {
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+            updateStats(statusEffect, false, true);
         }
     }
 	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
@@ -483,8 +505,8 @@ public class Unit : MonoBehaviour
 	{
 		float originDotDamage = damage; // 최종 대미지 (정수로 표시되는)
         
-		float defense = GetActualStat(Stat.Defense);
-		float resistance = GetActualStat(Stat.Resistance);
+		float defense = GetStat(Stat.Defense);
+		float resistance = GetStat(Stat.Resistance);
 
 		if (caster.GetUnitClass() == UnitClass.Melee)
 		{
@@ -561,7 +583,7 @@ public class Unit : MonoBehaviour
 		damageTextObject.SetActive(true);
 		damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
 
-		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+		healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
 
 		// 데미지 표시되는 시간.
 		yield return new WaitForSeconds(0.5f);
@@ -604,7 +626,7 @@ public class Unit : MonoBehaviour
 			damageTextObject.GetComponent<CustomWorldText>().ActWhenOnEnable();
 			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
 
-			healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+			healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
 
 			// 체인 해제
 			ChainList.RemoveChainsFromUnit(this);
@@ -669,8 +691,9 @@ public class Unit : MonoBehaviour
 
 	public IEnumerator RecoverHealth(float amount)
 	{
+        int maxHealth = GetMaxHealth();
 		// 회복량 증감 효과 적용
-		amount = GetActualEffect(amount, StatusEffectType.TakenHealChange);
+		amount = CalculateActualAmount(amount, StatusEffectType.TakenHealChange);
 
 		// 초과회복량 차감
 		int actualAmount = (int)amount;
@@ -718,7 +741,7 @@ public class Unit : MonoBehaviour
 	public void RegenerateActionPoint()
 	{
 		activityPoint = GetRegeneratedActionPoint();
-		Debug.Log(name + " recover " + dexturity + "AP. Current AP : " + activityPoint);
+		Debug.Log(name + " recover " + actualDexturity.value + "AP. Current AP : " + activityPoint);
 	}
 
 	public int GetRegeneratedActionPoint()
@@ -728,7 +751,7 @@ public class Unit : MonoBehaviour
 
 	public int GetRegenerationAmount()
 	{
-		return GetActualStat(Stat.Dexturity);
+		return GetStat(Stat.Dexturity);
 	}
 
     public int GetActualRequireSkillAP(Skill selectedSkill)
@@ -741,7 +764,7 @@ public class Unit : MonoBehaviour
         // 행동력(기술) 소모 증감 효과 적용
         if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
 		{
-			requireSkillAP = (int) GetActualEffect((float)requireSkillAP, StatusEffectType.RequireSkillAPChange);
+			requireSkillAP = (int) CalculateActualAmount((float)requireSkillAP, StatusEffectType.RequireSkillAPChange);
 		}
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
@@ -822,7 +845,13 @@ public class Unit : MonoBehaviour
 		this.baseDefense = unitInfo.baseDefense;
 		this.baseResistance = unitInfo.baseResistance;
 		this.baseDexturity = unitInfo.baseDexturity;
-		this.unitClass = unitInfo.unitClass;
+        this.baseStats = new Dictionary<Stat, int>();
+        baseStats.Add(Stat.MaxHealth, baseHealth);
+        baseStats.Add(Stat.Power, basePower);
+        baseStats.Add(Stat.Defense, baseDefense);
+        baseStats.Add(Stat.Resistance, baseResistance);
+        baseStats.Add(Stat.Dexturity, baseDexturity);
+        this.unitClass = unitInfo.unitClass;
 		this.element = unitInfo.element;
 		this.celestial = unitInfo.celestial;
 		this.isObject = unitInfo.isObject;
@@ -941,39 +970,45 @@ public class Unit : MonoBehaviour
 	{
 		float partyLevel = (float)FindObjectOfType<BattleManager>().GetPartyLevel();
 
-		maxHealth = (int)baseHealth;
-		power = (int)basePower;
-		defense = (int)baseDefense;
-		resistance = (int)baseResistance;
-		dexturity = (int)baseDexturity;
+        actualHealth = new ActualStat(baseHealth, Stat.MaxHealth);
+        actualPower  = new ActualStat(basePower, Stat.Power);
+        actualDefense = new ActualStat(baseDefense, Stat.Defense);
+        actualResistance = new ActualStat(baseResistance, Stat.Resistance);
+        actualDexturity = new ActualStat(baseDexturity, Stat.Dexturity);
+        actualStats = new Dictionary<Stat, ActualStat>();
+        actualStats.Add(Stat.MaxHealth, actualHealth);
+        actualStats.Add(Stat.Power, actualPower);
+        actualStats.Add(Stat.Defense, actualDefense);
+        actualStats.Add(Stat.Resistance, actualResistance);
+        actualStats.Add(Stat.Dexturity, actualDexturity);
 
-		// 절대값으로 그대로 넣도록 변경.
-		// float actualHealthAcceleration = healthAcceleration + (healthAccelerationInterval * baseHealth);
-		// float actualHealthInitialGrowth = healthInitialGrowth + (healthInitialGrowthInterval * baseHealth);
-		// float actualHealthStandardValue = healthStandardValue + (healthStandardValueInterval * baseHealth);
-		// maxHealth = (int)((actualHealthAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualHealthInitialGrowth * partyLevel) + actualHealthStandardValue);
-		// float actualPowerAcceleration = powerAcceleration + (powerAccelerationInterval * basePower);
-		// float actualPowerInitialGrowth = powerInitialGrowth + (powerInitialGrowthInterval * basePower);
-		// float actualPowerStandardValue = powerStandardValue + (powerStandardValueInterval * basePower);
-		// power = (int)((actualPowerAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualPowerInitialGrowth * partyLevel) + actualPowerStandardValue);
-		// float actualDefenseAcceleration = defenseAcceleration + (defenseAccelerationInterval * baseDefense);
-		// float actualDefenseInitialGrowth = defenseInitialGrowth + (defenseInitialGrowthInterval * baseDefense);
-		// float actualDefenseStandardValue = defenseStandardValue + (defenseStandardValueInterval * baseDefense);
-		// defense = (int)((actualDefenseAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualDefenseInitialGrowth * partyLevel) + actualDefenseStandardValue);
-		// float actualResistanceAcceleration = resistanceAcceleration + (resistanceAccelerationInterval * baseResistance);
-		// float actualResistanceInitialGrowth = resistanceInitialGrowth + (resistanceInitialGrowthInterval * baseResistance);
-		// float actualResistanceStandardValue = resistanceStandardValue + (resistanceStandardValueInterval * baseResistance);
-		// resistance = (int)((actualResistanceAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualResistanceInitialGrowth * partyLevel) + actualResistanceStandardValue);
-		// float actualDexturityAcceleration = dexturityAcceleration + (dexturityAccelerationInterval * baseDexturity);
-		// float actualDexturityInitialGrowth = dexturityInitialGrowth + (dexturityInitialGrowthInterval * baseDexturity);
-		// float actualDexturityStandardValue = dexturityStandardValue + (dexturityStandardValueInterval * baseDexturity);
-		// dexturity = (int)((actualDexturityAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-		// 				   + (actualDexturityInitialGrowth * partyLevel) + actualDexturityStandardValue);
-	}
+        // 절대값으로 그대로 넣도록 변경.
+        // float actualHealthAcceleration = healthAcceleration + (healthAccelerationInterval * baseHealth);
+        // float actualHealthInitialGrowth = healthInitialGrowth + (healthInitialGrowthInterval * baseHealth);
+        // float actualHealthStandardValue = healthStandardValue + (healthStandardValueInterval * baseHealth);
+        // maxHealth = (int)((actualHealthAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+        // 				   + (actualHealthInitialGrowth * partyLevel) + actualHealthStandardValue);
+        // float actualPowerAcceleration = powerAcceleration + (powerAccelerationInterval * basePower);
+        // float actualPowerInitialGrowth = powerInitialGrowth + (powerInitialGrowthInterval * basePower);
+        // float actualPowerStandardValue = powerStandardValue + (powerStandardValueInterval * basePower);
+        // power = (int)((actualPowerAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+        // 				   + (actualPowerInitialGrowth * partyLevel) + actualPowerStandardValue);
+        // float actualDefenseAcceleration = defenseAcceleration + (defenseAccelerationInterval * baseDefense);
+        // float actualDefenseInitialGrowth = defenseInitialGrowth + (defenseInitialGrowthInterval * baseDefense);
+        // float actualDefenseStandardValue = defenseStandardValue + (defenseStandardValueInterval * baseDefense);
+        // defense = (int)((actualDefenseAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+        // 				   + (actualDefenseInitialGrowth * partyLevel) + actualDefenseStandardValue);
+        // float actualResistanceAcceleration = resistanceAcceleration + (resistanceAccelerationInterval * baseResistance);
+        // float actualResistanceInitialGrowth = resistanceInitialGrowth + (resistanceInitialGrowthInterval * baseResistance);
+        // float actualResistanceStandardValue = resistanceStandardValue + (resistanceStandardValueInterval * baseResistance);
+        // resistance = (int)((actualResistanceAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+        // 				   + (actualResistanceInitialGrowth * partyLevel) + actualResistanceStandardValue);
+        // float actualDexturityAcceleration = dexturityAcceleration + (dexturityAccelerationInterval * baseDexturity);
+        // float actualDexturityInitialGrowth = dexturityInitialGrowth + (dexturityInitialGrowthInterval * baseDexturity);
+        // float actualDexturityStandardValue = dexturityStandardValue + (dexturityStandardValueInterval * baseDexturity);
+        // dexturity = (int)((actualDexturityAcceleration * partyLevel * (partyLevel - 1f) / 2f)
+        // 				   + (actualDexturityInitialGrowth * partyLevel) + actualDexturityStandardValue);
+    }
 
 	UnitManager unitManager;
 	void Initialize()
@@ -983,10 +1018,10 @@ public class Unit : MonoBehaviour
 		position = initPosition;
 		startPositionOfPhase = position;
 		UpdateSpriteByDirection();
-		currentHealth = maxHealth;
+		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
-		activityPoint = (int)(dexturity * 0.5f) + unitManager.GetStandardActivityPoint();
-		if (dexturity == 0)
+		activityPoint = (int)(actualDexturity.value * 0.5f) + unitManager.GetStandardActivityPoint();
+		if (actualDexturity.value == 0)
 		{
 			// Manastone is not move
 			activityPoint = 0;
@@ -996,7 +1031,7 @@ public class Unit : MonoBehaviour
 		statusEffectList = new List<StatusEffect>();
 		latelyHitInfos = new List<HitInfo>();
 
-		healthViewer.SetInitHealth(maxHealth, side);
+		healthViewer.SetInitHealth(GetMaxHealth(), side);
 	}
 
 	void LoadSprite()

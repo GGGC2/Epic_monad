@@ -254,7 +254,7 @@ public class StatusEffect {
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
             result = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
         else if (seVarEnum == StatusEffectVar.Power)
-            result = caster.GetActualStat(Stat.Power);
+            result = caster.GetStat(Stat.Power);
         else {
             if(GetOriginSkill() != null)
                 result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster, owner);

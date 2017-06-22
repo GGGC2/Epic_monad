@@ -102,6 +102,7 @@ public class UnitManager : MonoBehaviour {
                         float statusEffectVar = statusEffect.GetStatusEffectVar(i);
                         statusEffect.CalculateAmount(i, statusEffectVar);
                     }
+                    unit.updateStats(statusEffect, false, false);
                 }
                 else
                     unit.RemoveStatusEffect(statusEffect);
@@ -248,7 +249,7 @@ public class UnitManager : MonoBehaviour {
 		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
@@ -366,7 +367,7 @@ public class UnitManager : MonoBehaviour {
 		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
@@ -374,10 +375,10 @@ public class UnitManager : MonoBehaviour {
 		{
 			SortHelper.CompareBy<Unit>(go => {
 					int currentAP = go.GetCurrentActivityPoint();
-					int recover = go.GetActualStat(Stat.Dexturity);
+					int recover = go.GetStat(Stat.Dexturity);
 					return currentAP + recover;
 			}),
-			SortHelper.CompareBy<Unit>(go => go.GetActualStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 

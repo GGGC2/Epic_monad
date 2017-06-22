@@ -13,7 +13,7 @@ public class Eren_2_r_SkillLogic : BasePassiveSkillLogic {
 		Debug.Log("AP before : " + hitInfo.caster.GetCurrentActivityPoint());
 		// 민첩성의 0.1만큼 행동력을 회복
 		Unit eren = hitInfo.caster;
-		int dexterity = eren.GetActualStat(Stat.Dexturity);
+		int dexterity = eren.GetStat(Stat.Dexturity);
 		int amount = (int)(dexterity * 0.1f);
 		Debug.Log("Amount : " + amount);
 		MonoBehaviour.FindObjectOfType<BattleManager>().StartCoroutine(eren.RecoverActionPoint(amount));
