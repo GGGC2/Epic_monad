@@ -48,7 +48,7 @@ namespace BattleUI
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
 			skillDataText.text = preSelectedSkill.GetSkillDataText();
 			
-			if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
+			/*if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
 			{
 				range1Image.sprite = transparent;
 			}
@@ -56,7 +56,7 @@ namespace BattleUI
 			{
 				skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
 				range1Image.sprite = RangeFormIcons[(int)preSelectedSkill.GetFirstRangeForm()];
-			}
+			}*/
 		}
 
 		public void CallbackPointerExitSkillIndex(int index)

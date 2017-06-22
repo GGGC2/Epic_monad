@@ -14,7 +14,7 @@ namespace Battle.Skills {
         }
         public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
             if(statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
-                Aura.TriggerOnRemoved(target, null, statusEffect);
+                Aura.TriggerOnRemoved(target, statusEffect);
             return true;
         }
         public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {

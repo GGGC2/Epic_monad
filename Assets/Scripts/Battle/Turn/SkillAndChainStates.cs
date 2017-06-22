@@ -444,26 +444,30 @@ namespace Battle.Turn {
 
             yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
             
-            foreach (var target in targets) {
-                if (!isChainable || !CheckEvasion(battleData, caster, target)) {
-                    // 데미지 적용
-                    if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
-                        yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+            foreach (var tile in selectedTiles) {
+                if (tile.IsUnitOnTile()) {
+                    Unit target = tile.GetUnitOnTile();
+                    if (!isChainable || !CheckEvasion(battleData, caster, target)) {
+                        // 데미지 적용
+                        if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
+                            SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
+                            yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+                        }
+
+                        // 효과 외의 부가 액션 (AP 감소 등)
+                        SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, selectedTiles);
+
+                        // 기술의 상태이상은 기술이 적용된 후에 붙인다.
+                        if (appliedSkill.GetStatusEffectList().Count > 0)
+                            StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
                     }
-
-                    // 효과 외의 부가 액션 (AP 감소 등)
-                    SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, selectedTiles);
-
-                    // 기술의 상태이상은 기술이 적용된 후에 붙인다.
-                    if (appliedSkill.GetStatusEffectList().Count > 0)
-                        StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+                    caster.ActiveFalseAllBonusText();
+                    // 사이사이에도 특성 발동 조건을 체크해준다.
+                    battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+                    battleData.unitManager.TriggerStatusEffectsAtActionEnd();
+                    battleData.unitManager.UpdateStatusEffectsAtActionEnd();
                 }
-                caster.ActiveFalseAllBonusText();
-                // 사이사이에도 특성 발동 조건을 체크해준다.
-                battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-                battleData.unitManager.TriggerStatusEffectsAtActionEnd();
-                battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+                StatusEffector.AttachStatusEffect(caster, appliedSkill, tile);
             }
 
             // 기술 사용 시 적용되는 특성

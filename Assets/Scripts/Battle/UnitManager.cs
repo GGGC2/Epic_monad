@@ -37,6 +37,7 @@ public class UnitManager : MonoBehaviour {
 	List<SkillInfo> skillInfoList = new List<SkillInfo>();
 	List<PassiveSkillInfo> passiveSkillInfoList = new List<PassiveSkillInfo>();
     List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
+    List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
 	public GameObject unitPrefab;
 	List<Unit> units = new List<Unit>();
@@ -186,7 +187,7 @@ public class UnitManager : MonoBehaviour {
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 			unit.ApplyUnitInfo(unitInfo);
-			unit.ApplySkillList(skillInfoList, statusEffectInfoList, passiveSkillInfoList);
+			unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
 
 			Vector2 initPosition = unit.GetInitPosition();
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
@@ -339,11 +340,17 @@ public class UnitManager : MonoBehaviour {
         statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
     }
 
+    void LoadTileStatusEffects()
+    {
+        tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
+    }
+
 	void Start () 
 	{
 		LoadSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
+        LoadTileStatusEffects();
 		GenerateUnits();
         GetEnemyUnits();
 		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());

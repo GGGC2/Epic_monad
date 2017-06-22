@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using Enums;
 
@@ -9,8 +9,9 @@ public class TileViewer : MonoBehaviour {
 	Text nameText;
 	Text apText;
 	Image elementImage;
+    Text statusEffectText;
 
-	public void UpdateTileViewer(Tile tile)
+    public void UpdateTileViewer(Tile tile)
 	{
 		if (tileImage == null) {
 			
@@ -30,9 +31,30 @@ public class TileViewer : MonoBehaviour {
 	    }
 
         SetElementImage(tile.GetTileElement());
+        UpdateEffect(tile);
 	}
 
-	void SetElementImage(Element element)
+    void UpdateEffect(Tile tile) {
+        List<TileStatusEffect> effectList = tile.GetStatusEffectList();
+        // Debug.Log(unit.GetName() + " has " + effectList.Count + " se");
+        int numberOfEffects = effectList.Count;
+        string concattedText = "";
+        for (int i = 0; i < numberOfEffects; i++) {
+            concattedText += effectList[i].GetDisplayName();
+            if (effectList[i].GetIsStackable())
+                concattedText += "[" + effectList[i].GetRemainStack() + "]";
+            if (effectList[i].GetRemainPhase() < 500)
+                concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+            else
+                concattedText += "(--)";
+            concattedText += (int)effectList[i].GetAmount();
+            if (i < numberOfEffects - 1)
+                concattedText += " ";
+        }
+        statusEffectText.text = concattedText;
+    }
+
+    void SetElementImage(Element element)
 	{
 		if (element == Element.Fire)
 			elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
@@ -50,8 +72,9 @@ public class TileViewer : MonoBehaviour {
 		tileImage = transform.Find("TileImage").GetComponent<Image>();
 		nameText = transform.Find("NameText").GetComponent<Text>();
 		apText = transform.Find("APText").GetComponent<Text>();
-		elementImage = transform.Find("ElementImage").GetComponent<Image>();	
-	}
+		elementImage = transform.Find("ElementImage").GetComponent<Image>();
+        statusEffectText = transform.Find("statusEffects").GetComponent<Text>();
+    }
 
 	// Use this for initialization
 	void Start () {

@@ -175,24 +175,37 @@ public class Parser : MonoBehaviour {
 		}
 	}
 
-    public static List<StatusEffectInfo> GetParsedStatusEffectInfo()
-    {
+    public static List<StatusEffectInfo> GetParsedStatusEffectInfo() {
         List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
 
         TextAsset csvFile = Resources.Load("Data/testStatusEffectData") as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedStatusEffectInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 1; i < unparsedStatusEffectInfoStrings.Length; i++)
-		{
-			StatusEffectInfo statusEffectInfo = new StatusEffectInfo(unparsedStatusEffectInfoStrings[i]);
+		for (int i = 1; i < unparsedStatusEffectInfoStrings.Length; i++) {
+            StatusEffectInfo statusEffectInfo = new StatusEffectInfo(unparsedStatusEffectInfoStrings[i]);
 			statusEffectInfoList.Add(statusEffectInfo);
 		}
 
 		return statusEffectInfoList;
     }
 
-	public static List<TileInfo> GetParsedTileInfo()
+    public static List<TileStatusEffectInfo> GetParsedTileStatusEffectInfo() {
+        List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
+
+        TextAsset csvFile = Resources.Load("Data/testTileStatusEffectData") as TextAsset;
+        string csvText = csvFile.text;
+        string[] unparsedTileStatusEffectInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+        for (int i = 1; i < unparsedTileStatusEffectInfoStrings.Length; i++) {
+            TileStatusEffectInfo tileStatusEffectInfo = new TileStatusEffectInfo(unparsedTileStatusEffectInfoStrings[i]);
+            tileStatusEffectInfoList.Add(tileStatusEffectInfo);
+        }
+
+        return tileStatusEffectInfoList;
+    }
+
+    public static List<TileInfo> GetParsedTileInfo()
 	{
 		List<TileInfo> tileInfoList = new List<TileInfo>();
 

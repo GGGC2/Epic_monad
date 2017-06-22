@@ -125,5 +125,48 @@ public static class StatusEffector
             }
 		}
 	}
+
+
+    public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Tile targetTile) {
+        List<TileStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetTileStatusEffectList();
+        List<TileStatusEffect> statusEffects = fixedStatusEffects
+            .Select(fixedElem => new TileStatusEffect(fixedElem, caster, appliedSkill, null))
+            .ToList();
+        AttachStatusEffect(caster, statusEffects, targetTile);
+    }
+    private static void AttachStatusEffect(Unit caster, List<TileStatusEffect> statusEffects, Tile targetTile) {
+        Vector2 tilePos = targetTile.GetTilePos();
+        foreach (var statusEffect in statusEffects) {
+            var alreadyAppliedSameEffect = targetTile.GetStatusEffectList().Find(
+                alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
+            );
+
+            // 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
+            if (alreadyAppliedSameEffect != null && !statusEffect.GetIsStackable()) {
+                Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to tile (" + tilePos.x + ", " + tilePos.y + ")");
+                List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                newStatusEffectList.Add(statusEffect);
+                targetTile.SetStatusEffectList(newStatusEffectList);
+            }
+            // 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
+            else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()) {
+                Debug.Log("Add same SE : " + statusEffect.GetDisplayName() + " to tile (" + tilePos.x + ", " + tilePos.y + ")");
+                int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
+                for (int i = 0; i < num; i++) {
+                    alreadyAppliedSameEffect.SetAmount(i, statusEffect.GetAmount(i));
+                    alreadyAppliedSameEffect.SetRemainAmount(i, statusEffect.GetAmount(i));
+                    alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
+                }
+                alreadyAppliedSameEffect.AddRemainStack(1);
+            }
+            // 동일한 효과가 없음 -> 새로 넣음
+            else {
+                Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to tile (" + tilePos.x + ", " + tilePos.y + ")");
+                List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => true);
+                newStatusEffectList.Add(statusEffect);
+                targetTile.SetStatusEffectList(newStatusEffectList);
+            }
+        }
+    }
 }
 }

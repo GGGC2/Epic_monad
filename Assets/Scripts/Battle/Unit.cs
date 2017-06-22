@@ -808,6 +808,7 @@ public class Unit : MonoBehaviour
 
 	public void ApplySkillList(List<SkillInfo> skillInfoList, 
 							   List<StatusEffectInfo> statusEffectInfoList, 
+                               List<TileStatusEffectInfo> tileStatusEffectInfoList,
 							   List<PassiveSkillInfo> passiveSkillInfoList)
 	{
 		int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
@@ -821,6 +822,7 @@ public class Unit : MonoBehaviour
 					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
 					{
 						skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                        skill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
                     	skillList.Add(skill);
 					}
                 }

@@ -43,6 +43,7 @@ public class Skill{
     
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
+    List<TileStatusEffect.FixedElement> tileStatusEffectList = new List<TileStatusEffect.FixedElement>();
     
 	public Skill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 
                  float powerFactor,
@@ -93,8 +94,23 @@ public class Skill{
             previousStatusEffect = statusEffectToAdd;
         }
     }
-
-	public string GetOwner(){return owner;}
+    public void ApplyTileStatusEffectList(List<TileStatusEffectInfo> statusEffectInfoList, int partyLevel) {
+        TileStatusEffect.FixedElement previousStatusEffect = null;
+        foreach (var statusEffectInfo in statusEffectInfoList) {
+            TileStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+            if (statusEffectInfo.GetRequireLevel() <= partyLevel) {
+                if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //이전의 previousStatusEffect에 대해서만 대체 여부를 확인함.
+                                                                                                 //즉, 대체되어야 하는 StatusEffect는 csv 파일에서 바로 다음 줄에 만들어야 함.
+                    tileStatusEffectList.Remove(previousStatusEffect);
+                }
+                if (statusEffectInfo.GetOriginSkillName().Equals(name)) {
+                    tileStatusEffectList.Add(statusEffectToAdd);
+                }
+            }
+            previousStatusEffect = statusEffectToAdd;
+        }
+    }
+    public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
     public int GetLequireLevel() { return requireLevel;}
@@ -116,4 +132,5 @@ public class Skill{
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
 	public string GetSkillDataText() {return skillDataText;}
     public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
+    public List<TileStatusEffect.FixedElement> GetTileStatusEffectList() { return tileStatusEffectList; }
 }

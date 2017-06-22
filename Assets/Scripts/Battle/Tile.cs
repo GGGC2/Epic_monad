@@ -18,6 +18,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public SpriteRenderer sprite;
 	public bool isHighlight;
 	public List<Color> colors;
+    List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
 
 	public SpriteRenderer arrowRenderer;
 	public List<Sprite> arrows;
@@ -45,7 +46,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		SetTileElement(element);
 	}
 
-	public void SetTileAPAtStandardHeight(int APAtStandardHeight)	{	this.APAtStandardHeight = APAtStandardHeight;	}
+    public List<TileStatusEffect> GetStatusEffectList() { return statusEffectList; }
+    public void SetStatusEffectList(List<TileStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
+    public void SetTileAPAtStandardHeight(int APAtStandardHeight)	{	this.APAtStandardHeight = APAtStandardHeight;	}
 
 	public void SetTileHeight(int height)	{	this.height = height;	}
 
