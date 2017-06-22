@@ -52,8 +52,7 @@ public class Unit : MonoBehaviour
 
 	// 유닛 배치할때만 사용
 	Vector2 initPosition;
-
-	// Base stats.
+    
 	int baseHealth; // 체력
 	int basePower; // 공격력
 	int baseDefense; // 방어력
@@ -61,6 +60,17 @@ public class Unit : MonoBehaviour
 	int baseDexturity; // 행동력
     Dictionary<Stat, int> baseStats;
 
+    class ActualStat {
+        public int value;
+        public Stat stat;
+        public List<StatusEffect> appliedStatusEffects;
+
+        public ActualStat(int value, Stat stat) {
+            this.value = value;
+            this.stat = stat;
+            this.appliedStatusEffects = new List<StatusEffect>();
+        }
+    }
     ActualStat actualHealth;
     ActualStat actualPower;
     ActualStat actualDefense;
@@ -91,87 +101,30 @@ public class Unit : MonoBehaviour
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
-	public Sprite GetCurrentSprite()
-	{
-		return GetComponent<SpriteRenderer>().sprite;
-	}
-
-	public Sprite GetDefaultSprite()
-	{
-		return spriteLeftDown;
-	}
-
+	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
+	public Sprite GetDefaultSprite(){ return spriteLeftDown; }
 	public void SetChargeEffect(GameObject effect)
 	{
 		if (chargeEffect != null) RemoveChargeEffect();
 		chargeEffect = effect;
 		effect.transform.position = gameObject.transform.position - new Vector3(0, 0, 0.01f);
 	}
-
-	public void RemoveChargeEffect()
-	{
-		Destroy(chargeEffect);
-	}
-
-    public int GetStat(Stat stat)
-    {
-        if(actualStats.ContainsKey(stat))
+	public void RemoveChargeEffect(){ Destroy(chargeEffect); }
+    public int GetStat(Stat stat) {
+        if (actualStats.ContainsKey(stat))
             return actualStats[stat].value;
         return 0;
     }
     public int GetBaseStat(Stat stat) {
-        if(baseStats.ContainsKey(stat))
+        if (baseStats.ContainsKey(stat))
             return baseStats[stat];
         return 0;
     }
-    
-	class ActualStat
-	{
-		public int value;
-        public Stat stat;
-		public List<StatusEffect> appliedStatusEffects;
-
-        public ActualStat(int value, Stat stat) {
-            this.value = value;
-            this.stat = stat;
-            this.appliedStatusEffects = new List<StatusEffect>();
-        }
-	}
-
-    public void updateStats() {
-        foreach(var actualStat in actualStats.Values) {
-            actualStat.value = (int)CalculateActualStats(actualStat.stat);
-        }
-    }
-    public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
-        List<ActualStat> statsToUpdate = new List<ActualStat>();
-        for(int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
-            StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
-            Stat statTypeToUpdate = EnumConverter.GetCorrespondingStat(type);
-            if(statTypeToUpdate != Stat.None)
-                statsToUpdate.Add(actualStats[statTypeToUpdate]);
-        }
-        for(int i = 0; i< statsToUpdate.Count; i++) {
-            if(isApplied)       statsToUpdate[i].appliedStatusEffects.Add(statusEffect);
-            else if(isRemoved)  statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
-
-            statsToUpdate[i].value = (int)CalculateActualStats(statsToUpdate[i].stat);
-        }
-    }
-
-    public float CalculateActualStats(Stat statType) {
-        float result = ApplyTileElement(baseStats[statType], statType);
-        result = ApplyTileStatusEffect(result, statType);
-        result = CalculateActualAmount(result, EnumConverter.GetCorrespondingStatusEffectType(statType));
-        return result;
-    }
-
-	public void SetActive() { activeArrowIcon.SetActive(true); }
+    public int GetRegenerationAmount() { return GetStat(Stat.Dexturity); }
+    public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
 	public Vector2 GetInitPosition() { return initPosition; }
-
 	public List<Skill> GetSkillList() { return skillList; }
-
 	public List<Skill> GetLearnedSkillList()
 	{
 		var learnedSkills =
@@ -182,12 +135,7 @@ public class Unit : MonoBehaviour
 		Debug.LogWarning(GetNameInCode() +  " Learnedskils" + learnedSkills.Count());
 		return learnedSkills.ToList();
 	}
-
-	public List<PassiveSkill> GetLearnedPassiveSkillList()
-	{
-		return passiveSkillList;
-	}
-
+	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
     public List<StatusEffect> GetStatusEffectList() { return statusEffectList; }
 	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
 	public int GetMaxHealth() { return actualHealth.value; }
@@ -206,23 +154,15 @@ public class Unit : MonoBehaviour
 	public void SetName(string name) { this.name = name; }
 	public Side GetSide() { return side; }	
 	public bool IsObject() { return isObject; }
-
-	public void SetDirection(Direction direction)
-	{
+    public Vector2 GetPosition() { return position; }
+    public void SetPosition(Vector2 position) { this.position = position; }
+    public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
+    public Dictionary<string, int> GetUsedSkillDict() {return usedSkillDict;}
+    public Direction GetDirection() { return direction; }
+    public void SetDirection(Direction direction) {
 		this.direction = direction;
 		UpdateSpriteByDirection();
 	}
-
-	public Direction GetDirection()
-	{
-		return direction;
-	}
-
-	public void SetPosition(Vector2 position)
-	{
-		this.position = position;
-	}
-
 	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp)
 	{
 		before.SetUnitOnTile(null);
@@ -251,20 +191,66 @@ public class Unit : MonoBehaviour
         updateStats();
     }
 
-	public Vector2 GetPosition()
-	{
-		return position;
-	}
+    public void updateStats() {
+        foreach (var actualStat in actualStats.Values) {
+            actualStat.value = (int)CalculateActualStats(actualStat.stat);
+        }
+    }
+    public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
+        List<ActualStat> statsToUpdate = new List<ActualStat>();
+        for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+            StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
+            Stat statTypeToUpdate = EnumConverter.GetCorrespondingStat(type);
+            if (statTypeToUpdate != Stat.None)
+                statsToUpdate.Add(actualStats[statTypeToUpdate]);
+        }
+        for (int i = 0; i < statsToUpdate.Count; i++) {
+            if (isApplied) statsToUpdate[i].appliedStatusEffects.Add(statusEffect);
+            else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
 
-	public Vector2 GetStartPositionOfPhase()
-	{
-		return startPositionOfPhase;
-	}
+            statsToUpdate[i].value = (int)CalculateActualStats(statsToUpdate[i].stat);
+        }
+    }
+    public float CalculateActualStats(Stat statType) {
+        float result = ApplyTileElement(baseStats[statType], statType);
+        result = ApplyTileStatusEffect(result, statType);
+        result = CalculateActualAmount(result, EnumConverter.GetCorrespondingStatusEffectType(statType));
+        return result;
+    }
+    public float ApplyTileElement(float statValue, Stat stat) {
+        // 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
+        if (GetTileUnderUnit() == null) {
+            Debug.Log("Null tile Unit's " + transform.position);
+        }
+        if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
+            if (stat == Stat.Power)
+                statValue *= 1.2f;
+        }
 
-	public Dictionary<string, int> GetUsedSkillDict()
-	{
-		return usedSkillDict;
-	}
+        // 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+        if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal) {
+            if (stat == Stat.Defense || stat == Stat.Resistance)
+                statValue += 30;
+        }
+        return statValue;
+    }
+    public float ApplyTileStatusEffect(float statValue, Stat stat) {
+        Tile tile = GetTileUnderUnit();
+        List<TileStatusEffect> tileStatusEffectList = tile.GetStatusEffectList();
+        foreach (var tileStatusEffect in tileStatusEffectList) {
+            for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++) {
+                StatusEffectType type = tileStatusEffect.fixedElem.actuals[i].statusEffectType;
+                bool isMatch = ((type == StatusEffectType.PowerChange && stat == Stat.Power) ||
+                                (type == StatusEffectType.DefenseChange && stat == Stat.Defense) ||
+                                (type == StatusEffectType.ResistanceChange && stat == Stat.Resistance));
+                if (isMatch && tileStatusEffect.fixedElem.actuals[i].isMultiply)
+                    statValue *= 1 + tileStatusEffect.GetAmount(i) / 100;
+                if (isMatch && !tileStatusEffect.fixedElem.actuals[i].isMultiply)
+                    statValue += tileStatusEffect.GetAmount(i);
+            }
+        }
+        return statValue;
+    }
 
 	public void AddSkillCooldown(int phase)
 	{
@@ -334,7 +320,41 @@ public class Unit : MonoBehaviour
 		return hasStatusEffect;
 	}
 
-	public float GetSpeed()
+    public void RemoveStatusEffect(StatusEffect statusEffect) {
+        bool toBeRemoved = true;
+
+        toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if (originSkill != null) {
+            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
+        }
+        if (toBeRemoved) {
+            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
+            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+            updateStats(statusEffect, false, true);
+        }
+    }
+    public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
+    {
+        foreach (var statusEffect in statusEffectList) {
+            if (num == 0) break;
+
+            // 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
+            if (statusEffect.GetCaster() == this) continue;
+
+            if (!statusEffect.GetIsRemovable()) continue;
+
+            bool matchIsBuff = (category == StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
+            bool matchIsDebuff = (category == StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
+            bool matchAll = (category == StatusEffectCategory.All);
+            if (matchIsBuff || matchIsDebuff || matchAll) {
+                RemoveStatusEffect(statusEffect);
+                num -= 1;
+            }
+        }
+    }
+
+    public float GetSpeed()
 	{
 		int speedValue = 100;
 		foreach (var statusEffect in statusEffectList)
@@ -351,45 +371,6 @@ public class Unit : MonoBehaviour
 
 		return (float)speedValue / 100;
 	}
-
-	public float ApplyTileElement(float statValue, Stat stat)
-	{
-		// 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
-		if(GetTileUnderUnit() == null)
-		{
-			Debug.Log("Null tile Unit's " + transform.position);
-		}
-		if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire)
-		{
-			if (stat == Stat.Power)
-				statValue *= 1.2f;
-		}
-
-		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
-		if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal)
-		{
-			if (stat == Stat.Defense || stat == Stat.Resistance)
-				statValue += 30;
-		}
-		return statValue;
-	}
-    public float ApplyTileStatusEffect(float statValue, Stat stat) {
-        Tile tile = GetTileUnderUnit();
-        List<TileStatusEffect> tileStatusEffectList = tile.GetStatusEffectList();
-        foreach(var tileStatusEffect in tileStatusEffectList) {
-            for(int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++) {
-                StatusEffectType type = tileStatusEffect.fixedElem.actuals[i].statusEffectType;
-                bool isMatch = ((type == StatusEffectType.PowerChange && stat == Stat.Power) ||
-                                (type == StatusEffectType.DefenseChange && stat == Stat.Defense) ||
-                                (type == StatusEffectType.ResistanceChange && stat == Stat.Resistance));
-                if(isMatch && tileStatusEffect.fixedElem.actuals[i].isMultiply) 
-                    statValue *= 1 + tileStatusEffect.GetAmount(i) / 100;
-                if(isMatch && !tileStatusEffect.fixedElem.actuals[i].isMultiply) 
-                    statValue += tileStatusEffect.GetAmount(i);
-            }
-        }
-        return statValue;
-    }
 
 	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
 	{
@@ -456,42 +437,6 @@ public class Unit : MonoBehaviour
 	{
 		startPositionOfPhase = this.GetPosition();
         hasMovedThisTurn = false;
-	}
-    
-    public void RemoveStatusEffect(StatusEffect statusEffect) {
-        bool toBeRemoved = true;
-        
-        toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
-        Skill originSkill = statusEffect.GetOriginSkill();
-        if(originSkill != null) {
-            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
-        }
-        if(toBeRemoved) {
-            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
-            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
-            updateStats(statusEffect, false, true);
-        }
-    }
-	public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
-	{
-		foreach (var statusEffect in statusEffectList)
-		{
-			if (num == 0)   break;	
-
-			// 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
-			if (statusEffect.GetCaster() == this)   continue;
-
-			if (!statusEffect.GetIsRemovable())     continue;
-
-			bool matchIsBuff = (category == StatusEffectCategory.Buff) && (statusEffect.GetIsBuff());
-			bool matchIsDebuff = (category == StatusEffectCategory.Debuff) && (!statusEffect.GetIsBuff());
-			bool matchAll = (category == StatusEffectCategory.All);
-			if (matchIsBuff || matchIsDebuff || matchAll)
-			{
-                RemoveStatusEffect(statusEffect);
-                num -= 1;
-			}
-		}
 	}
 
 	// 반사데미지
@@ -749,11 +694,6 @@ public class Unit : MonoBehaviour
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
 
-	public int GetRegenerationAmount()
-	{
-		return GetStat(Stat.Dexturity);
-	}
-
     public int GetActualRequireSkillAP(Skill selectedSkill)
     {
         int requireSkillAP = selectedSkill.GetRequireAP();
@@ -832,77 +772,7 @@ public class Unit : MonoBehaviour
 		if (direction == Direction.RightDown)
 			GetComponent<SpriteRenderer>().sprite = spriteRightDown;
 	}
-
-	public void ApplyUnitInfo(UnitInfo unitInfo)
-	{
-		this.name = unitInfo.name;
-		this.nameInCode = unitInfo.nameInCode;
-		this.side = unitInfo.side;
-		this.initPosition = unitInfo.initPosition;
-		this.direction = unitInfo.initDirection;
-		this.baseHealth = unitInfo.baseHealth;
-		this.basePower = unitInfo.basePower;
-		this.baseDefense = unitInfo.baseDefense;
-		this.baseResistance = unitInfo.baseResistance;
-		this.baseDexturity = unitInfo.baseDexturity;
-        this.baseStats = new Dictionary<Stat, int>();
-        baseStats.Add(Stat.MaxHealth, baseHealth);
-        baseStats.Add(Stat.Power, basePower);
-        baseStats.Add(Stat.Defense, baseDefense);
-        baseStats.Add(Stat.Resistance, baseResistance);
-        baseStats.Add(Stat.Dexturity, baseDexturity);
-        this.unitClass = unitInfo.unitClass;
-		this.element = unitInfo.element;
-		this.celestial = unitInfo.celestial;
-		this.isObject = unitInfo.isObject;
-	}
-
-	public void ApplySkillList(List<SkillInfo> skillInfoList, 
-							   List<StatusEffectInfo> statusEffectInfoList, 
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList,
-							   List<PassiveSkillInfo> passiveSkillInfoList)
-	{
-		int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
-
-		foreach (var skillInfo in skillInfoList)
-		{
-			if ((skillInfo.GetOwner() == nameInCode) &&
-				(skillInfo.GetRequireLevel() <= partyLevel))
-                {
-                    Skill skill = skillInfo.GetSkill();
-					// if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
-					{
-						skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                        skill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                    	skillList.Add(skill);
-					}
-                }
-
-		}
-		// 비어있으면 디폴트 스킬로 채우도록.
-		if (skillList.Count() == 0)
-		{
-			foreach (var skillInfo in skillInfoList)
-			{
-				if ((skillInfo.GetOwner() == "default") &&
-					(skillInfo.GetRequireLevel() <= partyLevel))
-					skillList.Add(skillInfo.GetSkill());
-			}
-		}
-
-		foreach (var passiveSkillInfo in passiveSkillInfoList)
-		{
-			//Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-			if ((passiveSkillInfo.GetOwner() == nameInCode) &&
-				(passiveSkillInfo.GetRequireLevel() <= partyLevel))
-			{
-				PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
-				passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-				passiveSkillList.Add(passiveSkill);
-			}
-		}
-	}
-
+    
 	// 보너스 텍스트 표시.
 	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage)
 	{
@@ -912,7 +782,6 @@ public class Unit : MonoBehaviour
 		else if (attackDamage.attackDirection == DirectionCategory.Back)
 			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
 	}
-
 	public void PrintCelestialBonus(float bonus)
 	{
 		celestialBonusTextObject.SetActive(true);
@@ -920,13 +789,11 @@ public class Unit : MonoBehaviour
 		celestialBonusTextObject.GetComponentInChildren<Text>().text = "천체속성 (x" + bonus + ")";
 		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
-
 	public void PrintHeightBonus(float bonus)
 	{
 		heightBonusTextObject.SetActive(true);
 		heightBonusTextObject.GetComponentInChildren<Text>().text = "고저차 (x" + bonus + ")";
 	}
-
 	public void ActiveFalseAllBonusText()
 	{
 		celestialBonusTextObject.SetActive(false);
@@ -934,7 +801,6 @@ public class Unit : MonoBehaviour
 		directionBonusTextObject.SetActive(false);
 		heightBonusTextObject.SetActive(false);
 	}
-
 	public void PrintChainBonus(int chainCount)
 	{
 		float chainBonus;
@@ -950,17 +816,14 @@ public class Unit : MonoBehaviour
 		chainBonusTextObject.SetActive(true);
 		chainBonusTextObject.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
 	}
-
 	public void DisableChainText()
 	{
 		chainBonusTextObject.SetActive(false);
 	}
-
 	public void ShowChainIcon()
 	{
 		chainAttackerIcon.SetActive(true);
 	}
-
 	public void HideChainIcon()
 	{
 		chainAttackerIcon.SetActive(false);
@@ -1009,8 +872,67 @@ public class Unit : MonoBehaviour
         // dexturity = (int)((actualDexturityAcceleration * partyLevel * (partyLevel - 1f) / 2f)
         // 				   + (actualDexturityInitialGrowth * partyLevel) + actualDexturityStandardValue);
     }
+    public void ApplyUnitInfo(UnitInfo unitInfo) {
+        this.name = unitInfo.name;
+        this.nameInCode = unitInfo.nameInCode;
+        this.side = unitInfo.side;
+        this.initPosition = unitInfo.initPosition;
+        this.direction = unitInfo.initDirection;
+        this.baseHealth = unitInfo.baseHealth;
+        this.basePower = unitInfo.basePower;
+        this.baseDefense = unitInfo.baseDefense;
+        this.baseResistance = unitInfo.baseResistance;
+        this.baseDexturity = unitInfo.baseDexturity;
+        this.baseStats = new Dictionary<Stat, int>();
+        baseStats.Add(Stat.MaxHealth, baseHealth);
+        baseStats.Add(Stat.Power, basePower);
+        baseStats.Add(Stat.Defense, baseDefense);
+        baseStats.Add(Stat.Resistance, baseResistance);
+        baseStats.Add(Stat.Dexturity, baseDexturity);
+        this.unitClass = unitInfo.unitClass;
+        this.element = unitInfo.element;
+        this.celestial = unitInfo.celestial;
+        this.isObject = unitInfo.isObject;
+    }
+    public void ApplySkillList(List<SkillInfo> skillInfoList,
+                               List<StatusEffectInfo> statusEffectInfoList,
+                               List<TileStatusEffectInfo> tileStatusEffectInfoList,
+                               List<PassiveSkillInfo> passiveSkillInfoList) {
+        int partyLevel = FindObjectOfType<BattleManager>().GetPartyLevel();
 
-	UnitManager unitManager;
+        foreach (var skillInfo in skillInfoList) {
+            if ((skillInfo.GetOwner() == nameInCode) &&
+                (skillInfo.GetRequireLevel() <= partyLevel)) {
+                Skill skill = skillInfo.GetSkill();
+                // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
+                {
+                    skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                    skill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
+                    skillList.Add(skill);
+                }
+            }
+
+        }
+        // 비어있으면 디폴트 스킬로 채우도록.
+        if (skillList.Count() == 0) {
+            foreach (var skillInfo in skillInfoList) {
+                if ((skillInfo.GetOwner() == "default") &&
+                    (skillInfo.GetRequireLevel() <= partyLevel))
+                    skillList.Add(skillInfo.GetSkill());
+            }
+        }
+
+        foreach (var passiveSkillInfo in passiveSkillInfoList) {
+            //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
+            if ((passiveSkillInfo.GetOwner() == nameInCode) &&
+                (passiveSkillInfo.GetRequireLevel() <= partyLevel)) {
+                PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
+                passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                passiveSkillList.Add(passiveSkill);
+            }
+        }
+    }
+    UnitManager unitManager;
 	void Initialize()
 	{
 		gameObject.name = nameInCode;
