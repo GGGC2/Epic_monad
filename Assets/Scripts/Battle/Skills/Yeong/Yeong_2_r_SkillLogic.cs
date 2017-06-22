@@ -10,10 +10,10 @@ namespace Battle.Skills
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit unit) {
+        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            Vector2 unitPosition = unit.GetPosition();
+            Vector2 unitPosition = owner.GetPosition();
             List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, 0, Direction.LeftUp);
 
             List<Unit> nearbyUnits = new List<Unit>();

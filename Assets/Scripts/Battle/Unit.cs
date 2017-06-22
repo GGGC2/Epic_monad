@@ -294,11 +294,6 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void UpdateStatusEffectAtPhaseEnd()
-	{
-		
-	}
-
 	// searching certain StatusEffect
 	public bool HasStatusEffect(StatusEffect statusEffect)
 	{
@@ -782,6 +777,16 @@ public class Unit : MonoBehaviour
     public void ApplyTriggerOnPhaseEnd()
     {
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
+    }
+
+    public void TriggerTileStatusEffectAtTurnEnd() {
+        Tile tile = GetTileUnderUnit();
+        foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
+            Skill originSkill = tileStatusEffect.GetOriginSkill();
+            if (originSkill != null) {
+                SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
+            }
+        }
     }
 
 	public void GetKnockedBack(BattleData battleData, Tile destTile)

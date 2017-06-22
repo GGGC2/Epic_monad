@@ -55,7 +55,7 @@ public class BasePassiveSkillLogic
 	{
 		return 0;
 	}
-    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit unit) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
+    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
     }
 

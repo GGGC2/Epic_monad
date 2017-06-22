@@ -9,9 +9,9 @@ namespace Battle.Skills
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit unit) {
+        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-            List<Tile> nearbyTilesOfLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, unit.GetPosition(), 0, 1, 0, unit.GetDirection());
+            List<Tile> nearbyTilesOfLenian = tileManager.GetTilesInRange(Enums.RangeForm.Square, owner.GetPosition(), 0, 1, 0, owner.GetDirection());
             return nearbyTilesOfLenian.Count(x => x.GetTileElement() == Enums.Element.Metal);
         }
     }

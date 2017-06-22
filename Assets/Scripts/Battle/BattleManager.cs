@@ -123,6 +123,8 @@ public class BattleManager : MonoBehaviour
 
 		yield return StartCoroutine(FocusToUnit(battleData));
 
+        battleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
+        
 		battleData.uiManager.DisableSelectedUnitViewerUI();
 		if (battleData.selectedUnit != null)
 			battleData.selectedUnit.SetInactive();
@@ -524,6 +526,7 @@ public class BattleManager : MonoBehaviour
 		Debug.Log("Phase End.");
 
 		battleData.unitManager.EndPhase(battleData.currentPhase);
+        battleData.tileManager.EndPhase(battleData.currentPhase);
 		yield return new WaitForSeconds(0.5f);
 	}
 

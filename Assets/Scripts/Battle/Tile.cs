@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 using Enums;
 using Battle.Feature;
+using Battle.Skills;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
 
@@ -98,9 +99,20 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		else
 			throw new NotImplementedException(color.ToString() + " is not a supported color");
 	}
-
-
-	public Unit GetUnitOnTile ()
+    
+    public void RemoveStatusEffect(TileStatusEffect statusEffect) {
+        Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
+        statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+    }
+    public void UpdateRemainPhaseAtPhaseEnd() {
+        foreach (var statusEffect in statusEffectList) {
+            if (!statusEffect.GetIsInfinite())
+                statusEffect.DecreaseRemainPhase();
+            if (statusEffect.GetRemainPhase() <= 0)
+                RemoveStatusEffect(statusEffect);
+        }
+    }
+    public Unit GetUnitOnTile ()
 	{
 		return unitOnTile;
 	}

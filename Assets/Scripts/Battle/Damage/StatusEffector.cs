@@ -13,7 +13,7 @@ public static class StatusEffector
 	{
         List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster, appliedSkill, null))
+			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, appliedSkill, null))
 			.ToList();
         List<StatusEffect> newStatusEffects = new List<StatusEffect>();
         foreach(var statusEffect in statusEffects) {
@@ -40,7 +40,7 @@ public static class StatusEffector
 	{
 		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster, null, appliedSkill))
+			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, null, appliedSkill))
 			.ToList();
 		AttachStatusEffect(caster, statusEffects, target);
 	}

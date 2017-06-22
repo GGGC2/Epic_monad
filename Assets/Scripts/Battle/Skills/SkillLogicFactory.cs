@@ -122,6 +122,9 @@ public static class SkillLogicFactory
             case "에테르 폭탄":
             skillLogic = new Curi_7_r_SkillLogic();
             break;
+            case "초강산 혼합물":
+            skillLogic = new Curi_8_m_SkillLogic();
+            break;
             default:
             skillLogic = new BaseSkillLogic();
             break;

@@ -444,8 +444,13 @@ public class TileManager : MonoBehaviour {
 
 		else return Vector2.right+Vector2.down;
 	}
-
-	public bool isTileGenerationFinished = false;
+    
+    public void EndPhase(int phase) {
+        // Decrease each buff & debuff phase
+        foreach (var tile in GetAllTiles())
+            tile.Value.UpdateRemainPhaseAtPhaseEnd();
+    }
+    public bool isTileGenerationFinished = false;
 	public void GenerateTiles (List<TileInfo> tileInfoList)
 	{
 		foreach (var tileInfo in tileInfoList)

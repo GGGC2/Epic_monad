@@ -97,6 +97,7 @@ public class StatusEffect {
         public List<ActualElement> actuals;
         public class DisplayElement {
             public Unit caster; // 시전자
+            public Unit owner;  // statusEffect를 가지고 있는 유닛
             public Skill originSkill;
             public PassiveSkill originPassiveSkill;
             public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
@@ -104,10 +105,11 @@ public class StatusEffect {
             public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
             public List<Unit> memorizedUnits;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
 
-            public DisplayElement(Unit caster, Skill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
+            public DisplayElement(Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
                 this.originSkill = originSkill;
                 this.originPassiveSkill = originPassiveSkill;
                 this.caster = caster;
+                this.owner  = owner;
                 this.remainStack = 1;
                 this.remainPhase = defaultPhase;
                 this.memorizedUnits = new List<Unit>();
@@ -124,11 +126,11 @@ public class StatusEffect {
             }
         }
 
-        public FlexibleElement(StatusEffect statusEffect, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+        public FlexibleElement(StatusEffect statusEffect, Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill) {
             StatusEffect.FixedElement fixedElem = statusEffect.fixedElem;
             int maxStack = fixedElem.display.maxStack;
             int defaultPhase = fixedElem.display.defaultPhase;
-            display = new DisplayElement(caster, originSkill, originPassiveSkill, maxStack, defaultPhase);
+            display = new DisplayElement(caster, owner, originSkill, originPassiveSkill, maxStack, defaultPhase);
 
             this.actuals = new List<ActualElement>();
             for (int i = 0; i < fixedElem.actuals.Count; i++) {
@@ -137,11 +139,11 @@ public class StatusEffect {
         }
     }
 
-    public StatusEffect(FixedElement fixedElem, Unit caster, Skill originSkill, PassiveSkill originPassiveSkill) {
+    public StatusEffect(FixedElement fixedElem, Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill) {
         this.fixedElem = fixedElem;
-        this.flexibleElem = new FlexibleElement(this, caster, originSkill, originPassiveSkill);
+        this.flexibleElem = new FlexibleElement(this, caster, owner, originSkill, originPassiveSkill);
         for(int i = 0; i<fixedElem.actuals.Count; i++) {
-            float statusEffectVar = GetStatusEffectVar(i, caster);
+            float statusEffectVar = GetStatusEffectVar(i);
             CalculateAmount(i, statusEffectVar);
         }
     }
@@ -160,6 +162,7 @@ public class StatusEffect {
     public Skill GetOriginSkill() { return flexibleElem.display.originSkill; }
     public PassiveSkill GetOriginPassiveSkill() { return flexibleElem.display.originPassiveSkill; }
     public Unit GetCaster() { return flexibleElem.display.caster; }
+    public Unit GetOwner()  { return flexibleElem.display.owner;  }
     public int GetRemainPhase() { return flexibleElem.display.remainPhase; }
     public int GetRemainStack() { return flexibleElem.display.remainStack; }
     public Element GetElement() { return flexibleElem.display.element; }
@@ -241,7 +244,9 @@ public class StatusEffect {
         flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
     }
     
-    public float GetStatusEffectVar(int i, Unit caster) {
+    public float GetStatusEffectVar(int i) {
+        Unit caster = GetCaster();
+        Unit owner  = GetOwner();
         float result = 0;
         StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
         if (seVarEnum == StatusEffectVar.Level)
@@ -252,9 +257,9 @@ public class StatusEffect {
             result = caster.GetActualStat(Stat.Power);
         else {
             if(GetOriginSkill() != null)
-                result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster);
+                result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster, owner);
             if(GetOriginPassiveSkill() != null)
-                result = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster);
+                result = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster, owner);
         }
         return result;
     }

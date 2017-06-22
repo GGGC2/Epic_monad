@@ -99,7 +99,7 @@ public class UnitManager : MonoBehaviour {
             foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
-                        float statusEffectVar = statusEffect.GetStatusEffectVar(i, unit);
+                        float statusEffectVar = statusEffect.GetStatusEffectVar(i);
                         statusEffect.CalculateAmount(i, statusEffectVar);
                     }
                 }
@@ -308,7 +308,6 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateRemainPhaseAtPhaseEnd();
-			//unit.UpdateStatusEffectAtPhaseEnd();
 			unit.UpdateSkillCooldown();
 		}
 
