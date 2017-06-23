@@ -131,6 +131,18 @@ public class DamageCalculator
 		return targets;
 	}
 
+    public static void CalculateHealAmount(SkillInstanceData skillInstanceData) {
+        Unit caster = skillInstanceData.GetCaster();
+        Unit target = skillInstanceData.GetMainTarget();
+        AttackDamage attackDamage = skillInstanceData.GetDamage();
+        Skill appliedSkill = skillInstanceData.GetSkill();
+
+        Debug.LogWarning("ApplyAdd'heal from" + appliedSkill.GetName());
+        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
+        attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
+        Debug.Log("resultHeal : " + attackDamage.resultDamage);
+    }
 	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
         Unit caster = skillInstanceData.GetCaster();
@@ -146,8 +158,9 @@ public class DamageCalculator
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
-		// 해당 기술의 추가데미지 계산
-		ApplyBonusDamageFromEachSkill(skillInstanceData);
+        // 해당 기술의 추가데미지 계산
+        Debug.LogWarning("ApplyAdd'damage from" + appliedSkill.GetName());
+        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
@@ -233,12 +246,6 @@ public class DamageCalculator
 		smiteAmount = casterUnit.CalculateActualAmount(smiteAmount, StatusEffectType.Smite);
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
-	}
-
-	private static void ApplyBonusDamageFromEachSkill(SkillInstanceData skillInstanceData) {
-		Skill appliedSkill = skillInstanceData.GetSkill();
-		Debug.LogWarning("ApplyAdd'damage from" + appliedSkill.GetName());
-        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 	}
 
 	public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)

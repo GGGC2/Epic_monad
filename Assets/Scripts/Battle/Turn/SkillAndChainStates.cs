@@ -462,6 +462,16 @@ namespace Battle.Turn {
                         if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                             yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
                         }
+                        else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+                            DamageCalculator.CalculateHealAmount(skillInstanceData);
+                            float healAmount = skillInstanceData.GetDamage().resultDamage;
+                            yield return battleManager.StartCoroutine(target.RecoverHealth(healAmount));
+                        }
+                        else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
+                            DamageCalculator.CalculateHealAmount(skillInstanceData);
+                            float healAmount = skillInstanceData.GetDamage().resultDamage;
+                            yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)healAmount));
+                        }
 
                         // 효과 외의 부가 액션 (AP 감소 등)
                         yield return battleManager.StartCoroutine(SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(skillInstanceData));

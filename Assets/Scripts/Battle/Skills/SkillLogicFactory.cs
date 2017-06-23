@@ -23,9 +23,17 @@ public static class SkillLogicFactory
 			case "지옥 불꽃":
             skillLogic = new Reina_4_m_SkillLogic();
             break;
-			// case "에테르 과부하":
-			// return new Reina_5_r_SkillLogic();
-			
+            // case "에테르 과부하":
+            // return new Reina_5_r_SkillLogic();
+
+            // 루베리카
+            case "정화된 밤":
+            skillLogic = new Luvericha_1_l_SkillLogic();
+            break;
+            case "사랑의 기쁨":
+            skillLogic = new Luvericha_1_r_SkillLogic();
+            break;
+
 			// 리니안
 			case "전자기 충격": case "전자기 충격_test":
             skillLogic = new Lenien_1_m_SkillLogic();
@@ -176,9 +184,20 @@ public static class SkillLogicFactory
 			case "열상 낙인":
 			passiveSkillLogic = new Reina_7_m_SkillLogic();
 			break;
-			// case "에테르 순환":
-			// passiveSkillLogic = new Reina_7_r_SkillLogic();
-			// break;
+            // case "에테르 순환":
+            // passiveSkillLogic = new Reina_7_r_SkillLogic();
+            // break;
+
+            // 루베리카
+            case "위기상황":
+            passiveSkillLogic = new Luvericha_2_m_SkillLogic();
+            break;
+            case "자가치유":
+            passiveSkillLogic = new Luvericha_2_r_SkillLogic();
+            break;
+            case "수호의 오오라":
+            passiveSkillLogic = new Luvericha_3_m_SkillLogic();
+            break;
 
 			// 리니안
 			case "감전":

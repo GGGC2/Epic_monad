@@ -88,8 +88,14 @@ namespace Battle.Skills
 
 		    return totalEvasionChance;
 	    }
+        public override float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                baseAmount = skillLogic.ApplyAdditionalRecoverHealthDuringRest(caster, baseAmount);
+            }
+            return baseAmount;
+        }
 
-	    public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
+        public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {

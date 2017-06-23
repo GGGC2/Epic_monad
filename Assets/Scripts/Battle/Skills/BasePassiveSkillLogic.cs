@@ -58,6 +58,9 @@ public class BasePassiveSkillLogic
     public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
     }
+    public virtual float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
+        return baseAmount;
+    }
 
 	public virtual void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
 	{
