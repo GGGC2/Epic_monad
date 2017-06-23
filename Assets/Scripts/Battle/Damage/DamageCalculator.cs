@@ -137,9 +137,14 @@ public class DamageCalculator
         AttackDamage attackDamage = skillInstanceData.GetDamage();
         Skill appliedSkill = skillInstanceData.GetSkill();
 
-        Debug.LogWarning("Apply Additional Amount from" + appliedSkill.GetName());
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
+        // 해당 기술의 추가데미지 계산
+        Debug.LogWarning("Apply Additional Amount from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        // 특성에 의한 추가데미지
+        List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
+        SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
+
         attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
         Debug.Log("resultAmount : " + attackDamage.resultDamage);
     }
