@@ -89,6 +89,9 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
     }
+    public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
+        yield return null;
+    }
 
     public virtual void TriggerOnStart(Unit caster) {		
 	}

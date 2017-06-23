@@ -42,6 +42,12 @@ public static class SkillLogicFactory
             case "교향곡 : 운명":
             skillLogic = new Luvericha_6_l_SkillLogic();
             break;
+            case "4분 33초":
+            skillLogic = new Luvericha_8_l_SkillLogic();
+            break;
+            case "환상곡":
+            skillLogic = new Luvericha_8_r_SkillLogic();
+            break;
 
 			// 리니안
 			case "전자기 충격": case "전자기 충격_test":
@@ -209,6 +215,18 @@ public static class SkillLogicFactory
             break;
             case "치유의 오오라":
             passiveSkillLogic = new Luvericha_3_r_SkillLogic();
+            break;
+            case "넘치는 사랑":
+            passiveSkillLogic = new Luvericha_5_r_SkillLogic();
+            break;
+            case "영혼의 교감":
+            passiveSkillLogic = new Luvericha_6_r_SkillLogic();
+            break;
+            case "헌신":
+            passiveSkillLogic = new Luvericha_7_m_SkillLogic();
+            break;
+            case "응급처치":
+            passiveSkillLogic = new Luvericha_7_r_SkillLogic();
             break;
 
 			// 리니안
