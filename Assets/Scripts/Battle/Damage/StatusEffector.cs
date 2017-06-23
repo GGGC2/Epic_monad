@@ -169,6 +169,7 @@ public static class StatusEffector
                 newStatusEffectList.Add(statusEffect);
                 targetTile.SetStatusEffectList(newStatusEffectList);
             }
+            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().updateStats();
         }
     }
 }

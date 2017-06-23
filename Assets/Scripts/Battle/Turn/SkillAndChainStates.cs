@@ -351,8 +351,6 @@ namespace Battle.Turn {
                                                                         selectedSkill.GetSecondMaxReach(),
                                                                         selectedSkill.GetSecondWidth(),
                                                                         battleData.selectedUnit.GetDirection());
-            if (selectedSkill.GetSkillType() == SkillType.Auto)
-                selectedTiles.Remove(targetTile);
             Debug.Log("NO. of tiles selected : " + selectedTiles.Count);
             return selectedTiles;
         }
@@ -466,7 +464,7 @@ namespace Battle.Turn {
                         }
 
                         // 효과 외의 부가 액션 (AP 감소 등)
-                        SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(battleData, appliedSkill, caster, selectedTiles);
+                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(skillInstanceData));
 
                         // 기술의 상태이상은 기술이 적용된 후에 붙인다.
                         if (appliedSkill.GetStatusEffectList().Count > 0) {

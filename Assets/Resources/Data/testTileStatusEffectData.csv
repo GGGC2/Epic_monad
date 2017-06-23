@@ -1,4 +1,4 @@
-owner,requireLevel,toBeReplaced,originSkillName,displayName,isInfinite,isStackable,isOnce,defaultPhase,maxStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountVar,amountCoef,amountBase,isMultiply,statusEffectType_02,amountVar,amountCoef,amountBase,isMultiply,statusEffectType_03,amountVar,amountCoef,amountBase,isRelative
-curi,50,false,ÃÊ°­»ê È¥ÇÕ¹°,°­»ê Áö´ë,TRUE,FALSE,FALSE,9999,1,FALSE,None,None,None,1,Etc,0,0,FALSE,,,,,,,,,,
-eugene,22,true,¹éÀºÀÇ Àå¸·,¹éÀºÀÇ Àå¸·,FALSE,FALSE,FALSE,2,1,FALSE,None,None,None,2,ResistanceChange,Level,1.4,106,FALSE,Etc,X,X,X,NONE,,,,,
-eugene,50,false,¹éÀºÀÇ ¿À·Î¶ó,¹éÀºÀÇ ¿À·Î¶ó,FALSE,FALSE,FALSE,2,1,FALSE,None,None,None,2,ResistanceChange,Level,1.7,132,FALSE,Etc,X,X,X,NONE,,,,,
+ï»¿owner,requireLevel,toBeReplaced,originSkillName,displayName,isInfinite,isStackable,isOnce,defaultPhase,maxStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountVar,amountCoef,amountBase,isMultiply,statusEffectType_02,amountVar,amountCoef,amountBase,isMultiply,statusEffectType_03,amountVar,amountCoef,amountBase,isRelative
+curi,50,false,ì´ˆê°•ì‚° í˜¼í•©ë¬¼,ê°•ì‚° ì§€ëŒ€,TRUE,FALSE,FALSE,9999,1,FALSE,None,None,None,1,Etc,0,0,FALSE,,,,,,,,,,
+eugene,22,true,ë°±ì€ì˜ ì¥ë§‰,ë°±ì€ì˜ ì¥ë§‰,FALSE,FALSE,FALSE,2,1,FALSE,None,None,None,2,ResistanceChange,Level,1.4,106,FALSE,Etc,X,X,X,NONE,,,,,
+eugene,50,false,ë°±ì€ì˜ ì˜¤ë¡œë¼,ë°±ì€ì˜ ì˜¤ë¡œë¼,FALSE,FALSE,FALSE,2,1,FALSE,None,None,None,2,ResistanceChange,Level,1.7,132,FALSE,Etc,X,X,X,NONE,,,,,

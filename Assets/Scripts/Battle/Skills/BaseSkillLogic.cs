@@ -52,8 +52,9 @@ public class BaseSkillLogic
 		return skillInstanceData.GetDamage();
 	}
 
-	public virtual void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, List<Tile> selectedTiles)
+	public virtual IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData)
 	{
+        yield return null;
 	}
     public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;

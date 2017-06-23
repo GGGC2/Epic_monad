@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Battle.Skills {
     public class Curi_6_m_SkillLogic : BaseSkillLogic {
-        public override void ActionInDamageRoutine(BattleData battleData, Skill appliedSkill, Unit unitInChain, List<Tile> selectedTiles) {
-            unitInChain.currentHealth -= (int)(unitInChain.GetMaxHealth() * 0.1f);
+        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+            BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+            Unit target = skillInstanceData.GetMainTarget();
+            skillInstanceData.GetDamage().resultDamage = target.GetMaxHealth() * 0.1f;
+            yield return battleManager.StartCoroutine(target.Damaged(skillInstanceData, true));
         }
     }
 }

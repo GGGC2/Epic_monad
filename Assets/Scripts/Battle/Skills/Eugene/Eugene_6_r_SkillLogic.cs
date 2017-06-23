@@ -1,6 +1,5 @@
 ﻿using Enums;
 using Battle.Damage;
-using UnityEngine;
 
 namespace Battle.Skills {
     class Eugene_6_r_SkillLogic : BasePassiveSkillLogic{
