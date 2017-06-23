@@ -461,16 +461,17 @@ namespace Battle.Turn {
                         // 데미지 적용
                         if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                             yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
-                        }
-                        else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
-                            DamageCalculator.CalculateHealAmount(skillInstanceData);
-                            float healAmount = skillInstanceData.GetDamage().resultDamage;
-                            yield return battleManager.StartCoroutine(target.RecoverHealth(healAmount));
-                        }
-                        else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
-                            DamageCalculator.CalculateHealAmount(skillInstanceData);
-                            float healAmount = skillInstanceData.GetDamage().resultDamage;
-                            yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)healAmount));
+                        } else {
+                            DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
+                            float amount = skillInstanceData.GetDamage().resultDamage;
+                            if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
+                                yield return battleManager.StartCoroutine(target.Damaged(skillInstanceData, false));
+                                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+                            } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+                                yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
+                            } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
+                                yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
+                            }
                         }
 
                         // 효과 외의 부가 액션 (AP 감소 등)

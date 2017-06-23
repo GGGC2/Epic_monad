@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using Battle.Damage;
@@ -8,8 +9,7 @@ namespace Battle.Skills
 {
     public class Lenien_3_l_SkillLogic : BasePassiveSkillLogic
     {
-
-        public override void TriggerOnPhaseStart(Unit caster)
+        public override IEnumerator TriggerOnPhaseStart(Unit caster)
         {
             int casterHeight = caster.GetHeight();
 
@@ -36,6 +36,7 @@ namespace Battle.Skills
                 foreach (var target in targets)
                     StatusEffector.AttachStatusEffect(caster, this.passiveSkill, target);
             }
+            yield return null;
         }
     }
 }

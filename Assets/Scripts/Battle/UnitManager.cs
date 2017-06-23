@@ -291,12 +291,12 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-	public void StartPhase(int phase)
+	public IEnumerator StartPhase(int phase)
 	{
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
-			unit.ApplyTriggerOnPhaseStart();
+			yield return unit.ApplyTriggerOnPhaseStart();
             if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }

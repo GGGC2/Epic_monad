@@ -723,9 +723,9 @@ public class Unit : MonoBehaviour
 		unitManager.UpdateUnitOrder();
 	}
 
-	public void ApplyTriggerOnPhaseStart()
+	public IEnumerator ApplyTriggerOnPhaseStart()
 	{
-		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
+		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
         foreach (StatusEffect statusEffect in statusEffectList) {
             if (statusEffect.GetOriginSkill() != null) {
                 SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);

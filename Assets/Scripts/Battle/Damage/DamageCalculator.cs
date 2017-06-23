@@ -131,17 +131,17 @@ public class DamageCalculator
 		return targets;
 	}
 
-    public static void CalculateHealAmount(SkillInstanceData skillInstanceData) {
+    public static void CalculateAmountOtherThanAttackDamage(SkillInstanceData skillInstanceData) {
         Unit caster = skillInstanceData.GetCaster();
         Unit target = skillInstanceData.GetMainTarget();
         AttackDamage attackDamage = skillInstanceData.GetDamage();
         Skill appliedSkill = skillInstanceData.GetSkill();
 
-        Debug.LogWarning("ApplyAdd'heal from" + appliedSkill.GetName());
-        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        Debug.LogWarning("Apply Additional Amount from" + appliedSkill.GetName());
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
+        SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
         attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
-        Debug.Log("resultHeal : " + attackDamage.resultDamage);
+        Debug.Log("resultAmount : " + attackDamage.resultDamage);
     }
 	public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 	{
@@ -159,7 +159,7 @@ public class DamageCalculator
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
         // 해당 기술의 추가데미지 계산
-        Debug.LogWarning("ApplyAdd'damage from" + appliedSkill.GetName());
+        Debug.LogWarning("Apply Additional Damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();

@@ -534,7 +534,7 @@ public class BattleManager : MonoBehaviour
 	{
 		battleData.currentPhase++;
 
-		battleData.unitManager.StartPhase(battleData.currentPhase);
+		yield return StartCoroutine(battleData.unitManager.StartPhase(battleData.currentPhase));
         yield return StartCoroutine(battleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 

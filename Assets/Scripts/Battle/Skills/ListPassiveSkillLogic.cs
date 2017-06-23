@@ -157,10 +157,10 @@ namespace Battle.Skills
             }
         }
 
-        public override void TriggerOnPhaseStart(Unit caster) {		
+        public override IEnumerator TriggerOnPhaseStart(Unit caster) {		
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.TriggerOnPhaseStart(caster);
+			    yield return skillLogic.TriggerOnPhaseStart(caster);
 		    }
 	    }
 
