@@ -62,7 +62,7 @@ public class SceneLoader : MonoBehaviour {
 		Time.timeScale = 1.0f;
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
+	IEnumerator Fadeout()
 	{
 		Time.timeScale = 0;
 
@@ -73,6 +73,11 @@ public class SceneLoader : MonoBehaviour {
 		{
 			yield return null;
 		}
+	}
+
+	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
+	{
+		yield return Fadeout();
 
 		SceneData.nextStageName = nextSceneName;
 		Debug.Log("input next battle - " + SceneData.nextStageName);
@@ -82,15 +87,7 @@ public class SceneLoader : MonoBehaviour {
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
 	{
-		Time.timeScale = 0;
-
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
+		yield return Fadeout();
 
 		if (nextScriptFileName == "Title")
 		{
@@ -108,15 +105,7 @@ public class SceneLoader : MonoBehaviour {
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)
 	{
-		Time.timeScale = 0;
-
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
+		yield return Fadeout();
 
 		// need use save data
 		WorldMapManager.currentStory = nextStoryName;

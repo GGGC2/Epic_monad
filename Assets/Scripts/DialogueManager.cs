@@ -70,7 +70,7 @@ public class DialogueManager : MonoBehaviour {
 			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
 			return Data.GetCommandType();
 		}
-		else if (Data.GetCommandType () == "load_battle") 
+		else if (Data.GetCommandType () == "load_battle")
 		{
 			string nextSceneName = Data.GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
