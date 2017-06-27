@@ -8,6 +8,8 @@ public class HealthViewer : MonoBehaviour {
 	GameObject currentHealthBar;
 	GameObject recoverBar;
 	GameObject damageBar;
+	GameObject retreatIcon;
+	GameObject killIcon;
 
 	int currentHealth;
 	int maxHealth;
@@ -20,6 +22,15 @@ public class HealthViewer : MonoBehaviour {
 		Vector3 previewCurrentHealthScale = new Vector3(healthRatio, 1, 1);
 		currentHealthBar.transform.localScale = previewCurrentHealthScale;
 		recoverBar.transform.localScale = previewCurrentHealthScale;
+
+		if(healthRatio <= 0)
+		{
+			killIcon.SetActive(true);
+		}
+		else if(healthRatio <= 0.1)
+		{
+			retreatIcon.SetActive(true);
+		}
 	}
 	
 	public void PreviewRecoverAmount(int recoverAmount)
@@ -77,15 +88,9 @@ public class HealthViewer : MonoBehaviour {
 		currentHealthBar = transform.Find("currentHealthBar").gameObject;
 		recoverBar = transform.Find("recoverBar").gameObject;
 		damageBar = transform.Find("damageBar").gameObject;
-	}
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+		retreatIcon = transform.Find("Retreat").gameObject;
+		killIcon = transform.Find("Kill").gameObject;
+		retreatIcon.SetActive(false);
+		killIcon.SetActive(false);
 	}
 }

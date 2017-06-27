@@ -516,7 +516,7 @@ public class BattleManager : MonoBehaviour
 	{
 		if (battleData.isWaitingUserInput)
 		{
-			battleData.triggers.selectedTileByUser.Trigger();
+			battleData.triggers.tileSelectedByUser.Trigger();
 			battleData.move.selectedTilePosition = position;
 		}
 	}
