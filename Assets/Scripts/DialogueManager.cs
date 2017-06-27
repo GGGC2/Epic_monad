@@ -375,4 +375,12 @@ public class DialogueManager : MonoBehaviour {
 	{
 		Initialize();
 	}
+
+	void Update()
+	{
+		if(Input.GetMouseButtonDown(1) && skipQuestionUI.active)
+		{
+			skipQuestionUI.SetActive(false);
+		}
+	}
 }
