@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using WorldMap;
 using DG.Tweening;
 
-public class SceneLoader : MonoBehaviour {
+public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
@@ -17,11 +17,11 @@ public class SceneLoader : MonoBehaviour {
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene(string nextSceneName)
+	public void LoadNextBattleScene(string nextSceneName, bool ready)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
-		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
+		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName, ready));
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
@@ -45,7 +45,6 @@ public class SceneLoader : MonoBehaviour {
 	
 	IEnumerator Start()
 	{
-		//Debug.Log("Load new scene");
 		Time.timeScale = 0;
 
 		fadeoutScreenObject.SetActive(true);
@@ -75,14 +74,16 @@ public class SceneLoader : MonoBehaviour {
 		}
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
+	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName, bool ready)
 	{
 		yield return Fadeout();
 
 		SceneData.nextStageName = nextSceneName;
-		Debug.Log("input next battle - " + SceneData.nextStageName);
 
-		SceneManager.LoadScene("Battle");
+		if(ready)
+			SceneManager.LoadScene("BattleReady");
+		else
+			SceneManager.LoadScene("Battle");
 	}
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)

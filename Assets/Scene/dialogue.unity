@@ -883,7 +883,7 @@ Prefab:
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: dialogueData
       value: 
-      objectReference: {fileID: 4900000, guid: c2352e9d0c0da0e4abc82e81af05f09f, type: 3}
+      objectReference: {fileID: 4900000, guid: dc58aac919cfb414198bf293c5478754, type: 3}
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: namePanel
       value: 

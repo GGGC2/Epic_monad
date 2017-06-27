@@ -73,7 +73,12 @@ public class DialogueManager : MonoBehaviour {
 		else if (Data.GetCommandType () == "load_battle")
 		{
 			string nextSceneName = Data.GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+
+			if(nextSceneName == "Stage01")
+				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName, false);
+			else
+				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName, true);
+				
 			return Data.GetCommandType();
 		}
 		else if(Data.GetCommandType() == "load_worldmap")

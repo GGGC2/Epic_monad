@@ -32,3 +32,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/SkillTree.unity
     guid: bcefe58f8ecc84337a80d97e2ffbc135
+  - enabled: 1
+    path: Assets/Scene/BattleReady.unity
+    guid: dbdd7ed600ede044f833b7fa2431c678
