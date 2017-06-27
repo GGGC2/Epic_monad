@@ -962,7 +962,7 @@ public class Unit : MonoBehaviour
 
 		if (sprites.Length == 0)
 		{
-			Debug.LogError("Cannot find sprite for " + nameInCode);
+			//Debug.LogError("Cannot find sprite for " + nameInCode);
 			if (side == Side.Ally)
 			{
 				sprites = Resources.LoadAll("UnitImage/notFound");
