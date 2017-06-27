@@ -151,6 +151,12 @@ namespace Battle.Skills
 		    }
 	    }
 
+        public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.TriggerApplyingHeal(skillInstanceData);
+            }
+        }
+
         public override void TriggerOnStart(Unit caster) {
             foreach(var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnStart(caster);

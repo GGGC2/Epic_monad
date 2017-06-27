@@ -439,6 +439,7 @@ namespace Battle.Turn {
         private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> selectedTiles, bool isChainable, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
             List<Unit> targets = GetUnitsOnTiles(selectedTiles);
+            List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
             /*
             // 경로형 스킬의 경우 대상 범위 재지정
             if (appliedSkill.GetSkillType() == SkillType.Route)
@@ -469,6 +470,7 @@ namespace Battle.Turn {
                                 battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
                             } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
                                 yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
+                                yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerApplyingHeal(skillInstanceData));
                             } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
                                 yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
                             }
@@ -501,7 +503,6 @@ namespace Battle.Turn {
             }
 
             // 기술 사용 시 적용되는 특성
-            List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
             SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerUsingSkill(caster, targets);
             foreach(var statusEffect in caster.GetStatusEffectList()) {
                 PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
