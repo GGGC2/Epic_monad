@@ -45,7 +45,9 @@ public class HealthViewer : MonoBehaviour {
 	{
 		Vector3 damageBarScale = damageBar.transform.localScale;
 		currentHealthBar.transform.localScale = damageBarScale;
-		recoverBar.transform.localScale = damageBarScale; 
+		recoverBar.transform.localScale = damageBarScale;
+		killIcon.SetActive(false);
+		retreatIcon.SetActive(false);
 	}
 
 	public void UpdateCurrentHealth(int currentHealth, int maxHealth)
@@ -90,7 +92,5 @@ public class HealthViewer : MonoBehaviour {
 		damageBar = transform.Find("damageBar").gameObject;
 		retreatIcon = transform.Find("Retreat").gameObject;
 		killIcon = transform.Find("Kill").gameObject;
-		retreatIcon.SetActive(false);
-		killIcon.SetActive(false);
 	}
 }
