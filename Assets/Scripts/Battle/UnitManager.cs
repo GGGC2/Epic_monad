@@ -194,7 +194,7 @@ public class UnitManager : MonoBehaviour {
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
 			// Vector3 respawnPos = tilePosition + new Vector3(0,0,5f);
 			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-			respawnPos -= new Vector3(0,0,0.05f);
+			respawnPos -= new Vector3(0, 0, 0.05f);
 			// Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f,
 			// 								 tileHeight * (initPosition.y - initPosition.x) * 0.5f,
 			// 								 (initPosition.y - initPosition.x) * 0.1f - 5f);
