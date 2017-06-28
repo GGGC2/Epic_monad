@@ -29,8 +29,9 @@ public class ReadyManager : MonoBehaviour{
 		string[] elements = Data.Split(',');
 		for(int i = 2; i < elements.Length; i++)
 		{
-			Debug.Log("elements[i] : " + elements[i]);
-			GameObject.Find("AvailableUnit" + (i-1)).GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + elements[i]);
+			GameObject availableUnitPanel = GameObject.Find("AvailableUnit" + (i-1));
+			availableUnitPanel.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + elements[i]);
+			availableUnitPanel.GetComponent<AvailableUnitPanel>().unitName = elements[i];
 		}
 	}
 }
