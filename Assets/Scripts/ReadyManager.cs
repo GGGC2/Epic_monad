@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
 	void Start()
@@ -29,7 +30,7 @@ public class ReadyManager : MonoBehaviour{
 		for(int i = 2; i < elements.Length; i++)
 		{
 			Debug.Log("elements[i] : " + elements[i]);
-			GameObject.Find("AvailableUnit" + (i-1)).GetComponent<SpriteRenderer>().sprite = Resources.Load("UnitImage/portrait_" + elements[i], typeof(Sprite)) as Sprite;
+			GameObject.Find("AvailableUnit" + (i-1)).GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + elements[i]);
 		}
 	}
 }
