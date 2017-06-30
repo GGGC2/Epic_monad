@@ -51,7 +51,7 @@ public class TileViewer : MonoBehaviour {
             if (i < numberOfEffects - 1)
                 concattedText += " ";
         }
-        statusEffectText.text = concattedText;
+        // statusEffectText.text = concattedText;
     }
 
     void SetElementImage(Element element)
@@ -73,7 +73,7 @@ public class TileViewer : MonoBehaviour {
 		nameText = transform.Find("NameText").GetComponent<Text>();
 		apText = transform.Find("APText").GetComponent<Text>();
 		elementImage = transform.Find("ElementImage").GetComponent<Image>();
-        statusEffectText = transform.Find("statusEffects").GetComponent<Text>();
+        // statusEffectText = transform.Find("statusEffects").GetComponent<Text>();
     }
 
 	// Use this for initialization
