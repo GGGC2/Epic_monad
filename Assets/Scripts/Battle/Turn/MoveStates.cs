@@ -49,7 +49,7 @@ namespace Battle.Turn
 				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
 					battleData.triggers.rightClicked,
 					battleData.triggers.cancelClicked,
-					battleData.triggers.selectedTileByUser
+					battleData.triggers.tileSelectedByUser
 				));
 				battleData.battleManager.StopCoroutine(update);
 

@@ -962,7 +962,7 @@ public class Unit : MonoBehaviour
 
 		if (sprites.Length == 0)
 		{
-			Debug.LogError("Cannot find sprite for " + nameInCode);
+			//Debug.LogError("Cannot find sprite for " + nameInCode);
 			if (side == Side.Ally)
 			{
 				sprites = Resources.LoadAll("UnitImage/notFound");
@@ -1002,10 +1002,6 @@ public class Unit : MonoBehaviour
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		directionBonusTextObject = GameObject.Find("DirectionBonusPanel");
 		heightBonusTextObject = GameObject.Find("HeightBonusPanel");
-		damageTextObject.SetActive(false);
-		recoverTextObject.SetActive(false);
-		activeArrowIcon.SetActive(false);
-		chainAttackerIcon.SetActive(false);
 
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}

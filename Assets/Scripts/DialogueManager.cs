@@ -70,10 +70,15 @@ public class DialogueManager : MonoBehaviour {
 			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
 			return Data.GetCommandType();
 		}
-		else if (Data.GetCommandType () == "load_battle") 
+		else if (Data.GetCommandType () == "load_battle")
 		{
 			string nextSceneName = Data.GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+
+			if(nextSceneName == "Stage01")
+				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName, false);
+			else
+				FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName, true);
+				
 			return Data.GetCommandType();
 		}
 		else if(Data.GetCommandType() == "load_worldmap")
@@ -374,5 +379,13 @@ public class DialogueManager : MonoBehaviour {
 	void Start () 
 	{
 		Initialize();
+	}
+
+	void Update()
+	{
+		if(Input.GetMouseButtonDown(1) && skipQuestionUI.active)
+		{
+			skipQuestionUI.SetActive(false);
+		}
 	}
 }

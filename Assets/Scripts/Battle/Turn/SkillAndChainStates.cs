@@ -138,7 +138,7 @@ namespace Battle.Turn {
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     battleData.triggers.rightClicked,
                     battleData.triggers.cancelClicked,
-                    battleData.triggers.selectedTileByUser
+                    battleData.triggers.tileSelectedByUser
                 ));
                 battleData.battleManager.StopCoroutine(update);
                 battleData.isWaitingUserInput = false;
@@ -152,7 +152,7 @@ namespace Battle.Turn {
                     yield break;
                 }
 
-                if (battleData.triggers.selectedTileByUser.Triggered) {
+                if (battleData.triggers.tileSelectedByUser.Triggered) {
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
                     if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
@@ -205,7 +205,7 @@ namespace Battle.Turn {
                 var update = UpdatePointSkillMouseDirection(battleData);
                 battleData.battleManager.StartCoroutine(update);
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    battleData.triggers.selectedTileByUser,
+                    battleData.triggers.tileSelectedByUser,
                     battleData.triggers.rightClicked,
                     battleData.triggers.cancelClicked
                 ));
