@@ -50,6 +50,13 @@ public class CustomWorldText : MonoBehaviour
 		StartCoroutine(CheckValueChanged());
 	}
 
+	public void ApplyText()
+	{
+		DestroyAllChilds();
+		GenerateTextInstances();
+		RePosition();
+	}
+
 	IEnumerator CheckValueChanged()
 	{
 		var previousText = text;
@@ -66,6 +73,11 @@ public class CustomWorldText : MonoBehaviour
 				RePosition();
 			}
 		}
+	}
+
+	public void Inact()
+	{
+		StopCoroutine(CheckValueChanged());
 	}
 
 	private void DestroyAllChilds()

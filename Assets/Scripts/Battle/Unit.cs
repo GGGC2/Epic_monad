@@ -527,14 +527,14 @@ public class Unit : MonoBehaviour
 
 		damageTextObject.SetActive(true);
 		damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+		damageTextObject.GetComponent<CustomWorldText>().ApplyText();
 
 		healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
-
-		// 데미지 표시되는 시간.
-		yield return new WaitForSeconds(0.5f);
+		Debug.Log("damageText will inactive");
+		yield return new WaitForSeconds(0.5f); 
+		Debug.Log("damageText soon inactive");
 		damageTextObject.SetActive(false);
-
-		yield return null;
+		Debug.Log("damageText inactive");
 	}
 
 	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isHealth)
@@ -568,8 +568,9 @@ public class Unit : MonoBehaviour
 			Debug.Log("Damage dealt : "+finalDamage);
 
 			damageTextObject.SetActive(true);
-			damageTextObject.GetComponent<CustomWorldText>().ActWhenOnEnable();
 			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+			damageTextObject.GetComponent<CustomWorldText>().ApplyText();
+
 
 			healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
 
@@ -578,7 +579,7 @@ public class Unit : MonoBehaviour
 
 			// 데미지 표시되는 시간.
 			yield return new WaitForSeconds(1);
-			damageTextObject.SetActive(false);
+			// damageTextObject.SetActive(false); Debug.Log("origin damageText inactive");
 		}
 
 		else
