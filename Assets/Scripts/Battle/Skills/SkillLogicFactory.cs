@@ -53,8 +53,9 @@ public static class SkillLogicFactory
 			case "전자기 충격": case "전자기 충격_test":
             skillLogic = new Lenien_1_m_SkillLogic();
             break;
-			// case "하전 파동":
-			// return new Lenien_2_m_SkillLogic();
+			case "하전 파동":
+			skillLogic = new Lenien_2_m_SkillLogic();
+			break;
 			case "축전":
             skillLogic = new Lenien_7_l_SkillLogic();
             break;

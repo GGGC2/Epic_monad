@@ -207,7 +207,7 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		//UpdateUnitOrder();
-		Debug.Log("Generate units complete");
+		// Debug.Log("Generate units complete");
 	}
 
 	public void DeleteDeadUnit(Unit deadUnit)
@@ -241,7 +241,7 @@ public class UnitManager : MonoBehaviour {
 			if (unit.GetCurrentActivityPoint() >= standardActivityPoint)
 			{
 				readiedUnits.Add(unit);
-				Debug.Log(unit.GetName() + " is readied");
+				// Debug.Log(unit.GetName() + " is readied");
 			}
 		}
 
@@ -263,7 +263,7 @@ public class UnitManager : MonoBehaviour {
             if (unit.GetSide() == Side.Enemy)
             {
                 enemyUnits.Add(unit);
-                Debug.Log(unit.GetName() + " is enemy");
+                // Debug.Log(unit.GetName() + " is enemy");
             }
         }
         return enemyUnits;
