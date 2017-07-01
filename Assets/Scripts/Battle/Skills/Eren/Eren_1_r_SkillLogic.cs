@@ -15,7 +15,7 @@ public class Eren_1_r_SkillLogic : BaseSkillLogic {
             float power = caster.GetStat(Stat.Power);
 
             statusEffect.CalculateAmount(stack);
-            statusEffect.SetAmount(statusEffect.GetAmount() * power);
+            statusEffect.SetAmount(0, statusEffect.GetAmount() * power);
             return true;
         }
     }

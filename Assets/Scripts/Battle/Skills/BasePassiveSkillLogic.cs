@@ -23,6 +23,11 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
+	public virtual float GetAdditionalAbsoluteResistanceBonus(Unit caster)
+	{
+		return 0;
+	}
+
 	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
 	{
 		return defense;
@@ -55,7 +60,7 @@ public class BasePassiveSkillLogic
 	{
 		return 0;
 	}
-    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffectÀÇ i¹øÂ° actualElement ÀÇ seVar °ªÀ» ±¸ÇÔ.
+    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffectï¿½ï¿½ iï¿½ï¿½Â° actualElement ï¿½ï¿½ seVar ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         return 0;
     }
     public virtual float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
@@ -78,12 +83,12 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit¿¡°Ô StatusEffect°¡ Àû¿ëµÉ ¶§ ¹ßµ¿. false¸¦ ¸®ÅÏÇÒ ½Ã ÇØ´ç StatusEffect¸¦ ¹«½Ã.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unitï¿½ï¿½ï¿½ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ßµï¿½. falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
     {
         return true;
     }
 
-    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unitÀÇ StatusEffect°¡ »ç¶óÁú ¶§ ¹ßµ¿. false¸¦ ¸®ÅÏÇÒ ½Ã ÇØ´ç StatusEffect°¡ »ç¶óÁöÁö ¾ÊÀ½.
+    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unitï¿½ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ßµï¿½. falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
     {
         return true;
     }
@@ -106,7 +111,7 @@ public class BasePassiveSkillLogic
     public virtual void TriggerOnActionEnd(Unit caster) {    
     }
     
-    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //false¸¦ ¸®ÅÏÇÒ ½Ã ÇØ´ç statusEffect°¡ »ç¶óÁü.
+    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ statusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
         return true;
     }
 	public virtual void TriggerOnRest(Unit caster) {

@@ -377,6 +377,13 @@ public class Unit : MonoBehaviour
 		float totalAbsoluteValue = 0.0f; // 절대값
 		float totalRelativeValue = 1.0f; // 상대값
 
+		bool isPercent;
+		bool isMultiply;
+
+		// 회피율은 기본값이 0이므로
+		if (statusEffectType == StatusEffectType.EvasionChange)
+			totalRelativeValue = 0.0f;
+
 		// 효과로 인한 변동값 계산
 		foreach (var statusEffect in statusEffectList)
 		{
@@ -385,19 +392,22 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(i, statusEffectType))
 				{
-					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
-					{
+					isPercent = statusEffect.GetIsPercent(i);
+					isMultiply = statusEffect.GetIsMultiply(i);
+					
+					if (isPercent && isMultiply) // 상대값 & 곱연산 (ex: 공격력 버프. 1.2배 * 1.3배)
 						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;
-					}
-					else // 절대값 합산
-					{
+					else if (isPercent && !isMultiply) // 상대값 & 합연산 (ex: 회피율. 40% + 50% = 90%)
+						totalRelativeValue += statusEffect.GetAmount(i)/100;
+					// else if (!isPercent && isMultiply) // 절대값 & 곱연산 (ex: ??)
+						// totalAbsoluteValue = totalAbsoluteValue;
+					else // 절대값 & 합연산 (ex: 강타. 160 + 30 = 190)	
 						totalAbsoluteValue += statusEffect.GetAmount(i);
-					}
 				}
 			}
 		}
 
-		// 상대값 공격력 변동 특성 영향 합산
+		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)
 		float additionalPowerBonus = 1.0f;					
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
@@ -406,7 +416,7 @@ public class Unit : MonoBehaviour
 		}
 		totalRelativeValue *= additionalPowerBonus;
 
-		// 절대값 방어력 변동 특성 영향 합산
+		// 절대값 방어력 변동 특성 영향 합산 (무조건 합연산)
 		float additionalDefenseBouns = 0;
 		if (statusEffectType == StatusEffectType.DefenseChange)
 		{
@@ -415,7 +425,16 @@ public class Unit : MonoBehaviour
 		}
 		totalAbsoluteValue += additionalDefenseBouns;
 
-		// 데미지, 저항력, 민첩성, 기타등등...추가할 것			
+		// 절대값 저항력 변동 특성 영향 합산 (무조건 합연산)
+		float additionalResistanceBouns = 0;
+		if (statusEffectType == StatusEffectType.ResistanceChange)
+		{
+			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+			additionalResistanceBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteResistanceBonus(this);
+		}
+		totalAbsoluteValue += additionalResistanceBouns;
+
+		// 데미지, 민첩성, 기타등등...추가할 것			
 		
 		// this.UpdateStatusEffect();
 
@@ -944,11 +963,11 @@ public class Unit : MonoBehaviour
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
 		activityPoint = (int)(actualDexturity.value * 0.5f) + unitManager.GetStandardActivityPoint();
-		if (actualDexturity.value == 0)
-		{
-			// Manastone is not move
+		
+		// 기본민첩성이 0인 유닛은 시작시 행동력이 0
+		if (baseDexturity == 0)
 			activityPoint = 0;
-		}
+		
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<StatusEffect>();
@@ -977,7 +996,8 @@ public class Unit : MonoBehaviour
 		spriteLeftDown = sprites[3] as Sprite;
 		spriteRightUp = sprites[4] as Sprite;
 		spriteRightDown = sprites[2] as Sprite;
-		GetComponent<SpriteRenderer>().sprite = spriteLeftUp; // FIXME : 초기 방향에 따라 스프라이트 지정되도록 기능 추가.
+		// FIXME : 초기 방향에 따라 스프라이트 지정되도록 기능 추가. -> 필요없음. 아래의 Initialize에서 해결.
+		// GetComponent<SpriteRenderer>().sprite = spriteLeftUp;
 	}
 
 	// Use this for initialization
