@@ -178,7 +178,7 @@ public class Parser : MonoBehaviour {
     public static List<StatusEffectInfo> GetParsedStatusEffectInfo() {
         List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
 
-        TextAsset csvFile = Resources.Load("Data/testStatusEffectData") as TextAsset;
+        TextAsset csvFile = Resources.Load("Data/StatusEffectData") as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedStatusEffectInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
