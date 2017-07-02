@@ -728,7 +728,7 @@ public class Unit : MonoBehaviour
 		}
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
-		if (selectedSkill.GetRequireAP() == 9999)
+		if (selectedSkill.GetRequireAP() == 1000)
 		{
 			requireSkillAP = GetCurrentActivityPoint();
 		}
