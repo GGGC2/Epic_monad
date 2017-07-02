@@ -31,53 +31,11 @@ public class CustomWorldText : MonoBehaviour
 		RIGHT
 	}
 
-	void OnEnable () 
-	{
-		/*DestroyAllChilds();
-		GenerateTextInstances();
-		RePosition();
-
-		StartCoroutine(CheckValueChanged());*/
-	}
-
-	//OnEnable은 AddComponent에서도 불리는 것 같아서 다른 이름의 함수로 대체
-	public void ActWhenOnEnable()
-	{
-		DestroyAllChilds();
-		GenerateTextInstances();
-		RePosition();
-
-		StartCoroutine(CheckValueChanged());
-	}
-
 	public void ApplyText()
 	{
 		DestroyAllChilds();
 		GenerateTextInstances();
 		RePosition();
-	}
-
-	IEnumerator CheckValueChanged()
-	{
-		var previousText = text;
-		var previousAlign = align;
-		while (true)
-		{
-			yield return null;
-			if (previousText != text || previousAlign != align) {
-				previousText = text;
-				previousAlign = align;
-
-				DestroyAllChilds();
-				GenerateTextInstances();
-				RePosition();
-			}
-		}
-	}
-
-	public void Inact()
-	{
-		StopCoroutine(CheckValueChanged());
 	}
 
 	private void DestroyAllChilds()
@@ -92,9 +50,9 @@ public class CustomWorldText : MonoBehaviour
 	private void GenerateTextInstances()
 	{
 		foreach(var character in text) {
-			Debug.Log(character);
+			// Debug.Log(character);
 
-			var gameObject = new GameObject(character.ToString());
+			var gameObject = new GameObject(character.ToString(), typeof(RectTransform));
 			gameObject.transform.SetParent(transform);
 			gameObject.transform.localScale = Vector3.one;
 			gameObject.AddComponent<RectTransform>();

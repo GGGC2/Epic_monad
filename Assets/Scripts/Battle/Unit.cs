@@ -529,6 +529,7 @@ public class Unit : MonoBehaviour
 			if (isEmptyShield)
 				statusEffectsToRemove.Add(se);
 		}
+
         foreach(StatusEffect statusEffect in statusEffectsToRemove) 
 		    RemoveStatusEffect(statusEffect);
 
@@ -542,6 +543,8 @@ public class Unit : MonoBehaviour
 		if (currentHealth < 0)
 			currentHealth = 0;
 
+			yield return null;
+
 		Debug.Log("Damage dealt by DOT : " + finalDamage);
 
 		damageTextObject.SetActive(true);
@@ -549,11 +552,9 @@ public class Unit : MonoBehaviour
 		damageTextObject.GetComponent<CustomWorldText>().ApplyText();
 
 		healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
-		Debug.Log("damageText will inactive");
+		
 		yield return new WaitForSeconds(0.5f); 
-		Debug.Log("damageText soon inactive");
 		damageTextObject.SetActive(false);
-		Debug.Log("damageText inactive");
 	}
 
 	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isHealth)

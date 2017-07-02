@@ -296,7 +296,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
-			yield return unit.ApplyTriggerOnPhaseStart();
+			yield return StartCoroutine( unit.ApplyTriggerOnPhaseStart());
             if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }
