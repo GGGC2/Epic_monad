@@ -598,7 +598,7 @@ public class Unit : MonoBehaviour
 
 			// 데미지 표시되는 시간.
 			yield return new WaitForSeconds(1);
-			// damageTextObject.SetActive(false); Debug.Log("origin damageText inactive");
+			damageTextObject.SetActive(false); //Debug.Log("origin damageText inactive");
 		}
 
 		else
