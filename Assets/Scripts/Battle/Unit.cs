@@ -543,8 +543,6 @@ public class Unit : MonoBehaviour
 		if (currentHealth < 0)
 			currentHealth = 0;
 
-			yield return null;
-
 		Debug.Log("Damage dealt by DOT : " + finalDamage);
 
 		damageTextObject.SetActive(true);
