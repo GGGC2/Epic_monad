@@ -57,7 +57,7 @@ public class UnitManager : MonoBehaviour {
 	{
 		foreach (var unit in GetAllUnits())
 		{
-			unit.latelyHitInfos.Clear();
+			unit.GetLatelyHitInfos().Clear();
 		}
 	}
 
@@ -213,7 +213,7 @@ public class UnitManager : MonoBehaviour {
 	public void DeleteDeadUnit(Unit deadUnit)
 	{
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnit.latelyHitInfos)
+		foreach (var hitInfo in deadUnit.GetLatelyHitInfos())
 		{
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);

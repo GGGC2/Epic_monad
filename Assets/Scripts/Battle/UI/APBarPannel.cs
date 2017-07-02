@@ -87,7 +87,7 @@ namespace BattleUI
 
 			GameObject apTextGO = bigProfile.transform.Find("apText").gameObject;
 			apTextGO.GetComponent<CustomUIText>().enabled = true;
-			apTextGO.GetComponent<CustomUIText>().text = unit.activityPoint.ToString();
+			apTextGO.GetComponent<CustomUIText>().text = unit.GetCurrentActivityPoint().ToString();
 		}
 
 		private void SetProfiles(BattleData battleData, int standardActivityPoint, List<UnitWrapper> otherUnits)

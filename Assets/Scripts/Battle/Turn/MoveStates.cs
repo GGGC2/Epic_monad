@@ -165,8 +165,8 @@ namespace Battle.Turn
 			Debug.Log("Capture move snapshot");
 			BattleData.MoveSnapshopt snapshot = new BattleData.MoveSnapshopt();
 			snapshot.tile = battleData.SelectedUnitTile;
-			snapshot.ap = battleData.selectedUnit.activityPoint;
-			snapshot.direction = battleData.selectedUnit.direction;
+			snapshot.ap = battleData.selectedUnit.GetCurrentActivityPoint();
+			snapshot.direction = battleData.selectedUnit.GetDirection();
 			battleData.moveSnapshot = snapshot;
 		}
 

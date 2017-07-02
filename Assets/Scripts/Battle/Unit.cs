@@ -23,17 +23,17 @@ public class HitInfo
 
 public class Unit : MonoBehaviour
 {
-	public GameObject chainBonusTextObject;
+	GameObject chainBonusTextObject;
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
-	public GameObject celestialBonusTextObject;
-	public GameObject directionBonusTextObject;
-	public GameObject heightBonusTextObject;
+	GameObject celestialBonusTextObject;
+	GameObject directionBonusTextObject;
+	GameObject heightBonusTextObject;
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 
-	public List<HitInfo> latelyHitInfos;
+	List<HitInfo> latelyHitInfos;
 
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
@@ -84,15 +84,15 @@ public class Unit : MonoBehaviour
 	Celestial celestial;
 
 	// Variable values.
-	public Vector2 position;
+	Vector2 position;
 	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
-	public Vector2 startPositionOfPhase;
+	Vector2 startPositionOfPhase;
     //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
-    public bool hasMovedThisTurn;
+    bool hasMovedThisTurn;
 
-	public Direction direction;
+	Direction direction;
 	public int currentHealth;
-	public int activityPoint;
+	int activityPoint;
 
 	GameObject chargeEffect;
 
@@ -101,6 +101,7 @@ public class Unit : MonoBehaviour
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
+    public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
 	public Sprite GetDefaultSprite(){ return spriteLeftDown; }
 	public void SetChargeEffect(GameObject effect)
@@ -157,6 +158,7 @@ public class Unit : MonoBehaviour
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
     public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
+    public bool GetHasMovedThisTurn() { return hasMovedThisTurn; }
     public Dictionary<string, int> GetUsedSkillDict() {return usedSkillDict;}
     public Direction GetDirection() { return direction; }
     public void SetDirection(Direction direction) {
@@ -193,7 +195,7 @@ public class Unit : MonoBehaviour
 
     public void updateStats() {
         foreach (var actualStat in actualStats.Values) {
-            actualStat.value = (int)CalculateActualStats(actualStat.stat);
+            actualStat.value = (int)CalculateActualStat(actualStat.stat);
         }
     }
     public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
@@ -208,32 +210,17 @@ public class Unit : MonoBehaviour
             if (isApplied) statsToUpdate[i].appliedStatusEffects.Add(statusEffect);
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
 
-            statsToUpdate[i].value = (int)CalculateActualStats(statsToUpdate[i].stat);
+            statsToUpdate[i].value = (int)CalculateActualStat(statsToUpdate[i].stat);
         }
     }
-    public float CalculateActualStats(Stat statType) {
-        float result = ApplyTileElement(baseStats[statType], statType);
-        result = ApplyTileStatusEffect(result, statType);
-        result = CalculateActualAmount(result, EnumConverter.GetCorrespondingStatusEffectType(statType));
+    public float CalculateActualStat(Stat statType) {
+        float result = ApplyTileStatusEffect(baseStats[statType], statType);
+        StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
+        if(statusEffectType != StatusEffectType.Etc)
+            result = CalculateActualAmount(result, EnumConverter.GetCorrespondingStatusEffectType(statType));
         return result;
     }
-    public float ApplyTileElement(float statValue, Stat stat) {
-        // 불속성 유닛이 불타일 위에 있을경우 공격력 +20%
-        if (GetTileUnderUnit() == null) {
-            Debug.Log("Null tile Unit's " + transform.position);
-        }
-        if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
-            if (stat == Stat.Power)
-                statValue *= 1.2f;
-        }
 
-        // 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
-        if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal) {
-            if (stat == Stat.Defense || stat == Stat.Resistance)
-                statValue += 30;
-        }
-        return statValue;
-    }
     public float ApplyTileStatusEffect(float statValue, Stat stat) {
         Tile tile = GetTileUnderUnit();
         List<TileStatusEffect> tileStatusEffectList = tile.GetStatusEffectList();
@@ -372,54 +359,69 @@ public class Unit : MonoBehaviour
 		return (float)speedValue / 100;
 	}
 
+    public float CalculateThroughChangeList(float data, Dictionary<bool, float> appliedChangeList) {    //<isMultiply, value>
+        float totalAdditiveValue = 0.0f;
+        float totalMultiplicativeValue = 1.0f;
+        foreach (var kv in appliedChangeList) {
+            if(kv.Key == true) {
+                totalMultiplicativeValue *= 1 + kv.Value/100;
+            }
+            else {
+                totalAdditiveValue += kv.Value;
+            }
+        }
+        return data * totalMultiplicativeValue + totalAdditiveValue;
+    }
+
 	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
 	{
-		float totalAbsoluteValue = 0.0f; // 절대값
-		float totalRelativeValue = 1.0f; // 상대값
+        Dictionary<bool, float> appliedChangeList = new Dictionary<bool, float>();  //<isMultiply, value>
 
-		// 효과로 인한 변동값 계산
+		// StatusEffect로 인한 변동값 계산
 		foreach (var statusEffect in statusEffectList)
-		{
-			int num = statusEffect.fixedElem.actuals.Count;
-			for (int i = 0; i < num; i++)
-			{
+			for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
 				if (statusEffect.IsOfType(i, statusEffectType))
-				{
-					if (statusEffect.GetIsMultiply(i)) // 상대값 합산
-					{
-						totalRelativeValue *= 1 + statusEffect.GetAmount(i)/100;
-					}
-					else // 절대값 합산
-					{
-						totalAbsoluteValue += statusEffect.GetAmount(i);
-					}
-				}
-			}
-		}
+                    appliedChangeList.Add(statusEffect.GetIsMultiply(), statusEffect.GetAmount(i));
+        
+        // TileStatusEffect로 인한 변동값 계산
+        Tile tile = GetTileUnderUnit();
+        foreach (var tileStatusEffect in tile.GetStatusEffectList()) 
+            for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++)
+                if(tileStatusEffect.IsOfType(i, statusEffectType))
+                    appliedChangeList.Add(tileStatusEffect.GetIsMultiply(), tileStatusEffect.GetAmount(i));
 
-		// 상대값 공격력 변동 특성 영향 합산
-		float additionalPowerBonus = 1.0f;					
-		if (statusEffectType == StatusEffectType.PowerChange)
+        
+        // 공격력 변동 특성 영향 합산
+        if (statusEffectType == StatusEffectType.PowerChange)
 		{
 			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-			additionalPowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
-		}
-		totalRelativeValue *= additionalPowerBonus;
+			float multiplicativePowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
+            appliedChangeList.Add(true, multiplicativePowerBonus);
 
-		// 절대값 방어력 변동 특성 영향 합산
-		float additionalDefenseBouns = 0;
-		if (statusEffectType == StatusEffectType.DefenseChange)
-		{
-			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-			additionalDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
-		}
-		totalAbsoluteValue += additionalDefenseBouns;
+            if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
+                appliedChangeList.Add(true, 1.2f);
+            }
+        }
 
-		// 데미지, 저항력, 민첩성, 기타등등...추가할 것			
-		
-		// this.UpdateStatusEffect();
+		// 방어력 변동 특성 영향 합산
+		if (statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) {
+            List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
+            if (statusEffectType == StatusEffectType.DefenseChange) {
+                float additiveDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
+                appliedChangeList.Add(false, additiveDefenseBouns);
+            }
+            else if(statusEffectType == StatusEffectType.ResistanceChange) {
+                float additiveResistanceBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteResistanceBonus(this);
+                appliedChangeList.Add(false, additiveResistanceBouns);
+            }
 
-		return data * totalRelativeValue + totalAbsoluteValue;
+            // 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+            if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal) {
+                appliedChangeList.Add(false, 30);
+            }
+        }
+
+		return CalculateThroughChangeList(data, appliedChangeList);
 	}
 
 	public void UpdateRemainPhaseAtPhaseEnd()

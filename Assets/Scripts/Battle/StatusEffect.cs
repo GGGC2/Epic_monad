@@ -56,6 +56,7 @@ public class StatusEffect {
         }
 
         public class ActualElement {
+            
             public readonly StatusEffectType statusEffectType; // 시스템 상으로 구분하는 상태이상의 종류 
 
             // var * coef + base
