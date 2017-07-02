@@ -17,4 +17,4 @@ blank	-	-	역적들을 놓쳤다는 말에 아직도 머리가 지끈거린다. 
 tumna	-	툼나	나가 봐. 그리고 연구부장에게 알현을 명했다고 전해.
 python	-	파이선	명을 받들겠습니다.
 *	load_script	Scene#3-2
-*	load_title
+*	load_script	Scene#4

@@ -64,15 +64,17 @@ public class StatusEffect {
             public readonly float seCoef;
             public readonly float seBase;
 
+            public readonly bool isPercent;
             public readonly bool isMultiply;
 
             public ActualElement(StatusEffectType statusEffectType,
                                  StatusEffectVar statusEffectVar, float statusEffectCoef, float statusEffectBase,
-                                 bool isMultiply) {
+                                 bool isPercent, bool isMultiply) {
                 this.statusEffectType = statusEffectType;
                 this.seVar = statusEffectVar;
                 this.seCoef = statusEffectCoef;
                 this.seBase = statusEffectBase;
+                this.isPercent = isPercent;
                 this.isMultiply = isMultiply;
             }
         }
@@ -171,16 +173,13 @@ public class StatusEffect {
 
     public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
-    public bool GetIsMultiply() { return fixedElem.actuals[0].isMultiply; }
+    public bool GetIsPercent(int index) { return fixedElem.actuals[index].isPercent; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetAmount() { return flexibleElem.actuals[0].amount; }
     public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
-    public float GetRemainAmount() { return flexibleElem.actuals[0].remainAmount; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
 
-    public void SetAmount(float amount) { flexibleElem.actuals[0].amount = amount; }
     public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
-    public void SetRemainAmount(float amount) { flexibleElem.actuals[0].remainAmount = amount; }
     public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
     public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
     public void AddRemainPhase(int phase) { flexibleElem.display.remainPhase += phase; }

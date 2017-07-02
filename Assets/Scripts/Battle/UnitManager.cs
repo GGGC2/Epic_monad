@@ -194,7 +194,7 @@ public class UnitManager : MonoBehaviour {
 			// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
 			// Vector3 respawnPos = tilePosition + new Vector3(0,0,5f);
 			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-			respawnPos -= new Vector3(0,0,0.05f);
+			respawnPos -= new Vector3(0, 0, 0.05f);
 			// Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f,
 			// 								 tileHeight * (initPosition.y - initPosition.x) * 0.5f,
 			// 								 (initPosition.y - initPosition.x) * 0.1f - 5f);
@@ -207,7 +207,7 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		//UpdateUnitOrder();
-		Debug.Log("Generate units complete");
+		// Debug.Log("Generate units complete");
 	}
 
 	public void DeleteDeadUnit(Unit deadUnit)
@@ -241,7 +241,7 @@ public class UnitManager : MonoBehaviour {
 			if (unit.GetCurrentActivityPoint() >= standardActivityPoint)
 			{
 				readiedUnits.Add(unit);
-				Debug.Log(unit.GetName() + " is readied");
+				// Debug.Log(unit.GetName() + " is readied");
 			}
 		}
 
@@ -263,7 +263,7 @@ public class UnitManager : MonoBehaviour {
             if (unit.GetSide() == Side.Enemy)
             {
                 enemyUnits.Add(unit);
-                Debug.Log(unit.GetName() + " is enemy");
+                // Debug.Log(unit.GetName() + " is enemy");
             }
         }
         return enemyUnits;
@@ -296,7 +296,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
-			yield return unit.ApplyTriggerOnPhaseStart();
+			yield return StartCoroutine( unit.ApplyTriggerOnPhaseStart());
             if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }

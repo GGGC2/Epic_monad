@@ -1,7 +1,7 @@
 Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
-제국군 병사,soldier01,Enemy,10,5,LeftUp,119,54,18,18,43,Melee,Plant,Earth,false
-제국군 병사,soldier01,Enemy,10,4,LeftUp,119,54,18,18,43,Melee,Plant,Earth,false
-제국군 병사,soldier01,Enemy,10,3,LeftUp,119,54,18,18,43,Melee,Plant,Earth,false
-제국군 병사,soldier01,Enemy,9,4,LeftUp,119,54,18,18,43,Melee,Plant,Earth,false
+제국군 병사,soldier01,Enemy,10,5,LeftUp,160,54,18,18,43,Melee,Plant,Earth,false
+제국군 병사,soldier01,Enemy,10,4,LeftUp,160,54,18,18,43,Melee,Plant,Earth,false
+제국군 병사,soldier01,Enemy,10,3,LeftUp,160,54,18,18,43,Melee,Plant,Earth,false
+제국군 병사,soldier01,Enemy,9,4,LeftUp,160,54,18,18,43,Melee,Plant,Earth,false
 루키어스,lucius,Ally,2,4,RightDown,458,73,51,28,53,Melee,Water,Sun,false
 레이나,reina,Ally,2,3,RightDown,350,70,0,50,50,Magic,Fire,Earth,false

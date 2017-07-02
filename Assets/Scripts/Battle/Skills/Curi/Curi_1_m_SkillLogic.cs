@@ -27,6 +27,7 @@ namespace Battle.Skills {
                     caster, damagedUnitList, target, damagedUnitList.Count);
 
                     foreach (var secondaryTarget in damagedUnitList) {
+                        //secondaryTarget.Damaged(skillInstanceData, true);
                         secondaryTarget.currentHealth -= (int)DamageCalculator.GetActualDamage(skillInstanceData, true);
                     }
                     return false;

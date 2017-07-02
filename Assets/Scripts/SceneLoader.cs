@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using WorldMap;
 using DG.Tweening;
 
-public class SceneLoader : MonoBehaviour {
+public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
@@ -17,11 +17,11 @@ public class SceneLoader : MonoBehaviour {
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene(string nextSceneName)
+	public void LoadNextBattleScene(string nextSceneName, bool ready)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
-		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
+		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName, ready));
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
@@ -45,7 +45,6 @@ public class SceneLoader : MonoBehaviour {
 	
 	IEnumerator Start()
 	{
-		//Debug.Log("Load new scene");
 		Time.timeScale = 0;
 
 		fadeoutScreenObject.SetActive(true);
@@ -62,7 +61,7 @@ public class SceneLoader : MonoBehaviour {
 		Time.timeScale = 1.0f;
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
+	IEnumerator Fadeout()
 	{
 		Time.timeScale = 0;
 
@@ -73,24 +72,23 @@ public class SceneLoader : MonoBehaviour {
 		{
 			yield return null;
 		}
+	}
+
+	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName, bool ready)
+	{
+		yield return Fadeout();
 
 		SceneData.nextStageName = nextSceneName;
-		Debug.Log("input next battle - " + SceneData.nextStageName);
 
-		SceneManager.LoadScene("Battle");
+		if(ready)
+			SceneManager.LoadScene("BattleReady");
+		else
+			SceneManager.LoadScene("Battle");
 	}
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
 	{
-		Time.timeScale = 0;
-
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
+		yield return Fadeout();
 
 		if (nextScriptFileName == "Title")
 		{
@@ -108,15 +106,7 @@ public class SceneLoader : MonoBehaviour {
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)
 	{
-		Time.timeScale = 0;
-
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
+		yield return Fadeout();
 
 		// need use save data
 		WorldMapManager.currentStory = nextStoryName;
