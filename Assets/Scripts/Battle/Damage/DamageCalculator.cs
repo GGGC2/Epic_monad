@@ -277,7 +277,7 @@ public class DamageCalculator
 	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isHealth)
 	{
 		float actualDamage = skillInstanceData.GetDamage().resultDamage;
-		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+		float finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Skill appliedSkill = skillInstanceData.GetSkill();
         Unit target = skillInstanceData.GetMainTarget();
         Unit caster = skillInstanceData.GetCaster();
@@ -329,7 +329,7 @@ public class DamageCalculator
 				// actualDamage = actualDamage;
 			}
 
-			finalDamage = (int) actualDamage;
+			finalDamage = actualDamage;
 
 			// 보호막에 따른 대미지 삭감 - 실제 실드는 깎이지 않음
 			if (target.HasStatusEffect(StatusEffectType.Shield))
@@ -354,7 +354,7 @@ public class DamageCalculator
 			}
 		}
 		
-		return (float) finalDamage;
+		return finalDamage;
 	}	
 }
 }

@@ -384,12 +384,12 @@ public class Unit : MonoBehaviour
                 if(tileStatusEffect.IsOfType(i, statusEffectType))
                     appliedChangeList.Add(new ChangeByStatusEffect(tileStatusEffect.GetIsMultiply(), tileStatusEffect.GetAmount(i)));
 
-		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)
-		float additionalPowerBonus = 1.0f;					
+		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)			
 		if (statusEffectType == StatusEffectType.PowerChange)
 		{
 			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
 			float relativePowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
+            relativePowerBonus = (relativePowerBonus - 1) * 100;
             appliedChangeList.Add(new ChangeByStatusEffect(true, relativePowerBonus));
             if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
                 appliedChangeList.Add(new ChangeByStatusEffect(true, 1.2f));
@@ -538,9 +538,11 @@ public class Unit : MonoBehaviour
         Skill appliedSkill = skillInstanceData.GetSkill();
 		// 체력 깎임
 		// 체인 해제
-		if (isHealth == true)
-		{
-			finalDamage = (int)Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth);
+		if (isHealth == true) {
+            float temp = Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth);
+            if(temp - (int)temp < 0.5) 
+                finalDamage = (int)temp;
+            else finalDamage = (int)temp + 1;   //반올림
 
 			if (finalDamage > 0)
 			{
@@ -578,7 +580,11 @@ public class Unit : MonoBehaviour
 
 		else
 		{
-			finalDamage = (int) skillInstanceData.GetDamage().resultDamage;
+            float temp = skillInstanceData.GetDamage().resultDamage;
+            if (temp - (int)temp < 0.5)
+                finalDamage = (int)temp;
+            else finalDamage = (int)temp + 1;   //반올림
+
 			if (activityPoint >= finalDamage)
 			{
 				activityPoint -= finalDamage;

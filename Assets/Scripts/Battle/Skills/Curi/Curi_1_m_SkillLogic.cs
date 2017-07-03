@@ -16,7 +16,6 @@ namespace Battle.Skills {
                     damage.resultDamage = statusEffect.GetAmount();
 
                     List<Unit> damagedUnitList = new List<Unit>();
-                    damagedUnitList.Add(target);
                     foreach (Tile tile in tileList) {
                         if (tile.IsUnitOnTile()) {
                             Unit secondaryTarget = tile.GetUnitOnTile();
