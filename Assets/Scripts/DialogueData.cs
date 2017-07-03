@@ -24,7 +24,7 @@ public class DialogueData{
 
 	public bool IsEffect() { return isEffect; }
 	public string GetNameInCode() { return nameInCode; }
-	public string GetEmotion() { return nameInCode; }
+	public string GetEmotion() { return emotion; }
 	public string GetName() { return name; }
 	public string GetDialogue() { return dialogue; }
 	public string GetCommandType() { return commandType; }
