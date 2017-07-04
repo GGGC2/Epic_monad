@@ -186,7 +186,8 @@ public class Unit : MonoBehaviour
 		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
-            if (statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange && statusEffect.GetIsOnce() == true) {
+            if ((statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange ||
+                statusEffect.GetStatusEffectType() == StatusEffectType.SpeedChange) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);
             }
         }
@@ -321,24 +322,6 @@ public class Unit : MonoBehaviour
             }
         }
     }
-
-    public float GetSpeed()
-	{
-		int speedValue = 100;
-		foreach (var statusEffect in statusEffectList)
-		{
-			int num = statusEffect.fixedElem.actuals.Count;
-			for (int i = 0; i < num; i++)
-			{
-				if (statusEffect.IsOfType(i, StatusEffectType.SpeedChange))
-				{
-					speedValue += (int)statusEffect.GetAmount(i);	
-				}
-			}
-		}
-
-		return (float)speedValue / 100;
-	}
 
     float CalculateThroughChangeList(float data, List<ChangeByStatusEffect> appliedChangeList) {    //<isMultiply, value>
         float totalAdditiveValue = 0.0f;
@@ -703,10 +686,11 @@ public class Unit : MonoBehaviour
 		requireSkillAP = SkillLogicFactory.Get(selectedSkill).CalculateAP(requireSkillAP, this);
 
         // 행동력(기술) 소모 증감 효과 적용
-        if (this.HasStatusEffect(StatusEffectType.RequireSkillAPChange))
-		{
-			requireSkillAP = (int) CalculateActualAmount((float)requireSkillAP, StatusEffectType.RequireSkillAPChange);
-		}
+        if (HasStatusEffect(StatusEffectType.RequireSkillAPChange) || HasStatusEffect(StatusEffectType.SpeedChange)) {
+			requireSkillAP = (int) CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange);
+            float speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
+            requireSkillAP = (int)(requireSkillAP * (100f / speed));
+        }
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
 		if (selectedSkill.GetRequireAP() == 1000)

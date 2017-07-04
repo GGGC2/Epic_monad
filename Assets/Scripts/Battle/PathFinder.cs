@@ -44,9 +44,11 @@ public class PathFinder {
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right);
 		}
         //// queue가 비었으면 loop를 탈출.		
-        if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange)) {
+        if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)) {
             foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
-                tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount((float)tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
+                tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount(tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
+                float speed = unit.CalculateActualAmount(100, StatusEffectType.SpeedChange);
+                tileWithPath.requireActivityPoint = (int)(tileWithPath.requireActivityPoint * (100f / speed));
             }
         }
         return tilesWithPath;
@@ -71,10 +73,12 @@ public class PathFinder {
 		int remainAP = unit.GetCurrentActivityPoint();
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
 		// 필요 행동력(이동) 증감 효과 적용
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
+		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
 		{
-			requireAP = (int)(unit.CalculateActualAmount((float) requireAP, StatusEffectType.RequireMoveAPChange));
-		}
+			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
+            float speed = unit.CalculateActualAmount(100, StatusEffectType.SpeedChange);
+            requireAP = (int)(requireAP * (100f / speed));
+        }
 		if (requireAP > remainAP) return;
 		
 		// else, 
