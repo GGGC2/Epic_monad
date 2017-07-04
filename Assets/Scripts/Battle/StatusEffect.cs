@@ -146,8 +146,7 @@ public class StatusEffect {
         this.fixedElem = fixedElem;
         this.flexibleElem = new FlexibleElement(this, caster, owner, originSkill, originPassiveSkill);
         for(int i = 0; i<fixedElem.actuals.Count; i++) {
-            float statusEffectVar = GetStatusEffectVar(i);
-            CalculateAmount(i, statusEffectVar);
+            CalculateAmount(i, false);
         }
     }
 
@@ -240,27 +239,25 @@ public class StatusEffect {
     public void CalculateAmount(float statusEffectVar) {
         flexibleElem.actuals[0].amount = (statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase) * GetRemainStack();
     }
-    public void CalculateAmount(int i, float statusEffectVar) {
-        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
-    }
-    
-    public float GetStatusEffectVar(int i) {
+    public void CalculateAmount(int i, bool isUpdate) {
         Unit caster = GetCaster();
-        Unit owner  = GetOwner();
-        float result = 0;
+        Unit owner = GetOwner();
         StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
+        float statusEffectVar = 0;
         if (seVarEnum == StatusEffectVar.Level)
-            result = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
+            statusEffectVar = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
-            result = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
-        else if (seVarEnum == StatusEffectVar.Power)
-            result = caster.GetStat(Stat.Power);
-        else {
-            if(GetOriginSkill() != null)
-                result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster, owner);
-            if(GetOriginPassiveSkill() != null)
-                result = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster, owner);
+            statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
+        else if (seVarEnum == StatusEffectVar.Power) {
+            if(isUpdate == true)    return;
+            statusEffectVar = caster.GetStat(Stat.Power);
+        } else {
+            if (GetOriginSkill() != null)
+                statusEffectVar = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster, owner);
+            if (GetOriginPassiveSkill() != null)
+                statusEffectVar = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster, owner);
         }
-        return result;
+
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
     }
 }
