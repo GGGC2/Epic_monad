@@ -101,7 +101,7 @@ public class DamageCalculator
 
 		foreach (var target in targets)
 		{
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, targets, target, targets.Count);
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, selectedTiles, target, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
             float attackDamage = skillInstanceData.GetDamage().resultDamage;

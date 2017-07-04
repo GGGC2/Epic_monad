@@ -23,7 +23,7 @@ namespace Battle.Skills {
                         }
                     }
                     SkillInstanceData skillInstanceData = new SkillInstanceData(damage, statusEffect.GetOriginSkill(),
-                    caster, damagedUnitList, target, damagedUnitList.Count);
+                    caster, tileList, target, damagedUnitList.Count);
 
                     foreach (var secondaryTarget in damagedUnitList) {
                         //secondaryTarget.Damaged(skillInstanceData, true);

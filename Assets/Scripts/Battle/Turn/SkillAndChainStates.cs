@@ -458,7 +458,7 @@ namespace Battle.Turn {
                 if (tile.IsUnitOnTile()) {
                     Unit target = tile.GetUnitOnTile();
                     if (!isChainable || !CheckEvasion(battleData, caster, target)) {
-                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, targets, target, targets.Count);
+                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
                         // 데미지 적용
                         if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                             yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
@@ -490,7 +490,7 @@ namespace Battle.Turn {
                                 }
                             }
                             if(!ignored)
-                                StatusEffector.AttachStatusEffect(caster, appliedSkill, target);
+                                StatusEffector.AttachStatusEffect(caster, appliedSkill, target, selectedTiles);
                         }
                     }
                     caster.ActiveFalseAllBonusText();
@@ -580,10 +580,10 @@ namespace Battle.Turn {
 
                 DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
                 reflectAttackDamage.resultDamage = reflectAmount;
-                List<Unit> reflectTargetList = new List<Unit>();
-                reflectTargetList.Add(unitInChain);
+                List<Tile> reflectTileList = new List<Tile>();
+                reflectTileList.Add(unitInChain.GetTileUnderUnit());
                 SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
-                                                            reflectTargetList, unitInChain, 1);
+                                                            reflectTileList, unitInChain, 1);
                 var reflectCoroutine = unitInChain.Damaged(reflectInstanceData, true);
                 yield return battleManager.StartCoroutine(reflectCoroutine);
             }
