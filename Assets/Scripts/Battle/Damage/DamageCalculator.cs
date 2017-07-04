@@ -163,6 +163,10 @@ public class DamageCalculator
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
+        if(caster.GetElement() == Element.Fire && target.HasStatusEffect(StatusEffectType.FireWeakness)){
+            attackDamage.relativeDamageBonus *= target.CalculateActualAmount(1, StatusEffectType.FireWeakness);
+        }
+
         // 해당 기술의 추가데미지 계산
         Debug.LogWarning("Apply Additional Damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
