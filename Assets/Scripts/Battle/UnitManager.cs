@@ -90,7 +90,7 @@ public class UnitManager : MonoBehaviour {
     public void UpdateStatusEffectsAtActionEnd() {
         foreach (var unit in GetAllUnits()) {
             foreach (StatusEffect statusEffect in unit.GetStatusEffectList()) {
-                if(statusEffect.GetStatusEffectType() == StatusEffectType.Aura) {
+                if(statusEffect.IsOfType(StatusEffectType.Aura)) {
                     Aura.Update(unit, statusEffect);
                 }
             }

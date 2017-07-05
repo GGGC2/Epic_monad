@@ -5,7 +5,7 @@ namespace Battle.Skills {
         public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             List<StatusEffect> statusEffectList = target.GetStatusEffectList();
             StatusEffect statusEffectToChange = statusEffectList.Find(se => (se.GetOriginSkillName() == "순백의 방패"
-                                        && se.GetStatusEffectType() == Enums.StatusEffectType.Aura));
+                                        && se.IsOfType(Enums.StatusEffectType.Aura)));
             if(statusEffectToChange != null) {
                 target.RemoveStatusEffect(statusEffectToChange);
                 return true;

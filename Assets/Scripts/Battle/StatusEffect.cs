@@ -169,13 +169,10 @@ public class StatusEffect {
     public int GetRemainStack() { return flexibleElem.display.remainStack; }
     public Element GetElement() { return flexibleElem.display.element; }
     public List<Unit> GetMemorizedUnits() { return flexibleElem.display.memorizedUnits; }
-
-    public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
+    
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
     public bool GetIsPercent(int index) { return fixedElem.actuals[index].isPercent; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
-    public float GetAmount() { return flexibleElem.actuals[0].amount; }
-    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
 
     public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
@@ -215,12 +212,31 @@ public class StatusEffect {
             flexibleElem.display.remainStack = 0;
         }
     }
-
+    
+    private List<int> FindIndexOfType(StatusEffectType statusEffectType) {
+        List<int> indices = new List<int>();
+        for (int i = 0; i < fixedElem.actuals.Count; i++) {
+            if (statusEffectType.Equals(this.GetStatusEffectType(i))) {
+                indices.Add(i);
+            }
+        }
+        return indices;
+    }
+    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
+    public float GetAmountOfType(StatusEffectType statusEffectType) {
+        float amount = 0;
+        List<int> indices = FindIndexOfType(statusEffectType);
+        foreach (var index in indices) {
+            amount += GetAmount(index);
+        }
+        return amount;
+    }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
-        if (statusEffectType.Equals(this.GetStatusEffectType()))
-        {
-            isOfType = true;
+        for(int i = 0; i < fixedElem.actuals.Count; i++) {
+            if (statusEffectType.Equals(this.GetStatusEffectType(i))) {
+                isOfType = true;
+            }
         }
         
         return isOfType;

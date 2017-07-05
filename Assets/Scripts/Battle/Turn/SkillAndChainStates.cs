@@ -521,9 +521,9 @@ namespace Battle.Turn {
             // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
             if (isChainable) {
                 List<StatusEffect> statusEffectsToRemove = caster.GetStatusEffectList().FindAll(x => (x.GetIsOnce() &&
-                                                                                    (x.GetStatusEffectType() == StatusEffectType.PowerChange ||
-                                                                                    x.GetStatusEffectType() == StatusEffectType.DamageChange ||
-                                                                                    x.GetStatusEffectType() == StatusEffectType.Smite)));
+                                                                                    (x.IsOfType(StatusEffectType.PowerChange) ||
+                                                                                    x.IsOfType(StatusEffectType.DamageChange) ||
+                                                                                    x.IsOfType(StatusEffectType.Smite))));
                 foreach(StatusEffect statusEffect in statusEffectsToRemove)
                     caster.RemoveStatusEffect(statusEffect);
             }

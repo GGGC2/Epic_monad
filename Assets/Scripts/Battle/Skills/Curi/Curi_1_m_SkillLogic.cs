@@ -13,7 +13,7 @@ namespace Battle.Skills {
                     TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
                     List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, 0, Direction.Left);
                     DamageCalculator.AttackDamage damage = new DamageCalculator.AttackDamage();
-                    damage.resultDamage = statusEffect.GetAmount();
+                    damage.resultDamage = statusEffect.GetAmountOfType(StatusEffectType.Etc);
 
                     List<Unit> damagedUnitList = new List<Unit>();
                     foreach (Tile tile in tileList) {

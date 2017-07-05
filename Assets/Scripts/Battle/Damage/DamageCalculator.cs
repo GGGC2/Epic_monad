@@ -256,7 +256,7 @@ public class DamageCalculator
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
-
+    
 	public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)
 	{
 		float reflectAmount = 0;
@@ -271,8 +271,10 @@ public class DamageCalculator
                     SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
                 if (statusEffect.GetIsOnce() == true)
                     target.RemoveStatusEffect(statusEffect);
-                reflectAmount += attackDamage * statusEffect.GetAmount()/100;
-                break;
+                float reflectPercent = statusEffect.GetAmountOfType(StatusEffectType.Reflect);
+                if(damageType == UnitClass.Magic) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MagicReflect);
+                if(damageType == UnitClass.Melee) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MeleeReflect);
+                reflectAmount += attackDamage * reflectPercent/100;
 			}
 		}
 		return reflectAmount;

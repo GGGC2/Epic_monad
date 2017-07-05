@@ -9,8 +9,9 @@ class Aura{
     private static Dictionary<Unit, bool> TagUnitInRange(Unit target, StatusEffect statusEffect) {   //각 unit이 target이 가진 오오라 범위 안에 있을 경우 true 태그를 닮.
         TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
         UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-        List<Tile> auraRange = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, (int)statusEffect.GetAmount(), 0, Direction.Down);
         Dictionary<Unit, bool> unitDictionary = new Dictionary<Unit, bool>();
+        List<Tile> auraRange = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 
+                                    (int)statusEffect.GetAmountOfType(StatusEffectType.Aura), 0, Direction.Down);
         foreach (var unit in unitManager.GetAllUnits()) {
             if (auraRange.Contains(unit.GetTileUnderUnit())) unitDictionary.Add(unit, true);
             else unitDictionary.Add(unit, false);
@@ -26,7 +27,7 @@ class Aura{
             if(unit == owner)   continue;
             StatusEffect alreadyAppliedEffect = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == originSkill
                                                     && se.GetOriginPassiveSkill() == originPassiveSkill
-                                                    && se.GetStatusEffectType() != StatusEffectType.Aura));
+                                                    && se.IsOfType(StatusEffectType.Aura)));
             if (alreadyAppliedEffect != null && kv.Value == false) {                    //원래 오오라 범위 안에 있었는데 액션 이후 벗어난 경우
                 alreadyAppliedEffect.DecreaseRemainStack();
                 alreadyAppliedEffect.GetMemorizedUnits().Remove(owner);
@@ -54,19 +55,19 @@ class Aura{
     }
     public static void TriggerOnApplied(StatusEffect statusEffect, Unit caster, Unit target) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
     {
-        if (statusEffect.GetStatusEffectType() != StatusEffectType.Aura) {
+        if (statusEffect.IsOfType(StatusEffectType.Aura)) {
             statusEffect.GetMemorizedUnits().Add(target);
         }
     }
     public static void TriggerOnRemoved(Unit owner, StatusEffect statusEffect) {
-        if (statusEffect.GetStatusEffectType() == StatusEffectType.Aura) {
+        if (statusEffect.IsOfType(StatusEffectType.Aura)) {
             Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(owner, statusEffect);
             foreach (var kv in unitInRangeDictionary) {
                 Unit unit = kv.Key;
                 if (kv.Value == true) {
                     StatusEffect statusEffectToRemove = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == statusEffect.GetOriginSkill()
                                                         && se.GetOriginPassiveSkill() == statusEffect.GetOriginPassiveSkill()
-                                                        && se.GetStatusEffectType() != StatusEffectType.Aura));
+                                                        && se.IsOfType(StatusEffectType.Aura)));
                     if (statusEffectToRemove != null) {
                         statusEffectToRemove.DecreaseRemainStack();
                         statusEffectToRemove.GetMemorizedUnits().Remove(owner);

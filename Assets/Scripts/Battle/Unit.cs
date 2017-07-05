@@ -186,8 +186,8 @@ public class Unit : MonoBehaviour
 		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
-            if ((statusEffect.GetStatusEffectType() == StatusEffectType.RequireMoveAPChange ||
-                statusEffect.GetStatusEffectType() == StatusEffectType.SpeedChange) && statusEffect.GetIsOnce() == true) {
+            if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
+                statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);
             }
         }
@@ -607,7 +607,7 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase))
 				{
-					totalAmount += statusEffect.GetAmount();
+					totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
 				}
 			}
 		}
