@@ -196,7 +196,10 @@ public class Unit : MonoBehaviour
 
     public void updateStats() {
         foreach (var actualStat in actualStats.Values) {
-            actualStat.value = (int)CalculateActualStat(actualStat.stat);
+            Stat statType = actualStat.stat;
+            StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
+            if (statusEffectType != StatusEffectType.Etc)
+                actualStat.value = (int)CalculateActualAmount(baseStats[statType], statusEffectType);
         }
     }
     public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
@@ -210,17 +213,12 @@ public class Unit : MonoBehaviour
         for (int i = 0; i < statsToUpdate.Count; i++) {
             if (isApplied) statsToUpdate[i].appliedStatusEffects.Add(statusEffect);
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
-
-            statsToUpdate[i].value = (int)CalculateActualStat(statsToUpdate[i].stat);
+            
+            StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
+            statsToUpdate[i].value = (int)CalculateActualAmount(baseStats[statsToUpdate[i].stat], statusEffectType);
         }
     }
-    public float CalculateActualStat(Stat statType) {
-        StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
-        if(statusEffectType != StatusEffectType.Etc)
-            return CalculateActualAmount(baseStats[statType], EnumConverter.GetCorrespondingStatusEffectType(statType));
-        return 0;
-    }
-
+    
 	public void AddSkillCooldown(int phase)
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
