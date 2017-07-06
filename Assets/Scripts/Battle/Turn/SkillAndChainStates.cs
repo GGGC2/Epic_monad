@@ -509,6 +509,7 @@ namespace Battle.Turn {
                 if(originPassiveSkill != null)
                     SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
             }
+            caster.SetHasUsedSkillThisTurn(true);
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);

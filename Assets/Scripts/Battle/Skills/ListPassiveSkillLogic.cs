@@ -150,6 +150,11 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(caster, targets);
 		    }
 	    }
+        public override void TriggerOnMove(Unit caster) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerOnMove(caster);
+            }
+        }
 
         public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
             foreach (var skillLogic in passiveSkillLogics) {
@@ -210,6 +215,11 @@ namespace Battle.Skills
         public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnUsingSkill(target, targetsOfSkill, statusEffect);
+            }
+        }
+        public override void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }
         }
     }

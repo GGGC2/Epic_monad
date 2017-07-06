@@ -89,6 +89,8 @@ public class Unit : MonoBehaviour
 	Vector2 startPositionOfPhase;
     //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
     bool hasMovedThisTurn;
+    //이 유닛이 이 턴에 스킬을 사용했을 경우에 true - 유진 스킬 '여행자의 발걸음', '길잡이'에서 체크
+    bool hasUsedSkillThisTurn;
 
 	Direction direction;
 	public int currentHealth;
@@ -159,6 +161,8 @@ public class Unit : MonoBehaviour
     public void SetPosition(Vector2 position) { this.position = position; }
     public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
     public bool GetHasMovedThisTurn() { return hasMovedThisTurn; }
+    public bool GetHasUsedSkillThisTurn() { return hasUsedSkillThisTurn; }
+    public void SetHasUsedSkillThisTurn(bool hasUsedSkillThisTurn) { this.hasUsedSkillThisTurn = hasUsedSkillThisTurn; }
     public Dictionary<string, int> GetUsedSkillDict() {return usedSkillDict;}
     public Direction GetDirection() { return direction; }
     public void SetDirection(Direction direction) {
@@ -190,6 +194,12 @@ public class Unit : MonoBehaviour
                 statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);
             }
+        }
+        SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
+        foreach (var statusEffect in GetStatusEffectList()) {
+            PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
+            if (originPassiveSkill != null)
+                SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
         }
         updateStats();
     }
@@ -413,6 +423,7 @@ public class Unit : MonoBehaviour
 	{
 		startPositionOfPhase = this.GetPosition();
         hasMovedThisTurn = false;
+        hasUsedSkillThisTurn = false;
 	}
 
 	// 반사데미지

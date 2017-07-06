@@ -5,13 +5,14 @@ namespace Battle.Skills {
     class Eugene_7_r_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
             if(Utility.GetDistance(caster.GetPosition(), turnStarter.GetPosition()) <= 2) {
-                StatusEffector.AttachStatusEffect(caster, passiveSkill, turnStarter);
+                StatusEffect.FixedElement fixedElement = passiveSkill.GetStatusEffectList().Find(se => se.display.displayName == "길잡이");
+                StatusEffect statusEffectToAttach = new StatusEffect(fixedElement, caster, turnStarter, null, passiveSkill);
+                turnStarter.GetStatusEffectList().Add(statusEffectToAttach);
             }
         }
-        public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect stautsEffect) {
-            StatusEffect statusEffectToRemove = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "길잡이");
-            if (statusEffectToRemove != null)
-                target.RemoveStatusEffect(statusEffectToRemove);
+        public override void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+            if (!target.GetHasUsedSkillThisTurn())
+                StatusEffector.AttachStatusEffect(statusEffect.GetCaster(), passiveSkill, target);
         }
     }
 }

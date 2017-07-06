@@ -94,6 +94,8 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
     }
+    public virtual void TriggerOnMove(Unit caster) {
+    }
     public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
         yield return null;
     }
@@ -121,6 +123,8 @@ public class BasePassiveSkillLogic
     public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
     }
     public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
+    }
+    public virtual void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
     }
 }
 }
