@@ -13,6 +13,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	{
 		GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
 		GameObject.Find("UnitImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/"+unitName+"_2");
+		GameObject.Find("HPText").GetComponent<Text>().text = Save.SaveDataCenter.GetSaveData().party.partyLevel.ToString();
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
@@ -25,6 +26,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 					break;
 				}
 			}
+
 			if(!AlreadySelected){
 				for(int i = 1; i <= 8; i++){
 					GameObject Panel = GameObject.Find("SelectedUnit"+i);
