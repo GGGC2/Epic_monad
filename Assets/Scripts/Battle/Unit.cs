@@ -520,10 +520,7 @@ public class Unit : MonoBehaviour
 		// 체력 깎임
 		// 체인 해제
 		if (isHealth == true) {
-            float temp = Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth);
-            if(temp - (int)temp < 0.5) 
-                finalDamage = (int)temp;
-            else finalDamage = (int)temp + 1;   //반올림
+            finalDamage = (int)Math.Round(Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth));
 
 			if (finalDamage > 0)
 			{
@@ -561,10 +558,7 @@ public class Unit : MonoBehaviour
 
 		else
 		{
-            float temp = skillInstanceData.GetDamage().resultDamage;
-            if (temp - (int)temp < 0.5)
-                finalDamage = (int)temp;
-            else finalDamage = (int)temp + 1;   //반올림
+            finalDamage = (int)Math.Round(Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth));
 
 			if (activityPoint >= finalDamage)
 			{

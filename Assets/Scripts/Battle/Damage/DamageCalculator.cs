@@ -321,13 +321,16 @@ public class DamageCalculator
 	
             if (caster.GetUnitClass() == UnitClass.Melee)
 			{
-				// 실제 피해 = 원래 피해 x 200/(200+방어력)
-				actualDamage = actualDamage * 200.0f / (200.0f + targetDefense);
+                // 실제 피해 = 원래 피해 x 200/(200+방어력)
+                // 방어력이 -180 이하일 시 -180으로 적용
+                if (targetDefense <= -180) actualDamage = actualDamage * 10;
+                else actualDamage = actualDamage * 200.0f / (200.0f + targetDefense);
 				Debug.Log("Actual melee damage without status effect : " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.Magic)
 			{
-				actualDamage = actualDamage * 200.0f / (200.0f + targetResistance);
+                if(targetResistance <= -180) actualDamage = actualDamage * 10;
+				else actualDamage = actualDamage * 200.0f / (200.0f + targetResistance);
 				Debug.Log("Actual magic damage without status effect: " + actualDamage);
 			}
 			else if (caster.GetUnitClass() == UnitClass.None)

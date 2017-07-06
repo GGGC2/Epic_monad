@@ -580,6 +580,7 @@ namespace Battle.Turn {
 
                 DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
                 reflectAttackDamage.resultDamage = reflectAmount;
+                attackDamage.resultDamage -= reflectAmount;
                 List<Tile> reflectTileList = new List<Tile>();
                 reflectTileList.Add(unitInChain.GetTileUnderUnit());
                 SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
