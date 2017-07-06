@@ -258,7 +258,7 @@ namespace Battle.Turn
 			Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
-			if (selectedUnit.activityPoint < 70)
+			if (selectedUnit.GetCurrentActivityPoint() < 70)
 			{
 				return null;
 			}

@@ -9,7 +9,7 @@ namespace Battle.Damage
 {
 public static class StatusEffector
 {
-	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target)
+	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target, List<Tile> targetTiles)
 	{
         List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
@@ -26,7 +26,7 @@ public static class StatusEffector
                     Debug.Log(statusEffect.GetDisplayName()+ " ignored by "+targetStatusEffect.GetOriginSkillName()+" of "+target.GetName());
                 }
             }
-            if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+            if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target, targetTiles) == false) {
                 ignoreStatusEffect = true;
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
             }

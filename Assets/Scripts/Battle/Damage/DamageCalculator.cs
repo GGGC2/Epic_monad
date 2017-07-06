@@ -101,7 +101,7 @@ public class DamageCalculator
 
 		foreach (var target in targets)
 		{
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, targets, target, targets.Count);
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, selectedTiles, target, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
             float attackDamage = skillInstanceData.GetDamage().resultDamage;
@@ -162,6 +162,10 @@ public class DamageCalculator
 		attackDamage.heightBonus = HeightBonus(caster, target);
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
+
+        if(caster.GetElement() == Element.Fire && target.HasStatusEffect(StatusEffectType.FireWeakness)){
+            attackDamage.relativeDamageBonus *= target.CalculateActualAmount(1, StatusEffectType.FireWeakness);
+        }
 
         // 해당 기술의 추가데미지 계산
         Debug.LogWarning("Apply Additional Damage from" + appliedSkill.GetName());
@@ -252,7 +256,7 @@ public class DamageCalculator
 		Debug.Log("smiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
-
+    
 	public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)
 	{
 		float reflectAmount = 0;
@@ -267,8 +271,10 @@ public class DamageCalculator
                     SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
                 if (statusEffect.GetIsOnce() == true)
                     target.RemoveStatusEffect(statusEffect);
-                reflectAmount += attackDamage * statusEffect.GetAmount()/100;
-                break;
+                float reflectPercent = statusEffect.GetAmountOfType(StatusEffectType.Reflect);
+                if(damageType == UnitClass.Magic) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MagicReflect);
+                if(damageType == UnitClass.Melee) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MeleeReflect);
+                reflectAmount += attackDamage * reflectPercent/100;
 			}
 		}
 		return reflectAmount;
@@ -277,7 +283,7 @@ public class DamageCalculator
 	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isHealth)
 	{
 		float actualDamage = skillInstanceData.GetDamage().resultDamage;
-		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+		float finalDamage = 0; // 최종 대미지 (정수로 표시되는)
         Skill appliedSkill = skillInstanceData.GetSkill();
         Unit target = skillInstanceData.GetMainTarget();
         Unit caster = skillInstanceData.GetCaster();
@@ -329,7 +335,7 @@ public class DamageCalculator
 				// actualDamage = actualDamage;
 			}
 
-			finalDamage = (int) actualDamage;
+			finalDamage = actualDamage;
 
 			// 보호막에 따른 대미지 삭감 - 실제 실드는 깎이지 않음
 			if (target.HasStatusEffect(StatusEffectType.Shield))
@@ -354,7 +360,7 @@ public class DamageCalculator
 			}
 		}
 		
-		return (float) finalDamage;
+		return finalDamage;
 	}	
 }
 }

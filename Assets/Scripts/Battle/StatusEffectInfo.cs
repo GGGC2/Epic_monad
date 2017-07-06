@@ -56,6 +56,7 @@ public class StatusEffectInfo {
 			float statusEffectCoef = commaParser.ConsumeFloat("X", 0);
 			float statusEffectBase = commaParser.ConsumeFloat("X", 0);
 
+			bool isPercent = commaParser.ConsumeBool();
 			bool isMultiply = commaParser.ConsumeBool("NONE", false);
 
 			StatusEffect.FixedElement.ActualElement actualElement = 
@@ -63,6 +64,7 @@ public class StatusEffectInfo {
 															statusEffectVar,
 															statusEffectCoef,
 															statusEffectBase, 
+															isPercent,
 															isMultiply);
 			actualElements.Add(actualElement);
 		}

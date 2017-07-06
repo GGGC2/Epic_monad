@@ -104,8 +104,9 @@ public class UIManager : MonoBehaviour
 			
 			Skill skill = skillList[i];
 			Unit caster = selectedUnit;
-			int originAP = skill.GetRequireAP();
-			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(originAP, caster);			
+            int originAP = skill.GetRequireAP();
+			int APChangedByStatusEffects = caster.GetActualRequireSkillAP(skill);
+			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(APChangedByStatusEffects, caster);			
 			Text apText = skillButton.transform.Find("APText").GetComponent<Text>();
 			apText.text = actualAP.ToString() + " AP";
 			if (originAP < actualAP)

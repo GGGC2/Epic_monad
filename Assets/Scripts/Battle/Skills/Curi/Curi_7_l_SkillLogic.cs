@@ -15,7 +15,9 @@ namespace Battle.Skills {
                 if(unit != owner) 
                     unitsExceptThis.Add(unit);
             }
-            int distance = unitsExceptThis.Min(x => Utility.GetDistance(owner.GetPosition(), x.GetPosition()));
+            int distance = 0;
+            if(unitsExceptThis.Count != 0)
+                distance = unitsExceptThis.Min(x => Utility.GetDistance(owner.GetPosition(), x.GetPosition()));
             return distance;
         }
     }

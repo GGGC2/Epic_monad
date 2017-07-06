@@ -7,7 +7,7 @@ namespace Battle.Skills {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
-            if(statusEffect.GetStatusEffectType() != StatusEffectType.Aura && caster == target) {
+            if(!statusEffect.IsOfType(StatusEffectType.Aura) && caster == target) {
                 return false;
             }
             Aura.TriggerOnApplied(statusEffect, caster, target);
