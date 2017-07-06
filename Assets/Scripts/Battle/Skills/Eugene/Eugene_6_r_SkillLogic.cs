@@ -18,7 +18,7 @@ namespace Battle.Skills {
         }
         public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
             if (!statusEffect.IsOfType(StatusEffectType.Aura)) {
-                target.RemoveStatusEffect(StatusEffectCategory.Debuff, 1);
+                target.RemoveStatusEffect(statusEffect.GetCaster(), StatusEffectCategory.Debuff, 1);
             }
         }
     }

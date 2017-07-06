@@ -25,7 +25,7 @@ namespace Battle.Skills {
         public override void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) { //청명수의 은총 skillLogic
             if (statusEffect.fixedElem.actuals.Count >= 3) {    //청명수의 은총 스킬을 배웠을 경우
                 if(target.GetTileUnderUnit().GetTileElement() == Element.Water)
-                    target.RemoveStatusEffect(StatusEffectCategory.Debuff, 1);
+                    target.RemoveStatusEffect(statusEffect.GetCaster(), StatusEffectCategory.Debuff, 1);
             }
         }
     }

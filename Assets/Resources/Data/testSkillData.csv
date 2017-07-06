@@ -28,7 +28,7 @@ eren,22,순간 재충전,3,25,5,Power,0,Point,Diamond,0,9,0,Diamond,0,0,0,Buff,-
 eren,36,치유의 빛,3,56,5,Power,0.6,Point,Diamond,0,9,0,Diamond,0,0,0,HealHealth,-,Area,Move,—
 eren,50,영혼 소각,1,97,5,Power,2.7,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Area,Move,—
 eren,50,운명의 개척자,3,90,5,Dexturity,0.3,Point,Diamond,0,9,0,Diamond,0,0,0,HealAP,-,Area,Move,--
-luvericha,1,정화된 밤,1,0,1,Power,0,Point,Diamond,0,5,0,Diamond,0,0,0,Buff,-,Area,Move,—
+luvericha,1,정화된 밤,1,0,2,Power,0,Point,Diamond,0,5,0,Diamond,0,0,0,Buff,-,Area,Move,—
 luvericha,1,사랑의 기쁨,3,39,3,Power,0.7,Auto,Diamond,1,4,0,Diamond,1,4,0,HealHealth,-,Area,Move,—
 luvericha,22,에튀드 : 겨울바람,1,56,4,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--
 luvericha,22,에튀드 : 햇빛,3,68,4,Power,0,Auto,Square,1,2,0,Square,1,2,0,Buff,-,Area,NonMove,--

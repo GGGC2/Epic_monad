@@ -3,7 +3,7 @@
 namespace Battle.Skills {
     class Eugene_2_r_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerOnRest(Unit caster) {
-            caster.RemoveStatusEffect(StatusEffectCategory.Debuff, 1);
+            caster.RemoveStatusEffect(caster, StatusEffectCategory.Debuff, 1);
         }
     }
 }

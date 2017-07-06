@@ -311,13 +311,13 @@ public class Unit : MonoBehaviour
             updateStats(statusEffect, false, true);
         }
     }
-    public void RemoveStatusEffect(StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
+    public void RemoveStatusEffect(Unit caster, StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
     {
         foreach (var statusEffect in statusEffectList) {
             if (num == 0) break;
 
-            // 자신이 건 효과는 해제할 수 없다 - 기획문서 참조
-            if (statusEffect.GetCaster() == this) continue;
+            // 자신이 자신에게 건 효과는 스스로 해제할 수 없다 - 기획문서 참조
+            if (caster == this && statusEffect.GetCaster() == this) continue;
 
             if (!statusEffect.GetIsRemovable()) continue;
 
