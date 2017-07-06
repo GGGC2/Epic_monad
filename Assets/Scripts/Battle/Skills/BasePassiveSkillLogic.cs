@@ -83,12 +83,12 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� ����� �� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
     {
         return true;
     }
 
-    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� ����� �� �ߵ�. false�� ������ �� �ش� StatusEffect�� ������� ����.
+    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� �������?����.
     {
         return true;
     }
@@ -111,7 +111,7 @@ public class BasePassiveSkillLogic
     public virtual void TriggerOnActionEnd(Unit caster) {    
     }
     
-    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //false�� ������ �� �ش� statusEffect�� �����.
+    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //false�� ������ �� �ش� statusEffect�� �����?
         return true;
     }
 	public virtual void TriggerOnRest(Unit caster) {

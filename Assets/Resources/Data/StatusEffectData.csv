@@ -43,7 +43,7 @@ curi,22,FALSE,산성 혼합물,산성 혼합물,FALSE,FALSE,FALSE,FALSE,3,-,1,TR
 curi,29,FALSE,재결정,공격력 증가,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,PowerChange,O,0,25,TRUE,TRUE,,,,,,,,,,,,
 curi,29,FALSE,도금,기절,FALSE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,Faint,X,X,X,FALSE,NONE,,,,,,,,,,,,
 curi,29,FALSE,도금,물리 면역,TRUE,FALSE,FALSE,FALSE,2,-,1,TRUE,None,None,None,1,MeleeImmune,X,X,X,FALSE,NONE,,,,,,,,,,,,
-curi,36,FALSE,유독성 촉매,강타,TRUE,TRUE,FALSE,TRUE,9999,-,1,TRUE,None,None,None,1,Smite,Level,0.7,0,FALSE,FALSE,,,,,,,,,,,,
+curi,36,FALSE,유독성 촉매,강타,TRUE,TRUE,FALSE,TRUE,9999,-,1,TRUE,None,None,None,1,Smite,Power,0.7,0,FALSE,FALSE,,,,,,,,,,,,
 curi,43,FALSE,에테르 폭탄,침묵,FALSE,FALSE,FALSE,FALSE,1,-,1,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,
 curi,43,FALSE,제한 구역,공격력 상승,TRUE,TRUE,FALSE,FALSE,9999,-,99,FALSE,None,None,None,1,PowerChange,Stack,4,0,TRUE,TRUE,,,,,,,,,,,,
 curi,50,FALSE,초강산 혼합물,초강산 혼합물,FALSE,FALSE,FALSE,FALSE,3,-,1,TRUE,None,None,None,3,DefenseChange,Level,-1.7,-132,FALSE,FALSE,ResistanceChange,Level,-1.7,-132,FALSE,FALSE,DamageOverPhase,O,0.08,0,FALSE,NONE

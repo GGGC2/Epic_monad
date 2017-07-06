@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using Enums;
-using Battle.Damage;
 
 namespace Battle.Skills
 {
 public class Lenien_2_m_SkillLogic : BaseSkillLogic {
 
 	// 조건부 기절 추가.
-	public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target)
+	public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles)
 	{
 		BattleData battleData = MonoBehaviour.FindObjectOfType<BattleManager>().battleData;
 		Tile midPointTile = battleData.SelectedTile;

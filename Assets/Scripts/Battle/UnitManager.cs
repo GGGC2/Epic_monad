@@ -57,7 +57,7 @@ public class UnitManager : MonoBehaviour {
 	{
 		foreach (var unit in GetAllUnits())
 		{
-			unit.latelyHitInfos.Clear();
+			unit.GetLatelyHitInfos().Clear();
 		}
 	}
 
@@ -90,7 +90,7 @@ public class UnitManager : MonoBehaviour {
     public void UpdateStatusEffectsAtActionEnd() {
         foreach (var unit in GetAllUnits()) {
             foreach (StatusEffect statusEffect in unit.GetStatusEffectList()) {
-                if(statusEffect.GetStatusEffectType() == StatusEffectType.Aura) {
+                if(statusEffect.IsOfType(StatusEffectType.Aura)) {
                     Aura.Update(unit, statusEffect);
                 }
             }
@@ -99,8 +99,7 @@ public class UnitManager : MonoBehaviour {
             foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
-                        float statusEffectVar = statusEffect.GetStatusEffectVar(i);
-                        statusEffect.CalculateAmount(i, statusEffectVar);
+                        statusEffect.CalculateAmount(i, true);
                     }
                     unit.updateStats(statusEffect, false, false);
                 }
@@ -213,7 +212,7 @@ public class UnitManager : MonoBehaviour {
 	public void DeleteDeadUnit(Unit deadUnit)
 	{
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnit.latelyHitInfos)
+		foreach (var hitInfo in deadUnit.GetLatelyHitInfos())
 		{
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
