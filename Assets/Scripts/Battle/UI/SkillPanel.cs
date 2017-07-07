@@ -11,6 +11,9 @@ namespace BattleUI
 		Text skillRange1Text;
 		Text skillCooldownText;
 		Image range1Image;
+        int page = 0;
+        int maxPage = 0;
+        Unit selectedUnit;
 
 		//Enums.RangeForm과 값이 정확히 맞아야 함
 		public Sprite[] RangeFormIcons;
@@ -30,6 +33,18 @@ namespace BattleUI
 			range1Image = GameObject.Find("SkillRange1Image").GetComponent<Image>();
 		}
 
+        public int GetPage() { return page; }
+        public void SetMaxPage(int maxPage) { this.maxPage = maxPage; }
+
+        public void triggerEnabled(Unit selectedUnit) {
+            this.selectedUnit = selectedUnit;
+            page = 0;
+            Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
+            Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
+            prevButton.interactable = false;
+            if (maxPage == 0) nextButton.interactable = false;
+            else nextButton.interactable = true;
+        }
 		public void CallbackSkillIndex(int index)
 		{
 			battleManager.CallbackSkillIndex(index);
@@ -73,5 +88,30 @@ namespace BattleUI
 		{
 			battleManager.CallbackSkillUICancel();
 		}
+
+        public void CallbackNextPage() {
+            page += 1;
+            if (page > 0) {
+                Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
+                prevButton.interactable = true;
+            }
+            if (page >= maxPage) {
+                Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
+                nextButton.interactable = false;
+            }
+            MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);
+        }
+        public void CallbackPrevPage() {
+            page -= 1;
+            if (page <= 0) {
+                Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
+                prevButton.interactable = false;
+            }
+            if (page < maxPage) {
+                Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
+                nextButton.interactable = true;
+            }
+            MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);
+        }
 	}
 }

@@ -81,28 +81,32 @@ public class UIManager : MonoBehaviour
 			transform.gameObject.SetActive(true);
 		}
 	}
-
-	public void UpdateSkillInfo(Unit selectedUnit)
-	{
-		EnableSkillUI();
-		List<Skill> skillList = selectedUnit.GetLearnedSkillList();
-
-		if (skillList.Count > skillButtonCount) {
-			Debug.LogError("Too many skill count " + skillList.Count);
-		}
-
-		for (int i = 0; i < skillButtonCount; i++)
+    public void SetSkillUI() {
+        Unit selectedUnit = MonoBehaviour.FindObjectOfType<BattleManager>().battleData.selectedUnit;
+        List<Skill> skillList = selectedUnit.GetLearnedSkillList();
+        SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
+        skillPanel.SetMaxPage((skillList.Count - 1) / skillButtonCount);
+        skillPanel.triggerEnabled(selectedUnit);
+        EnableSkillUI();
+        
+        UpdateSkillInfo(selectedUnit);
+    }
+    public void UpdateSkillInfo(Unit selectedUnit) {
+        List<Skill> skillList = selectedUnit.GetLearnedSkillList();
+        for (int i = 0; i < skillButtonCount; i++)
 		{
-			GameObject skillButton = GameObject.Find((i + 1).ToString() + "SkillButton"); //?? skillUI.transform.Find(i + "SkillButton")
-			if (i >= skillList.Count)
+            int skillIndex = i + skillButtonCount * skillUI.GetComponent<SkillPanel>().GetPage();
+			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
+			if (skillIndex >= skillList.Count)
 			{
 				skillButton.SetActive(false);
 				continue;
 			}
+            skillButton.SetActive(true);
 
-			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[i].GetName();
+			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[skillIndex].GetName();
 			
-			Skill skill = skillList[i];
+			Skill skill = skillList[skillIndex];
 			Unit caster = selectedUnit;
             int originAP = skill.GetRequireAP();
 			int APChangedByStatusEffects = caster.GetActualRequireSkillAP(skill);
@@ -117,9 +121,9 @@ public class UIManager : MonoBehaviour
 				apText.color = Color.white;
 
 			var skillCooldownDict = selectedUnit.GetUsedSkillDict();
-			if (skillCooldownDict.ContainsKey(skillList[i].GetName()))
+			if (skillCooldownDict.ContainsKey(skillList[skillIndex].GetName()))
 			{
-				int remainCooldown = skillCooldownDict[skillList[i].GetName()];
+				int remainCooldown = skillCooldownDict[skillList[skillIndex].GetName()];
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "재사용까지 " + remainCooldown + "페이즈";
 			}
 			else
