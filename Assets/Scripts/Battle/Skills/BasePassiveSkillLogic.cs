@@ -83,7 +83,11 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        return true;
+    }
+
+    public virtual bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
     {
         return true;
     }

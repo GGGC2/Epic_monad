@@ -6,7 +6,7 @@ namespace Battle.Skills {
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
             if (statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
                 Aura.TriggerOnApplied(statusEffect, caster, target);
             return true;

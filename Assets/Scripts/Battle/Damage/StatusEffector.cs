@@ -34,7 +34,17 @@ public static class StatusEffector
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, null, appliedSkill))
 			.ToList();
-		AttachStatusEffect(caster, statusEffects, target);
+        List<StatusEffect> newStatusEffects = new List<StatusEffect>();
+        foreach (var statusEffect in statusEffects) {
+            bool ignoreStatusEffect = false;
+            if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+                ignoreStatusEffect = true;
+                Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
+            }
+            if (ignoreStatusEffect == false)
+                newStatusEffects.Add(statusEffect);
+        }
+        AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
 	private static bool IsValidAtZero(StatusEffectType seType)
@@ -77,7 +87,7 @@ public static class StatusEffector
 		foreach (var statusEffect in validStatusEffects)
 		{
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
-            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectAppliedToOwner(statusEffect, caster, target) == false) {
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetName());
                 continue;
             }

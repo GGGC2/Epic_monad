@@ -441,11 +441,21 @@ public class Unit : MonoBehaviour
                 for (int i = 0; i < num; i++) {
                     if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
                         float remainShieldAmount = se.GetRemainAmount(i);
-                        if (remainShieldAmount >= damage) {
-                            se.SubAmount(i, damage);
+                        if (remainShieldAmount >= (int)damage) {
+                            se.SubAmount(i, (int)damage);
+                            Skill originSkill = se.GetOriginSkill();
+
+                            if(originSkill != null) 
+                                yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, (int)damage));
+
                             damage = 0;
                         } else {
                             se.SubAmount(i, remainShieldAmount);
+
+                            Skill originSkill = se.GetOriginSkill();
+                            if (originSkill != null)
+                                yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, remainShieldAmount));
+
                             RemoveStatusEffect(se);
                             damage -= remainShieldAmount;
                         }

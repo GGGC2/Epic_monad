@@ -123,10 +123,10 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
             bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                if (!skillLogic.TriggerStatusEffectApplied(statusEffect, caster, target)) {
+                if (!skillLogic.TriggerStatusEffectAppliedToOwner(statusEffect, caster, target)) {
                     ignored = true;
                 }
             }

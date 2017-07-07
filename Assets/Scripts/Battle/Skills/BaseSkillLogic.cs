@@ -88,6 +88,9 @@ public class BaseSkillLogic
     }
     public virtual void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
     }
+    public virtual IEnumerator TriggerShieldAttacked(Unit target, float amount) {
+        yield return null;
+    }
     public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{
 		Direction realDirection;
