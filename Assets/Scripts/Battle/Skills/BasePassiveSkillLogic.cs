@@ -28,22 +28,22 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}
 
-	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}

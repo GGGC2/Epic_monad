@@ -502,12 +502,13 @@ public class Unit : MonoBehaviour
 
 	public IEnumerator DamagedBySkill(SkillInstanceData skillInstanceData, bool isHealth) {
         Unit caster = skillInstanceData.GetCaster();
+        Unit target = skillInstanceData.GetMainTarget();
         Skill appliedSkill = skillInstanceData.GetSkill();
         float damage = skillInstanceData.GetDamage().resultDamage;
         // 체력 깎임
         // 체인 해제
-        float defense = Battle.DamageCalculator.CalculateDefense(skillInstanceData);
-        float resistance = Battle.DamageCalculator.CalculateResistance(skillInstanceData);
+        float defense = Battle.DamageCalculator.CalculateDefense(appliedSkill, target, caster);
+        float resistance = Battle.DamageCalculator.CalculateResistance(appliedSkill, target, caster);
         if (isHealth == true) {
 			// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
 			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();

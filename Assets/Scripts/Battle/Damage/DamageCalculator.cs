@@ -105,12 +105,21 @@ public class DamageCalculator
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
             float actualDamage = skillInstanceData.GetDamage().resultDamage;
-            float defense = CalculateDefense(skillInstanceData);
-            float resistance = CalculateResistance(skillInstanceData);
-            actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), defense, resistance);
+            float reflectDamage = CalculateReflectDamage(actualDamage, target, caster, caster.GetUnitClass());
+            actualDamage -= reflectDamage;
+
+            float targetDefense = CalculateDefense(appliedSkill, target, caster);
+            float targetResistance = CalculateResistance(appliedSkill, target, caster);
+            actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
+            
+            float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
+            float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
+            reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
 
 			DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
+            DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
 			damageList.Add(target, damageInfo);
+            damageList.Add(caster, reflectDamageInfo);
 
 			Debug.Log("Apply " + actualDamage + " damage to " + target.GetName() + "\n" +
 						"ChainCombo : " + chainCombo);
@@ -294,10 +303,7 @@ public class DamageCalculator
         }
         return damage;
     }
-	public static float CalculateDefense(SkillInstanceData skillInstanceData) {
-        Skill appliedSkill = skillInstanceData.GetSkill();
-        Unit target = skillInstanceData.GetMainTarget();
-        Unit caster = skillInstanceData.GetCaster();
+	public static float CalculateDefense(Skill appliedSkill, Unit target, Unit caster) {
 		float defense = target.GetStat(Stat.Defense);
 			
 		// 기술에 의한 방어 무시 (상대값)
@@ -305,19 +311,16 @@ public class DamageCalculator
 			
 		// 특성에 의한 방어 무시 (상대값)
 		List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-        defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, defense); 
+        defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(appliedSkill, target, caster, defense); 
             
 		// 기술에 의한 방어 무시 (절대값)
 		defense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceAbsoluteValueBySkill(defense, caster, target);
 			
 		// 특성에 의한 방어 무시 (절대값)
-		defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, defense);
+		defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(appliedSkill, target, caster, defense);
 		return defense;
 	}
-    public static float CalculateResistance(SkillInstanceData skillInstanceData) {
-        Skill appliedSkill = skillInstanceData.GetSkill();
-        Unit target = skillInstanceData.GetMainTarget();
-        Unit caster = skillInstanceData.GetCaster();
+    public static float CalculateResistance(Skill appliedSkill, Unit target, Unit caster) {
         float resistance = target.GetStat(Stat.Resistance);
 
         // 기술에 의한 저항 무시 (상대값)
@@ -325,13 +328,13 @@ public class DamageCalculator
 
         // 특성에 의한 저항 무시 (상대값)
         List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, resistance);
+        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(appliedSkill, target, caster, resistance);
 
         // 기술에 의한 저항 무시 (절대값)
         resistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceAbsoluteValueBySkill(resistance, caster, target);
 
         // 특성에 의한 저항 무시 (절대값)
-        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, resistance);
+        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(appliedSkill, target, caster, resistance);
         return resistance;
     }
     }

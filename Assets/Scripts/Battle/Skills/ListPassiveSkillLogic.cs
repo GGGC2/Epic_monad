@@ -37,30 +37,30 @@ namespace Battle.Skills
             return totalAdditionalDefenseBonus;
         }
 
-        public override float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance) {
+        public override float ApplyIgnoreResistanceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance) {
             foreach (var skillLogic in passiveSkillLogics) {
-                resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, resistance);
+                resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(appliedSkill, target, caster, resistance);
             }
             return resistance;
         }
 
-        public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance) {
+        public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance) {
             foreach (var skillLogic in passiveSkillLogics) {
-                resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, resistance);
+                resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(appliedSkill, target, caster, resistance);
             }
             return resistance;
         }
 
-        public override float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense) {
+        public override float ApplyIgnoreDefenceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense) {
             foreach (var skillLogic in passiveSkillLogics) {
-                defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, defense);
+                defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(appliedSkill, target, caster, defense);
             }
             return defense;
         }
 
-        public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense) {
+        public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense) {
             foreach (var skillLogic in passiveSkillLogics) {
-                defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, defense);
+                defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(appliedSkill, target, caster, defense);
             }
             return defense;
         }

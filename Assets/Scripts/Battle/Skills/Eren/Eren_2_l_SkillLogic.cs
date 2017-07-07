@@ -5,9 +5,8 @@ namespace Battle.Skills
 {
 public class Eren_2_l_SkillLogic : BasePassiveSkillLogic {
 
-	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
 	{
-		Unit caster = skillInstanceData.GetCaster();
 		// 27 + (lv * 0.3 * stack)
 		StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");		
 		int stack = 0;
