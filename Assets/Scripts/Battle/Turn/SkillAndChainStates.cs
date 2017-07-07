@@ -241,11 +241,12 @@ namespace Battle.Turn {
                 List<Tile> firstRange = GetTilesInFirstRange(battleData);
 
                 //데미지 미리보기
+                Debug.Log("/------- Damage preview -------\\");
                 Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
                 foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
-                    Debug.Log(kv.Key.GetName() + " - Damage preview");
                     kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
                 }
+                Debug.Log("\\------- Damage preview -------/");
 
                 bool isChainPossible = CheckChainPossible(battleData);
                 battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
@@ -375,7 +376,6 @@ namespace Battle.Turn {
              && battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.Debuff) {
                 isPossible = false;
             }
-            Debug.Log("Skill Apply Type : " + battleData.SelectedSkill.GetSkillApplyType());
             
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {

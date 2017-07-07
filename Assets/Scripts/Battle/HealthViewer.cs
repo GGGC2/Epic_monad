@@ -16,7 +16,6 @@ public class HealthViewer : MonoBehaviour {
 
 	public void PreviewDamageAmount(int damageAmount)
 	{
-		Debug.Log("PreviewDamageAmount");
         int previewCurrentHealth = Math.Max(currentHealth - damageAmount, 0);
         float healthRatio = (float)previewCurrentHealth / (float)maxHealth;
 		Vector3 previewCurrentHealthScale = new Vector3(healthRatio, 1, 1);

@@ -111,18 +111,22 @@ public class DamageCalculator
             float targetDefense = CalculateDefense(appliedSkill, target, caster);
             float targetResistance = CalculateResistance(appliedSkill, target, caster);
             actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
-            
-            float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
-            float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
-            reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
 
 			DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
-            DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
 			damageList.Add(target, damageInfo);
-            damageList.Add(caster, reflectDamageInfo);
 
-			Debug.Log("Apply " + actualDamage + " damage to " + target.GetName() + "\n" +
+			Debug.Log(actualDamage + " damage will be applied to " + target.GetName() + "\n" +
 						"ChainCombo : " + chainCombo);
+
+            if(reflectDamage != 0) {
+                float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
+                float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
+                reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
+
+                DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
+                damageList.Add(caster, reflectDamageInfo);
+                Debug.Log(reflectDamage + " damage will be reflected from " + target.GetName() + " to " + caster.GetName());
+            }
 		}
 
 		caster.SetDirection(oldDirection);
@@ -149,7 +153,6 @@ public class DamageCalculator
 
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
         // 해당 기술의 추가데미지 계산
-        Debug.LogWarning("Apply Additional Amount from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
         // 특성에 의한 추가데미지
         List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
@@ -181,7 +184,6 @@ public class DamageCalculator
         }
 
         // 해당 기술의 추가데미지 계산
-        Debug.LogWarning("Apply Additional Damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
@@ -220,14 +222,13 @@ public class DamageCalculator
 
 	private static float DirectionBonus(Unit caster, Unit target) {
 		float directionBonus = Utility.GetDirectionBonus(caster, target);
-		Debug.Log("directionBonus : " + directionBonus);
+		Debug.Log("\tdirectionBonus : " + directionBonus);
 		return directionBonus;
 	}
 
 	private static DirectionCategory AttackDirection(Unit caster, Unit target)
 	{
 		float directionBonus = Utility.GetDirectionBonus(caster, target);
-		Debug.Log("directionBonus : " + directionBonus);
 		if (directionBonus == 1.1f)
 			return DirectionCategory.Side;
 		else if (directionBonus == 1.25f)
@@ -238,23 +239,23 @@ public class DamageCalculator
 
 	private static float CelestialBonus(Unit caster, Unit target) {
 		float celestialBonus = Utility.GetCelestialBonus(caster, target);
-		Debug.Log("celestialBonus : " + celestialBonus);
+		Debug.Log("\tcelestialBonus : " + celestialBonus);
 		return celestialBonus;
 	}
 
 	private static float HeightBonus(Unit caster, Unit target) {
 		float heightBonus = Utility.GetHeightBonus(caster, target);
-		Debug.Log("heightBonus : " + heightBonus);
+		Debug.Log("\theightBonus : " + heightBonus);
 		return heightBonus;
 	}
 
 	private static float ChainComboBonus(int chainCombo) {
 		float chainBonus = GetChainDamageFactorFromChainCombo(chainCombo);
-		Debug.Log("chainBonus : " + chainBonus);
+		Debug.Log("\tchainBonus : " + chainBonus);
 		return chainBonus;
 	}
 
-	public static float GetChainDamageFactorFromChainCombo(int chainCombo)
+	private static float GetChainDamageFactorFromChainCombo(int chainCombo)
 	{
 		if (chainCombo < 2)	return 1.0f;
 		else if (chainCombo == 2) return 1.2f;
@@ -266,7 +267,7 @@ public class DamageCalculator
 	private static float SmiteAmount(Unit casterUnit) {
 		float smiteAmount = 0;
 		smiteAmount = casterUnit.CalculateActualAmount(smiteAmount, StatusEffectType.Smite);
-		Debug.Log("smiteAmount : " + smiteAmount);
+		Debug.Log("\tsmiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
     
@@ -295,11 +296,9 @@ public class DamageCalculator
             // 방어력이 -180 이하일 시 -180으로 적용
             if (defense <= -180) damage = damage * 10;
             else damage = damage * 200.0f / (200.0f + defense);
-            Debug.Log("Actual melee damage without status effect : " + damage);
         } else if (damageType == UnitClass.Magic) {
             if (resistance <= -180) damage = damage * 10;
             else damage = damage * 200.0f / (200.0f + resistance);
-            Debug.Log("Actual magic damage without status effect: " + damage);
         }
         return damage;
     }

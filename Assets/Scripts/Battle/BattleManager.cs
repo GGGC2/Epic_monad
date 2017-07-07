@@ -80,11 +80,10 @@ public class BattleManager : MonoBehaviour
 
             battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
 
-			while (battleData.readiedUnits.Count != 0)
-			{
-				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+			while (battleData.readiedUnits.Count != 0) {
+                battleData.selectedUnit = battleData.readiedUnits[0];
+                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-				battleData.selectedUnit = battleData.readiedUnits[0];
 				if (battleData.selectedUnit.GetSide() == Side.Enemy)
 				{
 					yield return AIStates.StartAI(battleData);
@@ -105,7 +104,6 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator ActionAtTurn(Unit unit)
 	{
-		Debug.Log("ActionAtTurn Called.");
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetName() + "'s turn");

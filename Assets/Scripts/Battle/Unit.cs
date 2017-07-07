@@ -473,7 +473,7 @@ public class Unit : MonoBehaviour
             if (currentHealth < 0)
                 currentHealth = 0;
 
-            Debug.Log("Damage dealt : " + finalDamage);
+            Debug.Log(finalDamage + " damage applied to " + GetName());
 
             damageTextObject.SetActive(true);
             damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
