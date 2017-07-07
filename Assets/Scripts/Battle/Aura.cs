@@ -27,10 +27,10 @@ class Aura{
             if(unit == owner)   continue;
             StatusEffect alreadyAppliedEffect = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == originSkill
                                                     && se.GetOriginPassiveSkill() == originPassiveSkill
-                                                    && se.IsOfType(StatusEffectType.Aura)));
+                                                    && !se.IsOfType(StatusEffectType.Aura)));
             if (alreadyAppliedEffect != null && kv.Value == false) {                    //원래 오오라 범위 안에 있었는데 액션 이후 벗어난 경우
-                alreadyAppliedEffect.DecreaseRemainStack();
-                alreadyAppliedEffect.GetMemorizedUnits().Remove(owner);
+                alreadyAppliedEffect.GetMemorizedUnits().Remove(owner); 
+                alreadyAppliedEffect.SetRemainStack(alreadyAppliedEffect.GetMemorizedUnits().Count);
             } else if(kv.Value == true){
                 StatusEffect.FixedElement fixedElementOfAuraStatusEffect = null;
                 if (originSkill != null)
@@ -55,9 +55,7 @@ class Aura{
     }
     public static void TriggerOnApplied(StatusEffect statusEffect, Unit caster, Unit target) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
     {
-        if (statusEffect.IsOfType(StatusEffectType.Aura)) {
-            statusEffect.GetMemorizedUnits().Add(target);
-        }
+        statusEffect.GetMemorizedUnits().Add(target);
     }
     public static void TriggerOnRemoved(Unit owner, StatusEffect statusEffect) {
         if (statusEffect.IsOfType(StatusEffectType.Aura)) {
@@ -67,10 +65,10 @@ class Aura{
                 if (kv.Value == true) {
                     StatusEffect statusEffectToRemove = unit.GetStatusEffectList().Find(se => (se.GetOriginSkill() == statusEffect.GetOriginSkill()
                                                         && se.GetOriginPassiveSkill() == statusEffect.GetOriginPassiveSkill()
-                                                        && se.IsOfType(StatusEffectType.Aura)));
+                                                        && !se.IsOfType(StatusEffectType.Aura)));
                     if (statusEffectToRemove != null) {
-                        statusEffectToRemove.DecreaseRemainStack();
                         statusEffectToRemove.GetMemorizedUnits().Remove(owner);
+                        statusEffectToRemove.SetRemainStack(statusEffectToRemove.GetMemorizedUnits().Count);
                     }
                 }
             }

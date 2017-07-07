@@ -78,11 +78,8 @@ public class ChainList : MonoBehaviour {
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
 		ChainInfo deleteChainInfo = chainList.Find(x => x.GetUnit() == unit);
-
-		if (deleteChainInfo == null)
-			Debug.LogWarning(unit.GetName() + "'s chainInfo is null");
-		else
-			chainList.Remove(deleteChainInfo);
+        
+	    chainList.Remove(deleteChainInfo);
 
 		RemoveChargeEffectToUnit(unit);
 	}

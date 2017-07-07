@@ -13,7 +13,10 @@ public class SelectedUnits : MonoBehaviour
 
 		for(int i = 1; i <= 8; i++)
 		{
-			SelectedUnitPanels.Add(GameObject.Find("SelectedUnit"+i).GetComponent<Image>());
+			if(GameObject.Find("SelectedUnit"+i) != null)
+			{
+				SelectedUnitPanels.Add(GameObject.Find("SelectedUnit"+i).GetComponent<Image>());
+			}
 		}
 	}
 }

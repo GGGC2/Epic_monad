@@ -88,34 +88,48 @@ public class DamageCalculator
 			return damageList;
 		}
         
-		Unit casterUnit = chainInfo.GetUnit();			
+		Unit caster = chainInfo.GetUnit();			
 		List<Tile> selectedTiles = chainInfo.GetTargetArea();
 
-		Direction oldDirection = casterUnit.GetDirection();
+		Direction oldDirection = caster.GetDirection();
 
 		// 시전 방향으로 유닛의 바라보는 방향을 돌림.
 		if (appliedSkill.GetSkillType() != SkillType.Auto)
-			casterUnit.SetDirection(Utility.GetDirectionToTarget(casterUnit, selectedTiles));
+			caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
 
 		List<Unit> targets = GetTargetUnits(selectedTiles);
 
 		foreach (var target in targets)
 		{
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, casterUnit, selectedTiles, target, targets.Count);
+            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
 			CalculateAttackDamage(skillInstanceData, chainCombo);
 
-            float attackDamage = skillInstanceData.GetDamage().resultDamage;
+            float actualDamage = skillInstanceData.GetDamage().resultDamage;
+            float reflectDamage = CalculateReflectDamage(actualDamage, target, caster, caster.GetUnitClass());
+            actualDamage -= reflectDamage;
 
-			float actualDamage = GetActualDamage(skillInstanceData, true);
+            float targetDefense = CalculateDefense(appliedSkill, target, caster);
+            float targetResistance = CalculateResistance(appliedSkill, target, caster);
+            actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
 
-			DamageInfo damageInfo = new DamageInfo(casterUnit, actualDamage);
+			DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
 			damageList.Add(target, damageInfo);
 
-			Debug.Log("Apply " + actualDamage + " damage to " + target.GetName() + "\n" +
+			Debug.Log(actualDamage + " damage will be applied to " + target.GetName() + "\n" +
 						"ChainCombo : " + chainCombo);
+
+            if(reflectDamage != 0) {
+                float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
+                float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
+                reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
+
+                DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
+                damageList.Add(caster, reflectDamageInfo);
+                Debug.Log(reflectDamage + " damage will be reflected from " + target.GetName() + " to " + caster.GetName());
+            }
 		}
 
-		casterUnit.SetDirection(oldDirection);
+		caster.SetDirection(oldDirection);
 		return damageList;
 	}
 
@@ -139,7 +153,6 @@ public class DamageCalculator
 
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
         // 해당 기술의 추가데미지 계산
-        Debug.LogWarning("Apply Additional Amount from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
         // 특성에 의한 추가데미지
         List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
@@ -163,12 +176,14 @@ public class DamageCalculator
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
-        if(caster.GetElement() == Element.Fire && target.HasStatusEffect(StatusEffectType.FireWeakness)){
-            attackDamage.relativeDamageBonus *= target.CalculateActualAmount(1, StatusEffectType.FireWeakness);
+        if(caster.GetElement() != Element.None){
+            StatusEffectType casterElementWeakness = EnumConverter.GetCorrespondingStatusEffectType(caster.GetElement());
+            if (target.HasStatusEffect(casterElementWeakness)){
+                attackDamage.relativeDamageBonus *= target.CalculateActualAmount(1, casterElementWeakness);
+            }
         }
 
         // 해당 기술의 추가데미지 계산
-        Debug.LogWarning("Apply Additional Damage from" + appliedSkill.GetName());
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
 		// 특성에 의한 추가데미지
 		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
@@ -207,14 +222,13 @@ public class DamageCalculator
 
 	private static float DirectionBonus(Unit caster, Unit target) {
 		float directionBonus = Utility.GetDirectionBonus(caster, target);
-		Debug.Log("directionBonus : " + directionBonus);
+		Debug.Log("\tdirectionBonus : " + directionBonus);
 		return directionBonus;
 	}
 
 	private static DirectionCategory AttackDirection(Unit caster, Unit target)
 	{
 		float directionBonus = Utility.GetDirectionBonus(caster, target);
-		Debug.Log("directionBonus : " + directionBonus);
 		if (directionBonus == 1.1f)
 			return DirectionCategory.Side;
 		else if (directionBonus == 1.25f)
@@ -225,23 +239,23 @@ public class DamageCalculator
 
 	private static float CelestialBonus(Unit caster, Unit target) {
 		float celestialBonus = Utility.GetCelestialBonus(caster, target);
-		Debug.Log("celestialBonus : " + celestialBonus);
+		Debug.Log("\tcelestialBonus : " + celestialBonus);
 		return celestialBonus;
 	}
 
 	private static float HeightBonus(Unit caster, Unit target) {
 		float heightBonus = Utility.GetHeightBonus(caster, target);
-		Debug.Log("heightBonus : " + heightBonus);
+		Debug.Log("\theightBonus : " + heightBonus);
 		return heightBonus;
 	}
 
 	private static float ChainComboBonus(int chainCombo) {
 		float chainBonus = GetChainDamageFactorFromChainCombo(chainCombo);
-		Debug.Log("chainBonus : " + chainBonus);
+		Debug.Log("\tchainBonus : " + chainBonus);
 		return chainBonus;
 	}
 
-	public static float GetChainDamageFactorFromChainCombo(int chainCombo)
+	private static float GetChainDamageFactorFromChainCombo(int chainCombo)
 	{
 		if (chainCombo < 2)	return 1.0f;
 		else if (chainCombo == 2) return 1.2f;
@@ -253,7 +267,7 @@ public class DamageCalculator
 	private static float SmiteAmount(Unit casterUnit) {
 		float smiteAmount = 0;
 		smiteAmount = casterUnit.CalculateActualAmount(smiteAmount, StatusEffectType.Smite);
-		Debug.Log("smiteAmount : " + smiteAmount);
+		Debug.Log("\tsmiteAmount : " + smiteAmount);
 		return smiteAmount;
 	}
     
@@ -267,10 +281,6 @@ public class DamageCalculator
                                 (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect)
 			{
-                if(statusEffect.GetOriginSkill() != null)
-                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
-                if (statusEffect.GetIsOnce() == true)
-                    target.RemoveStatusEffect(statusEffect);
                 float reflectPercent = statusEffect.GetAmountOfType(StatusEffectType.Reflect);
                 if(damageType == UnitClass.Magic) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MagicReflect);
                 if(damageType == UnitClass.Melee) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MeleeReflect);
@@ -280,87 +290,51 @@ public class DamageCalculator
 		return reflectAmount;
 	}
     
-	public static float GetActualDamage(SkillInstanceData skillInstanceData, bool isHealth)
-	{
-		float actualDamage = skillInstanceData.GetDamage().resultDamage;
-		float finalDamage = 0; // 최종 대미지 (정수로 표시되는)
-        Skill appliedSkill = skillInstanceData.GetSkill();
-        Unit target = skillInstanceData.GetMainTarget();
-        Unit caster = skillInstanceData.GetCaster();
-		// 대미지 증가/감소 효과 적용
-		// 공격이 물리인지 마법인지 체크
-		// 기술 / 특성의 추가피해 / 감소 효과
-		// 방어력 / 저항력 중 맞는 값을 적용 (적용 단계에서 능력치 변동 효과 반영)
-		// 보호막 있을 경우 대미지 삭감
-		// 최종데미지 산출
-		if (isHealth == true)
-		{
-			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
-			actualDamage = target.CalculateActualAmount(actualDamage, StatusEffectType.TakenDamageChange);
+    public static float ApplyDefenseAndResistance(float damage, UnitClass damageType, float defense, float resistance) {
+        if (damageType == UnitClass.Melee) {
+            // 실제 피해 = 원래 피해 x 200/(200+방어력)
+            // 방어력이 -180 이하일 시 -180으로 적용
+            if (defense <= -180) damage = damage * 10;
+            else damage = damage * 200.0f / (200.0f + defense);
+        } else if (damageType == UnitClass.Magic) {
+            if (resistance <= -180) damage = damage * 10;
+            else damage = damage * 200.0f / (200.0f + resistance);
+        }
+        return damage;
+    }
+	public static float CalculateDefense(Skill appliedSkill, Unit target, Unit caster) {
+		float defense = target.GetStat(Stat.Defense);
 			
-			float targetDefense = target.GetStat(Stat.Defense);
-			float targetResistance = target.GetStat(Stat.Resistance);
+		// 기술에 의한 방어 무시 (상대값)
+		defense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceRelativeValueBySkill(defense, caster, target);
 			
-			// 기술에 의한 방어/저항 무시 (상대값)
-			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceRelativeValueBySkill(targetDefense, caster, target);
-			targetResistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceRelativeValueBySkill(targetResistance, caster, target);
-			
-			// 특성에 의한 방어/저항 무시 (상대값)
-			List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
-	
-            targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, targetDefense); 
-            targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, targetResistance);
+		// 특성에 의한 방어 무시 (상대값)
+		List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
+        defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceRelativeValueByEachPassive(appliedSkill, target, caster, defense); 
             
-			// 기술에 의한 방어/저항 무시 (절대값)
-			targetDefense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceAbsoluteValueBySkill(targetDefense, caster, target);
-			targetResistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceAbsoluteValueBySkill(targetResistance, caster, target);
+		// 기술에 의한 방어 무시 (절대값)
+		defense = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreDefenceAbsoluteValueBySkill(defense, caster, target);
 			
-			// 특성에 의한 방어/저항 무시 (절대값)
-			targetDefense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, targetDefense);
-            targetResistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, targetResistance);
-	
-            if (caster.GetUnitClass() == UnitClass.Melee)
-			{
-				// 실제 피해 = 원래 피해 x 200/(200+방어력)
-				actualDamage = actualDamage * 200.0f / (200.0f + targetDefense);
-				Debug.Log("Actual melee damage without status effect : " + actualDamage);
-			}
-			else if (caster.GetUnitClass() == UnitClass.Magic)
-			{
-				actualDamage = actualDamage * 200.0f / (200.0f + targetResistance);
-				Debug.Log("Actual magic damage without status effect: " + actualDamage);
-			}
-			else if (caster.GetUnitClass() == UnitClass.None)
-			{
-				// actualDamage = actualDamage;
-			}
+		// 특성에 의한 방어 무시 (절대값)
+		defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(appliedSkill, target, caster, defense);
+		return defense;
+	}
+    public static float CalculateResistance(Skill appliedSkill, Unit target, Unit caster) {
+        float resistance = target.GetStat(Stat.Resistance);
 
-			finalDamage = actualDamage;
+        // 기술에 의한 저항 무시 (상대값)
+        resistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceRelativeValueBySkill(resistance, caster, target);
 
-			// 보호막에 따른 대미지 삭감 - 실제 실드는 깎이지 않음
-			if (target.HasStatusEffect(StatusEffectType.Shield))
-			{
-				List<StatusEffect> statusEffectList = target.GetStatusEffectList();
-				int shieldAmount = 0;
-				foreach (var se in statusEffectList)
-				{
-					int actuals = se.fixedElem.actuals.Count;
-					for (int i = 0; i < actuals; i++)
-					{
-						if (se.IsOfType(i, StatusEffectType.Shield))
-						{
-							shieldAmount += (int)se.GetRemainAmount(i);
-						}
-					}
-				}
-				if (shieldAmount > finalDamage)
-					finalDamage = 0;
-				else
-					finalDamage -= shieldAmount;
-			}
-		}
-		
-		return finalDamage;
-	}	
-}
+        // 특성에 의한 저항 무시 (상대값)
+        List<PassiveSkill> casterPassiveSkills = caster.GetLearnedPassiveSkillList();
+        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceRelativeValueByEachPassive(appliedSkill, target, caster, resistance);
+
+        // 기술에 의한 저항 무시 (절대값)
+        resistance = SkillLogicFactory.Get(appliedSkill).ApplyIgnoreResistanceAbsoluteValueBySkill(resistance, caster, target);
+
+        // 특성에 의한 저항 무시 (절대값)
+        resistance = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreResistanceAbsoluteValueByEachPassive(appliedSkill, target, caster, resistance);
+        return resistance;
+    }
+    }
 }

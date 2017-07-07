@@ -55,7 +55,7 @@ public class CustomWorldText : MonoBehaviour
 			var gameObject = new GameObject(character.ToString(), typeof(RectTransform));
 			gameObject.transform.SetParent(transform);
 			gameObject.transform.localScale = Vector3.one;
-			gameObject.AddComponent<RectTransform>();
+			//gameObject.AddComponent<RectTransform>();
 
 			var image = gameObject.AddComponent<Image>();
 			image.sprite = GetSprite(character);

@@ -200,5 +200,18 @@ namespace Enums {
             }
             return StatusEffectType.Etc;
         }
+        public static StatusEffectType GetCorrespondingStatusEffectType(Element element) {
+            switch (element) {
+            case Element.Fire:
+                return StatusEffectType.FireWeakness;
+            case Element.Metal:
+                return StatusEffectType.MetalWeakness;
+            case Element.Plant:
+                return StatusEffectType.PlantWeakness;
+            case Element.Water:
+                return StatusEffectType.WaterWeakness;
+            }
+            return StatusEffectType.Etc;
+        }
     }
 }

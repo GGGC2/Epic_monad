@@ -125,7 +125,7 @@ public class StatusEffect {
 
             public ActualElement(float amount) {
                 this.amount = amount;
-                this.remainAmount = amount; // 초기화
+                this.remainAmount = 0;
             }
         }
 
@@ -147,6 +147,7 @@ public class StatusEffect {
         this.flexibleElem = new FlexibleElement(this, caster, owner, originSkill, originPassiveSkill);
         for(int i = 0; i<fixedElem.actuals.Count; i++) {
             CalculateAmount(i, false);
+            SetRemainAmount(i, GetAmount(i));
         }
     }
 

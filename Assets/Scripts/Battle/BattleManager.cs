@@ -80,11 +80,10 @@ public class BattleManager : MonoBehaviour
 
             battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
 
-			while (battleData.readiedUnits.Count != 0)
-			{
-				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+			while (battleData.readiedUnits.Count != 0) {
+                battleData.selectedUnit = battleData.readiedUnits[0];
+                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-				battleData.selectedUnit = battleData.readiedUnits[0];
 				if (battleData.selectedUnit.GetSide() == Side.Enemy)
 				{
 					yield return AIStates.StartAI(battleData);
@@ -105,7 +104,6 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator ActionAtTurn(Unit unit)
 	{
-		Debug.Log("ActionAtTurn Called.");
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		Debug.Log(unit.GetName() + "'s turn");
@@ -300,7 +298,7 @@ public class BattleManager : MonoBehaviour
 			// 매 액션이 끝날때마다 갱신하는 특성 조건들
 			battleData.unitManager.ResetLatelyHitUnits();
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-            battleData.unitManager.TriggerStatusEffectsAtActionEnd();
+            yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
             battleData.unitManager.UpdateStatusEffectsAtActionEnd();
 			
 			if (IsSelectedUnitRetraitOrDie(battleData))
@@ -380,14 +378,12 @@ public class BattleManager : MonoBehaviour
 
 	public void CallbackOnPointerEnterRestCommand()
 	{
-		Debug.Log("Pointer Enter to Rest in battleManager.");
 		battleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP(battleData));
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 	}
 
 	public void CallbackOnPointerExitRestCommand()
 	{
-		Debug.Log("Pointer exit from Rest in battleManager.");
 		battleData.previewAPAction = null;
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 	}

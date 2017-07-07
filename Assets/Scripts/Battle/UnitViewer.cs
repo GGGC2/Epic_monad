@@ -65,6 +65,10 @@ public class UnitViewer : MonoBehaviour {
 			else
 				concattedText += "(--)";
             for (int j = 0; j < effectList[i].fixedElem.actuals.Count; j++) {
+                if(effectList[i].GetStatusEffectType(j) == StatusEffectType.Shield) {
+                    concattedText += (int)effectList[i].GetRemainAmount(j);
+                    concattedText += "/";
+                }
                 concattedText += (int)effectList[i].GetAmount(j);
                 if(j < effectList[i].fixedElem.actuals.Count - 1)   concattedText += ",";
             }

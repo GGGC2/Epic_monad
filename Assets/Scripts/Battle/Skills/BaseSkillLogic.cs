@@ -69,10 +69,11 @@ public class BaseSkillLogic
     }
     public virtual void TriggerStatusEffectsAtPhaseStart(Unit target, StatusEffect statusEffect) {
     }
-    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-        return true;
+    public virtual IEnumerator TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
+        yield return null;
     }
-    public virtual void TriggerStatusEffectAtReflection(Unit target, StatusEffect statusEffect, Unit reflectTarget) {
+    public virtual IEnumerator TriggerStatusEffectAtReflection(Unit target, StatusEffect statusEffect, Unit reflectTarget) {
+        yield return null;
     }
     public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, StatusEffect statusEffect, StatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
@@ -87,6 +88,9 @@ public class BaseSkillLogic
         return true;    //false를 리턴할 경우 해당 타일 위의 유닛에게 적용되는 statusEffect는 무시된다.
     }
     public virtual void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
+    }
+    public virtual IEnumerator TriggerShieldAttacked(Unit target, float amount) {
+        yield return null;
     }
     public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
 	{

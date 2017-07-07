@@ -25,7 +25,7 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillState(BattleData battleData) {
             while (battleData.currentState == CurrentState.SelectSkill) {
-                battleData.uiManager.UpdateSkillInfo(battleData.selectedUnit);
+                battleData.uiManager.SetSkillUI();
                 battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
@@ -241,11 +241,12 @@ namespace Battle.Turn {
                 List<Tile> firstRange = GetTilesInFirstRange(battleData);
 
                 //데미지 미리보기
+                Debug.Log("/------- Damage preview -------\\");
                 Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
                 foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
-                    Debug.Log(kv.Key.GetName() + " - Damage preview");
                     kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
                 }
+                Debug.Log("\\------- Damage preview -------/");
 
                 bool isChainPossible = CheckChainPossible(battleData);
                 battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
@@ -375,7 +376,6 @@ namespace Battle.Turn {
              && battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.Debuff) {
                 isPossible = false;
             }
-            Debug.Log("Skill Apply Type : " + battleData.SelectedSkill.GetSkillApplyType());
             
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
@@ -466,7 +466,7 @@ namespace Battle.Turn {
                             DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
                             float amount = skillInstanceData.GetDamage().resultDamage;
                             if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
-                                yield return battleManager.StartCoroutine(target.Damaged(skillInstanceData, false));
+                                yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
                                 battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
                             } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
                                 yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
@@ -496,7 +496,7 @@ namespace Battle.Turn {
                     caster.ActiveFalseAllBonusText();
                     // 사이사이에도 특성 발동 조건을 체크해준다.
                     battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-                    battleData.unitManager.TriggerStatusEffectsAtActionEnd();
+                    yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
                     battleData.unitManager.UpdateStatusEffectsAtActionEnd();
                 }
                 StatusEffector.AttachStatusEffect(caster, appliedSkill, tile);
@@ -509,6 +509,7 @@ namespace Battle.Turn {
                 if(originPassiveSkill != null)
                     SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
             }
+            caster.SetHasUsedSkillThisTurn(true);
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
@@ -574,26 +575,38 @@ namespace Battle.Turn {
             bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
                                 (target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
                                 (target.HasStatusEffect(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
-
+            float reflectAmount = 0;
             if (canReflect) {
-                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
-
-                DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
-                reflectAttackDamage.resultDamage = reflectAmount;
-                List<Tile> reflectTileList = new List<Tile>();
-                reflectTileList.Add(unitInChain.GetTileUnderUnit());
-                SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
-                                                            reflectTileList, unitInChain, 1);
-                var reflectCoroutine = unitInChain.Damaged(reflectInstanceData, true);
-                yield return battleManager.StartCoroutine(reflectCoroutine);
+                reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
+                attackDamage.resultDamage -= reflectAmount;
             }
 
-            var damageCoroutine = target.Damaged(skillInstanceData, true);
+            var damageCoroutine = target.DamagedBySkill(skillInstanceData, true);
             if (isLastTarget) {
                 yield return battleManager.StartCoroutine(damageCoroutine);
             } else {
                 battleManager.StartCoroutine(damageCoroutine);
                 yield return null;
+            }
+            
+            if(canReflect)  yield return battleManager.StartCoroutine(reflectDamage(unitInChain, target, reflectAmount));
+        }
+        private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
+            UnitClass damageType = caster.GetUnitClass();
+            BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true));
+
+            foreach (var statusEffect in target.GetStatusEffectList()) {
+                bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
+                                    (statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
+                                    (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
+                if (canReflect) {
+                    if (statusEffect.GetOriginSkill() != null)
+                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(statusEffect.GetOriginSkill()).
+                                                TriggerStatusEffectAtReflection(target, statusEffect, caster));
+                    if (statusEffect.GetIsOnce() == true)
+                        target.RemoveStatusEffect(statusEffect);
+                }
             }
         }
 

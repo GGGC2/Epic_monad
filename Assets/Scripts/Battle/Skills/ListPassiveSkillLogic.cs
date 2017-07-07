@@ -37,30 +37,30 @@ namespace Battle.Skills
             return totalAdditionalDefenseBonus;
         }
 
-        public override float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance) {
+        public override float ApplyIgnoreResistanceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance) {
             foreach (var skillLogic in passiveSkillLogics) {
-                resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(skillInstanceData, resistance);
+                resistance = skillLogic.ApplyIgnoreResistanceRelativeValueByEachPassive(appliedSkill, target, caster, resistance);
             }
             return resistance;
         }
 
-        public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance) {
+        public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance) {
             foreach (var skillLogic in passiveSkillLogics) {
-                resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(skillInstanceData, resistance);
+                resistance = skillLogic.ApplyIgnoreResistanceAbsoluteValueByEachPassive(appliedSkill, target, caster, resistance);
             }
             return resistance;
         }
 
-        public override float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense) {
+        public override float ApplyIgnoreDefenceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense) {
             foreach (var skillLogic in passiveSkillLogics) {
-                defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(skillInstanceData, defense);
+                defense = skillLogic.ApplyIgnoreDefenceRelativeValueByEachPassive(appliedSkill, target, caster, defense);
             }
             return defense;
         }
 
-        public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense) {
+        public override float ApplyIgnoreDefenceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense) {
             foreach (var skillLogic in passiveSkillLogics) {
-                defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(skillInstanceData, defense);
+                defense = skillLogic.ApplyIgnoreDefenceAbsoluteValueByEachPassive(appliedSkill, target, caster, defense);
             }
             return defense;
         }
@@ -123,10 +123,10 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
             bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                if (!skillLogic.TriggerStatusEffectApplied(statusEffect, caster, target)) {
+                if (!skillLogic.TriggerStatusEffectAppliedToOwner(statusEffect, caster, target)) {
                     ignored = true;
                 }
             }
@@ -150,6 +150,11 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(caster, targets);
 		    }
 	    }
+        public override void TriggerOnMove(Unit caster) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerOnMove(caster);
+            }
+        }
 
         public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
             foreach (var skillLogic in passiveSkillLogics) {
@@ -182,16 +187,6 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-            bool toBeRemoved = false;
-            foreach (var skillLogic in passiveSkillLogics) {
-                if(!skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect)) {
-                    toBeRemoved = true;
-                }
-            }
-            return !toBeRemoved;
-        }
-
         public override void TriggerOnRest(Unit caster) {
             foreach(var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnRest(caster);
@@ -210,6 +205,11 @@ namespace Battle.Skills
         public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnUsingSkill(target, targetsOfSkill, statusEffect);
+            }
+        }
+        public override void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }
         }
     }

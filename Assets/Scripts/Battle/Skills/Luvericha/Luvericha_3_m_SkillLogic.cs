@@ -17,6 +17,5 @@ namespace Battle.Skills {
             Aura.TriggerOnRemoved(target, statusEffect);
             return true;
         }
-
     }
 }

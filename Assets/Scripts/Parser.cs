@@ -6,7 +6,12 @@ using System;
 using WorldMap;
 using SkillTree;
 
-public class Parser : MonoBehaviour {
+public class Parser : MonoBehaviour
+{
+	public static string ExtractFromMatrix(string text, int row, int column){
+		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		return RowDataStrings[row].Split(',')[column];
+	}
 
 	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile)
 	{

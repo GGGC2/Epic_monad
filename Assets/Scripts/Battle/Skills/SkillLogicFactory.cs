@@ -39,6 +39,9 @@ public static class SkillLogicFactory
             case "에튀드 : 햇빛":
             skillLogic = new Luvericha_4_r_SkillLogic();
             break;
+            case "소녀의 기도":
+            skillLogic = new Luvericha_5_m_SkillLogic();
+            break;
             case "교향곡 : 운명":
             skillLogic = new Luvericha_6_l_SkillLogic();
             break;

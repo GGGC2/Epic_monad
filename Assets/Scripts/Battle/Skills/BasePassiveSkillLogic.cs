@@ -28,22 +28,22 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float defense)
+	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}
 
-	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(SkillInstanceData skillInstanceData, float resistance)
+	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}
@@ -83,7 +83,11 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) //unitï¿½ï¿½ï¿½ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½ßµï¿½. falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+        return true;
+    }
+
+    public virtual bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) //unitï¿½ï¿½ï¿½ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½ï¿½ ï¿½ßµï¿½. falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ StatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
     {
         return true;
     }
@@ -93,6 +97,8 @@ public class BasePassiveSkillLogic
         return true;
     }
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
+    }
+    public virtual void TriggerOnMove(Unit caster) {
     }
     public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
         yield return null;
@@ -110,10 +116,6 @@ public class BasePassiveSkillLogic
 
     public virtual void TriggerOnActionEnd(Unit caster) {    
     }
-    
-    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ statusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?
-        return true;
-    }
 	public virtual void TriggerOnRest(Unit caster) {
     }
     public virtual void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
@@ -121,6 +123,8 @@ public class BasePassiveSkillLogic
     public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
     }
     public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
+    }
+    public virtual void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
     }
 }
 }

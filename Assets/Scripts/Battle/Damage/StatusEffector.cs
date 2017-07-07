@@ -18,14 +18,6 @@ public static class StatusEffector
         List<StatusEffect> newStatusEffects = new List<StatusEffect>();
         foreach(var statusEffect in statusEffects) {
             bool ignoreStatusEffect = false;
-            List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
-            foreach(StatusEffect targetStatusEffect in targetStatusEffectList) {
-                if((targetStatusEffect.GetOriginSkill() != null && SkillLogicFactory.Get(targetStatusEffect.GetOriginSkill()).
-                        TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false)) {
-                    ignoreStatusEffect = true; 
-                    Debug.Log(statusEffect.GetDisplayName()+ " ignored by "+targetStatusEffect.GetOriginSkillName()+" of "+target.GetName());
-                }
-            }
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target, targetTiles) == false) {
                 ignoreStatusEffect = true;
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
@@ -42,7 +34,17 @@ public static class StatusEffector
 		List<StatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, null, appliedSkill))
 			.ToList();
-		AttachStatusEffect(caster, statusEffects, target);
+        List<StatusEffect> newStatusEffects = new List<StatusEffect>();
+        foreach (var statusEffect in statusEffects) {
+            bool ignoreStatusEffect = false;
+            if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+                ignoreStatusEffect = true;
+                Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
+            }
+            if (ignoreStatusEffect == false)
+                newStatusEffects.Add(statusEffect);
+        }
+        AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
 	private static bool IsValidAtZero(StatusEffectType seType)
@@ -85,12 +87,22 @@ public static class StatusEffector
 		foreach (var statusEffect in validStatusEffects)
 		{
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
-            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
+            if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectAppliedToOwner(statusEffect, caster, target) == false) {
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetName());
                 continue;
             }
+            List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
+            foreach (StatusEffect targetStatusEffect in targetStatusEffectList) {
+                Skill skill = targetStatusEffect.GetOriginSkill();
+                if (skill != null) {
+                    if(SkillLogicFactory.Get(skill).TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false) {
+                        Debug.Log(statusEffect.GetDisplayName() + " ignored by " + targetStatusEffect.GetOriginSkillName() + " of " + target.GetName());
+                        continue;
+                    }
+                }
+            }
 
-			var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
+            var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);
 

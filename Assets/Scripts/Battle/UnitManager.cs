@@ -67,23 +67,15 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-    public void TriggerStatusEffectsAtActionEnd() {
+    public IEnumerator TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            List<StatusEffect> statusEffectsToRemove = new List<StatusEffect>();
             foreach (StatusEffect statusEffect in statusEffectList) {
-                bool toBeRemoved = false;
                 Skill skill = statusEffect.GetOriginSkill();
                 PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
-                if(skill != null)
-                    toBeRemoved = !SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                if(passiveSkill != null)
-                    toBeRemoved = !SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsAtActionEnd(unit, statusEffect);
-                if(toBeRemoved)
-                    statusEffectsToRemove.Add(statusEffect);
+                if (skill != null)
+                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect));
             }
-            foreach(StatusEffect statusEffect in statusEffectsToRemove) 
-                unit.RemoveStatusEffect(statusEffect);
         }
     }
 
