@@ -27,4 +27,10 @@ public class ReadyManager : MonoBehaviour{
 				Panel.gameObject.SetActive(false);
 		}
 	}
+
+	void Update(){
+		if(Input.GetKeyDown(KeyCode.A)){
+			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene(SceneData.nextStageName, false);
+		}
+	}
 }
