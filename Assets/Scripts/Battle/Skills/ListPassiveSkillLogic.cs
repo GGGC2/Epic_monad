@@ -187,16 +187,6 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {
-            bool toBeRemoved = false;
-            foreach (var skillLogic in passiveSkillLogics) {
-                if(!skillLogic.TriggerStatusEffectsAtActionEnd(target, statusEffect)) {
-                    toBeRemoved = true;
-                }
-            }
-            return !toBeRemoved;
-        }
-
         public override void TriggerOnRest(Unit caster) {
             foreach(var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnRest(caster);

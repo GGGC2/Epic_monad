@@ -134,8 +134,6 @@ public class Unit : MonoBehaviour
 			 from skill in skillList
 			// where SkillDB.IsLearned(nameInCode, skill.GetName())
 			 select skill;
-
-		Debug.LogWarning(GetNameInCode() +  " Learnedskils" + learnedSkills.Count());
 		return learnedSkills.ToList();
 	}
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
@@ -425,159 +423,81 @@ public class Unit : MonoBehaviour
         hasMovedThisTurn = false;
         hasUsedSkillThisTurn = false;
 	}
+    
+	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth) {
+        int finalDamage = (int) damage;
+        float defense = GetStat(Stat.Defense) + additionalDefense;
+        float resistance = GetStat(Stat.Resistance) + additionalResistance;
 
-	// 반사데미지
-	public IEnumerator DamagedByReflection()
-	{
-		yield return null;
-	}
+        if (isHealth) {
+            // 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
+            damage = CalculateActualAmount(damage, StatusEffectType.TakenDamageChange);
+            // 방어력 및 저항력 적용
+            damage = Battle.DamageCalculator.ApplyDefenseAndResistance(damage, caster.GetUnitClass(), defense, resistance);
 
-	// 지속데미지
-	public IEnumerator DamagedByDot(float damage, Unit caster)
-	{
-		float originDotDamage = damage; // 최종 대미지 (정수로 표시되는)
-        
-		float defense = GetStat(Stat.Defense);
-		float resistance = GetStat(Stat.Resistance);
+            // 실드 차감. 먼저 걸린 실드부터 차감.
+            foreach (var se in statusEffectList) {
+                int num = se.fixedElem.actuals.Count;
+                for (int i = 0; i < num; i++) {
+                    if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
+                        float remainShieldAmount = se.GetRemainAmount(i);
+                        if (remainShieldAmount >= damage) {
+                            se.SubAmount(i, damage);
+                            damage = 0;
+                        } else {
+                            se.SubAmount(i, remainShieldAmount);
+                            RemoveStatusEffect(se);
+                            damage -= remainShieldAmount;
+                        }
+                    }
+                }
+                if (damage == 0) break;
+            }
 
-		if (caster.GetUnitClass() == UnitClass.Melee)
-		{
-			// 실제 피해 = 원래 피해 x 200/(200+방어력)
-			originDotDamage = originDotDamage * 200.0f / (200.0f + defense);
-			Debug.Log("Actual melee DOT damage : " + originDotDamage);
-		}
-		else if (caster.GetUnitClass() == UnitClass.Magic)
-		{
-			originDotDamage = originDotDamage * 200.0f / (200.0f + resistance);
-			Debug.Log("Actual magic DOT damage effect: " + originDotDamage);
-		}
-		else if (caster.GetUnitClass() == UnitClass.None)
-		{
-			// actualDamage = actualDamage;
-		}	
+            finalDamage = (int)damage;
 
-		// 실드 차감. 먼저 걸린 실드부터 차감.
-		foreach (var se in statusEffectList)
-		{
-			int actuals = se.fixedElem.actuals.Count;
-			for (int i = 0; i < actuals; i++)
-			{
-				if (se.GetStatusEffectType(i) == StatusEffectType.Shield)
-				{
-					float remainShieldAmount = se.GetRemainAmount(i);
-					if (remainShieldAmount >= originDotDamage)
-					{
-						se.SubAmount(i, originDotDamage);
-						originDotDamage = 0;
-					}
-					else
-					{
-						se.SubAmount(i, remainShieldAmount);
-						originDotDamage -= remainShieldAmount;
-					}
-				}
-			}
+            if (finalDamage > 0) {
+                currentHealth -= finalDamage;
+                latelyHitInfos.Add(new HitInfo(caster, null));
 
-			if (originDotDamage == 0) break;
-		}
+                // 데미지를 받을 때 발동하는 피격자 특성
+                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, caster);
+            }
+            if (currentHealth < 0)
+                currentHealth = 0;
 
-		// 0이 된 실드 제거
-		List<StatusEffect> statusEffectsToRemove = new List<StatusEffect>();
-		foreach (StatusEffect se in statusEffectList)
-		{
-			bool isEmptyShield = false;
-			int actuals = se.fixedElem.actuals.Count;
-			for (int i = 0; i < actuals; i++)
-			{
-				if (se.GetStatusEffectType(i) == StatusEffectType.Shield &&
-					se.GetRemainAmount(i) == 0) {
-					isEmptyShield = true;
-				}
-			}
-			if (isEmptyShield)
-				statusEffectsToRemove.Add(se);
-		}
+            Debug.Log("Damage dealt : " + finalDamage);
 
-        foreach(StatusEffect statusEffect in statusEffectsToRemove) 
-		    RemoveStatusEffect(statusEffect);
+            damageTextObject.SetActive(true);
+            damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
+            damageTextObject.GetComponent<CustomWorldText>().ApplyText();
 
-		int finalDamage = (int)originDotDamage;
+            healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
 
-		if (finalDamage > 0)
-		{
-			currentHealth -= finalDamage;
-			latelyHitInfos.Add(new HitInfo(caster, null));
-		}
-		if (currentHealth < 0)
-			currentHealth = 0;
+            yield return new WaitForSeconds(1);
+            damageTextObject.SetActive(false);
+        } else {
+            if (activityPoint >= finalDamage) {
+                activityPoint -= finalDamage;
+            } else activityPoint = 0;
+            Debug.Log(GetName() + " loses " + finalDamage + "AP.");
+        }
+    }
 
-		Debug.Log("Damage dealt by DOT : " + finalDamage);
-
-		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
-		damageTextObject.GetComponent<CustomWorldText>().ApplyText();
-
-		healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
-		
-		yield return new WaitForSeconds(0.5f); 
-		damageTextObject.SetActive(false);
-	}
-
-	public IEnumerator Damaged(SkillInstanceData skillInstanceData, bool isHealth)
-	{
-		int finalDamage = 0; // 최종 대미지 (정수로 표시되는)
+	public IEnumerator DamagedBySkill(SkillInstanceData skillInstanceData, bool isHealth) {
         Unit caster = skillInstanceData.GetCaster();
         Skill appliedSkill = skillInstanceData.GetSkill();
-		// 체력 깎임
-		// 체인 해제
-		if (isHealth == true) {
-            finalDamage = (int)Math.Round(Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth));
-
-			if (finalDamage > 0)
-			{
-				currentHealth -= finalDamage;
-
-				if (currentHealth < 0)
-					currentHealth = 0;
-				
-				latelyHitInfos.Add(new HitInfo(caster, appliedSkill));
-		
-				// 대상에게 데미지를 줄때 발동하는 공격자 특성
-				var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
-				SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
-
-				// 데미지를 받을 때 발동하는 피격자 특성
-                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, skillInstanceData.GetCaster());
-			}
-
-			Debug.Log("Damage dealt : "+finalDamage);
-
-			damageTextObject.SetActive(true);
-			damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
-			damageTextObject.GetComponent<CustomWorldText>().ApplyText();
-
-
-			healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
-
-			// 체인 해제
-			ChainList.RemoveChainsFromUnit(this);
-
-			// 데미지 표시되는 시간.
-			yield return new WaitForSeconds(1);
-			damageTextObject.SetActive(false); //Debug.Log("origin damageText inactive");
+        float damage = skillInstanceData.GetDamage().resultDamage;
+        // 체력 깎임
+        // 체인 해제
+        float defense = Battle.DamageCalculator.CalculateDefense(skillInstanceData);
+        float resistance = Battle.DamageCalculator.CalculateResistance(skillInstanceData);
+        if (isHealth == true) {
+			// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
+			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 		}
-
-		else
-		{
-            finalDamage = (int)Math.Round(Battle.DamageCalculator.GetActualDamage(skillInstanceData, isHealth));
-
-			if (activityPoint >= finalDamage)
-			{
-				activityPoint -= finalDamage;
-			}
-			else activityPoint = 0;
-			Debug.Log(GetName() + " loses " + finalDamage + "AP.");
-		}
+        yield return StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth));
 		unitManager.UpdateUnitOrder();
 	}
 
@@ -594,7 +514,7 @@ public class Unit : MonoBehaviour
 
 					float damage = se.GetAmount(i);
 					Unit caster = se.GetCaster();
-					yield return StartCoroutine(DamagedByDot(damage, caster));
+					yield return StartCoroutine(Damaged(damage, caster, 0, 0, true));
 				}
 			}
 		}

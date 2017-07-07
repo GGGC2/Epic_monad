@@ -25,7 +25,7 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillState(BattleData battleData) {
             while (battleData.currentState == CurrentState.SelectSkill) {
-                battleData.uiManager.UpdateSkillInfo(battleData.selectedUnit);
+                battleData.uiManager.SetSkillUI();
                 battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
@@ -466,7 +466,7 @@ namespace Battle.Turn {
                             DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
                             float amount = skillInstanceData.GetDamage().resultDamage;
                             if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
-                                yield return battleManager.StartCoroutine(target.Damaged(skillInstanceData, false));
+                                yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
                                 battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
                             } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
                                 yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
@@ -496,7 +496,7 @@ namespace Battle.Turn {
                     caster.ActiveFalseAllBonusText();
                     // 사이사이에도 특성 발동 조건을 체크해준다.
                     battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-                    battleData.unitManager.TriggerStatusEffectsAtActionEnd();
+                    yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
                     battleData.unitManager.UpdateStatusEffectsAtActionEnd();
                 }
                 StatusEffector.AttachStatusEffect(caster, appliedSkill, tile);
@@ -578,19 +578,11 @@ namespace Battle.Turn {
 
             if (canReflect) {
                 float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
-
-                DamageCalculator.AttackDamage reflectAttackDamage = new DamageCalculator.AttackDamage();
-                reflectAttackDamage.resultDamage = reflectAmount;
                 attackDamage.resultDamage -= reflectAmount;
-                List<Tile> reflectTileList = new List<Tile>();
-                reflectTileList.Add(unitInChain.GetTileUnderUnit());
-                SkillInstanceData reflectInstanceData = new SkillInstanceData(reflectAttackDamage, appliedSkill, target, 
-                                                            reflectTileList, unitInChain, 1);
-                var reflectCoroutine = unitInChain.Damaged(reflectInstanceData, true);
-                yield return battleManager.StartCoroutine(reflectCoroutine);
+                yield return battleManager.StartCoroutine(unitInChain.Damaged(reflectAmount, target, 0, 0, true));
             }
 
-            var damageCoroutine = target.Damaged(skillInstanceData, true);
+            var damageCoroutine = target.DamagedBySkill(skillInstanceData, true);
             if (isLastTarget) {
                 yield return battleManager.StartCoroutine(damageCoroutine);
             } else {

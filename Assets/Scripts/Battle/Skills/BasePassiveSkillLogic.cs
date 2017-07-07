@@ -112,10 +112,6 @@ public class BasePassiveSkillLogic
 
     public virtual void TriggerOnActionEnd(Unit caster) {    
     }
-    
-    public virtual bool TriggerStatusEffectsAtActionEnd(Unit target, StatusEffect statusEffect) {   //falseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ statusEffectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿?
-        return true;
-    }
 	public virtual void TriggerOnRest(Unit caster) {
     }
     public virtual void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
