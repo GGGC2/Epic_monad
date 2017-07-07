@@ -19,6 +19,14 @@ public class UnitInfo {
 	public Celestial celestial;
 	public bool isObject;
 	
+	public enum StatType{
+		Health = 1,
+		Power = 2,
+		Defense = 3,
+		Resist = 4,
+		Agility = 5,
+	}
+
 	public UnitInfo (string data)
 	{
 		CommaStringParser commaParser = new CommaStringParser(data);
@@ -38,5 +46,25 @@ public class UnitInfo {
 		this.element = commaParser.ConsumeEnum<Element>();
 		this.celestial = commaParser.ConsumeEnum<Celestial>();
 		this.isObject = commaParser.ConsumeBool();
+	}
+
+	public static int GetStat(string unitName, StatType type){
+		TextAsset UnitDataMatrix = Resources.Load<TextAsset>("Data/UnitDataPC");
+		TextAsset CoefTable = Resources.Load<TextAsset>("Data/StatCoefTable");
+
+		int RelativePoint = Int32.Parse(Parser.FindRowDataOf(UnitDataMatrix.text, unitName)[(int)type]);
+
+		float acc = 0;
+		if((int)type >= 3)
+			acc = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type, RelativePoint+5));
+
+		float coef = 0;
+		coef = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+2, RelativePoint+5));
+
+		float basepoint = 0;
+		basepoint = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+7, RelativePoint+5));
+
+		float level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
+		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
 	}
 }
