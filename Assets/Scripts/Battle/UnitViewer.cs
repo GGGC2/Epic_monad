@@ -58,9 +58,9 @@ public class UnitViewer : MonoBehaviour {
 		int level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
 		apText.text = level+60+(Agility/2) + "(+" + Agility + ")";
 
-		SetClassImage(unitName);
-		SetElementImage(unitName);
-		SetCelestialImage(unitName);
+		SetClassImage(UnitInfo.GetUnitClass(unitName));
+		SetElementImage(UnitInfo.GetElement(unitName));
+		SetCelestialImage(UnitInfo.GetCelestial(unitName));
 	}
 
 	public void Clear(){
@@ -168,21 +168,11 @@ public class UnitViewer : MonoBehaviour {
 	void SetClassImage(UnitClass unitClass)
 	{
 		if (unitClass == UnitClass.Melee)
-			classImage.sprite = Resources.Load("Icon/Stat/meleeClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/Stat/meleeClass");
 		else if (unitClass == UnitClass.Magic)
-			classImage.sprite = Resources.Load("Icon/Stat/magicClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/Stat/magicClass");
 		else
-			classImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
-	}
-
-	void SetClassImage(string unitName){
-		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, unitName)[6];
-		if (className == "melee")
-			classImage.sprite = Resources.Load("Icon/Stat/meleeClass", typeof(Sprite)) as Sprite;
-		else if (className == "magic")
-			classImage.sprite = Resources.Load("Icon/Stat/magicClass", typeof(Sprite)) as Sprite;
-		else
-			classImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/transparent");
 	}
 
 	void SetElementImage(Element element)
@@ -199,20 +189,6 @@ public class UnitViewer : MonoBehaviour {
 			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
 	}
 
-	void SetElementImage(string unitName){
-		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, unitName)[7];
-		if (element == "fire")
-			elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
-		else if (element == "water")
-			elementImage.sprite = Resources.Load("Icon/Element/water", typeof(Sprite)) as Sprite;
-		else if (element == "plant")
-			elementImage.sprite = Resources.Load("Icon/Element/plant", typeof(Sprite)) as Sprite;
-		else if (element == "metal")
-			elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
-		else
-			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
-	}
-
 	void SetCelestialImage(Celestial celestial)
 	{
 		if (celestial == Celestial.Sun)
@@ -220,18 +196,6 @@ public class UnitViewer : MonoBehaviour {
 		else if (celestial == Celestial.Moon)
 			celestialImage.sprite = Resources.Load("Icon/Celestial/moon", typeof(Sprite)) as Sprite;
 		else if (celestial == Celestial.Earth)
-			celestialImage.sprite = Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
-		else
-			celestialImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
-	}
-
-	void SetCelestialImage(string unitName){
-		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, unitName)[8];
-		if (celestial == "sun")
-			celestialImage.sprite = Resources.Load("Icon/Celestial/sun", typeof(Sprite)) as Sprite;
-		else if (celestial == "moon")
-			celestialImage.sprite = Resources.Load("Icon/Celestial/moon", typeof(Sprite)) as Sprite;
-		else if (celestial == "earth")
 			celestialImage.sprite = Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
 		else
 			celestialImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;

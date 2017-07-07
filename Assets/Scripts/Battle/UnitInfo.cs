@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using Enums;
 
@@ -13,7 +14,7 @@ public class UnitInfo {
 	public int basePower;
 	public int baseDefense;
 	public int baseResistance;
-	public int baseDexturity;
+	public int baseAgility;
 	public UnitClass unitClass;
 	public Element element;
 	public Celestial celestial;
@@ -41,7 +42,7 @@ public class UnitInfo {
 		this.basePower = commaParser.ConsumeInt();
 		this.baseDefense = commaParser.ConsumeInt();
 		this.baseResistance = commaParser.ConsumeInt();
-		this.baseDexturity = commaParser.ConsumeInt();
+		this.baseAgility = commaParser.ConsumeInt();
 		this.unitClass = commaParser.ConsumeEnum<UnitClass>();
 		this.element = commaParser.ConsumeEnum<Element>();
 		this.celestial = commaParser.ConsumeEnum<Celestial>();
@@ -66,5 +67,64 @@ public class UnitInfo {
 
 		float level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
 		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
+	}
+
+	public static Enums.UnitClass GetUnitClass(string PCName){
+		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[6];
+		if(className == "melee")
+			return Enums.UnitClass.Melee;
+		else if(className == "magic")
+			return Enums.UnitClass.Magic;
+		else
+			return Enums.UnitClass.None;
+	}
+
+	public static Enums.Element GetElement(string PCName){
+		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[7];
+		if (element == "fire")
+			return Enums.Element.Fire;
+		else if (element == "water")
+			return Enums.Element.Water;
+		else if (element == "plant")
+			return Enums.Element.Plant;
+		else if (element == "metal")
+			return Enums.Element.Metal;
+		else
+			return Enums.Element.None;
+	}
+
+	public static Enums.Celestial GetCelestial(string PCName){
+		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[8];
+		if (celestial == "sun")
+			return Enums.Celestial.Sun;
+		else if (celestial == "moon")
+			return Enums.Celestial.Moon;
+		else if (celestial == "earth")
+			return Enums.Celestial.Earth;
+		else
+			return Enums.Celestial.None;
+	}
+
+	void SetCelestialImage(string unitName){
+		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, unitName)[8];
+		
+	}
+
+	public static string ConvertToKoreanName(string codeName){
+		if(codeName == "noel")
+			return "노엘";
+		else if(codeName == "sepia")
+			return "세피아";
+		else if(codeName == "arcadia")
+			return "아르카디아";
+		else if(codeName == "grenev")
+			return "그레네브";
+		else if(codeName == "darkenir")
+			return "달케니르";
+		else if(codeName == "")
+			return "Empty";
+		else
+			Debug.LogError(codeName + " has NO KoreanName");
+			return "";
 	}
 }

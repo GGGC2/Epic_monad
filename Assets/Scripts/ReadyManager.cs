@@ -26,11 +26,13 @@ public class ReadyManager : MonoBehaviour{
 			else
 				Panel.gameObject.SetActive(false);
 		}
+
+		DontDestroyOnLoad(gameObject);
 	}
 
 	void Update(){
 		if(Input.GetKeyDown(KeyCode.A)){
-			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene(SceneData.nextStageName, false);
+			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene(SceneData.nextStageName);
 		}
 	}
 }
