@@ -436,6 +436,7 @@ public class Unit : MonoBehaviour
             damage = Battle.DamageCalculator.ApplyDefenseAndResistance(damage, caster.GetUnitClass(), defense, resistance);
 
             // 실드 차감. 먼저 걸린 실드부터 차감.
+            Dictionary<StatusEffect, int> attackedShieldDict = new Dictionary<StatusEffect, int>();
             foreach (var se in statusEffectList) {
                 int num = se.fixedElem.actuals.Count;
                 for (int i = 0; i < num; i++) {
@@ -443,18 +444,12 @@ public class Unit : MonoBehaviour
                         float remainShieldAmount = se.GetRemainAmount(i);
                         if (remainShieldAmount >= (int)damage) {
                             se.SubAmount(i, (int)damage);
-                            Skill originSkill = se.GetOriginSkill();
-
-                            if(originSkill != null) 
-                                yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, (int)damage));
+                            attackedShieldDict.Add(se, (int)damage);
 
                             damage = 0;
                         } else {
                             se.SubAmount(i, remainShieldAmount);
-
-                            Skill originSkill = se.GetOriginSkill();
-                            if (originSkill != null)
-                                yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, remainShieldAmount));
+                            attackedShieldDict.Add(se, (int)remainShieldAmount);
 
                             RemoveStatusEffect(se);
                             damage -= remainShieldAmount;
@@ -473,6 +468,8 @@ public class Unit : MonoBehaviour
                 // 데미지를 받을 때 발동하는 피격자 특성
                 SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, caster);
             }
+
+
             if (currentHealth < 0)
                 currentHealth = 0;
 
@@ -485,7 +482,16 @@ public class Unit : MonoBehaviour
             healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
 
             yield return new WaitForSeconds(1);
+
             damageTextObject.SetActive(false);
+
+            foreach (var kv in attackedShieldDict) {
+                StatusEffect statusEffect = kv.Key;
+                Skill originSkill = statusEffect.GetOriginSkill();
+                if (originSkill != null)
+                    yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
+            }
+
         } else {
             if (activityPoint >= finalDamage) {
                 activityPoint -= finalDamage;

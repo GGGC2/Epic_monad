@@ -575,11 +575,10 @@ namespace Battle.Turn {
             bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
                                 (target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
                                 (target.HasStatusEffect(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
-
+            float reflectAmount = 0;
             if (canReflect) {
-                float reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
+                reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, unitInChain, damageType);
                 attackDamage.resultDamage -= reflectAmount;
-                yield return battleManager.StartCoroutine(unitInChain.Damaged(reflectAmount, target, 0, 0, true));
             }
 
             var damageCoroutine = target.DamagedBySkill(skillInstanceData, true);
@@ -588,6 +587,26 @@ namespace Battle.Turn {
             } else {
                 battleManager.StartCoroutine(damageCoroutine);
                 yield return null;
+            }
+            
+            if(canReflect)  yield return battleManager.StartCoroutine(reflectDamage(unitInChain, target, reflectAmount));
+        }
+        private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
+            UnitClass damageType = caster.GetUnitClass();
+            BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true));
+
+            foreach (var statusEffect in target.GetStatusEffectList()) {
+                bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
+                                    (statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
+                                    (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
+                if (canReflect) {
+                    if (statusEffect.GetOriginSkill() != null)
+                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(statusEffect.GetOriginSkill()).
+                                                TriggerStatusEffectAtReflection(target, statusEffect, caster));
+                    if (statusEffect.GetIsOnce() == true)
+                        target.RemoveStatusEffect(statusEffect);
+                }
             }
         }
 

@@ -271,10 +271,6 @@ public class DamageCalculator
                                 (statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect)
 			{
-                if(statusEffect.GetOriginSkill() != null)
-                    SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtReflection(target, statusEffect, reflectTarget);
-                if (statusEffect.GetIsOnce() == true)
-                    target.RemoveStatusEffect(statusEffect);
                 float reflectPercent = statusEffect.GetAmountOfType(StatusEffectType.Reflect);
                 if(damageType == UnitClass.Magic) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MagicReflect);
                 if(damageType == UnitClass.Melee) reflectPercent += statusEffect.GetAmountOfType(StatusEffectType.MeleeReflect);
