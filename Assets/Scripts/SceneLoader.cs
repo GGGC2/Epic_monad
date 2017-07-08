@@ -17,11 +17,11 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene(string nextSceneName, bool ready)
+	public void LoadNextBattleScene(string nextSceneName)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
-		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName, ready));
+		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
@@ -74,16 +74,16 @@ public class SceneLoader : MonoBehaviour{
 		}
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName, bool ready)
+	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
 	{
 		yield return Fadeout();
 
 		SceneData.nextStageName = nextSceneName;
 
-		if(ready)
-			SceneManager.LoadScene("BattleReady");
-		else
+		if(nextSceneName == "Stage01" || SceneManager.GetActiveScene().name == "BattleReady")
 			SceneManager.LoadScene("Battle");
+		else
+			SceneManager.LoadScene("BattleReady");			
 	}
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)

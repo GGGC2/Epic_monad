@@ -12,6 +12,21 @@ public class Parser : MonoBehaviour
 		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 		return RowDataStrings[row].Split(',')[column];
 	}
+	
+	public static string[] FindRowDataOf(string text, string searchingWord){
+		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		foreach(string row in RowDataStrings){
+			string[] tempRowData = row.Split(',');
+			if(tempRowData[0] == searchingWord)
+			{
+				return tempRowData;
+			}
+		}
+
+		Debug.Log("RowData Not Found : " + searchingWord + "in " + text);
+		return null;
+	}
 
 	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile)
 	{

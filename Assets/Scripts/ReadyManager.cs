@@ -5,33 +5,34 @@ using System;
 using UnityEngine.UI;
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
-	string[] StageData;
 	public List<UnitPanel> Selected = new List<UnitPanel>();
 
 	void Start(){
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
-		string dataString = csvFile.text;
-		string[] unparsedDataStrings = dataString.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-		string[] StageData = {""};
+		string[] StageData = Parser.FindRowDataOf(csvFile.text, SceneData.nextStageName);
 
-		foreach(string TempData in unparsedDataStrings){
-			string[] TempElements = TempData.Split(',');
-			if(TempElements[0] == SceneData.nextStageName){
-				StageData = TempData.Split(',');
-				break;
-			}
-		}
-
-		for(int i = 2; i < StageData.Length; i++){
+		for(int i = 2; i < 20; i++){
 			GameObject availableUnitPanel = GameObject.Find("AvailableUnit" + (i-1));
-			availableUnitPanel.GetComponent<UnitPanel>().SetNameAndSprite(StageData[i]);
+			if(i < StageData.Length)				
+				availableUnitPanel.GetComponent<UnitPanel>().SetNameAndSprite(StageData[i]);
+			else
+				availableUnitPanel.gameObject.SetActive(false);
 		}
+
 		for(int i = 1; i <= 8; i++){
 			UnitPanel Panel = GameObject.Find("SelectedUnit"+i).GetComponent<UnitPanel>();
 			if(i <= Int32.Parse(StageData[1]))
 				Selected.Add(Panel);
 			else
 				Panel.gameObject.SetActive(false);
+		}
+
+		DontDestroyOnLoad(gameObject);
+	}
+
+	void Update(){
+		if(Input.GetKeyDown(KeyCode.A)){
+			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene(SceneData.nextStageName);
 		}
 	}
 }

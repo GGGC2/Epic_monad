@@ -4,16 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler{
+public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerExitHandler{
 	public string unitName;
 	public bool AvailableOrSelected;
 	public ReadyManager Manager;
 
-	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
-	{
-		GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
-		GameObject.Find("UnitImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/"+unitName+"_2");
-		GameObject.Find("HPText").GetComponent<Text>().text = Save.SaveDataCenter.GetSaveData().party.partyLevel.ToString();
+	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
+		if(unitName != ""){
+			GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
+			GameObject.Find("UnitImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/"+unitName+"_2");
+			GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>().UpdateUnitViewer(unitName);
+		}
+	}
+
+	void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
+		GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>().Clear();
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
