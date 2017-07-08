@@ -86,7 +86,8 @@ public class BattleManager : MonoBehaviour
 
 				if (battleData.selectedUnit.GetSide() == Side.Enemy)
 				{
-					yield return AIStates.StartAI(battleData);
+					// yield return AIStates_old.AIStart(battleData);
+					yield return AIStates.AIStart(battleData);
 				}
 				else
 				{
