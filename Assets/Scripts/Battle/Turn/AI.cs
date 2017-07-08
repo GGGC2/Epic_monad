@@ -368,35 +368,24 @@ namespace Battle.Turn
 
 	public class AIStates
 	{
-		// 활성화 트리거
-		public static int activeTrigger = 1;
-		public static bool isActive = false;
-
-		// 활성화 페이즈 (2번 트리거에서 사용)
-		public static int activePhase = 2;
-
-		// 활성범위 관련 변수 (3, 4번 트리거에서 사용)
-		public static RangeForm rangeForm = RangeForm.Diamond;
-		// 트리거가 3일때는 (0,0)이 자신의 위치, 4일때는 절대좌표 (0,0)을 의미
-		public static Vector2 midPosition = new Vector2(0, 0);
-		public static int minReach = 1;
-		public static int maxReach = 5;
-		public static int width = 0;
+		public static Unit currentUnit;
+		public static AIData currentUnitAIData;
 
 		public static IEnumerator AIStart(BattleData battleData)
 		{
-			Unit currentUnit = battleData.selectedUnit;
+			currentUnit = battleData.selectedUnit;
+			currentUnitAIData = currentUnit.GetComponent<AIData>();
 			BattleManager battleManager = battleData.battleManager;
 			// if (currentUnit.isBoss)
 			// 보스 전용 AI
 			// else
 			// 기절 & 활성화되었는지 체크
-			if (!isActive)
+			if (!currentUnitAIData.IsActive())
 			{
-				CheckActiveTrigger(battleData, currentUnit);
+				CheckActiveTrigger(battleData);
 			}
 			
-			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !isActive)
+			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
 			{
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 				yield break;
@@ -410,29 +399,31 @@ namespace Battle.Turn
 			yield return null;
 		}
 
-		public static void CheckActiveTrigger(BattleData battleData, Unit currentUnit)
+		public static void CheckActiveTrigger(BattleData battleData)
 		{
 			// 전투 시작시 활성화
-			if (activeTrigger == 1)
+			if (currentUnitAIData.activeTrigger == 1)
 			{
-				isActive = true;
+				currentUnitAIData.SetActive();
 			}
 			// 일정 페이즈부터 활성화
-			else if (activeTrigger == 2)
+			else if (currentUnitAIData.activeTrigger == 2)
 			{
-				if (battleData.currentPhase >= activePhase)
-					isActive = true;
+				if (battleData.currentPhase >= currentUnitAIData.activePhase)
+					currentUnitAIData.SetActive();
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
-			else if (activeTrigger == 3)
+			else if (currentUnitAIData.activeTrigger == 3)
 			{
 				bool isThereAnotherSideUnit = false;
 				
 				// 자신을 기준으로 한 상대좌표
 				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
-												rangeForm, 
-												currentUnit.GetPosition() + midPosition,
-												minReach, maxReach, width,
+												currentUnitAIData.rangeForm, 
+												currentUnit.GetPosition() + currentUnitAIData.midPosition,
+												currentUnitAIData.minReach, 
+												currentUnitAIData.maxReach, 
+												currentUnitAIData.width,
 												currentUnit.GetDirection());
 				List<Unit> aroundUnits = new List<Unit>();
 				foreach (var tile in aroundTiles)
@@ -446,18 +437,20 @@ namespace Battle.Turn
 				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
 
 				if (isThereAnotherSideUnit)
-					isActive = true;
+					currentUnitAIData.SetActive();
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
-			else if (activeTrigger == 4)
+			else if (currentUnitAIData.activeTrigger == 4)
 			{
 				bool isThereAnotherSideUnit = false;
 				
 				// 절대좌표
 				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
-												rangeForm, 
-												midPosition,
-												minReach, maxReach, width,
+												currentUnitAIData.rangeForm, 
+												currentUnitAIData.midPosition,
+												currentUnitAIData.minReach, 
+												currentUnitAIData.maxReach, 
+												currentUnitAIData.width,
 												currentUnit.GetDirection());
 				List<Unit> aroundUnits = new List<Unit>();
 				foreach (var tile in aroundTiles)
@@ -471,10 +464,10 @@ namespace Battle.Turn
 				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
 
 				if (isThereAnotherSideUnit)
-					isActive = true;
+					currentUnitAIData.SetActive();
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
-			else if (activeTrigger == 5)
+			else if (currentUnitAIData.activeTrigger == 5)
 			{
 				// 뭔가 기술의 영향을 받으면
 			}
