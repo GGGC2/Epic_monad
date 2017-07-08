@@ -58,7 +58,6 @@ MonoBehaviour:
   - {fileID: 1945089233371396}
   - {fileID: 1118627913230304}
   - {fileID: 1230004429773334}
-  projectileArrowColors: []
 --- !u!212 &21205522
 SpriteRenderer:
   m_ObjectHideFlags: 1
