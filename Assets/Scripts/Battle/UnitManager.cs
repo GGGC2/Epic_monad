@@ -5,6 +5,7 @@ using UnityEngine;
 using Enums;
 using Util;
 using Battle.Skills;
+using System.Linq;
 
 public class DeadUnitInfo
 {
@@ -169,44 +170,73 @@ public class UnitManager : MonoBehaviour {
 
 	public void GenerateUnits ()
 	{
-		//float tileWidth = 0.5f*200/100;
-		//float tileHeight = 0.5f*100/100;
-
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 		int GeneratedPC = 0;
 
-		foreach (var unitInfo in unitInfoList)
+		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
+
+		if (readyManager != null)
 		{
-			if(unitInfo.name == ""){
-				string PCName = GameObject.Find("ReadyManager").GetComponent<ReadyManager>().Selected[GeneratedPC].unitName;
-				unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
-				
-				if(unitInfo.name != "Empty"){
-					unitInfo.nameInCode = PCName;
-					unitInfo.baseHealth = UnitInfo.GetStat(PCName, UnitInfo.StatType.Health);
-					unitInfo.basePower = UnitInfo.GetStat(PCName, UnitInfo.StatType.Power);
-					unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
-					unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
-					unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+			foreach (var unitInfo in unitInfoList)
+			{
+				if (unitInfo.name == "") 
+				{
+					string PCName = readyManager.selected[GeneratedPC].unitName;
+					unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
+					
+					if (unitInfo.name != "Empty") 
+					{
+						unitInfo.nameInCode = PCName;
+						unitInfo.baseHealth = UnitInfo.GetStat(PCName, UnitInfo.StatType.Health);
+						unitInfo.basePower = UnitInfo.GetStat(PCName, UnitInfo.StatType.Power);
+						unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
+						unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
+						unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+					}
+					
+					GeneratedPC += 1;
 				}
-				
-				GeneratedPC += 1;
+
+				if (unitInfo.name != "Empty") 
+				{
+					Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+
+					unit.ApplyUnitInfo(unitInfo);
+					unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
+
+					Vector2 initPosition = unit.GetInitPosition();
+					Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+					respawnPos -= new Vector3(0, 0, 0.05f);
+					unit.gameObject.transform.position = respawnPos;
+
+					Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+					tileUnderUnit.SetUnitOnTile(unit);
+
+					units.Add(unit);
+				}
 			}
 
-			if(unitInfo.name != "Empty"){
+			List<string> controllableUnitNameList = new List<string>();
+			// readyManager.selected.ToList().ForEach(panel => {if (panel.unitName)})
+			foreach (var unit in units)
+			{
+				
+			}
+
+			Destroy(GameObject.Find("ReadyManager").gameObject);
+		}
+		else 
+		{
+			foreach (var unitInfo in unitInfoList)
+			{
 				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 				unit.ApplyUnitInfo(unitInfo);
 				unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
 
 				Vector2 initPosition = unit.GetInitPosition();
-				// Vector3 tilePosition = tileManager.GetTilePos(initPosition);
-				// Vector3 respawnPos = tilePosition + new Vector3(0,0,5f);
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
 				respawnPos -= new Vector3(0, 0, 0.05f);
-				// Vector3 respawnPos = new Vector3(tileWidth * (initPosition.y + initPosition.x) * 0.5f,
-				// 								 tileHeight * (initPosition.y - initPosition.x) * 0.5f,
-				// 								 (initPosition.y - initPosition.x) * 0.1f - 5f);
 				unit.gameObject.transform.position = respawnPos;
 
 				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
@@ -215,8 +245,6 @@ public class UnitManager : MonoBehaviour {
 				units.Add(unit);
 			}
 		}
-
-		Destroy(GameObject.Find("ReadyManager").gameObject);
 		// Debug.Log("Generate units complete");
 	}
 
