@@ -121,7 +121,7 @@ public class UnitInfo {
 			return "그레네브";
 		else if(codeName == "darkenir")
 			return "달케니르";
-		else if(codeName == "")
+		else if(codeName == "unselected")
 			return "Empty";
 		else
 			Debug.LogError(codeName + " has NO KoreanName");

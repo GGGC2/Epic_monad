@@ -179,7 +179,7 @@ public class UnitManager : MonoBehaviour {
 		{
 			foreach (var unitInfo in unitInfoList)
 			{
-				if (unitInfo.name == "") 
+				if (unitInfo.name == "unselected") 
 				{
 					string PCName = readyManager.selected[GeneratedPC].unitName;
 					unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
@@ -196,32 +196,41 @@ public class UnitManager : MonoBehaviour {
 					
 					GeneratedPC += 1;
 				}
+			}
+			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
 
-				if (unitInfo.name != "Empty") 
-				{
-					Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+			foreach (var unitInfo in unitInfoList)
+			{
+				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
-					unit.ApplyUnitInfo(unitInfo);
-					unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
+				unit.ApplyUnitInfo(unitInfo);
+				unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
 
-					Vector2 initPosition = unit.GetInitPosition();
-					Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-					respawnPos -= new Vector3(0, 0, 0.05f);
-					unit.gameObject.transform.position = respawnPos;
+				Vector2 initPosition = unit.GetInitPosition();
+				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+				respawnPos -= new Vector3(0, 0, 0.05f);
+				unit.gameObject.transform.position = respawnPos;
 
-					Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-					tileUnderUnit.SetUnitOnTile(unit);
+				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+				tileUnderUnit.SetUnitOnTile(unit);
 
-					units.Add(unit);
-				}
+				units.Add(unit);
 			}
 
 			List<string> controllableUnitNameList = new List<string>();
-			// readyManager.selected.ToList().ForEach(panel => {if (panel.unitName)})
-			foreach (var unit in units)
-			{
-				
-			}
+			readyManager.selected.ToList().ForEach(panel => {
+				if (panel.unitName != "Empty")
+				{
+					controllableUnitNameList.Add(panel.unitName);
+				}
+			});
+			
+			units.ForEach(unit => {
+				if (controllableUnitNameList.Contains(unit.GetNameInCode()))
+				{
+					Destroy(unit.GetComponent<AIData>());
+				}
+			});
 
 			Destroy(GameObject.Find("ReadyManager").gameObject);
 		}
@@ -244,6 +253,13 @@ public class UnitManager : MonoBehaviour {
 
 				units.Add(unit);
 			}
+
+			units.ForEach(unit => {
+				if (unit.GetSide() == Side.Ally)
+				{
+					Destroy(unit.GetComponent<AIData>());
+				}
+			});
 		}
 		// Debug.Log("Generate units complete");
 	}

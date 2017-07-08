@@ -48,7 +48,7 @@ public class UnitViewer : MonoBehaviour {
 	}
 
 	public void UpdateUnitViewer(string unitName){
-		Debug.Assert(unitName != "");
+		Debug.Assert(unitName != "unselected");
 		hpText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Health).ToString();
 		powerText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Power).ToString();
 		defenseText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Defense).ToString();

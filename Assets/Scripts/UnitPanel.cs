@@ -10,7 +10,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	public ReadyManager Manager;
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
-		if(unitName != ""){
+		if(unitName != "unselected"){
 			GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
 			GameObject.Find("UnitImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/"+unitName+"_2");
 			GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>().UpdateUnitViewer(unitName);
@@ -25,7 +25,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	{ 
 		if(AvailableOrSelected){
 			bool AlreadySelected = false;
-			foreach(UnitPanel Panel in Manager.Selected){
+			foreach(UnitPanel Panel in Manager.selected){
 				if(Panel.unitName == unitName){
 					AlreadySelected = true;
 					break;
@@ -37,7 +37,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 					GameObject Panel = GameObject.Find("SelectedUnit"+i);
 					if(Panel == null)
 						break;
-					else if(Panel.GetComponent<UnitPanel>().unitName == ""){
+					else if(Panel.GetComponent<UnitPanel>().unitName == "unselected"){
 						Panel.GetComponent<UnitPanel>().SetNameAndSprite(unitName);
 						break;
 					}
@@ -45,7 +45,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			}	
 		}
 		else
-			SetNameAndSprite("");
+			SetNameAndSprite("unselected");
 	}
 
 	public void ChangeIllust()
@@ -57,7 +57,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	{
 		unitName = name;
 
-		if(name == "")
+		if(name == "unselected")
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_placeholder");
 		else
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + unitName);		
