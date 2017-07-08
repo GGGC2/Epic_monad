@@ -5,7 +5,7 @@ using System;
 using UnityEngine.UI;
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
-	public List<UnitPanel> Selected = new List<UnitPanel>();
+	public List<UnitPanel> selected = new List<UnitPanel>();
 
 	void Start(){
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
@@ -22,7 +22,7 @@ public class ReadyManager : MonoBehaviour{
 		for(int i = 1; i <= 8; i++){
 			UnitPanel Panel = GameObject.Find("SelectedUnit"+i).GetComponent<UnitPanel>();
 			if(i <= Int32.Parse(StageData[1]))
-				Selected.Add(Panel);
+				selected.Add(Panel);
 			else
 				Panel.gameObject.SetActive(false);
 		}

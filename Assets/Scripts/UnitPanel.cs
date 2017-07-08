@@ -25,7 +25,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	{ 
 		if(AvailableOrSelected){
 			bool AlreadySelected = false;
-			foreach(UnitPanel Panel in Manager.Selected){
+			foreach(UnitPanel Panel in Manager.selected){
 				if(Panel.unitName == unitName){
 					AlreadySelected = true;
 					break;
