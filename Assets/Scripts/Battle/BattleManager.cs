@@ -45,8 +45,9 @@ public class BattleManager : MonoBehaviour
 
 	void Start()
 	{
-		battleData.partyLevel = Save.PartyDB.GetPartyLevel();
-		battleData.partyLevel = GetLevelInfoFromJson();
+		//battleData.partyLevel = Save.PartyDB.GetPartyLevel();
+		//battleData.partyLevel = GetLevelInfoFromJson();
+		battleData.partyLevel = GameData.level;
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
 
 		battleData.selectedUnit = null;
