@@ -769,33 +769,6 @@ public class Unit : MonoBehaviour
         actualStats.Add(Stat.Defense, actualDefense);
         actualStats.Add(Stat.Resistance, actualResistance);
         actualStats.Add(Stat.Dexturity, actualDexturity);
-
-        // 절대값으로 그대로 넣도록 변경.
-        // float actualHealthAcceleration = healthAcceleration + (healthAccelerationInterval * baseHealth);
-        // float actualHealthInitialGrowth = healthInitialGrowth + (healthInitialGrowthInterval * baseHealth);
-        // float actualHealthStandardValue = healthStandardValue + (healthStandardValueInterval * baseHealth);
-        // maxHealth = (int)((actualHealthAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-        // 				   + (actualHealthInitialGrowth * partyLevel) + actualHealthStandardValue);
-        // float actualPowerAcceleration = powerAcceleration + (powerAccelerationInterval * basePower);
-        // float actualPowerInitialGrowth = powerInitialGrowth + (powerInitialGrowthInterval * basePower);
-        // float actualPowerStandardValue = powerStandardValue + (powerStandardValueInterval * basePower);
-        // power = (int)((actualPowerAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-        // 				   + (actualPowerInitialGrowth * partyLevel) + actualPowerStandardValue);
-        // float actualDefenseAcceleration = defenseAcceleration + (defenseAccelerationInterval * baseDefense);
-        // float actualDefenseInitialGrowth = defenseInitialGrowth + (defenseInitialGrowthInterval * baseDefense);
-        // float actualDefenseStandardValue = defenseStandardValue + (defenseStandardValueInterval * baseDefense);
-        // defense = (int)((actualDefenseAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-        // 				   + (actualDefenseInitialGrowth * partyLevel) + actualDefenseStandardValue);
-        // float actualResistanceAcceleration = resistanceAcceleration + (resistanceAccelerationInterval * baseResistance);
-        // float actualResistanceInitialGrowth = resistanceInitialGrowth + (resistanceInitialGrowthInterval * baseResistance);
-        // float actualResistanceStandardValue = resistanceStandardValue + (resistanceStandardValueInterval * baseResistance);
-        // resistance = (int)((actualResistanceAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-        // 				   + (actualResistanceInitialGrowth * partyLevel) + actualResistanceStandardValue);
-        // float actualDexturityAcceleration = dexturityAcceleration + (dexturityAccelerationInterval * baseDexturity);
-        // float actualDexturityInitialGrowth = dexturityInitialGrowth + (dexturityInitialGrowthInterval * baseDexturity);
-        // float actualDexturityStandardValue = dexturityStandardValue + (dexturityStandardValueInterval * baseDexturity);
-        // dexturity = (int)((actualDexturityAcceleration * partyLevel * (partyLevel - 1f) / 2f)
-        // 				   + (actualDexturityInitialGrowth * partyLevel) + actualDexturityStandardValue);
     }
     public void ApplyUnitInfo(UnitInfo unitInfo) {
         this.name = unitInfo.name;

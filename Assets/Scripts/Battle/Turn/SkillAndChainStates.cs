@@ -457,6 +457,11 @@ namespace Battle.Turn {
             foreach (var tile in selectedTiles) {
                 if (tile.IsUnitOnTile()) {
                     Unit target = tile.GetUnitOnTile();
+
+                    // 자신에게 뭔가 기술이 날아오면 일단 활성화
+                    if (target.GetComponent<AIData>() != null) 
+                        target.GetComponent<AIData>().SetActiveByExternalFactor();
+
                     if (!isChainable || !CheckEvasion(battleData, caster, target)) {
                         SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
                         // 데미지 적용

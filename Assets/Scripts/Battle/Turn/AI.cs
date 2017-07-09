@@ -402,18 +402,18 @@ namespace Battle.Turn
 		public static void CheckActiveTrigger(BattleData battleData)
 		{
 			// 전투 시작시 활성화
-			if (currentUnitAIData.activeTrigger == 1)
+			if (currentUnitAIData.activeTrigger.Contains(1))
 			{
 				currentUnitAIData.SetActive();
 			}
 			// 일정 페이즈부터 활성화
-			else if (currentUnitAIData.activeTrigger == 2)
+			else if (currentUnitAIData.activeTrigger.Contains(2))
 			{
 				if (battleData.currentPhase >= currentUnitAIData.activePhase)
 					currentUnitAIData.SetActive();
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
-			else if (currentUnitAIData.activeTrigger == 3)
+			else if (currentUnitAIData.activeTrigger.Contains(3))
 			{
 				bool isThereAnotherSideUnit = false;
 				
@@ -440,7 +440,7 @@ namespace Battle.Turn
 					currentUnitAIData.SetActive();
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
-			else if (currentUnitAIData.activeTrigger == 4)
+			else if (currentUnitAIData.activeTrigger.Contains(4))
 			{
 				bool isThereAnotherSideUnit = false;
 				
@@ -467,9 +467,10 @@ namespace Battle.Turn
 					currentUnitAIData.SetActive();
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
-			else if (currentUnitAIData.activeTrigger == 5)
+			else if (currentUnitAIData.activeTrigger.Contains(5))
 			{
 				// 뭔가 기술의 영향을 받으면
+				// SkillAndChainState.ApplySkill에서 체크
 			}
 		}
 	}
