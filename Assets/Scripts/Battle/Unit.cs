@@ -829,7 +829,7 @@ public class Unit : MonoBehaviour
         this.basePower = unitInfo.basePower;
         this.baseDefense = unitInfo.baseDefense;
         this.baseResistance = unitInfo.baseResistance;
-        this.baseDexturity = unitInfo.baseDexturity;
+        this.baseDexturity = unitInfo.baseAgility;
         this.baseStats = new Dictionary<Stat, int>();
         baseStats.Add(Stat.MaxHealth, baseHealth);
         baseStats.Add(Stat.Power, basePower);

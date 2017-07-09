@@ -47,6 +47,33 @@ public class UnitViewer : MonoBehaviour {
 		UpdateEffect(unit);
 	}
 
+	public void UpdateUnitViewer(string unitName){
+		Debug.Assert(unitName != "unselected");
+		hpText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Health).ToString();
+		powerText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Power).ToString();
+		defenseText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Defense).ToString();
+		resistanceText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Resist).ToString();
+
+		int Agility = UnitInfo.GetStat(unitName, UnitInfo.StatType.Agility);
+		int level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
+		apText.text = level+60+(Agility/2) + "(+" + Agility + ")";
+
+		SetClassImage(UnitInfo.GetUnitClass(unitName));
+		SetElementImage(UnitInfo.GetElement(unitName));
+		SetCelestialImage(UnitInfo.GetCelestial(unitName));
+	}
+
+	public void Clear(){
+		hpText.text = "";
+		powerText.text = "";
+		defenseText.text = "";
+		resistanceText.text = "";
+		apText.text = "";
+		classImage.sprite = Resources.Load<Sprite>("Icon/transparent");
+		elementImage.sprite = Resources.Load<Sprite>("Icon/transparent");
+		celestialImage.sprite = Resources.Load<Sprite>("Icon/transparent");
+	}
+
 	void UpdateEffect(Unit unit)
 	{
 		List<StatusEffect> effectList = unit.GetStatusEffectList();
@@ -141,11 +168,11 @@ public class UnitViewer : MonoBehaviour {
 	void SetClassImage(UnitClass unitClass)
 	{
 		if (unitClass == UnitClass.Melee)
-			classImage.sprite = Resources.Load("Icon/Stat/meleeClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/Stat/meleeClass");
 		else if (unitClass == UnitClass.Magic)
-			classImage.sprite = Resources.Load("Icon/Stat/magicClass", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/Stat/magicClass");
 		else
-			classImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
+			classImage.sprite = Resources.Load<Sprite>("Icon/transparent");
 	}
 
 	void SetElementImage(Element element)

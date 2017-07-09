@@ -7,6 +7,7 @@ Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePo
 메이드,soldier01,Enemy,14,4,LeftUp,162,61,20,37,43,Melee,Water,Earth,false
 메이드,soldier01,Enemy,14,10,LeftUp,162,61,20,37,43,Melee,Water,Earth,false
 제어장치,soldier01,Enemy,15,7,LeftUp,249,0,3,71,1,Magic,Metal,Earth,true
-노엘,noel,Ally,2,6,RightDown,419,71,54,138,54,Magic,Water,Earth,false
-세피아,sepia,Ally,2,7,RightDown,512,82,121,71,54,Melee,Fire,Sun,false
-그레네브,grenev,Ally,2,8,RightDown,344,109,20,20,54,Melee,Plant,Moon,false
+unselected,unselected,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
+unselected,unselected,Ally,2,7,RightDown,0,0,0,0,0,None,None,None,false
+unselected,unselected,Ally,2,8,RightDown,0,0,0,0,0,None,None,None,false
+unselected,unselected,Ally,1,7,RightDown,0,0,0,0,0,None,None,None,false

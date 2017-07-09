@@ -331,19 +331,19 @@ namespace Battle.Turn
 			if (Skill1Available(battleData))
 			{
 				nothingTodo = false;
-				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 1));
+				yield return battleManager.StartCoroutine(AIStates_old.AIAttack(battleData, 1));
 			}
 
 			if (Skill2Available(battleData))
 			{
 				nothingTodo = false;
-				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 2));
+				yield return battleManager.StartCoroutine(AIStates_old.AIAttack(battleData, 2));
 			}
 
 			if (Skill3Available(battleData))
 			{
 				nothingTodo = false;
-				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 3));
+				yield return battleManager.StartCoroutine(AIStates_old.AIAttack(battleData, 3));
 			}
 
 			Direction? skill4AvailableDirection = Skill4AvailableDirection(battleData);
@@ -353,7 +353,7 @@ namespace Battle.Turn
 				battleData.uiManager.SetSkillNamePanelUI(battleData.SelectedSkill.GetName());
 				Debug.LogError("Skill 4 available " + skill4AvailableDirection.Value);
 				battleData.selectedUnit.SetDirection(skill4AvailableDirection.Value);
-				yield return battleManager.StartCoroutine(AIStates.AIAttack(battleData, 4));
+				yield return battleManager.StartCoroutine(AIStates_old.AIAttack(battleData, 4));
 				yield return battleManager.StartCoroutine(Skill4Knockback(battleData));
 				battleData.uiManager.ResetSkillNamePanelUI();
 			}
@@ -365,9 +365,118 @@ namespace Battle.Turn
 			}
 		}
 	}
-    public class AIStates
+
+	public class AIStates
 	{
-		public static IEnumerator StartAI(BattleData battleData)
+		public static Unit currentUnit;
+		public static AIData currentUnitAIData;
+
+		public static IEnumerator AIStart(BattleData battleData)
+		{
+			currentUnit = battleData.selectedUnit;
+			currentUnitAIData = currentUnit.GetComponent<AIData>();
+			BattleManager battleManager = battleData.battleManager;
+			// if (currentUnit.isBoss)
+			// 보스 전용 AI
+			// else
+			// 기절 & 활성화되었는지 체크
+			if (!currentUnitAIData.IsActive())
+			{
+				CheckActiveTrigger(battleData);
+			}
+			
+			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
+			{
+				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+				yield break;
+			}
+			else
+				yield return battleManager.StartCoroutine(AIStates_old.AIMove(battleData));
+		}
+
+		public static IEnumerator AIMove(BattleData battleData)
+		{
+			yield return null;
+		}
+
+		public static void CheckActiveTrigger(BattleData battleData)
+		{
+			// 전투 시작시 활성화
+			if (currentUnitAIData.activeTrigger == 1)
+			{
+				currentUnitAIData.SetActive();
+			}
+			// 일정 페이즈부터 활성화
+			else if (currentUnitAIData.activeTrigger == 2)
+			{
+				if (battleData.currentPhase >= currentUnitAIData.activePhase)
+					currentUnitAIData.SetActive();
+			}
+			// 자신 주위 일정 영역에 접근하면 활성화
+			else if (currentUnitAIData.activeTrigger == 3)
+			{
+				bool isThereAnotherSideUnit = false;
+				
+				// 자신을 기준으로 한 상대좌표
+				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
+												currentUnitAIData.rangeForm, 
+												currentUnit.GetPosition() + currentUnitAIData.midPosition,
+												currentUnitAIData.minReach, 
+												currentUnitAIData.maxReach, 
+												currentUnitAIData.width,
+												currentUnit.GetDirection());
+				List<Unit> aroundUnits = new List<Unit>();
+				foreach (var tile in aroundTiles)
+				{
+					if (tile.IsUnitOnTile())
+						aroundUnits.Add(tile.GetUnitOnTile());
+				}
+				if (aroundUnits.Contains(currentUnit))
+					aroundUnits.Remove(currentUnit);
+
+				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
+
+				if (isThereAnotherSideUnit)
+					currentUnitAIData.SetActive();
+			}
+			// 맵 상의 특정 영역에 접근하면 활성화
+			else if (currentUnitAIData.activeTrigger == 4)
+			{
+				bool isThereAnotherSideUnit = false;
+				
+				// 절대좌표
+				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
+												currentUnitAIData.rangeForm, 
+												currentUnitAIData.midPosition,
+												currentUnitAIData.minReach, 
+												currentUnitAIData.maxReach, 
+												currentUnitAIData.width,
+												currentUnit.GetDirection());
+				List<Unit> aroundUnits = new List<Unit>();
+				foreach (var tile in aroundTiles)
+				{
+					if (tile.IsUnitOnTile())
+						aroundUnits.Add(tile.GetUnitOnTile());
+				}
+				if (aroundUnits.Contains(currentUnit))
+					aroundUnits.Remove(currentUnit);
+
+				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
+
+				if (isThereAnotherSideUnit)
+					currentUnitAIData.SetActive();
+			}
+			// 자신을 대상으로 기술이 시전되면 활성화
+			else if (currentUnitAIData.activeTrigger == 5)
+			{
+				// 뭔가 기술의 영향을 받으면
+			}
+		}
+	}
+
+    public class AIStates_old
+	{
+		public static IEnumerator AIStart(BattleData battleData)
 		{
 			Unit currentUnit = battleData.selectedUnit;
 			BattleManager battleManager = battleData.battleManager;

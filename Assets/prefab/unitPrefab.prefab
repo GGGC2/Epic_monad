@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 11438956}
   - component: {fileID: 22272118}
   - component: {fileID: 21280136}
+  - component: {fileID: 114286865032969388}
   m_Layer: 0
   m_Name: unitPrefab
   m_TagString: Untagged
@@ -614,6 +615,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21213288
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -654,6 +656,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21253108
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -694,6 +697,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21258944
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -734,6 +738,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21272088
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -774,6 +779,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21280136
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -814,6 +820,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21285538
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -854,6 +861,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!222 &22272118
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1356,3 +1364,4 @@ SpriteRenderer:
   m_Size: {x: 1.06, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
