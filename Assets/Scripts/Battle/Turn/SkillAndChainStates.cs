@@ -244,7 +244,8 @@ namespace Battle.Turn {
                 Debug.Log("/------- Damage preview -------\\");
                 Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
                 foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
-                    kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
+                    if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
+                    else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
                 }
                 Debug.Log("\\------- Damage preview -------/");
 
@@ -503,6 +504,8 @@ namespace Battle.Turn {
                     battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
                     yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
                     battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+
+                    target.UpdateHealthViewer();
                 }
                 StatusEffector.AttachStatusEffect(caster, appliedSkill, tile);
             }

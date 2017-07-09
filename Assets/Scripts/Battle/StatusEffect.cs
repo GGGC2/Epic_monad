@@ -232,6 +232,14 @@ public class StatusEffect {
         }
         return amount;
     }
+    public float GetRemainAmountOfType(StatusEffectType statusEffectType) {
+        float amount = 0;
+        List<int> indices = FindIndexOfType(statusEffectType);
+        foreach (var index in indices) {
+            amount += GetRemainAmount(index);
+        }
+        return amount;
+    }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {

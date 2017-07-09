@@ -27,6 +27,10 @@ public class TitleForNexon : MonoBehaviour
 
 	public void OnLowLevelClicked()
 	{
+		GameData.level = 1;
+		GameData.exp = 0;
+		GameData.reqExp = 100;
+
 		SaveDataCenter.Reset();
 		SaveData saveData = SaveDataCenter.GetSaveData();
 
