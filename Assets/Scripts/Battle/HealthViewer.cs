@@ -1,67 +1,83 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Enums;
 
 public class HealthViewer : MonoBehaviour {
-
+    /*height order : 
+     * currentHealthBar         ( z = -0.03 )
+     * recoverBar, damageBar    ( z = -0.02 )
+     * shieldBar                ( z = -0.01 )
+     * shieldDamageBar          ( z =  0    )
+     * backgroundBar            ( z =  0.01 )
+     */
 	GameObject currentHealthBar;
+    GameObject shieldBar;
 	GameObject recoverBar;
 	GameObject damageBar;
+    GameObject shieldDamageBar;
 	GameObject retreatIcon;
 	GameObject killIcon;
 
 	int currentHealth;
 	int maxHealth;
+    int shieldAmount;
 
-	public void PreviewDamageAmount(int damageAmount)
-	{
-        int previewCurrentHealth = Math.Max(currentHealth - damageAmount, 0);
-        float healthRatio = (float)previewCurrentHealth / (float)maxHealth;
-		Vector3 previewCurrentHealthScale = new Vector3(healthRatio, 1, 1);
-		currentHealthBar.transform.localScale = previewCurrentHealthScale;
-		recoverBar.transform.localScale = previewCurrentHealthScale;
+	public void PreviewDamageAmount(int damageAmount) {
+        int previewCurrentHealth = currentHealth + Math.Min(shieldAmount - damageAmount, 0);
+        previewCurrentHealth = Math.Max(previewCurrentHealth, 0);
+        int previewShieldAmount = Math.Max(shieldAmount - damageAmount, 0);
+        GameObject[] barsToBeHealthScale = { currentHealthBar, recoverBar };
+        GameObject[] barsToBeShieldScale = { shieldBar };
+        float previewHealthRatio = AdjustBarScales(previewCurrentHealth, previewShieldAmount, barsToBeHealthScale, barsToBeShieldScale);
 
-		if(healthRatio <= 0)
-		{
-			killIcon.SetActive(true);
-		}
-		else if(healthRatio <= 0.1)
-		{
-			retreatIcon.SetActive(true);
-		}
+        if (previewHealthRatio <= 0)   killIcon.SetActive(true);
+		else if(previewHealthRatio <= 0.1) retreatIcon.SetActive(true);
 	}
 	
-	public void PreviewRecoverAmount(int recoverAmount)
-	{
-		int previewCurrentHealth = currentHealth + recoverAmount;
-		float healthRatio = (float)previewCurrentHealth / (float)maxHealth;
-		Vector3 previewCurrentHealthScale = new Vector3(healthRatio, 1, 1);
-		recoverBar.transform.localScale = previewCurrentHealthScale;
-	}
-	
-	public void CancelPreview()
-	{
-		Vector3 damageBarScale = damageBar.transform.localScale;
-		currentHealthBar.transform.localScale = damageBarScale;
-		recoverBar.transform.localScale = damageBarScale;
-		killIcon.SetActive(false);
-		retreatIcon.SetActive(false);
+	public void PreviewRecoverAmount(int recoverAmount) {
+		int previewCurrentHealth = Math.Min(currentHealth + recoverAmount, maxHealth);
+        GameObject[] barsToBeHealthScale = { recoverBar };
+        GameObject[] barsToBeShieldScale = { shieldBar };
+        AdjustBarScales(previewCurrentHealth, shieldAmount, barsToBeHealthScale, barsToBeShieldScale);
 	}
 
-	public void UpdateCurrentHealth(int currentHealth, int maxHealth)
-	{
-		float healthRatio = (float)currentHealth / (float)maxHealth;
-		Vector3 currentHealthScale = new Vector3(healthRatio, 1, 1);
-		currentHealthBar.transform.localScale = currentHealthScale;
-		recoverBar.transform.localScale = currentHealthScale;
-		damageBar.transform.localScale = currentHealthScale;
-		
-		this.currentHealth = currentHealth;
-		this.maxHealth = maxHealth;
+	public void UpdateCurrentHealth(int currentHealth, int shieldAmount, int maxHealth) {
+        this.currentHealth = currentHealth;
+        this.maxHealth = maxHealth;
+        this.shieldAmount = shieldAmount;
+        GameObject[] barsToBeHealthScale = { currentHealthBar, recoverBar, damageBar };
+        GameObject[] barsToBeShieldScale = { shieldBar, shieldDamageBar };
+        AdjustBarScales(currentHealth, shieldAmount, barsToBeHealthScale, barsToBeShieldScale );
 	}
-	
-	public void SetInitHealth(int maxHealth, Side side)
+
+    private float AdjustBarScales(float health, float shieldAmount, GameObject[] barsToBeHealthScale, GameObject[] barsToBeShieldScale) {
+        //Adjusts barScales according to parameters, and returns healthRatio
+        float maxBarSize = Math.Max(this.currentHealth + this.shieldAmount, maxHealth);
+        float healthRatio = health / maxBarSize;
+        float shieldRatio = shieldAmount / maxBarSize;
+
+        Vector3 healthScale = new Vector3(healthRatio, 1, 1);
+        Vector3 shieldScale = new Vector3(healthRatio + shieldRatio, 1, 1);
+
+        foreach(var bar in barsToBeHealthScale)     bar.transform.localScale = healthScale;
+        foreach(var bar in barsToBeShieldScale)     bar.transform.localScale = shieldScale;
+        return healthScale.x;
+    }
+
+    public void CancelPreview() {
+        Vector3 damageBarScale = damageBar.transform.localScale;
+        currentHealthBar.transform.localScale = damageBarScale;
+        recoverBar.transform.localScale = damageBarScale;
+
+        Vector3 shieldDamageBarScale = shieldDamageBar.transform.localScale;
+        shieldBar.transform.localScale = shieldDamageBarScale;
+        killIcon.SetActive(false);
+        retreatIcon.SetActive(false);
+    }
+
+    public void SetInitHealth(int maxHealth, Side side)
 	{
 		this.currentHealth = maxHealth;
 		this.maxHealth = maxHealth;
@@ -70,6 +86,8 @@ public class HealthViewer : MonoBehaviour {
 		currentHealthBar.transform.localScale = initHealthScale;
 		recoverBar.transform.localScale = initHealthScale;
 		damageBar.transform.localScale = initHealthScale;
+        shieldBar.transform.localScale = initHealthScale;
+        shieldDamageBar.transform.localScale = initHealthScale;
 		
 		if (side == Side.Ally)
 		{
@@ -87,8 +105,10 @@ public class HealthViewer : MonoBehaviour {
 
 	void Awake () {
 		currentHealthBar = transform.Find("currentHealthBar").gameObject;
-		recoverBar = transform.Find("recoverBar").gameObject;
-		damageBar = transform.Find("damageBar").gameObject;
+        shieldBar = transform.Find("ShieldBar").gameObject;
+        recoverBar = transform.Find("recoverBar").gameObject;
+        damageBar = transform.Find("damageBar").gameObject;
+        shieldDamageBar = transform.Find("ShieldDamageBar").gameObject;
 		retreatIcon = transform.Find("Retreat").gameObject;
 		killIcon = transform.Find("Kill").gameObject;
 	}

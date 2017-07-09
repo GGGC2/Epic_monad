@@ -227,6 +227,9 @@ public class Unit : MonoBehaviour
         }
     }
     
+    public void UpdateHealthViewer() {
+        healthViewer.UpdateCurrentHealth(currentHealth, GetRemainShield(), GetMaxHealth());
+    }
 	public void AddSkillCooldown(int phase)
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
@@ -307,6 +310,9 @@ public class Unit : MonoBehaviour
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             updateStats(statusEffect, false, true);
+            if(statusEffect.IsOfType(StatusEffectType.Shield)) {
+                UpdateHealthViewer();
+            }
         }
     }
     public void RemoveStatusEffect(Unit caster, StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
@@ -329,7 +335,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    float CalculateThroughChangeList(float data, List<ChangeByStatusEffect> appliedChangeList) {    //<isMultiply, value>
+    float CalculateThroughChangeList(float data, List<StatChange> appliedChangeList) {    //<isMultiply, value>
         float totalAdditiveValue = 0.0f;
         float totalMultiplicativeValue = 1.0f;
         foreach (var change in appliedChangeList) {
@@ -343,17 +349,17 @@ public class Unit : MonoBehaviour
         return data * totalMultiplicativeValue + totalAdditiveValue;
     }
 
-    class ChangeByStatusEffect {
+    class StatChange {
         public bool isMultiply;
         public float value;
-        public ChangeByStatusEffect(bool isMultiply, float value) {
+        public StatChange(bool isMultiply, float value) {
             this.isMultiply = isMultiply;
             this.value = value;
         }
     }
 	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
 	{
-        List<ChangeByStatusEffect> appliedChangeList = new List<ChangeByStatusEffect>();
+        List<StatChange> appliedChangeList = new List<StatChange>();
         
         // 효과로 인한 변동값 계산
         foreach (var statusEffect in statusEffectList)
@@ -363,7 +369,7 @@ public class Unit : MonoBehaviour
                     if(statusEffect.GetIsPercent(i)) {
                         amount = amount/100;
                     }
-                    appliedChangeList.Add(new ChangeByStatusEffect(statusEffect.GetIsMultiply(i), statusEffect.GetAmount(i)));
+                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), statusEffect.GetAmount(i)));
                 }
         
         // TileStatusEffect로 인한 변동값 계산
@@ -371,7 +377,7 @@ public class Unit : MonoBehaviour
         foreach (var tileStatusEffect in tile.GetStatusEffectList()) 
             for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++)
                 if(tileStatusEffect.IsOfType(i, statusEffectType))
-                    appliedChangeList.Add(new ChangeByStatusEffect(tileStatusEffect.GetIsMultiply(), tileStatusEffect.GetAmount(i)));
+                    appliedChangeList.Add(new StatChange(tileStatusEffect.GetIsMultiply(), tileStatusEffect.GetAmount(i)));
 
 		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)			
 		if (statusEffectType == StatusEffectType.PowerChange)
@@ -379,9 +385,11 @@ public class Unit : MonoBehaviour
 			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
 			float relativePowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
             relativePowerBonus = (relativePowerBonus - 1) * 100;
-            appliedChangeList.Add(new ChangeByStatusEffect(true, relativePowerBonus));
+            appliedChangeList.Add(new StatChange(true, relativePowerBonus));
+
+            // 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
             if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
-                appliedChangeList.Add(new ChangeByStatusEffect(true, 1.2f));
+                appliedChangeList.Add(new StatChange(true, 1.2f));
             }
         }
 
@@ -390,21 +398,35 @@ public class Unit : MonoBehaviour
             List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
             if (statusEffectType == StatusEffectType.DefenseChange) {
                 float additiveDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
-                appliedChangeList.Add(new ChangeByStatusEffect(false, additiveDefenseBouns));
+                appliedChangeList.Add(new StatChange(false, additiveDefenseBouns));
             }
             else if(statusEffectType == StatusEffectType.ResistanceChange) {
                 float additiveResistanceBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteResistanceBonus(this);
-                appliedChangeList.Add(new ChangeByStatusEffect(false, additiveResistanceBouns));
+                appliedChangeList.Add(new StatChange(false, additiveResistanceBouns));
             }
 
             // 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
             if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal) {
-                appliedChangeList.Add(new ChangeByStatusEffect(false, 30));
+                appliedChangeList.Add(new StatChange(false, 30));
+            }
+        }
+
+        if (statusEffectType == StatusEffectType.SpeedChange) {
+            if (element == Element.Water && GetTileUnderUnit().GetTileElement() == Element.Water) {
+                appliedChangeList.Add(new StatChange(false, 15));
             }
         }
 
 		return CalculateThroughChangeList(data, appliedChangeList);
 	}
+
+    public int GetRemainShield() {
+        float remainShieldAmount = 0;
+        foreach(StatusEffect statusEffect in statusEffectList) {
+            remainShieldAmount += statusEffect.GetRemainAmountOfType(StatusEffectType.Shield);
+        }
+        return (int)remainShieldAmount;
+    }
 
 	public void UpdateRemainPhaseAtPhaseEnd()
 	{
@@ -479,7 +501,7 @@ public class Unit : MonoBehaviour
             damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
             damageTextObject.GetComponent<CustomWorldText>().ApplyText();
 
-            healthViewer.UpdateCurrentHealth(currentHealth, GetMaxHealth());
+            UpdateHealthViewer();
 
             yield return new WaitForSeconds(1);
 
@@ -578,7 +600,7 @@ public class Unit : MonoBehaviour
 		recoverTextObject.SetActive(true);
 		recoverTextObject.GetComponent<TextMesh>().text = ((int)amount).ToString();
 
-		healthViewer.UpdateCurrentHealth(currentHealth, maxHealth);
+		UpdateHealthViewer();
 
 		// 회복량 표시되는 시간. (회복량이 0일때는 딜레이 없음)
 		if (amount > 0)

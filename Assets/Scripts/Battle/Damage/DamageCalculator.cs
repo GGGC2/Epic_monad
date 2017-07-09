@@ -84,52 +84,50 @@ public class DamageCalculator
 	{
 		var damageList = new Dictionary<Unit, DamageInfo>();
 		Skill appliedSkill = chainInfo.GetSkill();
-		if (appliedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth) {
-			return damageList;
-		}
-        
 		Unit caster = chainInfo.GetUnit();			
 		List<Tile> selectedTiles = chainInfo.GetTargetArea();
-
-		Direction oldDirection = caster.GetDirection();
-
-		// 시전 방향으로 유닛의 바라보는 방향을 돌림.
-		if (appliedSkill.GetSkillType() != SkillType.Auto)
-			caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
-
 		List<Unit> targets = GetTargetUnits(selectedTiles);
 
 		foreach (var target in targets)
 		{
             SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
-			CalculateAttackDamage(skillInstanceData, chainCombo);
 
-            float actualDamage = skillInstanceData.GetDamage().resultDamage;
-            float reflectDamage = CalculateReflectDamage(actualDamage, target, caster, caster.GetUnitClass());
-            actualDamage -= reflectDamage;
+            if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
+                CalculateAttackDamage(skillInstanceData, chainCombo);
 
-            float targetDefense = CalculateDefense(appliedSkill, target, caster);
-            float targetResistance = CalculateResistance(appliedSkill, target, caster);
-            actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
+                float actualDamage = skillInstanceData.GetDamage().resultDamage;
+                float reflectDamage = CalculateReflectDamage(actualDamage, target, caster, caster.GetUnitClass());
+                actualDamage -= reflectDamage;
 
-			DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
-			damageList.Add(target, damageInfo);
+                float targetDefense = CalculateDefense(appliedSkill, target, caster);
+                float targetResistance = CalculateResistance(appliedSkill, target, caster);
+                actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
 
-			Debug.Log(actualDamage + " damage will be applied to " + target.GetName() + "\n" +
-						"ChainCombo : " + chainCombo);
+                DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
+                damageList.Add(target, damageInfo);
 
-            if(reflectDamage != 0) {
-                float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
-                float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
-                reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
+                Debug.Log(actualDamage + " damage will be applied to " + target.GetName() + "\n" +
+                            "ChainCombo : " + chainCombo);
 
-                DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
-                damageList.Add(caster, reflectDamageInfo);
-                Debug.Log(reflectDamage + " damage will be reflected from " + target.GetName() + " to " + caster.GetName());
+                if (reflectDamage != 0) {
+                    float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
+                    float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
+                    reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
+
+                    DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
+                    damageList.Add(caster, reflectDamageInfo);
+                    Debug.Log(reflectDamage + " damage will be reflected from " + target.GetName() + " to " + caster.GetName());
+                }
+            }
+            else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+                CalculateAmountOtherThanAttackDamage(skillInstanceData);
+                float actualHealAmount = skillInstanceData.GetDamage().resultDamage;
+                DamageInfo damageInfo = new DamageInfo(caster, -actualHealAmount);
+                damageList.Add(target, damageInfo);
+
+                Debug.Log(actualHealAmount + " heal will be applied to " + target.GetName());
             }
 		}
-
-		caster.SetDirection(oldDirection);
 		return damageList;
 	}
 
