@@ -43,7 +43,7 @@ public class Parser : MonoBehaviour
 		return dialogueDataList;
 	}
 
-	public static List<BattleTrigger> GetParsedBattleEndConditionData()
+	public static List<BattleTrigger> GetParsedBattleTriggerData()
 	{
 		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 

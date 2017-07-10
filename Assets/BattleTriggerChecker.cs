@@ -45,19 +45,20 @@ public class BattleTriggerChecker : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.countDown -= 1;
+		Debug.Log("countDown remain : "+trigger.countDown);
 		if(trigger.countDown <= 0 && !trigger.acquired){
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus){
 				trigger.acquired = true;
 				battleData.rewardPoint += trigger.reward;
 			}
-			else if(trigger.resultType == BattleTrigger.ResultType.Bonus){
+			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
 				GameData.AddExp(battleData.rewardPoint);
 				sceneLoader.LoadNextDialogueScene(nextScriptName);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log(trigger.actionType + " " + trigger.unitType);
-				//sceneLoader.LoadNextDialogueScene("Title");
+				sceneLoader.LoadNextDialogueScene("Title");
 			}
 		}
 	}
@@ -66,30 +67,35 @@ public class BattleTriggerChecker : MonoBehaviour {
 		unitManager = battleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
 
-		battleTriggers = Parser.GetParsedBattleEndConditionData();
-		// Debug.Log("BET : " + battleEndTriggers.Count);
+		battleTriggers = Parser.GetParsedBattleTriggerData();
+		Debug.Log("BattleTrigger Count : "+battleTriggers.Count);
+		foreach(BattleTrigger trigger in battleTriggers){
+			Debug.Log(trigger.actionType);
+			Debug.Log(trigger.unitType);
+		}
+		
 		// battleEndTriggers.ForEach(trigger => Debug.Log(trigger.result + ", " + trigger.triggerNumber));
 
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
-
-		// Debug.Log("BET_win : " + battleWinConditions.Count);
-		// Debug.Log("BET_lose : " + battleLoseConditions.Count);
 	}
 
 	public static void CountBattleCondition(Unit unit){
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
-		
+		Debug.Log("TriggerCount : "+Checker.battleTriggers.Count);
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
-			if(trigger.actionType == BattleTrigger.ActionType.Neutralize && Checker.CheckUnitType(trigger, unit)){
+			if(trigger.resultType == BattleTrigger.ResultType.End)
+				continue;
+			else if(trigger.actionType == BattleTrigger.ActionType.Neutralize && Checker.CheckUnitType(trigger, unit))
 				Checker.CountBattleTrigger(trigger);
-			}
 		}
 	}
 
 	public static void CountBattleCondition(){
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
-			if(trigger.actionType == BattleTrigger.ActionType.Phase)
+			if(trigger.resultType == BattleTrigger.ResultType.End)
+				continue;
+			else if(trigger.actionType == BattleTrigger.ActionType.Phase)
 				Checker.CountBattleTrigger(trigger);
 		}
 	}
@@ -97,13 +103,16 @@ public class BattleTriggerChecker : MonoBehaviour {
 	public static void CountBattleCondition(Unit unit, Tile destination){
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
-			if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
+			if(trigger.resultType == BattleTrigger.ResultType.End)
+				continue;
+			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
 				Checker.CountBattleTrigger(trigger);
 			}	
 		}
 	}
 
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
+		Debug.Log("UnitType : "+trigger.unitType+", Name : "+unit.name);
 		if(trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any(x => x == unit.name))
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.side == Side.Ally)

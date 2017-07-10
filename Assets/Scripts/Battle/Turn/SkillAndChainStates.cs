@@ -711,9 +711,7 @@ namespace Battle.Turn {
                     particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
                     GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
                 }
-                //Debug.Log("Doubt area Start");
                 yield return new WaitForSeconds(0.5f);
-                Debug.Log("Doubt area End");
             }
         }
     }
