@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 11438956}
   - component: {fileID: 22272118}
   - component: {fileID: 21280136}
-  - component: {fileID: 114286865032969388}
+  - component: {fileID: 114109202501214672}
   m_Layer: 0
   m_Name: unitPrefab
   m_TagString: Untagged
@@ -928,7 +928,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 353.04288, y: 140.73523}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.05000001}
 --- !u!1001 &100100000
@@ -1204,6 +1204,25 @@ Transform:
   m_Father: {fileID: 486946}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114109202501214672
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4828faddd77a24095b6f2f66e7706489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeTrigger: 
+  isActive: 0
+  activePhase: 2
+  rangeForm: 3
+  midPosition: {x: 0, y: 0}
+  minReach: 1
+  maxReach: 5
+  width: 0
 --- !u!212 &212120001275806680
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1244,6 +1263,7 @@ SpriteRenderer:
   m_Size: {x: 1.77, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212265947819992384
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1284,6 +1304,7 @@ SpriteRenderer:
   m_Size: {x: 1.06, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212476942290256146
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1324,6 +1345,7 @@ SpriteRenderer:
   m_Size: {x: 1.77, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212535727131796374
 SpriteRenderer:
   m_ObjectHideFlags: 1
