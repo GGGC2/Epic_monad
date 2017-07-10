@@ -29,14 +29,14 @@ public class UIManager : MonoBehaviour
 		apBarUI = GameObject.Find("APBarPanel");
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
-		skillCheckUI = GameObject.Find("ApplyButton");
+		skillCheckUI = GameObject.Find("ApplyOrWaitPanel");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
-		//skillNamePanelUI = GameObject.Find("SkillNamePanel");
+		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovedUICanvas");
 
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
 		cancelButtonUI.SetActive(false);
-		//skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
+		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
 	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) 
@@ -99,6 +99,7 @@ public class UIManager : MonoBehaviour
 			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
 			if (skillIndex >= skillList.Count)
 			{
+				Debug.Log(selectedUnit+"'s skillCount : "+skillList.Count);
 				skillButton.SetActive(false);
 				continue;
 			}

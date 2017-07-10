@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BattleUI
 {
-	public class CommandPannel : MonoBehaviour
+	public class CommandPanel : MonoBehaviour
 	{
 		private BattleManager battleManager;
 
@@ -16,9 +16,9 @@ namespace BattleUI
 			battleManager.CallbackMoveCommand();
 		}
 
-		public void CallbackAttackCommand()
+		public void CallbackSkillCommand()
 		{
-			battleManager.CallbackAttackCommand();
+			battleManager.CallbackSkillCommand();
 		}
 
 		public void CallbackRestCommand()

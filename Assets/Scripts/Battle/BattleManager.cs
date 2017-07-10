@@ -360,7 +360,7 @@ public class BattleManager : MonoBehaviour
 		battleData.triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
-	public void CallbackAttackCommand()
+	public void CallbackSkillCommand()
 	{
 		battleData.uiManager.DisableCommandUI();
 		battleData.triggers.actionCommand.Trigger(ActionCommand.Skill);

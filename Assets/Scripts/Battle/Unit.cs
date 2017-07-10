@@ -23,10 +23,10 @@ public class HitInfo
 
 public class Unit : MonoBehaviour
 {
-	GameObject chainBonusTextObject;
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
+	GameObject chainBonusTextObject;
 	GameObject celestialBonusTextObject;
 	GameObject directionBonusTextObject;
 	GameObject heightBonusTextObject;
@@ -910,10 +910,10 @@ public class Unit : MonoBehaviour
 		LoadSprite();
 		Initialize();
 
-		//chainBonusTextObject.SetActive(false);
-		//celestialBonusTextObject.SetActive(false);
-		//directionBonusTextObject.SetActive(false);
-		//heightBonusTextObject.SetActive(false);
+		chainBonusTextObject.SetActive(false);
+		celestialBonusTextObject.SetActive(false);
+		directionBonusTextObject.SetActive(false);
+		heightBonusTextObject.SetActive(false);
 	}
 
 	void Awake()
