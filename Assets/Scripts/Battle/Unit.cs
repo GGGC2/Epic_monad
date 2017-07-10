@@ -38,7 +38,7 @@ public class Unit : MonoBehaviour
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
 
-	Side side; // 진영. 적/아군
+	public Side side; // 진영. 적/아군
 	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않는다.
 
 	// 스킬리스트.
@@ -187,6 +187,9 @@ public class Unit : MonoBehaviour
 		SetDirection(direction);
 		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
+
+		BattleTriggerChecker.CountBattleCondition(this, tileAfter);
+
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
                 statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
@@ -907,10 +910,10 @@ public class Unit : MonoBehaviour
 		LoadSprite();
 		Initialize();
 
-		chainBonusTextObject.SetActive(false);
-		celestialBonusTextObject.SetActive(false);
-		directionBonusTextObject.SetActive(false);
-		heightBonusTextObject.SetActive(false);
+		//chainBonusTextObject.SetActive(false);
+		//celestialBonusTextObject.SetActive(false);
+		//directionBonusTextObject.SetActive(false);
+		//heightBonusTextObject.SetActive(false);
 	}
 
 	void Awake()

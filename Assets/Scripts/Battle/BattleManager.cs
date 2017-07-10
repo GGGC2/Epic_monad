@@ -11,6 +11,7 @@ using Battle.Skills;
 public class BattleManager : MonoBehaviour
 {
 	public BattleData battleData = new BattleData();
+	public StageManager stageManager;
 
 	public class LevelData {
 		public int level;
@@ -32,6 +33,7 @@ public class BattleManager : MonoBehaviour
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;
+		battleData.stageManager = FindObjectOfType<StageManager>();
 	}
 
 	public int GetLevelInfoFromJson()
@@ -45,13 +47,9 @@ public class BattleManager : MonoBehaviour
 
 	void Start()
 	{
-		//battleData.partyLevel = Save.PartyDB.GetPartyLevel();
-		//battleData.partyLevel = GetLevelInfoFromJson();
 		battleData.partyLevel = GameData.level;
 		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
-
 		battleData.selectedUnit = null;
-
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
@@ -247,6 +245,7 @@ public class BattleManager : MonoBehaviour
 
 		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
 		{
+			BattleTriggerChecker.CountBattleCondition(battleData.selectedUnit);
 			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
 			Debug.Log("SelectedUnit retreats");
@@ -256,6 +255,7 @@ public class BattleManager : MonoBehaviour
 
 		if (battleData.deadUnits.Contains(battleData.selectedUnit))
 		{
+			BattleTriggerChecker.CountBattleCondition(battleData.selectedUnit);
 			battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
@@ -531,6 +531,7 @@ public class BattleManager : MonoBehaviour
 	IEnumerator StartPhaseOnGameManager()
 	{
 		battleData.currentPhase++;
+		BattleTriggerChecker.CountBattleCondition();
 
 		yield return StartCoroutine(battleData.unitManager.StartPhase(battleData.currentPhase));
         yield return StartCoroutine(battleData.unitManager.ApplyEachHeal());

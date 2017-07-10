@@ -8,7 +8,6 @@ public class PhaseDisplay : MonoBehaviour {
 	Text standardAPText;
 	UnitManager unitManager;
 	BattleManager battleManager;
-	BattleEndChecker battleEndChecker;
 
 	// Use this for initialization
 	void Start () {
@@ -16,12 +15,11 @@ public class PhaseDisplay : MonoBehaviour {
 		standardAPText = transform.Find("StandardAPText").GetComponent<Text>();
 		unitManager = FindObjectOfType<UnitManager>();
 		battleManager = FindObjectOfType<BattleManager>();
-		battleEndChecker = FindObjectOfType<BattleEndChecker>();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		phaseText.text = "Phase\n" + FindObjectOfType<BattleManager>().GetCurrentPhase() + " / " + battleEndChecker.MaxPhase;
+		phaseText.text = "Phase " + FindObjectOfType<BattleManager>().GetCurrentPhase();
 		// standardAPText.text = "Standard AP : " + unitManager.GetStandardActivityPoint() + "";
 	}
 }

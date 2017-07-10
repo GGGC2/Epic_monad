@@ -157,6 +157,7 @@ public class BattleData
 	public UnitManager unitManager;
 	public UIManager uiManager;
 	public BattleManager battleManager;
+	public StageManager stageManager;
 
 	public class Triggers
 	{
@@ -175,6 +176,7 @@ public class BattleData
 	public Vector2? preSelectedTilePosition;
 	public int indexOfPreSelectedSkillByUser = 0;
 	public int indexOfSelectedSkillByUser = 0;
+	public int rewardPoint;
 	public bool isWaitingUserInput = false;
 	public bool enemyUnitSelected = false;
 

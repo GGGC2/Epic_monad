@@ -14,7 +14,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;
-	Vector2 position;
+	public Vector2 position;
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public bool isHighlight;

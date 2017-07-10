@@ -13,13 +13,7 @@ public class CameraMover : MonoBehaviour {
 	{
 		fixedPosition = new Vector3(position.x, position.y, transform.position.z);
 	}
-
-	// Use this for initialization
-	void Start () {
 	
-	}
-	
-	// Update is called once per frame
 	void Update () {
 		// return to fixedPosition.
 		if (Input.GetKeyDown(KeyCode.Space))

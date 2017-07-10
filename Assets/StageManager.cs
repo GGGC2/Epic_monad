@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class StageManager : MonoBehaviour {
-	public int rewardPoint;
 	public TextAsset mapData;
 	public TextAsset GetMapData()
 	{
@@ -62,7 +61,6 @@ public class StageManager : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
 	void Awake () {
 		//Debug.Log(SceneData.nextDialogueName);
 		if (SceneData.nextStageName != null)

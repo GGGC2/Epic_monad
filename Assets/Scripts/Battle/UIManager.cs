@@ -29,14 +29,14 @@ public class UIManager : MonoBehaviour
 		apBarUI = GameObject.Find("APBarPanel");
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
-		skillCheckUI = GameObject.Find("ApplyOrWaitPanel");
+		skillCheckUI = GameObject.Find("ApplyButton");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
-		skillNamePanelUI = GameObject.Find("SkillNamePanel");
+		//skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovedUICanvas");
 
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
 		cancelButtonUI.SetActive(false);
-		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
+		//skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
 	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) 
@@ -264,7 +264,7 @@ public class UIManager : MonoBehaviour
 	public void SetMovedUICanvasOnCenter(Vector2 position)
 	{
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
-		FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
+		//FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
 		movedUICanvas.transform.position = newPosition;
 	}
 

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-
 using WorldMap;
 using SkillTree;
 
@@ -44,26 +43,19 @@ public class Parser : MonoBehaviour
 		return dialogueDataList;
 	}
 
-	public static List<BattleEndTrigger> GetParsedBattleEndConditionData()
+	public static List<BattleTrigger> GetParsedBattleEndConditionData()
 	{
-		List<BattleEndTrigger> battleEndTriggers = new List<BattleEndTrigger>();
+		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 
 		TextAsset csvFile;
-		if (FindObjectOfType<StageManager>() == null)
-		{
-			BattleEndTrigger battleEndTrigger = new BattleEndTrigger();
-			battleEndTriggers.Add(battleEndTrigger);
-			return battleEndTriggers;
-		}
-
 		csvFile = FindObjectOfType<StageManager>().GetBattleEndConditionData() as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedBattleEndConditionDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++)
 		{
-			BattleEndTrigger battleEndTrigger = new BattleEndTrigger(unparsedBattleEndConditionDataStrings[i]);
-			battleEndTriggers.Add(battleEndTrigger);
+			BattleTrigger battleTrigger = new BattleTrigger(unparsedBattleEndConditionDataStrings[i]);
+			battleEndTriggers.Add(battleTrigger);
 		}
 
 		return battleEndTriggers;

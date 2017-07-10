@@ -3,9 +3,9 @@ using System.Collections;
 
 namespace Enums {
 
-	public enum BattleResult
+	public enum ConditionType
 	{
-		Win, Lose, End
+		Win, Lose, End, Bonus
 	}
 
 	public enum EffectVisualType
