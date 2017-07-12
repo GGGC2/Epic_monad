@@ -12,8 +12,7 @@ public class Reina_3_l_SkillLogic : BasePassiveSkillLogic {
 						x => x.GetIsBuff() && (x.GetCaster() != caster));
 
 		// 갯수 * {40 + (레벨 * 0.5)} %
-		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
-		float ignoreAmount = numberOfBuffFromOtherUnits * (40 + (partyLevel * 0.5f));
+		float ignoreAmount = numberOfBuffFromOtherUnits * (40 + (GameData.level * 0.5f));
 
 		return resistance - ignoreAmount;
 	}

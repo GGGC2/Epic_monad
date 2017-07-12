@@ -17,11 +17,6 @@ public class BattleManager : MonoBehaviour
 		public int level;
 	}
 
-	public int GetPartyLevel()
-	{
-		return battleData.partyLevel;
-	}
-
 	public List<ChainInfo> GetChainList()
 	{
 		return battleData.chainList;
@@ -45,10 +40,15 @@ public class BattleManager : MonoBehaviour
 		return levelData.level;
 	}
 
-	void Start()
-	{
+	void Start(){
+		if(GameData.level == 0){
+			Debug.Log("Set Level 0 --> 1");
+			GameData.level = 1;
+			GameData.SetReqExp();
+		}
+
 		battleData.partyLevel = GameData.level;
-		battleData.unitManager.SetStandardActivityPoint(battleData.partyLevel);
+		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;
 

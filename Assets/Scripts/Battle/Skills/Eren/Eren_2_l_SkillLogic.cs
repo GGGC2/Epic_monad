@@ -13,10 +13,9 @@ public class Eren_2_l_SkillLogic : BasePassiveSkillLogic {
 		if (uniqueStatusEffect != null)
 			stack = uniqueStatusEffect.GetRemainStack();
 		float ignoreAmountPerStack = 0.3f;
-		int partyLevel = MonoBehaviour.FindObjectOfType<BattleManager>().GetPartyLevel();
 		float baseAmountPerLevel = 27;
 
-		resistance -= baseAmountPerLevel + (partyLevel * ignoreAmountPerStack * stack);
+		resistance -= baseAmountPerLevel + (GameData.level * ignoreAmountPerStack * stack);
 		return resistance;
 	}
 }

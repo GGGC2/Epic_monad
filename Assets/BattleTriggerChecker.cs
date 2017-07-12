@@ -8,20 +8,15 @@ using System;
 
 public class BattleTriggerChecker : MonoBehaviour {
 	UnitManager unitManager;
-	BattleData battleData;
-	SceneLoader sceneLoader;
+	public BattleData battleData;
+	public SceneLoader sceneLoader;
+	ResultPanel resultPanel;
 
 	public List<BattleTrigger> battleTriggers = new List<BattleTrigger>();
-	List<int> battleWinTriggers = new List<int>();
-	List<int> battleLoseTriggers = new List<int>();
-	List<BattleTrigger> battleWinConditions = new List<BattleTrigger>();
-	List<BattleTrigger> battleLoseConditions = new List<BattleTrigger>();
-	List<BattleTrigger> battleEndConditions = new List<BattleTrigger>();
-	int minNumberOfTargetUnit;
 	List<Vector2> targetTiles = new List<Vector2>();
 	List<string> reachedTargetUnitNames = new List<string>();
 
-	string nextScriptName;
+	public string nextScriptName;
 
 	public BattleData BattleData
 	{
@@ -38,14 +33,13 @@ public class BattleTriggerChecker : MonoBehaviour {
 		get { return targetTiles; }
 	}
 
-	public List<string> ReachedTargetUnitNames
+	public List<string> ReachedTargetUnitNames	
 	{
 		get { return reachedTargetUnitNames; }
 	}
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.countDown -= 1;
-		Debug.Log("countDown remain : "+trigger.countDown);
 		if(trigger.countDown <= 0 && !trigger.acquired){
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus){
 				trigger.acquired = true;
@@ -53,8 +47,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
-				GameData.AddExp(battleData.rewardPoint);
-				sceneLoader.LoadNextDialogueScene(nextScriptName);
+				resultPanel.gameObject.SetActive(true);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log(trigger.actionType + " " + trigger.unitType);
@@ -67,15 +60,11 @@ public class BattleTriggerChecker : MonoBehaviour {
 		unitManager = battleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
 
-		battleTriggers = Parser.GetParsedBattleTriggerData();
-		Debug.Log("BattleTrigger Count : "+battleTriggers.Count);
-		foreach(BattleTrigger trigger in battleTriggers){
-			Debug.Log(trigger.actionType);
-			Debug.Log(trigger.unitType);
-		}
-		
-		// battleEndTriggers.ForEach(trigger => Debug.Log(trigger.result + ", " + trigger.triggerNumber));
+		resultPanel = FindObjectOfType<ResultPanel>();
+		resultPanel.Checker = this;
+		resultPanel.gameObject.SetActive(false);
 
+		battleTriggers = Parser.GetParsedBattleTriggerData();
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 	}
 
