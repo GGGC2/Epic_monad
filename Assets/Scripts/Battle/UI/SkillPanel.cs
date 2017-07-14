@@ -50,6 +50,21 @@ namespace BattleUI
 			battleManager.CallbackSkillIndex(index);
 		}
 
+		public void Update(){
+			if(battleManager.battleData.currentState == CurrentState.SelectSkill){
+				if(Input.GetKeyDown(KeyCode.A))
+					battleManager.CallbackSkillIndex(1);
+				else if(Input.GetKeyDown(KeyCode.S))
+					battleManager.CallbackSkillIndex(2);
+				else if(Input.GetKeyDown(KeyCode.D))
+					battleManager.CallbackSkillIndex(3);
+				else if(Input.GetKeyDown(KeyCode.F))
+					battleManager.CallbackSkillIndex(4);
+				else if(Input.GetKeyDown(KeyCode.G))
+					battleManager.CallbackSkillIndex(5);
+			}
+		}
+
 		public void CallbackPointerEnterSkillIndex(int index)
 		{
 			battleManager.CallbackPointerEnterSkillIndex(index);			

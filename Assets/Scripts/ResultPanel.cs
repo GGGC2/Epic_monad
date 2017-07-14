@@ -9,6 +9,7 @@ public class ResultPanel : MonoBehaviour
 	public GameObject ExpText;
 	public bool alreadyClicked;
 	public BattleTriggerChecker Checker;
+	public int runningFrame;
 
 	void OnEnable(){
 		UpdateText();
@@ -21,15 +22,23 @@ public class ResultPanel : MonoBehaviour
 	public IEnumerator IClicked(){
 		if(!alreadyClicked){
 			alreadyClicked = true;
+			int expTick = Checker.battleData.rewardPoint/runningFrame;
 			while(Checker.battleData.rewardPoint > 0){
-				GameData.AddExp(1);
-				Checker.battleData.rewardPoint -= 1;
-				UpdateText();
+				if(Checker.battleData.rewardPoint >= expTick)
+					UpdateExp(expTick);
+				else
+					UpdateExp(Checker.battleData.rewardPoint);
 				yield return null;
 			}
 		}
 		else
 			Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+	}
+
+	void UpdateExp(int point){
+		GameData.AddExp(point);
+		Checker.battleData.rewardPoint -= point;
+		UpdateText();
 	}
 
 	void UpdateText(){

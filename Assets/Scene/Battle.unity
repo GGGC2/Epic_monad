@@ -377,6 +377,7 @@ MonoBehaviour:
   ExpText: {fileID: 212214419}
   alreadyClicked: 0
   Checker: {fileID: 0}
+  runningFrame: 30
 --- !u!114 &150496863
 MonoBehaviour:
   m_ObjectHideFlags: 0
