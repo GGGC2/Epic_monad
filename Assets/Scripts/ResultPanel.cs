@@ -13,11 +13,20 @@ public class ResultPanel : MonoBehaviour
 	void OnEnable(){
 		UpdateText();
 	}
+
 	public void Clicked(){
+		StartCoroutine(IClicked());
+	}
+
+	public IEnumerator IClicked(){
 		if(!alreadyClicked){
-			GameData.AddExp(Checker.battleData.rewardPoint);
 			alreadyClicked = true;
-			UpdateText();
+			while(Checker.battleData.rewardPoint > 0){
+				GameData.AddExp(1);
+				Checker.battleData.rewardPoint -= 1;
+				UpdateText();
+				yield return null;
+			}
 		}
 		else
 			Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
