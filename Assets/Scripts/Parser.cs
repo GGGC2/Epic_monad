@@ -52,8 +52,7 @@ public class Parser : MonoBehaviour
 		string csvText = csvFile.text;
 		string[] unparsedBattleEndConditionDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++)
-		{
+		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++){
 			BattleTrigger battleTrigger = new BattleTrigger(unparsedBattleEndConditionDataStrings[i]);
 			battleEndTriggers.Add(battleTrigger);
 		}
