@@ -7,6 +7,7 @@ using LitJson;
 using System;
 using Battle.Turn;
 using Battle.Skills;
+using GameData;
 
 public class BattleManager : MonoBehaviour
 {
@@ -41,13 +42,13 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void Start(){
-		if(GameData.level == 0){
+		if(PartyData.level == 0){
 			Debug.Log("Set Level 0 --> 1");
-			GameData.level = 1;
-			GameData.SetReqExp();
+			PartyData.level = 1;
+			PartyData.SetReqExp();
 		}
 
-		battleData.partyLevel = GameData.level;
+		battleData.partyLevel = PartyData.level;
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;

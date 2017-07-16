@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
 using WorldMap;
 using DG.Tweening;
+using GameData;
 
 public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
@@ -78,7 +78,7 @@ public class SceneLoader : MonoBehaviour{
 	{
 		yield return Fadeout();
 
-		SceneData.nextStageName = nextSceneName;
+		SceneData.stageName = nextSceneName;
 
 		if(nextSceneName == "Stage01" || SceneManager.GetActiveScene().name == "BattleReady")
 			SceneManager.LoadScene("Battle");
@@ -97,8 +97,8 @@ public class SceneLoader : MonoBehaviour{
 		}
 		else
 		{
-			SceneData.nextDialogueName = nextScriptFileName;
-			Debug.Log("input next dialogue - " + SceneData.nextDialogueName);
+			SceneData.dialogueName = nextScriptFileName;
+			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
 			SceneManager.LoadScene("dialogue");
 		}

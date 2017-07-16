@@ -13,7 +13,7 @@ public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		Tile tileUnderTarget = tileManager.GetTile(target.GetPosition());
 		if (tileUnderTarget.GetTileElement() == Enums.Element.Water)
-			resistance -= baseAmountPerLevel + (ignoreAmountPerLevel * GameData.level);
+			resistance -= baseAmountPerLevel + (ignoreAmountPerLevel * GameData.PartyData.level);
 		
 		return resistance;
 	}

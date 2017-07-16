@@ -11,7 +11,7 @@ public class Triana_2_r_SkillLogic : BasePassiveSkillLogic {
 		float baseAmountPerLevel = 41;
 
 		if (caster.GetElement() == Enums.Element.Plant)
-			return bonusAmountPerLevel + (baseAmountPerLevel * GameData.level);
+			return bonusAmountPerLevel + (baseAmountPerLevel * GameData.PartyData.level);
 		else
 			return 0;
 	}

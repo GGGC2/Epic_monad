@@ -165,7 +165,7 @@ public class UnitManager : MonoBehaviour {
 
 	public void SetStandardActivityPoint()
 	{
-		standardActivityPoint = GameData.level + 60;
+		standardActivityPoint = GameData.PartyData.level + 60;
 	}
 
 	public void GenerateUnits ()

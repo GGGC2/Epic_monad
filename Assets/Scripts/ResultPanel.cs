@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using GameData;
 public class ResultPanel : MonoBehaviour
 {
 	public GameObject LevelText;
@@ -36,13 +36,13 @@ public class ResultPanel : MonoBehaviour
 	}
 
 	void UpdateExp(int point){
-		GameData.AddExp(point);
+		PartyData.AddExp(point);
 		Checker.battleData.rewardPoint -= point;
 		UpdateText();
 	}
 
 	void UpdateText(){
-		LevelText.GetComponent<Text>().text = "레벨 : " + GameData.level;
-		ExpText.GetComponent<Text>().text = "경험치 : " + GameData.exp;
+		LevelText.GetComponent<Text>().text = "레벨 : " + PartyData.level;
+		ExpText.GetComponent<Text>().text = "경험치 : " + PartyData.exp;
 	}
 }

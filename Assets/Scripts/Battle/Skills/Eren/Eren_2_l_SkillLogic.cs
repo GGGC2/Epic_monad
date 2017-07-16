@@ -15,7 +15,7 @@ public class Eren_2_l_SkillLogic : BasePassiveSkillLogic {
 		float ignoreAmountPerStack = 0.3f;
 		float baseAmountPerLevel = 27;
 
-		resistance -= baseAmountPerLevel + (GameData.level * ignoreAmountPerStack * stack);
+		resistance -= baseAmountPerLevel + (GameData.PartyData.level * ignoreAmountPerStack * stack);
 		return resistance;
 	}
 }
