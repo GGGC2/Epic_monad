@@ -16,7 +16,7 @@ public class RestAndRecover {
         List<PassiveSkill> passiveSkillList = unit.GetLearnedPassiveSkillList();
         int usingActivityPointToRest = GetRestCostAP(battleData);
 		int maxHealthOfUnit = unit.GetStat(Stat.MaxHealth);
-		int level = battleData.partyLevel;
+		int level = GameData.PartyData.level;
 		//Debug.Log("Float : " + ((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest));
 		//Debug.Log("Int : " + (int)((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest));
 		int recoverHealthDuringRest = (int)((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest);

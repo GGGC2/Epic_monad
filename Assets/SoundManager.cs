@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour {
 
-	StageManager stageManager;
+	BattleManager battleManager;
 	AudioSource audioSource;
 
 	public void PlayBgm(string name)
@@ -17,7 +17,7 @@ public class SoundManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		stageManager = FindObjectOfType<StageManager>();
+		battleManager = FindObjectOfType<BattleManager>();
 		audioSource = gameObject.GetComponent<AudioSource>();
 
 		if (SceneManager.GetActiveScene().name == "Battle")

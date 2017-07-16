@@ -1,9 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace BattleUI
-{
-	public class SkillCheckPannel : MonoBehaviour
-	{
+namespace BattleUI{
+	public class SkillCheckPanel : MonoBehaviour{
 		private BattleManager battleManager;
 
 		public void Start()
