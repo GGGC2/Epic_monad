@@ -45,36 +45,24 @@ public class StageManager : MonoBehaviour {
 	public void Load()
 	{
 		loaded = true;
-		Debug.Log(SceneData.dialogueName);
-		if (SceneData.stageName != null)
-		{
-			string nextStageName = SceneData.stageName;
-			// Debug.Log("Data/" + SceneData.nextStageName + "_map, " + "Data/" + SceneData.nextStageName + "_unit");
-			TextAsset nextMapFile = Resources.Load("Data/" + SceneData.stageName + "_map", typeof(TextAsset)) as TextAsset;
+		GetStageDataFiles();
+	}
+
+	void GetStageDataFiles(){
+		if (SceneData.stageNumber > 0){
+			TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
 			mapData = nextMapFile;
-			TextAsset nextUnitFile = Resources.Load("Data/" + SceneData.stageName + "_unit", typeof(TextAsset)) as TextAsset;
+			TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
 			unitData = nextUnitFile;
-			TextAsset nextBattleEndConditionFile = Resources.Load("Data/" + SceneData.stageName + "_battleEndCondition", typeof(TextAsset)) as TextAsset;
+			TextAsset nextBattleEndConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleEndCondition");
 			battleEndConditionData = nextBattleEndConditionFile;
-			TextAsset nextBgmFile = Resources.Load("Data/" + SceneData.stageName + "_bgm", typeof(TextAsset)) as TextAsset;
+			TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
 			bgmData = nextBgmFile;
 		}
 	}
 
-	void Awake () {
-		//Debug.Log(SceneData.nextDialogueName);
-		if (SceneData.stageName != null)
-		{
-			string nextStageName = SceneData.stageName;
-			// Debug.Log("Data/" + SceneData.nextStageName + "_map, " + "Data/" + SceneData.nextStageName + "_unit");
-			TextAsset nextMapFile = Resources.Load("Data/" + SceneData.stageName + "_map", typeof(TextAsset)) as TextAsset;
-			mapData = nextMapFile;
-			TextAsset nextUnitFile = Resources.Load("Data/" + SceneData.stageName + "_unit", typeof(TextAsset)) as TextAsset;
-			unitData = nextUnitFile;
-			TextAsset nextBattleEndConditionFile = Resources.Load("Data/" + SceneData.stageName + "_battleEndCondition", typeof(TextAsset)) as TextAsset;
-			battleEndConditionData = nextBattleEndConditionFile;
-			TextAsset nextBgmFile = Resources.Load("Data/" + SceneData.stageName + "_bgm", typeof(TextAsset)) as TextAsset;
-			bgmData = nextBgmFile;
-		}
+	void Awake ()
+	{
+		GetStageDataFiles();
 	}
 }
