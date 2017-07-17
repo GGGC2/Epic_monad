@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GameData;
-public class ResultPanel : MonoBehaviour
-{
+
+public class ResultPanel : MonoBehaviour{
 	public GameObject LevelText;
 	public GameObject ExpText;
+	public Image ExpBar;
 	public bool alreadyClicked;
 	public BattleTriggerChecker Checker;
 	public int runningFrame;
 
 	void OnEnable(){
-		UpdateText();
+		UpdatePanel();
 	}
 
 	public void Clicked(){
@@ -38,11 +39,14 @@ public class ResultPanel : MonoBehaviour
 	void UpdateExp(int point){
 		PartyData.AddExp(point);
 		Checker.battleData.rewardPoint -= point;
-		UpdateText();
+		UpdatePanel();
 	}
 
-	void UpdateText(){
+	void UpdatePanel(){
 		LevelText.GetComponent<Text>().text = "레벨 : " + PartyData.level;
 		ExpText.GetComponent<Text>().text = "경험치 : " + PartyData.exp;
+
+		if (PartyData.reqExp != 0)
+			ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
 	}
 }
