@@ -14,10 +14,6 @@ public class BattleManager : MonoBehaviour
 	bool startFinished = false;
 	public BattleData battleData = new BattleData();
 
-	public class LevelData {
-		public int level;
-	}
-
 	public List<ChainInfo> GetChainList()
 	{
 		return battleData.chainList;
@@ -30,15 +26,6 @@ public class BattleManager : MonoBehaviour
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;
-	}
-
-	public int GetLevelInfoFromJson()
-	{
-		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
-		string jsonString = jsonTextAsset.text;
-		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
-
-		return levelData.level;
 	}
 
 	void Start(){
@@ -109,6 +96,7 @@ public class BattleManager : MonoBehaviour
 	IEnumerator ActionAtTurn(Unit unit)
 	{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 
 		Debug.Log(unit.GetName() + "'s turn");
         foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
