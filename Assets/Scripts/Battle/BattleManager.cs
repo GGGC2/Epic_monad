@@ -46,13 +46,14 @@ public class BattleManager : MonoBehaviour
 			Debug.Log("Set Level 0 --> 1");
 			PartyData.level = 1;
 			PartyData.SetReqExp();
-		}
+		}		
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
+
 		startFinished = true;
 		StartCoroutine(InstantiateTurnManager());
 	}

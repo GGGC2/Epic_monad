@@ -13,7 +13,8 @@ public class UIManager : MonoBehaviour
 	APBarPanel apBarUI;
 	GameObject commandUI;
 	GameObject skillUI;
-	GameObject skillCheckUI;
+	SkillCheckPanel skillCheckUI;
+	GameObject WaitButton;
 	GameObject destCheckUI;
 	GameObject unitViewerUI;
 	GameObject selectedUnitViewerUI;
@@ -30,7 +31,8 @@ public class UIManager : MonoBehaviour
 		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
-		skillCheckUI = GameObject.Find("ApplyOrWaitPanel");
+		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
+		WaitButton = GameObject.Find("WaitButton");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
@@ -42,11 +44,10 @@ public class UIManager : MonoBehaviour
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 	}
 
-	void Start()
-	{
+	void Start(){
 		commandUI.SetActive(false);
 		skillUI.SetActive(false);
-		skillCheckUI.SetActive(false);
+		skillCheckUI.gameObject.SetActive(false);
 		destCheckUI.SetActive(false);
 		unitViewerUI.SetActive(false);
 		selectedUnitViewerUI.SetActive(false);
@@ -165,22 +166,23 @@ public class UIManager : MonoBehaviour
 
 	public void SetSkillCheckAP(Unit selectedUnit, Skill selectedSkill)
 	{
-		skillCheckUI.SetActive(true);
+		skillCheckUI.gameObject.SetActive(true);
 		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);
 		string newAPText = "소모 AP : " + requireAP + "\n" +
 			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public void EnableSkillCheckChainButton(bool isPossible)
+	public void EnableSkillCheckWaitButton(bool isPossible)
 	{
-		skillCheckUI.SetActive(true);
-		GameObject.Find("ChainButton").GetComponent<Button>().interactable = isPossible;
+		skillCheckUI.gameObject.SetActive(true);
+		WaitButton.SetActive(isPossible);
+		//GameObject.Find("WaitButton").GetComponent<Button>().interactable = isPossible;
 	}
 
 	public void DisableSkillCheckUI()
 	{
-		skillCheckUI.SetActive(false);
+		skillCheckUI.gameObject.SetActive(false);
 	}
 
 	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint)
