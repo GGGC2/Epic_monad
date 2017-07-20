@@ -186,7 +186,8 @@ public class BattleManager : MonoBehaviour
 
 		foreach (Unit deadUnit in battleData.deadUnits)
 		{
-			BattleTriggerChecker.CountBattleCondition(deadUnit);
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			if (deadUnit == battleData.selectedUnit)
 				continue;
 			// 죽은 유닛에게 추가 이펙트.
@@ -204,7 +205,8 @@ public class BattleManager : MonoBehaviour
 
 		foreach (Unit retreatUnit in battleData.retreatUnits)
 		{
-			BattleTriggerChecker.CountBattleCondition(retreatUnit);
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
@@ -550,14 +552,14 @@ public class BattleManager : MonoBehaviour
 		}
 		return unitData;
 	}
-	public TextAsset battleEndConditionData;
-	public TextAsset GetBattleEndConditionData()
+	public TextAsset battleConditionData;
+	public TextAsset GetBattleConditionData()
 	{
 		if (loaded == false)
 		{
 			Load();
 		}
-		return battleEndConditionData;
+		return battleConditionData;
 	}
 	public TextAsset bgmData;
 	public TextAsset GetBgmData()
@@ -578,15 +580,16 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void GetStageDataFiles(){
-		if (SceneData.stageNumber > 0){
-			TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
-			mapData = nextMapFile;
-			TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
-			unitData = nextUnitFile;
-			TextAsset nextBattleEndConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleEndCondition");
-			battleEndConditionData = nextBattleEndConditionFile;
-			TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
-			bgmData = nextBgmFile;
-		}
+		if (SceneData.stageNumber == 0)
+			SceneData.stageNumber = 1;	
+
+		TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
+		mapData = nextMapFile;
+		TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
+		unitData = nextUnitFile;
+		TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
+		battleConditionData = nextBattleConditionFile;
+		TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
+		bgmData = nextBgmFile;
 	}
 }

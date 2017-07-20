@@ -41,14 +41,14 @@ public class BattleTriggerChecker : MonoBehaviour {
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.countDown -= 1;
 		if(trigger.countDown <= 0 && !trigger.acquired){
-			if(trigger.resultType == BattleTrigger.ResultType.Bonus){
-				trigger.acquired = true;
+			trigger.acquired = true;
+			Debug.Log("TriggerName : "+trigger.korName);
+			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
 				battleData.rewardPoint += trigger.reward;
-			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
 				resultPanel.gameObject.SetActive(true);
-				resultPanel.UpdatePanel();
+				resultPanel.UpdatePanel(0);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log(trigger.actionType + " " + trigger.unitType);
@@ -69,13 +69,12 @@ public class BattleTriggerChecker : MonoBehaviour {
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 	}
 
-	public static void CountBattleCondition(Unit unit){
+	public static void CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
-		Debug.Log("TriggerCount : "+Checker.battleTriggers.Count);
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(trigger.actionType == BattleTrigger.ActionType.Neutralize && Checker.CheckUnitType(trigger, unit))
+			else if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
 				Checker.CountBattleTrigger(trigger);
 		}
 	}
@@ -102,12 +101,18 @@ public class BattleTriggerChecker : MonoBehaviour {
 	}
 
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
-		Debug.Log("UnitType : "+trigger.unitType+", Name : "+unit.name);
 		if(trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any(x => x == unit.name))
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.side == Side.Ally)
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
+			return true;
+		else
+			return false;
+	}
+
+	public bool CheckActionType(BattleTrigger trigger, BattleTrigger.ActionType actionType){
+		if(trigger.actionType == actionType)
 			return true;
 		else
 			return false;
