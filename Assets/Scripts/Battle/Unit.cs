@@ -343,7 +343,7 @@ public class Unit : MonoBehaviour
         float totalMultiplicativeValue = 1.0f;
         foreach (var change in appliedChangeList) {
             if(change.isMultiply == true) {
-                totalMultiplicativeValue *= 1 + change.value/100;
+                totalMultiplicativeValue *= 1 + change.value;
             }
             else {
                 totalAdditiveValue += change.value;
@@ -372,7 +372,7 @@ public class Unit : MonoBehaviour
                     if(statusEffect.GetIsPercent(i)) {
                         amount = amount/100;
                     }
-                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), statusEffect.GetAmount(i)));
+                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), amount));
                 }
         
         // TileStatusEffect로 인한 변동값 계산
@@ -673,12 +673,12 @@ public class Unit : MonoBehaviour
 		unitManager.UpdateUnitOrder();
 	}
 
-	public IEnumerator ApplyTriggerOnPhaseStart()
+	public IEnumerator ApplyTriggerOnPhaseStart(int phase)
 	{
-		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
+		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (StatusEffect statusEffect in statusEffectList) {
             if (statusEffect.GetOriginSkill() != null) {
-                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);
+                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtPhaseStart(this, statusEffect);
             }
         }
     }

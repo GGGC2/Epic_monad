@@ -168,10 +168,10 @@ namespace Battle.Skills
             }
         }
 
-        public override IEnumerator TriggerOnPhaseStart(Unit caster) {		
+        public override IEnumerator TriggerOnPhaseStart(Unit caster, int phase) {		
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    yield return skillLogic.TriggerOnPhaseStart(caster);
+			    yield return skillLogic.TriggerOnPhaseStart(caster, phase);
 		    }
 	    }
 
