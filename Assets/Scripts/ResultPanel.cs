@@ -7,14 +7,11 @@ using GameData;
 public class ResultPanel : MonoBehaviour{
 	public GameObject LevelText;
 	public GameObject ExpText;
+	public GameObject ScoreText;
 	public Image ExpBar;
 	public bool alreadyClicked;
 	public BattleTriggerChecker Checker;
 	public int runningFrame;
-
-	void OnEnable(){
-		UpdatePanel();
-	}
 
 	public void Clicked(){
 		StartCoroutine(IClicked());
@@ -42,7 +39,8 @@ public class ResultPanel : MonoBehaviour{
 		UpdatePanel();
 	}
 
-	void UpdatePanel(){
+	public void UpdatePanel(){
+		ScoreText.GetComponent<Text>().text = "점수 : " + Checker.battleData.rewardPoint;
 		LevelText.GetComponent<Text>().text = "레벨 : " + PartyData.level;
 		ExpText.GetComponent<Text>().text = "경험치 : " + PartyData.exp;
 

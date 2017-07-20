@@ -48,6 +48,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
 				resultPanel.gameObject.SetActive(true);
+				resultPanel.UpdatePanel();
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log(trigger.actionType + " " + trigger.unitType);
