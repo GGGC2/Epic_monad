@@ -250,7 +250,7 @@ namespace Battle.Turn {
                 Debug.Log("\\------- Damage preview -------/");
 
                 bool isChainPossible = CheckChainPossible(battleData);
-                battleData.uiManager.EnableSkillCheckChainButton(isChainPossible);
+                battleData.uiManager.EnableSkillCheckWaitButton(isChainPossible);
                 Skill selectedSkill = battleData.SelectedSkill;
                 battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
 
@@ -358,7 +358,10 @@ namespace Battle.Turn {
         }
 
         private static bool CheckChainPossible(BattleData battleData) {
-            bool isPossible = false;
+			if (GameData.SceneData.stageNumber <= 1)
+				return false;
+
+			bool isPossible = false;
             Unit caster = battleData.selectedUnit;
 
             // ap 조건으로 체크.

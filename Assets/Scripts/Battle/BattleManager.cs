@@ -7,15 +7,12 @@ using LitJson;
 using System;
 using Battle.Turn;
 using Battle.Skills;
+using GameData;
 
 public class BattleManager : MonoBehaviour
 {
+	bool startFinished = false;
 	public BattleData battleData = new BattleData();
-	public StageManager stageManager;
-
-	public class LevelData {
-		public int level;
-	}
 
 	public List<ChainInfo> GetChainList()
 	{
@@ -24,35 +21,28 @@ public class BattleManager : MonoBehaviour
 
 	void Awake ()
 	{
+		GetStageDataFiles();
 		battleData.tileManager = FindObjectOfType<TileManager>();
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;
-		battleData.stageManager = FindObjectOfType<StageManager>();
-	}
-
-	public int GetLevelInfoFromJson()
-	{
-		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
-		string jsonString = jsonTextAsset.text;
-		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
-
-		return levelData.level;
 	}
 
 	void Start(){
-		if(GameData.level == 0){
+		if(PartyData.level == 0){
 			Debug.Log("Set Level 0 --> 1");
-			GameData.level = 1;
-			GameData.SetReqExp();
-		}
+			PartyData.level = 1;
+			PartyData.SetReqExp();
+		}		
 
-		battleData.partyLevel = GameData.level;
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
+
+		startFinished = true;
+		StartCoroutine(InstantiateTurnManager());
 	}
 
 	public int GetCurrentPhase()
@@ -72,39 +62,41 @@ public class BattleManager : MonoBehaviour
 
 	public IEnumerator InstantiateTurnManager()
 	{
-        yield return new WaitForSeconds(0.5f);
-		while (true)
-		{
-			yield return StartCoroutine(StartPhaseOnGameManager());
-
-            battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
-
-			while (battleData.readiedUnits.Count != 0) {
-                battleData.selectedUnit = battleData.readiedUnits[0];
-                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-				if (battleData.selectedUnit.GetSide() == Side.Enemy)
-				{
-					// yield return AIStates_old.AIStart(battleData);
-					yield return AIStates.AIStart(battleData);
-				}
-				else
-				{
-					yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
-				}
-				battleData.selectedUnit = null;
+        if(startFinished && battleData.uiManager.startFinished){
+			while (true)
+			{
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
-				yield return null;
-			}
 
-			yield return StartCoroutine(EndPhaseOnGameManager());
+				while (battleData.readiedUnits.Count != 0) {
+					battleData.selectedUnit = battleData.readiedUnits[0];
+					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
+					if (battleData.selectedUnit.GetSide() == Side.Enemy)
+					{
+						// yield return AIStates_old.AIStart(battleData);
+						yield return AIStates.AIStart(battleData);
+					}
+					else
+					{
+						yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
+					}
+					battleData.selectedUnit = null;
+
+					battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
+					yield return null;
+				}
+
+				yield return StartCoroutine(EndPhaseOnGameManager());
+			}
 		}
 	}
 
 	IEnumerator ActionAtTurn(Unit unit)
 	{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 
 		Debug.Log(unit.GetName() + "'s turn");
         foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
@@ -536,5 +528,65 @@ public class BattleManager : MonoBehaviour
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);
+	}
+
+	//이하는 StageManager의 Load기능 통합
+	public TextAsset mapData;
+	public TextAsset GetMapData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return mapData;
+	}
+
+	public TextAsset unitData;
+	public TextAsset GetUnitData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return unitData;
+	}
+	public TextAsset battleEndConditionData;
+	public TextAsset GetBattleEndConditionData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return battleEndConditionData;
+	}
+	public TextAsset bgmData;
+	public TextAsset GetBgmData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return bgmData;
+	}
+
+	private bool loaded = false;
+
+	public void Load()
+	{
+		loaded = true;
+		GetStageDataFiles();
+	}
+
+	void GetStageDataFiles(){
+		if (SceneData.stageNumber > 0){
+			TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
+			mapData = nextMapFile;
+			TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
+			unitData = nextUnitFile;
+			TextAsset nextBattleEndConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleEndCondition");
+			battleEndConditionData = nextBattleEndConditionFile;
+			TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
+			bgmData = nextBgmFile;
+		}
 	}
 }

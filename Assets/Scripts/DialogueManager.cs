@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using GameData;
 
 public class DialogueManager : MonoBehaviour {
 
@@ -72,8 +73,9 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (Data.GetCommandType () == "load_battle")
 		{
-			string nextSceneName = Data.GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene(nextSceneName);
+			Debug.Log(Data.GetCommandSubType());
+			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
+			FindObjectOfType<SceneLoader>().LoadNextBattleScene();
 			return Data.GetCommandType();
 		}
 		else if(Data.GetCommandType() == "load_worldmap")
@@ -254,10 +256,10 @@ public class DialogueManager : MonoBehaviour {
 
 	void Initialize()
 	{
-		Debug.Log(SceneData.nextDialogueName);
-        if (SceneData.nextDialogueName != null)
+		Debug.Log(SceneData.dialogueName);
+        if (SceneData.dialogueName != null)
         {
-            TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.nextDialogueName, typeof(TextAsset)) as TextAsset;
+            TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.dialogueName, typeof(TextAsset)) as TextAsset;
             dialogueData = nextScriptFile;
         }
 

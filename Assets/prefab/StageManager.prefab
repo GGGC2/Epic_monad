@@ -5,11 +5,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 407154}
-  - 114: {fileID: 11472570}
-  - 114: {fileID: 11462164}
+  - component: {fileID: 407154}
+  - component: {fileID: 11462164}
+  - component: {fileID: 114722528710428942}
   m_Layer: 0
   m_Name: StageManager
   m_TagString: Untagged
@@ -29,6 +29,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11462164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,23 +41,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c06a810d9114203ace368e70dcaf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isBattleEnd: 0
-  minNumberOfTargetUnit: 0
-  minNumberOfAlly: 0
-  minNumberOfEnemy: 0
---- !u!114 &11472570
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 119434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abdfdd0cc737c4c3eacd057149883675, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapData: {fileID: 4900000, guid: 4eba42b3fb8c9480bac9709ddfb11cab, type: 3}
-  unitData: {fileID: 4900000, guid: ba9fbe18369944e1c82bda44c8ecacd2, type: 3}
+  sceneLoader: {fileID: 0}
+  nextScriptName: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -68,3 +54,20 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 119434}
   m_IsPrefabParent: 1
+--- !u!114 &114722528710428942
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 983715c2feff24b5cb0c10c6df350860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleManager: {fileID: 0}
+  mapData: {fileID: 4900000, guid: 1a933926a248348cb9e4a025b706ba50, type: 3}
+  unitData: {fileID: 4900000, guid: 27d72ba83af934bea9963b30b10cf732, type: 3}
+  battleEndConditionData: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5,
+    type: 3}
+  bgmData: {fileID: 0}

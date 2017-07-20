@@ -6,38 +6,29 @@ using UnityEngine.UI;
 public class TutorialManager : MonoBehaviour {
 
 	int index;
-	readonly int maxIndex = 9;
-
 	public Image image;
 	CameraMover cm;
 
-	// Use this for initialization
 	void Start () {
-		index = 1;
+		index = 0;
 
 		cm = FindObjectOfType<CameraMover>();
 		cm.mouseMoveActive = false;
 		cm.keyboardMoveActive = false;
+
+		OnClick();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	void OnClick(){
+		index += 1;
+		Sprite newSprite = Resources.Load<Sprite>("Tutorial/" + GameData.SceneData.stageNumber.ToString() + "_" + index.ToString());
 
-	public void OnClick() {
-		if (index < maxIndex)
-		{
-			index++;
-			Sprite newSprite = Resources.Load("Tutorial/tutorial" + index.ToString(), typeof(Sprite)) as Sprite;
-			image.sprite = newSprite;
-		}
-		else if (index == maxIndex)
-		{
+		if(newSprite == null){
 			cm.mouseMoveActive = true;
 			cm.keyboardMoveActive = true;
 			gameObject.SetActive(false);
 		}
-			
+		else
+			image.sprite = newSprite;
 	}
 }

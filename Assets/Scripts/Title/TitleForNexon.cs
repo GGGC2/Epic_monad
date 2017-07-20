@@ -2,9 +2,9 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using DG.Tweening;
-
 using Save;
 using WorldMap;
+using GameData;
 
 public class TitleForNexon : MonoBehaviour
 {
@@ -27,9 +27,9 @@ public class TitleForNexon : MonoBehaviour
 
 	public void OnLowLevelClicked()
 	{
-		GameData.level = 1;
-		GameData.exp = 0;
-		GameData.reqExp = 100;
+		PartyData.level = 1;
+		PartyData.exp = 0;
+		PartyData.reqExp = 100;
 
 		SaveDataCenter.Reset();
 		SaveData saveData = SaveDataCenter.GetSaveData();

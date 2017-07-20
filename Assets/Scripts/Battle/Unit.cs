@@ -781,7 +781,7 @@ public class Unit : MonoBehaviour
 
 	void ApplyStats()
 	{
-		float partyLevel = (float)GameData.level;
+		float partyLevel = (float)GameData.PartyData.level;
 
         actualHealth = new ActualStat(baseHealth, Stat.MaxHealth);
         actualPower  = new ActualStat(basePower, Stat.Power);
@@ -821,7 +821,7 @@ public class Unit : MonoBehaviour
                                List<StatusEffectInfo> statusEffectInfoList,
                                List<TileStatusEffectInfo> tileStatusEffectInfoList,
                                List<PassiveSkillInfo> passiveSkillInfoList) {
-        int partyLevel = GameData.level;
+        int partyLevel = GameData.PartyData.level;
 
         foreach (var skillInfo in skillInfoList) {
             if ((skillInfo.GetOwner() == nameInCode) &&

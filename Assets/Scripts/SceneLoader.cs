@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
 using WorldMap;
 using DG.Tweening;
+using GameData;
 
 public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
@@ -17,11 +17,11 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene(string nextSceneName)
+	public void LoadNextBattleScene()
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
-		StartCoroutine(FadeoutAndLoadBattleScene(nextSceneName));
+		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
@@ -74,13 +74,11 @@ public class SceneLoader : MonoBehaviour{
 		}
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene(string nextSceneName)
+	IEnumerator FadeoutAndLoadBattleScene()
 	{
 		yield return Fadeout();
 
-		SceneData.nextStageName = nextSceneName;
-
-		if(nextSceneName == "Stage01" || SceneManager.GetActiveScene().name == "BattleReady")
+		if(SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
 			SceneManager.LoadScene("Battle");
 		else
 			SceneManager.LoadScene("BattleReady");			
@@ -97,8 +95,8 @@ public class SceneLoader : MonoBehaviour{
 		}
 		else
 		{
-			SceneData.nextDialogueName = nextScriptFileName;
-			Debug.Log("input next dialogue - " + SceneData.nextDialogueName);
+			SceneData.dialogueName = nextScriptFileName;
+			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
 			SceneManager.LoadScene("dialogue");
 		}

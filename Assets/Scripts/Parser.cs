@@ -48,12 +48,11 @@ public class Parser : MonoBehaviour
 		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 
 		TextAsset csvFile;
-		csvFile = FindObjectOfType<StageManager>().GetBattleEndConditionData() as TextAsset;
+		csvFile = FindObjectOfType<BattleManager>().GetBattleEndConditionData() as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedBattleEndConditionDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++)
-		{
+		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++){
 			BattleTrigger battleTrigger = new BattleTrigger(unparsedBattleEndConditionDataStrings[i]);
 			battleEndTriggers.Add(battleTrigger);
 		}
@@ -65,11 +64,12 @@ public class Parser : MonoBehaviour
 	{
 		List<UnitInfo> unitInfoList = new List<UnitInfo>();
 
-		TextAsset csvFile;
-		if (FindObjectOfType<StageManager>() != null)
-			csvFile = FindObjectOfType<StageManager>().GetUnitData() as TextAsset;
+		TextAsset csvFile = null;
+		if (FindObjectOfType<BattleManager>() != null)
+			csvFile = FindObjectOfType<BattleManager>().GetUnitData() as TextAsset;
 		else
-			csvFile = Resources.Load("Data/testStageUnitData") as TextAsset;
+			Debug.LogError("No BattleManager");
+			//csvFile = Resources.Load("Data/testStageUnitData") as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedUnitInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -222,8 +222,8 @@ public class Parser : MonoBehaviour
 		List<TileInfo> tileInfoList = new List<TileInfo>();
 
 		TextAsset csvFile;
-		if (FindObjectOfType<StageManager>() != null)
-			csvFile = FindObjectOfType<StageManager>().GetMapData() as TextAsset;
+		if (FindObjectOfType<BattleManager>() != null)
+			csvFile = FindObjectOfType<BattleManager>().GetMapData() as TextAsset;
 		else
 			csvFile = Resources.Load("Data/testMapData") as TextAsset;
 		string csvText = csvFile.text;

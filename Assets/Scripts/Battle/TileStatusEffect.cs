@@ -236,7 +236,7 @@ public class TileStatusEffect {
         float result = 0;
         StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
         if (seVarEnum == StatusEffectVar.Level)
-            result = GameData.level;
+            result = GameData.PartyData.level;
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
             result = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
         else if (seVarEnum == StatusEffectVar.Power)
