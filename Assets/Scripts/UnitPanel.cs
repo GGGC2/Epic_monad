@@ -9,16 +9,31 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	public bool AvailableOrSelected;
 	public ReadyManager Manager;
 
+	UnitViewer unitViewer;
+	Text nameText;
+	Image characterIllust;
+	Image unitImage;
+	
+	void Start()
+	{
+		nameText = GameObject.Find("NameText").GetComponent<Text>();
+		characterIllust = GameObject.Find("CharacterIllust").GetComponent<Image>();
+		unitImage = GameObject.Find("UnitImage").GetComponent<Image>();
+		unitViewer = GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>();
+	}
+
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(unitName != "unselected"){
-			GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
-			GameObject.Find("UnitImage").GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/"+unitName+"_2");
-			GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>().UpdateUnitViewer(unitName);
+			nameText.text = ToKorean(unitName);
+			characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
+			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
+			unitImage.sprite = sprites[3] as Sprite;
+			unitViewer.UpdateUnitViewer(unitName);
 		}
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
-		GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>().Clear();
+		unitViewer.Clear();
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
@@ -50,7 +65,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 
 	public void ChangeIllust()
 	{
-		GameObject.Find("CharacterIllust").GetComponent<Image>().sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
+		characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
 	}
 
 	public void SetNameAndSprite(string name)
@@ -61,5 +76,19 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_placeholder");
 		else
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + unitName);		
+	}
+
+	string ToKorean(string unitName)
+	{
+		switch (unitName)
+		{
+			case "noel":		return "노엘";
+			case "grenev":		return "그레네브";
+			case "sepia":		return "세피아";
+			case "arcadia":		return "아르카디아";
+			case "darkenir":	return "달케니르";
+			case "yeong":		return "영";
+			default:			return "--";
+		}
 	}
 }
