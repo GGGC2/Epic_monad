@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 48ff99d94a0434cde9b8c00cb2a7d5c9
-timeCreated: 1500653428
+guid: a57d8cbfd201846f4b52a348896f045a
+timeCreated: 1500653407
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: grenev_0
-    21300002: grenev_1
-    21300004: grenev_2
-    21300006: grenev_3
+    21300000: arcadia_0
+    21300002: arcadia_1
+    21300004: arcadia_2
+    21300006: arcadia_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -82,7 +82,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: grenev_0
+      name: arcadia_0
       rect:
         serializedVersion: 2
         x: 0
@@ -95,7 +95,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_1
+      name: arcadia_1
       rect:
         serializedVersion: 2
         x: 250
@@ -108,7 +108,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_2
+      name: arcadia_2
       rect:
         serializedVersion: 2
         x: 500
@@ -121,7 +121,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_3
+      name: arcadia_3
       rect:
         serializedVersion: 2
         x: 750

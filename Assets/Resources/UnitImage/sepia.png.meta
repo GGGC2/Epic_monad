@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 48ff99d94a0434cde9b8c00cb2a7d5c9
-timeCreated: 1500653428
+guid: 09a62955735a148679af5da6296777ed
+timeCreated: 1500653462
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: grenev_0
-    21300002: grenev_1
-    21300004: grenev_2
-    21300006: grenev_3
+    21300000: sepia_0
+    21300002: sepia_1
+    21300004: sepia_2
+    21300006: sepia_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -82,7 +82,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: grenev_0
+      name: sepia_0
       rect:
         serializedVersion: 2
         x: 0
@@ -95,7 +95,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_1
+      name: sepia_1
       rect:
         serializedVersion: 2
         x: 250
@@ -108,7 +108,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_2
+      name: sepia_2
       rect:
         serializedVersion: 2
         x: 500
@@ -121,7 +121,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: grenev_3
+      name: sepia_3
       rect:
         serializedVersion: 2
         x: 750
