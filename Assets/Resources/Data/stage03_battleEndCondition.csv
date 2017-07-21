@@ -1,0 +1,6 @@
+ResultType,UnitType,ActionType,CountDown,Reward,etc
+Win,6
+Win,14,7,16,1,16,2,16,3,16,4,16,5,16,6,16,7
+Lose,1,20
+Lose,5
+End,Scene#3-1
