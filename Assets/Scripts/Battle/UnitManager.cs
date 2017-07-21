@@ -192,6 +192,9 @@ public class UnitManager : MonoBehaviour {
 						unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
 						unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
 						unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
+						unitInfo.element = UnitInfo.GetElement(PCName);
+						unitInfo.celestial = UnitInfo.GetCelestial(PCName);
 					}
 					
 					GeneratedPC += 1;
