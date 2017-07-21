@@ -7,12 +7,14 @@ using BattleUI;
 
 public class UIManager : MonoBehaviour
 {
+	public bool startFinished = false;
 	const int skillButtonCount = 5;
 
-	GameObject apBarUI;
+	APBarPanel apBarUI;
 	GameObject commandUI;
 	GameObject skillUI;
-	GameObject skillCheckUI;
+	SkillCheckPanel skillCheckUI;
+	GameObject WaitButton;
 	GameObject destCheckUI;
 	GameObject unitViewerUI;
 	GameObject selectedUnitViewerUI;
@@ -24,12 +26,13 @@ public class UIManager : MonoBehaviour
 
 	GameObject notImplementedDebugPanel;
 
-	private void Awake()
+	void Awake()
 	{
-		apBarUI = GameObject.Find("APBarPanel");
+		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
-		skillCheckUI = GameObject.Find("ApplyOrWaitPanel");
+		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
+		WaitButton = GameObject.Find("WaitButton");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
 		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
@@ -38,15 +41,13 @@ public class UIManager : MonoBehaviour
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovedUICanvas");
-
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 	}
 
-	private void Start()
-	{
+	void Start(){
 		commandUI.SetActive(false);
 		skillUI.SetActive(false);
-		skillCheckUI.SetActive(false);
+		skillCheckUI.gameObject.SetActive(false);
 		destCheckUI.SetActive(false);
 		unitViewerUI.SetActive(false);
 		selectedUnitViewerUI.SetActive(false);
@@ -54,12 +55,15 @@ public class UIManager : MonoBehaviour
 		selectDirectionUI.gameObject.SetActive(false);
 		cancelButtonUI.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
+
+		startFinished = true;
+		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
 	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) 
 	{
-		apBarUI.SetActive(true);
-		apBarUI.GetComponent<APBarPannel>().UpdateAPDisplay(battleData, allUnits);
+		apBarUI.gameObject.SetActive(true);
+		apBarUI.UpdateAPDisplay(battleData, allUnits);
 	}
 
 	public void SetCommandUIName(Unit selectedUnit)
@@ -162,22 +166,23 @@ public class UIManager : MonoBehaviour
 
 	public void SetSkillCheckAP(Unit selectedUnit, Skill selectedSkill)
 	{
-		skillCheckUI.SetActive(true);
+		skillCheckUI.gameObject.SetActive(true);
 		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);
 		string newAPText = "소모 AP : " + requireAP + "\n" +
 			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public void EnableSkillCheckChainButton(bool isPossible)
+	public void EnableSkillCheckWaitButton(bool isPossible)
 	{
-		skillCheckUI.SetActive(true);
-		GameObject.Find("ChainButton").GetComponent<Button>().interactable = isPossible;
+		skillCheckUI.gameObject.SetActive(true);
+		WaitButton.SetActive(isPossible);
+		//GameObject.Find("WaitButton").GetComponent<Button>().interactable = isPossible;
 	}
 
 	public void DisableSkillCheckUI()
 	{
-		skillCheckUI.SetActive(false);
+		skillCheckUI.gameObject.SetActive(false);
 	}
 
 	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint)

@@ -407,7 +407,6 @@ public class UnitManager : MonoBehaviour {
         LoadTileStatusEffects();
 		GenerateUnits();
         GetEnemyUnits();
-		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
 	public void UpdateUnitOrder ()

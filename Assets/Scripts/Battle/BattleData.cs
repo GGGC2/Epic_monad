@@ -157,7 +157,6 @@ public class BattleData
 	public UnitManager unitManager;
 	public UIManager uiManager;
 	public BattleManager battleManager;
-	public StageManager stageManager;
 
 	public class Triggers
 	{
@@ -210,9 +209,6 @@ public class BattleData
 
 	// temp values.
 	public int chainDamageFactor = 1;
-
-	// Load from json.
-	public int partyLevel;
 
 	public APAction previewAPAction;
 

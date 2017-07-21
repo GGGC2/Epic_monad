@@ -11,7 +11,7 @@ public class ReadyManager : MonoBehaviour{
 	void Start()
 	{
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
-		string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageName);
+		string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
 
 		for (int i = 2; i < 20; i++)
 		{
@@ -41,7 +41,7 @@ public class ReadyManager : MonoBehaviour{
 	{
 		if(Input.GetKeyDown(KeyCode.A))
 		{
-			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene(SceneData.stageName);
+			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene();
 		}
 	}
 }

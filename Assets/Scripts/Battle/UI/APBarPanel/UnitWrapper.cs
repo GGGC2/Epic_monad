@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BattleUI.APBarPannels
+namespace BattleUI.APBarPanels
 {
 	public class UnitWrapper
 	{

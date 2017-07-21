@@ -11,12 +11,8 @@ using GameData;
 
 public class BattleManager : MonoBehaviour
 {
+	bool startFinished = false;
 	public BattleData battleData = new BattleData();
-	public StageManager stageManager;
-
-	public class LevelData {
-		public int level;
-	}
 
 	public List<ChainInfo> GetChainList()
 	{
@@ -25,20 +21,11 @@ public class BattleManager : MonoBehaviour
 
 	void Awake ()
 	{
+		GetStageDataFiles();
 		battleData.tileManager = FindObjectOfType<TileManager>();
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;
-		battleData.stageManager = FindObjectOfType<StageManager>();
-	}
-
-	public int GetLevelInfoFromJson()
-	{
-		TextAsset jsonTextAsset = Resources.Load("Data/PartyData") as TextAsset;
-		string jsonString = jsonTextAsset.text;
-		LevelData levelData = JsonMapper.ToObject<LevelData>(jsonString);
-
-		return levelData.level;
 	}
 
 	void Start(){
@@ -46,14 +33,16 @@ public class BattleManager : MonoBehaviour
 			Debug.Log("Set Level 0 --> 1");
 			PartyData.level = 1;
 			PartyData.SetReqExp();
-		}
+		}		
 
-		battleData.partyLevel = PartyData.level;
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
+
+		startFinished = true;
+		StartCoroutine(InstantiateTurnManager());
 	}
 
 	public int GetCurrentPhase()
@@ -73,39 +62,41 @@ public class BattleManager : MonoBehaviour
 
 	public IEnumerator InstantiateTurnManager()
 	{
-        yield return new WaitForSeconds(0.5f);
-		while (true)
-		{
-			yield return StartCoroutine(StartPhaseOnGameManager());
-
-            battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
-
-			while (battleData.readiedUnits.Count != 0) {
-                battleData.selectedUnit = battleData.readiedUnits[0];
-                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-				if (battleData.selectedUnit.GetSide() == Side.Enemy)
-				{
-					// yield return AIStates_old.AIStart(battleData);
-					yield return AIStates.AIStart(battleData);
-				}
-				else
-				{
-					yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
-				}
-				battleData.selectedUnit = null;
+        if(startFinished && battleData.uiManager.startFinished){
+			while (true)
+			{
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
-				yield return null;
-			}
 
-			yield return StartCoroutine(EndPhaseOnGameManager());
+				while (battleData.readiedUnits.Count != 0) {
+					battleData.selectedUnit = battleData.readiedUnits[0];
+					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
+					if (battleData.selectedUnit.GetSide() == Side.Enemy)
+					{
+						// yield return AIStates_old.AIStart(battleData);
+						yield return AIStates.AIStart(battleData);
+					}
+					else
+					{
+						yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
+					}
+					battleData.selectedUnit = null;
+
+					battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
+					yield return null;
+				}
+
+				yield return StartCoroutine(EndPhaseOnGameManager());
+			}
 		}
 	}
 
 	IEnumerator ActionAtTurn(Unit unit)
 	{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 
 		Debug.Log(unit.GetName() + "'s turn");
         foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
@@ -195,7 +186,8 @@ public class BattleManager : MonoBehaviour
 
 		foreach (Unit deadUnit in battleData.deadUnits)
 		{
-			BattleTriggerChecker.CountBattleCondition(deadUnit);
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			if (deadUnit == battleData.selectedUnit)
 				continue;
 			// 죽은 유닛에게 추가 이펙트.
@@ -213,7 +205,8 @@ public class BattleManager : MonoBehaviour
 
 		foreach (Unit retreatUnit in battleData.retreatUnits)
 		{
-			BattleTriggerChecker.CountBattleCondition(retreatUnit);
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
@@ -537,5 +530,66 @@ public class BattleManager : MonoBehaviour
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);
+	}
+
+	//이하는 StageManager의 Load기능 통합
+	public TextAsset mapData;
+	public TextAsset GetMapData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return mapData;
+	}
+
+	public TextAsset unitData;
+	public TextAsset GetUnitData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return unitData;
+	}
+	public TextAsset battleConditionData;
+	public TextAsset GetBattleConditionData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return battleConditionData;
+	}
+	public TextAsset bgmData;
+	public TextAsset GetBgmData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return bgmData;
+	}
+
+	private bool loaded = false;
+
+	public void Load()
+	{
+		loaded = true;
+		GetStageDataFiles();
+	}
+
+	void GetStageDataFiles(){
+		if (SceneData.stageNumber == 0)
+			SceneData.stageNumber = 1;	
+
+		TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
+		mapData = nextMapFile;
+		TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
+		unitData = nextUnitFile;
+		TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
+		battleConditionData = nextBattleConditionFile;
+		TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
+		bgmData = nextBgmFile;
 	}
 }

@@ -1,6 +1,0 @@
-ResultType,UnitType,ActionType,CountDown,Reward,etc
-Win,Enemy,Neutralize,1,100
-Win,Ally,Reach,2,100,7,16,1,16,2,16,3,16,4,16,5,16,6,16,7
-Lose,None,Phase,20,0
-Lose,Ally,Neutralize,1,0
-End,Scene#2-1

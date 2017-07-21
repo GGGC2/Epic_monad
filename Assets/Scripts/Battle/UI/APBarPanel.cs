@@ -3,13 +3,13 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
-using BattleUI.APBarPannels;
+using BattleUI.APBarPanels;
 using Enums;
 using Util;
 
 namespace BattleUI
 {
-	public class APBarPannel : MonoBehaviour {
+	public class APBarPanel : MonoBehaviour {
 		private GameObject bigProfile;
 		private List<GameObject> otherProfiles = new List<GameObject>();
 		private List<GameObject> turnSeperateBars = new List<GameObject>();

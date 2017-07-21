@@ -21,7 +21,7 @@ public class TutorialManager : MonoBehaviour {
 	
 	void OnClick(){
 		index += 1;
-		Sprite newSprite = Resources.Load<Sprite>("Tutorial/" + GameData.SceneData.stageName + index.ToString());
+		Sprite newSprite = Resources.Load<Sprite>("Tutorial/" + GameData.SceneData.stageNumber.ToString() + "_" + index.ToString());
 
 		if(newSprite == null){
 			cm.mouseMoveActive = true;
