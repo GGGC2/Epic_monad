@@ -49,7 +49,8 @@ public class UnitViewer : MonoBehaviour {
 
 	public void UpdateUnitViewer(string unitName){
 		Debug.Assert(unitName != "unselected");
-		hpText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Health).ToString();
+		string hpString = UnitInfo.GetStat(unitName, UnitInfo.StatType.Health).ToString();
+		hpText.text = hpString + "/" + hpString;
 		powerText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Power).ToString();
 		defenseText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Defense).ToString();
 		resistanceText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Resist).ToString();
@@ -64,14 +65,18 @@ public class UnitViewer : MonoBehaviour {
 	}
 
 	public void Clear(){
-		hpText.text = "";
+		Sprite transparentSprite = Resources.Load<Sprite>("Icon/transparent");
+
+		hpText.text = "--/--";
 		powerText.text = "";
 		defenseText.text = "";
 		resistanceText.text = "";
-		apText.text = "";
-		classImage.sprite = Resources.Load<Sprite>("Icon/transparent");
-		elementImage.sprite = Resources.Load<Sprite>("Icon/transparent");
-		celestialImage.sprite = Resources.Load<Sprite>("Icon/transparent");
+		apText.text = "--(+--)";
+		nameText.text = "--";
+		classImage.sprite = transparentSprite;
+		elementImage.sprite = transparentSprite;
+		celestialImage.sprite = transparentSprite;
+		unitImage.sprite = transparentSprite;
 	}
 
 	void UpdateEffect(Unit unit)

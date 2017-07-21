@@ -280,10 +280,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 1448435037219410, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
-      propertyPath: m_Name
-      value: MovedUICanvas
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
   m_IsPrefabParent: 0
@@ -810,6 +806,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
