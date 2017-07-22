@@ -157,7 +157,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bgm")
 		{
-			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
+			string bgmName = dialogueDataList [line].GetCommandSubType ();
+			SoundManager.Instance.PlayBgm(bgmName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bg")
 		{
@@ -166,7 +167,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "se")
 		{
-			// Not implement yet.
+			string SEName = dialogueDataList [line].GetCommandSubType ();
+			SoundManager.Instance.PlaySE (SEName);
 		}
 		else
 		{
