@@ -47,14 +47,17 @@ public class BattleTriggerChecker : MonoBehaviour {
 				battleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
-				resultPanel.gameObject.SetActive(true);
-				resultPanel.UpdatePanel(0);
+				DisplayResultPanel ();
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log(trigger.actionType + " " + trigger.unitType);
 				sceneLoader.LoadNextDialogueScene("Title");
 			}
 		}
+	}
+	private void DisplayResultPanel(){
+		resultPanel.gameObject.SetActive(true);
+		resultPanel.UpdatePanel(0);
 	}
 	void Start () {
 		battleData = FindObjectOfType<BattleManager>().battleData;
@@ -67,6 +70,12 @@ public class BattleTriggerChecker : MonoBehaviour {
 
 		battleTriggers = Parser.GetParsedBattleTriggerData();
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
+	}
+
+	void Update(){
+		if (Input.GetKeyDown (KeyCode.CapsLock)) {
+			DisplayResultPanel ();
+		}
 	}
 
 	public static void CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
