@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 114630687992352614}
+  usedSceneName: Battle
 --- !u!114 &114879711850586500
 MonoBehaviour:
   m_ObjectHideFlags: 1
