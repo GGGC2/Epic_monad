@@ -88,6 +88,9 @@ public static class SkillLogicFactory
             case "잘근잘근 덫":
             skillLogic = new Bianca_1_l_SkillLogic();
             break;
+            case "떠밀기":
+            skillLogic = new Bianca_1_r_SkillLogic();
+            break;
 
             //세피아
             case "반달베기":
