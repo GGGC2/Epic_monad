@@ -614,6 +614,18 @@ Prefab:
       propertyPath: m_AnchoredPosition.x
       value: 503.56
       objectReference: {fileID: 0}
+    - target: {fileID: 1398139091624678, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430066998489090, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1503834048013012, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
@@ -743,6 +755,11 @@ Prefab:
       propertyPath: m_Name
       value: BattleManager
       objectReference: {fileID: 0}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: battleConditionData
+      value: 
+      objectReference: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0

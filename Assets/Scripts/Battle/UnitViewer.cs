@@ -115,10 +115,8 @@ public class UnitViewer : MonoBehaviour {
 		elementBuffIcon.SetActive(false);
 		elementDebuffIcon.SetActive(false);
 
-		if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement())
-		{
+		if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement() && unit.GetElement() != Element.None)
 			elementBuffIcon.SetActive(true);
-		}
 	}
 
 	void UpdateHp(Unit unit)
