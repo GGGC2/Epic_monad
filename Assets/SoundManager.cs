@@ -3,29 +3,34 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour {
+	private static SoundManager instance = null;
+	public static SoundManager Instance {
+		get { return instance; }
+	}
 
 	BattleManager battleManager;
 	AudioSource audioSource;
 
 	public void PlayBgm(string name)
 	{
-		AudioClip bgm = Resources.Load("Sound/" + name, typeof(AudioClip)) as AudioClip;
-		audioSource.clip = bgm;
 		Debug.Log("Play bgm : " + "Sound/" + name);
-		audioSource.Play();
+		AudioClip bgm = Resources.Load<AudioClip>("Sound/" + name);
+		if(audioSource.clip == null || audioSource.clip != bgm)
+			audioSource.clip = bgm;
+		if(!audioSource.isPlaying)
+			audioSource.Play();
 	}
 
-	// Use this for initialization
 	void Awake () {
+		if (instance != null && instance != this) {
+			Destroy(this.gameObject);
+			return;
+		} else {
+			instance = this;
+		}
+		DontDestroyOnLoad(this.gameObject);
+
 		battleManager = FindObjectOfType<BattleManager>();
 		audioSource = gameObject.GetComponent<AudioSource>();
-
-		if (SceneManager.GetActiveScene().name == "Battle")
-			PlayBgm("Script_Tense");
-	}
-
-	// Update is called once per frame
-	void Update () {
-
 	}
 }

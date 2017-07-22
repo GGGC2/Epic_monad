@@ -29,6 +29,8 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void Start(){
+		SoundManager.Instance.PlayBgm("Script_Tense");
+		
 		if(PartyData.level == 0){
 			Debug.Log("Set Level 0 --> 1");
 			PartyData.level = 1;

@@ -157,7 +157,7 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bgm")
 		{
-			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
+			SoundManager.Instance.PlayBgm(dialogueDataList[line].GetCommandSubType());
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bg")
 		{
