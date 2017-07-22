@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -310,7 +310,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983715c2feff24b5cb0c10c6df350860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageManager: {fileID: 0}
+  mapData: {fileID: 0}
+  unitData: {fileID: 0}
+  battleEndConditionData: {fileID: 0}
+  bgmData: {fileID: 0}
 --- !u!4 &512625764
 Transform:
   m_ObjectHideFlags: 0
@@ -721,6 +724,21 @@ Prefab:
       value: 
       objectReference: {fileID: 4900000, guid: ac7e72e9d8a8d164db5e798e5ca23e96, type: 3}
     - target: {fileID: 11472570, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
+      propertyPath: battleEndConditionData
+      value: 
+      objectReference: {fileID: 4900000, guid: 10b0073aa9b8ff9448860c779875918e, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: mapData
+      value: 
+      objectReference: {fileID: 4900000, guid: 84c36ebe36d452b4d9421b89ad21ddeb, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: unitData
+      value: 
+      objectReference: {fileID: 4900000, guid: ac7e72e9d8a8d164db5e798e5ca23e96, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
       propertyPath: battleEndConditionData
       value: 
       objectReference: {fileID: 4900000, guid: 10b0073aa9b8ff9448860c779875918e, type: 3}

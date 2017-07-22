@@ -15,6 +15,9 @@ public static class SkillLogicFactory
             case "저격":
             skillLogic = new Grenev_1_l_SkillLogic();
             break;
+            case "단검술":
+            skillLogic = new Grenev_1_m_SkillLogic();
+            break;
 
             // 노엘
             case "파마의 섬광":
@@ -79,6 +82,11 @@ public static class SkillLogicFactory
 			break;
 			case "축전":
             skillLogic = new Lenien_7_l_SkillLogic();
+            break;
+
+            //비앙카
+            case "잘근잘근 덫":
+            skillLogic = new Bianca_1_l_SkillLogic();
             break;
 
             //세피아
@@ -302,6 +310,11 @@ public static class SkillLogicFactory
 			case "입자 가속":
 			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
+
+            //세피아
+            case "신뢰의 끈":
+            passiveSkillLogic = new Sepia_1_m_SkillLogic();
+            break;
 
             //아르카디아
             case "광합성":

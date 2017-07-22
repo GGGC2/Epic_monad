@@ -10,9 +10,11 @@ namespace Battle.Skills {
             return (float)owner.GetCurrentHealth(); // *0.08은 StatusEffect.CalculateAmount 메서드에서 적용됨.
         }
         public override void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
-            List<Tile> tiles= new List<Tile>();
-            tiles.Add(turnEnder.GetTileUnderUnit());
-            StatusEffector.AttachStatusEffect(tileStatusEffect.GetCaster(), skill, turnEnder, tiles);
+            if (turnEnder.GetTileUnderUnit() == tile) {
+                List<Tile> tiles = new List<Tile>();
+                tiles.Add(tile);
+                StatusEffector.AttachStatusEffect(tileStatusEffect.GetCaster(), skill, turnEnder, tiles);
+            }
         }
     }
 }

@@ -56,6 +56,12 @@ public class BaseSkillLogic
 	{
         yield return null;
 	}
+    public virtual bool CheckApplyPossible(Unit caster, List<Tile> targetTiles) {
+        return true;
+    }
+    public virtual bool IgnoreShield(SkillInstanceData skillInstanceData) {
+        return false;
+    }
     public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
     }
@@ -78,6 +84,9 @@ public class BaseSkillLogic
     public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, StatusEffect statusEffect, StatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
     }
+    public virtual bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect, Unit caster, Tile targetTile) {
+        return true;
+    }
     public virtual void TriggerTileStatusEffectAtActionEnd(Tile tile, TileStatusEffect tileStatusEffect) {
     }
     public virtual bool TriggerTileStatusEffectRemoved(Tile tile, TileStatusEffect tileStatusEffect){
@@ -91,6 +100,8 @@ public class BaseSkillLogic
     }
     public virtual bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(SkillInstanceData skillInstanceData, Tile tile, TileStatusEffect tileStatusEffect) {
         return true;    //false를 리턴할 경우 해당 타일 위의 유닛에게 적용되는 statusEffect는 무시된다.
+    }
+    public virtual void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, Tile tile, TileStatusEffect tileStatusEffect) {
     }
     public virtual void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
     }

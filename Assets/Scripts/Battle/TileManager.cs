@@ -444,7 +444,27 @@ public class TileManager : MonoBehaviour {
 
 		else return Vector2.right+Vector2.down;
 	}
-    
+
+    public void UpdateTileStatusEffectsAtActionEnd() {
+        foreach (var tile in GetAllTiles().Values) {
+            foreach (var statusEffect in tile.GetStatusEffectList()) {
+                if (statusEffect.IsOfType(StatusEffectType.Trap)) {
+                    Trap.Update(statusEffect, tile);
+                }
+            }
+        }
+        foreach (var tile in GetAllTiles().Values) {
+            foreach (var statusEffect in tile.GetStatusEffectList()) {
+                if (statusEffect.GetRemainStack() != 0) {
+                    for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+                        statusEffect.CalculateAmount(i, true);
+                    }
+                } else
+                    tile.RemoveStatusEffect(statusEffect);
+            }
+        }
+    }
+
     public void EndPhase(int phase) {
         // Decrease each buff & debuff phase
         foreach (var tile in GetAllTiles())

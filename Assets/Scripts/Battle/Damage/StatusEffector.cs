@@ -147,9 +147,19 @@ public static class StatusEffector
         List<TileStatusEffect> statusEffects = fixedStatusEffects
             .Select(fixedElem => new TileStatusEffect(fixedElem, caster, appliedSkill, null))
             .ToList();
-        AttachStatusEffect(caster, statusEffects, targetTile);
-    }
-    private static void AttachStatusEffect(Unit caster, List<TileStatusEffect> statusEffects, Tile targetTile) {
+            List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
+            foreach (var statusEffect in statusEffects) {
+                bool ignoreStatusEffect = false;
+                if (SkillLogicFactory.Get(appliedSkill).TriggerTileStatusEffectApplied(statusEffect, caster, targetTile) == false) {
+                    ignoreStatusEffect = true;
+                    Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
+                }
+                if (ignoreStatusEffect == false)
+                    newStatusEffects.Add(statusEffect);
+            }
+            AttachStatusEffect(caster, newStatusEffects, targetTile);
+        }
+    public static void AttachStatusEffect(Unit caster, List<TileStatusEffect> statusEffects, Tile targetTile) {
         Vector2 tilePos = targetTile.GetTilePos();
         foreach (var statusEffect in statusEffects) {
             var alreadyAppliedSameEffect = targetTile.GetStatusEffectList().Find(

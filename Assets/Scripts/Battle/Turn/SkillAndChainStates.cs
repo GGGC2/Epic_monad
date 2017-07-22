@@ -249,8 +249,9 @@ namespace Battle.Turn {
                 }
                 Debug.Log("\\------- Damage preview -------/");
 
+                bool isApplyPossible = SkillLogicFactory.Get(battleData.SelectedSkill).CheckApplyPossible(caster, tilesInSkillRange);
                 bool isChainPossible = CheckChainPossible(battleData);
-                battleData.uiManager.EnableSkillCheckWaitButton(isChainPossible);
+                battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
                 Skill selectedSkill = battleData.SelectedSkill;
                 battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
 
@@ -507,6 +508,7 @@ namespace Battle.Turn {
                     battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
                     yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
                     battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+                    battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
                     target.UpdateHealthViewer();
                 }
@@ -605,7 +607,7 @@ namespace Battle.Turn {
         private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
             UnitClass damageType = caster.GetUnitClass();
             BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true));
+            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false));
 
             foreach (var statusEffect in target.GetStatusEffectList()) {
                 bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
