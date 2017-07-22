@@ -102,6 +102,7 @@ public class BattleManager : MonoBehaviour
         foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
             SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
         }
+        unit.TriggerTileStatusEffectAtTurnStart();
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
@@ -294,6 +295,7 @@ public class BattleManager : MonoBehaviour
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
             yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
             battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+            battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 			
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;

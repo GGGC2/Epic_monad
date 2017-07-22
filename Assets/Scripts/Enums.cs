@@ -160,6 +160,7 @@ namespace Enums {
 		MagicImmune, // 마법 면역
 		AllImmune,  // 모든 피해 면역
         Aura,       //오오라
+        Trap,
         Etc // 위 분류에 해당하지 않는 효과
 	}
 

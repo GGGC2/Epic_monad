@@ -75,7 +75,7 @@ public class UnitManager : MonoBehaviour {
                 Skill skill = statusEffect.GetOriginSkill();
                 PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
                 if (skill != null)
-                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect));
+                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectAtActionEnd(unit, statusEffect));
             }
         }
     }
@@ -353,7 +353,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
-			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart());
+			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart(phase));
             if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }

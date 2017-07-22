@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
 	GameObject commandUI;
 	GameObject skillUI;
 	SkillCheckPanel skillCheckUI;
+    GameObject ApplyButton;
 	GameObject WaitButton;
 	GameObject destCheckUI;
 	GameObject unitViewerUI;
@@ -32,6 +33,7 @@ public class UIManager : MonoBehaviour
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
 		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
+        ApplyButton = GameObject.Find("ApplyButton");
 		WaitButton = GameObject.Find("WaitButton");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
@@ -173,10 +175,11 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public void EnableSkillCheckWaitButton(bool isPossible)
+	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible)
 	{
 		skillCheckUI.gameObject.SetActive(true);
-		WaitButton.SetActive(isPossible);
+        ApplyButton.GetComponent<Button>().interactable = isApplyPossible;
+		WaitButton.SetActive(isWaitPossible && isApplyPossible);
 		//GameObject.Find("WaitButton").GetComponent<Button>().interactable = isPossible;
 	}
 

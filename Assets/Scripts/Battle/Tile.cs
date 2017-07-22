@@ -118,15 +118,22 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
     
     public void RemoveStatusEffect(TileStatusEffect statusEffect) {
-        Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
-        statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+        bool toBeRemoved = true;
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if (originSkill != null)
+            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectRemoved(this, statusEffect);
+        if (toBeRemoved) {
+            Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
+            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+        }
     }
     public void UpdateRemainPhaseAtPhaseEnd() {
         foreach (var statusEffect in statusEffectList) {
             if (!statusEffect.GetIsInfinite())
                 statusEffect.DecreaseRemainPhase();
-            if (statusEffect.GetRemainPhase() <= 0)
+            if (statusEffect.GetRemainPhase() <= 0) {
                 RemoveStatusEffect(statusEffect);
+            }
         }
     }
     public Unit GetUnitOnTile ()

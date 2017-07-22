@@ -9,7 +9,7 @@ namespace Battle.Skills
 {
     public class Lenien_3_l_SkillLogic : BasePassiveSkillLogic
     {
-        public override IEnumerator TriggerOnPhaseStart(Unit caster)
+        public override IEnumerator TriggerOnPhaseStart(Unit caster, int phase)
         {
             int casterHeight = caster.GetHeight();
 
