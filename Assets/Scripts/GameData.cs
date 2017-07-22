@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace GameData{
-	public class PartyData : MonoBehaviour{
+	public class PartyData{
 		public static int level;
 		public static int exp;
 		public static int reqExp;
