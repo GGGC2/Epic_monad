@@ -185,10 +185,7 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (Unit deadUnit in battleData.deadUnits)
-		{
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
+		foreach (Unit deadUnit in battleData.deadUnits){
 			if (deadUnit == battleData.selectedUnit)
 				continue;
 			// 죽은 유닛에게 추가 이펙트.
@@ -196,6 +193,8 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(deadUnit.gameObject);
 		}
 	}
@@ -205,14 +204,14 @@ public class BattleManager : MonoBehaviour
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit retreatUnit in battleData.retreatUnits)
-		{
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
+{
 			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(retreatUnit.gameObject);
 		}
 	}

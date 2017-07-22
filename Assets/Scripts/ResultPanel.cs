@@ -25,7 +25,8 @@ public class ResultPanel : MonoBehaviour{
 			foreach(BattleTrigger trigger in Checker.battleTriggers){
 				//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
 				if(trigger.acquired){
-					TriggerIndex.text += trigger.korName + " " + trigger.reward + "\n";
+					TriggerIndex.text += trigger.korName + " " + trigger.reward + MultiplierText(trigger);
+					TriggerIndex.text += "\n";
 					yield return new WaitForSeconds(0.5f);
 				}
 			}
@@ -44,6 +45,13 @@ public class ResultPanel : MonoBehaviour{
 		}
 		else
 			Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+	}
+
+	string MultiplierText(BattleTrigger trigger){
+		if(!trigger.repeatable || trigger.count == 1)
+			return "";
+		else
+			return " x"+trigger.count;
 	}
 
 	void UpdateExp(int point){

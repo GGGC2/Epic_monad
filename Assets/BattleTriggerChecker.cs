@@ -38,23 +38,26 @@ public class BattleTriggerChecker : MonoBehaviour {
 		get { return reachedTargetUnitNames; }
 	}
 
-	public void CountBattleTrigger(BattleTrigger trigger){
-		trigger.countDown -= 1;
-		if(trigger.countDown <= 0 && !trigger.acquired){
+	public IEnumerator CountBattleTrigger(BattleTrigger trigger){
+		trigger.count += 1;
+		if(trigger.count == trigger.targetCount && !trigger.acquired){
 			trigger.acquired = true;
-			Debug.Log("TriggerName : "+trigger.korName);
+			Debug.Log("TriggerName : " + trigger.korName);
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
 				battleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
+				yield return new WaitForSeconds(1.0f);
 				resultPanel.gameObject.SetActive(true);
 				resultPanel.UpdatePanel(0);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
-				Debug.Log(trigger.actionType + " " + trigger.unitType);
+				Debug.Log("Mission FAIL : "+trigger.korName);
 				sceneLoader.LoadNextDialogueScene("Title");
 			}
 		}
+		else if(trigger.repeatable)
+			battleData.rewardPoint += trigger.reward;
 	}
 	void Start () {
 		battleData = FindObjectOfType<BattleManager>().battleData;
