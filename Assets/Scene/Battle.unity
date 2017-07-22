@@ -380,10 +380,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1566462969264870, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
   m_IsPrefabParent: 0
@@ -806,7 +802,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
@@ -979,5 +974,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effd5ecd7fbddcf488eb2664b3d79aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseMoveActive: 0
+  mouseMoveActive: 1
   keyboardMoveActive: 1
