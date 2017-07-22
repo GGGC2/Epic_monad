@@ -12,8 +12,9 @@ public static class SkillLogicFactory
         BaseSkillLogic skillLogic;
 		switch (skill.GetName()) {
             // 그레네브
-            case "저격":
-            skillLogic = new Grenev_1_l_SkillLogic();
+			case "저격":
+				skillLogic = new Grenev_1_l_SkillLogic ();
+				skill.SetSoundEffectName ("Gun");
             break;
             case "단검술":
             skillLogic = new Grenev_1_m_SkillLogic();

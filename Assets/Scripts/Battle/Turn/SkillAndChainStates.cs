@@ -457,6 +457,9 @@ namespace Battle.Turn {
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
 
+			if(appliedSkill.GetSoundEffectName () != null)
+				SoundManager.Instance.PlaySE (appliedSkill.GetSoundEffectName ());
+
             yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
             
             foreach (var tile in selectedTiles) {

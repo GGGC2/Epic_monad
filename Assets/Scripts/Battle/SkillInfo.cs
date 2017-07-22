@@ -68,6 +68,7 @@ public class SkillInfo {
 							   secondRangeForm, secondMinReach, secondMaxReach, secondWidth,
 							   skillApplyType,
 							   effectName, effectVisualType, effectMoveType,
+							   null,
 							   skillDataText);
 	}
 }
