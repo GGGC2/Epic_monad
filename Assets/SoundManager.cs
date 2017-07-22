@@ -20,6 +20,11 @@ public class SoundManager : MonoBehaviour {
 		if(!audioSource.isPlaying)
 			audioSource.Play();
 	}
+	public void PlaySE(string name)
+	{
+		AudioClip SE = Resources.Load<AudioClip>("Sound/SE/" + name);
+		audioSource.PlayOneShot (SE);
+	}
 
 	void Awake () {
 		if (instance != null && instance != this) {
