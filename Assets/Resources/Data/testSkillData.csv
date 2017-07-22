@@ -71,6 +71,7 @@ darkenir,1,에테르 미사일,1,27,0,Power,0,Route,Straight,1,7,0,Straight,0,1,
 noel,1,파마의 섬광,0,40,0,Power,0.9,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Individual,NonMove,—
 noel,1,신의 가호,2,24,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,—
 arcadia,1,갈고리 씨앗,0,20,0,Power,0,Auto,Sector,1,3,0,Sector,1,3,0,Debuff,-,Individual,NonMove,—
-bianca,1,잘근잘근 덫,0,28,0,Power,0,Point,Diamond,0,2,0,Diamond,0,0,0,Debuff,-,Individual,NonMove,—
+bianca,1,잘근잘근 덫,0,27,0,Power,0,Point,Diamond,0,2,0,Diamond,0,0,0,Debuff,-,Individual,NonMove,—
+bianca,1,떠밀기,2,5,0,Power,0,Auto,Straight,1,1,0,Straight,1,1,0,DamageHealth,-,Individual,NonMove,—
 grenev,1,저격,0,29,0,Power,0.8,Point,Diamond,0,11,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,—
 grenev,1,단검술,1,35,0,Power,1.5,Route,Straight,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,—
