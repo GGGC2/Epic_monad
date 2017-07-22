@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -279,10 +279,6 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1448435037219410, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
-      propertyPath: m_Name
-      value: MovedUICanvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
@@ -612,21 +608,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 224311623989977614, guid: 4b39f95afa3dd460e9610c859bd55188,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 503.56
-      objectReference: {fileID: 0}
     - target: {fileID: 224050073275868164, guid: 4b39f95afa3dd460e9610c859bd55188,
         type: 2}
       propertyPath: m_AnchoredPosition.x
       value: 443.74
       objectReference: {fileID: 0}
-    - target: {fileID: 114234929286339028, guid: 4b39f95afa3dd460e9610c859bd55188,
+    - target: {fileID: 224311623989977614, guid: 4b39f95afa3dd460e9610c859bd55188,
         type: 2}
-      propertyPath: ExpBar
-      value: 
-      objectReference: {fileID: 1868555616}
+      propertyPath: m_AnchoredPosition.x
+      value: 503.56
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
@@ -815,6 +806,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
@@ -828,12 +820,6 @@ Transform:
   m_Father: {fileID: 2087932900}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1868555616 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114302939665235524, guid: 4b39f95afa3dd460e9610c859bd55188,
-    type: 2}
-  m_PrefabInternal: {fileID: 1705971726}
-  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &1897022873
 Prefab:
   m_ObjectHideFlags: 0

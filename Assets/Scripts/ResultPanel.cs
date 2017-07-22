@@ -5,16 +5,14 @@ using UnityEngine.UI;
 using GameData;
 
 public class ResultPanel : MonoBehaviour{
-	public GameObject LevelText;
-	public GameObject ExpText;
+	public Text LevelText;
+	public Text ExpText;
+	public Text ScoreText;
+	public Text TriggerIndex;
 	public Image ExpBar;
 	public bool alreadyClicked;
 	public BattleTriggerChecker Checker;
 	public int runningFrame;
-
-	void OnEnable(){
-		UpdatePanel();
-	}
 
 	public void Clicked(){
 		StartCoroutine(IClicked());
@@ -23,6 +21,18 @@ public class ResultPanel : MonoBehaviour{
 	public IEnumerator IClicked(){
 		if(!alreadyClicked){
 			alreadyClicked = true;
+
+			foreach(BattleTrigger trigger in Checker.battleTriggers){
+				//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
+				if(trigger.acquired){
+					TriggerIndex.text += trigger.korName + " " + trigger.reward + "\n";
+					yield return new WaitForSeconds(0.5f);
+				}
+			}
+
+			ScoreText.text = "점수 : " + Checker.battleData.rewardPoint;
+			yield return new WaitForSeconds(0.5f);
+		
 			int expTick = Checker.battleData.rewardPoint/runningFrame;
 			while(Checker.battleData.rewardPoint > 0){
 				if(Checker.battleData.rewardPoint >= expTick)
@@ -39,14 +49,13 @@ public class ResultPanel : MonoBehaviour{
 	void UpdateExp(int point){
 		PartyData.AddExp(point);
 		Checker.battleData.rewardPoint -= point;
-		UpdatePanel();
+		UpdatePanel(Checker.battleData.rewardPoint);
 	}
 
-	void UpdatePanel(){
-		LevelText.GetComponent<Text>().text = "레벨 : " + PartyData.level;
-		ExpText.GetComponent<Text>().text = "경험치 : " + PartyData.exp;
-
-		if (PartyData.reqExp != 0)
-			ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
+	public void UpdatePanel(int remainScore){
+		ScoreText.text = "점수 : " + remainScore;
+		LevelText.text = "레벨 : " + PartyData.level;
+		ExpText.text = "경험치 : " + PartyData.exp + " / " + PartyData.reqExp;
+		ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
 	}
 }

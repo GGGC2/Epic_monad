@@ -7,7 +7,7 @@ public class BattleTrigger
 {
 	public enum ResultType{Win, Lose, Bonus, End}
 	public enum UnitType{Target, Ally, Enemy, None}
-	public enum ActionType{Neutralize, Reach, Phase}
+	public enum ActionType{Neutralize, Reach, Phase, Kill, Retreat}
 	public bool acquired;
 	public ResultType resultType;
 	public UnitType unitType;
@@ -20,6 +20,7 @@ public class BattleTrigger
 	public List<Vector2> targetTiles = new List<Vector2>();
 	public List<string> reachedTargetUnitNames = new List<string>();
 	public string nextSceneIndex;
+	public string korName;
 
 	public BattleTrigger(string data)
 	{
@@ -29,6 +30,7 @@ public class BattleTrigger
 		if(resultType == ResultType.End)
 			nextSceneIndex = commaParser.Consume();
 		else{
+			korName = commaParser.Consume();
 			unitType = commaParser.ConsumeEnum<UnitType>();
 		
 			actionType = commaParser.ConsumeEnum<ActionType>();

@@ -47,8 +47,7 @@ public class Parser : MonoBehaviour
 	{
 		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 
-		TextAsset csvFile;
-		csvFile = FindObjectOfType<BattleManager>().GetBattleEndConditionData() as TextAsset;
+		TextAsset csvFile = FindObjectOfType<BattleManager>().GetBattleConditionData() as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedBattleEndConditionDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
