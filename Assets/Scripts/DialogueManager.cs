@@ -18,6 +18,8 @@ public class DialogueManager : MonoBehaviour {
 	public Image leftPortrait;
 	public Image rightPortrait; 
 	public Image namePanel;
+
+	public Image clickIcon;
 	public Text nameText;
 	public Text dialogueText;
 	
@@ -378,6 +380,18 @@ public class DialogueManager : MonoBehaviour {
 	void Start () 
 	{
 		Initialize();
+
+		if(dialogueData.name == "Scene#1-1")
+			StartCoroutine(BlinkClickIcon());
+	}
+
+	IEnumerator BlinkClickIcon(){		
+		for(int i = 0; i < 3; i++){
+			clickIcon.gameObject.SetActive(true);
+			yield return new WaitForSeconds(1.0f);
+			clickIcon.gameObject.SetActive(false);
+			yield return new WaitForSeconds(1.0f);
+		}
 	}
 
 	void Update()
