@@ -32,9 +32,9 @@ public class BattleManager : MonoBehaviour
 		SoundManager.Instance.PlayBgm("Script_Tense");
 		
 		if(PartyData.level == 0){
-			Debug.Log("Set Level 0 --> 1");
 			PartyData.level = 1;
 			PartyData.SetReqExp();
+			Debug.Log("Set Level 0 --> 1");
 		}		
 
 		battleData.unitManager.SetStandardActivityPoint();
@@ -195,8 +195,8 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
+			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(deadUnit.gameObject);
 		}
 	}
@@ -205,15 +205,14 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (Unit retreatUnit in battleData.retreatUnits)
-{
+		foreach (Unit retreatUnit in battleData.retreatUnits){
 			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
+			yield return battleManager.StartCoroutine(BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat));
+			yield return battleManager.StartCoroutine(BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize));
 			Destroy(retreatUnit.gameObject);
 		}
 	}
@@ -221,14 +220,10 @@ public class BattleManager : MonoBehaviour
 	static bool IsSelectedUnitRetraitOrDie(BattleData battleData)
 	{
 		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
-		{
 			return true;
-		}
 
 		if (battleData.deadUnits.Contains(battleData.selectedUnit))
-		{
 			return true;
-		}
 
 		return false;
 	}

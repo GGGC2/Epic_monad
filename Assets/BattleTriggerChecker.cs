@@ -40,6 +40,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 
 	public IEnumerator CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
+		Debug.Log(trigger.korName + "'s count : " + trigger.count);
 		if(trigger.count == trigger.targetCount && !trigger.acquired){
 			trigger.acquired = true;
 			Debug.Log("TriggerName : " + trigger.korName);
@@ -47,7 +48,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 				battleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
-				yield return new WaitForSeconds(1.0f);
+				yield return new WaitForSeconds(0.1f);
 				resultPanel.gameObject.SetActive(true);
 				resultPanel.UpdatePanel(0);
 			}
@@ -72,14 +73,19 @@ public class BattleTriggerChecker : MonoBehaviour {
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 	}
 
-	public static void CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
+	public static IEnumerator CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
+		Debug.Log("Count BattleCondition : " + unit.name + "'s " + actionType);
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
-				Checker.CountBattleTrigger(trigger);
+			else{
+				//Debug.Log(trigger.korName + " : UnitCheck " + Checker.CheckUnitType(trigger, unit) + " & " + Checker.CheckActionType(trigger, actionType));
+				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
+					return Checker.CountBattleTrigger(trigger);
+			}
 		}
+		return null;
 	}
 
 	public static void CountBattleCondition(){
