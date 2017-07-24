@@ -38,7 +38,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 		get { return reachedTargetUnitNames; }
 	}
 
-	public IEnumerator CountBattleTrigger(BattleTrigger trigger){
+	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
 		Debug.Log(trigger.korName + "'s count : " + trigger.count);
 		if(trigger.count == trigger.targetCount && !trigger.acquired){
@@ -48,9 +48,6 @@ public class BattleTriggerChecker : MonoBehaviour {
 				battleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
-				yield return new WaitForSeconds(0.1f);
-				resultPanel.gameObject.SetActive(true);
-				resultPanel.UpdatePanel(0);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log("Mission FAIL : "+trigger.korName);
@@ -59,6 +56,11 @@ public class BattleTriggerChecker : MonoBehaviour {
 		}
 		else if(trigger.repeatable)
 			battleData.rewardPoint += trigger.reward;
+	}
+
+	public void InitializeResultPanel(){
+		resultPanel.gameObject.SetActive(true);
+		resultPanel.UpdatePanel(0);
 	}
 	void Start () {
 		battleData = FindObjectOfType<BattleManager>().battleData;
@@ -82,7 +84,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 			else{
 				//Debug.Log(trigger.korName + " : UnitCheck " + Checker.CheckUnitType(trigger, unit) + " & " + Checker.CheckActionType(trigger, actionType));
 				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
-					return Checker.CountBattleTrigger(trigger);
+					Checker.CountBattleTrigger(trigger);
 			}
 		}
 		return null;

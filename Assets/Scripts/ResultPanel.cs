@@ -36,7 +36,9 @@ public class ResultPanel : MonoBehaviour{
 		
 			int expTick = Checker.battleData.rewardPoint/runningFrame;
 			while(Checker.battleData.rewardPoint > 0){
-				if(Checker.battleData.rewardPoint >= expTick)
+				if(expTick == 0)
+					UpdateExp(1);
+				else if(Checker.battleData.rewardPoint >= expTick)
 					UpdateExp(expTick);
 				else
 					UpdateExp(Checker.battleData.rewardPoint);

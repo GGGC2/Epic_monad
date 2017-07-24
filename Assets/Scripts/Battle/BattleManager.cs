@@ -8,6 +8,7 @@ using System;
 using Battle.Turn;
 using Battle.Skills;
 using GameData;
+using System.Linq;
 
 public class BattleManager : MonoBehaviour
 {
@@ -292,7 +293,12 @@ public class BattleManager : MonoBehaviour
             yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
             battleData.unitManager.UpdateStatusEffectsAtActionEnd();
             battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
-			
+
+			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+				Checker.InitializeResultPanel();
+			// 액션마다 갱신사항 종료
+				
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
 
