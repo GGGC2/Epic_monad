@@ -38,7 +38,7 @@ public class BattleTrigger{
 			reward = commaParser.ConsumeInt();
 
 			if(unitType == UnitType.Target){
-				int targetCount = commaParser.ConsumeInt();
+				targetCount = commaParser.ConsumeInt();
 				targetUnitNames = new List<string>();
 				for (int i = 0; i < targetCount; i++){
 					string targetUnitName = commaParser.Consume();

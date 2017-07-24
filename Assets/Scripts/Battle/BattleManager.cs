@@ -212,8 +212,8 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
-			yield return battleManager.StartCoroutine(BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat));
-			yield return battleManager.StartCoroutine(BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize));
+			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(retreatUnit.gameObject);
 		}
 	}
@@ -482,6 +482,12 @@ public class BattleManager : MonoBehaviour
 			// 유닛 뷰어가 뜬 상태에서 좌클릭하면, 유닛 뷰어가 고정된다. 단, 행동 선택 상태(FocusToUnit)에서만 가능.
 			if ((battleData.currentState == CurrentState.FocusToUnit) && (battleData.uiManager.IsUnitViewerShowing()))
 				battleData.enemyUnitSelected = true;
+		}
+
+		if (Input.GetKeyDown(KeyCode.CapsLock))
+		{
+			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			Checker.InitializeResultPanel ();
 		}
 	}
 
