@@ -4,4 +4,5 @@ using UnityEngine;
 
 public class Setting{
 	public static int elementOpenStage = 3;
+	public static int directionOpenStage = 3;
 }

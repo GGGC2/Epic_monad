@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Enums;
 using UnityEngine;
 using Battle.Skills;
+using GameData;
 
 namespace Battle
 {
@@ -219,6 +220,8 @@ public class DamageCalculator
 	}
 
 	private static float DirectionBonus(Unit caster, Unit target) {
+		if(SceneData.stageNumber < Setting.directionOpenStage)
+			return 1.0f;
 		float directionBonus = Utility.GetDirectionBonus(caster, target);
 		Debug.Log("\tdirectionBonus : " + directionBonus);
 		return directionBonus;
