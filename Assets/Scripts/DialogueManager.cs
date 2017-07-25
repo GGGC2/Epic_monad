@@ -188,8 +188,7 @@ public class DialogueManager : MonoBehaviour {
 		skipQuestionUI.SetActive(true);
 	}
 
-	public void InactiveSkipQuestionUI()
-	{
+	public void InactiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(false);
 	}
 

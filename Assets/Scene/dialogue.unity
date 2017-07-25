@@ -561,11 +561,23 @@ Prefab:
       objectReference: {fileID: 265084405}
     - target: {fileID: 11405486, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
       propertyPath: m_Text
-      value: "\uB2E4\uC74C \uC7A5\uBA74\uC73C\uB85C \uB118\uC5B4\uAC08\uAE4C\uC694?"
+      value: "\uB2E4\uC74C \uC7A5\uBA74\uC73C\uB85C \uB118\uC5B4\uAC11\uB2C8\uB2E4."
       objectReference: {fileID: 0}
     - target: {fileID: 22482000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
       propertyPath: m_AnchoredPosition.y
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496870, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: InactiveSkipQuestionUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 11487420, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_Text
+      value: "\uD655\uC778"
+      objectReference: {fileID: 0}
+    - target: {fileID: 11439118, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_Text
+      value: "\uCDE8\uC18C"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
