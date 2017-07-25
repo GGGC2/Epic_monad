@@ -47,11 +47,14 @@ public class TileViewer : MonoBehaviour {
                 concattedText += "(" + effectList[i].GetRemainPhase() + ")";
             else
                 concattedText += "(--)";
-            concattedText += (int)effectList[i].GetAmount();
+            for (int j = 0; j < effectList[i].fixedElem.actuals.Count; j++) {
+                concattedText += (int)effectList[i].GetAmount(j);
+                if (j < effectList[i].fixedElem.actuals.Count - 1) concattedText += ",";
+            }
             if (i < numberOfEffects - 1)
                 concattedText += " ";
         }
-        // statusEffectText.text = concattedText;
+        statusEffectText.text = concattedText;
     }
 
     void SetElementImage(Element element)
@@ -73,7 +76,7 @@ public class TileViewer : MonoBehaviour {
 		nameText = transform.Find("NameText").GetComponent<Text>();
 		apText = transform.Find("APText").GetComponent<Text>();
 		elementImage = transform.Find("ElementImage").GetComponent<Image>();
-        // statusEffectText = transform.Find("statusEffects").GetComponent<Text>();
+        statusEffectText = transform.Find("statusEffects").GetComponent<Text>();
     }
 
 	// Use this for initialization

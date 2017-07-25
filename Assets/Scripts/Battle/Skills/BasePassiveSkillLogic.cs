@@ -107,7 +107,7 @@ public class BasePassiveSkillLogic
     public virtual void TriggerOnStart(Unit caster) {		
 	}
 
-	public virtual IEnumerator TriggerOnPhaseStart(Unit caster) {
+	public virtual IEnumerator TriggerOnPhaseStart(Unit caster, int phase) {
         yield return null;
 	}
     

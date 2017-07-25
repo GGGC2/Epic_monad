@@ -8,6 +8,7 @@ using System;
 using Battle.Turn;
 using Battle.Skills;
 using GameData;
+using System.Linq;
 
 public class BattleManager : MonoBehaviour
 {
@@ -29,10 +30,12 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void Start(){
+		SoundManager.Instance.PlayBgm("Script_Tense");
+		
 		if(PartyData.level == 0){
-			Debug.Log("Set Level 0 --> 1");
 			PartyData.level = 1;
 			PartyData.SetReqExp();
+			Debug.Log("Set Level 0 --> 1");
 		}		
 
 		battleData.unitManager.SetStandardActivityPoint();
@@ -102,6 +105,7 @@ public class BattleManager : MonoBehaviour
         foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
             SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
         }
+        unit.TriggerTileStatusEffectAtTurnStart();
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
@@ -184,10 +188,7 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (Unit deadUnit in battleData.deadUnits)
-		{
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
+		foreach (Unit deadUnit in battleData.deadUnits){
 			if (deadUnit == battleData.selectedUnit)
 				continue;
 			// 죽은 유닛에게 추가 이펙트.
@@ -195,6 +196,8 @@ public class BattleManager : MonoBehaviour
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
+			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(deadUnit.gameObject);
 		}
 	}
@@ -203,15 +206,14 @@ public class BattleManager : MonoBehaviour
 	{
 		BattleManager battleManager = battleData.battleManager;
 
-		foreach (Unit retreatUnit in battleData.retreatUnits)
-		{
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
+		foreach (Unit retreatUnit in battleData.retreatUnits){
 			if (retreatUnit == battleData.selectedUnit)
 				continue;
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
+			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(retreatUnit.gameObject);
 		}
 	}
@@ -219,14 +221,10 @@ public class BattleManager : MonoBehaviour
 	static bool IsSelectedUnitRetraitOrDie(BattleData battleData)
 	{
 		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
-		{
 			return true;
-		}
 
 		if (battleData.deadUnits.Contains(battleData.selectedUnit))
-		{
 			return true;
-		}
 
 		return false;
 	}
@@ -294,7 +292,13 @@ public class BattleManager : MonoBehaviour
 			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
             yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
             battleData.unitManager.UpdateStatusEffectsAtActionEnd();
-			
+            battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+
+			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+				Checker.InitializeResultPanel();
+			// 액션마다 갱신사항 종료
+				
 			if (IsSelectedUnitRetraitOrDie(battleData))
 				yield break;
 
@@ -453,7 +457,7 @@ public class BattleManager : MonoBehaviour
 		else if (directionString == "RightDown")
 			battleData.move.selectedDirection = Direction.RightDown;
 		
-		battleData.triggers.selectedDirectionByUser.Trigger();
+		battleData.triggers.directionSelectedByUser.Trigger();
 		battleData.uiManager.DisableSelectDirectionUI();
 	}
 
@@ -478,6 +482,12 @@ public class BattleManager : MonoBehaviour
 			// 유닛 뷰어가 뜬 상태에서 좌클릭하면, 유닛 뷰어가 고정된다. 단, 행동 선택 상태(FocusToUnit)에서만 가능.
 			if ((battleData.currentState == CurrentState.FocusToUnit) && (battleData.uiManager.IsUnitViewerShowing()))
 				battleData.enemyUnitSelected = true;
+		}
+
+		if (Input.GetKeyDown(KeyCode.CapsLock))
+		{
+			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			Checker.InitializeResultPanel ();
 		}
 	}
 

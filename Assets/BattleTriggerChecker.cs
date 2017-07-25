@@ -39,22 +39,28 @@ public class BattleTriggerChecker : MonoBehaviour {
 	}
 
 	public void CountBattleTrigger(BattleTrigger trigger){
-		trigger.countDown -= 1;
-		if(trigger.countDown <= 0 && !trigger.acquired){
+		trigger.count += 1;
+		Debug.Log(trigger.korName + "'s count : " + trigger.count);
+		if(trigger.count == trigger.targetCount && !trigger.acquired){
 			trigger.acquired = true;
-			Debug.Log("TriggerName : "+trigger.korName);
+			Debug.Log("TriggerName : " + trigger.korName);
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
 				battleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win){
 				battleData.rewardPoint += trigger.reward;
-				resultPanel.gameObject.SetActive(true);
-				resultPanel.UpdatePanel(0);
 			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
-				Debug.Log(trigger.actionType + " " + trigger.unitType);
+				Debug.Log("Mission FAIL : "+trigger.korName);
 				sceneLoader.LoadNextDialogueScene("Title");
 			}
 		}
+		else if(trigger.repeatable)
+			battleData.rewardPoint += trigger.reward;
+	}
+
+	public void InitializeResultPanel(){
+		resultPanel.gameObject.SetActive(true);
+		resultPanel.UpdatePanel(0);
 	}
 	void Start () {
 		battleData = FindObjectOfType<BattleManager>().battleData;
@@ -69,14 +75,19 @@ public class BattleTriggerChecker : MonoBehaviour {
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 	}
 
-	public static void CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
+	public static IEnumerator CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
+		Debug.Log("Count BattleCondition : " + unit.name + "'s " + actionType);
 		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
-				Checker.CountBattleTrigger(trigger);
+			else{
+				//Debug.Log(trigger.korName + " : UnitCheck " + Checker.CheckUnitType(trigger, unit) + " & " + Checker.CheckActionType(trigger, actionType));
+				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
+					Checker.CountBattleTrigger(trigger);
+			}
 		}
+		return null;
 	}
 
 	public static void CountBattleCondition(){

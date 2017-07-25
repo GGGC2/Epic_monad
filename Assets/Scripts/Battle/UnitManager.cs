@@ -75,7 +75,7 @@ public class UnitManager : MonoBehaviour {
                 Skill skill = statusEffect.GetOriginSkill();
                 PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
                 if (skill != null)
-                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectsAtActionEnd(unit, statusEffect));
+                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectAtActionEnd(unit, statusEffect));
             }
         }
     }
@@ -184,14 +184,19 @@ public class UnitManager : MonoBehaviour {
 					string PCName = readyManager.selected[GeneratedPC].unitName;
 					unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
 					
-					if (unitInfo.name != "Empty") 
-					{
+					if (unitInfo.name != "Empty") {
 						unitInfo.nameInCode = PCName;
 						unitInfo.baseHealth = UnitInfo.GetStat(PCName, UnitInfo.StatType.Health);
 						unitInfo.basePower = UnitInfo.GetStat(PCName, UnitInfo.StatType.Power);
 						unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
 						unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
 						unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
+
+						if(GameData.SceneData.stageNumber >= Setting.elementOpenStage){
+							unitInfo.element = UnitInfo.GetElement(PCName);
+							unitInfo.celestial = UnitInfo.GetCelestial(PCName);
+						}
 					}
 					
 					GeneratedPC += 1;
@@ -350,7 +355,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units)
 		{
 			unit.UpdateStartPosition();
-			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart());
+			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart(phase));
             if(phase == 1) {
                 unit.ApplyTriggerOnStart();
             }

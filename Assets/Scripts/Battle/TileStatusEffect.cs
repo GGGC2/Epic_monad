@@ -134,8 +134,8 @@ public class TileStatusEffect {
         this.fixedElem = fixedElem;
         this.flexibleElem = new FlexibleElement(this, caster, originSkill, originPassiveSkill);
         for (int i = 0; i < fixedElem.actuals.Count; i++) {
-            float statusEffectVar = GetStatusEffectVar(i, caster);
-            CalculateAmount(i, statusEffectVar);
+            CalculateAmount(i, false);
+            SetRemainAmount(i, GetAmount(i));
         }
     }
 
@@ -156,14 +156,9 @@ public class TileStatusEffect {
     public int GetRemainStack() { return flexibleElem.display.remainStack; }
     public Element GetElement() { return flexibleElem.display.element; }
     public List<Unit> GetMemorizedUnits() { return flexibleElem.display.memorizedUnits; }
-
-    public StatusEffectType GetStatusEffectType() { return fixedElem.actuals[0].statusEffectType; }
+    
     public StatusEffectType GetStatusEffectType(int index) { return fixedElem.actuals[index].statusEffectType; }
-    public bool GetIsMultiply() { return fixedElem.actuals[0].isMultiply; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
-    public float GetAmount() { return flexibleElem.actuals[0].amount; }
-    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
-    public float GetRemainAmount() { return flexibleElem.actuals[0].remainAmount; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
 
     public void SetAmount(float amount) { flexibleElem.actuals[0].amount = amount; }
@@ -205,11 +200,38 @@ public class TileStatusEffect {
             flexibleElem.display.remainStack = 0;
         }
     }
-
+    private List<int> FindIndexOfType(StatusEffectType statusEffectType) {
+        List<int> indices = new List<int>();
+        for (int i = 0; i < fixedElem.actuals.Count; i++) {
+            if (statusEffectType.Equals(this.GetStatusEffectType(i))) {
+                indices.Add(i);
+            }
+        }
+        return indices;
+    }
+    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
+    public float GetAmountOfType(StatusEffectType statusEffectType) {
+        float amount = 0;
+        List<int> indices = FindIndexOfType(statusEffectType);
+        foreach (var index in indices) {
+            amount += GetAmount(index);
+        }
+        return amount;
+    }
+    public float GetRemainAmountOfType(StatusEffectType statusEffectType) {
+        float amount = 0;
+        List<int> indices = FindIndexOfType(statusEffectType);
+        foreach (var index in indices) {
+            amount += GetRemainAmount(index);
+        }
+        return amount;
+    }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
-        if (statusEffectType.Equals(this.GetStatusEffectType())) {
-            isOfType = true;
+        for (int i = 0; i < fixedElem.actuals.Count; i++) {
+            if (statusEffectType.Equals(this.GetStatusEffectType(i))) {
+                isOfType = true;
+            }
         }
 
         return isOfType;
@@ -228,25 +250,18 @@ public class TileStatusEffect {
     public void CalculateAmount(float statusEffectVar) {
         flexibleElem.actuals[0].amount = (statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase) * GetRemainStack();
     }
-    public void CalculateAmount(int i, float statusEffectVar) {
-        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
-    }
-
-    public float GetStatusEffectVar(int i, Unit caster) {
-        float result = 0;
+    public void CalculateAmount(int i, bool isUpdate) {
+        Unit caster = GetCaster();
         StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
+        float statusEffectVar = 0;
         if (seVarEnum == StatusEffectVar.Level)
-            result = GameData.PartyData.level;
+            statusEffectVar = GameData.PartyData.level;
         else if (seVarEnum == StatusEffectVar.LostHpPercent)
-            result = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
-        else if (seVarEnum == StatusEffectVar.Power)
-            result = caster.GetStat(Stat.Power);
-        else {
-            if (GetOriginSkill() != null)
-                //result = SkillLogicFactory.Get(GetOriginSkill()).GetStatusEffectVar(this, i, caster);
-                if (GetOriginPassiveSkill() != null) { }
-                //result = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster);
+            statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
+        else if (seVarEnum == StatusEffectVar.Power) {
+            if (isUpdate == true) return;
+            statusEffectVar = caster.GetStat(Stat.Power);
         }
-        return result;
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
     }
 }

@@ -11,6 +11,28 @@ public static class SkillLogicFactory
 	{
         BaseSkillLogic skillLogic;
 		switch (skill.GetName()) {
+            // 그레네브
+			case "저격":
+				skillLogic = new Grenev_1_l_SkillLogic ();
+				skill.SetSoundEffectName ("Gun");
+            break;
+            case "단검술":
+            skillLogic = new Grenev_1_m_SkillLogic();
+            break;
+
+            // 노엘
+            case "파마의 섬광":
+            skillLogic = new Noel_1_l_SkillLogic();
+            break;
+            case "신의 가호":
+            skillLogic = new Noel_1_r_SkillLogic();
+            break;
+
+            // 달케니르
+            case "에테르 미사일":
+            skillLogic = new Darkenir_1_m_SkillLogic();
+            break;
+
 			// 레이나
 			case "화염 폭발":
 			skillLogic = new Reina_1_l_SkillLogic();
@@ -62,7 +84,25 @@ public static class SkillLogicFactory
 			case "축전":
             skillLogic = new Lenien_7_l_SkillLogic();
             break;
-			
+
+            //비앙카
+            case "잘근잘근 덫":
+            skillLogic = new Bianca_1_l_SkillLogic();
+            break;
+            case "떠밀기":
+            skillLogic = new Bianca_1_r_SkillLogic();
+            break;
+
+            //세피아
+            case "반달베기":
+            skillLogic = new Sepia_1_r_SkillLogic();
+            break;
+
+            //아르카디아
+            case "갈고리 씨앗":
+            skillLogic = new Arcadia_1_l_SkillLogic();
+            break;
+
 			// 영
 			case "은빛 베기": case "은빛 베기_test":
             skillLogic = new Yeong_1_l_SkillLogic();
@@ -172,6 +212,16 @@ public static class SkillLogicFactory
 		BasePassiveSkillLogic passiveSkillLogic = null;
 		switch (passiveSkill.GetName())
 		{
+            // 그레네브
+            case "살의":
+            passiveSkillLogic = new Grenev_1_r_SkillLogic();
+            break;
+
+            // 달케니르
+            case "공허의 장벽":
+            passiveSkillLogic = new Darkenir_1_l_SkillLogic();
+            break;
+
 			// 레이나
 			case "핀토스의 긍지":
 			passiveSkillLogic = new Reina_0_1_SkillLogic();
@@ -264,6 +314,16 @@ public static class SkillLogicFactory
 			case "입자 가속":
 			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
+
+            //세피아
+            case "신뢰의 끈":
+            passiveSkillLogic = new Sepia_1_m_SkillLogic();
+            break;
+
+            //아르카디아
+            case "광합성":
+            passiveSkillLogic = new Arcadia_1_m_SkillLogic();
+            break;
 
 			// 영
 			case "방랑자":

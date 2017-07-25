@@ -18,6 +18,8 @@ public class DialogueManager : MonoBehaviour {
 	public Image leftPortrait;
 	public Image rightPortrait; 
 	public Image namePanel;
+
+	public Image clickIcon;
 	public Text nameText;
 	public Text dialogueText;
 	
@@ -157,7 +159,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bgm")
 		{
-			FindObjectOfType<SoundManager>().PlayBgm(dialogueDataList[line].GetCommandSubType());
+			string bgmName = dialogueDataList [line].GetCommandSubType ();
+			SoundManager.Instance.PlayBgm(bgmName);
 		}
 		else if (dialogueDataList[line].GetCommandType() == "bg")
 		{
@@ -166,7 +169,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if (dialogueDataList[line].GetCommandType() == "se")
 		{
-			// Not implement yet.
+			string SEName = dialogueDataList [line].GetCommandSubType ();
+			SoundManager.Instance.PlaySE (SEName);
 		}
 		else
 		{
@@ -184,8 +188,7 @@ public class DialogueManager : MonoBehaviour {
 		skipQuestionUI.SetActive(true);
 	}
 
-	public void InactiveSkipQuestionUI()
-	{
+	public void InactiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(false);
 	}
 
@@ -376,6 +379,18 @@ public class DialogueManager : MonoBehaviour {
 	void Start () 
 	{
 		Initialize();
+
+		if(dialogueData.name == "Scene#1-1")
+			StartCoroutine(BlinkClickIcon());
+	}
+
+	IEnumerator BlinkClickIcon(){		
+		for(int i = 0; i < 3; i++){
+			clickIcon.gameObject.SetActive(true);
+			yield return new WaitForSeconds(1.0f);
+			clickIcon.gameObject.SetActive(false);
+			yield return new WaitForSeconds(1.0f);
+		}
 	}
 
 	void Update()

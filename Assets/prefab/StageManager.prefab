@@ -24,7 +24,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 119434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.0115952, y: 0.6080337, z: 8.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -65,9 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983715c2feff24b5cb0c10c6df350860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 0}
+  resultPanel: {fileID: 0}
   mapData: {fileID: 4900000, guid: 1a933926a248348cb9e4a025b706ba50, type: 3}
   unitData: {fileID: 4900000, guid: 27d72ba83af934bea9963b30b10cf732, type: 3}
-  battleEndConditionData: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5,
-    type: 3}
+  battleConditionData: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5, type: 3}
   bgmData: {fileID: 0}

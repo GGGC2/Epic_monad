@@ -248,7 +248,7 @@ Prefab:
     - target: {fileID: 224761965734578448, guid: e0c9a42fcd625498bb26545b7d1b6c46,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 719.56757
+      value: 720
       objectReference: {fileID: 0}
     - target: {fileID: 224761965734578448, guid: e0c9a42fcd625498bb26545b7d1b6c46,
         type: 2}
@@ -279,6 +279,10 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1448435037219410, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
+      propertyPath: m_Name
+      value: MovingUICanvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
@@ -380,10 +384,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1566462969264870, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
   m_IsPrefabParent: 0
@@ -469,6 +469,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfcab888066814e668aadf383a349170, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1061465556 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114234929286339028, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1705971726}
+  m_Script: {fileID: 11500000, guid: b6dd7b3620332d04fb5a7b4c67a2970f, type: 3}
 --- !u!1001 &1333908123
 Prefab:
   m_ObjectHideFlags: 0
@@ -608,15 +614,20 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 224311623989977614, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 503.56
+      objectReference: {fileID: 0}
     - target: {fileID: 224050073275868164, guid: 4b39f95afa3dd460e9610c859bd55188,
         type: 2}
       propertyPath: m_AnchoredPosition.x
       value: 443.74
       objectReference: {fileID: 0}
-    - target: {fileID: 224311623989977614, guid: 4b39f95afa3dd460e9610c859bd55188,
+    - target: {fileID: 224834690726821586, guid: 4b39f95afa3dd460e9610c859bd55188,
         type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 503.56
+      propertyPath: m_AnchoredPosition.y
+      value: -230
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
@@ -713,15 +724,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 407154, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 7.0115952
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 407154, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0.6080337
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 407154, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 8.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 407154, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: m_LocalRotation.x
@@ -743,6 +754,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: resultPanel
+      value: 
+      objectReference: {fileID: 1061465556}
     - target: {fileID: 119434, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: m_Name
       value: BattleManager
@@ -806,7 +822,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
@@ -979,5 +994,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: effd5ecd7fbddcf488eb2664b3d79aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseMoveActive: 0
+  mouseMoveActive: 1
   keyboardMoveActive: 1

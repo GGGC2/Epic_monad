@@ -343,7 +343,7 @@ public class Unit : MonoBehaviour
         float totalMultiplicativeValue = 1.0f;
         foreach (var change in appliedChangeList) {
             if(change.isMultiply == true) {
-                totalMultiplicativeValue *= 1 + change.value/100;
+                totalMultiplicativeValue *= 1 + change.value;
             }
             else {
                 totalAdditiveValue += change.value;
@@ -372,7 +372,7 @@ public class Unit : MonoBehaviour
                     if(statusEffect.GetIsPercent(i)) {
                         amount = amount/100;
                     }
-                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), statusEffect.GetAmount(i)));
+                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), amount));
                 }
         
         // TileStatusEffect로 인한 변동값 계산
@@ -380,7 +380,7 @@ public class Unit : MonoBehaviour
         foreach (var tileStatusEffect in tile.GetStatusEffectList()) 
             for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++)
                 if(tileStatusEffect.IsOfType(i, statusEffectType))
-                    appliedChangeList.Add(new StatChange(tileStatusEffect.GetIsMultiply(), tileStatusEffect.GetAmount(i)));
+                    appliedChangeList.Add(new StatChange(tileStatusEffect.GetIsMultiply(i), tileStatusEffect.GetAmount(i)));
 
 		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)			
 		if (statusEffectType == StatusEffectType.PowerChange)
@@ -449,7 +449,7 @@ public class Unit : MonoBehaviour
         hasUsedSkillThisTurn = false;
 	}
     
-	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth) {
+	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield) {
         int finalDamage = (int) damage;
         float defense = GetStat(Stat.Defense) + additionalDefense;
         float resistance = GetStat(Stat.Resistance) + additionalResistance;
@@ -462,26 +462,28 @@ public class Unit : MonoBehaviour
 
             // 실드 차감. 먼저 걸린 실드부터 차감.
             Dictionary<StatusEffect, int> attackedShieldDict = new Dictionary<StatusEffect, int>();
-            foreach (var se in statusEffectList) {
-                int num = se.fixedElem.actuals.Count;
-                for (int i = 0; i < num; i++) {
-                    if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
-                        float remainShieldAmount = se.GetRemainAmount(i);
-                        if (remainShieldAmount >= (int)damage) {
-                            se.SubAmount(i, (int)damage);
-                            attackedShieldDict.Add(se, (int)damage);
+            if (!ignoreShield) {
+                foreach (var se in statusEffectList) {
+                    int num = se.fixedElem.actuals.Count;
+                    for (int i = 0; i < num; i++) {
+                        if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
+                            float remainShieldAmount = se.GetRemainAmount(i);
+                            if (remainShieldAmount >= (int)damage) {
+                                se.SubAmount(i, (int)damage);
+                                attackedShieldDict.Add(se, (int)damage);
 
-                            damage = 0;
-                        } else {
-                            se.SubAmount(i, remainShieldAmount);
-                            attackedShieldDict.Add(se, (int)remainShieldAmount);
+                                damage = 0;
+                            } else {
+                                se.SubAmount(i, remainShieldAmount);
+                                attackedShieldDict.Add(se, (int)remainShieldAmount);
 
-                            RemoveStatusEffect(se);
-                            damage -= remainShieldAmount;
+                                RemoveStatusEffect(se);
+                                damage -= remainShieldAmount;
+                            }
                         }
                     }
+                    if (damage == 0) break;
                 }
-                if (damage == 0) break;
             }
 
             finalDamage = (int)damage;
@@ -539,7 +541,8 @@ public class Unit : MonoBehaviour
 			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 		}
-        yield return StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth));
+        bool ignoreShield = SkillLogicFactory.Get(appliedSkill).IgnoreShield(skillInstanceData);
+        yield return StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
 		unitManager.UpdateUnitOrder();
 	}
 
@@ -556,7 +559,7 @@ public class Unit : MonoBehaviour
 
 					float damage = se.GetAmount(i);
 					Unit caster = se.GetCaster();
-					yield return StartCoroutine(Damaged(damage, caster, 0, 0, true));
+					yield return StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
 				}
 			}
 		}
@@ -673,12 +676,12 @@ public class Unit : MonoBehaviour
 		unitManager.UpdateUnitOrder();
 	}
 
-	public IEnumerator ApplyTriggerOnPhaseStart()
+	public IEnumerator ApplyTriggerOnPhaseStart(int phase)
 	{
-		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this);
+		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (StatusEffect statusEffect in statusEffectList) {
             if (statusEffect.GetOriginSkill() != null) {
-                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectsAtPhaseStart(this, statusEffect);
+                SkillLogicFactory.Get(statusEffect.GetOriginSkill()).TriggerStatusEffectAtPhaseStart(this, statusEffect);
             }
         }
     }
@@ -691,13 +694,23 @@ public class Unit : MonoBehaviour
     {
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
-
+    public void TriggerTileStatusEffectAtTurnStart() {
+        foreach(var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+            foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
+                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                if (originSkill != null) {
+                    SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnStart(this, tile, tileStatusEffect);
+                }
+            }
+        }
+    }
     public void TriggerTileStatusEffectAtTurnEnd() {
-        Tile tile = GetTileUnderUnit();
-        foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
-            Skill originSkill = tileStatusEffect.GetOriginSkill();
-            if (originSkill != null) {
-                SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
+        foreach (var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+            foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
+                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                if (originSkill != null) {
+                    SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
+                }
             }
         }
     }

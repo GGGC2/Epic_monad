@@ -107,7 +107,7 @@ namespace Battle.Turn
 				battleData.uiManager.EnableCancelButtonUI();
 				battleData.isWaitingUserInput = true;
 				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-					battleData.triggers.selectedDirectionByUser,
+					battleData.triggers.directionSelectedByUser,
 					battleData.triggers.rightClicked,
 					battleData.triggers.cancelClicked
 				));

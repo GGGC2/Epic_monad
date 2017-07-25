@@ -14,8 +14,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	Image characterIllust;
 	Image unitImage;
 	
-	void Start()
-	{
+	void Start(){
 		nameText = GameObject.Find("NameText").GetComponent<Text>();
 		characterIllust = GameObject.Find("CharacterIllust").GetComponent<Image>();
 		unitImage = GameObject.Find("UnitImage").GetComponent<Image>();
@@ -34,6 +33,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
 		unitViewer.Clear();
+		characterIllust.sprite = Resources.Load<Sprite>("StandingImage/transparent");
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

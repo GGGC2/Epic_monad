@@ -37,6 +37,9 @@ public class Skill{
 	string effectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
+
+	// 스킬 SE 이름(그냥 그레네브 총질에만 한번 넣어봄)
+	string soundEffectName;
 	
 	// 스킬 설명 텍스트
 	string skillDataText;
@@ -51,7 +54,7 @@ public class Skill{
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 				 SkillApplyType skillApplyType,  
-				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType,
+		string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
 				 string skillDataText)
 	{
 		this.owner = owner;
@@ -74,6 +77,7 @@ public class Skill{
 		this.effectName = effectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
+		this.soundEffectName = soundEffectName;
 		this.skillDataText = skillDataText;
 	}
       
@@ -114,6 +118,7 @@ public class Skill{
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
     public int GetLequireLevel() { return requireLevel;}
+    public void SetRequireAP(int requireAP) { this.requireAP = requireAP;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}
 	public float GetPowerFactor(Stat status) {return powerFactor;} 
@@ -130,6 +135,8 @@ public class Skill{
 	public string GetEffectName() {return effectName;}
 	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
 	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
+	public string GetSoundEffectName() {return soundEffectName;}
+	public void SetSoundEffectName(string soundEffectName) { this.soundEffectName = soundEffectName; }
 	public string GetSkillDataText() {return skillDataText;}
     public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
     public List<TileStatusEffect.FixedElement> GetTileStatusEffectList() { return tileStatusEffectList; }

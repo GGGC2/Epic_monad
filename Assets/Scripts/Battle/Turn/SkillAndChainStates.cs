@@ -130,15 +130,20 @@ namespace Battle.Turn {
             Unit selectedUnit = battleData.selectedUnit;
             Skill selectedSkill = battleData.SelectedSkill;
 
-            while (true) 
-            {
+            while (true) {
                 battleData.isWaitingUserInput = true;
+                //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시를 업데이트
                 var update = UpdateRangeSkillMouseDirection(battleData);
                 battleData.battleManager.StartCoroutine(update);
+
+                if(battleData.SelectedSkill.GetSkillType() != SkillType.Point)
+                    battleData.uiManager.EnableSelectDirectionUI();
+
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     battleData.triggers.rightClicked,
                     battleData.triggers.cancelClicked,
-                    battleData.triggers.tileSelectedByUser
+                    battleData.triggers.tileSelectedByUser,
+                    battleData.triggers.directionSelectedByUser
                 ));
                 battleData.battleManager.StopCoroutine(update);
                 battleData.isWaitingUserInput = false;
@@ -151,16 +156,20 @@ namespace Battle.Turn {
                     battleData.currentState = CurrentState.SelectSkill;
                     yield break;
                 }
-
-                if (battleData.triggers.tileSelectedByUser.Triggered) {
+                else{
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
-                    if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                        var firstRange = GetTilesInFirstRange(battleData);
-                        var destTileAtRoute = GetRouteTiles(firstRange).Last();
-                        yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
-                    } else
+
+                    if(battleData.triggers.directionSelectedByUser.Triggered)
                         yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+                    else{
+                        if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+                            var firstRange = GetTilesInFirstRange(battleData);
+                            var destTileAtRoute = GetRouteTiles(firstRange).Last();
+                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
+                        } else
+                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+                    }
                 }
 
                 if (battleData.currentState != CurrentState.SelectSkillApplyDirection) {
@@ -249,8 +258,9 @@ namespace Battle.Turn {
                 }
                 Debug.Log("\\------- Damage preview -------/");
 
+                bool isApplyPossible = SkillLogicFactory.Get(battleData.SelectedSkill).CheckApplyPossible(caster, tilesInSkillRange);
                 bool isChainPossible = CheckChainPossible(battleData);
-                battleData.uiManager.EnableSkillCheckWaitButton(isChainPossible);
+                battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
                 Skill selectedSkill = battleData.SelectedSkill;
                 battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
 
@@ -456,6 +466,9 @@ namespace Battle.Turn {
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
 
+			if(appliedSkill.GetSoundEffectName () != null)
+				SoundManager.Instance.PlaySE (appliedSkill.GetSoundEffectName ());
+
             yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
             
             foreach (var tile in selectedTiles) {
@@ -507,6 +520,7 @@ namespace Battle.Turn {
                     battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
                     yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
                     battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+                    battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
                     target.UpdateHealthViewer();
                 }
@@ -605,7 +619,7 @@ namespace Battle.Turn {
         private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
             UnitClass damageType = caster.GetUnitClass();
             BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true));
+            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false));
 
             foreach (var statusEffect in target.GetStatusEffectList()) {
                 bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||

@@ -10,40 +10,52 @@ public class ResultPanel : MonoBehaviour{
 	public Text ScoreText;
 	public Text TriggerIndex;
 	public Image ExpBar;
-	public bool alreadyClicked;
+	private bool alreadyClicked;
 	public BattleTriggerChecker Checker;
 	public int runningFrame;
 
 	public void Clicked(){
-		StartCoroutine(IClicked());
+		if (!alreadyClicked) {
+			alreadyClicked = true;
+			StartCoroutine (IClicked ());
+		}
 	}
 
 	public IEnumerator IClicked(){
-		if(!alreadyClicked){
-			alreadyClicked = true;
-
-			foreach(BattleTrigger trigger in Checker.battleTriggers){
-				//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
-				if(trigger.acquired){
-					TriggerIndex.text += trigger.korName + " " + trigger.reward + "\n";
-					yield return new WaitForSeconds(0.5f);
-				}
-			}
-
-			ScoreText.text = "점수 : " + Checker.battleData.rewardPoint;
-			yield return new WaitForSeconds(0.5f);
-		
-			int expTick = Checker.battleData.rewardPoint/runningFrame;
-			while(Checker.battleData.rewardPoint > 0){
-				if(Checker.battleData.rewardPoint >= expTick)
-					UpdateExp(expTick);
-				else
-					UpdateExp(Checker.battleData.rewardPoint);
-				yield return null;
+		foreach(BattleTrigger trigger in Checker.battleTriggers){
+			//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
+			if(trigger.acquired){
+				TriggerIndex.text += trigger.korName + " " + trigger.reward + MultiplierText(trigger);
+				TriggerIndex.text += "\n";
+				yield return new WaitForSeconds(0.5f);
 			}
 		}
+
+		ScoreText.text = "점수 : " + Checker.battleData.rewardPoint;
+		yield return new WaitForSeconds(0.5f);
+
+		int expTick = Checker.battleData.rewardPoint/runningFrame;
+		while(Checker.battleData.rewardPoint > 0){
+			if(expTick == 0)
+				UpdateExp(1);
+			else if(Checker.battleData.rewardPoint >= expTick)
+				UpdateExp(expTick);
+			else
+				UpdateExp(Checker.battleData.rewardPoint);
+			yield return null;
+		}
+
+		//다 출력된 후 클릭을 해야 넘어감
+		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
+
+		Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+	}
+
+	string MultiplierText(BattleTrigger trigger){
+		if(!trigger.repeatable || trigger.count == 1)
+			return "";
 		else
-			Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+			return " x"+trigger.count;
 	}
 
 	void UpdateExp(int point){
