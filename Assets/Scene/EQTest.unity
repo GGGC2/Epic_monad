@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -280,6 +280,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1448435037219410, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
+      propertyPath: m_Name
+      value: MovingUICanvas
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
   m_IsPrefabParent: 0
@@ -312,7 +316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapData: {fileID: 0}
   unitData: {fileID: 0}
-  battleEndConditionData: {fileID: 0}
+  battleConditionData: {fileID: 0}
   bgmData: {fileID: 0}
 --- !u!4 &512625764
 Transform:
