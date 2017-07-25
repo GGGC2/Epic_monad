@@ -73,7 +73,9 @@ public class BattleTriggerChecker : MonoBehaviour {
 
 		battleTriggers = Parser.GetParsedBattleTriggerData();
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
-		FindObjectOfType<ConditionPanel>().Initialize(battleTriggers);
+		
+		if(FindObjectOfType<ConditionPanel>() != null)
+			FindObjectOfType<ConditionPanel>().Initialize(battleTriggers);
 	}
 
 	public static IEnumerator CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
