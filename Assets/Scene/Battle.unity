@@ -248,7 +248,7 @@ Prefab:
     - target: {fileID: 224761965734578448, guid: e0c9a42fcd625498bb26545b7d1b6c46,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 719.56757
+      value: 720
       objectReference: {fileID: 0}
     - target: {fileID: 224761965734578448, guid: e0c9a42fcd625498bb26545b7d1b6c46,
         type: 2}
@@ -279,6 +279,10 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1448435037219410, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
+      propertyPath: m_Name
+      value: MovingUICanvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}

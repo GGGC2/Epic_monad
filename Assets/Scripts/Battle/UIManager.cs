@@ -42,7 +42,7 @@ public class UIManager : MonoBehaviour
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
-		movedUICanvas = GameObject.Find("MovedUICanvas");
+		movedUICanvas = GameObject.Find("MovingUICanvas");
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 	}
 

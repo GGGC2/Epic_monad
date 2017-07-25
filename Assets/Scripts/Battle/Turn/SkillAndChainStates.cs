@@ -130,15 +130,20 @@ namespace Battle.Turn {
             Unit selectedUnit = battleData.selectedUnit;
             Skill selectedSkill = battleData.SelectedSkill;
 
-            while (true) 
-            {
+            while (true) {
                 battleData.isWaitingUserInput = true;
+                //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시를 업데이트
                 var update = UpdateRangeSkillMouseDirection(battleData);
                 battleData.battleManager.StartCoroutine(update);
+
+                if(battleData.SelectedSkill.GetSkillType() != SkillType.Point)
+                    battleData.uiManager.EnableSelectDirectionUI();
+
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     battleData.triggers.rightClicked,
                     battleData.triggers.cancelClicked,
-                    battleData.triggers.tileSelectedByUser
+                    battleData.triggers.tileSelectedByUser,
+                    battleData.triggers.directionSelectedByUser
                 ));
                 battleData.battleManager.StopCoroutine(update);
                 battleData.isWaitingUserInput = false;
@@ -151,16 +156,20 @@ namespace Battle.Turn {
                     battleData.currentState = CurrentState.SelectSkill;
                     yield break;
                 }
-
-                if (battleData.triggers.tileSelectedByUser.Triggered) {
+                else{
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
-                    if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                        var firstRange = GetTilesInFirstRange(battleData);
-                        var destTileAtRoute = GetRouteTiles(firstRange).Last();
-                        yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
-                    } else
+
+                    if(battleData.triggers.directionSelectedByUser.Triggered)
                         yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+                    else{
+                        if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+                            var firstRange = GetTilesInFirstRange(battleData);
+                            var destTileAtRoute = GetRouteTiles(firstRange).Last();
+                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
+                        } else
+                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
+                    }
                 }
 
                 if (battleData.currentState != CurrentState.SelectSkillApplyDirection) {

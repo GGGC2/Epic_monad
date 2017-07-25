@@ -163,7 +163,7 @@ public class BattleData
 		public EventTrigger rightClicked = new EventTrigger();
 		public EventTrigger cancelClicked = new EventTrigger();
 		public EventTrigger tileSelectedByUser = new EventTrigger();
-		public EventTrigger selectedDirectionByUser = new EventTrigger();
+		public EventTrigger directionSelectedByUser = new EventTrigger();
 		public EventTrigger skillSelected = new EventTrigger();
 		public EventTrigger skillApplyCommandChanged = new EventTrigger();
 		public EventTrigger<ActionCommand> actionCommand = new EventTrigger<ActionCommand>();

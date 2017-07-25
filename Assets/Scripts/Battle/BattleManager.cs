@@ -457,7 +457,7 @@ public class BattleManager : MonoBehaviour
 		else if (directionString == "RightDown")
 			battleData.move.selectedDirection = Direction.RightDown;
 		
-		battleData.triggers.selectedDirectionByUser.Trigger();
+		battleData.triggers.directionSelectedByUser.Trigger();
 		battleData.uiManager.DisableSelectDirectionUI();
 	}
 
