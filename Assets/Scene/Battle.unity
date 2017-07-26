@@ -768,6 +768,21 @@ Prefab:
       propertyPath: m_Name
       value: BattleManager
       objectReference: {fileID: 0}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: unitData
+      value: 
+      objectReference: {fileID: 4900000, guid: b4b4f3bdccbe3784794d15c2eae5fc27, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: mapData
+      value: 
+      objectReference: {fileID: 4900000, guid: a17744d7fd537f04aab2098b19de4b95, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: battleConditionData
+      value: 
+      objectReference: {fileID: 4900000, guid: a7cb44f562fc1ad488293e449e7fdfb8, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0

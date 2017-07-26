@@ -152,6 +152,7 @@ namespace Battle.Turn {
 
                 if (battleData.triggers.rightClicked.Triggered ||
                     battleData.triggers.cancelClicked.Triggered) {
+                    battleData.uiManager.DisableSelectDirectionUI();
                     selectedUnit.SetDirection(originalDirection);
                     battleData.currentState = CurrentState.SelectSkill;
                     yield break;
@@ -160,14 +161,15 @@ namespace Battle.Turn {
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
 
-                    if(battleData.triggers.directionSelectedByUser.Triggered)
+                    if(battleData.triggers.tileSelectedByUser.Triggered)
                         yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
                     else{
                         if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
                             var firstRange = GetTilesInFirstRange(battleData);
                             var destTileAtRoute = GetRouteTiles(firstRange).Last();
                             yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
-                        } else
+                        }
+                        else
                             yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
                     }
                 }
