@@ -8,20 +8,20 @@ public class CustomWorldText : MonoBehaviour
 	public string text = "013";
 	public Align align;
 
-	public Sprite sprite0;
-	public Sprite sprite1;
-	public Sprite sprite2;
-	public Sprite sprite3;
-	public Sprite sprite4;
-	public Sprite sprite5;
-	public Sprite sprite6;
-	public Sprite sprite7;
-	public Sprite sprite8;
-	public Sprite sprite9;
+	public Sprite spriteDamage0;
+	public Sprite spriteDamage1;
+	public Sprite spriteDamage2;
+	public Sprite spriteDamage3;
+	public Sprite spriteDamage4;
+	public Sprite spriteDamage5;
+	public Sprite spriteDamage6;
+	public Sprite spriteDamage7;
+	public Sprite spriteDamage8;
+	public Sprite spriteDamage9;
 	public Sprite spriteMinus;
 	public Sprite spritePlus;
 
-	private static int gap = 50;
+	private static int gap = 100;
 	private List<GameObject> characterInstances = new List<GameObject>();
 
 	public enum Align
@@ -102,25 +102,25 @@ public class CustomWorldText : MonoBehaviour
 		switch (character)
 		{
 			case '0':
-			return sprite0;
+			return spriteDamage0;
 			case '1':
-			return sprite1;
+			return spriteDamage1;
 			case '2':
-			return sprite2;
+			return spriteDamage2;
 			case '3':
-			return sprite3;
+			return spriteDamage3;
 			case '4':
-			return sprite4;
+			return spriteDamage4;
 			case '5':
-			return sprite5;
+			return spriteDamage5;
 			case '6':
-			return sprite6;
+			return spriteDamage6;
 			case '7':
-			return sprite7;
+			return spriteDamage7;
 			case '8':
-			return sprite8;
+			return spriteDamage8;
 			case '9':
-			return sprite9;
+			return spriteDamage9;
 			case '-':
 			return spriteMinus;
 			case '+':
