@@ -502,9 +502,7 @@ public class Unit : MonoBehaviour
 
             Debug.Log(finalDamage + " damage applied to " + GetName());
 
-            damageTextObject.SetActive(true);
-            damageTextObject.GetComponent<CustomWorldText>().text = finalDamage.ToString();
-            damageTextObject.GetComponent<CustomWorldText>().ApplyText();
+			DisplayDamageText(finalDamage);
 
             UpdateHealthViewer();
 
@@ -526,6 +524,17 @@ public class Unit : MonoBehaviour
             Debug.Log(GetName() + " loses " + finalDamage + "AP.");
         }
     }
+
+	public void DisplayDamageText(int damage){
+		damageTextObject.SetActive(true);
+		damageTextObject.GetComponent<CustomWorldText>().text = damage.ToString();
+		damageTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.DAMAGE);
+	}
+	public void DisplayRecoverText(int recover){
+		recoverTextObject.SetActive(true);
+		recoverTextObject.GetComponent<CustomWorldText>().text = recover.ToString();
+		recoverTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.RECOVER);
+	}
 
 	public IEnumerator DamagedBySkill(SkillInstanceData skillInstanceData, bool isHealth) {
         Unit caster = skillInstanceData.GetCaster();
@@ -603,8 +612,7 @@ public class Unit : MonoBehaviour
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
-		recoverTextObject.SetActive(true);
-		recoverTextObject.GetComponent<TextMesh>().text = ((int)amount).ToString();
+		DisplayRecoverText ((int)amount);
 
 		UpdateHealthViewer();
 
