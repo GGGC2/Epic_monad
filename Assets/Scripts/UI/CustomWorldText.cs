@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class CustomWorldText : MonoBehaviour
 {
 	public string text = "013";
-	public Align align;
 
 	public Sprite spriteDamage0;
 	public Sprite spriteDamage1;
@@ -18,10 +17,21 @@ public class CustomWorldText : MonoBehaviour
 	public Sprite spriteDamage7;
 	public Sprite spriteDamage8;
 	public Sprite spriteDamage9;
+	public Sprite spriteRecover0;
+	public Sprite spriteRecover1;
+	public Sprite spriteRecover2;
+	public Sprite spriteRecover3;
+	public Sprite spriteRecover4;
+	public Sprite spriteRecover5;
+	public Sprite spriteRecover6;
+	public Sprite spriteRecover7;
+	public Sprite spriteRecover8;
+	public Sprite spriteRecover9;
 	public Sprite spriteMinus;
 	public Sprite spritePlus;
 
-	private static int gap = 100;
+	private static int gap = 80;
+	private static float scale = 3f;
 	private List<GameObject> characterInstances = new List<GameObject>();
 
 	public enum Align
@@ -30,11 +40,16 @@ public class CustomWorldText : MonoBehaviour
 		MIDDLE,
 		RIGHT
 	}
+	public enum Font
+	{
+		DAMAGE,
+		RECOVER
+	}
 
-	public void ApplyText()
+	public void ApplyText(Font font)
 	{
 		DestroyAllChilds();
-		GenerateTextInstances();
+		GenerateTextInstances(font);
 		RePosition();
 	}
 
@@ -47,7 +62,7 @@ public class CustomWorldText : MonoBehaviour
 		characterInstances.Clear();
 	}
 
-	private void GenerateTextInstances()
+	private void GenerateTextInstances(Font font)
 	{
 		foreach(var character in text) {
 			// Debug.Log(character);
@@ -58,7 +73,8 @@ public class CustomWorldText : MonoBehaviour
 			//gameObject.AddComponent<RectTransform>();
 
 			var image = gameObject.AddComponent<Image>();
-			image.sprite = GetSprite(character);
+			image.sprite = GetSprite(character, font);
+			gameObject.GetComponent<RectTransform>().sizeDelta = image.sprite.rect.size * scale;
 
 			characterInstances.Add(gameObject);
 		}
@@ -73,11 +89,9 @@ public class CustomWorldText : MonoBehaviour
 			var rectTransform = characterInstances[i].GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = parentRectTransform.anchoredPosition;
 
-			var relativePosition = MakeRelativePosition(text.Length, i, align);
+			var relativePosition = MakeRelativePosition(text.Length, i, Align.MIDDLE);
 
-			rectTransform.offsetMax = new Vector2(100, 100) + relativePosition;
-			rectTransform.offsetMin = Vector2.zero + relativePosition;
-			rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0);
+			rectTransform.localPosition = new Vector3(rectTransform.localPosition.x + relativePosition.x, rectTransform.localPosition.y + relativePosition. y, 0);
 		}
 	}
 
@@ -97,35 +111,67 @@ public class CustomWorldText : MonoBehaviour
 		}
 	}
 
-	private Sprite GetSprite(char character)
+	private Sprite GetSprite(char character, Font font)
 	{
-		switch (character)
-		{
+		if (font == Font.DAMAGE) {
+			switch (character) {
 			case '0':
-			return spriteDamage0;
+				return spriteDamage0;
 			case '1':
-			return spriteDamage1;
+				return spriteDamage1;
 			case '2':
-			return spriteDamage2;
+				return spriteDamage2;
 			case '3':
-			return spriteDamage3;
+				return spriteDamage3;
 			case '4':
-			return spriteDamage4;
+				return spriteDamage4;
 			case '5':
-			return spriteDamage5;
+				return spriteDamage5;
 			case '6':
-			return spriteDamage6;
+				return spriteDamage6;
 			case '7':
-			return spriteDamage7;
+				return spriteDamage7;
 			case '8':
-			return spriteDamage8;
+				return spriteDamage8;
 			case '9':
-			return spriteDamage9;
+				return spriteDamage9;
 			case '-':
-			return spriteMinus;
+				return spriteMinus;
 			case '+':
-			return spritePlus;
+				return spritePlus;
+			}
+			throw new System.Exception ("Cannot find damage font of " + character);
+		} else if (font == Font.RECOVER) {
+			switch (character) {
+			case '0':
+				return spriteRecover0;
+			case '1':
+				return spriteRecover1;
+			case '2':
+				return spriteRecover2;
+			case '3':
+				return spriteRecover3;
+			case '4':
+				return spriteRecover4;
+			case '5':
+				return spriteRecover5;
+			case '6':
+				return spriteRecover6;
+			case '7':
+				return spriteRecover7;
+			case '8':
+				return spriteRecover8;
+			case '9':
+				return spriteRecover9;
+			case '-':
+				return spriteMinus;
+			case '+':
+				return spritePlus;
+			}
+			throw new System.Exception ("Cannot find recover font of " + character);
+		} else {
+			Debug.Log ("This custom text font doesn't exit (only damage font and recover font exist)");
+			return null;
 		}
-		throw new System.Exception("Cannot find font of " + character);
 	}
 }
