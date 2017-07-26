@@ -7,7 +7,16 @@ public class ConditionPanel : MonoBehaviour{
 	public Text Win;
 	public Text Lose;
 
+	CameraMover cm;
+
 	public void Initialize(List<BattleTrigger> triggers){
+
+		cm = FindObjectOfType<CameraMover>();
+		cm.mouseMoveActive = false;
+
+		Win.text = "";
+		Lose.text = "";
+
 		foreach(BattleTrigger trigger in triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.Win)
 				Win.text += "- " + trigger.korName + "\n";
@@ -17,6 +26,7 @@ public class ConditionPanel : MonoBehaviour{
 	}
 
 	public void OnClicked(){
+		cm.mouseMoveActive = true;
 		gameObject.SetActive(false);
 	}
 }
