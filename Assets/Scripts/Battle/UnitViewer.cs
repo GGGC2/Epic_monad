@@ -65,7 +65,7 @@ public class UnitViewer : MonoBehaviour {
 	}
 
 	public void Clear(){
-		Sprite transparentSprite = Resources.Load<Sprite>("Icon/transparent");
+		Sprite transparentSprite = Resources.Load<Sprite>("Icon/Empty");
 
 		hpText.text = "--/--";
 		powerText.text = "";
@@ -175,7 +175,7 @@ public class UnitViewer : MonoBehaviour {
 		else if (unitClass == UnitClass.Magic)
 			classImage.sprite = Resources.Load<Sprite>("Icon/Stat/magicClass");
 		else
-			classImage.sprite = Resources.Load<Sprite>("Icon/transparent");
+			classImage.sprite = Resources.Load<Sprite>("Icon/Empty");
 	}
 
 	void SetElementImage(Element element)
@@ -189,7 +189,7 @@ public class UnitViewer : MonoBehaviour {
 		else if (element == Element.Metal)
 			elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
 		else
-			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
 	}
 
 	void SetCelestialImage(Celestial celestial)
@@ -201,7 +201,7 @@ public class UnitViewer : MonoBehaviour {
 		else if (celestial == Celestial.Earth)
 			celestialImage.sprite = Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
 		else
-			celestialImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
+			celestialImage.sprite = Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
 	}
 
 	void Awake () {

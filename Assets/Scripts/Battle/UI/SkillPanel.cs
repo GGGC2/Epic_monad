@@ -18,7 +18,7 @@ namespace BattleUI
         Unit selectedUnit;
 		public Sprite transparent;
 
-		public void Start(){
+		public void Awake(){
 			battleManager = FindObjectOfType<BattleManager>();
 			skillApText = GameObject.Find("SkillApText").GetComponent<Text>();
 			skillApText.text = "";
@@ -86,6 +86,15 @@ namespace BattleUI
 			}
 			else
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+		}
+
+		void OnEnable(){
+			skillApText.text = "";
+			skillCooldownText.text = "";	
+			skillDataText.text = "";
+			actualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
+			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
+			rangeText.text = "";
 		}
 
 		string GetFirstRangeText(Skill skill){
