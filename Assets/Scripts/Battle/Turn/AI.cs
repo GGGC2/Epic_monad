@@ -177,7 +177,7 @@ namespace Battle.Turn
 	{
 		public static bool Skill1Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			//Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSelectedSkillByUser = 1;
@@ -202,7 +202,7 @@ namespace Battle.Turn
 
 		public static bool Skill2Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			//Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSelectedSkillByUser = 2;
@@ -230,7 +230,7 @@ namespace Battle.Turn
 
 		public static bool Skill3Available(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			//Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
 			battleData.indexOfSelectedSkillByUser = 3;
@@ -255,7 +255,7 @@ namespace Battle.Turn
 
 		public static Direction? Skill4AvailableDirection(BattleData battleData)
 		{
-			Direction beforeDirection = battleData.selectedUnit.GetDirection();
+			//Direction beforeDirection = battleData.selectedUnit.GetDirection();
 			Unit selectedUnit = battleData.selectedUnit;
 
 			if (selectedUnit.GetCurrentActivityPoint() < 70)
@@ -314,7 +314,7 @@ namespace Battle.Turn
 			foreach (var enemy in enemies)
 			{
 				Vector2 dirVec = battleData.tileManager.ToVector2(selectedUnit.GetDirection());
-				BattleManager battleManager = battleData.battleManager;
+				//BattleManager battleManager = battleData.battleManager;
 
 				Tile targetTile = battleData.tileManager.GetTile(enemy.GetPosition() + dirVec * 3);
 				enemy.GetKnockedBack(battleData, targetTile);
@@ -526,17 +526,17 @@ namespace Battle.Turn
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
             Tile destTile = battleData.tileManager.GetTile(destPosition);
-			List<Tile> destPath = movableTilesWithPath[destPosition].path;
-			Vector2 currentTilePos = currentUnit.GetPosition();
-			Vector2 distanceVector = destPosition - currentTilePos;
-			int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
+			//List<Tile> destPath = movableTilesWithPath[destPosition].path;
+			//Vector2 currentTilePos = currentUnit.GetPosition();
+			//Vector2 distanceVector = destPosition - currentTilePos;
+			//int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 			int totalUseActivityPoint = movableTilesWithPath[destPosition].requireActivityPoint;
 
 			// battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			battleData.currentState = CurrentState.CheckDestination;
 
-			List<Tile> destTileList = destPath;
-			destTileList.Add(destTile);
+			//List<Tile> destTileList = destPath;
+			//destTileList.Add(destTile);
 
 			// 카메라를 옮기고
 			Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
@@ -555,25 +555,6 @@ namespace Battle.Turn
 
 			yield return battleManager.StartCoroutine(BattleManager.DestroyRetreatUnits(battleData));
 			yield return battleManager.StartCoroutine(BattleManager.DestroyDeadUnits(battleData));
-
-			if (battleData.retreatUnits.Contains(battleData.selectedUnit))
-			{
-				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnit, 1));
-				battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
-				Debug.Log("SelectedUnit retreats");
-				GameObject.Destroy(battleData.selectedUnit.gameObject);
-				yield break;
-			}
-
-			if (battleData.deadUnits.Contains(battleData.selectedUnit))
-			{
-				battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-				yield return battleManager.StartCoroutine(BattleManager.FadeOutEffect(battleData.selectedUnit, 1));
-				battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
-				Debug.Log("SelectedUnit is dead");
-				GameObject.Destroy(battleData.selectedUnit.gameObject);
-				yield break;
-			}
 		}
 
 		public static IEnumerator AIAttack(BattleData battleData)
@@ -622,7 +603,7 @@ namespace Battle.Turn
 
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
 		{
-			Direction beforeDirection = originalDirection;
+			//Direction beforeDirection = originalDirection;
 			List<Tile> selectedTiles = new List<Tile>();
 			Unit selectedUnit = battleData.selectedUnit;
 			Skill selectedSkill = battleData.SelectedSkill;
@@ -645,7 +626,7 @@ namespace Battle.Turn
 				yield break;
 			}
 
-			BattleManager battleManager = battleData.battleManager;
+			//BattleManager battleManager = battleData.battleManager;
 			battleData.currentState = CurrentState.CheckApplyOrChain;
 
 			List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
@@ -659,7 +640,7 @@ namespace Battle.Turn
 
 		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
 		{
-			Direction beforeDirection = originalDirection;
+			//Direction beforeDirection = originalDirection;
 			Unit selectedUnit = battleData.selectedUnit;
 
 			while (battleData.currentState == CurrentState.SelectSkillApplyPoint)
@@ -692,7 +673,7 @@ namespace Battle.Turn
 
 				// 타겟팅 스킬을 타겟이 없는 장소에 지정했을 경우 적용되지 않도록 예외처리 필요 - 대부분의 스킬은 논타겟팅. 추후 보강.
 
-				BattleManager battleManager = battleData.battleManager;
+				//BattleManager battleManager = battleData.battleManager;
 				battleData.currentState = CurrentState.CheckApplyOrChain;
 
 				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
