@@ -15,8 +15,8 @@ reina,22,지옥불꽃,2,81,6,Power,3.4,Route,Straight,1,5,0,Diamond,0,1,0,Damage
 reina,29,에테르 과부하,3,0,5,Dexturity,0.2,Self,Diamond,0,0,0,Diamond,0,0,0,HealAP,-,Area,Move,--
 reina,50,대재앙,1,65,6,Power,2.3,Auto,Diamond,1,4,0,Diamond,1,4,0,DamageHealth,-,Area,Move,--
 reina,50,최후의 불꽃,2,110,7,Power,4.5,Route,Straight,1,5,0,Diamond,0,1,0,DamageHealth,-,Area,Move,--
-lenien,1,전자기 충격,2,28,0,Power,0.8,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,YellowBlast,Area,Move,<color=red>0.8x공격력</color>의 피해를 줍니다.
-lenien,8,하전 파동,2,32,0,Power,0.1,Route,Straight,1,4,0,Sector,0,2,0,DamageHealth,YellowBlast,Area,Move,<color=red>0.1x공격력</color>의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>기절</color>시킵니다.
+lenien,1,전자기 충격,2,28,0,Power,0.8,Point,Diamond,1,5,0,Diamond,0,2,0,DamageHealth,YellowBlast,Area,Move,<color=red>0.8x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.
+lenien,8,하전 파동,2,32,0,Power,0.1,Route,Straight,1,4,0,Sector,0,2,0,DamageHealth,YellowBlast,Area,Move,<color=red>0.1x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>기절</color>시킵니다.
 lenien,22,벼락,2,62,5,Power,1.6,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,—
 lenien,43,축전,1,46,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Area,Move,--
 lenien,50,낙뢰 폭격,2,84,6,Power,2.4,Point,Diamond,1,4,0,Diamond,0,2,0,DamageHealth,-,Area,Move,--
@@ -66,11 +66,11 @@ eugene,22,얼음의 가호,1,50,4,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,
 eugene,22,백은의 장막,2,8,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,—
 eugene,50,겨울의 가호,1,84,4,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,-,Individual,NonMove,—
 eugene,50,백은의 오로라,2,9,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,—
-sepia,1,반달베기,3,27,0,Power,0.5,Auto,Front,1,2,3,Front,1,2,3,DamageHealth,-,Individual,NonMove,범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>짜리 <color=#b2ff66ff>보호막</color>을 얻습니다.
+sepia,1,반달베기,3,27,0,Power,0.5,Auto,Front,1,2,3,Front,1,2,3,DamageHealth,-,Individual,NonMove,범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>(<color=red>VALUE</color>)짜리 <color=#b2ff66ff>보호막</color>을 얻습니다.
 darkenir,1,에테르 미사일,1,27,0,Power,1.3,Route,Straight,1,7,0,Straight,0,1,0,DamageHealth,-,Individual,NonMove,투사체를 쏘아 <color=red>1.3x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.
 noel,1,파마의 섬광,1,40,0,Power,0.9,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Individual,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 대상으로부터 2타일 이내에 <color=#b2ff66ff>보호막</color>을 가진 동료가 있을 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>침묵</color>시킵니다.
-noel,1,신의 가호,3,24,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>1.5x공격력</color>의 <color=#b2ff66ff>보호막</color>을 줍니다.
-arcadia,1,갈고리 씨앗,0,20,0,Power,0,Auto,Sector,1,3,0,Sector,1,3,0,Debuff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.5x공격력</color>의 <color=red>지속 피해</color>를 줍니다.
+noel,1,신의 가호,3,24,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>1.5x공격력</color>(<color=red>VALUE</color>)의 <color=#b2ff66ff>보호막</color>을 줍니다.
+arcadia,1,갈고리 씨앗,0,20,0,Power,0,Auto,Sector,1,3,0,Sector,1,3,0,Debuff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.5x공격력</color>(<color=red>VALUE</color>)의 <color=red>지속 피해</color>를 줍니다.
 bianca,1,잘근잘근 덫,0,27,0,Power,0,Point,Diamond,0,2,0,Diamond,0,0,0,Debuff,-,Individual,NonMove,—
 bianca,1,떠밀기,2,5,0,Power,0,Auto,Straight,1,1,0,Straight,1,1,0,DamageHealth,-,Individual,NonMove,—
 grenev,1,저격,0,29,0,Power,0.8,Point,Diamond,0,11,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,<color=red>0.8x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.
