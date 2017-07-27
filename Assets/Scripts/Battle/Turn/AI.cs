@@ -7,20 +7,20 @@ using Enums;
 
 namespace Battle.Turn
 {
-	public class UdongNoodle
+	public class AIUtil
 	{
+		public static Side GetOtherSide(Unit unit){
+			Side mySide = unit.GetSide ();
+			Side otherSide;
+			if (mySide == Side.Ally)
+				otherSide = Side.Enemy;
+			else
+				otherSide = Side.Ally;
+			return otherSide;
+		}
 		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit)
 		{
-			Side otherSide;
-
-			if (mainUnit.GetSide() == Side.Ally)
-			{
-				otherSide = Side.Enemy;
-			}
-			else
-			{
-				otherSide = Side.Ally;
-			}
+			Side otherSide = GetOtherSide (mainUnit);
 
 			var positions = from tile in movableTiles
 					from unit in units
@@ -39,16 +39,7 @@ namespace Battle.Turn
 
 		public static Tile FindEnemyTile(List<Tile> activeTileRange, Unit mainUnit)
 		{
-			Side otherSide;
-
-			if (mainUnit.GetSide() == Side.Ally)
-			{
-				otherSide = Side.Enemy;
-			}
-			else
-			{
-				otherSide = Side.Ally;
-			}
+			Side otherSide = GetOtherSide (mainUnit);
 
 			var tilesHaveEnemy = from tile in activeTileRange
 								 where tile.GetUnitOnTile() != null
@@ -58,8 +49,34 @@ namespace Battle.Turn
 
 			return tilesHaveEnemy.FirstOrDefault();
 		}
+		public static bool IsThereAnotherSideUnitInRange(BattleData battleData, Unit unit, Vector2 centerPosition)
+		{
+			bool isThereAnotherSideUnit = false;
+			AIData unitAIData = unit.GetComponent<AIData> ();
+
+			List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
+				unitAIData.rangeForm, 
+				centerPosition,
+				unitAIData.minReach, 
+				unitAIData.maxReach, 
+				unitAIData.width,
+				unit.GetDirection());
+			List<Unit> aroundUnits = new List<Unit>();
+			foreach (var tile in aroundTiles)
+			{
+				if (tile.IsUnitOnTile())
+					aroundUnits.Add(tile.GetUnitOnTile());
+			}
+			if (aroundUnits.Contains(unit))
+				aroundUnits.Remove(unit);
+
+			isThereAnotherSideUnit = aroundUnits.Any(otherUnit => AIUtil.GetOtherSide(unit) == otherUnit.GetSide());
+
+			return isThereAnotherSideUnit;
+		}
 	}
 
+	/*
     public class SpaghettiConLumache {
         //
         //  ♪ღ♪*•.¸¸¸.•*¨¨*•.¸¸¸.•*•♪ღ♪¸.•*¨¨*•.¸¸¸.•*•♪ღ♪
@@ -172,7 +189,13 @@ namespace Battle.Turn
             return mainUnit.GetPosition();
         }
     }
+    */
 
+	// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+	//above class SpaghettiConLumache & below class OrchidBrain : legacy code
+	// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+	/*
 	public class OrchidBrain
 	{
 		public static bool Skill1Available(BattleData battleData)
@@ -365,6 +388,11 @@ namespace Battle.Turn
 			}
 		}
 	}
+	*/
+
+	// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+	//above class OrchidBrain : legacy code
+	// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 	public class AIStates
 	{
@@ -387,6 +415,7 @@ namespace Battle.Turn
 			
 			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
 			{
+				Debug.Log (currentUnit.GetName () + " take rest because of being faint or deactivated");
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 				yield break;
 			}
@@ -401,70 +430,39 @@ namespace Battle.Turn
 
 		public static void CheckActiveTrigger(BattleData battleData)
 		{
+			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
 			if (currentUnitAIData.activeTrigger.Contains(1))
 			{
-				currentUnitAIData.SetActive();
+				satisfyActiveCondition = true;
 			}
 			// 일정 페이즈부터 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(2))
 			{
-				if (battleData.currentPhase >= currentUnitAIData.activePhase)
-					currentUnitAIData.SetActive();
+				if (battleData.currentPhase >= currentUnitAIData.activePhase) {
+					Debug.Log (currentUnit.GetName () + " is activated because enough phase passed");
+					satisfyActiveCondition = true;
+				}
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(3))
 			{
-				bool isThereAnotherSideUnit = false;
-				
 				// 자신을 기준으로 한 상대좌표
-				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
-												currentUnitAIData.rangeForm, 
-												currentUnit.GetPosition() + currentUnitAIData.midPosition,
-												currentUnitAIData.minReach, 
-												currentUnitAIData.maxReach, 
-												currentUnitAIData.width,
-												currentUnit.GetDirection());
-				List<Unit> aroundUnits = new List<Unit>();
-				foreach (var tile in aroundTiles)
-				{
-					if (tile.IsUnitOnTile())
-						aroundUnits.Add(tile.GetUnitOnTile());
+				bool isThereAnotherSideUnit = AIUtil.IsThereAnotherSideUnitInRange(battleData, currentUnit, currentUnit.GetPosition() + currentUnitAIData.midPosition);
+				if (isThereAnotherSideUnit) {
+					Debug.Log (currentUnit.GetName () + " is activated because its enemy came to nearby");
+					satisfyActiveCondition = true;
 				}
-				if (aroundUnits.Contains(currentUnit))
-					aroundUnits.Remove(currentUnit);
-
-				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
-
-				if (isThereAnotherSideUnit)
-					currentUnitAIData.SetActive();
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(4))
 			{
-				bool isThereAnotherSideUnit = false;
-				
-				// 절대좌표
-				List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
-												currentUnitAIData.rangeForm, 
-												currentUnitAIData.midPosition,
-												currentUnitAIData.minReach, 
-												currentUnitAIData.maxReach, 
-												currentUnitAIData.width,
-												currentUnit.GetDirection());
-				List<Unit> aroundUnits = new List<Unit>();
-				foreach (var tile in aroundTiles)
-				{
-					if (tile.IsUnitOnTile())
-						aroundUnits.Add(tile.GetUnitOnTile());
+				//절대좌표
+				bool isThereAnotherSideUnit = AIUtil.IsThereAnotherSideUnitInRange(battleData, currentUnit, currentUnitAIData.midPosition);
+				if (isThereAnotherSideUnit) {
+					Debug.Log (currentUnit.GetName () + " is activated because its enemy came to absolute position range");
+					satisfyActiveCondition = true;
 				}
-				if (aroundUnits.Contains(currentUnit))
-					aroundUnits.Remove(currentUnit);
-
-				isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
-
-				if (isThereAnotherSideUnit)
-					currentUnitAIData.SetActive();
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(5))
@@ -472,11 +470,14 @@ namespace Battle.Turn
 				// 뭔가 기술의 영향을 받으면
 				// SkillAndChainState.ApplySkill에서 체크
 			}
+			if(satisfyActiveCondition)
+				currentUnitAIData.SetActive();
 		}
 	}
 
     public class AIStates_old
 	{
+		/*
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			Unit currentUnit = battleData.selectedUnit;
@@ -489,7 +490,7 @@ namespace Battle.Turn
 			{
 				yield return battleManager.StartCoroutine(AIMove(battleData));
 			}
-		}
+		}*/
 		public static IEnumerator AIMove(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -508,21 +509,23 @@ namespace Battle.Turn
 		    Unit currentUnit = battleData.selectedUnit;
 		    Vector2 destPosition;
 
-            if (currentUnit.GetNameInCode() == "monster")
+            /*if (currentUnit.GetNameInCode() == "monster")
 		    {
                 // stage 3 달팽이 몬스터 temp AI
 		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
 		            battleData.selectedUnit);
-		    }
+		    }*/
+			/*
 			if (currentUnit.GetNameInCode() == "orchid")
 			{
 				destPosition = battleData.selectedUnit.GetPosition();
 			}
-		    else
-		    {
+			*/
+		    //else
+		    //{
                 // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
-                destPosition = UdongNoodle.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
-            }
+			destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
+            //}
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
             Tile destTile = battleData.tileManager.GetTile(destPosition);
@@ -615,7 +618,7 @@ namespace Battle.Turn
 														selectedSkill.GetSecondWidth(),
 														selectedUnit.GetDirection());
 
-			Tile selectedTile = UdongNoodle.FindEnemyTile(selectedTiles, battleData.selectedUnit);
+			Tile selectedTile = AIUtil.FindEnemyTile(selectedTiles, battleData.selectedUnit);
 
 			if (selectedTile == null)
 			{
@@ -657,7 +660,7 @@ namespace Battle.Turn
 														selectedSkill.GetFirstWidth(),
 														battleData.selectedUnit.GetDirection());
 
-				Tile selectedTile = UdongNoodle.FindEnemyTile(activeRange, battleData.selectedUnit);
+				Tile selectedTile = AIUtil.FindEnemyTile(activeRange, battleData.selectedUnit);
 
 				if (selectedTile == null)
 				{
