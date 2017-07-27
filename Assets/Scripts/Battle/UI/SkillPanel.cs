@@ -9,24 +9,19 @@ namespace BattleUI
 		private BattleManager battleManager;
 		Text skillApText;
 		Text skillDataText;
-		Text skillRange1Text;
+		public Text rangeText;
 		Text skillCooldownText;
 		public Image rangeType;
 		public Image actualRange;
         int page = 0;
         int maxPage = 0;
         Unit selectedUnit;
-
-		//Enums.RangeForm과 값이 정확히 맞아야 함
-		public Sprite[] RangeFormIcons;
 		public Sprite transparent;
 
 		public void Start(){
 			battleManager = FindObjectOfType<BattleManager>();
 			skillApText = GameObject.Find("SkillApText").GetComponent<Text>();
 			skillApText.text = "";
-			skillRange1Text = GameObject.Find("SkillRange1Text").GetComponent<Text>();
-			skillRange1Text.text = "";
 			skillCooldownText = GameObject.Find("SkillCooldownText").GetComponent<Text>();
 			skillCooldownText.text = "";
 			skillDataText = GameObject.Find("SkillDataText").GetComponent<Text>();
@@ -80,15 +75,24 @@ namespace BattleUI
 			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+battleManager.battleData.selectedUnit.name+preSelectedSkill.GetColumn()+"_"+preSelectedSkill.GetRequireLevel());
 			if(actualRangeImage != null)
 				actualRange.sprite = actualRangeImage;
-			/*if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
-			{
-				range1Image.sprite = transparent;
+
+			if(preSelectedSkill.GetSkillType() == Enums.SkillType.Point){
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
+				rangeText.text += GetFirstRangeText(preSelectedSkill);
+			}
+			else if(preSelectedSkill.GetSkillType() == Enums.SkillType.Route){
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Line");
+				rangeText.text += GetFirstRangeText(preSelectedSkill);
 			}
 			else
-			{
-				skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
-				range1Image.sprite = RangeFormIcons[(int)preSelectedSkill.GetFirstRangeForm()];
-			}*/
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+		}
+
+		string GetFirstRangeText(Skill skill){
+			string result = "";
+			if(skill.GetFirstMinReach() > 1)
+				result = skill.GetFirstMinReach()+"~";
+			return result + skill.GetFirstMaxReach();
 		}
 
 		public string GetSkillBasePower(Unit unit, Skill skill){
@@ -99,7 +103,7 @@ namespace BattleUI
 		{
 			battleManager.CallbackPointerExitSkillIndex(index);
 			skillApText.text = "";
-			skillRange1Text.text = "";
+			rangeText.text = "";
 			skillCooldownText.text = "";
 			skillDataText.text = "";
 			rangeType.sprite = transparent;
