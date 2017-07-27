@@ -54,7 +54,6 @@ namespace Battle.Turn
 			bool isThereAnotherSideUnit = false;
 			AIData unitAIData = unit.GetComponent<AIData> ();
 
-			// 자신을 기준으로 한 상대좌표
 			List<Tile> aroundTiles = battleData.tileManager.GetTilesInRange(
 				unitAIData.rangeForm, 
 				centerPosition,
@@ -416,6 +415,7 @@ namespace Battle.Turn
 			
 			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
 			{
+				Debug.Log (currentUnit.GetName () + " take rest because of being faint or deactivated");
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 				yield break;
 			}
@@ -430,32 +430,39 @@ namespace Battle.Turn
 
 		public static void CheckActiveTrigger(BattleData battleData)
 		{
+			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
 			if (currentUnitAIData.activeTrigger.Contains(1))
 			{
-				currentUnitAIData.SetActive();
+				satisfyActiveCondition = true;
 			}
 			// 일정 페이즈부터 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(2))
 			{
-				if (battleData.currentPhase >= currentUnitAIData.activePhase)
-					currentUnitAIData.SetActive();
+				if (battleData.currentPhase >= currentUnitAIData.activePhase) {
+					Debug.Log (currentUnit.GetName () + " is activated because enough phase passed");
+					satisfyActiveCondition = true;
+				}
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(3))
 			{
 				// 자신을 기준으로 한 상대좌표
 				bool isThereAnotherSideUnit = AIUtil.IsThereAnotherSideUnitInRange(battleData, currentUnit, currentUnit.GetPosition() + currentUnitAIData.midPosition);
-				if (isThereAnotherSideUnit)
-					currentUnitAIData.SetActive();
+				if (isThereAnotherSideUnit) {
+					Debug.Log (currentUnit.GetName () + " is activated because its enemy came to nearby");
+					satisfyActiveCondition = true;
+				}
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(4))
 			{
 				//절대좌표
 				bool isThereAnotherSideUnit = AIUtil.IsThereAnotherSideUnitInRange(battleData, currentUnit, currentUnitAIData.midPosition);
-				if (isThereAnotherSideUnit)
-					currentUnitAIData.SetActive();
+				if (isThereAnotherSideUnit) {
+					Debug.Log (currentUnit.GetName () + " is activated because its enemy came to absolute position range");
+					satisfyActiveCondition = true;
+				}
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
 			else if (currentUnitAIData.activeTrigger.Contains(5))
@@ -463,6 +470,8 @@ namespace Battle.Turn
 				// 뭔가 기술의 영향을 받으면
 				// SkillAndChainState.ApplySkill에서 체크
 			}
+			if(satisfyActiveCondition)
+				currentUnitAIData.SetActive();
 		}
 	}
 
