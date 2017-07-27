@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace BattleUI
 {
@@ -76,7 +77,7 @@ namespace BattleUI
 			int cooldown = preSelectedSkill.GetCooldown();
 			if (cooldown > 0)
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
-			skillDataText.text = preSelectedSkill.GetSkillDataText();
+			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
 			
 			/*if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
 			{
@@ -87,6 +88,10 @@ namespace BattleUI
 				skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
 				range1Image.sprite = RangeFormIcons[(int)preSelectedSkill.GetFirstRangeForm()];
 			}*/
+		}
+
+		public string GetSkillBasePower(Unit unit, Skill skill){
+			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
 		}
 
 		public void CallbackPointerExitSkillIndex(int index)
