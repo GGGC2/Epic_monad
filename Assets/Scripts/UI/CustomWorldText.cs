@@ -65,12 +65,9 @@ public class CustomWorldText : MonoBehaviour
 	private void GenerateTextInstances(Font font)
 	{
 		foreach(var character in text) {
-			// Debug.Log(character);
-
 			var gameObject = new GameObject(character.ToString(), typeof(RectTransform));
 			gameObject.transform.SetParent(transform);
 			gameObject.transform.localScale = Vector3.one;
-			//gameObject.AddComponent<RectTransform>();
 
 			var image = gameObject.AddComponent<Image>();
 			image.sprite = GetSprite(character, font);

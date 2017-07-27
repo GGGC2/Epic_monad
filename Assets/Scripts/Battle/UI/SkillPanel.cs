@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace BattleUI
 {
@@ -8,29 +9,23 @@ namespace BattleUI
 		private BattleManager battleManager;
 		Text skillApText;
 		Text skillDataText;
-		Text skillRange1Text;
+		public Text rangeText;
 		Text skillCooldownText;
-		Image range1Image;
+		public Image rangeType;
+		public Image actualRange;
         int page = 0;
         int maxPage = 0;
         Unit selectedUnit;
-
-		//Enums.RangeForm과 값이 정확히 맞아야 함
-		public Sprite[] RangeFormIcons;
 		public Sprite transparent;
 
-		public void Start()
-		{
+		public void Awake(){
 			battleManager = FindObjectOfType<BattleManager>();
 			skillApText = GameObject.Find("SkillApText").GetComponent<Text>();
 			skillApText.text = "";
-			skillRange1Text = GameObject.Find("SkillRange1Text").GetComponent<Text>();
-			skillRange1Text.text = "";
 			skillCooldownText = GameObject.Find("SkillCooldownText").GetComponent<Text>();
 			skillCooldownText.text = "";
 			skillDataText = GameObject.Find("SkillDataText").GetComponent<Text>();
 			skillDataText.text = "";
-			range1Image = GameObject.Find("SkillRange1Image").GetComponent<Image>();
 		}
 
         public int GetPage() { return page; }
@@ -65,9 +60,8 @@ namespace BattleUI
 			}
 		}
 
-		public void CallbackPointerEnterSkillIndex(int index)
-		{
-			battleManager.CallbackPointerEnterSkillIndex(index);			
+		public void CallbackPointerEnterSkillIndex(int index){
+			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
 			
@@ -76,27 +70,52 @@ namespace BattleUI
 			int cooldown = preSelectedSkill.GetCooldown();
 			if (cooldown > 0)
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
-			skillDataText.text = preSelectedSkill.GetSkillDataText();
+			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
 			
-			/*if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
-			{
-				range1Image.sprite = transparent;
+			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+battleManager.battleData.selectedUnit.name+preSelectedSkill.GetColumn()+"_"+preSelectedSkill.GetRequireLevel());
+			if(actualRangeImage != null)
+				actualRange.sprite = actualRangeImage;
+
+			if(preSelectedSkill.GetSkillType() == Enums.SkillType.Point){
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
+				rangeText.text += GetFirstRangeText(preSelectedSkill);
+			}
+			else if(preSelectedSkill.GetSkillType() == Enums.SkillType.Route){
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Line");
+				rangeText.text += GetFirstRangeText(preSelectedSkill);
 			}
 			else
-			{
-				skillRange1Text.text = preSelectedSkill.GetFirstMinReach().ToString() + "-" + preSelectedSkill.GetFirstMaxReach().ToString();
-				range1Image.sprite = RangeFormIcons[(int)preSelectedSkill.GetFirstRangeForm()];
-			}*/
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+		}
+
+		void OnEnable(){
+			skillApText.text = "";
+			skillCooldownText.text = "";	
+			skillDataText.text = "";
+			actualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
+			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
+			rangeText.text = "";
+		}
+
+		string GetFirstRangeText(Skill skill){
+			string result = "";
+			if(skill.GetFirstMinReach() > 1)
+				result = skill.GetFirstMinReach()+"~";
+			return result + skill.GetFirstMaxReach();
+		}
+
+		public string GetSkillBasePower(Unit unit, Skill skill){
+			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
 		}
 
 		public void CallbackPointerExitSkillIndex(int index)
 		{
 			battleManager.CallbackPointerExitSkillIndex(index);
 			skillApText.text = "";
-			skillRange1Text.text = "";
+			rangeText.text = "";
 			skillCooldownText.text = "";
 			skillDataText.text = "";
-			range1Image.sprite = transparent;
+			rangeType.sprite = transparent;
 		}
 
 		public void CallbackSkillUICancel()

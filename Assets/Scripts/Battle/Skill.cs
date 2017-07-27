@@ -117,7 +117,7 @@ public class Skill{
     public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return name;}
-    public int GetLequireLevel() { return requireLevel;}
+    public int GetRequireLevel() { return requireLevel;}
     public void SetRequireAP(int requireAP) { this.requireAP = requireAP;}
 	public int GetRequireAP() {return requireAP;}
 	public int GetCooldown() {return cooldown;}

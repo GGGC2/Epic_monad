@@ -603,26 +603,20 @@ public class Unit : MonoBehaviour
 		// 회복량 증감 효과 적용
 		amount = CalculateActualAmount(amount, StatusEffectType.TakenHealChange);
 
-		// 초과회복량 차감
+		// 초과회복시 최대체력까지만 올라감
 		int actualAmount = (int)amount;
 		if (currentHealth + actualAmount > maxHealth)
 		{
-			actualAmount = actualAmount - (currentHealth + actualAmount - maxHealth);
+			actualAmount = maxHealth - currentHealth;
 		}
 
 		currentHealth += actualAmount;
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
-		DisplayRecoverText ((int)amount);
-
+		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
-
-		// 회복량 표시되는 시간. (회복량이 0일때는 딜레이 없음)
-		if (amount > 0)
-			yield return new WaitForSeconds(1);
-		else
-			yield return null;
+		yield return new WaitForSeconds(1);
 		recoverTextObject.SetActive(false);
 	}
 
@@ -630,18 +624,13 @@ public class Unit : MonoBehaviour
 	{
 		activityPoint += amount;
 
-		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomWorldText>().text = amount.ToString();
-
-		// recoverTextObject.SetActive(true);
-		// recoverTextObject.GetComponent<TextMesh>().text = amount.ToString();
-
-		// healthViewer.UpdateCurrentActivityPoint(currentHealth, maxHealth);
+		//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
+		DisplayRecoverText (amount);
 
 		// 회복량 표시되는 시간.
 		yield return new WaitForSeconds(1);
-		// recoverTextObject.SetActive(false);
-		damageTextObject.SetActive(false);
+		recoverTextObject.SetActive(false);
+
 		unitManager.UpdateUnitOrder();
 	}
 

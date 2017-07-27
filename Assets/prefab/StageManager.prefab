@@ -65,8 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 983715c2feff24b5cb0c10c6df350860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resultPanel: {fileID: 0}
   mapData: {fileID: 4900000, guid: 1a933926a248348cb9e4a025b706ba50, type: 3}
   unitData: {fileID: 4900000, guid: 27d72ba83af934bea9963b30b10cf732, type: 3}
+  aiData: {fileID: 4900000, guid: 92e49bde69b7444988ad80dc09bcee9e, type: 3}
   battleConditionData: {fileID: 4900000, guid: 45409931946b94e689a9fbca251831f5, type: 3}
   bgmData: {fileID: 0}

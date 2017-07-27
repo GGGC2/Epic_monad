@@ -174,8 +174,9 @@ public class BattleManager : MonoBehaviour
 	}
     
 
-	public static IEnumerator FadeOutEffect(Unit unit, float time)
+	public static IEnumerator FadeOutEffect(Unit unit)
 	{
+		float time = 0.5f;
 		SpriteRenderer sr = unit.gameObject.GetComponent<SpriteRenderer>();
 		for (int i = 0; i < 10; i++)
 		{
@@ -189,11 +190,9 @@ public class BattleManager : MonoBehaviour
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit deadUnit in battleData.deadUnits){
-			if (deadUnit == battleData.selectedUnit)
-				continue;
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit, 1));
+			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
 			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
@@ -207,9 +206,7 @@ public class BattleManager : MonoBehaviour
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit retreatUnit in battleData.retreatUnits){
-			if (retreatUnit == battleData.selectedUnit)
-				continue;
-			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit, 1));
+			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
 			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
@@ -229,30 +226,13 @@ public class BattleManager : MonoBehaviour
 		return false;
 	}
 
-	static IEnumerator UpdateRetraitAndDeadUnits(BattleData battleData, BattleManager battleManager)
+	static IEnumerator UpdateRetreatAndDeadUnits(BattleData battleData, BattleManager battleManager)
 	{
 		battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
 		battleData.deadUnits = battleData.unitManager.GetDeadUnits();
 
 		yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
 		yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
-
-		if (battleData.retreatUnits.Contains(battleData.selectedUnit)){
-			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
-			battleData.unitManager.DeleteRetreatUnit(battleData.selectedUnit);
-			Debug.Log("SelectedUnit retreats");
-			Destroy(battleData.selectedUnit.gameObject);
-			yield break;
-		}
-
-		if (battleData.deadUnits.Contains(battleData.selectedUnit)){
-			battleData.selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return battleManager.StartCoroutine(FadeOutEffect(battleData.selectedUnit, 1));
-			battleData.unitManager.DeleteDeadUnit(battleData.selectedUnit);
-			Debug.Log("SelectedUnit is dead");
-			Destroy(battleData.selectedUnit.gameObject);
-			yield break;
-		}
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
@@ -285,7 +265,10 @@ public class BattleManager : MonoBehaviour
 		{
 			BattleManager battleManager = battleData.battleManager;
 			
-			yield return battleManager.StartCoroutine(UpdateRetraitAndDeadUnits(battleData, battleManager));
+			yield return battleManager.StartCoroutine(UpdateRetreatAndDeadUnits(battleData, battleManager));
+
+			if (IsSelectedUnitRetraitOrDie(battleData))
+				yield break;
 			
 			// 매 액션이 끝날때마다 갱신하는 특성 조건들
 			battleData.unitManager.ResetLatelyHitUnits();
@@ -298,9 +281,6 @@ public class BattleManager : MonoBehaviour
 			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 				Checker.InitializeResultPanel();
 			// 액션마다 갱신사항 종료
-				
-			if (IsSelectedUnitRetraitOrDie(battleData))
-				yield break;
 
 			MoveCameraToUnit(battleData.selectedUnit);
 
