@@ -387,6 +387,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &683801279 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114883346016187548, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1705971726}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &894933682
 Prefab:
   m_ObjectHideFlags: 0
@@ -988,6 +994,24 @@ Prefab:
       propertyPath: m_Color.a
       value: 0.666
       objectReference: {fileID: 0}
+    - target: {fileID: 1916535649066204, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_Name
+      value: RangeType
+      objectReference: {fileID: 0}
+    - target: {fileID: 1067911848730786, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_Name
+      value: ActualRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: rangeType
+      value: 
+      objectReference: {fileID: 683801279}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: actualRange
+      value: 
+      objectReference: {fileID: 1905538626}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
@@ -1234,7 +1258,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
@@ -1290,6 +1313,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 750256399ab32466f94897aae008d915, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1905538626 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114582453895480400, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1705971726}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &2087932895
 GameObject:
   m_ObjectHideFlags: 0

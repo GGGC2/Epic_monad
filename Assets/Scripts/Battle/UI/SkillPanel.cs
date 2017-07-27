@@ -11,7 +11,8 @@ namespace BattleUI
 		Text skillDataText;
 		Text skillRange1Text;
 		Text skillCooldownText;
-		Image range1Image;
+		public Image rangeType;
+		public Image actualRange;
         int page = 0;
         int maxPage = 0;
         Unit selectedUnit;
@@ -20,8 +21,7 @@ namespace BattleUI
 		public Sprite[] RangeFormIcons;
 		public Sprite transparent;
 
-		public void Start()
-		{
+		public void Start(){
 			battleManager = FindObjectOfType<BattleManager>();
 			skillApText = GameObject.Find("SkillApText").GetComponent<Text>();
 			skillApText.text = "";
@@ -31,7 +31,6 @@ namespace BattleUI
 			skillCooldownText.text = "";
 			skillDataText = GameObject.Find("SkillDataText").GetComponent<Text>();
 			skillDataText.text = "";
-			range1Image = GameObject.Find("SkillRange1Image").GetComponent<Image>();
 		}
 
         public int GetPage() { return page; }
@@ -66,9 +65,8 @@ namespace BattleUI
 			}
 		}
 
-		public void CallbackPointerEnterSkillIndex(int index)
-		{
-			battleManager.CallbackPointerEnterSkillIndex(index);			
+		public void CallbackPointerEnterSkillIndex(int index){
+			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
 			
@@ -79,6 +77,9 @@ namespace BattleUI
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
 			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
 			
+			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+battleManager.battleData.selectedUnit.name+preSelectedSkill.GetColumn()+"_"+preSelectedSkill.GetRequireLevel());
+			if(actualRangeImage != null)
+				actualRange.sprite = actualRangeImage;
 			/*if(preSelectedSkill.GetSkillType() == Enums.SkillType.Auto)
 			{
 				range1Image.sprite = transparent;
@@ -101,7 +102,7 @@ namespace BattleUI
 			skillRange1Text.text = "";
 			skillCooldownText.text = "";
 			skillDataText.text = "";
-			range1Image.sprite = transparent;
+			rangeType.sprite = transparent;
 		}
 
 		public void CallbackSkillUICancel()
