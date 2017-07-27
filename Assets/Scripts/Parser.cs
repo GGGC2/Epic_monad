@@ -59,6 +59,37 @@ public class Parser : MonoBehaviour
 		return battleEndTriggers;
 	}
 
+	public static List<AIInfo> GetParsedAIInfo()
+	{
+		List<AIInfo> aiInfoList = new List<AIInfo>();
+		TextAsset csvFile = null;
+		if (FindObjectOfType<BattleManager>() != null)
+			csvFile = FindObjectOfType<BattleManager>().GetAIData() as TextAsset;
+		else
+			Debug.LogError("No BattleManager");
+
+		string csvText = csvFile.text;
+		string[] unparsedAIInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		for (int i = 1; i < unparsedAIInfoStrings.Length; i++)
+		{
+			try
+			{
+				AIInfo aiInfo = new AIInfo(unparsedAIInfoStrings[i]);
+				aiInfoList.Add(aiInfo);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError("Parsing failed in \n" +
+						" line is : " + i + "\n" +
+						" data is : " + unparsedAIInfoStrings[i]);
+				throw e;
+			}
+		}
+
+		return aiInfoList;
+	}
+
 	public static List<UnitInfo> GetParsedUnitInfo()
 	{
 		List<UnitInfo> unitInfoList = new List<UnitInfo>();

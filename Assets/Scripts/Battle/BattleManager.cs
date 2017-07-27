@@ -562,6 +562,17 @@ public class BattleManager : MonoBehaviour
 		}
 		return unitData;
 	}
+
+	public TextAsset aiData;
+	public TextAsset GetAIData()
+	{
+		if (loaded == false)
+		{
+			Load();
+		}
+		return aiData;
+	}
+
 	public TextAsset battleConditionData;
 	public TextAsset GetBattleConditionData()
 	{
@@ -597,6 +608,8 @@ public class BattleManager : MonoBehaviour
 		mapData = nextMapFile;
 		TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
 		unitData = nextUnitFile;
+		TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
+		aiData = nextAIDataFile;
 		TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
 		battleConditionData = nextBattleConditionFile;
 		TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");

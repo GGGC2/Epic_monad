@@ -168,6 +168,17 @@ public class UnitManager : MonoBehaviour {
 		standardActivityPoint = GameData.PartyData.level + 60;
 	}
 
+	public void ApplyAIInfo ()
+	{
+		List<AIInfo> aiInfoList = Parser.GetParsedAIInfo();
+		aiInfoList.ForEach(aiInfo => {
+			int index = aiInfo.index;
+			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
+
+			targetUnit.gameObject.GetComponent<AIData>().SetAIInfo(aiInfo);
+		});
+	}
+
 	public void GenerateUnits ()
 	{
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
@@ -411,6 +422,7 @@ public class UnitManager : MonoBehaviour {
         LoadStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
+		ApplyAIInfo();
         GetEnemyUnits();
 	}
 

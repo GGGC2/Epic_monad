@@ -5,6 +5,7 @@ using System;
 using Enums;
 
 public class UnitInfo {
+	public int index;
 	public string name;
 	public string nameInCode;
 	public Side side;
@@ -31,6 +32,7 @@ public class UnitInfo {
 	public UnitInfo (string data)
 	{
 		CommaStringParser commaParser = new CommaStringParser(data);
+		this.index = commaParser.ConsumeInt(); 
 		this.name = commaParser.Consume();
 		this.nameInCode = commaParser.Consume();
 		this.side = commaParser.ConsumeEnum<Side>();

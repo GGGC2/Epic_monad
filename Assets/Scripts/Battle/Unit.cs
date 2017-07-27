@@ -35,6 +35,7 @@ public class Unit : MonoBehaviour
 
 	List<HitInfo> latelyHitInfos;
 
+	int index; // 유닛의 고유 인덱스
 	new string name; // 한글이름
 	string nameInCode; // 영어이름
 
@@ -151,6 +152,7 @@ public class Unit : MonoBehaviour
     public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetTileHeight(); }
 	public string GetNameInCode() { return nameInCode; }
+	public int GetIndex() { return index; }
 	public string GetName() { return name; }
 	public void SetName(string name) { this.name = name; }
 	public Side GetSide() { return side; }	
@@ -817,7 +819,8 @@ public class Unit : MonoBehaviour
         actualStats.Add(Stat.Dexturity, actualDexturity);
     }
     public void ApplyUnitInfo(UnitInfo unitInfo) {
-        this.name = unitInfo.name;
+        this.index = unitInfo.index;
+		this.name = unitInfo.name;
         this.nameInCode = unitInfo.nameInCode;
         this.side = unitInfo.side;
         this.initPosition = unitInfo.initPosition;
