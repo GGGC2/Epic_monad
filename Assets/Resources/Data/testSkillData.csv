@@ -67,7 +67,7 @@ eugene,22,백은의 장막,2,8,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-
 eugene,50,겨울의 가호,1,84,4,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,-,Individual,NonMove,—
 eugene,50,백은의 오로라,2,9,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,—
 sepia,1,반달베기,3,27,0,Power,0.5,Auto,Front,1,2,3,Front,1,2,3,DamageHealth,-,Individual,NonMove,범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>(<color=red>VALUE</color>)짜리 <color=#b2ff66ff>보호막</color>을 얻습니다.
-darkenir,1,에테르 미사일,1,27,0,Power,1.3,Route,Straight,1,7,0,Straight,0,1,0,DamageHealth,-,Individual,NonMove,투사체를 쏘아 <color=red>1.3x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.
+darkenir,1,에테르 미사일,2,27,0,Power,1.3,Route,Straight,1,7,0,Straight,0,1,0,DamageHealth,-,Individual,NonMove,투사체를 쏘아 <color=red>1.3x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.
 noel,1,파마의 섬광,1,40,0,Power,0.9,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Individual,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE</color>)의 피해를 주고 대상으로부터 2타일 이내에 <color=#b2ff66ff>보호막</color>을 가진 동료가 있을 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>침묵</color>시킵니다.
 noel,1,신의 가호,3,24,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>1.5x공격력</color>(<color=red>VALUE</color>)의 <color=#b2ff66ff>보호막</color>을 줍니다.
 arcadia,1,갈고리 씨앗,0,20,0,Power,0,Auto,Sector,1,3,0,Sector,1,3,0,Debuff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.5x공격력</color>(<color=red>VALUE</color>)의 <color=red>지속 피해</color>를 줍니다.
