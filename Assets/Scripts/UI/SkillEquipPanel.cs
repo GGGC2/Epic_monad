@@ -4,21 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SkillEquipPanel : MonoBehaviour{
-	public Image FixedIcon;
-	Image[,] SkillIcons = new Image[3,8];
+	public SkillIcon FixedIcon;
+	SkillIcon[,] SkillIcons = new SkillIcon[3,8];
 
 	void Start(){
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 8; j++){
-				SkillIcons[i,j] = GameObject.Find(IntToColumnString(i)+(7*j+1)).GetComponent<Image>();
+				SkillIcons[i,j] = GameObject.Find(IntToColumnString(i)+(7*j+1)).GetComponent<SkillIcon>();
 			}
 		}
 	}
 
 	public void UpdateIcons(string unitName){
-		ChangeSpriteOrEmpty(FixedIcon, "Icon/Skill/"+unitName+"/Fixed");
-		foreach(Image IconSlot in SkillIcons)
-			ChangeSpriteOrEmpty(IconSlot, "Icon/Skill/"+unitName+"/"+IconSlot.gameObject.name);
+		ChangeSpriteOrEmpty(FixedIcon.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/Fixed");
+		List<SkillInfo> skillInfoList = Parser.GetParsedSkillInfo();
+		foreach(SkillIcon IconSlot in SkillIcons){
+			ChangeSpriteOrEmpty(IconSlot.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/"+IconSlot.gameObject.name);
+			SkillInfo SearchResult = skillInfoList.Find(skill => skill.owner == unitName && skill.requireLevel == IconSlot.level && skill.column == IconSlot.column);
+			if(SearchResult != null)
+				IconSlot.skill = SearchResult.GetSkill();
+		}
 	}
 
 	void ChangeSpriteOrEmpty(Image image, string spriteAddress){

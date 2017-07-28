@@ -5209,7 +5209,6 @@ GameObject:
   - component: {fileID: 224103937787886668}
   - component: {fileID: 222636624255844132}
   - component: {fileID: 114177139916300650}
-  - component: {fileID: 114036369937956988}
   m_Layer: 5
   m_Name: SkillTextPanel
   m_TagString: Untagged
@@ -5691,17 +5690,6 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "\uCC9C\uCCB4\uC18D\uC131 \uBCF4\uB108\uC2A4 (x 1.2)"
---- !u!114 &114036369937956988
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1989433306583634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114036631529454868
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6921,6 +6909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10fbdd182fd42494c80e5b34125456a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillPanel: {fileID: 114707233323498736}
   rangeText: {fileID: 114587920860037284}
   rangeType: {fileID: 114883346016187548}
   actualRange: {fileID: 114582453895480400}
@@ -12627,6 +12616,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ApText: {fileID: 114941799232219384}
+  CooldownText: {fileID: 114160116914206990}
+  RangeText: {fileID: 114587920860037284}
+  ActualRange: {fileID: 114582453895480400}
+  RangeType: {fileID: 114883346016187548}
 --- !u!114 &114708852424489044
 MonoBehaviour:
   m_ObjectHideFlags: 1

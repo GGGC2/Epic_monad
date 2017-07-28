@@ -7,6 +7,7 @@ namespace BattleUI
 	public class SkillPanel : MonoBehaviour
 	{
 		private BattleManager battleManager;
+		public SkillUIManager skillPanel;
 		Text skillApText;
 		Text skillDataText;
 		public Text rangeText;
@@ -64,13 +65,15 @@ namespace BattleUI
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
-			
-			skillApText.text = preSelectedSkill.GetRequireAP().ToString();
+			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
+			skillPanel.UpdateSkillInfoPanel(preSelectedSkill, battleManager.battleData.selectedUnit.name);
+
+			/*skillApText.text = preSelectedSkill.GetRequireAP().ToString();
 			
 			int cooldown = preSelectedSkill.GetCooldown();
 			if (cooldown > 0)
 				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
-			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
+			
 			
 			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+battleManager.battleData.selectedUnit.name+preSelectedSkill.GetColumn()+"_"+preSelectedSkill.GetRequireLevel());
 			if(actualRangeImage != null)
@@ -85,7 +88,7 @@ namespace BattleUI
 				rangeText.text += GetFirstRangeText(preSelectedSkill);
 			}
 			else
-				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");*/
 		}
 
 		void OnEnable(){

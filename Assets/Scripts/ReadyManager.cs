@@ -7,6 +7,7 @@ using GameData;
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
 	public List<UnitPanel> selected = new List<UnitPanel>();
+	public string currentUnitName;
 
 	void Start()
 	{
