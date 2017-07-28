@@ -22,12 +22,6 @@ public class AIData : MonoBehaviour {
 	public List<List<Tile>> trigger3Area = new List<List<Tile>>();
 	public List<List<Tile>> trigger4Area = new List<List<Tile>>();
 
-	public void Awake()
-	{
-		// activeTriggers.Add(3);
-		// activeTriggers.Add(5);
-	}
-
 	public bool IsActive()
 	{
 		return isActive;

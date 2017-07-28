@@ -486,20 +486,6 @@ namespace Battle.Turn
 
     public class AIStates_old
 	{
-		/*
-		public static IEnumerator AIStart(BattleData battleData)
-		{
-			Unit currentUnit = battleData.selectedUnit;
-			BattleManager battleManager = battleData.battleManager;
-			if (currentUnit.GetNameInCode() == "orchid")
-			{
-				yield return battleManager.StartCoroutine(OrchidBrain.AIStart(battleData));
-			}
-			else
-			{
-				yield return battleManager.StartCoroutine(AIMove(battleData));
-			}
-		}*/
 		public static IEnumerator AIMove(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -538,17 +524,9 @@ namespace Battle.Turn
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
             Tile destTile = battleData.tileManager.GetTile(destPosition);
-			//List<Tile> destPath = movableTilesWithPath[destPosition].path;
-			//Vector2 currentTilePos = currentUnit.GetPosition();
-			//Vector2 distanceVector = destPosition - currentTilePos;
-			//int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 			int totalUseActivityPoint = movableTilesWithPath[destPosition].requireActivityPoint;
 
-			// battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			battleData.currentState = CurrentState.CheckDestination;
-
-			//List<Tile> destTileList = destPath;
-			//destTileList.Add(destTile);
 
 			// 카메라를 옮기고
 			Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);

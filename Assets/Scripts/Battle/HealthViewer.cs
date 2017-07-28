@@ -33,7 +33,9 @@ public class HealthViewer : MonoBehaviour {
         float previewHealthRatio = AdjustBarScales(previewCurrentHealth, previewShieldAmount, barsToBeHealthScale, barsToBeShieldScale);
 
         if (previewHealthRatio <= 0)   killIcon.SetActive(true);
-		else if(previewHealthRatio <= 0.1) retreatIcon.SetActive(true);
+		else if ((previewHealthRatio <= 0.1) && 
+                !(transform.parent.gameObject.GetComponent<Unit>().IsObject())) 
+                retreatIcon.SetActive(true); // 오브젝트는 이탈하지 않음 (=오브젝트가 아닐 경우에만 이탈).
 	}
 	
 	public void PreviewRecoverAmount(int recoverAmount) {
