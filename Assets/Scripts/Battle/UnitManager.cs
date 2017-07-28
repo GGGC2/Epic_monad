@@ -107,6 +107,9 @@ public class UnitManager : MonoBehaviour {
 		retreatUnits.Clear();
 		foreach (var unit in units)
 		{
+			// 오브젝트는 이탈하지 않는다
+			if (unit.IsObject()) continue;
+
 			float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
 			if (((percentHealth <= 10) && (unit.GetCurrentHealth() > 0)) ||
 				(retreatUnits.Contains(unit)))

@@ -215,7 +215,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	static bool IsSelectedUnitRetraitOrDie(BattleData battleData)
+	static bool IsSelectedUnitRetreatOrDie(BattleData battleData)
 	{
 		if (battleData.retreatUnits.Contains(battleData.selectedUnit))
 			return true;
@@ -267,7 +267,7 @@ public class BattleManager : MonoBehaviour
 			
 			yield return battleManager.StartCoroutine(UpdateRetreatAndDeadUnits(battleData, battleManager));
 
-			if (IsSelectedUnitRetraitOrDie(battleData))
+			if (IsSelectedUnitRetreatOrDie(battleData))
 				yield break;
 			
 			// 매 액션이 끝날때마다 갱신하는 특성 조건들
