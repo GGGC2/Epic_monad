@@ -376,7 +376,7 @@ namespace Battle.Turn {
 			bool isPossible = false;
             Unit caster = battleData.selectedUnit;
 
-            // ap 조건으로 체크.
+            // AP 조건으로 체크.
             int requireAP = caster.GetActualRequireSkillAP(battleData.SelectedSkill);
             int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
@@ -543,7 +543,7 @@ namespace Battle.Turn {
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
-                caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+                caster.UseActivityPoint(requireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
                 // 스킬 쿨다운 기록
                 if (appliedSkill.GetCooldown() > 0)
                     caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
