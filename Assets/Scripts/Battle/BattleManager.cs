@@ -515,6 +515,8 @@ public class BattleManager : MonoBehaviour
 		battleData.currentPhase++;
 		BattleTriggerChecker.CountBattleCondition();
 
+		yield return StartCoroutine(battleData.uiManager.MovePhaseUI(battleData.currentPhase));
+
 		yield return StartCoroutine(battleData.unitManager.StartPhase(battleData.currentPhase));
         yield return StartCoroutine(battleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(battleData.unitManager.ApplyEachDOT());

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using BattleUI;
@@ -24,6 +25,7 @@ public class UIManager : MonoBehaviour
 	GameObject cancelButtonUI;
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
+	GameObject phaseUI;
 
 	GameObject notImplementedDebugPanel;
 
@@ -43,6 +45,7 @@ public class UIManager : MonoBehaviour
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovingUICanvas");
+		phaseUI = GameObject.Find("PhasePanel");
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 	}
 
@@ -194,6 +197,42 @@ public class UIManager : MonoBehaviour
 		string newAPText = "소모 AP : " + totalUseActivityPoint + "\n" +
 			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - totalUseActivityPoint);
 		destCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
+	}
+
+	public IEnumerator MovePhaseUI(int currentPhase)
+	{
+		phaseUI.transform.localPosition = new Vector3(-1280,0,0);
+		phaseUI.transform.Find("Text").GetComponent<Text>().text = "Phase " + currentPhase;
+		StartCoroutine("FadeInPhaseUI", 0.5f); 	
+		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(0,0,0), "islocal", true, "time", 1));
+		yield return new WaitForSeconds(2f);
+		StartCoroutine("FadeOutPhaseUI", 0.5f); 
+		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(1280,0,0), "islocal", true, "time", 1));
+		yield return null;
+	}
+
+	IEnumerator FadeInPhaseUI(float time)
+	{
+		Image img1 = phaseUI.GetComponent<Image>();
+		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
+		for (int i = 0; i < 20; i++)
+		{
+			img1.color += new Color (0,0,0,1f/20.0f);
+			img2.color += new Color (0,0,0,1f/20.0f);
+			yield return new WaitForSeconds(time/20.0f);
+		}
+	}
+
+	IEnumerator FadeOutPhaseUI(float time)
+	{
+		Image img1 = phaseUI.GetComponent<Image>();
+		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
+		for (int i = 0; i < 20; i++)
+		{
+			img1.color -= new Color (0,0,0,1f/20.0f);
+			img2.color -= new Color (0,0,0,1f/20.0f);
+			yield return new WaitForSeconds(time/20.0f);
+		}
 	}
 
 	public void DisableDestCheckUI()
