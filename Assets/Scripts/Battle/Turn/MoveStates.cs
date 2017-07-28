@@ -55,7 +55,6 @@ namespace Battle.Turn
 
 				battleData.isWaitingUserInput = false;
 
-				//yield break 넣으면 코루틴 강제종료
 				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
 				{
 					battleData.uiManager.DisableCancelButtonUI();

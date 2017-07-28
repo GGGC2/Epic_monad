@@ -350,7 +350,7 @@ public class Unit : MonoBehaviour
             else {
                 totalAdditiveValue += change.value;
             }
-        }
+		}
         return data * totalMultiplicativeValue + totalAdditiveValue;
     }
 
@@ -365,62 +365,62 @@ public class Unit : MonoBehaviour
 	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
 	{
         List<StatChange> appliedChangeList = new List<StatChange>();
-        
+
         // 효과로 인한 변동값 계산
-        foreach (var statusEffect in statusEffectList)
-            for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
-                if (statusEffect.IsOfType(i, statusEffectType)) {
-                    float amount = statusEffect.GetAmount(i);
-                    if(statusEffect.GetIsPercent(i)) {
-                        amount = amount/100;
-                    }
-                    appliedChangeList.Add(new StatChange(statusEffect.GetIsMultiply(i), amount));
-                }
+		foreach (var statusEffect in statusEffectList) {
+			for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+				if (statusEffect.IsOfType (i, statusEffectType)) {
+					float amount = statusEffect.GetAmount (i);
+					if (statusEffect.GetIsPercent (i)) {
+						amount = amount / 100;
+					}
+					appliedChangeList.Add (new StatChange (statusEffect.GetIsMultiply (i), amount));
+				}
+			}
         
-        // TileStatusEffect로 인한 변동값 계산
-        Tile tile = GetTileUnderUnit();
-        foreach (var tileStatusEffect in tile.GetStatusEffectList()) 
-            for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++)
-                if(tileStatusEffect.IsOfType(i, statusEffectType))
-                    appliedChangeList.Add(new StatChange(tileStatusEffect.GetIsMultiply(i), tileStatusEffect.GetAmount(i)));
+			// TileStatusEffect로 인한 변동값 계산
+			Tile tile = GetTileUnderUnit ();
+			foreach (var tileStatusEffect in tile.GetStatusEffectList())
+				for (int i = 0; i < tileStatusEffect.fixedElem.actuals.Count; i++)
+					if (tileStatusEffect.IsOfType (i, statusEffectType))
+						appliedChangeList.Add (new StatChange (tileStatusEffect.GetIsMultiply (i), tileStatusEffect.GetAmount (i)));
 
-		// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)			
-		if (statusEffectType == StatusEffectType.PowerChange)
-		{
-			List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-			float relativePowerBonus = SkillLogicFactory.Get(passiveSkills).GetAdditionalRelativePowerBonus(this);
-            relativePowerBonus = (relativePowerBonus - 1) * 100;
-            appliedChangeList.Add(new StatChange(true, relativePowerBonus));
+			// 상대값 공격력 변동 특성 영향 합산 (무조건 곱연산)			
+			if (statusEffectType == StatusEffectType.PowerChange) {
+				List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList ();
+				float relativePowerBonus = SkillLogicFactory.Get (passiveSkills).GetAdditionalRelativePowerBonus (this);
+				relativePowerBonus = (relativePowerBonus - 1) * 100;
+				appliedChangeList.Add (new StatChange (true, relativePowerBonus));
 
-            // 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-            if (element == Element.Fire && GetTileUnderUnit().GetTileElement() == Element.Fire) {
-                appliedChangeList.Add(new StatChange(true, 1.2f));
-            }
-        }
+				// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
+				if (element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire) {
+					appliedChangeList.Add (new StatChange (true, 1.2f));
+				}
+			}
 
-		// 방어력 변동 특성 영향 합산
-		if (statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) {
-            List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList();
-            if (statusEffectType == StatusEffectType.DefenseChange) {
-                float additiveDefenseBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteDefenseBonus(this);
-                appliedChangeList.Add(new StatChange(false, additiveDefenseBouns));
-            }
-            else if(statusEffectType == StatusEffectType.ResistanceChange) {
-                float additiveResistanceBouns = SkillLogicFactory.Get(passiveSkills).GetAdditionalAbsoluteResistanceBonus(this);
-                appliedChangeList.Add(new StatChange(false, additiveResistanceBouns));
-            }
+			// 방어력 변동 특성 영향 합산
+			if (statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) {
+				List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList ();
+				if (statusEffectType == StatusEffectType.DefenseChange) {
+					float additiveDefenseBouns = SkillLogicFactory.Get (passiveSkills).GetAdditionalAbsoluteDefenseBonus (this);
+					appliedChangeList.Add (new StatChange (false, additiveDefenseBouns));
+				} else if (statusEffectType == StatusEffectType.ResistanceChange) {
+					float additiveResistanceBouns = SkillLogicFactory.Get (passiveSkills).GetAdditionalAbsoluteResistanceBonus (this);
+					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
+				}
 
-            // 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
-            if (element == Element.Metal && GetTileUnderUnit().GetTileElement() == Element.Metal) {
-                appliedChangeList.Add(new StatChange(false, 30));
-            }
-        }
+				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+				if (element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
+					appliedChangeList.Add (new StatChange (false, 30));
+				}
+			}
 
-        if (statusEffectType == StatusEffectType.SpeedChange) {
-            if (element == Element.Water && GetTileUnderUnit().GetTileElement() == Element.Water) {
-                appliedChangeList.Add(new StatChange(false, 15));
-            }
-        }
+			if (statusEffectType == StatusEffectType.SpeedChange) {
+				if (element == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
+					appliedChangeList.Add (new StatChange (false, 15));
+				}
+			}
+		}
 
 		return CalculateThroughChangeList(data, appliedChangeList);
 	}
@@ -611,8 +611,6 @@ public class Unit : MonoBehaviour
 		}
 
 		currentHealth += actualAmount;
-		if (currentHealth > maxHealth)
-			currentHealth = maxHealth;
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();

@@ -221,6 +221,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		}
 	}
 
+
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData)
 	{
 		if (pointerData.button != PointerEventData.InputButton.Left) {

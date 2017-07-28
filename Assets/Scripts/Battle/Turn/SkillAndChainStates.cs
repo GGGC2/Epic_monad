@@ -73,33 +73,18 @@ namespace Battle.Turn {
             Unit selectedUnit = battleData.selectedUnit;
             Skill selectedSkill = battleData.SelectedSkill;
             var selectedTiles = GetTilesInFirstRange(battleData);
-            if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                selectedTiles = GetRouteTiles(selectedTiles);
-            }
-
             battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 
             while (true) {
                 Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit);
                 Direction beforeDirection = battleData.selectedUnit.GetDirection();
                 var selectedTilesByBeforeDirection = GetTilesInFirstRange(battleData, beforeDirection);
-
-                if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                    selectedTilesByBeforeDirection = GetRouteTiles(selectedTilesByBeforeDirection);
-                }
-
                 var selectedTilesByNewDirection = GetTilesInFirstRange(battleData, newDirection);
-                if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                    // 동일한 코드
-                    selectedTilesByNewDirection = GetRouteTiles(selectedTilesByNewDirection);
-                }
 
                 if (beforeDirection != newDirection) {
                     battleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
-
                     beforeDirection = newDirection;
                     battleData.selectedUnit.SetDirection(newDirection);
-
                     battleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
                 }
                 yield return null;
@@ -132,10 +117,11 @@ namespace Battle.Turn {
 
             while (true) {
                 battleData.isWaitingUserInput = true;
-                //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시를 업데이트
-                var update = UpdateRangeSkillMouseDirection(battleData);
-                battleData.battleManager.StartCoroutine(update);
+                //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향도 돌림
+                var updateRedArea = UpdateRangeSkillMouseDirection(battleData);
+                battleData.battleManager.StartCoroutine(updateRedArea);
 
+				//지정형 스킬이 아니라면 4방향 화살표를 띄운다(본인 중심으로 4방향 대칭인 스킬도 화살표가 의미가 있는데, 스킬 시전 후의 시전자 시선 방향을 결정하기 때문)
                 if(battleData.SelectedSkill.GetSkillType() != SkillType.Point)
                     battleData.uiManager.EnableSelectDirectionUI();
 
@@ -145,11 +131,12 @@ namespace Battle.Turn {
                     battleData.triggers.tileSelectedByUser,
                     battleData.triggers.directionSelectedByUser
                 ));
-                battleData.battleManager.StopCoroutine(update);
+                battleData.battleManager.StopCoroutine(updateRedArea);
                 battleData.isWaitingUserInput = false;
 
                 battleData.tileManager.DepaintAllTiles(TileColor.Red);
 
+				//취소선택시->1. 4방향 화살표 제거 2. 유닛이 원래 방향을 바라보게 되돌림 3. currentState는 스킬을 고르는 단계로 돌려놓는다
                 if (battleData.triggers.rightClicked.Triggered ||
                     battleData.triggers.cancelClicked.Triggered) {
                     battleData.uiManager.DisableSelectDirectionUI();
@@ -157,26 +144,25 @@ namespace Battle.Turn {
                     battleData.currentState = CurrentState.SelectSkill;
                     yield break;
                 }
+				//범위 내 타일이나 방향(사분면 중 하나)을 선택했을시->1. currentState는 즉시시전/연계대기를 선택하는 단계로 한다
+				//2. 현재 선택된 타겟 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 타겟 타일로 한다.
                 else{
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
-
-                    if(battleData.triggers.tileSelectedByUser.Triggered)
-                        yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
-                    else{
-                        if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
-                            var firstRange = GetTilesInFirstRange(battleData);
-                            var destTileAtRoute = GetRouteTiles(firstRange).Last();
-                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, destTileAtRoute, originalDirection));
-                        }
-                        else
-                            yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedUnitTile, originalDirection));
-                    }
+					var castingTile = battleData.SelectedUnitTile;
+					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
+					if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+						var firstRange = GetTilesInFirstRange(battleData);
+						castingTile = GetRouteTiles(firstRange).Last();
+					}
+					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, castingTile, originalDirection));
                 }
-
+					
                 if (battleData.currentState != CurrentState.SelectSkillApplyDirection) {
+					//이제 취소 버튼 UI 없으니 이 줄은 필요없지 않나
                     battleData.uiManager.DisableCancelButtonUI();
-                    yield break;
+                    
+					yield break;
                 }
             }
         }
@@ -247,13 +233,23 @@ namespace Battle.Turn {
                 Unit caster = battleData.selectedUnit;
                 BattleManager.MoveCameraToTile(targetTile);
 
+				//firstRange는 1차 범위(스킬 시전 가능 범위. 투사체의 경우 목표점까지의 경로) 내 타일들이고
+				//tilesInSkillRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들임. tilesInSkillRange가 현재 단계에서 중요
+				List<Tile> firstRange = GetTilesInFirstRange(battleData);
                 List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, targetTile);
                 battleData.tileManager.PaintTiles(tilesInSkillRange, TileColor.Red);
-                List<Tile> firstRange = GetTilesInFirstRange(battleData);
+				//tilesInRealEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 tilesInSkillRange와 동일
+				List<Tile> tilesInRealEffectRange = tilesInSkillRange;
+
+				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
+				if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+					if (!targetTile.IsUnitOnTile ())
+						tilesInRealEffectRange = new List<Tile>();
+				}
 
                 //데미지 미리보기
                 Debug.Log("/------- Damage preview -------\\");
-                Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInSkillRange, firstRange);
+				Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculateTotalDamage(battleData, targetTile, tilesInRealEffectRange, firstRange);
                 foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
                     if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
                     else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
@@ -306,22 +302,20 @@ namespace Battle.Turn {
                     // 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
                     if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
                      || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff) {
-                        yield return ApplyChain(battleData, targetTile, tilesInSkillRange, firstRange);
-                        BattleManager.MoveCameraToUnit(caster);
-                        battleData.currentState = CurrentState.FocusToUnit;
-                        // 연계 정보 업데이트
-                        battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
+						yield return ApplyChain(battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, firstRange);
                     }
                     // 체인이 불가능한 스킬일 경우, 그냥 발동.
                     else {
                         battleData.currentState = CurrentState.ApplySkill;
-                        yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, tilesInSkillRange, false, 1));
-                        BattleManager.MoveCameraToUnit(caster);
-                        battleData.currentState = CurrentState.FocusToUnit;
-                        // 연계 정보 업데이트
-                        battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
-                    }
-                } else if (battleData.skillApplyCommand == SkillApplyCommand.Chain) {
+						yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, tilesInSkillRange, tilesInRealEffectRange, false, 1));
+					}
+
+					BattleManager.MoveCameraToUnit(caster);
+					battleData.currentState = CurrentState.FocusToUnit;
+					// 연계 정보 업데이트
+					battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
+                }
+				else if (battleData.skillApplyCommand == SkillApplyCommand.Chain) {
                     // 데미지 미리보기 해제.
                     foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
                         kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
@@ -329,6 +323,7 @@ namespace Battle.Turn {
 
                     battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                     battleData.currentState = CurrentState.ChainAndStandby;
+					//투사체 스킬이고 타겟 타일에 유닛 없어도 연계 대기는 된다!(기획에서 결정된 사항)
                     yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, tilesInSkillRange, firstRange));
                     // 연계 정보 업데이트. 여기선 안 해줘도 될 것 같은데 혹시 몰라서...
                     battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
@@ -354,6 +349,11 @@ namespace Battle.Turn {
                                                                 battleData.SelectedSkill.GetFirstWidth(),
                                                                 realDirection);
 
+			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점까지를 1차 범위로 함. 범위 끝까지 가로막은 유닛이 없으면 직선 전체가 1차 범위
+			if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+				firstRange = GetRouteTiles(firstRange);
+			}
+
             return firstRange;
         }
 
@@ -376,7 +376,7 @@ namespace Battle.Turn {
 			bool isPossible = false;
             Unit caster = battleData.selectedUnit;
 
-            // ap 조건으로 체크.
+            // AP 조건으로 체크.
             int requireAP = caster.GetActualRequireSkillAP(battleData.SelectedSkill);
             int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
@@ -406,26 +406,33 @@ namespace Battle.Turn {
         }
 
 
-        public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<Tile> tilesInSkillRange, List<Tile> firstRange) {
+		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<Tile> tilesInSkillRange, List<Tile> tilesInRealEffectRange, List<Tile> firstRange) {
             BattleManager battleManager = battleData.battleManager;
-            // 자기 자신을 체인 리스트에 추가.
-            ChainList.AddChains(battleData.selectedUnit, targetTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
-            // 체인 체크, 순서대로 공격.
-            List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnit, tilesInSkillRange);
-            int chainCombo = allVaildChainInfo.Count;
+			//실제 데미지/효과가 가해지지는 경우에만 연계가 발동
+			if (tilesInRealEffectRange.Count != 0) {
+				// 자기 자신을 체인 리스트에 추가.
+				ChainList.AddChains (battleData.selectedUnit, targetTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
 
-            battleData.selectedUnit.PrintChainBonus(chainCombo);
+				// 체인 체크, 순서대로 공격.
+				List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea (battleData.selectedUnit, tilesInSkillRange);
+				int chainCombo = allVaildChainInfo.Count;
 
-            foreach (var chainInfo in allVaildChainInfo) {
-                Tile focusedTile = chainInfo.GetTargetArea()[0];
-                BattleManager.MoveCameraToTile(focusedTile);
-                battleData.currentState = CurrentState.ApplySkill;
-                chainInfo.GetUnit().HideChainIcon();
-                yield return battleManager.StartCoroutine(ApplySkill(battleData, chainInfo.GetUnit(), chainInfo.GetSkill(), chainInfo.GetTargetArea(), true, chainCombo));
-            }
+				battleData.selectedUnit.PrintChainBonus (chainCombo);
 
-            battleData.selectedUnit.DisableChainText();
+				foreach (var chainInfo in allVaildChainInfo) {
+					Tile focusedTile = chainInfo.GetTargetArea () [0];
+					BattleManager.MoveCameraToTile (focusedTile);
+					battleData.currentState = CurrentState.ApplySkill;
+					chainInfo.GetUnit ().HideChainIcon ();
+					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetTargetArea (), chainInfo.GetTargetArea (), true, chainCombo));
+				}
+				battleData.selectedUnit.DisableChainText ();
+			}
+			//실제 데미지/효과가 가해지지 않는 경우(이펙트만 나옴) 연계가 발동하지 않고 그냥 그 스킬만 발동시킨다
+			else {
+				yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, tilesInSkillRange, tilesInRealEffectRange, false, 1));
+			}
         }
 
         private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<Tile> selectedTiles, List<Tile> firstRange) {
@@ -452,37 +459,33 @@ namespace Battle.Turn {
             yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
 
-        private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> selectedTiles, bool isChainable, int chainCombo) {
+		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> tilesInSkillRange, List<Tile> tilesInRealEffectRange, bool isChainable, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
-            List<Unit> targets = GetUnitsOnTiles(selectedTiles);
+			List<Unit> targets = GetUnitsOnTiles(tilesInRealEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
-            /*
-            // 경로형 스킬의 경우 대상 범위 재지정
-            if (appliedSkill.GetSkillType() == SkillType.Route)
-                selectedTiles = ReselectTilesByRoute(battleData, selectedTiles);
-            */
-            // 시전 방향으로 유닛의 바라보는 방향을 돌림.
-            if (appliedSkill.GetSkillType() != SkillType.Auto)
-                caster.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
+
+			//tilesInSkillRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
+			//tilesInRealEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
 
+			//스킬 고유 효과음 재생
 			if(appliedSkill.GetSoundEffectName () != null)
 				SoundManager.Instance.PlaySE (appliedSkill.GetSoundEffectName ());
 
-            yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, selectedTiles));
+			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, tilesInSkillRange));
             
-            foreach (var tile in selectedTiles) {
+			foreach (var tile in tilesInRealEffectRange) {
                 if (tile.IsUnitOnTile()) {
                     Unit target = tile.GetUnitOnTile();
 
-                    // 자신에게 뭔가 기술이 날아오면 일단 활성화
+					// AI 유닛에게 뭔가 기술이 날아오면, 그 유닛이 활성화조건 5번(기술 날아온 순간 활성화)을 가지고 있는지 확인하고 맞으면 활성화시킨다
                     if (target.GetComponent<AIData>() != null) 
                         target.GetComponent<AIData>().SetActiveByExternalFactor();
 
                     if (!isChainable || !CheckEvasion(battleData, caster, target)) {
-                        SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, tilesInRealEffectRange, target, targets.Count);
                         // 데미지 적용
                         if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                             yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
@@ -514,7 +517,7 @@ namespace Battle.Turn {
                                 }
                             }
                             if(!ignored)
-                                StatusEffector.AttachStatusEffect(caster, appliedSkill, target, selectedTiles);
+								StatusEffector.AttachStatusEffect(caster, appliedSkill, target, tilesInRealEffectRange);
                         }
                     }
                     caster.ActiveFalseAllBonusText();
@@ -540,7 +543,7 @@ namespace Battle.Turn {
 
             if (caster == battleData.selectedUnit) {
                 int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
-                caster.UseActivityPoint(requireAP); // 즉시시전 대상만 ap를 차감. 나머지는 선차감되었으므로 패스.
+                caster.UseActivityPoint(requireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
                 // 스킬 쿨다운 기록
                 if (appliedSkill.GetCooldown() > 0)
                     caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
@@ -635,15 +638,6 @@ namespace Battle.Turn {
                         target.RemoveStatusEffect(statusEffect);
                 }
             }
-        }
-
-        private static List<Tile> ReselectTilesByRoute(BattleData battleData, List<Tile> selectedTiles) {
-            List<Tile> reselectTiles = new List<Tile>();
-            //단차 제외하고 구현.
-            Vector2 startPos = battleData.selectedUnit.GetPosition();
-            // Vector2 endPos = ; 
-
-            return reselectTiles;
         }
 
         private static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {

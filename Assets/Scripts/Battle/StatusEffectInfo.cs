@@ -50,7 +50,7 @@ public class StatusEffectInfo {
 
 		for (int i = 0; i < num; i++)
 		{
-			StatusEffectType statusEffectType = commaParser.ConsumeEnum<StatusEffectType>();;
+			StatusEffectType statusEffectType = commaParser.ConsumeEnum<StatusEffectType>();
 
 			StatusEffectVar statusEffectVar = commaParser.ConsumeEnum<StatusEffectVar>();
 			float statusEffectCoef = commaParser.ConsumeFloat("X", 0);

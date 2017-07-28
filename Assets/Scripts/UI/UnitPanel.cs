@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, IPointerExitHandler{
+public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler/*, IPointerExitHandler*/{
 	public string unitName;
 	public bool AvailableOrSelected;
 	public ReadyManager Manager;
@@ -28,13 +28,15 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);
+			Manager.currentUnitName = unitName;
+			FindObjectOfType<SkillEquipPanel>().UpdateIcons(unitName);
 		}
 	}
 
-	void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
+	/*void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
 		unitViewer.Clear();
 		characterIllust.sprite = Resources.Load<Sprite>("StandingImage/transparent");
-	}
+	}*/
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
 	{ 
