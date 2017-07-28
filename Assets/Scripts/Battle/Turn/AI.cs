@@ -642,8 +642,10 @@ namespace Battle.Turn
 			battleData.currentState = CurrentState.CheckApplyOrChain;
 
 			List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+			//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
+			List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
 			FocusUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
@@ -689,8 +691,10 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.CheckApplyOrChain;
 
 				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+				//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
+				List<Tile> tilesInRealEffectRange = tilesInSkillRange;
 
-				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, GetTilesInFirstRange(battleData));
+				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
 				FocusUnit(battleData.selectedUnit);
 				battleData.currentState = CurrentState.FocusToUnit;
 				battleData.uiManager.ResetSkillNamePanelUI();

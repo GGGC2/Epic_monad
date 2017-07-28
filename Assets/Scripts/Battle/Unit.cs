@@ -611,8 +611,6 @@ public class Unit : MonoBehaviour
 		}
 
 		currentHealth += actualAmount;
-		if (currentHealth > maxHealth)
-			currentHealth = maxHealth;
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
