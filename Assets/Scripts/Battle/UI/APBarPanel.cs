@@ -43,6 +43,10 @@ namespace BattleUI
 
 		public void UpdateAPDisplay(BattleData battleData, List<Unit> allUnits)
 		{
+			// 오브젝트는 AP바에 표시하지 않는다
+			List<Unit> allUnitsExceptObject = allUnits.FindAll(unit => unit.IsObject() == false);
+			allUnits = allUnitsExceptObject;
+
 			Debug.Assert(allUnits.Count > 0);
 			UnitManager unitManager = battleData.unitManager;
 			int standardActivityPoint =  unitManager.GetStandardActivityPoint();

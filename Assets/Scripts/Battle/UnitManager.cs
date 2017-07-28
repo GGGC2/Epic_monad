@@ -311,6 +311,9 @@ public class UnitManager : MonoBehaviour {
 		// check each unit and add all readied units.
 		foreach (var unit in units)
 		{
+			// 오브젝트의 턴은 돌아오지 않는다
+			if (unit.IsObject()) continue;
+
 			if (unit.GetCurrentActivityPoint() >= standardActivityPoint)
 			{
 				readiedUnits.Add(unit);
