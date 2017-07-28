@@ -65,7 +65,6 @@ namespace BattleUI
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
-			skillDataText.text = preSelectedSkill.GetSkillDataText().Replace("VALUE", GetSkillBasePower(battleManager.battleData.selectedUnit, preSelectedSkill));
 			skillPanel.UpdateSkillInfoPanel(preSelectedSkill, battleManager.battleData.selectedUnit.name);
 
 			/*skillApText.text = preSelectedSkill.GetRequireAP().ToString();

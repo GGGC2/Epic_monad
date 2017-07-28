@@ -26,8 +26,7 @@ public class SkillInfo {
 		return skill;
 	}
 	
-	public SkillInfo (string data)
-	{
+	public SkillInfo (string data){
 		CommaStringParser commaParser = new CommaStringParser(data);
 
 		owner = commaParser.Consume();
@@ -60,6 +59,10 @@ public class SkillInfo {
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
 		string skillDataText = commaParser.Consume();
+		Stat firstTextValueType = commaParser.ConsumeEnum<Stat>();
+		float firstTextValueCoef = commaParser.ConsumeFloat();
+		Stat secondTextValueType = commaParser.ConsumeEnum<Stat>();
+		float secondTextValueCoef = commaParser.ConsumeFloat();
 
 		this.skill = new Skill(owner, column, name, requireLevel, requireAP, cooldown, 
 							   powerFactor,
@@ -69,6 +72,6 @@ public class SkillInfo {
 							   skillApplyType,
 							   effectName, effectVisualType, effectMoveType,
 							   null,
-							   skillDataText);
+							   skillDataText, firstTextValueType, firstTextValueCoef, secondTextValueType, secondTextValueCoef);
 	}
 }

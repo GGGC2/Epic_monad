@@ -71,7 +71,7 @@ public class UnitInfo {
 		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
 	}
 
-	public static Enums.UnitClass GetUnitClass(string PCName){
+	public static UnitClass GetUnitClass(string PCName){
 		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[6];
 		if(className == "melee")
 			return Enums.UnitClass.Melee;

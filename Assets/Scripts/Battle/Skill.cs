@@ -43,6 +43,10 @@ public class Skill{
 	
 	// 스킬 설명 텍스트
 	string skillDataText;
+	public Stat firstTextValueType;
+	public float firstTextValueCoef;
+	public Stat secondTextValueType;
+	public float secondTextValueCoef;
     
     // 상태이상 관련 정보
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
@@ -54,8 +58,8 @@ public class Skill{
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 				 SkillApplyType skillApplyType,  
-		string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
-				 string skillDataText)
+				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
+				 string skillDataText, Stat firstTextValueType, float firstTextValueCoef, Stat secondTextValueType, float secondTextValueCoef)
 	{
 		this.owner = owner;
 		this.column = column;
@@ -79,6 +83,10 @@ public class Skill{
 		this.effectMoveType = effectMoveType;
 		this.soundEffectName = soundEffectName;
 		this.skillDataText = skillDataText;
+		this.firstTextValueType = firstTextValueType;
+		this.firstTextValueCoef = firstTextValueCoef;
+		this.secondTextValueType = secondTextValueType;
+		this.secondTextValueCoef = secondTextValueCoef;
 	}
       
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)

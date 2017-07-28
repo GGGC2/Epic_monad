@@ -1,17 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Enums;
 
 public class SkillUIManager : MonoBehaviour {
 	public Text ApText;
 	public Text CooldownText;
 	public Text RangeText;
-	//public Text ExplainText;
+	public Text ExplainText;
 	public Image ActualRange;
 	public Image RangeType;
 
 	public void UpdateSkillInfoPanel(Skill skill, string unitName){
 		ApText.text = skill.GetRequireAP().ToString();
+		ExplainText.text = skill.GetSkillDataText().Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, unitName)).
+													Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, unitName));
 
 		int cooldown = skill.GetCooldown();
 		if (cooldown > 0)
@@ -39,5 +42,14 @@ public class SkillUIManager : MonoBehaviour {
 		if(skill.GetFirstMinReach() > 1)
 			result = skill.GetFirstMinReach()+"~";
 		return result + skill.GetFirstMaxReach();
+	}
+
+	string GetSkillValueText(Stat statType, float coef, string unitName){
+		if(statType == Stat.Power)
+			return ((int)((float)UnitInfo.GetStat(unitName, UnitInfo.StatType.Power)*coef)).ToString();
+		else{
+			Debug.Log("Unknown StatType");
+			return null;
+		}
 	}
 }
