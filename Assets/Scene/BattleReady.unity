@@ -1314,6 +1314,7 @@ MonoBehaviour:
   ApText: {fileID: 2023849189}
   CooldownText: {fileID: 1564127697}
   RangeText: {fileID: 2120013579}
+  ExplainText: {fileID: 1569286333}
   ActualRange: {fileID: 625670256}
   RangeType: {fileID: 1986045382}
 --- !u!114 &325115710
@@ -2440,7 +2441,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c6fb32bf2ef584b6986ab1d9a1becfca, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4911,7 +4912,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC7AC\uC0AC\uC6A9\uAE4C\uC9C0 29 \uD398\uC774\uC988"
+  m_Text: 
 --- !u!222 &1564127698
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4989,18 +4990,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC81C\uD55C) \uC790\uC2E0\uC774 \uB098\uBB34 \uC18D\uC131\uC774\uC5B4\uC57C
-    \uD569\uB2C8\uB2E4.\n4.1x\uACF5\uACA9\uB825\uC758 \uD53C\uD574\uB97C \uC8FC\uACE0,
-    \uACBD\uB85C \uC704\uC758 \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uBE48 \uD0C0\uC77C\uB85C
-    \uB04C\uC5B4\uC628 \uD6C4 1\uD398\uC774\uC988 \uB3D9\uC548 \uB3C4\uBC1C \uD6A8\uACFC\uB97C
-    \uC90D\uB2C8\uB2E4. \uC0AC\uC6A9 \uD6C4 \uC790\uC2E0\uC774 \uAE08\uC18D \uC18D\uC131\uC774
-    \uB418\uBA70, 2\uD398\uC774\uC988 \uB3D9\uC548 \uBC14\uB00C\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.\n*\uBC18\uACBD4
-    \uC601\uC5ED\uC758 \uAC00\uC2DC\uB364\uBD88 \uD0C0\uC77C\uC774 15\uAC1C \uC774\uC0C1\uC774\uBA74,
-    \uC0AC\uC6A9 \uD6C4\uC5D0\uB3C4 \uB098\uBB34 \uC18D\uC131\uC774 \uC720\uC9C0\uB418\uBA70,
-    \uB3C4\uBC1C \uD6A8\uACFC\uAC00 2\uD398\uC774\uC988\uB85C \uB298\uC5B4\uB0A9\uB2C8\uB2E4.\n*\uBC18\uACBD4
-    \uC601\uC5ED\uC758 \uAC00\uC2DC\uB364\uBD88 \uD0C0\uC77C\uC774 30\uAC1C \uC774\uC0C1\uC774\uBA74,
-    \uC774 \uAE30\uC220\uC758 \uC7AC\uC0AC\uC6A9 \uB300\uAE30\uAC00 \uCD08\uAE30\uD654\uB418\uBA70,
-    \uB3C4\uBC1C \uD6A8\uACFC\uAC00 3\uD398\uC774\uC988\uB85C \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
+  m_Text: 
 --- !u!222 &1569286334
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6574,7 +6564,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c6fb32bf2ef584b6986ab1d9a1becfca, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6837,7 +6827,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 684
+  m_Text: 
 --- !u!222 &2023849190
 CanvasRenderer:
   m_ObjectHideFlags: 0

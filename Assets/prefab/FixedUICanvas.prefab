@@ -12619,6 +12619,7 @@ MonoBehaviour:
   ApText: {fileID: 114941799232219384}
   CooldownText: {fileID: 114160116914206990}
   RangeText: {fileID: 114587920860037284}
+  ExplainText: {fileID: 114547622553255424}
   ActualRange: {fileID: 114582453895480400}
   RangeType: {fileID: 114883346016187548}
 --- !u!114 &114708852424489044
@@ -19177,7 +19178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -722.75, y: 173}
+  m_AnchoredPosition: {x: -722.75, y: 173.00002}
   m_SizeDelta: {x: -645.5, y: -625}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224324194029682642
@@ -22159,7 +22160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10, y: -230}
+  m_AnchoredPosition: {x: 10, y: -229.99998}
   m_SizeDelta: {x: 300, y: 40}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224838954132168354

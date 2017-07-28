@@ -7,13 +7,6 @@ using SkillTree;
 
 public class Parser : MonoBehaviour
 {
-	public static List<string[]> GetMatrixOf(string text){
-		List<string[]> result = new List<string[]>();
-		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-		foreach(string rowData in RowDataStrings)
-			result.Add(rowData.Split(','));
-		return result;
-	}
 	public static string ExtractFromMatrix(string text, int row, int column){
 		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 		return RowDataStrings[row].Split(',')[column];
