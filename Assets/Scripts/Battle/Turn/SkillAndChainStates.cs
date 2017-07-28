@@ -145,7 +145,7 @@ namespace Battle.Turn {
                     yield break;
                 }
 				//범위 내 타일이나 방향(사분면 중 하나)을 선택했을시->1. currentState는 즉시시전/연계대기를 선택하는 단계로 한다
-				//2. 현재 선택된 시전 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
+				//2. 현재 선택된 타겟 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 타겟 타일로 한다.
                 else{
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
@@ -463,11 +463,9 @@ namespace Battle.Turn {
             BattleManager battleManager = battleData.battleManager;
 			List<Unit> targets = GetUnitsOnTiles(tilesInRealEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
-            /*
-            // 경로형 스킬의 경우 대상 범위 재지정
-            if (appliedSkill.GetSkillType() == SkillType.Route)
-                selectedTiles = ReselectTilesByRoute(battleData, selectedTiles);
-            */
+
+			//tilesInSkillRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
+			//tilesInRealEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
@@ -482,7 +480,7 @@ namespace Battle.Turn {
                 if (tile.IsUnitOnTile()) {
                     Unit target = tile.GetUnitOnTile();
 
-                    // 자신에게 뭔가 기술이 날아오면 일단 활성화
+					// AI 유닛에게 뭔가 기술이 날아오면, 그 유닛이 활성화조건 5번(기술 날아온 순간 활성화)을 가지고 있는지 확인하고 맞으면 활성화시킨다
                     if (target.GetComponent<AIData>() != null) 
                         target.GetComponent<AIData>().SetActiveByExternalFactor();
 
@@ -640,15 +638,6 @@ namespace Battle.Turn {
                         target.RemoveStatusEffect(statusEffect);
                 }
             }
-        }
-
-        private static List<Tile> ReselectTilesByRoute(BattleData battleData, List<Tile> selectedTiles) {
-            List<Tile> reselectTiles = new List<Tile>();
-            //단차 제외하고 구현.
-            Vector2 startPos = battleData.selectedUnit.GetPosition();
-            // Vector2 endPos = ; 
-
-            return reselectTiles;
         }
 
         private static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {
