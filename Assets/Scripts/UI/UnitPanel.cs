@@ -28,6 +28,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);
+			//FindObjectOfType<SkillEquipPanel>().UpdateIcons(unitName);
 		}
 	}
 
