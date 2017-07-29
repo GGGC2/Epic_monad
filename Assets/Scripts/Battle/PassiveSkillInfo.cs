@@ -32,7 +32,7 @@ public class PassiveSkillInfo {
 		this.column = commaParser.ConsumeInt();
 	}
 
-	public PassiveSkill GetSkill() {
+	/*public PassiveSkill GetSkill() {
 		return new PassiveSkill(owner, column, name, requireLevel);
-	}
+	}*/
 }
