@@ -197,7 +197,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	{
 		isHighlight = false;
 
-		FindObjectOfType<UIManager>().DisableTileViewerUI();
+		if(FindObjectOfType<UIManager>() != null)
+			FindObjectOfType<UIManager>().DisableTileViewerUI();
 
 		if (IsUnitOnTile())
 		{
