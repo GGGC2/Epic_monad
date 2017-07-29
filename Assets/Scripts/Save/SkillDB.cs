@@ -8,23 +8,17 @@ public class SkillDB
 {
 	private static Dictionary<string, List<string>> level1Skills = null;
 
-	private static Dictionary<string, List<string>> GetLevel1Skills()
-	{
+	private static Dictionary<string, List<string>> GetLevel1Skills(){
 		if (level1Skills != null)
-		{
 			return level1Skills;
-		}
 
 		level1Skills = new Dictionary<string, List<string>>();
 
-		List<SkillInfo> allSkills = Parser.GetParsedSkillInfo();
+		List<ActiveSkill> AllActiveSkills = Parser.GetActiveSkills();
 
-		foreach (SkillInfo skill in allSkills)
-		{
+		foreach (ActiveSkill skill in AllActiveSkills){
 			if (skill.requireLevel == 1)
-			{
-				AddToDictionary(level1Skills, skill.owner, skill.skill.GetName());
-			}
+				AddToDictionary(level1Skills, skill.owner, skill.korName);
 		}
 
 		return level1Skills;
@@ -46,10 +40,10 @@ public class SkillDB
 	{
 		List<SkillSaveData> skillSaveDatas = SaveDataCenter.GetSaveData().skills;
 
-		var allLearnedSkillsForUnit = skillSaveDatas.FindAll(skill => {
-			SkillInfo skillInfo = Parser.GetSkillInfoByName(skill.skillName);
+		var allLearnedSkillsForUnit = skillSaveDatas.FindAll(skillSaveData => {
+			Skill skill = Parser.GetSkillByName(skillSaveData.skillName);
 			// 테스트 중에는 스킬 이름이 자주 바뀔 수 있어서 세이브된 데이터가 테이블에 없을 수 있음.
-			return skillInfo != null && skillInfo.owner == unitName;
+			return skill != null && skill.owner == unitName;
         });
 		if (allLearnedSkillsForUnit.Count == 0)
 		{
@@ -62,17 +56,16 @@ public class SkillDB
 		}
 
 		List<string> skillNames = new List<string>();
-		List<SkillInfo> allUnitSkills = Parser.GetSkillInfoByUnit(unitName);
-		foreach (SkillSaveData skillSaveData in skillSaveDatas)
-		{
-			SkillInfo skillInfo = Parser.GetSkillInfoByName(skillSaveData.skillName);
-			if (skillInfo == null)
+		List<Skill> allUnitSkills = Parser.GetSkillByUnit(unitName);
+		foreach (SkillSaveData skillSaveData in skillSaveDatas){
+			Skill skill = Parser.GetSkillByName(skillSaveData.skillName);
+			if (skill == null)
 			{
 				Debug.LogError("There is no skill info in save data " + skillSaveData.skillName);
 				continue;
 			}
 
-			if (skillInfo.owner == unitName)
+			if (skill.owner == unitName)
 			{
 				skillNames.Add(skillSaveData.skillName);
 			}

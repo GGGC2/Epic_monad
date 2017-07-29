@@ -35,8 +35,8 @@ public class UnitManager : MonoBehaviour {
 
 	int standardActivityPoint;
 
-	List<SkillInfo> skillInfoList = new List<SkillInfo>();
-	List<PassiveSkillInfo> passiveSkillInfoList = new List<PassiveSkillInfo>();
+	List<ActiveSkill> ActiveSkillList = new List<ActiveSkill>();
+	List<PassiveSkill> PassiveSkillList = new List<PassiveSkill>();
     List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
@@ -220,12 +220,11 @@ public class UnitManager : MonoBehaviour {
 			}
 			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
 
-			foreach (var unitInfo in unitInfoList)
-			{
+			foreach (var unitInfo in unitInfoList){
 				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
+				unit.ApplySkillList(ActiveSkillList, statusEffectInfoList, tileStatusEffectInfoList, PassiveSkillList);
 
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
@@ -262,7 +261,7 @@ public class UnitManager : MonoBehaviour {
 				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(skillInfoList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillInfoList);
+				unit.ApplySkillList(ActiveSkillList, statusEffectInfoList, tileStatusEffectInfoList, PassiveSkillList);
 
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
@@ -403,14 +402,12 @@ public class UnitManager : MonoBehaviour {
         }
 	}
 
-	void LoadSkills()
-	{
-		skillInfoList = Parser.GetParsedSkillInfo();
+	void LoadActiveSkills(){
+		ActiveSkillList = Parser.GetActiveSkills();
 	}
 
-	void LoadPassiveSkills()
-	{
-		passiveSkillInfoList = Parser.GetParsedPassiveSkillInfo();
+	void LoadPassiveSkills(){
+		PassiveSkillList = Parser.GetPassiveSkills();
 	}
 
     void LoadStatusEffects()
@@ -425,7 +422,7 @@ public class UnitManager : MonoBehaviour {
 
 	void Start () 
 	{
-		LoadSkills();
+		LoadActiveSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
         LoadTileStatusEffects();
