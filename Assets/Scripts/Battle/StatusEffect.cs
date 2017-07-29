@@ -261,8 +261,8 @@ public class StatusEffect {
                     GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
 
-    public void CalculateAmount(float statusEffectVar) {
-        flexibleElem.actuals[0].amount = (statusEffectVar * fixedElem.actuals[0].seCoef + fixedElem.actuals[0].seBase) * GetRemainStack();
+    public void CalculateAmount(int i, float statusEffectVar) {
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
     }
     public void CalculateAmount(int i, bool isUpdate) {
         Unit caster = GetCaster();
