@@ -1,8 +1,9 @@
 ﻿owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,skillDataText,Value1Type,Value1Coef,Value2Type,Value2Coef
 manastone,1,가만히,1,9999,0,Power,0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 soldier01,1,근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
-asterArcher,1,화살 발사,0.9,30,0,Power,1,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
-controller,1,침입자 제거,1.5,1,0,Power,1,Point,Diamond,0,20,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
+archer,1,화살 발사,1,30,0,Power,0.9,Route,Straight,1,5,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
+asterArcher,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
+controller,1,침입자 제거,1,1,0,Power,1.5,Point,Diamond,0,20,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 asterAgent,1,섹션스킬,1,50,0,Power,1,Auto,Sector,1,1,0,Sector,1,3,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 monster,1,몬스터의근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 orchid,1,약공격,1,55,0,Power,1,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealth,-,Area,NonMove,--,None,0,None,0

@@ -1,7 +1,7 @@
 ﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
-1,궁수,asterArcher,Enemy,8,2,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
-2,궁수,asterArcher,Enemy,8,12,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
-3,궁수,asterArcher,Enemy,10,7,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+1,궁수,archer,Enemy,8,2,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+2,궁수,archer,Enemy,8,12,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+3,궁수,archer,Enemy,10,7,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
 4,메이드,soldier01,Enemy,5,4,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
 5,메이드,soldier01,Enemy,5,10,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
 6,메이드,soldier01,Enemy,14,4,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
