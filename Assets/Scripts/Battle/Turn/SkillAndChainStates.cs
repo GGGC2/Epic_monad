@@ -370,7 +370,7 @@ namespace Battle.Turn {
         }
 
         private static bool CheckChainPossible(BattleData battleData) {
-			if (GameData.SceneData.stageNumber <= 1)
+			if (GameData.SceneData.stageNumber < Setting.ChainOpenStage)
 				return false;
 
 			bool isPossible = false;
