@@ -11,7 +11,7 @@ namespace Battle.Skills
         }
         public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
             int numberOfBuffsFromOthers = caster.GetStatusEffectList().Count(x => x.GetIsBuff() && (x.GetCaster() != caster));
-            statusEffect.CalculateAmount(numberOfBuffsFromOthers);
+            statusEffect.CalculateAmount(0, numberOfBuffsFromOthers);
             return true;
         }
     }

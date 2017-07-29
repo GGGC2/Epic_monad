@@ -11,7 +11,7 @@ public class Eren_1_r_SkillLogic : BaseSkillLogic {
                 stack = AbsorptionStatusEffect.GetRemainStack();
             float power = caster.GetStat(Stat.Power);
 
-            statusEffect.CalculateAmount(stack);
+            statusEffect.CalculateAmount(0, stack);
             statusEffect.SetAmount(0, statusEffect.GetAmountOfType(StatusEffectType.Smite) * power);
             return true;
         }
