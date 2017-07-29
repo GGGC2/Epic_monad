@@ -13,6 +13,7 @@ using System.Linq;
 public class BattleManager : MonoBehaviour
 {
 	bool startFinished = false;
+	bool startTurnManager = false;
 	public BattleData battleData = new BattleData();
 
 	public List<ChainInfo> GetChainList()
@@ -45,7 +46,16 @@ public class BattleManager : MonoBehaviour
 		InitCameraPosition(); // temp init position;
 
 		startFinished = true;
-		StartCoroutine(InstantiateTurnManager());
+		
+	}
+
+	public void StartTurnManager()
+	{
+		if (!startTurnManager)
+		{
+			StartCoroutine(InstantiateTurnManager());
+			startTurnManager = true;
+		}
 	}
 
 	public int GetCurrentPhase()
