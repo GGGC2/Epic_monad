@@ -36,6 +36,45 @@ namespace Battle.Turn
 			}
 			return mainUnit.GetPosition();
 		}
+		public static Tile FindNearestEnemyAttackableTile(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, BattleData battleData)
+		{
+			Unit selectedUnit = battleData.selectedUnit;
+			Side otherSide = GetOtherSide (selectedUnit);
+			SkillType skillTypeOfSelectedSkill = skill.GetSkillType ();
+
+			Dictionary<Vector2, TileWithPath> enemyAttackableTilesWithPath = new Dictionary<Vector2, TileWithPath> ();
+
+			foreach (var pair in movableTilesWithPath) {
+				Tile tile = pair.Value.tile;
+				Tile attackAbleTile = null;
+				if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, tile);
+				else
+					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfPointSkill (battleData, tile);
+				
+				if (attackAbleTile != null)
+					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
+			}
+
+			Tile nearestTile = GetMinRequireAPTile (enemyAttackableTilesWithPath);
+			return nearestTile;
+		}
+		private static Tile GetMinRequireAPTile(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			if (movableTilesWithPath.Count > 0)
+			{
+				Tile nearestTile=null;
+				int minRequireAP = 99999;
+				foreach (var pair in movableTilesWithPath) {
+					int requireAP = pair.Value.requireActivityPoint;
+					if (requireAP < minRequireAP) {
+						minRequireAP = requireAP;
+						nearestTile = pair.Value.tile;
+					}
+				}
+				return nearestTile;
+			}
+			return null;
+		}
 
 		public static Tile FindOtherSideUnitTile(List<Tile> activeTileRange, Unit mainUnit)
 		{
@@ -533,11 +572,16 @@ namespace Battle.Turn
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		    Unit currentUnit = battleData.selectedUnit;
-		    Vector2 destPosition;
-            // 현재 가장 가까운 적을 향해 움직임
-			destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
 
-            Tile destTile = battleData.tileManager.GetTile(destPosition);
+			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (selectedSkill, movableTilesWithPath, battleData);
+			Vector2 destPosition;
+			if (destTile == null) {
+				destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), battleData.selectedUnit);
+				destTile = battleData.tileManager.GetTile(destPosition);
+			}
+			else{
+				destPosition = destTile.GetTilePos();
+			}
 			TileWithPath pathToDestTile = movableTilesWithPath[destPosition];
 
 			if (pathToDestTile.path.Count > 0) {
