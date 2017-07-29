@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 039dc48c15352cb428efdc9167b57671
-timeCreated: 1501330524
+guid: 551dda9033da947a6a766a16c13d428c
+timeCreated: 1501339169
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: controller_0
-    21300002: controller_1
-    21300004: controller_2
-    21300006: controller_3
+    21300000: unit_aster_0
+    21300002: unit_aster_1
+    21300004: unit_aster_2
+    21300006: unit_aster_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,11 +70,19 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: controller_0
+      name: unit_aster_0
       rect:
         serializedVersion: 2
         x: 0
@@ -87,7 +95,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: controller_1
+      name: unit_aster_1
       rect:
         serializedVersion: 2
         x: 250
@@ -100,7 +108,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: controller_2
+      name: unit_aster_2
       rect:
         serializedVersion: 2
         x: 500
@@ -113,7 +121,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: controller_3
+      name: unit_aster_3
       rect:
         serializedVersion: 2
         x: 750

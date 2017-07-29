@@ -5,26 +5,18 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class PassiveSkill {
-
-	// base info.
-	string owner;
-	int column;
-	string name;
-    int requireLevel;
+public class PassiveSkill : Skill{
 	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
-    string skillDataText;
-	public Stat firstTextValueType;
-	public float firstTextValueCoef;
-	public Stat secondTextValueType;
-	public float secondTextValueCoef;
-	
-	public PassiveSkill(string owner, int column, string name, int requireLevel)
-	{
-		this.owner = owner;
-		this.column = column;
-		this.name = name;
-        this.requireLevel = requireLevel;
+
+	public PassiveSkill(string skillData){
+		CommaStringParser commaParser = new CommaStringParser(skillData);
+		
+		GetCommonSkillData(commaParser);
+		skillDataText = commaParser.Consume();
+		firstTextValueType = commaParser.ConsumeEnum<Stat>();
+		firstTextValueCoef = commaParser.ConsumeFloat();
+		secondTextValueType = commaParser.ConsumeEnum<Stat>();
+		secondTextValueCoef = commaParser.ConsumeFloat();
 	}
 
 	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
@@ -37,7 +29,7 @@ public class PassiveSkill {
                                                                                                  //��, ��ü�Ǿ�� �ϴ� StatusEffect�� csv ���Ͽ��� �ٷ� ���� �ٿ� ������ ��.
                     statusEffectList.Remove(previousStatusEffect);
                 }
-                if (statusEffectInfo.GetOriginSkillName().Equals(name)) {
+                if (statusEffectInfo.GetOriginSkillName().Equals(korName)) {
                     statusEffectList.Add(statusEffectToAdd);
                 }
             }
@@ -47,7 +39,7 @@ public class PassiveSkill {
 
 	public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
-	public string GetName() {return name;}
+	public string GetName() {return korName;}
     public int GetRequireLevel() { return requireLevel;}
     public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
 }

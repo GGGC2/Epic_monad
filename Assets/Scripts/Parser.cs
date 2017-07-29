@@ -122,93 +122,97 @@ public class Parser : MonoBehaviour
 		return unitInfoList;
 	}
 
-	private static List<SkillInfo> skillInfosCache;
-	public static List<SkillInfo> GetParsedSkillInfo()
-	{
-		if (skillInfosCache != null)
-		{
-			return skillInfosCache;
+	private static List<Skill> skillInfosCache;
+
+	public static List<ActiveSkill> GetActiveSkills(){
+		List<ActiveSkill> ActiveSkills = new List<ActiveSkill>();
+
+		string csvText = Resources.Load<TextAsset>("Data/ActiveSkillData").text;
+		string[] rowDataList = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		for(int i = 1; i < rowDataList.Length; i++){
+			ActiveSkill skill = new ActiveSkill(rowDataList[i]);
+			ActiveSkills.Add(skill);
 		}
 
-		List<SkillInfo> skillInfoList = new List<SkillInfo>();
-
-		TextAsset csvFile = Resources.Load("Data/testSkillData") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedSkillInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedSkillInfoStrings.Length; i++)
-		{
-			SkillInfo skillInfo = new SkillInfo(unparsedSkillInfoStrings[i]);
-			skillInfoList.Add(skillInfo);
-		}
-
-		skillInfosCache = skillInfoList;
-		return skillInfoList;
+		return ActiveSkills;
 	}
 
-	public static List<PassiveSkillInfo> GetParsedPassiveSkillInfo()
-	{
-		List<PassiveSkillInfo> skillInfoList = new List<PassiveSkillInfo>();
+	public static List<Skill> GetSkills(){
+		List<Skill> Skills = new List<Skill>();
 
-		TextAsset csvFile = Resources.Load("Data/testPassiveSkillData") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedSkillInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedSkillInfoStrings.Length; i++)
-		{
-			PassiveSkillInfo skillInfo = new PassiveSkillInfo(unparsedSkillInfoStrings[i]);
-			skillInfoList.Add(skillInfo);
+		string activeSkillData = Resources.Load<TextAsset>("Data/ActiveSkillData").text;
+		string[] activeRowDataList = activeSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for(int i = 1; i < activeRowDataList.Length; i++){
+			Skill skill = new ActiveSkill(activeRowDataList[i]);
+			Skills.Add(skill);
 		}
 
-		return skillInfoList;
+		string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
+		string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for(int i = 1; i < passiveRowDataList.Length; i++){
+			Skill skill = new PassiveSkill(passiveRowDataList[i]);
+			Skills.Add(skill);
+		}
+
+		return Skills;
+	}
+	
+	public static List<PassiveSkill> GetPassiveSkills(){
+		List<PassiveSkill> PassiveSkills = new List<PassiveSkill>();
+
+		string csvText = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
+		string[] rowDataList = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		for(int i = 1; i < rowDataList.Length; i++){
+			PassiveSkill skill = new PassiveSkill(rowDataList[i]);
+			PassiveSkills.Add(skill);
+		}
+
+		return PassiveSkills;
 	}
 
-	private static Dictionary<string, SkillInfo> skillInfoByName;
-	public static SkillInfo GetSkillInfoByName(string skillName)
-	{
-		if (skillInfoByName == null)
-		{
-			skillInfoByName = new Dictionary<string, SkillInfo>();
+	private static Dictionary<string, Skill> skillByName;
+	public static Skill GetSkillByName(string skillName){
+		if (skillByName == null){
+			skillByName = new Dictionary<string, Skill>();
 
-			List<SkillInfo> skillInfos = GetParsedSkillInfo();
-			foreach (SkillInfo skillInfo in skillInfos)
-			{
-				skillInfoByName.SmartAdd(skillInfo.skill.GetName(), skillInfo);
-			}
+			List<ActiveSkill> ActiveSkillList = GetActiveSkills();
+			foreach (ActiveSkill skill in ActiveSkillList)
+				skillByName.SmartAdd(skill.korName, skill);
+			List<PassiveSkill> PassiveSkillList = GetPassiveSkills();
+			foreach(PassiveSkill skill in PassiveSkillList)
+				skillByName.SmartAdd(skill.korName, skill);
 		}
 
-		if (skillInfoByName.ContainsKey(skillName))
-		{
-			return skillInfoByName[skillName];
-		}
+		if (skillByName.ContainsKey(skillName))
+			return skillByName[skillName];
 		else
-		{
 			return null;
-		}
 	}
 
-	private static Dictionary<string, List<SkillInfo>> skillInfoByUnit;
-	public static List<SkillInfo> GetSkillInfoByUnit(string unitName)
-	{
-		if (skillInfoByUnit == null)
-		{
-			skillInfoByUnit = new Dictionary<string, List<SkillInfo>>();
+	private static Dictionary<string, List<Skill>> skillByUnit;
+	public static List<Skill> GetSkillByUnit(string unitName){
+		if (skillByUnit == null){
+			skillByUnit = new Dictionary<string, List<Skill>>();
 
-			List<SkillInfo> skillInfos = GetParsedSkillInfo();
-			foreach (SkillInfo skillInfo in skillInfos)
-			{
-				if (!skillInfoByUnit.ContainsKey(skillInfo.owner))
-				{
-					skillInfoByUnit.SmartAdd(skillInfo.owner, new List<SkillInfo>());
-				}
-
-				skillInfoByUnit[skillInfo.owner].Add(skillInfo);
+			List<ActiveSkill> ActiveSkillList = GetActiveSkills();
+			foreach (ActiveSkill skill in ActiveSkillList){
+				if (!skillByUnit.ContainsKey(skill.owner))
+					skillByUnit.SmartAdd(skill.owner, new List<Skill>());
+				skillByUnit[skill.owner].Add(skill);
+			}
+			List<PassiveSkill> PassiveSkillList = GetPassiveSkills();
+			foreach(PassiveSkill skill in PassiveSkillList){
+				if (!skillByUnit.ContainsKey(skill.owner))
+					skillByUnit.SmartAdd(skill.owner, new List<Skill>());
+				skillByUnit[skill.owner].Add(skill);
 			}
 		}
 
 		try
 		{
-			return skillInfoByUnit[unitName];
+			return skillByUnit[unitName];
 		}
 		catch (Exception e)
 		{

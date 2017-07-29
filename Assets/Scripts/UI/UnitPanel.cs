@@ -15,7 +15,6 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	
 	void Start(){
 		nameText = GameObject.Find("NameText").GetComponent<Text>();
-		//characterIllust = GameObject.Find("CharacterIllust").GetComponent<Image>();
 		unitImage = GameObject.Find("UnitImage").GetComponent<Image>();
 		unitViewer = GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>();
 	}
@@ -23,7 +22,6 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(unitName != "unselected"){
 			nameText.text = ToKorean(unitName);
-			//characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
 			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);

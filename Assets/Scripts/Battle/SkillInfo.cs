@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using Enums;
 
-public class SkillInfo {
+public class Skill {
 
 	public string owner;
 	public int requireLevel;
@@ -26,7 +26,7 @@ public class SkillInfo {
 		return skill;
 	}
 	
-	public SkillInfo (string data){
+	/*public SkillInfo (string data){
 		CommaStringParser commaParser = new CommaStringParser(data);
 
 		owner = commaParser.Consume();
@@ -74,4 +74,4 @@ public class SkillInfo {
 							   null,
 							   skillDataText, firstTextValueType, firstTextValueCoef, secondTextValueType, secondTextValueCoef);
 	}
-}
+}*/

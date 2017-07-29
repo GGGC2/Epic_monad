@@ -59,20 +59,18 @@ public class SkillTreeManager : MonoBehaviour
 
 	List<string> partyUnitNames = new List<string>();
 	List<UnitInfo> unitInfos = new List<UnitInfo>();
-	List<SkillInfo> skillInfos = new List<SkillInfo>();
-	Dictionary<string, SkillInfo> skillInfoByName = new Dictionary<string, SkillInfo>();
+	List<Skill> skills = new List<Skill>();
+	Dictionary<string, Skill> skillInfoByName = new Dictionary<string, Skill>();
 	List<SkillColumnInfo> skillColumnInfos = new List<SkillColumnInfo>();
 
-	void Start()
-	{
+	void Start(){
 		partyUnitNames = PartyDB.GetPartyUnits();
 
 		unitInfos = Parser.GetParsedUnitInfo();
-		skillInfos = Parser.GetParsedSkillInfo();
-		foreach (SkillInfo skillInfo in skillInfos)
-		{
-			string skillName = skillInfo.skill.GetName();
-			skillInfoByName[skillName] = skillInfo;
+		skills = Parser.GetSkills();
+		foreach (Skill skill in skills){
+			string skillName = skill.korName;
+			skillInfoByName[skillName] = skill;
 		}
 		skillColumnInfos = Parser.GetSkillColumInfo();
 
@@ -156,8 +154,8 @@ public class SkillTreeManager : MonoBehaviour
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
 		string unitNameInCode = unitInfo.nameInCode;
 
-		List<SkillInfo> unitSkills = new List<SkillInfo>();
-		foreach (SkillInfo skillInfo in skillInfos)
+		List<Skill> unitSkills = new List<Skill>();
+		foreach (Skill skillInfo in skills)
 		{
 			if (skillInfo.owner == unitNameInCode)
 			{
@@ -165,20 +163,20 @@ public class SkillTreeManager : MonoBehaviour
 			}
 		}
 
-		foreach (SkillInfo unitSkillInfo in unitSkills)
+		foreach (Skill unitSkill in unitSkills)
 		{
-			GameObject skillGameObject = GetSkillGameObject(unitSkillInfo.column, unitSkillInfo.requireLevel);
-			skillGameObject.GetComponent<SkillButton>().SetSkillInfo(unitSkillInfo);
+			GameObject skillGameObject = GetSkillGameObject(unitSkill.column, unitSkill.requireLevel);
+			skillGameObject.GetComponent<SkillButton>().SetSkillInfo(unitSkill);
 
-			ActiveSkill skill = unitSkillInfo.skill;
-			bool isLearned = SkillDB.IsLearned(unitNameInCode, skill.GetName());
+			Skill skill = unitSkill;
+			bool isLearned = SkillDB.IsLearned(unitNameInCode, skill.korName);
 			bool haveSkillPoint = GetAvailableSkillPoint(unitNameInCode) > 0;
-			bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skill.GetName()) < maxEnhanceLevel && haveSkillPoint;
+			bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skill.korName) < maxEnhanceLevel && haveSkillPoint;
 
-			int totalSkillPointUntilLevel = unitSkillInfo.requireLevel - 1;
-			int usedSkillPointUntilLevel = GetUsedSkillPointUntilLevel(unitNameInCode, unitSkillInfo.requireLevel - 1);
+			int totalSkillPointUntilLevel = unitSkill.requireLevel - 1;
+			int usedSkillPointUntilLevel = GetUsedSkillPointUntilLevel(unitNameInCode, unitSkill.requireLevel - 1);
 			// bool isLearnable = usedSkillPointUntilLevel >= totalSkillPointUntilLevel && haveSkillPoint;
-			bool isLearnable = PartyDB.GetPartyLevel() >= unitSkillInfo.GetRequireLevel() && haveSkillPoint;
+			bool isLearnable = PartyDB.GetPartyLevel() >= unitSkill.requireLevel && haveSkillPoint;
 
 			if (!isLearned && !isLearnable)
 			{
