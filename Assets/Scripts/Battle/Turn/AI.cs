@@ -37,7 +37,7 @@ namespace Battle.Turn
 			return mainUnit.GetPosition();
 		}
 
-		public static Tile FindEnemyTile(List<Tile> activeTileRange, Unit mainUnit)
+		public static Tile FindOtherSideUnitTile(List<Tile> activeTileRange, Unit mainUnit)
 		{
 			Side otherSide = GetOtherSide (mainUnit);
 
@@ -594,18 +594,8 @@ namespace Battle.Turn
 		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
 		{
 			//Direction beforeDirection = originalDirection;
-			List<Tile> selectedTiles = new List<Tile>();
 			Unit selectedUnit = battleData.selectedUnit;
-			ActiveSkill selectedSkill = battleData.SelectedSkill;
-
-			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-														selectedUnit.GetPosition(),
-														selectedSkill.GetSecondMinReach(),
-														selectedSkill.GetSecondMaxReach(),
-														selectedSkill.GetSecondWidth(),
-														selectedUnit.GetDirection());
-
-			Tile selectedTile = AIUtil.FindEnemyTile(selectedTiles, battleData.selectedUnit);
+			Tile selectedTile = GetAttackableOtherSideUnitTileOfDirectionSkill(battleData, selectedUnit.GetTileUnderUnit());
 
 			if (selectedTile == null)
 			{
@@ -629,27 +619,32 @@ namespace Battle.Turn
 
 			battleData.uiManager.ResetSkillNamePanelUI();
 		}
+		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(BattleData battleData, Tile unitTile){
+			List<Tile> selectedTiles = new List<Tile>();
+			Unit selectedUnit = battleData.selectedUnit;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				unitTile.GetTilePos(),
+				selectedSkill.GetSecondMinReach(),
+				selectedSkill.GetSecondMaxReach(),
+				selectedSkill.GetSecondWidth(),
+				selectedUnit.GetDirection());
+
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(selectedTiles, battleData.selectedUnit);
+
+			return selectedTile;
+		}
 
 		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection)
 		{
 			//Direction beforeDirection = originalDirection;
 			Unit selectedUnit = battleData.selectedUnit;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			while (battleData.currentState == CurrentState.SelectSkillApplyPoint)
 			{
-				Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
-
-				List<Tile> activeRange = new List<Tile>();
-				ActiveSkill selectedSkill = battleData.SelectedSkill;
-				activeRange = 
-					battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
-														selectedUnitPos,
-														selectedSkill.GetFirstMinReach(),
-														selectedSkill.GetFirstMaxReach(),
-														selectedSkill.GetFirstWidth(),
-														battleData.selectedUnit.GetDirection());
-
-				Tile selectedTile = AIUtil.FindEnemyTile(activeRange, battleData.selectedUnit);
+				Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, selectedUnit.GetTileUnderUnit ());
 
 				if (selectedTile == null)
 				{
@@ -677,6 +672,22 @@ namespace Battle.Turn
 				battleData.currentState = CurrentState.FocusToUnit;
 				battleData.uiManager.ResetSkillNamePanelUI();
 			}
+		}
+		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(BattleData battleData, Tile unitTile){
+			Unit selectedUnit = battleData.selectedUnit;
+			List<Tile> activeRange = new List<Tile>();
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+			activeRange = 
+				battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+					unitTile.GetTilePos(),
+					selectedSkill.GetFirstMinReach(),
+					selectedSkill.GetFirstMaxReach(),
+					selectedSkill.GetFirstWidth(),
+					battleData.selectedUnit.GetDirection());
+
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(activeRange, battleData.selectedUnit);
+
+			return selectedTile;
 		}
 
 		private static void FocusUnit(Unit unit)
