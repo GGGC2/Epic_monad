@@ -12,8 +12,7 @@ public class CommaStringParser
 		index = 0;
 	}
 
-	public string Consume()
-	{
+	public string Consume(){
 		index += 1;
 		return origin[index - 1];
 	}

@@ -11,6 +11,7 @@ public class BattleTrigger{
 	public bool repeatable;
 	public ResultType resultType;
 	public UnitType unitType;
+	public string unitName;
 	public ActionType actionType;
 	public int reward;
 	public int count;
