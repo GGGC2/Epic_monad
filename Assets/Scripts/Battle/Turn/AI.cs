@@ -489,8 +489,39 @@ namespace Battle.Turn
 		public static IEnumerator AIMove(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
+			Unit unit = battleData.selectedUnit;
+			Tile currentTile = unit.GetTileUnderUnit ();
 
 			yield return battleManager.StartCoroutine(AIDIe(battleData));
+
+			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
+			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
+			int selectedSkillIndex = 1;
+			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
+
+			Tile attackAbleTile;
+
+			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+			{
+				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, currentTile);
+				if (attackAbleTile != null) {
+					battleData.currentState = CurrentState.SelectSkillApplyDirection;
+					yield return battleManager.StartCoroutine (SelectSkillApplyDirection (battleData, battleData.selectedUnit.GetDirection ()));
+					yield break;
+				}
+			}
+			else
+			{
+				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, currentTile);
+				if (attackAbleTile != null) {
+					battleData.currentState = CurrentState.SelectSkillApplyPoint;
+					yield return battleManager.StartCoroutine (SelectSkillApplyPoint (battleData, battleData.selectedUnit.GetDirection ()));
+					yield  break;
+				}
+			}
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
 			List<Tile> movableTiles = new List<Tile>();
