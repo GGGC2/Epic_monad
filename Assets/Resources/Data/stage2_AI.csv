@@ -1,7 +1,7 @@
-Index,Name,NameInCode,Triggers,ActivePhase,AreaInfo,,,,,,,,,,,,,,,,,,,,,,
-1,궁수,soldier01,1,0,0,0,LeftUp
-2,궁수,soldier01,1,0,0,0,LeftUp
-3,궁수,soldier01,1,0,0,0,LeftUp
+﻿Index,Name,NameInCode,Triggers,ActivePhase,AreaInfo,,,,,,,,,,,,,,,,,,,,,,
+1,궁수,AsterArcher,1,0,0,0,LeftUp
+2,궁수,AsterArcher,1,0,0,0,LeftUp
+3,궁수,AsterArcher,1,0,0,0,LeftUp
 4,메이드,soldier01,1,0,0,0,LeftUp
 5,메이드,soldier01,1,0,0,0,LeftUp
 6,메이드,soldier01,1,0,0,0,LeftUp
