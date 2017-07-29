@@ -108,7 +108,7 @@ public class UIManager : MonoBehaviour
 			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
 			if (skillIndex >= skillList.Count)
 			{
-				Debug.Log(selectedUnit+"'s skillCount : "+skillList.Count);
+				//Debug.Log(selectedUnit+"'s skillCount : "+skillList.Count);
 				skillButton.SetActive(false);
 				continue;
 			}
