@@ -503,28 +503,26 @@ namespace Battle.Turn
 
 		    Unit currentUnit = battleData.selectedUnit;
 		    Vector2 destPosition;
-
-            /*if (currentUnit.GetNameInCode() == "monster")
-		    {
-                // stage 3 달팽이 몬스터 temp AI
-		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
-		            battleData.selectedUnit);
-		    }*/
-			/*
-			if (currentUnit.GetNameInCode() == "orchid")
-			{
-				destPosition = battleData.selectedUnit.GetPosition();
-			}
-			*/
-		    //else
-		    //{
-                // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
+            // 현재 가장 가까운 적을 향해 움직임
 			destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
-            //}
 
-            // FIXME : 어딘가로 옮겨야 할 텐데...
             Tile destTile = battleData.tileManager.GetTile(destPosition);
+			TileWithPath pathToDestTile = movableTilesWithPath[destPosition];
+			Tile prevLastTile = pathToDestTile.path.Last();
+			Vector2 prevLastTilePosition = prevLastTile.GetTilePos();
 			int totalUseActivityPoint = movableTilesWithPath[destPosition].requireActivityPoint;
+
+			Direction destDirection;
+			// 이동했을때 볼 방향 설정
+			Vector2 delta = destPosition - prevLastTilePosition;
+			if (delta == new Vector2 (1,0))
+				destDirection = Direction.RightDown;
+			else if (delta == new Vector2 (-1, 0))
+				destDirection = Direction.LeftUp;
+			else if (delta == new Vector2 (0, 1))
+				destDirection = Direction.RightUp;
+			else // delta == new Vector2 (0, -1)
+				destDirection = Direction.LeftDown;
 
 			battleData.currentState = CurrentState.CheckDestination;
 
@@ -532,7 +530,7 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(destTile.transform.position.x, destTile.transform.position.y, -10);
 
 			battleData.currentState = CurrentState.MoveToTile;
-			yield return battleManager.StartCoroutine(MoveStates.MoveToTile(battleData, destTile, Direction.Right, totalUseActivityPoint));
+			yield return battleManager.StartCoroutine(MoveStates.MoveToTile(battleData, destTile, destDirection, totalUseActivityPoint));
 
 			yield return AIAttack(battleData);
 		}
