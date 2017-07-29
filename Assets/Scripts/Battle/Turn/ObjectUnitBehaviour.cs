@@ -42,7 +42,7 @@ namespace Battle.Turn
 			if (objectUnit.GetNameInCode() == "controller")
 				yield return ControllerAttack(objectUnit);
 			else
-				yield return AIStates_old.AIAttack (battleData);
+				yield return AIStates_old.AIAct (battleData);
 			yield return null;
 		}
 
