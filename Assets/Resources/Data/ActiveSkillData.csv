@@ -1,8 +1,8 @@
 ﻿owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,skillDataText,Value1Type,Value1Coef,Value2Type,Value2Coef
 manastone,1,가만히,1,9999,0,Power,0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
-soldier01,1,근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
-archer01,1,화살 발사,1,30,0,Power,0.9,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
-asterArcher01,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
+soldier01,1,근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,--,None,0,None,0
+archer01,1,화살 발사,1,30,0,Power,0.9,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,--,None,0,None,0
+asterArcher01,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,--,None,0,None,0
 controller,1,침입자 제거,1,1,0,Power,1.5,Point,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 asterAgent,1,섹션스킬,1,50,0,Power,1,Auto,Sector,1,1,0,Sector,1,3,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 monster,1,몬스터의근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
@@ -39,7 +39,7 @@ luvericha,29,소녀의 기도,2,52,0,Power,1.5,Self,Diamond,0,0,0,Diamond,0,0,0,
 luvericha,36,교향곡 : 운명,1,58,1,Power,0,Auto,Sector,1,5,0,Sector,1,5,0,DamageHealth,-,Area,NonMove,?,None,0,None,0
 luvericha,50,4분 33초,1,93,4,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--,None,0,None,0
 luvericha,50,환상곡,3,98,4,Power,0.9,Auto,Diamond,1,2,0,Diamond,1,2,0,Buff,-,Area,NonMove,?,None,0,None,0
-yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '방랑자' 효과가 발동된 상태이면 위력이 <color=red>20%</color> 높아집니다.,Power,0.9,None,0
+yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,MeleeArea,Area,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '방랑자' 효과가 발동된 상태이면 위력이 <color=red>20%</color> 높아집니다.,Power,0.9,None,0
 yeong,8,섬광 찌르기,1,51,0,Power,1.2,Auto,Straight,1,3,0,Straight,1,3,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,22,배후의 습격,1,50,3,Power,1.8,Point,Diamond,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,29,초감각,3,47,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,--,None,0,None,0
@@ -69,12 +69,12 @@ eugene,22,얼음의 가호,1,50,4,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,
 eugene,22,백은의 장막,2,8,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,?,None,0,None,0
 eugene,50,겨울의 가호,1,84,4,Power,0,Point,Diamond,0,2,0,Square,0,2,0,Buff,-,Individual,NonMove,?,None,0,None,0
 eugene,50,백은의 오로라,2,9,5,Power,0,Auto,Diamond,0,4,0,Diamond,0,4,0,Buff,-,Individual,NonMove,?,None,0,None,0
-sepia,1,반달베기,3,27,0,Power,0.5,Auto,Front,1,2,3,Front,1,2,3,DamageHealth,-,Individual,NonMove,범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>(<color=red>VALUE2</color>)의 <color=#b2ff66ff>보호막</color>을 얻습니다.,Power,0.5,Power,0.2
+sepia,1,반달베기,3,27,0,Power,0.5,Auto,Front,1,2,3,Front,1,2,3,DamageHealth,MeleeArea,Area,NonMove,범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>(<color=red>VALUE2</color>)의 <color=#b2ff66ff>보호막</color>을 얻습니다.,Power,0.5,Power,0.2
 darkenir,1,에테르 미사일,2,27,0,Power,1.3,Route,Straight,1,7,0,Straight,0,1,0,DamageHealth,EtherShot,Area,Move,투사체를 쏘아 <color=red>1.3x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,1.3,None,0
 noel,1,파마의 섬광,1,40,0,Power,0.9,Auto,Sector,1,4,0,Sector,1,4,0,DamageHealth,-,Individual,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 대상으로부터 2타일 이내에 <color=#b2ff66ff>보호막</color>을 가진 동료가 있을 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>침묵</color>시킵니다.,Power,0.9,None,0
 noel,1,신의 가호,3,24,0,Power,0,Point,Diamond,0,4,0,Diamond,0,0,0,Buff,LightShield,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>1.5x공격력</color>(<color=red>VALUE1</color>)의 <color=#b2ff66ff>보호막</color>을 줍니다.,Power,1.5,None,0
 arcadia,1,갈고리 씨앗,1,20,0,Power,0,Auto,Sector,1,3,0,Sector,1,3,0,Debuff,-,Individual,NonMove,<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 <color=red>지속 피해</color>를 줍니다.,Power,0.5,None,0
 bianca,1,잘근잘근 덫,0,27,0,Power,0,Point,Diamond,0,2,0,Diamond,0,0,0,Debuff,-,Individual,NonMove,?,None,0,None,0
 bianca,1,떠밀기,2,5,0,Power,0,Auto,Straight,1,1,0,Straight,1,1,0,DamageHealth,-,Individual,NonMove,?,None,0,None,0
-grenev,1,저격,1,29,0,Power,0.8,Point,Diamond,0,11,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,0.8,None,0
+grenev,1,저격,1,29,0,Power,0.8,Point,Diamond,0,11,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,0.8,None,0
 grenev,1,단검술,2,35,0,Power,1.5,Route,Straight,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,후면 공격만 가능하며 방어력과 보호막을 무시하고 <color=red>1.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,1.5,None,0
