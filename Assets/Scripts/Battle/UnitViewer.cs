@@ -87,21 +87,29 @@ public class UnitViewer : MonoBehaviour {
 		string concattedText = "";
 		for (int i = 0; i < numberOfEffects; i++)
 		{
+			// d_와 (--)가 인게임에서 보면 지저분해서 임시로 출력되지 않게 했는데 나중에 필요하면 되돌리세요
+			/*
 			if (!effectList[i].GetIsBuff())
 				concattedText += "d_";
+				*/
 			concattedText += effectList[i].GetDisplayName();
 			if (effectList[i].GetIsStackable())
 				concattedText += "[" + effectList[i].GetRemainStack() +"]";
 			if (effectList[i].GetRemainPhase() < 500)
 				concattedText += "(" + effectList[i].GetRemainPhase() + ")";
+			/*
 			else
 				concattedText += "(--)";
+				*/
             for (int j = 0; j < effectList[i].fixedElem.actuals.Count; j++) {
+				if(effectList[i].GetAmount(j) != 0)
+					concattedText += " ";
                 if(effectList[i].GetStatusEffectType(j) == StatusEffectType.Shield) {
                     concattedText += (int)effectList[i].GetRemainAmount(j);
                     concattedText += "/";
                 }
-                concattedText += (int)effectList[i].GetAmount(j);
+				if(effectList[i].GetAmount(j) != 0)
+	                concattedText += (int)effectList[i].GetAmount(j);
                 if(j < effectList[i].fixedElem.actuals.Count - 1)   concattedText += ",";
             }
 			if (i < numberOfEffects-1)
