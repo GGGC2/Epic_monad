@@ -1,12 +1,12 @@
 ﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
-1,궁수,AsterArcher,Enemy,8,2,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
-2,궁수,AsterArcher,Enemy,8,12,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
-3,궁수,AsterArcher,Enemy,10,7,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+1,궁수,asterArcher,Enemy,8,2,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+2,궁수,asterArcher,Enemy,8,12,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
+3,궁수,asterArcher,Enemy,10,7,LeftUp,167,62,22,22,45,Melee,Metal,Sun,false
 4,메이드,soldier01,Enemy,5,4,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
 5,메이드,soldier01,Enemy,5,10,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
 6,메이드,soldier01,Enemy,14,4,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
 7,메이드,soldier01,Enemy,14,10,LeftUp,178,67,22,41,47,Melee,Water,Earth,false
-8,제어장치,stage2_object,Enemy,15,7,LeftUp,273,100,3,78,1,Magic,Metal,Earth,true
+8,제어장치,controller,Enemy,15,7,LeftUp,273,100,3,78,1,Magic,Metal,Earth,true
 9,unselected,unselected,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
 10,unselected,unselected,Ally,2,7,RightDown,0,0,0,0,0,None,None,None,false
 11,unselected,unselected,Ally,2,8,RightDown,0,0,0,0,0,None,None,None,false
