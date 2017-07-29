@@ -832,41 +832,32 @@ public class Unit : MonoBehaviour
         this.celestial = unitInfo.celestial;
         this.isObject = unitInfo.isObject;
     }
-    public void ApplySkillList(List<SkillInfo> skillInfoList,
-                               List<StatusEffectInfo> statusEffectInfoList,
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList,
-                               List<PassiveSkillInfo> passiveSkillInfoList) {
+    public void ApplySkillList(List<ActiveSkill> ActiveSkillList, List<StatusEffectInfo> statusEffectInfoList,
+                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkillList){
         int partyLevel = GameData.PartyData.level;
 
-        foreach (var skillInfo in skillInfoList) {
-            if ((skillInfo.GetOwner() == nameInCode) &&
-                (skillInfo.GetRequireLevel() <= partyLevel)) {
-                ActiveSkill skill = skillInfo.GetSkill();
+        foreach (var activeSkill in ActiveSkillList) {
+            if (activeSkill.owner == nameInCode && activeSkill.requireLevel <= partyLevel){
                 // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
-                {
-                    skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                    skill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                    skillList.Add(skill);
-                }
+                    activeSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                    activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
+                    skillList.Add(activeSkill);
             }
 
         }
         // 비어있으면 디폴트 스킬로 채우도록.
         if (skillList.Count() == 0) {
-            foreach (var skillInfo in skillInfoList) {
-                if ((skillInfo.GetOwner() == "default") &&
-                    (skillInfo.GetRequireLevel() <= partyLevel))
-                    skillList.Add(skillInfo.GetSkill());
+            foreach (var activeSkill in ActiveSkillList) {
+                if (activeSkill.owner == "default" && activeSkill.requireLevel <= partyLevel)
+                    skillList.Add(activeSkill);
             }
         }
 
-        foreach (var passiveSkillInfo in passiveSkillInfoList) {
+        foreach (var passiveSkill in passiveSkillList) {
             //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-            if ((passiveSkillInfo.GetOwner() == nameInCode) &&
-                (passiveSkillInfo.GetRequireLevel() <= partyLevel)) {
-                PassiveSkill passiveSkill = passiveSkillInfo.GetSkill();
+            if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
                 passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                passiveSkillList.Add(passiveSkill);
+                this.passiveSkillList.Add(passiveSkill);
             }
         }
     }
