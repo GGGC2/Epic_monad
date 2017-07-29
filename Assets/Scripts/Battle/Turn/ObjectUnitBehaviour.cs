@@ -40,6 +40,6 @@ namespace Battle.Turn
 			battleData.selectedUnit = objectUnit;
 			yield return AIStates_old.AIAttack (battleData);
 			yield return null;
-		}
+		}		
 	}
 }

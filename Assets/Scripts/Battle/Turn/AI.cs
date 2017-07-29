@@ -555,7 +555,7 @@ namespace Battle.Turn
 				else if (delta == new Vector2 (0, 1))
 					destDirection = Direction.RightUp;
 				else // delta == new Vector2 (0, -1)
-				destDirection = Direction.LeftDown;
+					destDirection = Direction.LeftDown;
 
 				battleData.currentState = CurrentState.CheckDestination;
 
