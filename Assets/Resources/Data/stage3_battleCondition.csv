@@ -1,6 +1,6 @@
 ResultType,UnitType,ActionType,targetCount,Repeatable,Reward,etc
 Bonus,적을 처치,Enemy,Kill,1,true,-20
-Win,맵의 구석으로 탈출,Target,Reach,1,false,190,1,yeong,1,1,1,23,15,1,15,23
+Win,맵의 구석으로 탈출,Target,Reach,1,false,190,1,yeong,4,1,1,1,23,15,1,15,23
 Win,모든 적을 무력화,Enemy,Neutralize,8,false,190
 Lose,영의 무력화,Target,Neutralize,1,false,0,1,yeong
 End,Scene#6
