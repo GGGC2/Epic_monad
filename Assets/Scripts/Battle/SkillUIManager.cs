@@ -41,6 +41,12 @@ public class SkillUIManager : MonoBehaviour {
 			else
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
 		}
+		else{
+			CooldownText.text = "특성(자동 적용)";
+			ActualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
+			RangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
+			RangeText.text = "";
+		}
 	}
 
 	string GetFirstRangeText(ActiveSkill skill){
