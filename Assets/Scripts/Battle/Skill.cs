@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class Skill{
+public class ActiveSkill{
 
 	// base info.
 	string owner;
@@ -52,7 +52,7 @@ public class Skill{
     List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
     List<TileStatusEffect.FixedElement> tileStatusEffectList = new List<TileStatusEffect.FixedElement>();
     
-	public Skill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 
+	public ActiveSkill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 
                  float powerFactor,
 				 SkillType skillType,
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,

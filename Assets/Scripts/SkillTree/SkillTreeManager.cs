@@ -170,7 +170,7 @@ public class SkillTreeManager : MonoBehaviour
 			GameObject skillGameObject = GetSkillGameObject(unitSkillInfo.column, unitSkillInfo.requireLevel);
 			skillGameObject.GetComponent<SkillButton>().SetSkillInfo(unitSkillInfo);
 
-			Skill skill = unitSkillInfo.skill;
+			ActiveSkill skill = unitSkillInfo.skill;
 			bool isLearned = SkillDB.IsLearned(unitNameInCode, skill.GetName());
 			bool haveSkillPoint = GetAvailableSkillPoint(unitNameInCode) > 0;
 			bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skill.GetName()) < maxEnhanceLevel && haveSkillPoint;

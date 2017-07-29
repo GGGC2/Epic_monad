@@ -13,6 +13,11 @@ public class PassiveSkill {
 	string name;
     int requireLevel;
 	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
+    string skillDataText;
+	public Stat firstTextValueType;
+	public float firstTextValueCoef;
+	public Stat secondTextValueType;
+	public float secondTextValueCoef;
 	
 	public PassiveSkill(string owner, int column, string name, int requireLevel)
 	{
@@ -28,8 +33,8 @@ public class PassiveSkill {
         foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
             StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if (statusEffectInfo.GetRequireLevel() <= partyLevel) {
-                if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //ÀÌÀüÀÇ previousStatusEffect¿¡ ´ëÇØ¼­¸¸ ´ëÃ¼ ¿©ºÎ¸¦ È®ÀÎÇÔ.
-                                                                                                 //Áï, ´ëÃ¼µÇ¾î¾ß ÇÏ´Â StatusEffect´Â csv ÆÄÀÏ¿¡¼­ ¹Ù·Î ´ÙÀ½ ÁÙ¿¡ ¸¸µé¾î¾ß ÇÔ.
+                if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ previousStatusEffectï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Î¸ï¿½ È®ï¿½ï¿½ï¿½ï¿½.
+                                                                                                 //ï¿½ï¿½, ï¿½ï¿½Ã¼ï¿½Ç¾ï¿½ï¿½ ï¿½Ï´ï¿½ StatusEffectï¿½ï¿½ csv ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½.
                     statusEffectList.Remove(previousStatusEffect);
                 }
                 if (statusEffectInfo.GetOriginSkillName().Equals(name)) {

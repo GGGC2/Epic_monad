@@ -551,7 +551,7 @@ namespace Battle.Turn
 		{
 			int selectedSkillIndex = 1;
 			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-			Skill selectedSkill = battleData.SelectedSkill;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			int currentAP = battleData.selectedUnit.GetCurrentActivityPoint();
 			int requireAP = battleData.SelectedSkill.GetRequireAP();
@@ -573,7 +573,7 @@ namespace Battle.Turn
 		public static IEnumerator AIAttack(BattleData battleData, int selectedSkillIndex)
 		{
 			BattleManager battleManager = battleData.battleManager;
-			Skill selectedSkill = battleData.SelectedSkill;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
 			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
@@ -596,7 +596,7 @@ namespace Battle.Turn
 			//Direction beforeDirection = originalDirection;
 			List<Tile> selectedTiles = new List<Tile>();
 			Unit selectedUnit = battleData.selectedUnit;
-			Skill selectedSkill = battleData.SelectedSkill;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 														selectedUnit.GetPosition(),
@@ -640,7 +640,7 @@ namespace Battle.Turn
 				Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
 
 				List<Tile> activeRange = new List<Tile>();
-				Skill selectedSkill = battleData.SelectedSkill;
+				ActiveSkill selectedSkill = battleData.SelectedSkill;
 				activeRange = 
 					battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 														selectedUnitPos,
@@ -686,7 +686,7 @@ namespace Battle.Turn
 
 		private static List<Tile> GetTilesInSkillRange(BattleData battleData, Tile targetTile, Unit selectedUnit = null)
 		{
-				Skill selectedSkill = battleData.SelectedSkill;
+				ActiveSkill selectedSkill = battleData.SelectedSkill;
 				List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
 																			targetTile.GetTilePos(),
 																			selectedSkill.GetSecondMinReach(),

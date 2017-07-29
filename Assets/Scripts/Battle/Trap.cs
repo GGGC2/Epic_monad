@@ -27,7 +27,7 @@ class Trap {
     }
     public static void ActivateTrap(TileStatusEffect trap, Tile tile) {
         Unit caster = trap.GetCaster();
-        Skill skill = trap.GetOriginSkill();
+        ActiveSkill skill = trap.GetOriginSkill();
         List<TileStatusEffect> statusEffects = skill.GetTileStatusEffectList()
                     .Select(fixedElem => new TileStatusEffect(fixedElem, caster, skill, null))
                     .ToList();
@@ -44,7 +44,7 @@ class Trap {
         Unit caster = trap.GetCaster();
         List<Unit> unitsInRange = GetUnitsInRange(trap, tile);
         foreach (var unit in unitsInRange) {
-            Skill originSkill = trap.GetOriginSkill();
+            ActiveSkill originSkill = trap.GetOriginSkill();
             StatusEffector.AttachStatusEffect(caster, originSkill, unit, GetTilesInRange(trap, tile));
         }
         if (unitsInRange.Count > 0)

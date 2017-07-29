@@ -11,7 +11,7 @@ public class SkillUIManager : MonoBehaviour {
 	public Image ActualRange;
 	public Image RangeType;
 
-	public void UpdateSkillInfoPanel(Skill skill, string unitName){
+	public void UpdateSkillInfoPanel(ActiveSkill skill, string unitName){
 		ApText.text = skill.GetRequireAP().ToString();
 		ExplainText.text = skill.GetSkillDataText().Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, unitName)).
 													Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, unitName));
@@ -37,7 +37,7 @@ public class SkillUIManager : MonoBehaviour {
 			RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
 	}
 
-	string GetFirstRangeText(Skill skill){
+	string GetFirstRangeText(ActiveSkill skill){
 		string result = "";
 		if(skill.GetFirstMinReach() > 1)
 			result = skill.GetFirstMinReach()+"~";

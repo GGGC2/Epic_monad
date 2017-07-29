@@ -92,7 +92,7 @@ public class BattleManager : MonoBehaviour
 				}
 
 				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
-				yield return StartCoroutine(ObjectBehave.AllObjectsBehave (battleData));
+				yield return StartCoroutine(ObjectUnitBehaviour.AllObjectUnitsBehave (battleData));
 
 				yield return StartCoroutine(EndPhaseOnGameManager());
 			}
@@ -154,7 +154,7 @@ public class BattleManager : MonoBehaviour
 
         Tile tileUnderCaster = caster.GetTileUnderUnit();
         foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-            Skill originSkill = tileStatusEffect.GetOriginSkill();
+            ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
             if (originSkill != null) {
                 if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
                     isPossible = false;

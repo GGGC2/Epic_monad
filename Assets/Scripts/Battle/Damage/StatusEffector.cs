@@ -9,7 +9,7 @@ namespace Battle.Damage
 {
 public static class StatusEffector
 {
-	public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Unit target, List<Tile> targetTiles)
+	public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Unit target, List<Tile> targetTiles)
 	{
         List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
 		List<StatusEffect> statusEffects = fixedStatusEffects
@@ -93,7 +93,7 @@ public static class StatusEffector
             }
             List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
             foreach (StatusEffect targetStatusEffect in targetStatusEffectList) {
-                Skill skill = targetStatusEffect.GetOriginSkill();
+                ActiveSkill skill = targetStatusEffect.GetOriginSkill();
                 if (skill != null) {
                     if(SkillLogicFactory.Get(skill).TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false) {
                         Debug.Log(statusEffect.GetDisplayName() + " ignored by " + targetStatusEffect.GetOriginSkillName() + " of " + target.GetName());
@@ -142,7 +142,7 @@ public static class StatusEffector
 	}
 
 
-    public static void AttachStatusEffect(Unit caster, Skill appliedSkill, Tile targetTile) {
+    public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Tile targetTile) {
         List<TileStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetTileStatusEffectList();
         List<TileStatusEffect> statusEffects = fixedStatusEffects
             .Select(fixedElem => new TileStatusEffect(fixedElem, caster, appliedSkill, null))

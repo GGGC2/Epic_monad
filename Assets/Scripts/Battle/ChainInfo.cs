@@ -10,11 +10,11 @@ public class ChainInfo {
 	Tile centerTile;
 	List<Tile> targetArea;
 	List<Tile> firstRange;
-	Skill skill;
+	ActiveSkill skill;
 
 	List<Tile> routeArea;
 
-	public ChainInfo (Unit unit, Tile centerTile, List<Tile> secondRange, Skill skill, List<Tile> firstRange)
+	public ChainInfo (Unit unit, Tile centerTile, List<Tile> secondRange, ActiveSkill skill, List<Tile> firstRange)
 	{
 		this.unit = unit;
 		this.centerTile = centerTile;
@@ -27,7 +27,7 @@ public class ChainInfo {
 	public Unit GetUnit() {	return unit;	}
 	public Tile GetCenterTile() {	return centerTile;	}
 	public List<Tile> GetTargetArea() {	return targetArea;	}
-	public Skill GetSkill() {	return skill;	}
+	public ActiveSkill GetSkill() {	return skill;	}
 	public bool IsRouteType() {	return skill.GetSkillType() == Enums.SkillType.Route;	}
 	public List<Tile> GetRouteArea()
 	{

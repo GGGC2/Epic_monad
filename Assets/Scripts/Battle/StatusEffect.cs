@@ -16,7 +16,7 @@ public class StatusEffect {
             public readonly bool toBeReplaced;  //상위의 강화 스킬이 있는 경우 true. 큐리의 '가연성 부착물'과 '조연성 부착물' 스킬 같은 경우 
                                                 //csv 파일에 같은 originSkillName을 가지고 있는데, 이 때 둘 중 하나만 읽어야 하므로 '가연성 부착물'
                                                 //statusEffect는 읽지 않게 하기 위함.
-            public readonly Skill originSkill;
+            public readonly ActiveSkill originSkill;
             public readonly string originSkillName; // 효과를 불러오는 기술의 이름 
             public readonly string displayName; // 유저에게 보일 이름
             public readonly bool isBuff; // 버프일 경우 true
@@ -101,14 +101,14 @@ public class StatusEffect {
         public class DisplayElement {
             public Unit caster; // 시전자
             public Unit owner;  // statusEffect를 가지고 있는 유닛
-            public Skill originSkill;
+            public ActiveSkill originSkill;
             public PassiveSkill originPassiveSkill;
             public int remainStack; // 지속 단위가 적용 횟수 단위인 경우 사용
             public int remainPhase; // 지속 단위가 페이즈 단위인 경우 사용
             public Element element; // StatusEffect의 속성. 큐리 패시브 등에 사용
             public List<Unit> memorizedUnits;  // StatusEffect가 기억할 유닛. 유진의 '순백의 방패'와 같이 중첩 가능한 오오라 효과에 사용.
 
-            public DisplayElement(Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
+            public DisplayElement(Unit caster, Unit owner, ActiveSkill originSkill, PassiveSkill originPassiveSkill, int maxStack, int defaultPhase) {
                 this.originSkill = originSkill;
                 this.originPassiveSkill = originPassiveSkill;
                 this.caster = caster;
@@ -129,7 +129,7 @@ public class StatusEffect {
             }
         }
 
-        public FlexibleElement(StatusEffect statusEffect, Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill) {
+        public FlexibleElement(StatusEffect statusEffect, Unit caster, Unit owner, ActiveSkill originSkill, PassiveSkill originPassiveSkill) {
             StatusEffect.FixedElement fixedElem = statusEffect.fixedElem;
             int maxStack = fixedElem.display.maxStack;
             int defaultPhase = fixedElem.display.defaultPhase;
@@ -142,7 +142,7 @@ public class StatusEffect {
         }
     }
 
-    public StatusEffect(FixedElement fixedElem, Unit caster, Unit owner, Skill originSkill, PassiveSkill originPassiveSkill) {
+    public StatusEffect(FixedElement fixedElem, Unit caster, Unit owner, ActiveSkill originSkill, PassiveSkill originPassiveSkill) {
         this.fixedElem = fixedElem;
         this.flexibleElem = new FlexibleElement(this, caster, owner, originSkill, originPassiveSkill);
         for(int i = 0; i<fixedElem.actuals.Count; i++) {
@@ -162,7 +162,7 @@ public class StatusEffect {
     public string GetEffectName() { return fixedElem.display.effectName; }
     public EffectVisualType GetEffectVisualType() { return fixedElem.display.effectVisualType; }
     public EffectMoveType GetEffectMoveType() { return fixedElem.display.effectMoveType; }
-    public Skill GetOriginSkill() { return flexibleElem.display.originSkill; }
+    public ActiveSkill GetOriginSkill() { return flexibleElem.display.originSkill; }
     public PassiveSkill GetOriginPassiveSkill() { return flexibleElem.display.originPassiveSkill; }
     public Unit GetCaster() { return flexibleElem.display.caster; }
     public Unit GetOwner()  { return flexibleElem.display.owner;  }

@@ -37,7 +37,7 @@ public class ChainList : MonoBehaviour {
 			{
 				List<Tile> newRouteTiles = Battle.Turn.SkillAndChainStates.GetRouteTiles(chainInfo.GetRouteArea());
 				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1];
-				Skill skill = chainInfo.GetSkill();
+				ActiveSkill skill = chainInfo.GetSkill();
 				Unit unit = chainInfo.GetUnit();
 				List<Tile> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
 																	newCenterTile.GetTilePos(),
@@ -56,7 +56,7 @@ public class ChainList : MonoBehaviour {
 		return newChainList;
 	}
 
-	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, Skill skill, List<Tile> firstRange)
+	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, ActiveSkill skill, List<Tile> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 

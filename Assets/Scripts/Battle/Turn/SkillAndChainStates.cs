@@ -12,7 +12,7 @@ namespace Battle.Turn {
         private static IEnumerator UpdatePreviewAP(BattleData battleData) {
             while (true) {
                 if (battleData.indexOfPreSelectedSkillByUser != 0) {
-                    Skill preSelectedSkill = battleData.PreSelectedSkill;
+                    ActiveSkill preSelectedSkill = battleData.PreSelectedSkill;
                     int requireAP = preSelectedSkill.GetRequireAP();
                     battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
                 } else {
@@ -50,7 +50,7 @@ namespace Battle.Turn {
                 }
 
                 BattleManager battleManager = battleData.battleManager;
-                Skill selectedSkill = battleData.SelectedSkill;
+                ActiveSkill selectedSkill = battleData.SelectedSkill;
                 SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
                 if (skillTypeOfSelectedSkill == SkillType.Auto ||
                     skillTypeOfSelectedSkill == SkillType.Self ||
@@ -71,7 +71,7 @@ namespace Battle.Turn {
 
         private static IEnumerator UpdateRangeSkillMouseDirection(BattleData battleData) {
             Unit selectedUnit = battleData.selectedUnit;
-            Skill selectedSkill = battleData.SelectedSkill;
+            ActiveSkill selectedSkill = battleData.SelectedSkill;
             var selectedTiles = GetTilesInFirstRange(battleData);
             battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 
@@ -113,7 +113,7 @@ namespace Battle.Turn {
         public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection) {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = battleData.selectedUnit;
-            Skill selectedSkill = battleData.SelectedSkill;
+            ActiveSkill selectedSkill = battleData.SelectedSkill;
 
             while (true) {
                 battleData.isWaitingUserInput = true;
@@ -192,7 +192,7 @@ namespace Battle.Turn {
                 Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
 
                 List<Tile> activeRange = new List<Tile>();
-                Skill selectedSkill = battleData.SelectedSkill;
+                ActiveSkill selectedSkill = battleData.SelectedSkill;
                 activeRange = GetTilesInFirstRange(battleData);
 
                 battleData.tileManager.PaintTiles(activeRange, TileColor.Red);
@@ -259,7 +259,7 @@ namespace Battle.Turn {
                 bool isApplyPossible = SkillLogicFactory.Get(battleData.SelectedSkill).CheckApplyPossible(caster, tilesInSkillRange);
                 bool isChainPossible = CheckChainPossible(battleData);
                 battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
-                Skill selectedSkill = battleData.SelectedSkill;
+                ActiveSkill selectedSkill = battleData.SelectedSkill;
                 battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
 
                 battleData.skillApplyCommand = SkillApplyCommand.Waiting;
@@ -358,7 +358,7 @@ namespace Battle.Turn {
         }
 
         private static List<Tile> GetTilesInSkillRange(BattleData battleData, Tile targetTile) {
-            Skill selectedSkill = battleData.SelectedSkill;
+            ActiveSkill selectedSkill = battleData.SelectedSkill;
             List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
                                                                         targetTile.GetTilePos(),
                                                                         selectedSkill.GetSecondMinReach(),
@@ -395,7 +395,7 @@ namespace Battle.Turn {
             
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill != null) {
                     if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
                         isPossible = false;
@@ -459,7 +459,7 @@ namespace Battle.Turn {
             yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
 
-		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, Skill appliedSkill, List<Tile> tilesInSkillRange, List<Tile> tilesInRealEffectRange, bool isChainable, int chainCombo) {
+		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, ActiveSkill appliedSkill, List<Tile> tilesInSkillRange, List<Tile> tilesInRealEffectRange, bool isChainable, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
 			List<Unit> targets = GetUnitsOnTiles(tilesInRealEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
@@ -510,7 +510,7 @@ namespace Battle.Turn {
                         if (appliedSkill.GetStatusEffectList().Count > 0) {
                             bool ignored = false;
                             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
-                                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                                ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
                                 if (originSkill != null) {
                                     if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(skillInstanceData, tile, tileStatusEffect))
                                         ignored = true;
@@ -587,7 +587,7 @@ namespace Battle.Turn {
         private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget) {
             Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
-            Skill appliedSkill = skillInstanceData.GetSkill();
+            ActiveSkill appliedSkill = skillInstanceData.GetSkill();
             int targetCount = skillInstanceData.GetTargetCount();
 
             DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
@@ -650,7 +650,7 @@ namespace Battle.Turn {
             return units;
         }
 
-        private static IEnumerator ApplySkillEffect(Skill appliedSkill, Unit unit, List<Tile> selectedTiles) {
+        private static IEnumerator ApplySkillEffect(ActiveSkill appliedSkill, Unit unit, List<Tile> selectedTiles) {
             string effectName = appliedSkill.GetEffectName();
             if (effectName == "-") {
                 Debug.Log("There is no effect for " + appliedSkill.GetName());

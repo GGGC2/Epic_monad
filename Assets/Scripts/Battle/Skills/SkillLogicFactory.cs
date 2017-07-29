@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
 public static class SkillLogicFactory
 {
-	public static BaseSkillLogic Get(Skill skill)
+	public static BaseSkillLogic Get(ActiveSkill skill)
 	{
         BaseSkillLogic skillLogic;
 		switch (skill.GetName()) {

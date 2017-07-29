@@ -28,22 +28,22 @@ public class BasePassiveSkillLogic
 		return 0;
 	}
 
-	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
+	public virtual float ApplyIgnoreDefenceRelativeValueByEachPassive(ActiveSkill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float defense)
+	public virtual float ApplyIgnoreDefenceAbsoluteValueByEachPassive(ActiveSkill appliedSkill, Unit target, Unit caster, float defense)
 	{
 		return defense;
 	}
 
-	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
+	public virtual float ApplyIgnoreResistanceRelativeValueByEachPassive(ActiveSkill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}
 
-	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(Skill appliedSkill, Unit target, Unit caster, float resistance)
+	public virtual float ApplyIgnoreResistanceAbsoluteValueByEachPassive(ActiveSkill appliedSkill, Unit target, Unit caster, float resistance)
 	{
 		return resistance;
 	}
@@ -87,12 +87,12 @@ public class BasePassiveSkillLogic
         return true;
     }
 
-    public virtual bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
+    public virtual bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
     {
         return true;
     }
 
-    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� �������?����.
+    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� �������?����.
     {
         return true;
     }

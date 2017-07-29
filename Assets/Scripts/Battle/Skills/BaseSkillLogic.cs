@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
 public class BaseSkillLogic
 {
-    public Skill skill;
+    public ActiveSkill skill;
 	public virtual int CalculateAP(int originAP, Unit caster)
 	{
 		return originAP;

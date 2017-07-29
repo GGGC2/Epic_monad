@@ -84,7 +84,7 @@ public class DamageCalculator
 	private static Dictionary<Unit, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<Unit, DamageInfo>();
-		Skill appliedSkill = chainInfo.GetSkill();
+		ActiveSkill appliedSkill = chainInfo.GetSkill();
 		Unit caster = chainInfo.GetUnit();			
 		List<Tile> selectedTiles = chainInfo.GetTargetArea();
 		List<Unit> targets = GetTargetUnits(selectedTiles);
@@ -148,7 +148,7 @@ public class DamageCalculator
         Unit caster = skillInstanceData.GetCaster();
         Unit target = skillInstanceData.GetMainTarget();
         AttackDamage attackDamage = skillInstanceData.GetDamage();
-        Skill appliedSkill = skillInstanceData.GetSkill();
+        ActiveSkill appliedSkill = skillInstanceData.GetSkill();
 
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
         // 해당 기술의 추가데미지 계산
@@ -165,7 +165,7 @@ public class DamageCalculator
         Unit caster = skillInstanceData.GetCaster();
         Unit target = skillInstanceData.GetMainTarget();
         AttackDamage attackDamage = skillInstanceData.GetDamage();
-        Skill appliedSkill = skillInstanceData.GetSkill();
+        ActiveSkill appliedSkill = skillInstanceData.GetSkill();
 
 		attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 		attackDamage.directionBonus = DirectionBonus(caster, target);
@@ -205,7 +205,7 @@ public class DamageCalculator
 		Debug.Log("resultDamage : " + attackDamage.resultDamage);
 	}
 
-	private static float PowerFactorDamage(Skill appliedSkill, Unit casterUnit)
+	private static float PowerFactorDamage(ActiveSkill appliedSkill, Unit casterUnit)
 	{
 		float damage = 0;
 		
@@ -303,7 +303,7 @@ public class DamageCalculator
         }
         return damage;
     }
-	public static float CalculateDefense(Skill appliedSkill, Unit target, Unit caster) {
+	public static float CalculateDefense(ActiveSkill appliedSkill, Unit target, Unit caster) {
 		float defense = target.GetStat(Stat.Defense);
 			
 		// 기술에 의한 방어 무시 (상대값)
@@ -320,7 +320,7 @@ public class DamageCalculator
 		defense = SkillLogicFactory.Get(casterPassiveSkills).ApplyIgnoreDefenceAbsoluteValueByEachPassive(appliedSkill, target, caster, defense);
 		return defense;
 	}
-    public static float CalculateResistance(Skill appliedSkill, Unit target, Unit caster) {
+    public static float CalculateResistance(ActiveSkill appliedSkill, Unit target, Unit caster) {
         float resistance = target.GetStat(Stat.Resistance);
 
         // 기술에 의한 저항 무시 (상대값)

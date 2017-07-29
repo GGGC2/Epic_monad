@@ -64,7 +64,7 @@ namespace BattleUI
 		public void CallbackPointerEnterSkillIndex(int index){
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
-			Skill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
+			ActiveSkill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
 			skillPanel.UpdateSkillInfoPanel(preSelectedSkill, battleManager.battleData.selectedUnit.name);
 
 			/*skillApText.text = preSelectedSkill.GetRequireAP().ToString();
@@ -99,14 +99,14 @@ namespace BattleUI
 			rangeText.text = "";
 		}
 
-		string GetFirstRangeText(Skill skill){
+		string GetFirstRangeText(ActiveSkill skill){
 			string result = "";
 			if(skill.GetFirstMinReach() > 1)
 				result = skill.GetFirstMinReach()+"~";
 			return result + skill.GetFirstMaxReach();
 		}
 
-		public string GetSkillBasePower(Unit unit, Skill skill){
+		public string GetSkillBasePower(Unit unit, ActiveSkill skill){
 			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
 		}
 

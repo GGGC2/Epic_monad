@@ -119,7 +119,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     
     public void RemoveStatusEffect(TileStatusEffect statusEffect) {
         bool toBeRemoved = true;
-        Skill originSkill = statusEffect.GetOriginSkill();
+        ActiveSkill originSkill = statusEffect.GetOriginSkill();
         if (originSkill != null)
             toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectRemoved(this, statusEffect);
         if (toBeRemoved) {

@@ -1,9 +1,9 @@
-Index,Name,NameInCode,Triggers,ActivePhase,AreaInfo,,,,,,,,,,,,,,,,,,,,,,
-1,궁수,soldier01,1,0,0,0,LeftUp
-2,궁수,soldier01,1,0,0,0,LeftUp
-3,궁수,soldier01,1,0,0,0,LeftUp
+﻿Index,Name,NameInCode,Triggers,ActivePhase,AreaInfo,,,,,,,,,,,,,,,,,,,,,,
+1,궁수,archer,1,0,0,0,LeftUp
+2,궁수,archer,1,0,0,0,LeftUp
+3,궁수,archer,1,0,0,0,LeftUp
 4,메이드,soldier01,1,0,0,0,LeftUp
 5,메이드,soldier01,1,0,0,0,LeftUp
 6,메이드,soldier01,1,0,0,0,LeftUp
 7,메이드,soldier01,1,0,0,0,LeftUp
-8,제어장치,stage2_object,1,0,0,0,LeftUp
+8,제어장치,controller,1,0,0,0,LeftUp
