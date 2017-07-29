@@ -209,12 +209,10 @@ public class UIManager : MonoBehaviour
 		phaseUI.transform.Find("Text").GetComponent<Text>().text = "Phase " + currentPhase;
 		img1.DOFade(1, 0.5f);
 		img2.DOFade(1, 0.5f);
-		// StartCoroutine("FadeInPhaseUI", 0.5f); 	
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(0,0,0), "islocal", true, "time", 1));
 		yield return new WaitForSeconds(2f);
 		img1.DOFade(0, 0.5f);
 		img2.DOFade(0, 0.5f);
-		// StartCoroutine("FadeOutPhaseUI", 0.5f); 
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(1280,0,0), "islocal", true, "time", 1));
 		yield return null;
 	}
