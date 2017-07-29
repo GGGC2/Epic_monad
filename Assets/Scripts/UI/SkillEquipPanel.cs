@@ -16,16 +16,17 @@ public class SkillEquipPanel : MonoBehaviour{
 	}
 
 	public void UpdateIcons(string unitName){
+		List<Skill> skills = Parser.GetSkills();
 		ChangeSpriteOrEmpty(FixedIcon.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/Fixed");
-		SearchAndSetSkill(FixedIcon, unitName);
+		SearchAndSetSkill(FixedIcon, unitName, skills);
 		foreach(SkillIcon IconSlot in SkillIcons){
 			ChangeSpriteOrEmpty(IconSlot.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/"+IconSlot.gameObject.name);
-			SearchAndSetSkill(IconSlot, unitName);
+			SearchAndSetSkill(IconSlot, unitName, skills);
 		}
 	}
 
-	void SearchAndSetSkill(SkillIcon IconSlot, string unitName){
-		List<Skill> Skills = Parser.GetSkills();
+	void SearchAndSetSkill(SkillIcon IconSlot, string unitName, List<Skill> Skills){
+		//List<Skill> Skills = Parser.GetSkills();
 		Skill SearchResult = Skills.Find(skill => skill.owner == unitName && skill.requireLevel == IconSlot.level && skill.column == IconSlot.column);
 		if(SearchResult != null)
 			IconSlot.skill = SearchResult;
