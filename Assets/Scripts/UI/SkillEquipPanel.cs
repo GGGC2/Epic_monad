@@ -17,13 +17,18 @@ public class SkillEquipPanel : MonoBehaviour{
 
 	public void UpdateIcons(string unitName){
 		ChangeSpriteOrEmpty(FixedIcon.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/Fixed");
-		List<Skill> Skills = Parser.GetSkills();
+		SearchAndSetSkill(FixedIcon, unitName);
 		foreach(SkillIcon IconSlot in SkillIcons){
 			ChangeSpriteOrEmpty(IconSlot.gameObject.GetComponent<Image>(), "Icon/Skill/"+unitName+"/"+IconSlot.gameObject.name);
-			Skill SearchResult = Skills.Find(skill => skill.owner == unitName && skill.requireLevel == IconSlot.level && skill.column == IconSlot.column);
-			if(SearchResult != null)
-				IconSlot.skill = SearchResult;
+			SearchAndSetSkill(IconSlot, unitName);
 		}
+	}
+
+	void SearchAndSetSkill(SkillIcon IconSlot, string unitName){
+		List<Skill> Skills = Parser.GetSkills();
+		Skill SearchResult = Skills.Find(skill => skill.owner == unitName && skill.requireLevel == IconSlot.level && skill.column == IconSlot.column);
+		if(SearchResult != null)
+			IconSlot.skill = SearchResult;
 	}
 
 	void ChangeSpriteOrEmpty(Image image, string spriteAddress){

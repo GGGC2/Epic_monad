@@ -7,13 +7,6 @@ using UnityEngine;
 
 public class PassiveSkill : Skill{
 	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
-	
-	/*public PassiveSkill(string owner, int column, string name, int requireLevel){
-		this.owner = owner;
-		this.column = column;
-		this.korName = name;
-        this.requireLevel = requireLevel;
-	}*/
 
 	public PassiveSkill(string skillData){
 		CommaStringParser commaParser = new CommaStringParser(skillData);

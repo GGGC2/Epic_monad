@@ -44,7 +44,7 @@ kashyasty,29,압축탄,1,ABCD,None,0,None,0
 kashyasty,29,마법공학 조준경,3,ABCD,None,0,None,0
 kashyasty,36,시들지 않는 의지,3,ABCD,None,0,None,0
 kashyasty,43,에테르화,1,ABCD,None,0,None,0
-yeong,0,방랑자,1,ABCD,None,0,None,0
+yeong,0,방랑자,0,페이즈를 시작한 지점으로부터 주변 2타일 바깥으로 이동하면 해당 페이즈 동안 회피 +15%를 얻습니다.,None,0,None,0
 yeong,1,어려운 목표물,2,ABCD,None,0,None,0
 yeong,1,동체 시력,3,ABCD,None,0,None,0
 yeong,8,간파,2,ABCD,None,0,None,0

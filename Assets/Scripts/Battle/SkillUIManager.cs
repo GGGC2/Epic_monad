@@ -24,6 +24,8 @@ public class SkillUIManager : MonoBehaviour {
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
 				CooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
+			else
+				CooldownText.text = "";
 
 			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+unitName+activeSkill.GetColumn()+"_"+activeSkill.GetRequireLevel());
 			if(actualRangeImage != null)

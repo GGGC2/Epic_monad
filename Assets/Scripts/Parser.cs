@@ -123,27 +123,6 @@ public class Parser : MonoBehaviour
 	}
 
 	private static List<Skill> skillInfosCache;
-	/*public static List<SkillInfo> GetParsedSkillInfo(){
-		if (skillInfosCache != null)
-		{
-			return skillInfosCache;
-		}
-
-		List<SkillInfo> skillInfoList = new List<SkillInfo>();
-
-		TextAsset csvFile = Resources.Load("Data/testSkillData") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedSkillInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedSkillInfoStrings.Length; i++)
-		{
-			SkillInfo skillInfo = new SkillInfo(unparsedSkillInfoStrings[i]);
-			skillInfoList.Add(skillInfo);
-		}
-
-		skillInfosCache = skillInfoList;
-		return skillInfoList;
-	}*/
 
 	public static List<ActiveSkill> GetActiveSkills(){
 		List<ActiveSkill> ActiveSkills = new List<ActiveSkill>();
@@ -178,22 +157,7 @@ public class Parser : MonoBehaviour
 
 		return Skills;
 	}
-
-	/*public static List<PassiveSkillInfo> GetParsedPassiveSkillInfo()
-	{
-		List<PassiveSkillInfo> skillInfoList = new List<PassiveSkillInfo>();
-
-		TextAsset csvFile = Resources.Load("Data/testPassiveSkillData") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedSkillInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedSkillInfoStrings.Length; i++){
-			PassiveSkillInfo skillInfo = new PassiveSkillInfo(unparsedSkillInfoStrings[i]);
-			skillInfoList.Add(skillInfo);
-		}
-
-		return skillInfoList;
-	}*/
+	
 	public static List<PassiveSkill> GetPassiveSkills(){
 		List<PassiveSkill> PassiveSkills = new List<PassiveSkill>();
 
