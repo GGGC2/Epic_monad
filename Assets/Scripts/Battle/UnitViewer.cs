@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Enums;
 using System.Collections.Generic;
+using GameData;
 
 // This component is used in two UI.
 // SelectedUnitViewer and UnitViewer.
@@ -56,7 +57,7 @@ public class UnitViewer : MonoBehaviour {
 		resistanceText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Resist).ToString();
 
 		int Agility = UnitInfo.GetStat(unitName, UnitInfo.StatType.Agility);
-		int level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
+		int level = PartyData.level;
 		apText.text = level+60+(Agility/2) + "(+" + Agility + ")";
 
 		SetClassImage(UnitInfo.GetUnitClass(unitName));

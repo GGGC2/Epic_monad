@@ -43,7 +43,7 @@ public class WorldMapManager : MonoBehaviour
 
 		if (currentStory == "")
 		{
-			currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
+			//currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
 			Debug.Log("Set current story to " + currentStory);
 		}
 	}

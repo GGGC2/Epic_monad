@@ -96,6 +96,7 @@ public class SceneLoader : MonoBehaviour{
 		else
 		{
 			SceneData.dialogueName = nextScriptFileName;
+            GameDataManager.Save();
 			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
 			SceneManager.LoadScene("dialogue");
