@@ -416,6 +416,10 @@ namespace Battle.Turn
 		public static IEnumerator AIStart(BattleData battleData)
 		{
 			currentUnit = battleData.selectedUnit;
+
+			battleData.uiManager.SetSelectedUnitViewerUI(currentUnit);
+			currentUnit.SetActive();
+
 			currentUnitAIData = currentUnit.GetComponent<AIData>();
 			BattleManager battleManager = battleData.battleManager;
 			// if (currentUnit.isBoss)

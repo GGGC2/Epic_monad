@@ -79,6 +79,9 @@ public class BattleManager : MonoBehaviour
 					if (battleData.selectedUnit.GetComponent<AIData>() != null)
 					{
 						yield return AIStates.AIStart(battleData);
+						// AI 코루틴이 어디서 끝나는지 몰라서 일단 여기 넣어놓음. 머리 위 화살표와 현재 턴 유닛 정보를 없애는 로직
+						battleData.uiManager.DisableSelectedUnitViewerUI();
+						battleData.selectedUnit.SetInactive();
 					}
 					else
 					{
