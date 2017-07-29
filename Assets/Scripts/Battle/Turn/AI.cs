@@ -502,7 +502,9 @@ namespace Battle.Turn
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		    Unit currentUnit = battleData.selectedUnit;
-			Vector2 destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
+		    Vector2 destPosition;
+            // 현재 가장 가까운 적을 향해 움직임
+			destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
 
             Tile destTile = battleData.tileManager.GetTile(destPosition);
 			TileWithPath pathToDestTile = movableTilesWithPath[destPosition];
