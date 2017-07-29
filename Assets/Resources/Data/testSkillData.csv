@@ -36,7 +36,7 @@ luvericha,29,소녀의 기도,2,52,0,Power,1.5,Self,Diamond,0,0,0,Diamond,0,0,0,
 luvericha,36,교향곡 : 운명,1,58,1,Power,0,Auto,Sector,1,5,0,Sector,1,5,0,DamageHealth,-,Area,NonMove,?,None,0,None,0
 luvericha,50,4분 33초,1,93,4,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--,None,0,None,0
 luvericha,50,환상곡,3,98,4,Power,0.9,Auto,Diamond,1,2,0,Diamond,1,2,0,Buff,-,Area,NonMove,?,None,0,None,0
-yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,--,None,0,None,0
+yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '방랑자' 효과가 발동된 상태이면 위력이 <color=red>20%</color> 높아집니다.,Power,0.9,None,0
 yeong,8,섬광 찌르기,1,51,0,Power,1.2,Auto,Straight,1,3,0,Straight,1,3,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,22,배후의 습격,1,50,3,Power,1.8,Point,Diamond,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,29,초감각,3,47,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,--,None,0,None,0
