@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Enums;
 	
 public class SkillLoader {
-	public static List<Skill> MakeSkillList() {
+	public static List<ActiveSkill> MakeSkillList() {
 		// 일단 임의로 하드코딩된 스킬셋을 사용.
 		// 스킬에 필요한 정보는 아래와 같음. 
 		// string name, int requireAP, int cooldown, 
@@ -16,7 +16,7 @@ public class SkillLoader {
 		// SkillApplyType skillApplyType,
 		// string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType;
 		
-        List<Skill> skillList = new List<Skill>();
+        List<ActiveSkill> skillList = new List<ActiveSkill>();
         /*
 		Skill skill1 = new Skill("암흑 폭발", 40, 0, 
 								 1.0f, 

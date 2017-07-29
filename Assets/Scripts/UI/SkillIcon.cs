@@ -8,7 +8,7 @@ using System;
 public class SkillIcon : MonoBehaviour, IPointerEnterHandler{
 	public SkillUIManager InfoPanel;
 	public Text InfoText;
-	public Skill skill;
+	public ActiveSkill skill;
 	public int column;
 	public int level;
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){

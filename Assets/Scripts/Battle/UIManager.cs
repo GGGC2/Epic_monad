@@ -93,7 +93,7 @@ public class UIManager : MonoBehaviour
 	}
     public void SetSkillUI() {
         Unit selectedUnit = MonoBehaviour.FindObjectOfType<BattleManager>().battleData.selectedUnit;
-        List<Skill> skillList = selectedUnit.GetLearnedSkillList();
+        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
         SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
         skillPanel.SetMaxPage((skillList.Count - 1) / skillButtonCount);
         skillPanel.triggerEnabled(selectedUnit);
@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour
         UpdateSkillInfo(selectedUnit);
     }
     public void UpdateSkillInfo(Unit selectedUnit) {
-        List<Skill> skillList = selectedUnit.GetLearnedSkillList();
+        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
         for (int i = 0; i < skillButtonCount; i++)
 		{
             int skillIndex = i + skillButtonCount * skillUI.GetComponent<SkillPanel>().GetPage();
@@ -117,7 +117,7 @@ public class UIManager : MonoBehaviour
 
 			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[skillIndex].GetName();
 			
-			Skill skill = skillList[skillIndex];
+			ActiveSkill skill = skillList[skillIndex];
 			Unit caster = selectedUnit;
             int originAP = skill.GetRequireAP();
 			int APChangedByStatusEffects = caster.GetActualRequireSkillAP(skill);
@@ -144,7 +144,7 @@ public class UIManager : MonoBehaviour
 
 	public void CheckUsableSkill(Unit selectedUnit)
 	{
-		List<Skill> skillList = selectedUnit.GetLearnedSkillList();
+		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
 
         Color enabledColor = new Color(1, 1, 1);
         Color disabledColor = new Color(1, 0, 0);
@@ -170,7 +170,7 @@ public class UIManager : MonoBehaviour
 		skillUI.SetActive(false);
 	}
 
-	public void SetSkillCheckAP(Unit selectedUnit, Skill selectedSkill)
+	public void SetSkillCheckAP(Unit selectedUnit, ActiveSkill selectedSkill)
 	{
 		skillCheckUI.gameObject.SetActive(true);
 		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);

@@ -19,7 +19,7 @@ class Aura{
         return unitDictionary;
     }
     public static bool Update(Unit owner, StatusEffect statusEffect) {
-        Skill originSkill = statusEffect.GetOriginSkill();
+        ActiveSkill originSkill = statusEffect.GetOriginSkill();
         PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
         Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(owner, statusEffect);
         foreach (var kv in unitInRangeDictionary) {

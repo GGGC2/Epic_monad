@@ -8,7 +8,7 @@ public class SkillInfo {
 
 	public string owner;
 	public int requireLevel;
-	public Skill skill;
+	public ActiveSkill skill;
 	public int column;
 	
 	public string GetOwner()
@@ -21,7 +21,7 @@ public class SkillInfo {
 		return requireLevel;
 	}
 	
-	public Skill GetSkill()
+	public ActiveSkill GetSkill()
 	{
 		return skill;
 	}
@@ -64,7 +64,7 @@ public class SkillInfo {
 		Stat secondTextValueType = commaParser.ConsumeEnum<Stat>();
 		float secondTextValueCoef = commaParser.ConsumeFloat();
 
-		this.skill = new Skill(owner, column, name, requireLevel, requireAP, cooldown, 
+		this.skill = new ActiveSkill(owner, column, name, requireLevel, requireAP, cooldown, 
 							   powerFactor,
 							   skillType,
 							   firstRangeForm, firstMinReach, firstMaxReach, firstWidth,

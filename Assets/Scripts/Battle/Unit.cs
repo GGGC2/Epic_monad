@@ -12,9 +12,9 @@ using Save;
 public class HitInfo
 {
 	public readonly Unit caster;
-	public readonly Skill skill;
+	public readonly ActiveSkill skill;
 
-	public HitInfo(Unit caster, Skill skill)
+	public HitInfo(Unit caster, ActiveSkill skill)
 	{
 		this.caster = caster;
 		this.skill = skill;
@@ -44,7 +44,7 @@ public class Unit : MonoBehaviour
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 
 	// 스킬리스트.
-	List<Skill> skillList = new List<Skill>();
+	List<ActiveSkill> skillList = new List<ActiveSkill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 	// 사용한 스킬 정보 저장(쿨타임 산정용).
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
@@ -132,8 +132,8 @@ public class Unit : MonoBehaviour
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
 	public Vector2 GetInitPosition() { return initPosition; }
-	public List<Skill> GetSkillList() { return skillList; }
-	public List<Skill> GetLearnedSkillList()
+	public List<ActiveSkill> GetSkillList() { return skillList; }
+	public List<ActiveSkill> GetLearnedSkillList()
 	{
 		var learnedSkills =
 			 from skill in skillList
@@ -311,7 +311,7 @@ public class Unit : MonoBehaviour
         bool toBeRemoved = true;
 
         toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
-        Skill originSkill = statusEffect.GetOriginSkill();
+        ActiveSkill originSkill = statusEffect.GetOriginSkill();
         if (originSkill != null) {
             toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerStatusEffectRemoved(statusEffect, this);
         }
@@ -518,7 +518,7 @@ public class Unit : MonoBehaviour
 
             foreach (var kv in attackedShieldDict) {
                 StatusEffect statusEffect = kv.Key;
-                Skill originSkill = statusEffect.GetOriginSkill();
+                ActiveSkill originSkill = statusEffect.GetOriginSkill();
                 if (originSkill != null)
                     yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
             }
@@ -545,7 +545,7 @@ public class Unit : MonoBehaviour
 	public IEnumerator DamagedBySkill(SkillInstanceData skillInstanceData, bool isHealth) {
         Unit caster = skillInstanceData.GetCaster();
         Unit target = skillInstanceData.GetMainTarget();
-        Skill appliedSkill = skillInstanceData.GetSkill();
+        ActiveSkill appliedSkill = skillInstanceData.GetSkill();
         float damage = skillInstanceData.GetDamage().resultDamage;
         // 체력 깎임
         // 체인 해제
@@ -647,7 +647,7 @@ public class Unit : MonoBehaviour
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
 
-    public int GetActualRequireSkillAP(Skill selectedSkill)
+    public int GetActualRequireSkillAP(ActiveSkill selectedSkill)
     {
         int requireSkillAP = selectedSkill.GetRequireAP();
 
@@ -698,7 +698,7 @@ public class Unit : MonoBehaviour
     public void TriggerTileStatusEffectAtTurnStart() {
         foreach(var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
-                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill != null) {
                     SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnStart(this, tile, tileStatusEffect);
                 }
@@ -708,7 +708,7 @@ public class Unit : MonoBehaviour
     public void TriggerTileStatusEffectAtTurnEnd() {
         foreach (var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
-                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill != null) {
                     SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
                 }
@@ -841,7 +841,7 @@ public class Unit : MonoBehaviour
         foreach (var skillInfo in skillInfoList) {
             if ((skillInfo.GetOwner() == nameInCode) &&
                 (skillInfo.GetRequireLevel() <= partyLevel)) {
-                Skill skill = skillInfo.GetSkill();
+                ActiveSkill skill = skillInfo.GetSkill();
                 // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
                 {
                     skill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);

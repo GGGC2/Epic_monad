@@ -74,7 +74,7 @@ public class UnitManager : MonoBehaviour {
         foreach(var unit in GetAllUnits()) {
             List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
             foreach (StatusEffect statusEffect in statusEffectList) {
-                Skill skill = statusEffect.GetOriginSkill();
+                ActiveSkill skill = statusEffect.GetOriginSkill();
                 PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
                 if (skill != null)
                     yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectAtActionEnd(unit, statusEffect));

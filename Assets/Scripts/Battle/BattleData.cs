@@ -212,14 +212,14 @@ public class BattleData
 
 	public APAction previewAPAction;
 
-	public Skill SelectedSkill
+	public ActiveSkill SelectedSkill
 	{
 		get {
 			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
 		}
 	}
 
-	public Skill PreSelectedSkill
+	public ActiveSkill PreSelectedSkill
 	{
 		get {
 			return selectedUnit.GetSkillList()[indexOfPreSelectedSkillByUser - 1];

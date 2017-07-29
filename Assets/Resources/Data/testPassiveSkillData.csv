@@ -1,4 +1,4 @@
-﻿owner,requireLevel,name,column
+﻿owner,requireLevel,name,column,Text,Type1,Coef1,Type2,Coef2
 reina,0,핀토스의 긍지,1
 reina,8,상처 태우기,1
 reina,8,불의 파동,2
@@ -99,4 +99,4 @@ eugene,43,백색 파문,2
 eugene,43,길잡이,3
 sepia,1,신뢰의 끈,2
 arcadia,1,광합성,2
-grenev,1,살의,3
+grenev,1,살의,3,6페이즈 이후부터 속도가 25 높아집니다.,

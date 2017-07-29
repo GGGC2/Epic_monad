@@ -154,7 +154,7 @@ public class BattleManager : MonoBehaviour
 
         Tile tileUnderCaster = caster.GetTileUnderUnit();
         foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-            Skill originSkill = tileStatusEffect.GetOriginSkill();
+            ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
             if (originSkill != null) {
                 if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
                     isPossible = false;
