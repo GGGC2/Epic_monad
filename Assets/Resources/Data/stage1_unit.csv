@@ -1,7 +1,7 @@
-Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
-1,제국군 병사,soldier01,Enemy,10,5,LeftUp,180,60,20,20,47,Melee,None,None,false
-2,제국군 병사,soldier01,Enemy,10,4,LeftUp,180,60,20,20,47,Melee,None,None,false
-3,제국군 병사,soldier01,Enemy,10,3,LeftUp,180,60,20,20,47,Melee,None,None,false
-4,제국군 병사,soldier01,Enemy,9,4,LeftUp,180,60,20,20,47,Melee,None,None,false
+﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+1,제국군 병사,soldier01,Enemy,10,5,LeftUp,180,60,20,20,47,Melee,None,None,true
+2,제국군 병사,soldier01,Enemy,10,4,LeftUp,180,60,20,20,47,Melee,None,None,true
+3,제국군 병사,soldier01,Enemy,10,3,LeftUp,180,60,20,20,47,Melee,None,None,true
+4,제국군 병사,soldier01,Enemy,9,4,LeftUp,180,60,20,20,47,Melee,None,None,true
 5,루키어스,lucius,Ally,2,4,RightDown,445,82,100,51,53,Melee,None,None,false
 6,레이나,reina,Ally,2,3,RightDown,366,88,51,83,50,Magic,None,None,false

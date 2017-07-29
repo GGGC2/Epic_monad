@@ -91,6 +91,9 @@ public class BattleManager : MonoBehaviour
 					yield return null;
 				}
 
+				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
+				yield return StartCoroutine(ObjectBehave.AllObjectsBehave (battleData));
+
 				yield return StartCoroutine(EndPhaseOnGameManager());
 			}
 		}

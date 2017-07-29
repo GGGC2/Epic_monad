@@ -41,6 +41,7 @@ public class Unit : MonoBehaviour
 
 	public Side side; // 진영. 적/아군
 	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않는다.
+	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 
 	// 스킬리스트.
 	List<Skill> skillList = new List<Skill>();
@@ -127,6 +128,9 @@ public class Unit : MonoBehaviour
     public int GetRegenerationAmount() { return GetStat(Stat.Dexturity); }
     public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
+	public bool IsAlreadyBehavedObject(){ return isAlreadyBehavedObject; }
+	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
+	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
 	public Vector2 GetInitPosition() { return initPosition; }
 	public List<Skill> GetSkillList() { return skillList; }
 	public List<Skill> GetLearnedSkillList()

@@ -265,4 +265,7 @@ public class BattleData
 
 		return resultUnits;
 	}
+	public List<Unit> GetObjectUnitsList(){
+		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject () == true);
+	}
 }
