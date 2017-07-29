@@ -24,6 +24,8 @@ public class SkillUIManager : MonoBehaviour {
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
 				CooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
+			else
+				CooldownText.text = "";
 
 			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+unitName+activeSkill.GetColumn()+"_"+activeSkill.GetRequireLevel());
 			if(actualRangeImage != null)
@@ -42,6 +44,7 @@ public class SkillUIManager : MonoBehaviour {
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
 		}
 		else{
+			ApText.text = "";
 			CooldownText.text = "특성(자동 적용)";
 			ActualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
 			RangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
