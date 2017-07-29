@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 using BattleUI;
 
@@ -201,38 +202,21 @@ public class UIManager : MonoBehaviour
 
 	public IEnumerator MovePhaseUI(int currentPhase)
 	{
+		Image img1 = phaseUI.GetComponent<Image>();
+		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
+
 		phaseUI.transform.localPosition = new Vector3(-1280,0,0);
 		phaseUI.transform.Find("Text").GetComponent<Text>().text = "Phase " + currentPhase;
-		StartCoroutine("FadeInPhaseUI", 0.5f); 	
+		img1.DOFade(1, 0.5f);
+		img2.DOFade(1, 0.5f);
+		// StartCoroutine("FadeInPhaseUI", 0.5f); 	
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(0,0,0), "islocal", true, "time", 1));
 		yield return new WaitForSeconds(2f);
-		StartCoroutine("FadeOutPhaseUI", 0.5f); 
+		img1.DOFade(0, 0.5f);
+		img2.DOFade(0, 0.5f);
+		// StartCoroutine("FadeOutPhaseUI", 0.5f); 
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(1280,0,0), "islocal", true, "time", 1));
 		yield return null;
-	}
-
-	IEnumerator FadeInPhaseUI(float time)
-	{
-		Image img1 = phaseUI.GetComponent<Image>();
-		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
-		for (int i = 0; i < 20; i++)
-		{
-			img1.color += new Color (0,0,0,1f/20.0f);
-			img2.color += new Color (0,0,0,1f/20.0f);
-			yield return new WaitForSeconds(time/20.0f);
-		}
-	}
-
-	IEnumerator FadeOutPhaseUI(float time)
-	{
-		Image img1 = phaseUI.GetComponent<Image>();
-		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
-		for (int i = 0; i < 20; i++)
-		{
-			img1.color -= new Color (0,0,0,1f/20.0f);
-			img2.color -= new Color (0,0,0,1f/20.0f);
-			yield return new WaitForSeconds(time/20.0f);
-		}
 	}
 
 	public void DisableDestCheckUI()
