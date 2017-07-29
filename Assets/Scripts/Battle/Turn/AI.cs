@@ -502,25 +502,7 @@ namespace Battle.Turn
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 		    Unit currentUnit = battleData.selectedUnit;
-		    Vector2 destPosition;
-
-            /*if (currentUnit.GetNameInCode() == "monster")
-		    {
-                // stage 3 달팽이 몬스터 temp AI
-		        destPosition = SpaghettiConLumache.CalculateDestination(movableTiles, battleData.unitManager.GetAllUnits(),
-		            battleData.selectedUnit);
-		    }*/
-			/*
-			if (currentUnit.GetNameInCode() == "orchid")
-			{
-				destPosition = battleData.selectedUnit.GetPosition();
-			}
-			*/
-		    //else
-		    //{
-                // var randomPosition = movableTiles[Random.Range(0, movableTiles.Count)].GetComponent<Tile>().GetTilePos();
-			destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
-            //}
+			Vector2 destPosition = AIUtil.FindNearestEnemy(movableTiles, battleData.unitManager.GetAllUnits(), battleData.selectedUnit);
 
             // FIXME : 어딘가로 옮겨야 할 텐데...
             Tile destTile = battleData.tileManager.GetTile(destPosition);
