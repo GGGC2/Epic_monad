@@ -198,7 +198,6 @@ RectTransform:
   - {fileID: 490381049}
   - {fileID: 2092940705}
   - {fileID: 1969320118}
-  - {fileID: 1439982390}
   - {fileID: 1338191335}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -868,7 +867,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &127708616
 GameObject:
   m_ObjectHideFlags: 0
@@ -2210,7 +2209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &614940556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3033,7 +3032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &859561751
 GameObject:
   m_ObjectHideFlags: 0
@@ -3309,7 +3308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &888926205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4117,7 +4116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &1327350987
 GameObject:
   m_ObjectHideFlags: 0
@@ -4284,7 +4283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &1338191334
 GameObject:
   m_ObjectHideFlags: 0
@@ -4316,7 +4315,7 @@ RectTransform:
   - {fileID: 2045868245}
   - {fileID: 325115708}
   m_Father: {fileID: 14009721}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -4524,74 +4523,6 @@ MonoBehaviour:
       m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
         Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   delegates: []
---- !u!1 &1439982389
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1439982390}
-  - component: {fileID: 1439982392}
-  - component: {fileID: 1439982391}
-  m_Layer: 0
-  m_Name: CharacterIllust
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1439982390
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1439982389}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
-  m_Children: []
-  m_Father: {fileID: 14009721}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -20}
-  m_SizeDelta: {x: 700, y: 750}
-  m_Pivot: {x: 1, y: 1}
---- !u!114 &1439982391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1439982389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 3373c79ee81354e64b614ef455ba7c9a, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
---- !u!222 &1439982392
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1439982389}
 --- !u!1001 &1450691912
 Prefab:
   m_ObjectHideFlags: 0
@@ -5670,7 +5601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &1831723207
 GameObject:
   m_ObjectHideFlags: 0
@@ -5753,7 +5684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: 
   AvailableOrSelected: 0
-  Manager: {fileID: 0}
+  Manager: {fileID: 1726533565}
 --- !u!1 &1837788550
 GameObject:
   m_ObjectHideFlags: 0

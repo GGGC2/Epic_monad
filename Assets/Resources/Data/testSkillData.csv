@@ -7,9 +7,9 @@ orchid,1,약공격,1,55,0,Power,1,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealth,
 orchid,1,중공격,1,42,0,Power,1.5,Point,Diamond,1,3,0,Diamond,0,1,0,DamageHealth,-,Area,NonMove,--,None,0,None,0
 orchid,1,강공격,1,60,0,Power,2,Point,Diamond,1,1,0,Diamond,0,0,0,DamageHealth,-,Area,NonMove,--,None,0,None,0
 orchid,1,밀어내기,1,70,0,None,0,Auto,Diamond,0,0,0,Sector,1,7,0,Debuff,-,Area,NonMove,--,None,0,None,0
-lucius,1,가로베기,1,28,0,Power,1,Auto,Front,1,1,3,Front,1,1,3,DamageHealth,Melee,Individual,NonMove,<color=red>1.0x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.,None,0,None,0
-reina,1,화염 폭발,1,33,0,Power,1,Auto,AllDirection,1,2,0,AllDirection,1,2,0,DamageHealth,RedBlast,Area,Move,<color=red>1.0x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.,None,0,None,0
-reina,1,화염구,2,34,0,Power,1.1,Route,Straight,1,6,0,Square,0,1,0,DamageHealth,RedBlast,Area,Move,투사체를 쏘아 <color=red>1.1x공격력</color>(<color=red>VALUE</color>)의 피해를 줍니다.,None,0,None,0
+lucius,1,가로베기,1,28,0,Power,1,Auto,Front,1,1,3,Front,1,1,3,DamageHealth,Melee,Individual,NonMove,<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,1,None,0
+reina,1,화염 폭발,1,33,0,Power,1,Auto,AllDirection,1,2,0,AllDirection,1,2,0,DamageHealth,RedBlast,Area,Move,<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,1,None,0
+reina,1,화염구,2,34,0,Power,1.1,Route,Straight,1,6,0,Square,0,1,0,DamageHealth,RedBlast,Area,Move,투사체를 쏘아 <color=red>1.1x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.,Power,1.1,None,0
 reina,22,화염낙진,1,48,5,Power,2.1,Auto,Diamond,1,3,0,Diamond,1,3,0,DamageHealth,-,Area,Move,--,None,0,None,0
 reina,22,지옥불꽃,2,81,6,Power,3.4,Route,Straight,1,5,0,Diamond,0,1,0,DamageHealth,-,Area,Move,--,None,0,None,0
 reina,29,에테르 과부하,3,0,5,Dexturity,0.2,Self,Diamond,0,0,0,Diamond,0,0,0,HealAP,-,Area,Move,--,None,0,None,0
@@ -36,7 +36,7 @@ luvericha,29,소녀의 기도,2,52,0,Power,1.5,Self,Diamond,0,0,0,Diamond,0,0,0,
 luvericha,36,교향곡 : 운명,1,58,1,Power,0,Auto,Sector,1,5,0,Sector,1,5,0,DamageHealth,-,Area,NonMove,?,None,0,None,0
 luvericha,50,4분 33초,1,93,4,Power,0,Auto,Front,1,5,5,Front,1,5,5,DamageAP,-,Area,NonMove,--,None,0,None,0
 luvericha,50,환상곡,3,98,4,Power,0.9,Auto,Diamond,1,2,0,Diamond,1,2,0,Buff,-,Area,NonMove,?,None,0,None,0
-yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,--,None,0,None,0
+yeong,1,은빛 베기,1,40,0,Power,0.9,Auto,Sector,1,2,0,Sector,1,2,0,DamageHealth,-,Area,NonMove,<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '방랑자' 효과가 발동된 상태이면 위력이 <color=red>20%</color> 높아집니다.,Power,0.9,None,0
 yeong,8,섬광 찌르기,1,51,0,Power,1.2,Auto,Straight,1,3,0,Straight,1,3,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,22,배후의 습격,1,50,3,Power,1.8,Point,Diamond,1,2,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,--,None,0,None,0
 yeong,29,초감각,3,47,3,Power,0,Self,Diamond,0,0,0,Diamond,0,0,0,Buff,-,Individual,NonMove,--,None,0,None,0

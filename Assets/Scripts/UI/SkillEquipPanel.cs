@@ -27,7 +27,7 @@ public class SkillEquipPanel : MonoBehaviour{
 	}
 
 	void ChangeSpriteOrEmpty(Image image, string spriteAddress){
-		Debug.Log("Put "+spriteAddress+" in "+image.gameObject.name);
+		//Debug.Log("Put "+spriteAddress+" in "+image.gameObject.name);
 		if(Resources.Load<Sprite>(spriteAddress) != null)
 			image.sprite = Resources.Load<Sprite>(spriteAddress);
 		else

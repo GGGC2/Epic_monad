@@ -200,7 +200,6 @@ public class DialogueManager : MonoBehaviour {
 
     public void InactiveAdventureUI()
     {
-		Debug.Log("InactiveAdventureUI");
         adventureUI.SetActive(false);
     }
 

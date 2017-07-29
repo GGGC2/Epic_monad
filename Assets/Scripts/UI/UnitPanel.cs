@@ -11,12 +11,11 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 
 	UnitViewer unitViewer;
 	Text nameText;
-	Image characterIllust;
 	Image unitImage;
 	
 	void Start(){
 		nameText = GameObject.Find("NameText").GetComponent<Text>();
-		characterIllust = GameObject.Find("CharacterIllust").GetComponent<Image>();
+		//characterIllust = GameObject.Find("CharacterIllust").GetComponent<Image>();
 		unitImage = GameObject.Find("UnitImage").GetComponent<Image>();
 		unitViewer = GameObject.Find("UnitViewerPanel").GetComponent<UnitViewer>();
 	}
@@ -24,7 +23,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(unitName != "unselected"){
 			nameText.text = ToKorean(unitName);
-			characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
+			//characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
 			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);
@@ -65,10 +64,10 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			SetNameAndSprite("unselected");
 	}
 
-	public void ChangeIllust()
+	/*public void ChangeIllust()
 	{
 		characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
-	}
+	}*/
 
 	public void SetNameAndSprite(string name)
 	{
