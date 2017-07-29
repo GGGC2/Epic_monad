@@ -76,9 +76,8 @@ public class BattleManager : MonoBehaviour
 					battleData.selectedUnit = battleData.readiedUnits[0];
 					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-					if (battleData.selectedUnit.GetSide() == Side.Enemy)
+					if (battleData.selectedUnit.GetComponent<AIData>() != null)
 					{
-						// yield return AIStates_old.AIStart(battleData);
 						yield return AIStates.AIStart(battleData);
 					}
 					else
