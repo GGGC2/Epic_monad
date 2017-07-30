@@ -6,7 +6,7 @@ public class CameraMover : MonoBehaviour {
 	public bool mouseMoveActive;
 	public bool keyboardMoveActive;
 
-	float speed = 0.1f;
+	float speed = 4f;
 	Vector3 fixedPosition = Vector3.zero;
 
 	public void SetFixedPosition(Vector3 position)
@@ -55,7 +55,7 @@ public class CameraMover : MonoBehaviour {
 
 	void MoveCameraToDirection(Vector3 direction)
 	{
-		Camera.main.transform.position += direction*speed;
+		Camera.main.transform.position += direction * speed * Time.deltaTime;
 	}
 
 	void MoveCameraToPosition(Vector3 position)
