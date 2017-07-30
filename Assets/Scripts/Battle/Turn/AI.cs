@@ -226,22 +226,13 @@ namespace Battle.Turn
 			Tile attackAbleTile;
 
 			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
-			{
 				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, currentTile);
-				if (attackAbleTile != null) {
-					battleData.currentState = CurrentState.SelectSkillApplyDirection;
-					yield return battleManager.StartCoroutine (SelectSkillApplyDirection (battleData, battleData.selectedUnit.GetDirection ()));
-					yield break;
-				}
-			}
 			else
-			{
 				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, currentTile);
-				if (attackAbleTile != null) {
-					battleData.currentState = CurrentState.SelectSkillApplyPoint;
-					yield return battleManager.StartCoroutine (SelectSkillApplyPoint (battleData, battleData.selectedUnit.GetDirection ()));
-					yield break;
-				}
+
+			if (attackAbleTile != null) {
+				yield return AIAct(battleData);
+				yield break;
 			}
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
