@@ -37,8 +37,13 @@ public class TitleForNexon : MonoBehaviour
 
 	public void OnHighLevelClicked()
 	{
+        SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
         GameDataManager.Load();
-        FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
+        if (SceneData.isDialogue) {
+            sceneLoader.LoadNextDialogueScene(SceneData.dialogueName);
+        }
+        else
+            sceneLoader.LoadNextBattleScene();
 		//ShowWorldMap();
 	}
 

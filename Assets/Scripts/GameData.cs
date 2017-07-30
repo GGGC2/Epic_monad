@@ -25,5 +25,6 @@ namespace GameData{
 	public class SceneData {
 		public static string dialogueName;
 		public static int stageNumber;
+        public static bool isDialogue;
 	}
 }

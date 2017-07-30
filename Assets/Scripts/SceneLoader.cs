@@ -78,11 +78,14 @@ public class SceneLoader : MonoBehaviour{
 	{
 		yield return Fadeout();
 
-		if(SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
-			SceneManager.LoadScene("Battle");
-		else
-			SceneManager.LoadScene("BattleReady");			
-	}
+        SceneData.isDialogue = false;
+        GameDataManager.Save();
+        if (SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
+            SceneManager.LoadScene("Battle");
+        else {
+            SceneManager.LoadScene("BattleReady");
+        }
+    }
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
 	{
@@ -96,6 +99,7 @@ public class SceneLoader : MonoBehaviour{
 		else
 		{
 			SceneData.dialogueName = nextScriptFileName;
+            SceneData.isDialogue = true;
             GameDataManager.Save();
 			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 

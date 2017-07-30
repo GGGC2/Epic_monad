@@ -14,6 +14,7 @@ public class GameDataManager {
         PartyData.SetReqExp();
         SceneData.dialogueName = "Scene#1-1";
         SceneData.stageNumber = 1;
+        SceneData.isDialogue = true;
         Save();
     }
     private static string ConvertGameDataToString() {
@@ -22,7 +23,8 @@ public class GameDataManager {
         result += PartyData.exp + ",";
         result += PartyData.reqExp + ",";
         result += SceneData.dialogueName + ",";
-        result += SceneData.stageNumber;
+        result += SceneData.stageNumber + ",";
+        result += SceneData.isDialogue;
         return result;
     }
     private static void ConvertStringToGameData(string str) {
@@ -32,6 +34,7 @@ public class GameDataManager {
         PartyData.reqExp = commastringParser.ConsumeInt();
         SceneData.dialogueName = commastringParser.Consume();
         SceneData.stageNumber = commastringParser.ConsumeInt();
+        SceneData.isDialogue = commastringParser.ConsumeBool();
     }
     public static void Save() {
         string data = ConvertGameDataToString();
