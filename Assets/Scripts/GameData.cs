@@ -9,7 +9,7 @@ namespace GameData{
 		public static int reqExp;
 
 		public static void SetReqExp(){
-			reqExp = (int)Mathf.Pow((0.117f*level)+0.883f, 3)*100;
+			reqExp = (int)(Mathf.Pow((0.117f*level)+0.883f, 3)*100);
 		}
 
 		public static void AddExp(int point){
