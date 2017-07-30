@@ -8,6 +8,7 @@ using GameData;
 
 public class TitleForNexon : MonoBehaviour
 {
+    public GameDataManager gameDataManager;
 	public DOTweenAnimation titlePath;
 	public DOTweenAnimation titleAnimation;
 
@@ -16,7 +17,9 @@ public class TitleForNexon : MonoBehaviour
 
 	public List<Button> worldMapButtons;
 	public List<DOTweenAnimation> worldMapButtonAnimations;
-
+    public void Start() {
+        GameDataManager.Load();
+    }
 	public void Awake()
 	{
 		foreach (var button in worldMapButtons)
@@ -27,39 +30,16 @@ public class TitleForNexon : MonoBehaviour
 
 	public void OnLowLevelClicked()
 	{
-		PartyData.level = 1;
-		PartyData.exp = 0;
-		PartyData.reqExp = 100;
+        GameDataManager.Reset();
 
-		SaveDataCenter.Reset();
-		SaveData saveData = SaveDataCenter.GetSaveData();
-
-		saveData.party.partyLevel = 1;
-		saveData.party.partyUnitNames = new List<string>
-		{
-			"reina",
-			"lucius"
-		};
-
-		FindObjectOfType<SceneLoader>().LoadNextDialogueScene("Scene#1-1");
+		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
 
 	public void OnHighLevelClicked()
 	{
-		SaveDataCenter.Reset();
-		SaveData saveData = SaveDataCenter.GetSaveData();
-
-		saveData.progress.worldMap = "Pintos5";
-		saveData.progress.dialogue = "Pintos#7-1";
-
-		saveData.party.partyLevel = 18;
-		saveData.party.partyUnitNames = new List<string>
-		{
-			"reina",
-			"sisterna"
-		};
-
-		ShowWorldMap();
+        GameDataManager.Load();
+        FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
+		//ShowWorldMap();
 	}
 
 	public void OnBossLevelClicked()

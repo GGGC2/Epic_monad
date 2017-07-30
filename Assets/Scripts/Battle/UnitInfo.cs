@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Enums;
+using GameData;
 
 public class UnitInfo {
 	public int index;
@@ -67,7 +68,7 @@ public class UnitInfo {
 		float basepoint = 0;
 		basepoint = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+7, RelativePoint+5));
 
-		float level = Save.SaveDataCenter.GetSaveData().party.partyLevel;
+		float level = PartyData.level;
 		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
 	}
 

@@ -48,6 +48,8 @@ namespace Battle.Turn
 
 		static IEnumerator ControllerAttack(Unit objectUnit)
 		{
+			SoundManager.Instance.PlaySE ("ControllerGrawl");
+
 			BattleManager.MoveCameraToUnit(objectUnit);
 			GameObject effect = MonoBehaviour.Instantiate(Resources.Load("Effect/ControllerActive")) as GameObject;
 			effect.transform.position = objectUnit.transform.position - new Vector3(0, 0, 0.01f);

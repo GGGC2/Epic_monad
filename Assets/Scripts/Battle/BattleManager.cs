@@ -7,8 +7,8 @@ using LitJson;
 using System;
 using Battle.Turn;
 using Battle.Skills;
-using GameData;
 using System.Linq;
+using GameData;
 
 public class BattleManager : MonoBehaviour
 {
@@ -30,14 +30,14 @@ public class BattleManager : MonoBehaviour
 		battleData.battleManager = this;
 	}
 
-	void Start(){
-		SoundManager.Instance.PlayBgm("Script_Tense");
-		
+	void Start() {
+        SoundManager.Instance.PlayBgm("Script_Tense");
 		if(PartyData.level == 0){
 			PartyData.level = 1;
 			PartyData.SetReqExp();
 			Debug.Log("Set Level 0 --> 1");
-		}		
+		}
+        GameDataManager.Load();
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
