@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using System.Linq;
 using GameData;
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
 	public List<UnitPanel> selected = new List<UnitPanel>();
 	public string currentUnitName;
+
+	public Button readyButton;
 
 	void Start()
 	{
@@ -38,9 +41,25 @@ public class ReadyManager : MonoBehaviour{
 
 	void Update()
 	{
+		if (IsThereAnyReadiedUnit())
+			readyButton.interactable = true;
+		else
+			readyButton.interactable = false;
+
 		if(Input.GetKeyDown(KeyCode.A))
 		{
 			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene();
 		}
+	}
+
+	bool IsThereAnyReadiedUnit()
+	{
+		List<GameObject> selectedUnitPanels = FindObjectOfType<SelectedUnits>().SelectedUnitPanels;
+		return selectedUnitPanels.Any(panel => panel.GetComponent<UnitPanel>().unitName != "unselected");
+	}
+
+	public void ReadyButtonDown()
+	{
+		GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene();
 	}
 }

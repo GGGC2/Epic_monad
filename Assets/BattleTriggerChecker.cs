@@ -84,8 +84,9 @@ public class BattleTriggerChecker : MonoBehaviour {
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
+			else if(actionType == BattleTrigger.ActionType.Kill && unit.IsObject())
+				continue;
 			else{
-				//Debug.Log(trigger.korName + " : UnitCheck " + Checker.CheckUnitType(trigger, unit) + " & " + Checker.CheckActionType(trigger, actionType));
 				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
 					Checker.CountBattleTrigger(trigger);
 			}
@@ -108,9 +109,8 @@ public class BattleTriggerChecker : MonoBehaviour {
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
+			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit))
 				Checker.CountBattleTrigger(trigger);
-			}	
 		}
 	}
 

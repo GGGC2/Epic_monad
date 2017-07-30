@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class SelectedUnits : MonoBehaviour 
 {
-	List<Image> SelectedUnitPanels;
+	public List<GameObject> SelectedUnitPanels;
 
 	void Start()
 	{
-		SelectedUnitPanels = new List<Image>();
+		SelectedUnitPanels = new List<GameObject>();
 
 		for(int i = 1; i <= 8; i++)
 		{
 			if(GameObject.Find("SelectedUnit"+i) != null)
 			{
-				SelectedUnitPanels.Add(GameObject.Find("SelectedUnit"+i).GetComponent<Image>());
+				SelectedUnitPanels.Add(GameObject.Find("SelectedUnit"+i));
 			}
 		}
 	}
