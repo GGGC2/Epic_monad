@@ -2798,7 +2798,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1566462969264870, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114839069769702706, guid: 3e39e29690a384acf8c20d2f60be1ea3,
         type: 2}
@@ -2809,7 +2809,7 @@ Prefab:
         type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 1b827b012b01278489e25c7b9f2dff76,
+      objectReference: {fileID: 21300000, guid: a33eeee8e1bb61b4e83cdac06f7833bc,
         type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
@@ -6266,7 +6266,6 @@ SpriteRenderer:
   m_Size: {x: 7.29, y: 4.07}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &2016892544
 Transform:
   m_ObjectHideFlags: 0
