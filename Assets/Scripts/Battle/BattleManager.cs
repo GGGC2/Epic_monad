@@ -23,6 +23,7 @@ public class BattleManager : MonoBehaviour
 
 	void Awake ()
 	{
+		PartyData.CheckLevelZero();
 		GetStageDataFiles();
 		battleData.tileManager = FindObjectOfType<TileManager>();
 		battleData.unitManager = FindObjectOfType<UnitManager>();
@@ -32,13 +33,8 @@ public class BattleManager : MonoBehaviour
 
 	void Start() {
         SoundManager.Instance.PlayBgm("Script_Tense");
-		if(PartyData.level == 0){
-			PartyData.level = 1;
-			PartyData.reqExp = 100;
-			Debug.Log("Set Level 0 --> 1");
-		}
-		//배틀씬에서 못 돌려서 임시로 주석처리해둠.
-        //GameDataManager.Load();
+		
+        GameDataManager.Load();
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -117,9 +113,9 @@ public class BattleManager : MonoBehaviour
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 
 		Debug.Log(unit.GetName() + "'s turn");
-        foreach(Unit otherUnit in battleData.unitManager.GetAllUnits()) {
+        foreach(Unit otherUnit in battleData.unitManager.GetAllUnits())
             SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
-        }
+
         unit.TriggerTileStatusEffectAtTurnStart();
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
@@ -274,10 +270,8 @@ public class BattleManager : MonoBehaviour
 				-10);	
 	}
 
-	public static IEnumerator FocusToUnit(BattleData battleData)
-	{
-		while (battleData.currentState == CurrentState.FocusToUnit)
-		{
+	public static IEnumerator FocusToUnit(BattleData battleData){
+		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
 			
 			yield return battleManager.StartCoroutine(UpdateRetreatAndDeadUnits(battleData, battleManager));
@@ -292,6 +286,7 @@ public class BattleManager : MonoBehaviour
             battleData.unitManager.UpdateStatusEffectsAtActionEnd();
             battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
+			//승리 조건이 충족되었으면 결과창 출력하기
 			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 				Checker.InitializeResultPanel();
@@ -316,18 +311,15 @@ public class BattleManager : MonoBehaviour
 			else
 				yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
 
-			if (battleData.alreadyMoved && battleData.triggers.rightClicked.Triggered)
-			{
+			if (battleData.alreadyMoved && battleData.triggers.rightClicked.Triggered){
 				Battle.Turn.MoveStates.RestoreMoveSnapshot(battleData);
 				battleData.alreadyMoved = false;
 			}
-			else if (battleData.triggers.actionCommand.Data == ActionCommand.Move)
-			{
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Move){
 				battleData.currentState = CurrentState.SelectMovingPoint;
 				yield return battleManager.StartCoroutine(MoveStates.SelectMovingPointState(battleData));
 			}
-			else if (battleData.triggers.actionCommand.Data == ActionCommand.Skill)
-			{
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Skill){
 				battleData.currentState = CurrentState.SelectSkill;
 				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
 			}

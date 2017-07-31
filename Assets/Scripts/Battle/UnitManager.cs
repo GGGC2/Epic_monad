@@ -35,8 +35,8 @@ public class UnitManager : MonoBehaviour {
 
 	int standardActivityPoint;
 
-	List<ActiveSkill> ActiveSkillList = new List<ActiveSkill>();
-	List<PassiveSkill> PassiveSkillList = new List<PassiveSkill>();
+	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
+	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
     List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
@@ -49,8 +49,7 @@ public class UnitManager : MonoBehaviour {
 	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
 	List<RetreatUnitInfo> retreatUnitsInfo = new List<RetreatUnitInfo>();
     
-	public List<Unit> GetAllUnits()
-	{
+	public List<Unit> GetAllUnits(){
 		return units;
 	}
 
@@ -184,19 +183,15 @@ public class UnitManager : MonoBehaviour {
 		});
 	}
 
-	public void GenerateUnits ()
-	{
+	public void GenerateUnits (){
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 		int GeneratedPC = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
 
-		if (readyManager != null)
-		{
-			foreach (var unitInfo in unitInfoList)
-			{
-				if (unitInfo.name == "unselected") 
-				{
+		if (readyManager != null){
+			foreach (var unitInfo in unitInfoList){
+				if (unitInfo.name == "unselected") {
 					string PCName = readyManager.selected[GeneratedPC].unitName;
 					unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
 					
@@ -224,7 +219,7 @@ public class UnitManager : MonoBehaviour {
 				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(ActiveSkillList, statusEffectInfoList, tileStatusEffectInfoList, PassiveSkillList);
+				unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
 
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
@@ -254,14 +249,12 @@ public class UnitManager : MonoBehaviour {
 
 			Destroy(GameObject.Find("ReadyManager").gameObject);
 		}
-		else 
-		{
-			foreach (var unitInfo in unitInfoList)
-			{
+		else {
+			foreach (var unitInfo in unitInfoList){
 				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 
 				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(ActiveSkillList, statusEffectInfoList, tileStatusEffectInfoList, PassiveSkillList);
+				unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
 
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
@@ -403,11 +396,11 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	void LoadActiveSkills(){
-		ActiveSkillList = Parser.GetActiveSkills();
+		activeSkillList = Parser.GetActiveSkills();
 	}
 
 	void LoadPassiveSkills(){
-		PassiveSkillList = Parser.GetPassiveSkills();
+		passiveSkillList = Parser.GetPassiveSkills();
 	}
 
     void LoadStatusEffects()
@@ -420,8 +413,8 @@ public class UnitManager : MonoBehaviour {
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start () 
-	{
+	void Start () {
+		GameData.PartyData.CheckLevelZero();
 		LoadActiveSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
