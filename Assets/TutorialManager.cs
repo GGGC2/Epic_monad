@@ -9,6 +9,7 @@ public class TutorialManager : MonoBehaviour {
 	public Image image;
 	CameraMover cm;
 	public string usedSceneName;
+	public Button ReverseButton;
 
 	void Start () {
 		index = 0;
@@ -24,6 +25,7 @@ public class TutorialManager : MonoBehaviour {
 	
 	void OnClick(){
 		index += 1;
+		CheckReverseButtonActive();
 		Sprite newSprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + GameData.SceneData.stageNumber.ToString() + "_" + index.ToString());
 
 		if(newSprite == null){
@@ -37,7 +39,20 @@ public class TutorialManager : MonoBehaviour {
 			image.sprite = newSprite;
 	}
 
+	void CheckReverseButtonActive(){
+		if(index <= 1)
+			ReverseButton.gameObject.SetActive(false);
+		else
+			ReverseButton.gameObject.SetActive(true);
+	}
+
 	public void Skip(){
 		gameObject.SetActive(false);
+	}
+
+	public void Reverse(){
+		index -= 1;
+		CheckReverseButtonActive();
+		image.sprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + GameData.SceneData.stageNumber.ToString() + "_" + index.ToString());
 	}
 }
