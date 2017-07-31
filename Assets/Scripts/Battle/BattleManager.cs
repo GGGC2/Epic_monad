@@ -34,10 +34,11 @@ public class BattleManager : MonoBehaviour
         SoundManager.Instance.PlayBgm("Script_Tense");
 		if(PartyData.level == 0){
 			PartyData.level = 1;
-			PartyData.SetReqExp();
+			PartyData.reqExp = 100;
 			Debug.Log("Set Level 0 --> 1");
 		}
-        GameDataManager.Load();
+		//배틀씬에서 못 돌려서 임시로 주석처리해둠.
+        //GameDataManager.Load();
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -46,7 +47,6 @@ public class BattleManager : MonoBehaviour
 		InitCameraPosition(); // temp init position;
 
 		startFinished = true;
-		
 	}
 
 	public void StartTurnManager()
