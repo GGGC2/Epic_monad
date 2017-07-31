@@ -45,15 +45,13 @@ public class BattleManager : MonoBehaviour
 	}
 
 	public void StartTurnManager(){
-		if (!startTurnManager)
-		{
+		if (!startTurnManager){
 			StartCoroutine(InstantiateTurnManager());
 			startTurnManager = true;
 		}
 	}
 
-	public int GetCurrentPhase()
-	{
+	public int GetCurrentPhase(){
 		return battleData.currentPhase;
 	}
 
@@ -69,8 +67,7 @@ public class BattleManager : MonoBehaviour
 
 	public IEnumerator InstantiateTurnManager(){
         if(startFinished && battleData.uiManager.startFinished){
-			while (true)
-			{
+			while (true){
 				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
@@ -79,17 +76,15 @@ public class BattleManager : MonoBehaviour
 					battleData.selectedUnit = battleData.readiedUnits[0];
 					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-					if (battleData.selectedUnit.GetComponent<AIData>() != null)
-					{
+					if (battleData.selectedUnit.GetComponent<AIData>() != null){
 						yield return AIStates.AIStart(battleData);
 						// AI 코루틴이 어디서 끝나는지 몰라서 일단 여기 넣어놓음. 머리 위 화살표와 현재 턴 유닛 정보를 없애는 로직
 						battleData.uiManager.DisableSelectedUnitViewerUI();
 						battleData.selectedUnit.SetInactive();
 					}
 					else
-					{
 						yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
-					}
+
 					battleData.selectedUnit = null;
 
 					battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
@@ -499,8 +494,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	IEnumerator EndPhaseOnGameManager()
-	{
+	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
 
 		battleData.unitManager.EndPhase(battleData.currentPhase);
@@ -508,8 +502,7 @@ public class BattleManager : MonoBehaviour
 		yield return new WaitForSeconds(0.5f);
 	}
 
-	IEnumerator StartPhaseOnGameManager()
-	{
+	IEnumerator StartPhaseOnGameManager(){
 		battleData.currentPhase++;
 		BattleTriggerChecker.CountBattleCondition();
 

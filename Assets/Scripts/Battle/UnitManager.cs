@@ -343,23 +343,18 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-	public IEnumerator StartPhase(int phase)
-	{
-		foreach (var unit in units)
-		{
+	public IEnumerator StartPhase(int phase){
+		foreach (var unit in units){
 			unit.UpdateStartPosition();
 			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart(phase));
-            if(phase == 1) {
+            if(phase == 1)
                 unit.ApplyTriggerOnStart();
-            }
 		}
 	}
 
-	public void EndPhase(int phase)
-	{
+	public void EndPhase(int phase){
 		// Decrease each buff & debuff phase
-		foreach (var unit in units)
-		{
+		foreach (var unit in units){
 			unit.UpdateRemainPhaseAtPhaseEnd();
 			unit.UpdateSkillCooldown();
 		}

@@ -9,7 +9,6 @@ public class PhaseDisplay : MonoBehaviour {
 	UnitManager unitManager;
 	BattleManager battleManager;
 
-	// Use this for initialization
 	void Start () {
 		phaseText = transform.Find("PhaseText").GetComponent<Text>();
 		standardAPText = transform.Find("StandardAPText").GetComponent<Text>();
@@ -17,7 +16,6 @@ public class PhaseDisplay : MonoBehaviour {
 		battleManager = FindObjectOfType<BattleManager>();
 	}
 
-	// Update is called once per frame
 	void Update () {
 		phaseText.text = "Phase " + battleManager.GetCurrentPhase();
 		// standardAPText.text = "Standard AP : " + unitManager.GetStandardActivityPoint() + "";

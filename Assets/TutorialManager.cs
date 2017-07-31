@@ -36,4 +36,8 @@ public class TutorialManager : MonoBehaviour {
 		else
 			image.sprite = newSprite;
 	}
+
+	public void Skip(){
+		gameObject.SetActive(false);
+	}
 }

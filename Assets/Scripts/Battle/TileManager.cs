@@ -500,8 +500,7 @@ public class TileManager : MonoBehaviour {
 		tiles.Add(new Vector2(i, j), tile);
 	}
 
-	void Awake () 
-	{
+	void Awake () {
 		GenerateTiles(Parser.GetParsedTileInfo());
 	}
 }

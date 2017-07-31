@@ -30,8 +30,7 @@ public class UIManager : MonoBehaviour
 
 	GameObject notImplementedDebugPanel;
 
-	void Awake()
-	{
+	void Awake(){
 		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
 		skillUI = GameObject.Find("SkillPanel");
