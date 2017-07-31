@@ -1,43 +1,49 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace BattleUI
-{
+namespace BattleUI{
 	public class CommandPanel : MonoBehaviour
 	{
 		private BattleManager battleManager;
 
-		public void Start()
-		{
+		void Start(){
 			battleManager = FindObjectOfType<BattleManager>();
 		}
 
-		public void CallbackMoveCommand()
-		{
+		void Update(){
+			if(battleManager.battleData.currentState == CurrentState.FocusToUnit){
+				if(GameObject.Find("MoveButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.Q))
+					CallbackMoveCommand();
+				else if(GameObject.Find("SkillButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.W))
+					CallbackSkillCommand();
+				else if(GameObject.Find("StandbyButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.E))
+					CallbackStandbyCommand();
+				else if(GameObject.Find("RestButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.R))
+					CallbackRestCommand();
+			}
+		}
+
+		public void CallbackMoveCommand(){
 			battleManager.CallbackMoveCommand();
 		}
 
-		public void CallbackSkillCommand()
-		{
+		public void CallbackSkillCommand(){
 			battleManager.CallbackSkillCommand();
 		}
 
-		public void CallbackRestCommand()
-		{
+		public void CallbackRestCommand(){
 			battleManager.CallbackRestCommand();
 		}
 
-		public void CallbackOnPointerEnterRestCommand()
-		{
+		public void CallbackOnPointerEnterRestCommand(){
 			battleManager.CallbackOnPointerEnterRestCommand();
 		}
 
-		public void CallbackOnPointerExitRestCommand()
-		{
+		public void CallbackOnPointerExitRestCommand(){
 			battleManager.CallbackOnPointerExitRestCommand();
 		}
 
-		public void CallbackStandbyCommand()
-		{
+		public void CallbackStandbyCommand(){
 			battleManager.CallbackStandbyCommand();
 		}
 	}

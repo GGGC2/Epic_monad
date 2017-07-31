@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 namespace BattleUI
 {
@@ -18,6 +19,7 @@ namespace BattleUI
         int maxPage = 0;
         Unit selectedUnit;
 		public Sprite transparent;
+		public List<Button> skillButtons;
 
 		public void Awake(){
 			battleManager = FindObjectOfType<BattleManager>();
@@ -41,22 +43,21 @@ namespace BattleUI
             if (maxPage == 0) nextButton.interactable = false;
             else nextButton.interactable = true;
         }
-		public void CallbackSkillIndex(int index)
-		{
+		public void CallbackSkillIndex(int index){
 			battleManager.CallbackSkillIndex(index);
 		}
 
 		public void Update(){
 			if(battleManager.battleData.currentState == CurrentState.SelectSkill){
-				if(Input.GetKeyDown(KeyCode.A))
+				if(Input.GetKeyDown(KeyCode.A) && skillButtons[0].interactable && skillButtons[0].gameObject.activeSelf)
 					battleManager.CallbackSkillIndex(1);
-				else if(Input.GetKeyDown(KeyCode.S))
+				else if(Input.GetKeyDown(KeyCode.S) && skillButtons[1].interactable && skillButtons[1].gameObject.activeSelf)
 					battleManager.CallbackSkillIndex(2);
-				else if(Input.GetKeyDown(KeyCode.D))
+				else if(Input.GetKeyDown(KeyCode.D) && skillButtons[2].interactable && skillButtons[2].gameObject.activeSelf)
 					battleManager.CallbackSkillIndex(3);
-				else if(Input.GetKeyDown(KeyCode.F))
+				else if(Input.GetKeyDown(KeyCode.F) && skillButtons[3].interactable && skillButtons[3].gameObject.activeSelf)
 					battleManager.CallbackSkillIndex(4);
-				else if(Input.GetKeyDown(KeyCode.G))
+				else if(Input.GetKeyDown(KeyCode.G) && skillButtons[4].interactable && skillButtons[4].gameObject.activeSelf)
 					battleManager.CallbackSkillIndex(5);
 			}
 		}
@@ -66,36 +67,14 @@ namespace BattleUI
 			
 			ActiveSkill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
 			skillPanel.UpdateSkillInfoPanel(preSelectedSkill, battleManager.battleData.selectedUnit.name);
-
-			/*skillApText.text = preSelectedSkill.GetRequireAP().ToString();
-			
-			int cooldown = preSelectedSkill.GetCooldown();
-			if (cooldown > 0)
-				skillCooldownText.text = "재사용까지 " + cooldown.ToString() + " 페이즈";
-			
-			
-			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+battleManager.battleData.selectedUnit.name+preSelectedSkill.GetColumn()+"_"+preSelectedSkill.GetRequireLevel());
-			if(actualRangeImage != null)
-				actualRange.sprite = actualRangeImage;
-
-			if(preSelectedSkill.GetSkillType() == Enums.SkillType.Point){
-				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
-				rangeText.text += GetFirstRangeText(preSelectedSkill);
-			}
-			else if(preSelectedSkill.GetSkillType() == Enums.SkillType.Route){
-				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Line");
-				rangeText.text += GetFirstRangeText(preSelectedSkill);
-			}
-			else
-				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");*/
 		}
 
 		void OnEnable(){
 			skillApText.text = "";
 			skillCooldownText.text = "";	
 			skillDataText.text = "";
-			actualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
-			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
+			actualRange.sprite = transparent;
+			rangeType.sprite = transparent;
 			rangeText.text = "";
 		}
 
@@ -110,14 +89,9 @@ namespace BattleUI
 			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
 		}
 
-		public void CallbackPointerExitSkillIndex(int index)
-		{
+		public void CallbackPointerExitSkillIndex(int index){
 			battleManager.CallbackPointerExitSkillIndex(index);
-			skillApText.text = "";
-			rangeText.text = "";
-			skillCooldownText.text = "";
-			skillDataText.text = "";
-			rangeType.sprite = transparent;
+			OnEnable();
 		}
 
 		public void CallbackSkillUICancel()

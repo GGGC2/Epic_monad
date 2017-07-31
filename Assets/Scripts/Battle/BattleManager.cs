@@ -21,8 +21,7 @@ public class BattleManager : MonoBehaviour
 		return battleData.chainList;
 	}
 
-	void Awake ()
-	{
+	void Awake (){
 		PartyData.CheckLevelZero();
 		GetStageDataFiles();
 		battleData.tileManager = FindObjectOfType<TileManager>();
@@ -45,8 +44,7 @@ public class BattleManager : MonoBehaviour
 		startFinished = true;
 	}
 
-	public void StartTurnManager()
-	{
+	public void StartTurnManager(){
 		if (!startTurnManager)
 		{
 			StartCoroutine(InstantiateTurnManager());
@@ -69,8 +67,7 @@ public class BattleManager : MonoBehaviour
 		Camera.main.transform.position = new Vector3(0, 0, -10);
 	}
 
-	public IEnumerator InstantiateTurnManager()
-	{
+	public IEnumerator InstantiateTurnManager(){
         if(startFinished && battleData.uiManager.startFinished){
 			while (true)
 			{
@@ -107,8 +104,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	IEnumerator ActionAtTurn(Unit unit)
-	{
+	IEnumerator ActionAtTurn(Unit unit){
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 
@@ -135,12 +131,10 @@ public class BattleManager : MonoBehaviour
 			battleData.selectedUnit.SetInactive();
 	}
 
-	static void CheckStandbyPossible(BattleData battleData)
-	{
+	static void CheckStandbyPossible(BattleData battleData){
 		bool isPossible = false;
 
-		foreach (var unit in battleData.unitManager.GetAllUnits())
-		{
+		foreach (var unit in battleData.unitManager.GetAllUnits()){
 			if ((unit != battleData.selectedUnit) &&
 			(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
 			{
@@ -173,8 +167,7 @@ public class BattleManager : MonoBehaviour
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
 
-	static void CheckMovePossible(BattleData battleData)
-	{
+	static void CheckMovePossible(BattleData battleData){
 		bool isPossible = false;
 
 		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
@@ -323,13 +316,11 @@ public class BattleManager : MonoBehaviour
 				battleData.currentState = CurrentState.SelectSkill;
 				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
 			}
-			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest)
-			{
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest){
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 			}
-			else if (battleData.triggers.actionCommand.Data == ActionCommand.Standby)
-			{
+			else if (battleData.triggers.actionCommand.Data == ActionCommand.Standby){
 				battleData.currentState = CurrentState.Standby;
 				yield return battleManager.StartCoroutine(Standby());
 			}
