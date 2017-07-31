@@ -5,8 +5,7 @@ using System;
 using WorldMap;
 using SkillTree;
 
-public class Parser : MonoBehaviour
-{
+public class Parser : MonoBehaviour{
 	public static string ExtractFromMatrix(string text, int row, int column){
 		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 		return RowDataStrings[row].Split(',')[column];
@@ -18,9 +17,7 @@ public class Parser : MonoBehaviour
 		foreach(string row in RowDataStrings){
 			string[] tempRowData = row.Split(',');
 			if(tempRowData[0] == searchingWord)
-			{
 				return tempRowData;
-			}
 		}
 
 		Debug.Log("RowData Not Found : " + searchingWord + "in " + text);
@@ -263,11 +260,9 @@ public class Parser : MonoBehaviour
 		string csvText = csvFile.text;
 		string[] unparsedTileInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int reverseY = unparsedTileInfoStrings.Length -1; reverseY >= 0 ; reverseY--)
-		{
+		for (int reverseY = unparsedTileInfoStrings.Length -1; reverseY >= 0 ; reverseY--){
 			string[] parsedTileInfoStrings = unparsedTileInfoStrings[reverseY].Split(',');
-			for (int x = 1; x <= parsedTileInfoStrings.Length; x++)
-			{
+			for (int x = 1; x <= parsedTileInfoStrings.Length; x++){
 				Vector2 tilePosition = new Vector2(x, unparsedTileInfoStrings.Length - reverseY);
 				// Debug.Log(x + ", " + (unparsedTileInfoStrings.Length - reverseY));
 				TileInfo tileInfo = new TileInfo(tilePosition, parsedTileInfoStrings[x-1]);

@@ -18,10 +18,8 @@ public class TileInfo {
 	public int GetTileIndex() { return tileTypeIndex; }
 	public bool IsEmptyTile() { return isEmptyTile; }
 
-	public TileInfo(Vector2 tilePosition, string tileInfoString)
-	{
-		if (tileInfoString[0] == '-')
-		{
+	public TileInfo(Vector2 tilePosition, string tileInfoString){
+		if (tileInfoString[0] == '-'){
 			this.isEmptyTile = true;
 			return;
 		}

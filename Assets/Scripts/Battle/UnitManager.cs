@@ -7,13 +7,11 @@ using Util;
 using Battle.Skills;
 using System.Linq;
 
-public class DeadUnitInfo
-{
+public class DeadUnitInfo{
 	public readonly string unitName;
 	public readonly Side unitSide;
 
-	public DeadUnitInfo(Unit unit)
-	{
+	public DeadUnitInfo(Unit unit){
 		unitName = unit.GetName();
 		unitSide = unit.GetSide();
 	}
@@ -53,10 +51,8 @@ public class UnitManager : MonoBehaviour {
 		return units;
 	}
 
-	public void ResetLatelyHitUnits()
-	{
-		foreach (var unit in GetAllUnits())
-		{
+	public void ResetLatelyHitUnits(){
+		foreach (var unit in GetAllUnits()){
 			unit.GetLatelyHitInfos().Clear();
 		}
 	}
@@ -92,9 +88,8 @@ public class UnitManager : MonoBehaviour {
         foreach (var unit in GetAllUnits()) {
             foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {
-                    for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
+                    for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
-                    }
                     unit.updateStats(statusEffect, false, false);
                 }
                 else
@@ -103,11 +98,9 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-	public List<Unit> GetRetreatUnits()
-	{
+	public List<Unit> GetRetreatUnits(){
 		retreatUnits.Clear();
-		foreach (var unit in units)
-		{
+		foreach (var unit in units){
 			// 오브젝트는 이탈하지 않는다
 			if (unit.IsObject()) continue;
 
@@ -120,26 +113,21 @@ public class UnitManager : MonoBehaviour {
 		return retreatUnits;
 	}
 
-	public void	MakeRetreatUnitInfo()
-	{
-		foreach (var retreatUnit in retreatUnits)
-		{
+	public void	MakeRetreatUnitInfo(){
+		foreach (var retreatUnit in retreatUnits){
 			RetreatUnitInfo retreatUnitInfo = new RetreatUnitInfo(retreatUnit);
 			retreatUnitsInfo.Add(retreatUnitInfo);
 		}
 	}
 
-	public List<RetreatUnitInfo> GetRetreatUnitsInfo()
-	{
+	public List<RetreatUnitInfo> GetRetreatUnitsInfo(){
 		return retreatUnitsInfo;
 	}
 
-	public List<Unit> GetDeadUnits()
-	{
+	public List<Unit> GetDeadUnits(){
 		// 죽은 유닛들을 체크.
 		deadUnits.Clear();
-		foreach (var unit in units)
-		{
+		foreach (var unit in units){
 			if ((unit.GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
 				deadUnits.Add(unit);
 		}
@@ -147,33 +135,27 @@ public class UnitManager : MonoBehaviour {
 		return deadUnits;
 	}
 
-	void MakeDeadUnitInfo()
-	{
-		foreach (var deadUnit in deadUnits)
-		{
+	void MakeDeadUnitInfo(){
+		foreach (var deadUnit in deadUnits){
 			DeadUnitInfo deadUnitInfo = new DeadUnitInfo(deadUnit);
 			deadUnitsInfo.Add(deadUnitInfo);
 		}
 	}
 
-	public List<DeadUnitInfo> GetDeadUnitsInfo()
-	{
+	public List<DeadUnitInfo> GetDeadUnitsInfo(){
 		MakeDeadUnitInfo();
 		return deadUnitsInfo;
 	}
 
-	public int GetStandardActivityPoint()
-	{
+	public int GetStandardActivityPoint(){
 		return standardActivityPoint;
 	}
 
-	public void SetStandardActivityPoint()
-	{
+	public void SetStandardActivityPoint(){
 		standardActivityPoint = GameData.PartyData.level + 60;
 	}
 
-	public void ApplyAIInfo ()
-	{
+	public void ApplyAIInfo (){
 		List<AIInfo> aiInfoList = Parser.GetParsedAIInfo();
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;
