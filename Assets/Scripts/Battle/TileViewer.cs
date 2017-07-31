@@ -68,7 +68,7 @@ public class TileViewer : MonoBehaviour {
 		else if (element == Element.Metal)
 			elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
 		else
-			elementImage.sprite = Resources.Load("Icon/transparent", typeof(Sprite)) as Sprite;
+			elementImage.sprite = Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
 	}
 
 	void Awake () {
