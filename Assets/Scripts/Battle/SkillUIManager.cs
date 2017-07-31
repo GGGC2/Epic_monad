@@ -8,11 +8,13 @@ public class SkillUIManager : MonoBehaviour {
 	public Text ApText;
 	public Text CooldownText;
 	public Text RangeText;
+	public Text NameText;
 	public Text ExplainText;
 	public Image ActualRange;
 	public Image RangeType;
 
-	public void UpdateSkillInfoPanel(Skill skill, string unitName){
+	public void UpdateSkillInfoUI(Skill skill, string unitName){
+		NameText.text = skill.korName;
 		ExplainText.text = skill.skillDataText.Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, unitName)).
 											   Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, unitName));
 

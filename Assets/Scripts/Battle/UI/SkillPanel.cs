@@ -66,7 +66,7 @@ namespace BattleUI
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			ActiveSkill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
-			skillPanel.UpdateSkillInfoPanel(preSelectedSkill, battleManager.battleData.selectedUnit.name);
+			skillPanel.UpdateSkillInfoUI(preSelectedSkill, battleManager.battleData.selectedUnit.name);
 		}
 
 		void OnEnable(){

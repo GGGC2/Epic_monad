@@ -13,6 +13,6 @@ public class SkillIcon : MonoBehaviour, IPointerEnterHandler{
 	public int level;
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(GetComponent<Image>().sprite != Resources.Load<Sprite>("Icon/Empty"))
-			InfoPanel.UpdateSkillInfoPanel(skill, FindObjectOfType<ReadyManager>().currentUnitName);
+			InfoPanel.UpdateSkillInfoUI(skill, FindObjectOfType<ReadyManager>().currentUnitName);
 	}
 }
