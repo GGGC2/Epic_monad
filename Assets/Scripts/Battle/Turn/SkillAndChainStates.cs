@@ -471,7 +471,7 @@ namespace Battle.Turn {
                 ChainList.RemoveChainsFromUnit(caster);
 
 			//스킬 고유 효과음 재생
-			if(appliedSkill.GetSoundEffectName () != null)
+			if(appliedSkill.GetSoundEffectName () != null || appliedSkill.GetSoundEffectName () != "-")
 				SoundManager.Instance.PlaySE (appliedSkill.GetSoundEffectName ());
 
 			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, tilesInSkillRange));

@@ -44,7 +44,7 @@ public class Unit : MonoBehaviour
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 
 	// 스킬리스트.
-	List<ActiveSkill> skillList = new List<ActiveSkill>();
+	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 	// 사용한 스킬 정보 저장(쿨타임 산정용).
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
@@ -132,11 +132,10 @@ public class Unit : MonoBehaviour
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
 	public Vector2 GetInitPosition() { return initPosition; }
-	public List<ActiveSkill> GetSkillList() { return skillList; }
-	public List<ActiveSkill> GetLearnedSkillList()
-	{
+	public List<ActiveSkill> GetSkillList() { return activeSkillList; }
+	public List<ActiveSkill> GetLearnedSkillList(){
 		var learnedSkills =
-			 from skill in skillList
+			 from skill in activeSkillList
 			// where SkillDB.IsLearned(nameInCode, skill.GetName())
 			 select skill;
 		return learnedSkills.ToList();
@@ -242,7 +241,7 @@ public class Unit : MonoBehaviour
 	public void AddSkillCooldown(int phase)
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
-		foreach (var skill in skillList)
+		foreach (var skill in activeSkillList)
 		{
 			int cooldown = 0;
 			if (usedSkillDict.ContainsKey(skill.GetName()))
@@ -832,34 +831,34 @@ public class Unit : MonoBehaviour
         this.celestial = unitInfo.celestial;
         this.isObject = unitInfo.isObject;
     }
-    public void ApplySkillList(List<ActiveSkill> ActiveSkillList, List<StatusEffectInfo> statusEffectInfoList,
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkillList){
+    public void ApplySkillList(List<ActiveSkill> activeSkills, List<StatusEffectInfo> statusEffectInfoList,
+                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
         int partyLevel = GameData.PartyData.level;
 
-        foreach (var activeSkill in ActiveSkillList) {
+        foreach (var activeSkill in activeSkills) {
             if (activeSkill.owner == nameInCode && activeSkill.requireLevel <= partyLevel){
                 // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
-                    activeSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                    activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                    skillList.Add(activeSkill);
-            }
-
-        }
-        // 비어있으면 디폴트 스킬로 채우도록.
-        if (skillList.Count() == 0) {
-            foreach (var activeSkill in ActiveSkillList) {
-                if (activeSkill.owner == "default" && activeSkill.requireLevel <= partyLevel)
-                    skillList.Add(activeSkill);
-            }
+                activeSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
+                activeSkillList.Add(activeSkill);
+			}
         }
 
-        foreach (var passiveSkill in passiveSkillList) {
+		foreach (var passiveSkill in passiveSkills) {
             //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
             if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
                 passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                this.passiveSkillList.Add(passiveSkill);
+                passiveSkillList.Add(passiveSkill);
             }
         }
+
+        // 비어있으면 디폴트 스킬로 채우도록.
+        if (activeSkills.Count() == 0) {
+            foreach (var activeSkill in activeSkills) {
+                if (activeSkill.owner == "default" && activeSkill.requireLevel <= partyLevel)
+                    activeSkillList.Add(activeSkill);
+            }
+		}
     }
     UnitManager unitManager;
 	void Initialize()
@@ -945,7 +944,7 @@ public class Unit : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.L))
 		{
 			String log = name + "\n";
-			foreach (var skill in skillList)
+			foreach (var skill in activeSkillList)
 			{
 				log += skill.GetName() + "\n";
 			}

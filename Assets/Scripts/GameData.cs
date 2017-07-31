@@ -12,6 +12,15 @@ namespace GameData{
 			reqExp = (int)(Mathf.Pow((0.117f*level)+0.883f, 3)*100);
 		}
 
+		public static void CheckLevelZero(){
+			if(level == 0){
+				Debug.Log("Set Default LEVEL 1");
+				level = 1;
+				exp = 0;
+				reqExp = 100;
+			}
+		}
+
 		public static void AddExp(int point){
 			exp += point;
 			if(exp >= reqExp){

@@ -34,7 +34,7 @@ public class ActiveSkill : Skill{
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
 
-	// 스킬 SE 이름(그냥 그레네브 총질에만 한번 넣어봄)
+	// 스킬 SE 이름
 	string soundEffectName;
     
     // 상태이상 관련 정보
@@ -67,6 +67,8 @@ public class ActiveSkill : Skill{
 		effectName = commaParser.Consume();
 		effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
+
+		soundEffectName = commaParser.Consume ();
 
 		skillDataText = commaParser.Consume();
 		firstTextValueType = commaParser.ConsumeEnum<Stat>();

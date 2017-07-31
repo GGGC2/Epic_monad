@@ -142,8 +142,7 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	public void CheckUsableSkill(Unit selectedUnit)
-	{
+	public void CheckUsableSkill(Unit selectedUnit){
 		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
 
         Color enabledColor = new Color(1, 1, 1);
