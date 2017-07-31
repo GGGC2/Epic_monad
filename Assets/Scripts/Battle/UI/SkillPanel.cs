@@ -94,8 +94,8 @@ namespace BattleUI
 			skillApText.text = "";
 			skillCooldownText.text = "";	
 			skillDataText.text = "";
-			actualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
-			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
+			actualRange.sprite = transparent;
+			rangeType.sprite = transparent;
 			rangeText.text = "";
 		}
 
@@ -110,14 +110,9 @@ namespace BattleUI
 			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
 		}
 
-		public void CallbackPointerExitSkillIndex(int index)
-		{
+		public void CallbackPointerExitSkillIndex(int index){
 			battleManager.CallbackPointerExitSkillIndex(index);
-			skillApText.text = "";
-			rangeText.text = "";
-			skillCooldownText.text = "";
-			skillDataText.text = "";
-			rangeType.sprite = transparent;
+			OnEnable();
 		}
 
 		public void CallbackSkillUICancel()
