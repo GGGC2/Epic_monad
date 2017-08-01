@@ -219,8 +219,7 @@ public class UIManager : MonoBehaviour
 		destCheckUI.SetActive(false);
 	}
 
-	public void UpdateUnitViewer(Unit unitOnTile)
-	{
+	public void UpdateUnitViewer(Unit unitOnTile){
 		unitViewerUI.SetActive(true);
 		unitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(unitOnTile);
 	}

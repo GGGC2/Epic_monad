@@ -401,8 +401,7 @@ public class UnitManager : MonoBehaviour {
         GetEnemyUnits();
 	}
 
-	public void UpdateUnitOrder ()
-	{
+	public void UpdateUnitOrder (){
 		int standardActivityPoint = GetStandardActivityPoint();
 		List<Unit> currentPhaseUnits =
 			units.FindAll(go => go.GetCurrentActivityPoint() >= standardActivityPoint);

@@ -172,8 +172,7 @@ public class Unit : MonoBehaviour
 		this.direction = direction;
 		UpdateSpriteByDirection();
 	}
-	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp)
-	{
+	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp){
 		before.SetUnitOnTile(null);
 		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(after.GetTilePos());

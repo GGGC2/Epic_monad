@@ -5,14 +5,10 @@ using UnityEngine;
 
 using Enums;
 
-namespace Battle.Turn
-{
-	public class MoveStates
-	{
-		private static IEnumerator UpdatePreviewAP(BattleData battleData, Dictionary<Vector2, TileWithPath> movableTilesWithPath)
-		{
-			while (true)
-			{
+namespace Battle.Turn{
+	public class MoveStates{
+		private static IEnumerator UpdatePreviewAP(BattleData battleData, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			while (true){
 				if (battleData.preSelectedTilePosition.HasValue == false ||
 					movableTilesWithPath.ContainsKey(battleData.preSelectedTilePosition.Value) == false)
 				{
@@ -29,10 +25,8 @@ namespace Battle.Turn
 			}
 		}
 
-		public static IEnumerator SelectMovingPointState(BattleData battleData)
-		{
-			while (battleData.currentState == CurrentState.SelectMovingPoint)
-			{
+		public static IEnumerator SelectMovingPointState(BattleData battleData){
+			while (battleData.currentState == CurrentState.SelectMovingPoint){
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
 				List<Tile> movableTiles = new List<Tile>();
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
@@ -55,8 +49,8 @@ namespace Battle.Turn
 
 				battleData.isWaitingUserInput = false;
 
-				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
-				{
+				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered){
+					battleData.unitManager.UpdateUnitOrder();
 					battleData.uiManager.DisableCancelButtonUI();
 					battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 

@@ -151,8 +151,7 @@ public class EventTrigger<T>: IEventTrigger
 	}
 }
 
-public class BattleData
-{
+public class BattleData{
 	public TileManager tileManager;
 	public UnitManager unitManager;
 	public UIManager uiManager;
