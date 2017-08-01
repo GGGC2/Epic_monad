@@ -61,8 +61,10 @@ public class UnitViewer : MonoBehaviour {
 		apText.text = level+60+(Agility/2) + "(+" + Agility + ")";
 
 		SetClassImage(UnitInfo.GetUnitClass(unitName));
-		SetElementImage(UnitInfo.GetElement(unitName));
-		SetCelestialImage(UnitInfo.GetCelestial(unitName));
+		if(SceneData.stageNumber >= Setting.elementOpenStage)
+			SetElementImage(UnitInfo.GetElement(unitName));
+		if(SceneData.stageNumber >= Setting.celestialOpenStage)
+			SetCelestialImage(UnitInfo.GetCelestial(unitName));
 	}
 
 	public void Clear(){
