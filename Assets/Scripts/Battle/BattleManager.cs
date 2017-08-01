@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -54,8 +55,7 @@ public class BattleManager : MonoBehaviour
 		return battleData.currentPhase;
 	}
 
-	public Unit GetSelectedUnit()
-	{
+	public Unit GetSelectedUnit(){
 		return battleData.selectedUnit;
 	}
 
@@ -433,7 +433,6 @@ public class BattleManager : MonoBehaviour
 		battleData.uiManager.DisableSelectDirectionUI();
 	}
 
-	// Update is called once per frame
 	void Update(){
 		if (Input.GetMouseButtonDown(1)){
 			if (battleData.enemyUnitSelected)
@@ -459,6 +458,9 @@ public class BattleManager : MonoBehaviour
 			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
 			Checker.InitializeResultPanel ();
 		}
+
+		if(Input.GetKeyDown(KeyCode.B))
+			SceneManager.LoadScene("BattleReady");
 	}
 
 	public bool EnemyUnitSelected()
