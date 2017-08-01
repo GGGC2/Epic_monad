@@ -2,8 +2,8 @@ Name,Health,Power,Defense,Resist,Agility,class,element,celestial
 grenev,-4,4,-3,-3,1,melee,plant,moon
 noel,-1,-2,-1,4,1,magic,water,earth
 darkenir,-2,3,-3,3,-2,magic,water,moon
-bianca,-2,1,0,1,4,magic,metal,sun
-sepia,2,0,3,0,1,melee,fire,sun
+bianca,-2,1,-1,-1,4,magic,metal,sun
+sepia,2,0,3,0,0,melee,fire,sun
 arcadia,1,-1,2,2,-2,magic,plant,earth
 deus,-3,-1,0,0,2,magic,fire,moon
 reina,-2,2,-1,1,0,magic,fire,sun

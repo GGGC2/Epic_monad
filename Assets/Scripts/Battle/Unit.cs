@@ -635,8 +635,7 @@ public class Unit : MonoBehaviour
 		unitManager.UpdateUnitOrder();
 	}
 
-	public void RegenerateActionPoint()
-	{
+	public void RegenerateActionPoint(){
 		activityPoint = GetRegeneratedActionPoint();
 		Debug.Log(name + " recover " + actualDexturity.value + "AP. Current AP : " + activityPoint);
 	}
@@ -935,14 +934,11 @@ public class Unit : MonoBehaviour
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}
 
-	void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.R))
-		{
+	void Update(){
+		if (Input.GetKeyDown(KeyCode.P))
 			RegenerateActionPoint();
-		}
-		if (Input.GetKeyDown(KeyCode.L))
-		{
+
+		if (Input.GetKeyDown(KeyCode.L)){
 			String log = name + "\n";
 			foreach (var skill in activeSkillList)
 			{

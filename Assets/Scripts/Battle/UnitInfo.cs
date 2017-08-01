@@ -59,7 +59,7 @@ public class UnitInfo {
 		int RelativePoint = Int32.Parse(Parser.FindRowDataOf(UnitDataMatrix.text, unitName)[(int)type]);
 
 		float acc = 0;
-		if((int)type >= 3)
+		if((int)type < 3)
 			acc = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type, RelativePoint+5));
 
 		float coef = 0;
