@@ -22,6 +22,7 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void Awake (){
+		GameDataManager.Load();
 		PartyData.CheckLevelZero();
 		GetStageDataFiles();
 		battleData.tileManager = FindObjectOfType<TileManager>();
@@ -32,8 +33,6 @@ public class BattleManager : MonoBehaviour
 
 	void Start() {
         SoundManager.Instance.PlayBgm("Script_Tense");
-		
-        GameDataManager.Load();
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -435,10 +434,8 @@ public class BattleManager : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update()
-	{
-		if (Input.GetMouseButtonDown(1))
-		{
+	void Update(){
+		if (Input.GetMouseButtonDown(1)){
 			if (battleData.enemyUnitSelected)
 				battleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
 			else

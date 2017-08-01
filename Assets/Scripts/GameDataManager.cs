@@ -9,9 +9,7 @@ public class GameDataManager {
     static string filePath = Application.persistentDataPath + "/save.txt";
     
     public static void Reset() {
-        PartyData.level = 1;
-        PartyData.exp = 0;
-        PartyData.SetReqExp();
+        PartyData.SetDefault();
         SceneData.dialogueName = "Scene#1-1";
         SceneData.stageNumber = 1;
         SceneData.isDialogue = true;

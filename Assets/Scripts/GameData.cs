@@ -8,17 +8,17 @@ namespace GameData{
 		public static int exp;
 		public static int reqExp;
 
-		public static void SetReqExp(){
-			reqExp = (int)(Mathf.Pow((0.117f*level)+0.883f, 3)*100);
-		}
+		public static void SetReqExp(){ reqExp = (int)(Mathf.Pow((0.117f*GetLevel())+0.883f, 3)*100); }
 
 		public static void CheckLevelZero(){
-			if(level == 0){
-				Debug.Log("Set Default LEVEL 1");
-				level = 1;
-				exp = 0;
-				reqExp = 100;
-			}
+			if(GetLevel() == 0){ SetDefault(); }
+		}
+
+		public static void SetDefault(){
+			Debug.Log("Set Default LEVEL 1");
+			level = 1;
+			exp = 0;
+			reqExp = 100;
 		}
 
 		public static void AddExp(int point){
@@ -29,6 +29,8 @@ namespace GameData{
 				SetReqExp();
 			}
 		}
+
+		public static int GetLevel(){ return level; }
 	}
 
 	public class SceneData {

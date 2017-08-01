@@ -65,8 +65,9 @@ public class ResultPanel : MonoBehaviour{
 	}
 
 	public void UpdatePanel(int remainScore){
+		Debug.Log("PartyLevel = " + PartyData.GetLevel());
 		ScoreText.text = "점수 : " + remainScore;
-		LevelText.text = "레벨 : " + PartyData.level;
+		LevelText.text = "레벨 : " + PartyData.GetLevel();
 		ExpText.text = "경험치 : " + PartyData.exp + " / " + PartyData.reqExp;
 		ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
 	}

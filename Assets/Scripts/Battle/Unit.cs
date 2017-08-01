@@ -903,13 +903,11 @@ public class Unit : MonoBehaviour
 		spriteLeftDown = sprites[3] as Sprite;
 		spriteRightUp = sprites[4] as Sprite;
 		spriteRightDown = sprites[2] as Sprite;
-		// FIXME : 초기 방향에 따라 스프라이트 지정되도록 기능 추가. -> 필요없음. 아래의 Initialize에서 해결.
 		// GetComponent<SpriteRenderer>().sprite = spriteLeftUp;
 	}
 
 	// Use this for initialization
-	void Start()
-	{
+	void Start(){
 		ApplyStats();
 		LoadSprite();
 		Initialize();
@@ -920,8 +918,7 @@ public class Unit : MonoBehaviour
 		heightBonusTextObject.SetActive(false);
 	}
 
-	void Awake()
-	{
+	void Awake(){
 		chainBonusTextObject = GameObject.Find("ChainBonusPanel");
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;

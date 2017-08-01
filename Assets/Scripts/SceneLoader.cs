@@ -79,6 +79,7 @@ public class SceneLoader : MonoBehaviour{
 		yield return Fadeout();
 
         SceneData.isDialogue = false;
+		PartyData.CheckLevelZero();
         GameDataManager.Save();
         if (SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
             SceneManager.LoadScene("Battle");
