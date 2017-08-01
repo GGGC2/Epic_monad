@@ -10,7 +10,6 @@ using Battle.Feature;
 using Battle.Skills;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
-
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;

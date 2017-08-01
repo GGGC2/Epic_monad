@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 using Enums;
+using UnityEngine.SceneManagement;
 
 public class SkillUIManager : MonoBehaviour {
 	public Text ApText;
@@ -14,7 +15,9 @@ public class SkillUIManager : MonoBehaviour {
 	public Image RangeType;
 
 	public void UpdateSkillInfoUI(Skill skill, string unitName){
-		NameText.text = skill.korName;
+		if(SceneManager.GetActiveScene().name == "BattleReady")
+			NameText.text = skill.korName;
+			
 		ExplainText.text = skill.skillDataText.Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, unitName)).
 											   Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, unitName));
 

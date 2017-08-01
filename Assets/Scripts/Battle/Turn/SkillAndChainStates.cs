@@ -57,7 +57,8 @@ namespace Battle.Turn {
                     skillTypeOfSelectedSkill == SkillType.Route) {
                     battleData.currentState = CurrentState.SelectSkillApplyDirection;
                     yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnit.GetDirection()));
-                } else {
+                }
+                else{
                     battleData.currentState = CurrentState.SelectSkillApplyPoint;
                     yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnit.GetDirection()));
                 }
@@ -69,14 +70,14 @@ namespace Battle.Turn {
             }
         }
 
-        private static IEnumerator UpdateRangeSkillMouseDirection(BattleData battleData) {
+        private static IEnumerator UpdateRangeSkillMouseDirection(BattleData battleData, Direction originalDirection) {
             Unit selectedUnit = battleData.selectedUnit;
             ActiveSkill selectedSkill = battleData.SelectedSkill;
             var selectedTiles = GetTilesInFirstRange(battleData);
             battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 
             while (true) {
-                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit);
+                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
                 Direction beforeDirection = battleData.selectedUnit.GetDirection();
                 var selectedTilesByBeforeDirection = GetTilesInFirstRange(battleData, beforeDirection);
                 var selectedTilesByNewDirection = GetTilesInFirstRange(battleData, newDirection);
@@ -118,7 +119,7 @@ namespace Battle.Turn {
             while (true) {
                 battleData.isWaitingUserInput = true;
                 //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향도 돌림
-                var updateRedArea = UpdateRangeSkillMouseDirection(battleData);
+                var updateRedArea = UpdateRangeSkillMouseDirection(battleData, originalDirection);
                 battleData.battleManager.StartCoroutine(updateRedArea);
 
 				//지정형 스킬이 아니라면 4방향 화살표를 띄운다(본인 중심으로 4방향 대칭인 스킬도 화살표가 의미가 있는데, 스킬 시전 후의 시전자 시선 방향을 결정하기 때문)
@@ -167,10 +168,10 @@ namespace Battle.Turn {
             }
         }
 
-        private static IEnumerator UpdatePointSkillMouseDirection(BattleData battleData) {
-            Direction beforeDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit);
+        private static IEnumerator UpdatePointSkillMouseDirection(BattleData battleData, Direction originalDirection) {
+            Direction beforeDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
             while (true) {
-                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit);
+                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
                 if (beforeDirection != newDirection) {
                     beforeDirection = newDirection;
                     battleData.selectedUnit.SetDirection(newDirection);
@@ -199,7 +200,7 @@ namespace Battle.Turn {
                 battleData.uiManager.EnableCancelButtonUI();
                 battleData.isWaitingUserInput = true;
 
-                var update = UpdatePointSkillMouseDirection(battleData);
+                var update = UpdatePointSkillMouseDirection(battleData, originalDirection);
                 battleData.battleManager.StartCoroutine(update);
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     battleData.triggers.tileSelectedByUser,
