@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;
+	string displayName;
 	public Vector2 position;
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
@@ -30,7 +31,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public Vector2 GetTilePos()	{	return position;	}
 
-	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height)
+	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height, string displayName)
 	{
 		string typeIndexString = typeIndex.ToString();
 		if (typeIndex < 10)
@@ -43,6 +44,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		SetTileAPAtStandardHeight(APAtStandardHeight);
 		SetTileHeight(height);
 		SetTileElement(element);
+		SetDisplayName (displayName);
 	}
 
     public List<TileStatusEffect> GetStatusEffectList() { return statusEffectList; }
@@ -52,6 +54,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public void SetTileHeight(int height)	{	this.height = height;	}
 
 	public void SetTileElement(Element element)	{	this.element = element;	}
+
+	public void SetDisplayName(string displayName)	{	this.displayName = displayName;	}
 
 	public int GetTileAPAtStandardHeight()	{	return APAtStandardHeight;	}
 
@@ -142,14 +146,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public string GetTileName()
 	{
-		if (element == Element.None)
-			return "평지";
-		else if (element == Element.Water)
-			return "물";
-		else if (element == Element.Plant)
-			return "풀밭";
-		else
-			return "--";
+		return displayName;
 	}
 
 	int CalculatingRequireAPOfTile(int tileAPAtStandardHeight, int tileHeight)

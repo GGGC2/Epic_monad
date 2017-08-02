@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Enums;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using Enums;
 
 public class TileInfo {
 	Vector2 tilePosition;
@@ -10,6 +11,7 @@ public class TileInfo {
 	Element tileElement;
 	int tileTypeIndex;
 	bool isEmptyTile;
+	string displayName;
 
 	public Vector2 GetTilePosition() { return tilePosition; }
 	public Element GetTileElement() { return tileElement; }
@@ -17,6 +19,7 @@ public class TileInfo {
 	public int GetTileHeight() { return tileHeight; }
 	public int GetTileIndex() { return tileTypeIndex; }
 	public bool IsEmptyTile() { return isEmptyTile; }
+	public String GetDisplayName() { return displayName; }
 
 	public TileInfo(Vector2 tilePosition, string tileInfoString){
 		if (tileInfoString[0] == '-'){
@@ -30,18 +33,7 @@ public class TileInfo {
 
 		char tileElementChar = tileInfoString[0];
 
-		if (tileElementChar == 'F')
-			this.tileElement = Element.Fire;
-		else if (tileElementChar == 'W')
-			this.tileElement = Element.Water;
-		else if (tileElementChar == 'P')
-			this.tileElement = Element.Plant;
-		else if (tileElementChar == 'M')
-			this.tileElement = Element.Metal;
-		else if (tileElementChar == 'N')
-			this.tileElement = Element.None;
-		else
-			Debug.LogError("Undefined tileType: <" + tileElement + ">" + " at " + tilePosition);
+		this.tileElement = ReadTileElementChar (tileElementChar);
 
 		string tileTypeIndexSubstring = tileInfoString.Substring(1,2);
 		int number;
@@ -56,11 +48,53 @@ public class TileInfo {
 		else
 			Debug.LogError ("Undefined tileHeight: <" + tileHeightSubstring + ">" + "at" + tilePosition);
 
-		// FIXME : 타일 AP 세팅 부분. 임시 구현.
-		if (tileElement == Element.Water)
-			this.tileAPAtStandardHeight = 9999;
-		else
-			this.tileAPAtStandardHeight = 3;
+		if (TileLibrary == null)
+			LoadTileLibrary ();
 
+		string tileIdentifier = tileInfoString.Substring (0, 3);
+		this.tileAPAtStandardHeight = TileLibrary [tileIdentifier].baseAPCost;
+		this.displayName = TileLibrary [tileIdentifier].displayName;
+	}
+	public static Element ReadTileElementChar(char tileElementChar){
+		if (tileElementChar == 'F')
+			return Element.Fire;
+		else if (tileElementChar == 'W')
+			return Element.Water;
+		else if (tileElementChar == 'P')
+			return Element.Plant;
+		else if (tileElementChar == 'M')
+			return Element.Metal;
+		else if (tileElementChar == 'N')
+			return Element.None;
+		else {
+			Debug.LogError ("Undefined tileType: <" + tileElementChar + ">");
+			return Element.None;
+		}
+	}
+
+	public static Dictionary<string, TileTypeData> TileLibrary = null;
+	public class TileTypeData{
+		public string identifier;
+		public string displayName;
+		public Element element;
+		public int baseAPCost;
+		public TileTypeData(string dataLine){
+			CommaStringParser commaParser = new CommaStringParser(dataLine);
+			displayName = commaParser.Consume();
+			identifier=commaParser.Consume();
+			baseAPCost = commaParser.ConsumeInt();
+		}
+	}
+	private static void LoadTileLibrary (){
+		TileLibrary = new Dictionary<string, TileTypeData> ();
+
+		TextAsset csvFile;
+		csvFile = Resources.Load("Data/TileLibrary") as TextAsset;
+		string csvText = csvFile.text;
+		string[] unparsedTileInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for (int i = 1; i < unparsedTileInfoStrings.Length; i++) {
+			TileTypeData tileType = new TileTypeData (unparsedTileInfoStrings [i]);
+			TileLibrary [tileType.identifier] = tileType;
+		}
 	}
 }
