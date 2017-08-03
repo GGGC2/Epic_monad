@@ -169,7 +169,7 @@ public static class SkillLogicFactory
 
 			// 카샤스티
 			case "더블 샷":
-            skillLogic = new Kashyasty_1_l_SkillLogic();
+            skillLogic = new Kashasty_1_l_SkillLogic();
             break;
 
 			// Not used
@@ -454,10 +454,10 @@ public static class SkillLogicFactory
 
 			// 카샤스티
 			case "장미 속의 가시":
-			passiveSkillLogic = new Kashyasty_1_r_SkillLogic();
+			passiveSkillLogic = new Kashasty_1_r_SkillLogic();
 			break;
 			case "장미의 사수":
-			passiveSkillLogic = new Kashyasty_2_r_SkillLogic();
+			passiveSkillLogic = new Kashasty_2_r_SkillLogic();
 			break;
 
             // 큐리
