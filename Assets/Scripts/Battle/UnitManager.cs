@@ -59,8 +59,6 @@ public class UnitManager : MonoBehaviour {
 
     public void TriggerPassiveSkillsAtActionEnd() {
 		foreach(var unit in GetAllUnits()) {
-			if(unit.GetLearnedPassiveSkillList ().Count >	0 )
-				Debug.Log (unit.GetName() + "의 패시브 스킬 개수 : " + unit.GetLearnedPassiveSkillList ().Count);
             SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
         }
     }
