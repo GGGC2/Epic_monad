@@ -45,7 +45,7 @@ namespace Battle.Turn
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
 				Tile attackAbleTile = null;
-				if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+				if (skillTypeOfSelectedSkill != SkillType.Point)
 					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, tile);
 				else
 					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfPointSkill (battleData, tile);
@@ -225,7 +225,7 @@ namespace Battle.Turn
 
 			Tile attackAbleTile;
 
-			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+			if (skillTypeOfSelectedSkill != SkillType.Point)
 				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, currentTile);
 			else
 				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, currentTile);
@@ -327,7 +327,7 @@ namespace Battle.Turn
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
-			if (skillTypeOfSelectedSkill == SkillType.Auto || skillTypeOfSelectedSkill == SkillType.Self)
+			if (skillTypeOfSelectedSkill != SkillType.Point)
 			{
 				battleData.currentState = CurrentState.SelectSkillApplyDirection;
 				yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnit.GetDirection()));
