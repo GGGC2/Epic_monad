@@ -15,9 +15,8 @@ namespace Battle.Turn {
                     ActiveSkill preSelectedSkill = battleData.PreSelectedSkill;
                     int requireAP = preSelectedSkill.GetRequireAP();
                     battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
-                } else {
+                }else 
                     battleData.previewAPAction = null;
-                }
                 battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
                 yield return null;
             }

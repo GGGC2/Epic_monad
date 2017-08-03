@@ -6,6 +6,7 @@ using Enums;
 using Util;
 using Battle.Skills;
 using System.Linq;
+using GameData;
 
 public class DeadUnitInfo{
 	public readonly string unitName;
@@ -98,12 +99,16 @@ public class UnitManager : MonoBehaviour {
 
 	public List<Unit> GetRetreatUnits(){
 		retreatUnits.Clear();
+		
+		if(SceneData.stageNumber < Setting.retreatOpenStage)
+			return retreatUnits;
+
 		foreach (var unit in units){
 			// 오브젝트는 이탈하지 않는다
 			if (unit.IsObject()) continue;
 
 			float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
-			if (((percentHealth <= 10) && (unit.GetCurrentHealth() > 0)) ||
+			if (((percentHealth <= Setting.retreatHpPercent) && (unit.GetCurrentHealth() > 0)) ||
 				(retreatUnits.Contains(unit)))
 				retreatUnits.Add(unit);
 		}
