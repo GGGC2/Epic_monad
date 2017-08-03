@@ -505,6 +505,7 @@ namespace Battle.Turn {
 
                         // 효과 외의 부가 액션 (AP 감소 등)
                         yield return battleManager.StartCoroutine(SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(skillInstanceData));
+                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).ActionInDamageRoutine(skillInstanceData));
 
                         // 기술의 상태이상은 기술이 적용된 후에 붙인다.
                         if (appliedSkill.GetStatusEffectList().Count > 0) {

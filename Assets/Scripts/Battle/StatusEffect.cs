@@ -26,6 +26,7 @@ public class StatusEffect {
             public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
             public readonly StatusEffectVar stackVar; // 한번에 쌓이는 스택 수
             public readonly int maxStack; // 최대 가능한 스택 수
+            public readonly bool amountNotEffectedByStack;
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
 
             // 이펙트 관련 정보
@@ -36,7 +37,7 @@ public class StatusEffect {
             public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
-                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
+                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
                 this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
@@ -48,6 +49,7 @@ public class StatusEffect {
                 this.defaultPhase = defaultPhase;
                 this.stackVar = stackVar;
                 this.maxStack = maxStack;
+                this.amountNotEffectedByStack = amountNotEffectedByStack;
                 this.isRemovable = isRemovable;
                 this.effectName = effectName;
                 this.effectVisualType = effectVisualType;
@@ -82,12 +84,12 @@ public class StatusEffect {
         public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
-                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool isRemovable,
+                  int defaultPhase, StatusEffectVar stackVar, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
                   string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
             display = new DisplayElement(toBeReplaced, originSkillName, displayName,
                     isBuff, isInfinite,
                     isStackable, isOnce,
-                    defaultPhase, stackVar, maxStack, isRemovable,
+                    defaultPhase, stackVar, maxStack, amountNotEffectedByStack, isRemovable,
                     effectName, effectVisualType, effectMoveType);
 
             actuals = actualEffects;
@@ -158,6 +160,7 @@ public class StatusEffect {
     public bool GetIsInfinite() { return fixedElem.display.isInfinite; }
     public bool GetIsStackable() { return fixedElem.display.isStackable; }
     public bool GetIsOnce() { return fixedElem.display.isOnce; }
+    public bool GetAmountNotEffectedByStack() { return fixedElem.display.amountNotEffectedByStack; }
     public bool GetIsRemovable() { return fixedElem.display.isRemovable; }
     public string GetEffectName() { return fixedElem.display.effectName; }
     public EffectVisualType GetEffectVisualType() { return fixedElem.display.effectVisualType; }
@@ -262,7 +265,8 @@ public class StatusEffect {
     }
 
     public void CalculateAmount(int i, float statusEffectVar) {
-        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
+        if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();
     }
     public void CalculateAmount(int i, bool isUpdate) {
         Unit caster = GetCaster();
@@ -282,7 +286,7 @@ public class StatusEffect {
             if (GetOriginPassiveSkill() != null)
                 statusEffectVar = SkillLogicFactory.Get(GetOriginPassiveSkill()).GetStatusEffectVar(this, i, caster, owner);
         }
-
-        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase) * GetRemainStack();
+        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
+        if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();
     }
 }

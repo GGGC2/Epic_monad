@@ -75,7 +75,7 @@ public static class StatusEffector
 		return true;
 	}
 
-	private static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
+	public static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
 	{
 		List<StatusEffect> validStatusEffects = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffects)

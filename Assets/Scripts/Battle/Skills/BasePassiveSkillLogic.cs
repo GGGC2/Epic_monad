@@ -55,8 +55,11 @@ public class BasePassiveSkillLogic
 	public virtual void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
 	}
-	
-	public virtual int GetEvasionChance()
+
+    public virtual IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+        yield return null;
+    }
+    public virtual int GetEvasionChance()
 	{
 		return 0;
 	}

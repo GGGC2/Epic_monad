@@ -167,6 +167,15 @@ public static class SkillLogicFactory
             skillLogic = new Eugene_8_m_SkillLogic();
             break;
 
+            //제이선
+            case "그림자 일격":
+            skillLogic = new Json_1_l_SkillLogic();
+            break;
+
+            case "단검 투척":
+            skillLogic = new Json_1_r_SkillLogic();
+            break;
+
 			// 카샤스티
 			case "더블 샷":
             skillLogic = new Kashasty_1_l_SkillLogic();
@@ -445,6 +454,11 @@ public static class SkillLogicFactory
             break;
             case "길잡이":
             passiveSkillLogic = new Eugene_7_r_SkillLogic();
+            break;
+
+            //제이선
+            case "표식":
+            passiveSkillLogic = new Json_0_1_SkillLogic();
             break;
 
 			// 트리아나

@@ -13,11 +13,13 @@ public class HitInfo
 {
 	public readonly Unit caster;
 	public readonly ActiveSkill skill;
+    public readonly int finalDamage;
 
-	public HitInfo(Unit caster, ActiveSkill skill)
+	public HitInfo(Unit caster, ActiveSkill skill, int finalDamage)
 	{
 		this.caster = caster;
 		this.skill = skill;
+        this.finalDamage = finalDamage;
 	}
 }
 
@@ -494,7 +496,7 @@ public class Unit : MonoBehaviour
 
             if (finalDamage > 0) {
                 currentHealth -= finalDamage;
-                latelyHitInfos.Add(new HitInfo(caster, null));
+                latelyHitInfos.Add(new HitInfo(caster, null, finalDamage));
 
                 // 데미지를 받을 때 발동하는 피격자 특성
                 SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, caster);

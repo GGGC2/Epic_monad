@@ -97,6 +97,7 @@ eugene,36,야영 전문가,3,ABCD,None,0,None,0
 eugene,43,청명수의 은총,1,ABCD,None,0,None,0
 eugene,43,백색 파문,2,ABCD,None,0,None,0
 eugene,43,길잡이,3,ABCD,None,0,None,0
+json,0,표식,1,제이선의 공격은 적에게 표식을 남깁니다. 표식을 4스택 쌓은 상태에서 공격하면 표식이 모두 사라지며 이 공격으로 가한 데미지의 n%만큼 제이선의 체력이 회복됩니다,None,0,None,0
 sepia,1,신뢰의 끈,2,자신으로부터 2타일 이내의 후면에 동료가 있으면 방어력이 <color=green>48+레벨당 0.6</color> 높아집니다.,None,0,None,0
 arcadia,1,광합성,2,ABCD,None,0,None,0
 grenev,1,살의,3,6페이즈 이후부터 속도가 25 높아집니다.,None,0,None,0

@@ -77,6 +77,11 @@ namespace Battle.Skills
             }
         }
 
+        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+            foreach(var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.ActionInDamageRoutine(skillInstanceData);
+            }
+        }
 
         public override int GetEvasionChance()
 	    {
