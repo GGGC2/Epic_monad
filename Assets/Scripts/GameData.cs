@@ -37,5 +37,7 @@ namespace GameData{
 		public static string dialogueName;
 		public static int stageNumber;
         public static bool isDialogue;
+        public static bool isTestMode = false;
+        public static bool isStageMode = false;
 	}
 }

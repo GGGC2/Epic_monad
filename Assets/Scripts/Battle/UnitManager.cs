@@ -395,7 +395,9 @@ public class UnitManager : MonoBehaviour {
         LoadStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
-		ApplyAIInfo();
+        if (!GameData.SceneData.isTestMode) {
+            ApplyAIInfo();
+        }
         GetEnemyUnits();
 	}
 

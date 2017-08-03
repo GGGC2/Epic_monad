@@ -79,8 +79,10 @@ public class SceneLoader : MonoBehaviour{
 		yield return Fadeout();
 
         SceneData.isDialogue = false;
-        GameDataManager.Save();
-        if (SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
+        if (!SceneData.isTestMode && !SceneData.isStageMode) {
+            GameDataManager.Save();
+        }
+        if (SceneData.isTestMode || SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
             SceneManager.LoadScene("Battle");
         else {
             SceneManager.LoadScene("BattleReady");
@@ -100,7 +102,9 @@ public class SceneLoader : MonoBehaviour{
 		{
 			SceneData.dialogueName = nextScriptFileName;
             SceneData.isDialogue = true;
-            GameDataManager.Save();
+            if (!SceneData.isTestMode && !SceneData.isStageMode) {
+                GameDataManager.Save();
+            }
 			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
 			SceneManager.LoadScene("dialogue");

@@ -23,9 +23,11 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void Awake (){
-		GameDataManager.Load();
+        if (!SceneData.isTestMode && !SceneData.isStageMode) {
+            GameDataManager.Load();
+        }
 		PartyData.CheckLevelZero();
-		GetStageDataFiles();
+		Load();
 		battleData.tileManager = FindObjectOfType<TileManager>();
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
@@ -578,18 +580,23 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void GetStageDataFiles(){
-		if (SceneData.stageNumber == 0)
-			SceneData.stageNumber = 1;	
+        if (SceneData.isTestMode) {
+            mapData = Resources.Load<TextAsset>("Data/EQ_test_map");
+            unitData = Resources.Load<TextAsset>("Data/EQ_test_unit");
+        } else {
+            if (SceneData.stageNumber == 0)
+                SceneData.stageNumber = 1;
 
-		TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
-		mapData = nextMapFile;
-		TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
-		unitData = nextUnitFile;
-		TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
-		aiData = nextAIDataFile;
-		TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
-		battleConditionData = nextBattleConditionFile;
-		TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
-		bgmData = nextBgmFile;
+            TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
+            mapData = nextMapFile;
+            TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
+            unitData = nextUnitFile;
+            TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
+            aiData = nextAIDataFile;
+            TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
+            battleConditionData = nextBattleConditionFile;
+            TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
+            bgmData = nextBgmFile;
+        }
 	}
 }

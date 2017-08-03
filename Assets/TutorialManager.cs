@@ -14,14 +14,16 @@ public class TutorialManager : MonoBehaviour {
 	void Start () {
 		index = 0;
 
-		if(usedSceneName == "Battle"){
-			cm = FindObjectOfType<CameraMover>();
-			cm.mouseMoveActive = false;
-			cm.keyboardMoveActive = false;
-		}
-
-		OnClick();
-	}
+        if (usedSceneName == "Battle") {
+            cm = FindObjectOfType<CameraMover>();
+            cm.mouseMoveActive = false;
+            cm.keyboardMoveActive = false;
+        }
+        OnClick();
+        if (GameData.SceneData.isTestMode || GameData.SceneData.isStageMode) {
+            Skip();
+        }
+    }
 	
 	void OnClick(){
 		index += 1;
