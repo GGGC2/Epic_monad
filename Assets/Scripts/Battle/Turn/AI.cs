@@ -298,6 +298,9 @@ namespace Battle.Turn
 
 		public static IEnumerator AIAct(BattleData battleData){
 			while (true) {
+				//행동하기 전마다 체크해야 할 사항들(중요!)
+				yield return BattleManager.AtActionEnd(battleData);
+
 				int selectedSkillIndex = 1;
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;

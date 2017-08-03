@@ -257,6 +257,22 @@ public class BattleManager : MonoBehaviour
 				-10);	
 	}
 
+	public static IEnumerator AtActionEnd(BattleData battleData){
+		BattleManager battleManager = battleData.battleManager;
+		// 매 액션이 끝날때마다 갱신하는 특성 조건들
+		battleData.unitManager.ResetLatelyHitUnits();
+		battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+		yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
+		battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+		battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+
+		//승리 조건이 충족되었으면 결과창 출력하기
+		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+			Checker.InitializeResultPanel();
+		// 액션마다 갱신사항 종료
+	}
+
 	public static IEnumerator FocusToUnit(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
@@ -266,18 +282,7 @@ public class BattleManager : MonoBehaviour
 			if (IsSelectedUnitRetreatOrDie(battleData))
 				yield break;
 			
-			// 매 액션이 끝날때마다 갱신하는 특성 조건들
-			battleData.unitManager.ResetLatelyHitUnits();
-			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-            yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
-            battleData.unitManager.UpdateStatusEffectsAtActionEnd();
-            battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
-
-			//승리 조건이 충족되었으면 결과창 출력하기
-			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
-			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
-				Checker.InitializeResultPanel();
-			// 액션마다 갱신사항 종료
+			yield return AtActionEnd(battleData);
 
 			MoveCameraToUnit(battleData.selectedUnit);
 

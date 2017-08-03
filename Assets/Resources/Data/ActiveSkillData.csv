@@ -1,6 +1,6 @@
-owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,soundEffectName,skillDataText,Value1Type,Value1Coef,Value2Type,Value2Coef
+﻿owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,soundEffectName,skillDataText,Value1Type,Value1Coef,Value2Type,Value2Coef
 manastone,1,가만히,1,9999,0,Power,0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,-,--,None,0,None,0
-soldier01,1,근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,Slash,--,None,0,None,0
+soldier01,1,근접공격,1,35,0,Power,1,Point,Cross,1,2,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,Slash,--,None,0,None,0
 archer01,1,화살 발사,1,30,0,Power,0.9,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,None,0
 asterArcher01,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,None,0
 controller,1,침입자 제거,1,1,0,Power,1.5,Point,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,ControllerGrawl,--,None,0,None,0
