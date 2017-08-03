@@ -1,0 +1,8 @@
+Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+1,경비병,soldier01,Enemy,8,2,LeftUp,152,57,20,20,41,Melee,None,None,false
+2,경비병,soldier01,Enemy,8,8,LeftUp,152,57,20,20,41,Melee,None,None,false
+3,경비병,soldier01,Enemy,10,7,LeftUp,152,57,20,20,41,Melee,None,None,false
+9,unselected,unselected,Ally,2,4,RightDown,0,0,0,0,0,None,None,None,false
+10,unselected,unselected,Ally,2,5,RightDown,0,0,0,0,0,None,None,None,false
+11,unselected,unselected,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
+12,unselected,unselected,Ally,1,5,RightDown,0,0,0,0,0,None,None,None,false
