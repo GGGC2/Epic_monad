@@ -737,11 +737,11 @@ public class Unit : MonoBehaviour
 	// 보너스 텍스트 표시.
 	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage)
 	{
-		directionBonusTextObject.SetActive(true);
+		directionBonusTextObject.SetActive (true);
 		if (attackDamage.attackDirection == DirectionCategory.Side)
-			directionBonusTextObject.GetComponentInChildren<Text>().text = "측면 공격 (x" + attackDamage.directionBonus + ")";
+			directionBonusTextObject.GetComponentInChildren<Text> ().text = "측면 공격 (x" + attackDamage.directionBonus + ")";
 		else if (attackDamage.attackDirection == DirectionCategory.Back)
-			directionBonusTextObject.GetComponentInChildren<Text>().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
+			directionBonusTextObject.GetComponentInChildren<Text> ().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
 	}
 	public void PrintCelestialBonus(float bonus)
 	{
