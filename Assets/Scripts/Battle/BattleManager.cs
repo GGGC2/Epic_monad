@@ -226,7 +226,7 @@ public class BattleManager : MonoBehaviour
 		return false;
 	}
 
-	static IEnumerator UpdateRetreatAndDeadUnits(BattleData battleData, BattleManager battleManager)
+	public static IEnumerator UpdateRetreatAndDeadUnits(BattleData battleData, BattleManager battleManager)
 	{
 		battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
 		battleData.deadUnits = battleData.unitManager.GetDeadUnits();

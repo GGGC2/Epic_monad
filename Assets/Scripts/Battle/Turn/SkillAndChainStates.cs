@@ -108,6 +108,20 @@ namespace Battle.Turn {
 
             return newRouteTiles;
         }
+		public static Tile GetRouteEnd(List<Tile> tiles) {// 현재는 AI 투사체에만 사용되는 함수임.
+			foreach (var tile in tiles) {
+				// 타일 단차에 의한 부분(미구현)
+				// 즉시 null을 return한다.
+				// break;
+
+				// 첫 유닛(오브젝트 포함)을 만난 경우
+				// 이번 타일을 return하고 종료한다.
+				if (tile.IsUnitOnTile())
+					return tile;
+			}
+
+			return null;
+		}
 
 
         public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection) {

@@ -1,8 +1,8 @@
 Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
-1,경비병,soldier01,Enemy,8,2,LeftUp,152,57,20,20,41,Melee,None,None,false
-2,경비병,soldier01,Enemy,8,8,LeftUp,152,57,20,20,41,Melee,None,None,false
-3,경비병,soldier01,Enemy,10,7,LeftUp,152,57,20,20,41,Melee,None,None,false
-4,카샤스티,kashasty_Escape,Enemy,5,5,LeftUp,900,200,200,200,96,Melee,None,None,false
+1,경비병,soldier01,Ally,8,2,LeftUp,152,57,20,20,41,Melee,Fire,Moon,false
+2,경비병,soldier01,Ally,8,8,LeftUp,152,57,20,20,41,Melee,Fire,Moon,false
+3,경비병,soldier01,Ally,10,7,LeftUp,152,57,20,20,41,Melee,Fire,Moon,false
+4,카샤스티,kashasty_Escape,Enemy,5,5,LeftUp,1505,293,113,197,71,Melee,Plant,Sun,false
 5,unselected,unselected,Ally,2,4,RightDown,0,0,0,0,0,None,None,None,false
 6,unselected,unselected,Ally,2,5,RightDown,0,0,0,0,0,None,None,None,false
 7,unselected,unselected,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
