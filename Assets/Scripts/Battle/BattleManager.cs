@@ -127,16 +127,21 @@ public class BattleManager : MonoBehaviour
 			battleData.selectedUnit.SetInactive();
 	}
 
-	static void CheckStandbyPossible(BattleData battleData){
+	public static bool GetStandbyPossible(BattleData battleData){
 		bool isPossible = false;
 
 		foreach (var unit in battleData.unitManager.GetAllUnits()){
 			if ((unit != battleData.selectedUnit) &&
-			(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
+				(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
 			{
 				isPossible = true;
+				return isPossible;
 			}
 		}
+		return isPossible;
+	}
+	private static void CheckStandbyPossible(BattleData battleData){
+		bool isPossible = GetStandbyPossible (battleData);
 
 		// Debug.Log("standbyButton : " + GameObject.Find("StandbyButton"));
 		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;

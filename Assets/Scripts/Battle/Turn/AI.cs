@@ -304,17 +304,26 @@ namespace Battle.Turn
 
 				int selectedSkillIndex = 1;
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				Unit selectedUnit = battleData.selectedUnit;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 				int currentAP = battleData.selectedUnit.GetCurrentActivityPoint ();
 				int requireAP = battleData.SelectedSkill.GetRequireAP ();
 				bool enoughAP = currentAP >= requireAP;
+				bool notInNonskillableEffect = !(selectedUnit.HasStatusEffect(StatusEffectType.Silence) ||
+					selectedUnit.HasStatusEffect(StatusEffectType.Faint));
 
-				if (enoughAP) {
+				if (enoughAP && notInNonskillableEffect) {
 					yield return AISkill (battleData, selectedSkillIndex);
 				}
 				else {
-					yield return PassTurn ();
+					if (BattleManager.GetStandbyPossible (battleData)) {
+						yield return PassTurn ();
+					}
+					else {
+						battleData.currentState = CurrentState.RestAndRecover;
+						yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+					}
 					yield break;
 				}
 			}
@@ -354,7 +363,7 @@ namespace Battle.Turn
 
 			if (selectedTile == null)
 			{
-				Debug.Log(selectedUnit.GetNameInCode () + " cannot find unit for direction attack. " );
+				Debug.Log(selectedUnit.GetName () + " cannot find unit for direction attack. " );
 				// 아무것도 할 게 없을 경우 휴식
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
@@ -433,7 +442,7 @@ namespace Battle.Turn
 
 			if (selectedTile == null)
 			{
-				Debug.Log(selectedUnit.GetNameInCode () + " cannot find unit for point attack. " );
+				Debug.Log(selectedUnit.GetName () + " cannot find unit for point attack. " );
 				// 아무것도 할 게 없을 경우 휴식
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
