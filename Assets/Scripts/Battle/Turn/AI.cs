@@ -2,13 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using Enums;
 
-namespace Battle.Turn
-{
-	public class AIUtil
-	{
+namespace Battle.Turn{
+	public class AIUtil{
 		public static Side GetOtherSide(Unit unit){
 			Side mySide = unit.GetSide ();
 			Side otherSide;
@@ -34,8 +31,7 @@ namespace Battle.Turn
 
 			return mainUnit.GetPosition();
 		}
-		public static Tile FindNearestEnemyAttackableTile(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, BattleData battleData)
-		{
+		public static Tile FindNearestEnemyAttackableTile(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, BattleData battleData){
 			Unit selectedUnit = battleData.selectedUnit;
 			Side otherSide = GetOtherSide (selectedUnit);
 			SkillType skillTypeOfSelectedSkill = skill.GetSkillType ();
@@ -93,8 +89,7 @@ namespace Battle.Turn
 		public static Unit currentUnit;
 		public static AIData currentUnitAIData;
 
-		public static IEnumerator AIStart(BattleData battleData)
-		{
+		public static IEnumerator AIStart(BattleData battleData){
 			currentUnit = battleData.selectedUnit;
 
 			battleData.uiManager.SetSelectedUnitViewerUI(currentUnit);
@@ -119,13 +114,11 @@ namespace Battle.Turn
 				yield return battleManager.StartCoroutine(AIStates_old.AIMove());
 		}
 
-		public static IEnumerator AIMove(BattleData battleData)
-		{
+		public static IEnumerator AIMove(BattleData battleData){
 			yield return null;
 		}
 
-		public static void CheckActiveTrigger(BattleData battleData)
-		{
+		public static void CheckActiveTrigger(BattleData battleData){
 			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
 			if (currentUnitAIData.activeTriggers.Contains(1))
@@ -150,9 +143,7 @@ namespace Battle.Turn
 				aroundTiles.ForEach(eachArea => {
 					eachArea.ForEach(tile => {
 						if (tile.IsUnitOnTile())
-						{
 							aroundUnits.Add(tile.GetUnitOnTile());
-						}
 					});
 				});
 
@@ -161,8 +152,7 @@ namespace Battle.Turn
 
 				bool isThereAnotherSideUnit = aroundUnits.Any(unit => unit.GetSide() != currentUnit.GetSide());
 
-				if (isThereAnotherSideUnit)
-				{
+				if (isThereAnotherSideUnit){
 					Debug.Log (currentUnit.GetName () + " is activated because its enemy came to nearby");
 					satisfyActiveCondition = true;
 				}
@@ -205,8 +195,7 @@ namespace Battle.Turn
 		}
 	}
 
-    public class AIStates_old
-	{
+    public class AIStates_old{
 		private static BattleData battleData;
 		public static void SetBattleData(BattleData battleDataInstance){
 			battleData = battleDataInstance;
