@@ -212,60 +212,59 @@ namespace Battle.Turn
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
 
-			int selectedSkillIndex = 1;
-			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-			ActiveSkill selectedSkill = battleData.SelectedSkill;
-
-			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();//더블 샷이니 경로형일 것임
-
-			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange(RangeForm.Straight,
-                                                                unit.GetPosition(),
-                                                                1,
-                                                                8,
-                                                                0,
-                                                                Direction.RightDown);
 
 			while(true){
+				int selectedSkillIndex = 1;
+				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill selectedSkill = battleData.SelectedSkill;
 
+				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();//더블 샷이니 경로형일 것임
+
+				List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange(RangeForm.Straight,
+					unit.GetPosition(),
+					1,
+					8,
+					0,
+					Direction.RightDown);
 
 				//행동하기 전마다 체크해야 할 사항들(중요!)
 				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
 				yield return BattleManager.AtActionEnd(battleData);
 
 			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
-			
-			if(barrierTile == null){
-				int step=0;
-				int requireAP=0;
 
-				int totalUseActivityPoint = 3+5+7+9+11+13+15;
+				if(barrierTile == null){
+					int step=0;
+					int requireAP=0;
 
-				Vector2 destPos = unit.GetPosition() + battleData.tileManager.ToVector2(Direction.RightDown)*7;
-				Tile destTile=battleData.tileManager.GetTile(destPos);
+					int totalUseActivityPoint = 3+5+7+9+11+13+15;
 
-				battleData.currentState = CurrentState.CheckDestination;
+					Vector2 destPos = unit.GetPosition() + battleData.tileManager.ToVector2(Direction.RightDown)*7;
+					Tile destTile=battleData.tileManager.GetTile(destPos);
 
-				// 카메라를 옮기고
-				Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
-				battleData.currentState = CurrentState.MoveToTile;
-				yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseActivityPoint));
-				break;
-			}
-			else{
-				unit.SetDirection (Direction.RightDown);
+					battleData.currentState = CurrentState.CheckDestination;
 
-				battleData.currentState = CurrentState.CheckApplyOrChain;
+					// 카메라를 옮기고
+					Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
+					battleData.currentState = CurrentState.MoveToTile;
+					yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseActivityPoint));
+					break;
+				}
+				else{
+					unit.SetDirection (Direction.RightDown);
 
-				List<Tile> tilesInSkillRange = new List<Tile>();
-				tilesInSkillRange.Add(barrierTile);
-				List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
+					battleData.currentState = CurrentState.CheckApplyOrChain;
 
-				yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
-				FocusUnit(battleData.selectedUnit);
-				battleData.currentState = CurrentState.FocusToUnit;
+					List<Tile> tilesInSkillRange = new List<Tile>();
+					tilesInSkillRange.Add(barrierTile);
+					List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-				battleData.uiManager.ResetSkillNamePanelUI();
-			}
+					yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
+					FocusUnit(battleData.selectedUnit);
+					battleData.currentState = CurrentState.FocusToUnit;
+
+					battleData.uiManager.ResetSkillNamePanelUI();
+				}
 			}
 
 			if (BattleManager.GetStandbyPossible (battleData)) {
@@ -387,6 +386,7 @@ namespace Battle.Turn
 				if(selectedSkill == null){
 					battleData.currentState = CurrentState.RestAndRecover;
 					yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+					yield break;
 				}
 
 				int currentAP = battleData.selectedUnit.GetCurrentActivityPoint ();
