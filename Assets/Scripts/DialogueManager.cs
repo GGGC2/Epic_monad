@@ -256,8 +256,7 @@ public class DialogueManager : MonoBehaviour {
         StartCoroutine(PrintLinesFrom(startLine));
     }
 
-	void Initialize()
-	{
+	void Initialize(){
 		Debug.Log(SceneData.dialogueName);
         if (SceneData.dialogueName != null)
         {
