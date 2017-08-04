@@ -235,15 +235,29 @@ namespace Battle.Turn
 				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
 				yield return BattleManager.AtActionEnd(battleData);
 
-			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
+				Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
+				int currentAP = unit.GetCurrentActivityPoint();
 
 				if(barrierTile == null){
-					int step=0;
-					int requireAP=0;
+					int step = 0;
+					int requireAP = 0;
+					Vector2 pos = unit.GetPosition ();
 
-					int totalUseActivityPoint = 3+5+7+9+11+13+15;
+					while ((!BattleManager.GetStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
+						pos += battleData.tileManager.ToVector2 (Direction.RightDown);
+						Tile tile = battleData.tileManager.GetTile (pos);
+						if (tile == null) {
+							Debug.Log ("tile==null");
+							break;
+						}
+						step++;
+						requireAP += 3 + 2 * (step - 1);
+						Debug.Log (step);
+						Debug.Log (requireAP);
+					}
 
-					Vector2 destPos = unit.GetPosition() + battleData.tileManager.ToVector2(Direction.RightDown)*7;
+					int totalUseAP = requireAP;
+					Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
 					Tile destTile=battleData.tileManager.GetTile(destPos);
 
 					battleData.currentState = CurrentState.CheckDestination;
@@ -251,10 +265,13 @@ namespace Battle.Turn
 					// 카메라를 옮기고
 					Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
 					battleData.currentState = CurrentState.MoveToTile;
-					yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseActivityPoint));
+					yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
 					break;
 				}
 				else{
+					if (currentAP < selectedSkill.GetRequireAP ())
+						break;
+
 					unit.SetDirection (Direction.RightDown);
 
 					battleData.currentState = CurrentState.CheckApplyOrChain;

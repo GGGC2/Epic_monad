@@ -154,7 +154,6 @@ namespace Battle.Turn{
 
 		private static void CaptureMoveSnapshot(BattleData battleData)
 		{
-			Debug.Log("Capture move snapshot");
 			BattleData.MoveSnapshopt snapshot = new BattleData.MoveSnapshopt();
 			snapshot.tile = battleData.SelectedUnitTile;
 			snapshot.ap = battleData.selectedUnit.GetCurrentActivityPoint();

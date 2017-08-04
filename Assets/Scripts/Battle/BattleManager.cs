@@ -129,17 +129,20 @@ public class BattleManager : MonoBehaviour
 			battleData.selectedUnit.SetInactive();
 	}
 
-	public static bool GetStandbyPossible(BattleData battleData){
+	public static bool GetStandbyPossibleWithThisAP(BattleData battleData, Unit unit, int AP){
 		bool isPossible = false;
-
-		foreach (var unit in battleData.unitManager.GetAllUnits()){
-			if ((unit != battleData.selectedUnit) &&
-				(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
+		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
+			if ((anyUnit != unit) &&
+				(anyUnit.GetCurrentActivityPoint() > AP))
 			{
 				isPossible = true;
 				return isPossible;
 			}
 		}
+		return isPossible;
+	}
+	public static bool GetStandbyPossible(BattleData battleData){
+		bool isPossible = GetStandbyPossibleWithThisAP (battleData, battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
 		return isPossible;
 	}
 	private static void CheckStandbyPossible(BattleData battleData){

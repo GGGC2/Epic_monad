@@ -175,6 +175,9 @@ public class Unit : MonoBehaviour
 		this.direction = direction;
 		UpdateSpriteByDirection();
 	}
+	public int GetStandardAP(){
+		return unitManager.GetStandardActivityPoint ();
+	}
 	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp){
 		before.SetUnitOnTile(null);
 		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
@@ -652,8 +655,10 @@ public class Unit : MonoBehaviour
 	}
 
 	public void RegenerateActionPoint(){
-		activityPoint = GetRegeneratedActionPoint();
-		Debug.Log(name + " recover " + actualAgility.value + "AP. Current AP : " + activityPoint);
+		if (!isObject) {
+			activityPoint = GetRegeneratedActionPoint ();
+			Debug.Log (name + " recover " + actualAgility.value + "AP. Current AP : " + activityPoint);
+		}
 	}
 
 	public int GetRegeneratedActionPoint()
