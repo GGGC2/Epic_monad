@@ -82,7 +82,10 @@ public class BasePassiveSkillLogic
 	{
 	}
     
-    public virtual void TriggerDamaged(Unit target, int damage, Unit caster) 
+    public virtual bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        return true;
+    }
+    public virtual void TriggerAfterDamaged(Unit target, int damage, Unit caster) 
     {        
     }
 
@@ -134,6 +137,9 @@ public class BasePassiveSkillLogic
     public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
     }
     public virtual void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+    }
+    public virtual bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+        return true;
     }
 }
 }

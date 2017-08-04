@@ -41,8 +41,6 @@ namespace Battle.Turn
 			battleData.selectedUnit = objectUnit;
 			if (objectUnit.GetNameInCode() == "controller")
 				yield return ControllerAttack(objectUnit);
-			else
-				yield return AIStates_old.AIAct ();
 			yield return null;
 		}
 
@@ -61,7 +59,7 @@ namespace Battle.Turn
 			{
 				BattleManager.MoveCameraToUnit(target);
 				float damageAmount = target.GetMaxHealth() * 0.15f;
-				yield return target.Damaged(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false);
+				yield return target.Damaged(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false, false);
 			}
 
 			MonoBehaviour.Destroy(effect);
