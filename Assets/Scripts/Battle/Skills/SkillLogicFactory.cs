@@ -114,6 +114,9 @@ public static class SkillLogicFactory
             case "생명의 요람":
             skillLogic = new Arcadia_1_m_SkillLogic();
             break;
+            case "계절풍":
+            skillLogic = new Arcadia_1_r_SkillLogic();
+            break;
             case "갈고리 씨앗":
             skillLogic = new Arcadia_2_r_SkillLogic();
             break;
@@ -251,8 +254,16 @@ public static class SkillLogicFactory
 		switch (passiveSkill.GetName())
 		{
             // 그레네브
+            case "타고난 저격수":
+            passiveSkillLogic = new Grenev_0_1_SkillLogic();
+            break;
             case "살의":
             passiveSkillLogic = new Grenev_1_r_SkillLogic();
+            break;
+
+            //노엘
+            case "심판의 빛":
+            passiveSkillLogic = new Noel_0_l_SkillLogic();
             break;
 
             // 달케니르
@@ -359,6 +370,9 @@ public static class SkillLogicFactory
             break;
 
             //아르카디아
+            case "뿌리 내리기":
+            passiveSkillLogic = new Arcadia_2_l_SkillLogic();
+            break;
             case "광합성":
             passiveSkillLogic = new Arcadia_3_m_SkillLogic();
             break;

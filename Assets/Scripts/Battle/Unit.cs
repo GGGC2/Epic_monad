@@ -184,18 +184,29 @@ public class Unit : MonoBehaviour
 		this.activityPoint = snapshotAp;
 		unitManager.UpdateUnitOrder();
 	}
+    public void ChangePosition(Tile tileAfter) {
+        Tile tileBefore = GetTileUnderUnit();
+        tileBefore.SetUnitOnTile(null);
+        transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
+        SetPosition(tileAfter.GetTilePos());
+        tileAfter.SetUnitOnTile(this);
 
-	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
+        BattleTriggerChecker.CountBattleCondition(this, tileAfter);
+        updateStats();
+    }
+
+    public void ForceMove(Tile tileAfter) { //강제이동
+        if (SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, tileAfter)) {
+            ChangePosition(tileAfter);
+        }
+    }
+
+	public void ApplyMove(Tile tileAfter, Direction direction, int costAp)
 	{
+        ChangePosition(tileAfter);
         hasMovedThisTurn = true;
-		tileBefore.SetUnitOnTile(null);
-		transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
-		SetPosition(tileAfter.GetTilePos());
 		SetDirection(direction);
-		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
-
-		BattleTriggerChecker.CountBattleCondition(this, tileAfter);
 
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
@@ -209,7 +220,6 @@ public class Unit : MonoBehaviour
             if (originPassiveSkill != null)
                 SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        updateStats();
     }
 
     public void updateStats() {
@@ -517,10 +527,15 @@ public class Unit : MonoBehaviour
             damageTextObject.SetActive(false);
 
             foreach (var kv in attackedShieldDict) {
+                BattleManager battleManager = FindObjectOfType<BattleManager>();
                 StatusEffect statusEffect = kv.Key;
                 ActiveSkill originSkill = statusEffect.GetOriginSkill();
                 if (originSkill != null)
-                    yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
+                    yield return battleManager.StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
+                Unit shieldCaster = statusEffect.GetCaster();
+                List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
+                yield return battleManager.StartCoroutine(SkillLogicFactory.Get(shieldCastersPassiveSkills).
+                                    TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value));
             }
 
         } else {
@@ -557,7 +572,7 @@ public class Unit : MonoBehaviour
 			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 		}
         bool ignoreShield = SkillLogicFactory.Get(appliedSkill).IgnoreShield(skillInstanceData);
-        yield return StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
+        yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
 		unitManager.UpdateUnitOrder();
 	}
 
@@ -574,7 +589,7 @@ public class Unit : MonoBehaviour
 
 					float damage = se.GetAmount(i);
 					Unit caster = se.GetCaster();
-					yield return StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
+					yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
 				}
 			}
 		}

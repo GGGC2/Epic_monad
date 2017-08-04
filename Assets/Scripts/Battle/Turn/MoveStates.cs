@@ -137,10 +137,9 @@ namespace Battle.Turn{
 		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction directionAtDest, int totalUseActivityPoint)
 		{
 			CaptureMoveSnapshot(battleData);
-
-			Tile beforeTile = battleData.SelectedUnitTile;
+            
 			Unit unit = battleData.selectedUnit;
-			unit.ApplyMove(beforeTile, destTile, directionAtDest, totalUseActivityPoint);
+			unit.ApplyMove(destTile, directionAtDest, totalUseActivityPoint);
 
 			battleData.previewAPAction = null;
 			battleData.currentState = CurrentState.FocusToUnit;

@@ -36,15 +36,9 @@ namespace Battle.Skills {
             Unit target = skillInstanceData.GetMainTarget();
 
             StatusEffector.AttachStatusEffect(caster, skill, caster, tiles);
-            Tile tileBefore = target.GetTileUnderUnit();
             Tile backTile = GetBackTile(caster, target);
-            if(backTile != null && !backTile.IsUnitOnTile()) {
-                tileBefore.SetUnitOnTile(null);
-                target.transform.position = backTile.transform.position + new Vector3(0, 0, -0.05f);
-                target.SetPosition(backTile.GetTilePos());
-                backTile.SetUnitOnTile(target);
-            }
-            BattleTriggerChecker.CountBattleCondition(target, backTile);
+            if(backTile != null && !backTile.IsUnitOnTile())
+                target.ForceMove(backTile);
 
             yield return new WaitForSeconds(0.5f);
         }
