@@ -183,18 +183,29 @@ public class Unit : MonoBehaviour
 		this.activityPoint = snapshotAp;
 		unitManager.UpdateUnitOrder();
 	}
+    public void ChangePosition(Tile tileAfter) {
+        Tile tileBefore = GetTileUnderUnit();
+        tileBefore.SetUnitOnTile(null);
+        transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
+        SetPosition(tileAfter.GetTilePos());
+        tileAfter.SetUnitOnTile(this);
 
-	public void ApplyMove(Tile tileBefore, Tile tileAfter, Direction direction, int costAp)
+        BattleTriggerChecker.CountBattleCondition(this, tileAfter);
+        updateStats();
+    }
+
+    public void ForceMove(Tile tileAfter) { //강제이동
+        if (SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, tileAfter)) {
+            ChangePosition(tileAfter);
+        }
+    }
+
+	public void ApplyMove(Tile tileAfter, Direction direction, int costAp)
 	{
+        ChangePosition(tileAfter);
         hasMovedThisTurn = true;
-		tileBefore.SetUnitOnTile(null);
-		transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
-		SetPosition(tileAfter.GetTilePos());
 		SetDirection(direction);
-		tileAfter.SetUnitOnTile(this);
 		UseActivityPoint(costAp);
-
-		BattleTriggerChecker.CountBattleCondition(this, tileAfter);
 
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
@@ -208,7 +219,6 @@ public class Unit : MonoBehaviour
             if (originPassiveSkill != null)
                 SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        updateStats();
     }
 
     public void updateStats() {

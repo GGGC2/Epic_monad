@@ -77,6 +77,7 @@ sepia,1,false,반달베기,보호막,TRUE,FALSE,FALSE,FALSE,2,-,1,FALSE,TRUE,Non
 noel,1,false,파마의 섬광,침묵,FALSE,FALSE,FALSE,FALSE,1,-,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,
 noel,1,false,신의 가호,신의 가호,TRUE,FALSE,FALSE,FALSE,2,-,1,FALSE,TRUE,None,None,None,1,Shield,Power,1.5,0,FALSE,FALSE,,,,,,,,,,,,
 arcadia,1,false,생명의 요람,생명의 요람,TRUE,FALSE,FALSE,FALSE,3,-,1,FALSE,TRUE,None,None,None,3,HealOverPhase,O,0.1,0,FALSE,FALSE,DefenseChange,Level,1.2,87,FALSE,FALSE,ResistanceChange,Level,1.2,87,FALSE,FALSE
+arcadia,8,false,뿌리 내리기,뿌리 내리기,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,FALSE,None,None,None,2,DefenseChange,Level,0.9,59,FALSE,FALSE,ResistanceChange,Level,0.9,59,FALSE,FALSE,,,,,,
 arcadia,8,false,갈고리 씨앗,지속 피해,FALSE,FALSE,FALSE,FALSE,2,-,1,FALSE,TRUE,None,None,None,1,DamageOverPhase,Power,0.5,0,FALSE,FALSE,,,,,,,,,,,,
 arcadia,15,false,광합성,안식,TRUE,TRUE,FALSE,FALSE,9999,-,1,FALSE,FALSE,None,None,None,1,TakenHealChange,O,0,50,TRUE,TRUE,,,,,,,,,,,,
 bianca,1,false,잘근잘근 덫,속박,FALSE,FALSE,FALSE,FALSE,1,-,1,FALSE,TRUE,None,None,None,1,Bind,X,X,X,FALSE,NONE,,,,,,,,,,,,

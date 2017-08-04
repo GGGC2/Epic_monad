@@ -103,6 +103,9 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerOnMove(Unit caster) {
     }
+    public virtual bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+        return true;
+    }
     public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
         yield return null;
     }

@@ -160,6 +160,15 @@ namespace Battle.Skills
                 skillLogic.TriggerOnMove(caster);
             }
         }
+        public override bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerOnForceMove(caster, tileAfter)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
+        }
 
         public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
             foreach (var skillLogic in passiveSkillLogics) {

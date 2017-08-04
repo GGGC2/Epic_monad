@@ -114,6 +114,9 @@ public static class SkillLogicFactory
             case "생명의 요람":
             skillLogic = new Arcadia_1_m_SkillLogic();
             break;
+            case "계절풍":
+            skillLogic = new Arcadia_1_r_SkillLogic();
+            break;
             case "갈고리 씨앗":
             skillLogic = new Arcadia_2_r_SkillLogic();
             break;
@@ -359,6 +362,9 @@ public static class SkillLogicFactory
             break;
 
             //아르카디아
+            case "뿌리 내리기":
+            passiveSkillLogic = new Arcadia_2_l_SkillLogic();
+            break;
             case "광합성":
             passiveSkillLogic = new Arcadia_3_m_SkillLogic();
             break;
