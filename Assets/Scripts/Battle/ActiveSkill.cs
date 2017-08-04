@@ -73,8 +73,10 @@ public class ActiveSkill : Skill{
 		skillDataText = commaParser.Consume();
 		firstTextValueType = commaParser.ConsumeEnum<Stat>();
 		firstTextValueCoef = commaParser.ConsumeFloat();
+        firstTextValueBase = commaParser.ConsumeFloat();
 		secondTextValueType = commaParser.ConsumeEnum<Stat>();
 		secondTextValueCoef = commaParser.ConsumeFloat();
+        secondTextValueBase = commaParser.ConsumeFloat();
 	}
     
 	/*public ActiveSkill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 

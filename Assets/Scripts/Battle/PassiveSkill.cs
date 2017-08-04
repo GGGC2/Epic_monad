@@ -15,8 +15,10 @@ public class PassiveSkill : Skill{
 		skillDataText = commaParser.Consume();
 		firstTextValueType = commaParser.ConsumeEnum<Stat>();
 		firstTextValueCoef = commaParser.ConsumeFloat();
+        firstTextValueBase = commaParser.ConsumeFloat();
 		secondTextValueType = commaParser.ConsumeEnum<Stat>();
 		secondTextValueCoef = commaParser.ConsumeFloat();
+        secondTextValueBase = commaParser.ConsumeFloat();
 	}
 
 	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)

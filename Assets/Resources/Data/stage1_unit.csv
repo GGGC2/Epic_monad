@@ -1,4 +1,4 @@
-﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseAgility,UnitClass,Element,Celestial,IsObject
 1,제국군 병사,soldier01,Enemy,10,5,LeftUp,177,60,20,20,47,Melee,None,None,false
 2,제국군 병사,soldier01,Enemy,10,4,LeftUp,177,60,20,20,47,Melee,None,None,false
 3,제국군 병사,soldier01,Enemy,10,3,LeftUp,177,60,20,20,47,Melee,None,None,false

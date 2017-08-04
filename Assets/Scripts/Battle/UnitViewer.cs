@@ -50,13 +50,13 @@ public class UnitViewer : MonoBehaviour {
 
 	public void UpdateUnitViewer(string unitName){
 		Debug.Assert(unitName != "unselected");
-		string hpString = UnitInfo.GetStat(unitName, UnitInfo.StatType.Health).ToString();
+		string hpString = UnitInfo.GetStat(unitName, Stat.MaxHealth).ToString();
 		hpText.text = hpString + "/" + hpString;
-		powerText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Power).ToString();
-		defenseText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Defense).ToString();
-		resistanceText.text = UnitInfo.GetStat(unitName, UnitInfo.StatType.Resist).ToString();
+		powerText.text = UnitInfo.GetStat(unitName, Stat.Power).ToString();
+		defenseText.text = UnitInfo.GetStat(unitName, Stat.Defense).ToString();
+		resistanceText.text = UnitInfo.GetStat(unitName, Stat.Resistance).ToString();
 
-		int Agility = UnitInfo.GetStat(unitName, UnitInfo.StatType.Agility);
+		int Agility = UnitInfo.GetStat(unitName, Stat.Agility);
 		int level = PartyData.level;
 		apText.text = level+60+(Agility/2) + "(+" + Agility + ")";
 
@@ -137,7 +137,7 @@ public class UnitViewer : MonoBehaviour {
 
 	void UpdateAp(Unit unit)
 	{
-		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Dexturity) + ")";
+		apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Agility) + ")";
 	}
 
 	void UpdatePower(Unit unit)

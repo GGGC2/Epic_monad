@@ -112,7 +112,7 @@ public static class SkillLogicFactory
 
             //아르카디아
             case "갈고리 씨앗":
-            skillLogic = new Arcadia_1_l_SkillLogic();
+            skillLogic = new Arcadia_2_r_SkillLogic();
             break;
 
 			// 영
@@ -357,7 +357,7 @@ public static class SkillLogicFactory
 
             //아르카디아
             case "광합성":
-            passiveSkillLogic = new Arcadia_1_m_SkillLogic();
+            passiveSkillLogic = new Arcadia_3_m_SkillLogic();
             break;
 
 			// 영

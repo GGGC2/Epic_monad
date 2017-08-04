@@ -1,4 +1,4 @@
-﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+﻿Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseAgility,UnitClass,Element,Celestial,IsObject
 1,궁수,archer01,Enemy,8,2,LeftUp,152,57,20,20,41,Melee,None,None,false
 2,궁수,archer01,Enemy,8,12,LeftUp,152,57,20,20,41,Melee,None,None,false
 3,궁수,archer01,Enemy,10,7,LeftUp,152,57,20,20,41,Melee,None,None,false
