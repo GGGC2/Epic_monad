@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -207,14 +207,42 @@ namespace Battle.Turn
 
     public class AIStates_old
 	{
+		private static IEnumerator KashastyAI(BattleData battleData){
+			BattleManager battleManager = battleData.battleManager;
+			Unit unit = battleData.selectedUnit;
+			Tile currentTile = unit.GetTileUnderUnit ();
+
+			int selectedSkillIndex = 1;
+			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();//더블 샷이니 경로형일 것임
+
+			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange(RangeForm.Straight,
+                                                                unit.GetPosition(),
+                                                                1,
+                                                                8,
+                                                                0,
+                                                                Direction.RightDown);
+
+			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
+
+			yield break;
+		}
 		public static IEnumerator AIMove(BattleData battleData)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
 
+			//FIXME : 이 줄 쓸모 없을 것 같은데 일단 지우고 테스트해 보겠음
 			yield return battleManager.StartCoroutine(AIDie(battleData));
 
+			if(unit.GetNameInCode() == "kashasty_Escape"){
+				yield return KashastyAI(battleData);
+				yield break;
+			}
+			
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			int selectedSkillIndex = 1;
