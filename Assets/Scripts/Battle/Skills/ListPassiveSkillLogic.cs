@@ -155,6 +155,11 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(caster, targets);
 		    }
 	    }
+        public override IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+            foreach(var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(attacker, shieldCaster, target, amount);
+            }
+        }
         public override void TriggerOnMove(Unit caster) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnMove(caster);

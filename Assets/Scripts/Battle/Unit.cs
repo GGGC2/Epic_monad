@@ -527,10 +527,15 @@ public class Unit : MonoBehaviour
             damageTextObject.SetActive(false);
 
             foreach (var kv in attackedShieldDict) {
+                BattleManager battleManager = FindObjectOfType<BattleManager>();
                 StatusEffect statusEffect = kv.Key;
                 ActiveSkill originSkill = statusEffect.GetOriginSkill();
                 if (originSkill != null)
-                    yield return StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
+                    yield return battleManager.StartCoroutine(SkillLogicFactory.Get(originSkill).TriggerShieldAttacked(this, kv.Value));
+                Unit shieldCaster = statusEffect.GetCaster();
+                List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
+                yield return battleManager.StartCoroutine(SkillLogicFactory.Get(shieldCastersPassiveSkills).
+                                    TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value));
             }
 
         } else {
@@ -567,7 +572,7 @@ public class Unit : MonoBehaviour
 			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 		}
         bool ignoreShield = SkillLogicFactory.Get(appliedSkill).IgnoreShield(skillInstanceData);
-        yield return StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
+        yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
 		unitManager.UpdateUnitOrder();
 	}
 
@@ -584,7 +589,7 @@ public class Unit : MonoBehaviour
 
 					float damage = se.GetAmount(i);
 					Unit caster = se.GetCaster();
-					yield return StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
+					yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
 				}
 			}
 		}

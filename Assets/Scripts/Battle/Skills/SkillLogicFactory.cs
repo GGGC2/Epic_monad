@@ -254,8 +254,16 @@ public static class SkillLogicFactory
 		switch (passiveSkill.GetName())
 		{
             // 그레네브
+            case "타고난 저격수":
+            passiveSkillLogic = new Grenev_0_1_SkillLogic();
+            break;
             case "살의":
             passiveSkillLogic = new Grenev_1_r_SkillLogic();
+            break;
+
+            //노엘
+            case "심판의 빛":
+            passiveSkillLogic = new Noel_0_l_SkillLogic();
             break;
 
             // 달케니르
