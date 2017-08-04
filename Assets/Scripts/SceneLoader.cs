@@ -17,8 +17,7 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene()
-	{
+	public void LoadNextBattleScene(){
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
 		StartCoroutine(FadeoutAndLoadBattleScene());
@@ -74,8 +73,7 @@ public class SceneLoader : MonoBehaviour{
 		}
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene()
-	{
+	IEnumerator FadeoutAndLoadBattleScene(){
 		yield return Fadeout();
 
         SceneData.isDialogue = false;
@@ -105,12 +103,11 @@ public class SceneLoader : MonoBehaviour{
             }
 			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
-			SceneManager.LoadScene("dialogue");
+			SceneManager.LoadScene("Dialogue");
 		}
 	}
 
-	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)
-	{
+	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName){
 		yield return Fadeout();
 
 		// need use save data

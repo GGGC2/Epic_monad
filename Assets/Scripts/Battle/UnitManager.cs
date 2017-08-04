@@ -18,8 +18,7 @@ public class DeadUnitInfo{
 	}
 }
 
-public class RetreatUnitInfo
-{
+public class RetreatUnitInfo{
 	public readonly string unitName;
 	public readonly Side unitSide;
 
@@ -31,7 +30,6 @@ public class RetreatUnitInfo
 }
 
 public class UnitManager : MonoBehaviour {
-
 	int standardActivityPoint;
 
 	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
