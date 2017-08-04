@@ -267,6 +267,9 @@ public static class SkillLogicFactory
             break;
 
             // 달케니르
+            case "흐름 동화":
+            passiveSkillLogic = new Darkenir_0_1_SkillLogic();
+            break;
             case "공허의 장벽":
             passiveSkillLogic = new Darkenir_1_l_SkillLogic();
             break;
@@ -363,6 +366,11 @@ public static class SkillLogicFactory
 			case "입자 가속":
 			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
+
+            //비앙카
+            case "사뿐사뿐":
+            passiveSkillLogic = new Bianca_0_1_SkillLogic();
+            break;
 
             //세피아
             case "신뢰의 끈":

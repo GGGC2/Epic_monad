@@ -121,10 +121,20 @@ namespace Battle.Skills
                 skillLogic.TriggerActiveSkillDamageApplied(caster, target);
             }
         }
-    
-        public override void TriggerDamaged(Unit target, int damage, Unit caster) {
+
+        public override bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                skillLogic.TriggerDamaged(target, damage, caster);
+                if (!skillLogic.TriggerDamaged(target, damage, caster, isSourceTrap)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
+        }
+
+        public override void TriggerAfterDamaged(Unit target, int damage, Unit caster) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerAfterDamaged(target, damage, caster);
             }
         }
 
@@ -230,6 +240,15 @@ namespace Battle.Skills
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }
+        }
+        public override bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerOnSteppingTrap(caster, tile, trap)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
         }
     }
 }

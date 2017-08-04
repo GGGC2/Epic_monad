@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine.UI;
 using Enums;
 using Battle.Skills;
-using GameData;
 
 using Save;
 
@@ -377,7 +376,8 @@ public class Unit : MonoBehaviour
             this.value = value;
         }
     }
-	public float CalculateActualAmount(float data, StatusEffectType statusEffectType){
+	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
+	{
         List<StatChange> appliedChangeList = new List<StatChange>();
 
         // 효과로 인한 변동값 계산
@@ -465,7 +465,7 @@ public class Unit : MonoBehaviour
         hasUsedSkillThisTurn = false;
 	}
     
-	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield) {
+	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap) {
         int finalDamage = (int) damage;
         float defense = GetStat(Stat.Defense) + additionalDefense;
         float resistance = GetStat(Stat.Resistance) + additionalResistance;
@@ -476,6 +476,9 @@ public class Unit : MonoBehaviour
             // 방어력 및 저항력 적용
             damage = Battle.DamageCalculator.ApplyDefenseAndResistance(damage, caster.GetUnitClass(), defense, resistance);
 
+            if (!SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerDamaged(this, damage, caster, isSourceTrap)) {
+                damage = 0;
+            }
             // 실드 차감. 먼저 걸린 실드부터 차감.
             Dictionary<StatusEffect, int> attackedShieldDict = new Dictionary<StatusEffect, int>();
             if (!ignoreShield) {
@@ -509,7 +512,7 @@ public class Unit : MonoBehaviour
                 latelyHitInfos.Add(new HitInfo(caster, null, finalDamage));
 
                 // 데미지를 받을 때 발동하는 피격자 특성
-                SkillLogicFactory.Get(passiveSkillList).TriggerDamaged(this, finalDamage, caster);
+                SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, finalDamage, caster);
             }
 
 
@@ -572,30 +575,41 @@ public class Unit : MonoBehaviour
 			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 		}
         bool ignoreShield = SkillLogicFactory.Get(appliedSkill).IgnoreShield(skillInstanceData);
-        yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield));
+        yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield, false));
 		unitManager.UpdateUnitOrder();
 	}
 
-	public IEnumerator ApplyDamageOverPhase()
-	{
-		foreach (var se in statusEffectList)
-		{
-			int actuals = se.fixedElem.actuals.Count;
-			for (int i = 0; i < actuals; i++)
-			{
-				if (se.IsOfType(i, StatusEffectType.DamageOverPhase))
-				{
-					BattleManager.MoveCameraToUnit(this);
+    private bool checkIfSourceIsTrap(StatusEffect se) {
+        List<TileStatusEffect.FixedElement> statusEffectList = new List<TileStatusEffect.FixedElement>();
+        ActiveSkill originSkill = se.GetOriginSkill();
+        if(originSkill != null) statusEffectList = originSkill.GetTileStatusEffectList();
+        bool isSourceTrap = false;
+        foreach(var fixedElem in statusEffectList) {
+            foreach(var actual in fixedElem.actuals) {
+                if(actual.statusEffectType == StatusEffectType.Trap)
+                    isSourceTrap = true;
+            }
+        }
+        return isSourceTrap;
+    }
+    public IEnumerator ApplyDamageOverPhase() {
+        foreach (var se in statusEffectList) {
+            int actuals = se.fixedElem.actuals.Count;
+            for (int i = 0; i < actuals; i++) {
+                if (se.IsOfType(i, StatusEffectType.DamageOverPhase)) {
+                    BattleManager.MoveCameraToUnit(this);
 
-					float damage = se.GetAmount(i);
-					Unit caster = se.GetCaster();
-					yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, 0, 0, true, false));
-				}
-			}
-		}
+                    float damage = se.GetAmount(i);
+                    Unit caster = se.GetCaster();
 
-		yield return null;
-	}
+                    bool isSourceTrap = checkIfSourceIsTrap(se);
+                    yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, 0, 0, true, false, isSourceTrap));
+                }
+            }
+        }
+
+        yield return null;
+    }
 
 	public IEnumerator ApplyHealOverPhase()
 	{
@@ -861,14 +875,13 @@ public class Unit : MonoBehaviour
 			}
         }
 
-		if(SceneData.stageNumber >= Setting.passiveOpenStage){
-			foreach (var passiveSkill in passiveSkills) {
-				if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
-					passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-					passiveSkillList.Add(passiveSkill);
-				}
-			}
-		}
+		foreach (var passiveSkill in passiveSkills) {
+            //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
+            if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
+                passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+                passiveSkillList.Add(passiveSkill);
+            }
+        }
 
         // 비어있으면 디폴트 스킬로 채우도록.
         if (activeSkills.Count() == 0) {

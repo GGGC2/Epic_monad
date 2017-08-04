@@ -639,7 +639,7 @@ namespace Battle.Turn {
         private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
             UnitClass damageType = caster.GetUnitClass();
             BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false));
+            yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false, false));
 
             foreach (var statusEffect in target.GetStatusEffectList()) {
                 bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||

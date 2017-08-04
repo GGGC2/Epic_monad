@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using UnityEngine;
 using Battle.Damage;
+using Battle.Skills;
 
 class Trap {
     private static List<Tile> GetTilesInRange(TileStatusEffect trap, Tile trapTile) {
@@ -54,16 +54,18 @@ class Trap {
         Unit caster = trap.GetCaster();
         List<Unit> unitsInRange = GetUnitsInRange(trap, tile);
         foreach(var unit in unitsInRange) {
-            if(!trap.GetMemorizedUnits().Contains(unit)) {
-                OperateTrap(trap, tile);
-                return;
+            if (!trap.GetMemorizedUnits().Contains(unit)) {
+                if (SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(unit, tile, trap)) {
+                    OperateTrap(trap, tile);
+                    return;
+                }
             }
         }
     }
     public static void TriggerAtTurnStart(TileStatusEffect trap, Tile tile, Unit turnStarter) {
         if (trap.IsOfType(StatusEffectType.Trap))
-            if (GetTilesInRange(trap, tile).Contains(turnStarter.GetTileUnderUnit())) {
-            OperateTrap(trap, tile);
-        }
+            if (GetTilesInRange(trap, tile).Contains(turnStarter.GetTileUnderUnit()))
+                if (SkillLogicFactory.Get(turnStarter.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(turnStarter, tile, trap))
+                    OperateTrap(trap, tile);
     }
 }
