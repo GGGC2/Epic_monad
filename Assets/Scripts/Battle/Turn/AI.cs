@@ -226,6 +226,19 @@ namespace Battle.Turn
                                                                 Direction.RightDown);
 
 			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
+			
+			if(barrierTile == null){
+			}
+			else{
+			}
+
+			if (BattleManager.GetStandbyPossible (battleData)) {
+				yield return PassTurn ();
+			}
+			else {
+				battleData.currentState = CurrentState.RestAndRecover;
+				yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+			}
 
 			yield break;
 		}
