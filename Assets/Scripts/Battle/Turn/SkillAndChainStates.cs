@@ -478,8 +478,16 @@ namespace Battle.Turn {
 			List<Unit> targets = GetUnitsOnTiles(tilesInRealEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
 
-			//tilesInSkillRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
-			//tilesInRealEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
+            //tilesInSkillRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
+            //tilesInRealEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
+            
+            if (caster == battleData.selectedUnit) {
+                int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
+                caster.UseActivityPoint(requireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
+                // 스킬 쿨다운 기록
+                if (appliedSkill.GetCooldown() > 0)
+                    caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
+            }
 
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
@@ -555,14 +563,6 @@ namespace Battle.Turn {
                     SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
             }
             caster.SetHasUsedSkillThisTurn(true);
-
-            if (caster == battleData.selectedUnit) {
-                int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
-                caster.UseActivityPoint(requireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
-                // 스킬 쿨다운 기록
-                if (appliedSkill.GetCooldown() > 0)
-                    caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
-            }
 
             // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
             if (isChainable) {

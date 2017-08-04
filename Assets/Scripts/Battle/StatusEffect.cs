@@ -178,10 +178,6 @@ public class StatusEffect {
     public bool GetIsPercent(int index) { return fixedElem.actuals[index].isPercent; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
-
-    public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
-    public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
-    public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
     public void AddRemainPhase(int phase) { flexibleElem.display.remainPhase += phase; }
     public void DecreaseRemainPhase() { flexibleElem.display.remainPhase -= 1; }
     public void DecreaseRemainPhase(int phase) { flexibleElem.display.remainPhase -= phase; }
@@ -230,19 +226,25 @@ public class StatusEffect {
     public float GetAmountOfType(StatusEffectType statusEffectType) {
         float amount = 0;
         List<int> indices = FindIndexOfType(statusEffectType);
-        foreach (var index in indices) {
+        foreach (var index in indices)
             amount += GetAmount(index);
-        }
         return amount;
     }
     public float GetRemainAmountOfType(StatusEffectType statusEffectType) {
         float amount = 0;
         List<int> indices = FindIndexOfType(statusEffectType);
-        foreach (var index in indices) {
+        foreach (var index in indices)
             amount += GetRemainAmount(index);
-        }
         return amount;
     }
+    public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
+    public void SetAmountOfType(StatusEffectType statusEffectType, float amount) {
+        List<int> indices = FindIndexOfType(statusEffectType);
+        foreach(var index in indices)
+            SetAmount(index, amount);
+    }
+    public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
+    public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {
