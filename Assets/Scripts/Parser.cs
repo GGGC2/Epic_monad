@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using WorldMap;
 using SkillTree;
+using GameData;
 
 public class Parser : MonoBehaviour{
 	public static string ExtractFromMatrix(string text, int row, int column){
@@ -38,8 +39,7 @@ public class Parser : MonoBehaviour{
 		return dialogueDataList;
 	}
 
-	public static List<BattleTrigger> GetParsedBattleTriggerData()
-	{
+	public static List<BattleTrigger> GetParsedBattleTriggerData(){
 		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 
 		TextAsset csvFile = FindObjectOfType<BattleManager>().GetBattleConditionData() as TextAsset;
@@ -54,8 +54,7 @@ public class Parser : MonoBehaviour{
 		return battleEndTriggers;
 	}
 
-	public static List<AIInfo> GetParsedAIInfo()
-	{
+	public static List<AIInfo> GetParsedAIInfo(){
 		List<AIInfo> aiInfoList = new List<AIInfo>();
 		TextAsset csvFile = null;
 		if (FindObjectOfType<BattleManager>() != null)
@@ -143,12 +142,15 @@ public class Parser : MonoBehaviour{
 			Skills.Add(skill);
 		}
 
-		string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
-		string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-		for(int i = 1; i < passiveRowDataList.Length; i++){
-			Skill skill = new PassiveSkill(passiveRowDataList[i]);
-			Skills.Add(skill);
-		}
+		//if(SceneData.stageNumber >= Setting.passiveOpenStage){
+			Debug.Log("passiveOpen : " + SceneData.stageNumber + "Stage");
+			string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
+			string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+			for(int i = 1; i < passiveRowDataList.Length; i++){
+				Skill skill = new PassiveSkill(passiveRowDataList[i]);
+				Skills.Add(skill);
+			}
+		//}
 
 		return Skills;
 	}

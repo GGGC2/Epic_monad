@@ -21,8 +21,7 @@ public class PassiveSkill : Skill{
         secondTextValueBase = commaParser.ConsumeFloat();
 	}
 
-	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
-	{
+	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel){
         StatusEffect.FixedElement previousStatusEffect = null;
         foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
             StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();

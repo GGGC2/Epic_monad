@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Enums;
 using Battle.Skills;
+using GameData;
 
 using Save;
 
@@ -366,8 +367,7 @@ public class Unit : MonoBehaviour
             this.value = value;
         }
     }
-	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
-	{
+	public float CalculateActualAmount(float data, StatusEffectType statusEffectType){
         List<StatChange> appliedChangeList = new List<StatChange>();
 
         // 효과로 인한 변동값 계산
@@ -846,13 +846,14 @@ public class Unit : MonoBehaviour
 			}
         }
 
-		foreach (var passiveSkill in passiveSkills) {
-            //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-            if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
-                passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
-                passiveSkillList.Add(passiveSkill);
-            }
-        }
+		if(SceneData.stageNumber >= Setting.passiveOpenStage){
+			foreach (var passiveSkill in passiveSkills) {
+				if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
+					passiveSkill.ApplyStatusEffectList(statusEffectInfoList, partyLevel);
+					passiveSkillList.Add(passiveSkill);
+				}
+			}
+		}
 
         // 비어있으면 디폴트 스킬로 채우도록.
         if (activeSkills.Count() == 0) {
