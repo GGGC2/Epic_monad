@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
-using Enums;
 using System;
+using Enums;
 
 public class BattleTriggerChecker : MonoBehaviour {
 	UnitManager unitManager;
@@ -120,6 +120,8 @@ public class BattleTriggerChecker : MonoBehaviour {
 		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.side == Side.Ally)
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
+			return true;
+		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.GetComponent<AIData>() == null)
 			return true;
 		else
 			return false;

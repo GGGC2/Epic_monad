@@ -11,21 +11,19 @@ using Battle.Skills;
 using System.Linq;
 using GameData;
 
-public class BattleManager : MonoBehaviour
-{
+public class BattleManager : MonoBehaviour{
 	bool startFinished = false;
 	bool startTurnManager = false;
 	public BattleData battleData = new BattleData();
 
-	public List<ChainInfo> GetChainList()
-	{
+	public List<ChainInfo> GetChainList(){
 		return battleData.chainList;
 	}
 
 	void Awake (){
-        if (!SceneData.isTestMode && !SceneData.isStageMode) {
+        if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
-        }
+
 		PartyData.CheckLevelZero();
 		Load();
 		battleData.tileManager = FindObjectOfType<TileManager>();
