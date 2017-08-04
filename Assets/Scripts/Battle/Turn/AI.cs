@@ -225,6 +225,13 @@ namespace Battle.Turn
                                                                 0,
                                                                 Direction.RightDown);
 
+			while(true){
+
+
+				//행동하기 전마다 체크해야 할 사항들(중요!)
+				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
+				yield return BattleManager.AtActionEnd(battleData);
+
 			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
 			
 			if(barrierTile == null){
@@ -242,10 +249,23 @@ namespace Battle.Turn
 				Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
 				battleData.currentState = CurrentState.MoveToTile;
 				yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseActivityPoint));
-
+				break;
 			}
 			else{
-				yield return AISkill(battleData, selectedSkillIndex);
+				unit.SetDirection (Direction.RightDown);
+
+				battleData.currentState = CurrentState.CheckApplyOrChain;
+
+				List<Tile> tilesInSkillRange = new List<Tile>();
+				tilesInSkillRange.Add(barrierTile);
+				List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
+
+				yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
+				FocusUnit(battleData.selectedUnit);
+				battleData.currentState = CurrentState.FocusToUnit;
+
+				battleData.uiManager.ResetSkillNamePanelUI();
+			}
 			}
 
 			if (BattleManager.GetStandbyPossible (battleData)) {
@@ -363,6 +383,11 @@ namespace Battle.Turn
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				Unit selectedUnit = battleData.selectedUnit;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+				if(selectedSkill == null){
+					battleData.currentState = CurrentState.RestAndRecover;
+					yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+				}
 
 				int currentAP = battleData.selectedUnit.GetCurrentActivityPoint ();
 				int requireAP = battleData.SelectedSkill.GetRequireAP ();
