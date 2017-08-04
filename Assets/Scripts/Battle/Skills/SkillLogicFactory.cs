@@ -111,6 +111,9 @@ public static class SkillLogicFactory
             break;
 
             //아르카디아
+            case "생명의 요람":
+            skillLogic = new Arcadia_1_m_SkillLogic();
+            break;
             case "갈고리 씨앗":
             skillLogic = new Arcadia_2_r_SkillLogic();
             break;
