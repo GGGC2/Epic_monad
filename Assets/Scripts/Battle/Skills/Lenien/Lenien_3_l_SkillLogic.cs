@@ -23,6 +23,7 @@ namespace Battle.Skills
             // 짝수 페이즈 시작 시, 자신보다 높은 유닛이 없으면 반경 2 영역 대상에게 기절 1페이즈
             if ((currentPhase % 2 == 0) && (!isThereAnyUnitHigherThanCaster))
             {
+                BattleManager.MoveCameraToUnit(caster);
                 Vector2 unitPosition = caster.GetPosition();
                 TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
                 List<Tile> targetArea = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 2, 0, Direction.LeftUp);

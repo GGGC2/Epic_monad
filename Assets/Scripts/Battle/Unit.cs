@@ -624,7 +624,8 @@ public class Unit : MonoBehaviour
 			{
 				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase))
 				{
-					totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
+                    BattleManager.MoveCameraToUnit(this);
+                    totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
 				}
 			}
 		}
