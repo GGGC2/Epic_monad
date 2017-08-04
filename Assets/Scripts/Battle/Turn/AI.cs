@@ -46,9 +46,9 @@ namespace Battle.Turn
 				Tile tile = pair.Value.tile;
 				Tile attackAbleTile = null;
 				if (skillTypeOfSelectedSkill != SkillType.Point)
-					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, tile);
+					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfDirectionSkill (tile);
 				else
-					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfPointSkill (battleData, tile);
+					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfPointSkill (tile);
 				
 				if (attackAbleTile != null)
 					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
@@ -116,7 +116,7 @@ namespace Battle.Turn
 				yield break;
 			}
 			else
-				yield return battleManager.StartCoroutine(AIStates_old.AIMove(battleData));
+				yield return battleManager.StartCoroutine(AIStates_old.AIMove());
 		}
 
 		public static IEnumerator AIMove(BattleData battleData)
@@ -207,7 +207,11 @@ namespace Battle.Turn
 
     public class AIStates_old
 	{
-		private static IEnumerator KashastyAI(BattleData battleData){
+		private static BattleData battleData;
+		public static void SetBattleData(BattleData battleDataInstance){
+			battleData = battleDataInstance;
+		}
+		private static IEnumerator KashastyAI(){
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
@@ -259,7 +263,7 @@ namespace Battle.Turn
 					tilesInSkillRange.Add(barrierTile);
 					List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-					yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
+					yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
 					FocusUnit(battleData.selectedUnit);
 					battleData.currentState = CurrentState.FocusToUnit;
 
@@ -277,17 +281,17 @@ namespace Battle.Turn
 
 			yield break;
 		}
-		public static IEnumerator AIMove(BattleData battleData)
+		public static IEnumerator AIMove()
 		{
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
 
 			//FIXME : 이 줄 쓸모 없을 것 같은데 일단 지우고 테스트해 보겠음
-			yield return battleManager.StartCoroutine(AIDie(battleData));
+			yield return battleManager.StartCoroutine(AIDie());
 
 			if(unit.GetNameInCode() == "kashasty_Escape"){
-				yield return KashastyAI(battleData);
+				yield return KashastyAI();
 				yield break;
 			}
 			
@@ -302,12 +306,12 @@ namespace Battle.Turn
 			Tile attackAbleTile;
 
 			if (skillTypeOfSelectedSkill != SkillType.Point)
-				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (battleData, currentTile);
+				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (currentTile);
 			else
-				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, currentTile);
+				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (currentTile);
 
 			if (attackAbleTile != null) {
-				yield return AIAct(battleData);
+				yield return AIAct();
 				yield break;
 			}
 
@@ -359,10 +363,10 @@ namespace Battle.Turn
 				yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, destDirection, totalUseActivityPoint));
 			}
 
-			yield return AIAct(battleData);
+			yield return AIAct();
 		}
 
-		public static IEnumerator AIDie(BattleData battleData)
+		public static IEnumerator AIDie()
 		{
 			BattleManager battleManager = battleData.battleManager;
 			battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
@@ -372,7 +376,7 @@ namespace Battle.Turn
 			yield return battleManager.StartCoroutine(BattleManager.DestroyDeadUnits(battleData));
 		}
 
-		public static IEnumerator AIAct(BattleData battleData){
+		public static IEnumerator AIAct(){
 			while (true) {
 				//행동하기 전마다 체크해야 할 사항들(중요!)
 				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
@@ -396,7 +400,7 @@ namespace Battle.Turn
 					selectedUnit.HasStatusEffect(StatusEffectType.Faint));
 
 				if (enoughAP && notInNonskillableEffect) {
-					yield return AISkill (battleData, selectedSkillIndex);
+					yield return AISkill (selectedSkillIndex);
 				}
 				else {
 					if (BattleManager.GetStandbyPossible (battleData)) {
@@ -416,7 +420,7 @@ namespace Battle.Turn
 			yield return new WaitForSeconds(0.5f);
 		}
 
-		public static IEnumerator AISkill(BattleData battleData, int selectedSkillIndex)
+		public static IEnumerator AISkill(int selectedSkillIndex)
 		{
 			BattleManager battleManager = battleData.battleManager;
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
@@ -425,23 +429,23 @@ namespace Battle.Turn
 			if (skillTypeOfSelectedSkill != SkillType.Point)
 			{
 				battleData.currentState = CurrentState.SelectSkillApplyDirection;
-				yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData, battleData.selectedUnit.GetDirection()));
+				yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData.selectedUnit.GetDirection()));
 			}
 			else
 			{
 				battleData.currentState = CurrentState.SelectSkillApplyPoint;
-				yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData, battleData.selectedUnit.GetDirection()));
+				yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData.selectedUnit.GetDirection()));
 			}
 
 			battleData.previewAPAction = null;
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 		}
 
-		public static IEnumerator SelectSkillApplyDirection(BattleData battleData, Direction originalDirection)
+		public static IEnumerator SelectSkillApplyDirection(Direction originalDirection)
 		{
 			Unit selectedUnit = battleData.selectedUnit;
 			Direction beforeDirection = selectedUnit.GetDirection ();
-			Tile selectedTile = GetAttackableOtherSideUnitTileOfDirectionSkill(battleData, selectedUnit.GetTileUnderUnit());
+			Tile selectedTile = GetAttackableOtherSideUnitTileOfDirectionSkill(selectedUnit.GetTileUnderUnit());
 
 			if (selectedTile == null)
 			{
@@ -457,17 +461,17 @@ namespace Battle.Turn
 
 			battleData.currentState = CurrentState.CheckApplyOrChain;
 
-			List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+			List<Tile> tilesInSkillRange = GetTilesInSkillRange(selectedTile, selectedUnit);
 			//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
 			List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
 			FocusUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
 			battleData.uiManager.ResetSkillNamePanelUI();
 		}
-		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(BattleData battleData, Tile unitTile){
+		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(Tile unitTile){
 			List<Tile> selectedTiles = new List<Tile>();
 			Unit selectedUnit = battleData.selectedUnit;
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
@@ -477,13 +481,13 @@ namespace Battle.Turn
 			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점을 castingTile로 함. 범위 끝까지 가로막은 유닛이 없으면 범위 맨 끝 타일이 castingTile=null
 			if (selectedSkill.GetSkillType() == SkillType.Route) {
 				//FIXME : 리스트로 만들어야 되는데.... 전체적으로 혼파망이라서 일단 이렇게 놔둠
-				castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.LeftUp);
+				castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.LeftUp);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.LeftDown);
+					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.LeftDown);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.RightUp);
+					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.RightUp);
 				if (castingTile == null)
-					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.RightDown);
+					castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.RightDown);
 			}
 
 			if (castingTile != null) {
@@ -502,7 +506,7 @@ namespace Battle.Turn
 
 			return selectedTile;
 		}
-		private static Tile GetRouteSkillCastingTile(BattleData battleData, Unit unit, ActiveSkill routeSkill, Direction direction){				
+		private static Tile GetRouteSkillCastingTile(Unit unit, ActiveSkill routeSkill, Direction direction){				
 			List<Tile> firstRange = battleData.tileManager.GetTilesInRange(routeSkill.GetFirstRangeForm(),
 				unit.GetPosition(),
 				routeSkill.GetFirstMinReach(),
@@ -516,11 +520,11 @@ namespace Battle.Turn
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//  아래 : 지정형 (Point) 스킬
 
-		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection){
+		public static IEnumerator SelectSkillApplyPoint(Direction originalDirection){
 
 			Unit selectedUnit = battleData.selectedUnit;
 			Direction beforeDirection = selectedUnit.GetDirection ();
-			Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill(battleData, selectedUnit.GetTileUnderUnit());
+			Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill(selectedUnit.GetTileUnderUnit());
 
 			if (selectedTile == null)
 			{
@@ -536,53 +540,17 @@ namespace Battle.Turn
 
 			battleData.currentState = CurrentState.CheckApplyOrChain;
 
-			List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
+			List<Tile> tilesInSkillRange = GetTilesInSkillRange(selectedTile, selectedUnit);
 			//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
 			List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
 			FocusUnit(battleData.selectedUnit);
 			battleData.currentState = CurrentState.FocusToUnit;
 
 			battleData.uiManager.ResetSkillNamePanelUI();
-
-			/*
-			//Direction beforeDirection = originalDirection;
-			Unit selectedUnit = battleData.selectedUnit;
-			ActiveSkill selectedSkill = battleData.SelectedSkill;
-
-			while (battleData.currentState == CurrentState.SelectSkillApplyPoint)
-			{
-				Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill (battleData, selectedUnit.GetTileUnderUnit ());
-
-				if (selectedTile == null){
-					Debug.LogError("Cannot find unit for attack. " );
-                    // 아무것도 할 게 없을 경우 휴식
-                    battleData.currentState = CurrentState.RestAndRecover;
-                    yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
-                    yield break;
-				}
-
-				battleData.uiManager.SetSkillNamePanelUI(selectedSkill.GetName());
-				battleData.move.selectedTilePosition = selectedTile.GetTilePos();
-
-				// 타겟팅 스킬을 타겟이 없는 장소에 지정했을 경우 적용되지 않도록 예외처리 필요 - 대부분의 스킬은 논타겟팅. 추후 보강.
-
-				//BattleManager battleManager = battleData.battleManager;
-				battleData.currentState = CurrentState.CheckApplyOrChain;
-
-				List<Tile> tilesInSkillRange = GetTilesInSkillRange(battleData, selectedTile, selectedUnit);
-				//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
-				List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-
-				yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(battleData));
-				FocusUnit(battleData.selectedUnit);
-				battleData.currentState = CurrentState.FocusToUnit;
-				battleData.uiManager.ResetSkillNamePanelUI();
-			}
-			*/
 		}
-		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(BattleData battleData, Tile unitTile){
+		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(Tile unitTile){
 			Unit selectedUnit = battleData.selectedUnit;
 			List<Tile> activeRange = new List<Tile>();
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
@@ -604,7 +572,7 @@ namespace Battle.Turn
 			Camera.main.transform.position = new Vector3(unit.transform.position.x, unit.transform.position.y, -10);
 		}
 
-		private static List<Tile> GetTilesInSkillRange(BattleData battleData, Tile targetTile, Unit selectedUnit = null)
+		private static List<Tile> GetTilesInSkillRange(Tile targetTile, Unit selectedUnit = null)
 		{
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
 				List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
@@ -627,7 +595,7 @@ namespace Battle.Turn
 				return selectedTiles;
 		}
 
-		private static List<Tile> GetTilesInFirstRange(BattleData battleData)
+		private static List<Tile> GetTilesInFirstRange()
 		{
 			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
 																battleData.selectedUnit.GetPosition(),

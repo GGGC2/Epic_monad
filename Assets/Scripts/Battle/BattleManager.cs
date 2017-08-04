@@ -37,6 +37,8 @@ public class BattleManager : MonoBehaviour
 	void Start() {
         SoundManager.Instance.PlayBgm("Script_Tense");
 
+		AIStates_old.SetBattleData (battleData);
+
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
 		battleData.currentPhase = 0;
