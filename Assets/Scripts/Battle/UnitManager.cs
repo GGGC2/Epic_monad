@@ -182,11 +182,11 @@ public class UnitManager : MonoBehaviour {
 					
 					if (unitInfo.name != "Empty") {
 						unitInfo.nameInCode = PCName;
-						unitInfo.baseHealth = UnitInfo.GetStat(PCName, UnitInfo.StatType.Health);
-						unitInfo.basePower = UnitInfo.GetStat(PCName, UnitInfo.StatType.Power);
-						unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
-						unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
-						unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+						unitInfo.baseHealth = UnitInfo.GetStat(PCName, Stat.MaxHealth);
+						unitInfo.basePower = UnitInfo.GetStat(PCName, Stat.Power);
+						unitInfo.baseDefense = UnitInfo.GetStat(PCName, Stat.Defense);
+						unitInfo.baseResistance = UnitInfo.GetStat(PCName, Stat.Resistance);
+						unitInfo.baseAgility = UnitInfo.GetStat(PCName, Stat.Agility);
 						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
 
 						if(GameData.SceneData.stageNumber >= Setting.elementOpenStage){
@@ -304,7 +304,7 @@ public class UnitManager : MonoBehaviour {
 		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
@@ -416,7 +416,7 @@ public class UnitManager : MonoBehaviour {
 		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
@@ -424,10 +424,10 @@ public class UnitManager : MonoBehaviour {
 		{
 			SortHelper.CompareBy<Unit>(go => {
 					int currentAP = go.GetCurrentActivityPoint();
-					int recover = go.GetStat(Stat.Dexturity);
+					int recover = go.GetStat(Stat.Agility);
 					return currentAP + recover;
 			}),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 

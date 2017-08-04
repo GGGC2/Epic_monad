@@ -69,15 +69,16 @@ namespace Enums {
 
     public enum Stat
     {
-        MaxHealth,
-		CurrentHealth, // 엄밀히 말해 Stat은 아니지만 대미지/효과 계산에 포함되므로 추가
-        Power,
-        Defense,
-        Resistance,
-        Dexturity,
-		UsedAP, // CurrentHealth와 동일
-		CurrentAP, // CurrentHealth와 동일
-		None // 대미지 없음, 고정값, 또는 기타 특수한 경우
+        MaxHealth = 1,
+        Power = 2,
+        Defense = 3,
+        Resistance = 4,
+        Agility = 5,
+        CurrentHealth = 6, // 엄밀히 말해 Stat은 아니지만 대미지/효과 계산에 포함되므로 추가
+		UsedAP = 7, // CurrentHealth와 동일
+		CurrentAP = 8, // CurrentHealth와 동일
+        Level = 9,
+		None = 10 // 대미지 없음, 고정값, 또는 기타 특수한 경우
     }
 
 	public enum RangeForm
@@ -127,7 +128,7 @@ namespace Enums {
         PowerChange,
         DefenseChange,
         ResistanceChange,
-        DexturityChange,
+        AgilityChange,
 		SpeedChange, // 속도 증감
 		UsedAPChange,
 		CurrentAPChange,
@@ -183,8 +184,8 @@ namespace Enums {
                 return Stat.Defense;
             case StatusEffectType.ResistanceChange:
                 return Stat.Resistance;
-            case StatusEffectType.DexturityChange:
-                return Stat.Dexturity;
+            case StatusEffectType.AgilityChange:
+                return Stat.Agility;
             }
             return Stat.None;
         }
@@ -196,8 +197,8 @@ namespace Enums {
                 return StatusEffectType.DefenseChange;
             case Stat.Resistance:
                 return StatusEffectType.ResistanceChange;
-            case Stat.Dexturity:
-                return StatusEffectType.DexturityChange;
+            case Stat.Agility:
+                return StatusEffectType.AgilityChange;
             }
             return StatusEffectType.Etc;
         }

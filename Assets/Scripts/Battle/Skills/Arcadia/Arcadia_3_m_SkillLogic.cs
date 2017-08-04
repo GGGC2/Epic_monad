@@ -3,7 +3,7 @@ using Battle.Damage;
 using Enums;
 
 namespace Battle.Skills {
-    class Arcadia_1_m_SkillLogic : BasePassiveSkillLogic {
+    class Arcadia_3_m_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerOnActionEnd(Unit caster) {
             Tile currentTile = caster.GetTileUnderUnit();
             Element elementOfTile = currentTile.GetTileElement();

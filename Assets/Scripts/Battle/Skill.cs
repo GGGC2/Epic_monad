@@ -14,8 +14,10 @@ public class Skill{
     public string skillDataText;
 	public Stat firstTextValueType;
 	public float firstTextValueCoef;
+    public float firstTextValueBase;
 	public Stat secondTextValueType;
 	public float secondTextValueCoef;
+    public float secondTextValueBase;
 
     //기술,특성의 공통되는 부분을 받아온다
     public void GetCommonSkillData(CommaStringParser parser){

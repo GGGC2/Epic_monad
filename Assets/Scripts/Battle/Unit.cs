@@ -61,7 +61,7 @@ public class Unit : MonoBehaviour
 	int basePower; // 공격력
 	int baseDefense; // 방어력
 	int baseResistance; // 저항력
-	int baseDexturity; // 행동력
+	int baseAgility; // 행동력
     Dictionary<Stat, int> baseStats;
 
     class ActualStat {
@@ -79,7 +79,7 @@ public class Unit : MonoBehaviour
     ActualStat actualPower;
     ActualStat actualDefense;
     ActualStat actualResistance;
-    ActualStat actualDexturity;
+    ActualStat actualAgility;
     Dictionary<Stat, ActualStat> actualStats;
 
 	// type.
@@ -127,7 +127,7 @@ public class Unit : MonoBehaviour
             return baseStats[stat];
         return 0;
     }
-    public int GetRegenerationAmount() { return GetStat(Stat.Dexturity); }
+    public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
     public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
 	public bool IsAlreadyBehavedObject(){ return isAlreadyBehavedObject; }
@@ -638,7 +638,7 @@ public class Unit : MonoBehaviour
 
 	public void RegenerateActionPoint(){
 		activityPoint = GetRegeneratedActionPoint();
-		Debug.Log(name + " recover " + actualDexturity.value + "AP. Current AP : " + activityPoint);
+		Debug.Log(name + " recover " + actualAgility.value + "AP. Current AP : " + activityPoint);
 	}
 
 	public int GetRegeneratedActionPoint()
@@ -800,13 +800,14 @@ public class Unit : MonoBehaviour
         actualPower  = new ActualStat(basePower, Stat.Power);
         actualDefense = new ActualStat(baseDefense, Stat.Defense);
         actualResistance = new ActualStat(baseResistance, Stat.Resistance);
-        actualDexturity = new ActualStat(baseDexturity, Stat.Dexturity);
+        actualAgility = new ActualStat(baseAgility, Stat.Agility);
         actualStats = new Dictionary<Stat, ActualStat>();
         actualStats.Add(Stat.MaxHealth, actualHealth);
         actualStats.Add(Stat.Power, actualPower);
         actualStats.Add(Stat.Defense, actualDefense);
         actualStats.Add(Stat.Resistance, actualResistance);
-        actualStats.Add(Stat.Dexturity, actualDexturity);
+        actualStats.Add(Stat.Agility, actualAgility);
+        actualStats.Add(Stat.Level, new ActualStat(GameData.PartyData.level, Stat.Level));
     }
     public void ApplyUnitInfo(UnitInfo unitInfo) {
         this.index = unitInfo.index;
@@ -819,13 +820,14 @@ public class Unit : MonoBehaviour
         this.basePower = unitInfo.basePower;
         this.baseDefense = unitInfo.baseDefense;
         this.baseResistance = unitInfo.baseResistance;
-        this.baseDexturity = unitInfo.baseAgility;
+        this.baseAgility = unitInfo.baseAgility;
         this.baseStats = new Dictionary<Stat, int>();
         baseStats.Add(Stat.MaxHealth, baseHealth);
         baseStats.Add(Stat.Power, basePower);
         baseStats.Add(Stat.Defense, baseDefense);
         baseStats.Add(Stat.Resistance, baseResistance);
-        baseStats.Add(Stat.Dexturity, baseDexturity);
+        baseStats.Add(Stat.Agility, baseAgility);
+        baseStats.Add(Stat.Level, GameData.PartyData.level);
         this.unitClass = unitInfo.unitClass;
         this.element = unitInfo.element;
         this.celestial = unitInfo.celestial;
@@ -870,10 +872,10 @@ public class Unit : MonoBehaviour
 		UpdateSpriteByDirection();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
-		activityPoint = (int)(actualDexturity.value * 0.5f) + unitManager.GetStandardActivityPoint();
+		activityPoint = (int)(actualAgility.value * 0.5f) + unitManager.GetStandardActivityPoint();
 		
 		// 기본민첩성이 0인 유닛은 시작시 행동력이 0
-		if (baseDexturity == 0)
+		if (baseAgility == 0)
 			activityPoint = 0;
 		
 		// skillList = SkillLoader.MakeSkillList();

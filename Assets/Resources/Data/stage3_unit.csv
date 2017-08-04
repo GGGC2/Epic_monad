@@ -1,4 +1,4 @@
-Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseDexturity,UnitClass,Element,Celestial,IsObject
+Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseAgility,UnitClass,Element,Celestial,IsObject
 1,아스터 기병,soldier01,Enemy,5,10,RightUp,173,68,5,5,52,Melee,Plant,Sun,false
 2,아스터 기병,soldier01,Enemy,11,10,RightUp,173,68,5,5,52,Melee,Plant,Sun,false
 3,아스터 기병,soldier01,Enemy,6,15,LeftDown,173,68,5,5,52,Melee,Plant,Sun,false
