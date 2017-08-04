@@ -93,13 +93,11 @@ public class SceneLoader : MonoBehaviour{
 	{
 		yield return Fadeout();
 
-		if (nextScriptFileName == "Title")
-		{
+		if (nextScriptFileName == "Title"){
 			Time.timeScale = 1.0f;
-			SceneManager.LoadScene("title");
+			SceneManager.LoadScene("Title");
 		}
-		else
-		{
+		else{
 			SceneData.dialogueName = nextScriptFileName;
             SceneData.isDialogue = true;
             if (!SceneData.isTestMode && !SceneData.isStageMode) {

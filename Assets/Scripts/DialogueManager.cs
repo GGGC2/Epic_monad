@@ -88,7 +88,7 @@ public class DialogueManager : MonoBehaviour {
 		}
 		else if(Data.GetCommandType() == "load_title")
 		{
-			SceneManager.LoadScene("title");
+			SceneManager.LoadScene("Title");
 			return Data.GetCommandType();
 		}
 		return "else";
@@ -256,8 +256,7 @@ public class DialogueManager : MonoBehaviour {
         StartCoroutine(PrintLinesFrom(startLine));
     }
 
-	void Initialize()
-	{
+	void Initialize(){
 		Debug.Log(SceneData.dialogueName);
         if (SceneData.dialogueName != null)
         {

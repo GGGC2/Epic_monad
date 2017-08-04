@@ -111,8 +111,7 @@ public class DialogueData{
 				dialogue = stringList[3];
 			}
 		}
-		catch (Exception e)
-		{
+		catch (Exception e){
 			Debug.LogError("Parse error with " + unparsedDialogueDataString);
 			Debug.LogException(e);
 			throw e;
