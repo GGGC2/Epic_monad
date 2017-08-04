@@ -201,6 +201,7 @@ public class BattleManager : MonoBehaviour{
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit));
+            RemoveAuraEffectFromDeadOrRetreatUnit(deadUnit);
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
 			yield return BattleTriggerManager.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
@@ -215,13 +216,22 @@ public class BattleManager : MonoBehaviour{
 
 		foreach (Unit retreatUnit in battleData.retreatUnits){
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit));
-			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
+            RemoveAuraEffectFromDeadOrRetreatUnit(retreatUnit);
+            battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
 			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
 			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(retreatUnit.gameObject);
 		}
 	}
+
+    public static void RemoveAuraEffectFromDeadOrRetreatUnit(Unit unit) {
+        foreach(var se in unit.GetStatusEffectList()) {
+            if(se.IsOfType(StatusEffectType.Aura)) {
+                Aura.TriggerOnRemoved(unit, se);
+            }
+        }
+    }
 
 	static bool IsSelectedUnitRetreatOrDie(BattleData battleData)
 	{
