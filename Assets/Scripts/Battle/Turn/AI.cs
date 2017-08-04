@@ -228,8 +228,24 @@ namespace Battle.Turn
 			Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
 			
 			if(barrierTile == null){
+				int step=0;
+				int requireAP=0;
+
+				int totalUseActivityPoint = 3+5+7+9+11+13+15;
+
+				Vector2 destPos = unit.GetPosition() + battleData.tileManager.ToVector2(Direction.RightDown)*7;
+				Tile destTile=battleData.tileManager.GetTile(destPos);
+
+				battleData.currentState = CurrentState.CheckDestination;
+
+				// 카메라를 옮기고
+				Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
+				battleData.currentState = CurrentState.MoveToTile;
+				yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseActivityPoint));
+
 			}
 			else{
+				yield return AISkill(battleData, selectedSkillIndex);
 			}
 
 			if (BattleManager.GetStandbyPossible (battleData)) {
