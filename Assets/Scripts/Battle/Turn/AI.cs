@@ -299,21 +299,31 @@ namespace Battle.Turn
 		public static IEnumerator AIAct(BattleData battleData){
 			while (true) {
 				//행동하기 전마다 체크해야 할 사항들(중요!)
+				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
 				yield return BattleManager.AtActionEnd(battleData);
 
 				int selectedSkillIndex = 1;
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				Unit selectedUnit = battleData.selectedUnit;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 				int currentAP = battleData.selectedUnit.GetCurrentActivityPoint ();
 				int requireAP = battleData.SelectedSkill.GetRequireAP ();
 				bool enoughAP = currentAP >= requireAP;
+				bool notInNonskillableEffect = !(selectedUnit.HasStatusEffect(StatusEffectType.Silence) ||
+					selectedUnit.HasStatusEffect(StatusEffectType.Faint));
 
-				if (enoughAP) {
+				if (enoughAP && notInNonskillableEffect) {
 					yield return AISkill (battleData, selectedSkillIndex);
 				}
 				else {
-					yield return PassTurn ();
+					if (BattleManager.GetStandbyPossible (battleData)) {
+						yield return PassTurn ();
+					}
+					else {
+						battleData.currentState = CurrentState.RestAndRecover;
+						yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+					}
 					yield break;
 				}
 			}
@@ -353,7 +363,7 @@ namespace Battle.Turn
 
 			if (selectedTile == null)
 			{
-				Debug.LogError("Cannot find unit for attack. " );
+				Debug.Log(selectedUnit.GetName () + " cannot find unit for direction attack. " );
 				// 아무것도 할 게 없을 경우 휴식
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
@@ -380,17 +390,49 @@ namespace Battle.Turn
 			Unit selectedUnit = battleData.selectedUnit;
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
-			selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-				unitTile.GetTilePos(),
-				selectedSkill.GetSecondMinReach(),
-				selectedSkill.GetSecondMaxReach(),
-				selectedSkill.GetSecondWidth(),
-				selectedUnit.GetDirection());
+			Tile castingTile = unitTile;
+
+			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점을 castingTile로 함. 범위 끝까지 가로막은 유닛이 없으면 범위 맨 끝 타일이 castingTile=null
+			if (selectedSkill.GetSkillType() == SkillType.Route) {
+				//FIXME : 리스트로 만들어야 되는데.... 전체적으로 혼파망이라서 일단 이렇게 놔둠
+				castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.LeftUp);
+				if(castingTile==null)
+					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.LeftDown);
+				if(castingTile==null)
+					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.RightUp);
+				if (castingTile == null)
+					castingTile = GetRouteSkillCastingTile (battleData, selectedUnit, selectedSkill, Direction.RightDown);
+			}
+
+			if (castingTile != null) {
+				selectedTiles = battleData.tileManager.GetTilesInRange (selectedSkill.GetSecondRangeForm (),
+					castingTile.GetTilePos (),
+					selectedSkill.GetSecondMinReach (),
+					selectedSkill.GetSecondMaxReach (),
+					selectedSkill.GetSecondWidth (),
+					selectedUnit.GetDirection ());
+			}
+			else {
+				selectedTiles = new List<Tile> ();
+			}
 
 			Tile selectedTile = AIUtil.FindOtherSideUnitTile(selectedTiles, battleData.selectedUnit);
 
 			return selectedTile;
 		}
+		private static Tile GetRouteSkillCastingTile(BattleData battleData, Unit unit, ActiveSkill routeSkill, Direction direction){				
+			List<Tile> firstRange = battleData.tileManager.GetTilesInRange(routeSkill.GetFirstRangeForm(),
+				unit.GetPosition(),
+				routeSkill.GetFirstMinReach(),
+				routeSkill.GetFirstMaxReach(),
+				routeSkill.GetFirstWidth(),
+				direction);
+			return SkillAndChainStates.GetRouteEnd(firstRange);
+		}
+
+		//  위 : 지정형 빼고 나머지 스킬
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//  아래 : 지정형 (Point) 스킬
 
 		public static IEnumerator SelectSkillApplyPoint(BattleData battleData, Direction originalDirection){
 
@@ -400,7 +442,7 @@ namespace Battle.Turn
 
 			if (selectedTile == null)
 			{
-				Debug.LogError("Cannot find unit for attack. " );
+				Debug.Log(selectedUnit.GetName () + " cannot find unit for point attack. " );
 				// 아무것도 할 게 없을 경우 휴식
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));

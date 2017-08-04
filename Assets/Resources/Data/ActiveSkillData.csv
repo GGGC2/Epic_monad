@@ -4,7 +4,7 @@ soldier01,1,근접공격,1,35,0,Power,1,Point,Cross,1,2,0,Diamond,0,0,0,DamageHe
 archer01,1,화살 발사,1,30,0,Power,0.9,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,None,0
 asterArcher01,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,None,0
 controller,1,침입자 제거,1,1,0,Power,1.5,Point,Diamond,0,0,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,ControllerGrawl,--,None,0,None,0
-kashasty_Escape,1,더블 샷,1,27,0,Power,1.2,Route,Straight,1,8,0,Straight,0,1,0,DamageHealth,Shot,Individual,NonMove,Gun,-,None,0,None,0
+kashasty_Escape,1,더블 샷,1,27,0,Power,1.2,Route,Straight,1,8,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,Gun,-,None,0,None,0
 asterAgent,1,섹션스킬,1,50,0,Power,1,Auto,Sector,1,1,0,Sector,1,3,0,DamageHealth,-,Individual,NonMove,-,--,None,0,None,0
 monster,1,몬스터의근접공격,1,50,0,Power,1,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,-,--,None,0,None,0
 orchid,1,약공격,1,55,0,Power,1,Auto,Diamond,0,0,0,Diamond,1,2,0,DamageHealth,-,Area,NonMove,-,--,None,0,None,0
