@@ -155,10 +155,24 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(caster, targets);
 		    }
 	    }
+        public override IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+            foreach(var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(attacker, shieldCaster, target, amount);
+            }
+        }
         public override void TriggerOnMove(Unit caster) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnMove(caster);
             }
+        }
+        public override bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerOnForceMove(caster, tileAfter)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
         }
 
         public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {

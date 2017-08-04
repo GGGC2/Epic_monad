@@ -101,7 +101,13 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
     }
+    public virtual IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+        yield return null;
+    }
     public virtual void TriggerOnMove(Unit caster) {
+    }
+    public virtual bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+        return true;
     }
     public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
         yield return null;

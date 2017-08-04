@@ -130,8 +130,7 @@ public static class StatusEffector
 				alreadyAppliedSameEffect.AddRemainStack(1);
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
-			else
-			{
+			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
                 List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
