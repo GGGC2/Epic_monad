@@ -214,6 +214,8 @@ public class BattleData{
 	public ActiveSkill SelectedSkill
 	{
 		get {
+			if(selectedUnit.GetSkillList().Count<indexOfSelectedSkillByUser)
+				return null;
 			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
 		}
 	}
