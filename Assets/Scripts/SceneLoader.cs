@@ -105,7 +105,7 @@ public class SceneLoader : MonoBehaviour{
             }
 			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
-			SceneManager.LoadScene("dialogue");
+			SceneManager.LoadScene("Dialogue");
 		}
 	}
 
