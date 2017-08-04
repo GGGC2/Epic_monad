@@ -187,15 +187,19 @@ public class UnitManager : MonoBehaviour {
 						unitInfo.baseAgility = UnitInfo.GetStat(PCName, Stat.Agility);
 						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
 
-						if(GameData.SceneData.stageNumber >= Setting.elementOpenStage){
+						if(SceneData.stageNumber >= Setting.elementOpenStage)
 							unitInfo.element = UnitInfo.GetElement(PCName);
+						if(SceneData.stageNumber >= Setting.celestialOpenStage)
 							unitInfo.celestial = UnitInfo.GetCelestial(PCName);
-						}
+
+						GeneratedPC += 1;
 					}
-					
-					GeneratedPC += 1;
 				}
 			}
+
+			Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
+			Debug.Log("GeneratedPC : " + GeneratedPC);
+			FindObjectOfType<BattleTriggerManager>().battleTriggers.Find(trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0).targetCount = GeneratedPC;
 			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
 
 			foreach (var unitInfo in unitInfoList){
@@ -218,19 +222,16 @@ public class UnitManager : MonoBehaviour {
 			List<string> controllableUnitNameList = new List<string>();
 			readyManager.selected.ToList().ForEach(panel => {
 				if (panel.unitName != "Empty")
-				{
 					controllableUnitNameList.Add(panel.unitName);
-				}
 			});
 			
 			units.ForEach(unit => {
-				if (controllableUnitNameList.Contains(unit.GetNameInCode()))
-				{
+				if (controllableUnitNameList.Contains(unit.GetNameInCode())){
 					Destroy(unit.GetComponent<AIData>());
 				}
 			});
 
-			Destroy(GameObject.Find("ReadyManager").gameObject);
+			Destroy(readyManager.gameObject);
 		}
 		else {
 			foreach (var unitInfo in unitInfoList){
@@ -260,11 +261,9 @@ public class UnitManager : MonoBehaviour {
 		// Debug.Log("Generate units complete");
 	}
 
-	public void DeleteDeadUnit(Unit deadUnit)
-	{
+	public void DeleteDeadUnit(Unit deadUnit){
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnit.GetLatelyHitInfos())
-		{
+		foreach (var hitInfo in deadUnit.GetLatelyHitInfos()){
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
 
@@ -276,18 +275,15 @@ public class UnitManager : MonoBehaviour {
 		readiedUnits.Remove(deadUnit);
 	}
 
-	public void DeleteRetreatUnit(Unit retreateUnit)
-	{
+	public void DeleteRetreatUnit(Unit retreateUnit){
 		units.Remove(retreateUnit);
 		readiedUnits.Remove(retreateUnit);
 	}
 
-	public List<Unit> GetUpdatedReadiedUnits()
-	{
+	public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();
 		// check each unit and add all readied units.
-		foreach (var unit in units)
-		{
+		foreach (var unit in units){
 			// 오브젝트의 턴은 돌아오지 않는다
 			if (unit.IsObject()) continue;
 
@@ -309,12 +305,9 @@ public class UnitManager : MonoBehaviour {
 		return readiedUnits;
 	}
 
-    public List<Unit> GetEnemyUnits()
-    {
-        foreach (var unit in units)
-        {
-            if (unit.GetSide() == Side.Enemy)
-            {
+    public List<Unit> GetEnemyUnits(){
+        foreach (var unit in units){
+            if (unit.GetSide() == Side.Enemy){
                 enemyUnits.Add(unit);
                 // Debug.Log(unit.GetName() + " is enemy");
             }
@@ -381,17 +374,15 @@ public class UnitManager : MonoBehaviour {
 		passiveSkillList = Parser.GetPassiveSkills();
 	}
 
-    void LoadStatusEffects()
-    {
+    void LoadStatusEffects(){
         statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
     }
 
-    void LoadTileStatusEffects()
-    {
+    void LoadTileStatusEffects(){
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start () {
+	void Start() {
 		GameData.PartyData.CheckLevelZero();
 		LoadActiveSkills();
 		LoadPassiveSkills();

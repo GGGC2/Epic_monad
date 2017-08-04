@@ -6,7 +6,7 @@ using System.Linq;
 using System;
 using Enums;
 
-public class BattleTriggerChecker : MonoBehaviour {
+public class BattleTriggerManager : MonoBehaviour {
 	UnitManager unitManager;
 	public BattleData battleData;
 	public SceneLoader sceneLoader;
@@ -18,25 +18,10 @@ public class BattleTriggerChecker : MonoBehaviour {
 
 	public string nextScriptName;
 
-	public BattleData BattleData
-	{
-		get { return battleData; }
-	}
-
-	public SceneLoader SceneLoader
-	{
-		get { return sceneLoader; }
-	}
-
-	public List<Vector2> TargetTiles
-	{
-		get { return targetTiles; }
-	}
-
-	public List<string> ReachedTargetUnitNames	
-	{
-		get { return reachedTargetUnitNames; }
-	}
+	public BattleData BattleData { get { return battleData; } }
+	public SceneLoader SceneLoader { get { return sceneLoader; } }
+	public List<Vector2> TargetTiles { get { return targetTiles; } }
+	public List<string> ReachedTargetUnitNames { get { return reachedTargetUnitNames; } }
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
@@ -46,9 +31,8 @@ public class BattleTriggerChecker : MonoBehaviour {
 			Debug.Log("TriggerName : " + trigger.korName);
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
 				battleData.rewardPoint += trigger.reward;
-			else if(trigger.resultType == BattleTrigger.ResultType.Win){
+			else if(trigger.resultType == BattleTrigger.ResultType.Win)
 				battleData.rewardPoint += trigger.reward;
-			}
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log("Mission FAIL : "+trigger.korName);
 				sceneLoader.LoadNextDialogueScene("Title");
@@ -62,11 +46,8 @@ public class BattleTriggerChecker : MonoBehaviour {
 		resultPanel.gameObject.SetActive(true);
 		resultPanel.UpdatePanel(0);
 	}
-	void Start () {
-		battleData = FindObjectOfType<BattleManager>().battleData;
-		unitManager = battleData.unitManager;
-		sceneLoader = FindObjectOfType<SceneLoader>();
 
+	void Awake(){
 		resultPanel = FindObjectOfType<ResultPanel>();
 		resultPanel.Checker = this;
 		resultPanel.gameObject.SetActive(false);
@@ -77,10 +58,15 @@ public class BattleTriggerChecker : MonoBehaviour {
 		if(FindObjectOfType<ConditionPanel>() != null)
 			FindObjectOfType<ConditionPanel>().Initialize(battleTriggers);
 	}
+	void Start () {
+		battleData = FindObjectOfType<BattleManager>().battleData;
+		unitManager = battleData.unitManager;
+		sceneLoader = FindObjectOfType<SceneLoader>();
+	}
 
 	public static IEnumerator CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
 		Debug.Log("Count BattleCondition : " + unit.name + "'s " + actionType);
-		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
@@ -95,7 +81,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 	}
 
 	public static void CountBattleCondition(){
-		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
@@ -105,7 +91,7 @@ public class BattleTriggerChecker : MonoBehaviour {
 	}
 
 	public static void CountBattleCondition(Unit unit, Tile destination){
-		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;

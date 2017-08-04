@@ -200,8 +200,8 @@ public class BattleManager : MonoBehaviour{
 			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit));
 			battleData.unitManager.DeleteDeadUnit(deadUnit);
 			Debug.Log(deadUnit.GetName() + " is dead");
-			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
+			yield return BattleTriggerManager.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
+			yield return BattleTriggerManager.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(deadUnit.gameObject);
 		}
 	}
@@ -214,8 +214,8 @@ public class BattleManager : MonoBehaviour{
 			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit));
 			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
-			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
+			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
+			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
 			Destroy(retreatUnit.gameObject);
 		}
 	}
@@ -274,7 +274,7 @@ public class BattleManager : MonoBehaviour{
 		battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
 		//승리 조건이 충족되었으면 결과창 출력하기
-		BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 			Checker.InitializeResultPanel();
 		// 액션마다 갱신사항 종료
@@ -467,7 +467,7 @@ public class BattleManager : MonoBehaviour{
 
 		if (Input.GetKeyDown(KeyCode.CapsLock))
 		{
-			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 			Checker.InitializeResultPanel ();
 		}
 
@@ -515,7 +515,7 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		battleData.currentPhase++;
-		BattleTriggerChecker.CountBattleCondition();
+		BattleTriggerManager.CountBattleCondition();
 
 		yield return StartCoroutine(battleData.uiManager.MovePhaseUI(battleData.currentPhase));
 

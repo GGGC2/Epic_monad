@@ -11,7 +11,7 @@ public class ResultPanel : MonoBehaviour{
 	public Text TriggerIndex;
 	public Image ExpBar;
 	private bool alreadyClicked;
-	public BattleTriggerChecker Checker;
+	public BattleTriggerManager Checker;
 	public int runningFrame;
 
 	public void Clicked(){

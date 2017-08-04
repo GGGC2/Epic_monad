@@ -191,7 +191,7 @@ public class Unit : MonoBehaviour
         SetPosition(tileAfter.GetTilePos());
         tileAfter.SetUnitOnTile(this);
 
-        BattleTriggerChecker.CountBattleCondition(this, tileAfter);
+        BattleTriggerManager.CountBattleCondition(this, tileAfter);
         updateStats();
     }
 
