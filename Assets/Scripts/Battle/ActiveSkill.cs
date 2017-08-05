@@ -42,7 +42,7 @@ public class ActiveSkill : Skill{
     List<TileStatusEffect.FixedElement> tileStatusEffectList = new List<TileStatusEffect.FixedElement>();
 
 	public ActiveSkill(string skillData){
-		CommaStringParser commaParser = new CommaStringParser(skillData);
+		StringParser commaParser = new StringParser(skillData, ',');
 		
 		GetCommonSkillData(commaParser);
 		requireAP = commaParser.ConsumeInt();

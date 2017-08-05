@@ -1,14 +1,16 @@
 using UnityEngine;
 using System;
 
-public class CommaStringParser
-{
+public class StringParser{
 	string[] origin = null;
 	int index = 0;
 
-	public CommaStringParser(string line)
-	{
-		origin = line.Split(',');
+	public StringParser(string line, char separator){
+		origin = line.Split(separator);
+		index = 0;
+	}
+
+	public void ResetIndex(){
 		index = 0;
 	}
 
@@ -17,8 +19,7 @@ public class CommaStringParser
 		return origin[index - 1];
 	}
 
-	public bool ConsumeBool()
-	{
+	public bool ConsumeBool(){
 		string strValue = Consume();
 		try
 		{

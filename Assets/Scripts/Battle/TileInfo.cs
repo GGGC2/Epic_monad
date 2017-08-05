@@ -79,7 +79,7 @@ public class TileInfo {
 		public Element element;
 		public int baseAPCost;
 		public TileTypeData(string dataLine){
-			CommaStringParser commaParser = new CommaStringParser(dataLine);
+			StringParser commaParser = new StringParser(dataLine, ',');
 			displayName = commaParser.Consume();
 			identifier=commaParser.Consume();
 			baseAPCost = commaParser.ConsumeInt();

@@ -43,58 +43,53 @@ public class DialogueManager : MonoBehaviour{
 		int newLine = line;
 		for (int i = newLine; i < endLine; i++)
 		{
-			if (dialogueDataList[i].IsAdventureObject())
-			{
-				ActiveAdventureUI();
+			if (dialogueDataList[i].IsAdventureObject()){
+				SetActiveAdventureUI(true);
 				break;
 			}
 			
-			if(HandleSceneChange(dialogueDataList[i]) != "else")
-			{
+			if(HandleSceneChange(dialogueDataList[i]) != DialogueData.CommandType.Else){
 				return;
 			}
 		}
-		ActiveAdventureUI();
+		SetActiveAdventureUI(true);
 	}
 
-	string HandleSceneChange (DialogueData Data){
-		if (Data.GetCommandType () == "adv_start") {
-			ActiveAdventureUI ();
+	DialogueData.CommandType HandleSceneChange (DialogueData Data){
+		if (Data.Command == DialogueData.CommandType.Adv){
+			SetActiveAdventureUI(true);
 			LoadAdventureObjects ();
-			return Data.GetCommandType();
-		}
-		else if (Data.GetCommandType () == "load_script") {
+			return Data.Command;
+		}else if (Data.Command == DialogueData.CommandType.Script){
 			string nextScriptName = Data.GetCommandSubType ();
-			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
-			return Data.GetCommandType();
+			sceneLoader.LoadNextDialogueScene (nextScriptName);
+			return Data.Command;
 		}
-		else if (Data.GetCommandType () == "load_battle"){
+		else if (Data.Command == DialogueData.CommandType.Battle){
 			Debug.Log(Data.GetCommandSubType());
 			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene();
-			return Data.GetCommandType();
+			sceneLoader.LoadNextBattleScene();
+			return Data.Command;
 		}
-		else if(Data.GetCommandType() == "load_worldmap"){
+		else if(Data.Command == DialogueData.CommandType.Map){
 			string nextStoryName = Data.GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
-			return Data.GetCommandType();
+			sceneLoader.LoadNextWorldMapScene(nextStoryName);
+			return Data.Command;
 		}
-		else if(Data.GetCommandType() == "load_title"){
+		else if(Data.Command == DialogueData.CommandType.Title){
 			SceneManager.LoadScene("Title");
-			return Data.GetCommandType();
+			return Data.Command;
 		}
-		return "else";
+		return DialogueData.CommandType.Else;
 	}
 
-	void HandleCommand(){
-		string CommandType = HandleSceneChange(dialogueDataList[line]);
-		if(CommandType != "else")
-			return;
+	IEnumerator HandleCommand(){
+		DialogueData.CommandType Command = HandleSceneChange(dialogueDataList[line]);
+		if(Command != DialogueData.CommandType.Else)
+			yield break;
 
-		else if (dialogueDataList[line].GetCommandType() == "appear")
-		{
-			if (dialogueDataList[line].GetCommandSubType() == "left")
-			{
+		else if (dialogueDataList[line].Command == DialogueData.CommandType.App){
+			if (dialogueDataList[line].GetCommandSubType() == "left"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) 
 				{
@@ -102,9 +97,7 @@ public class DialogueManager : MonoBehaviour{
 					leftPortrait.sprite = loadedSprite;
 					isLeftUnitOld = false;
 				}
-			}
-			else if (dialogueDataList[line].GetCommandSubType() == "right")
-			{
+			}else if (dialogueDataList[line].GetCommandSubType() == "right"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) 
 				{      
@@ -112,94 +105,66 @@ public class DialogueManager : MonoBehaviour{
 					rightPortrait.sprite = loadedSprite;
 					isLeftUnitOld = true;
 				}
-			}
-			else
-			{
+			}else
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "disappear")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.Disapp){
 			string commandSubType = dialogueDataList[line].GetCommandSubType();
-			if (commandSubType == "left" || commandSubType == leftUnit)
-			{
+			if (commandSubType == "left" || commandSubType == leftUnit){
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = false;
-			}
-			else if (commandSubType == "right" || commandSubType == rightUnit)
-			{
+			}else if (commandSubType == "right" || commandSubType == rightUnit){
 				rightUnit = null;
 				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = true;
 			}
 			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-			else if (dialogueDataList[line].GetCommandSubType() == "all")
-			{
+			else if (dialogueDataList[line].GetCommandSubType() == "all"){
 				leftUnit = null;
 				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				rightUnit = null;
 				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
 				isLeftUnitOld = false;
-			}
-			else
-			{
+			}else
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bgm")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BGM){
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlayBgm(bgmName);
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bg")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BG){
 			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
-		}
-		else if (dialogueDataList[line].GetCommandType() == "se")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.SE){
 			string SEName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlaySE (SEName);
-		}
-		else
-		{
-			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
-		}
+		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FIO){
+			yield return sceneLoader.Fade(true);
+			yield return sceneLoader.Fade(false);
+		}else
+			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
-
 	public void ReadEndLine(){
 		StartCoroutine (PrintLinesFrom (endLine-1));
 	}
 
-	public void ActiveSkipQuestionUI()
-	{
+	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
+	public void ActiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(true);
 	}
-
 	public void InactiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(false);
 	}
 
-    public void ActiveAdventureUI()
-    {
-        adventureUI.SetActive(true);
-        dialogueUI.SetActive(false);
-    }
+	public void SetActiveAdventureUI(bool active){
+		adventureUI.SetActive(active);
+		if(active) { dialogueUI.SetActive(false); }
+	}
 
-    public void InactiveAdventureUI()
-    {
-        adventureUI.SetActive(false);
-    }
-
-    public void ActiveDialogueUI()
-    {
+    public void ActiveDialogueUI(){
         adventureUI.SetActive(false);
         dialogueUI.SetActive(true);
     }
 
-    public void LoadAdventureObjects()
-    {
+    public void LoadAdventureObjects(){
         objects = adventureUI.GetComponent<AdventureManager>().objects;
 
 		objects.ToList().ForEach(x => x.SetActive(true));
@@ -279,25 +244,19 @@ public class DialogueManager : MonoBehaviour{
 		isLeftUnitOld = true;
 
 		line = startLine;
-		while (line < endLine)
-		{
+		while (line < endLine){
 			leftPortrait.color = Color.gray;
 			rightPortrait.color = Color.gray;
 
 			// Previous adventure dialogue is end
 			// If adventure object is clicked, PrintAllLine is called.
-			if (dialogueDataList[line].IsAdventureObject())
-			{
-				ActiveAdventureUI();
+			if (dialogueDataList[line].IsAdventureObject()){
+				SetActiveAdventureUI(true);
 				yield break;
-			}
-			else if (dialogueDataList[line].IsEffect())
-			{
-				HandleCommand();
+			}else if (dialogueDataList[line].IsEffect()){
+				StartCoroutine(HandleCommand());
 				line++;
-			}
-			else
-			{
+			}else{
 				HandleDialogue();
 
 				isWaitingMouseInput = true;
@@ -311,7 +270,7 @@ public class DialogueManager : MonoBehaviour{
 
 		yield return new WaitForSeconds(0.01f);
 
-		ActiveAdventureUI();
+		SetActiveAdventureUI(true);
 	}
 
 	void HandleDialogue()

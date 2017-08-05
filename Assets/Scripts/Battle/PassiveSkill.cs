@@ -9,7 +9,7 @@ public class PassiveSkill : Skill{
 	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
 
 	public PassiveSkill(string skillData){
-		CommaStringParser commaParser = new CommaStringParser(skillData);
+		StringParser commaParser = new StringParser(skillData, ',');
 		
 		GetCommonSkillData(commaParser);
 		skillDataText = commaParser.Consume();
