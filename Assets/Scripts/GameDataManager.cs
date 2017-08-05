@@ -26,7 +26,7 @@ public class GameDataManager {
         return result;
     }
     private static void ConvertStringToGameData(string str) {
-        CommaStringParser commastringParser = new CommaStringParser(str);
+        StringParser commastringParser = new StringParser(str, ',');
         PartyData.level = commastringParser.ConsumeInt();
         PartyData.exp = commastringParser.ConsumeInt();
         PartyData.reqExp = commastringParser.ConsumeInt();

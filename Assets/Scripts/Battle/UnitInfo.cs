@@ -24,7 +24,7 @@ public class UnitInfo {
 
 	public UnitInfo (string data)
 	{
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 		this.index = commaParser.ConsumeInt(); 
 		this.name = commaParser.Consume();
 		this.nameInCode = commaParser.Consume();

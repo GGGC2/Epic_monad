@@ -10,30 +10,29 @@ public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
-	public void GoToTitle()
-	{
+	public void GoToTitle(){
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
 	public void LoadNextBattleScene(){
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
 	}
 
 	public void LoadNextWorldMapScene(string storyName)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
@@ -47,7 +46,7 @@ public class SceneLoader : MonoBehaviour{
 		Time.timeScale = 1.0f;
 	}
 
-	IEnumerator Fade(bool isBlack){
+	public IEnumerator Fade(bool isBlack){
 		Time.timeScale = 0;
 		fadeoutScreenObject.SetActive(true);
 		var img = fadeoutScreenObject.GetComponent<Image>();
@@ -62,6 +61,9 @@ public class SceneLoader : MonoBehaviour{
 
 		while(tween.IsPlaying())
 			yield return null;
+
+		if(!isBlack)
+			fadeoutScreenObject.SetActive(false);
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(){

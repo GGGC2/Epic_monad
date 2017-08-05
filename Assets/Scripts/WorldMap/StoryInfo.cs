@@ -2,17 +2,16 @@ using UnityEngine;
 
 namespace WorldMap
 {
-public class StoryInfo
-{
-	public string storyName;
-	public string dialogueName;
-
-	public StoryInfo(string line)
+	public class StoryInfo
 	{
-		CommaStringParser commaParser = new CommaStringParser(line);
+		public string storyName;
+		public string dialogueName;
 
-		this.storyName = commaParser.Consume();
-		this.dialogueName = commaParser.Consume();
+		public StoryInfo(string line){
+			StringParser commaParser = new StringParser(line, ',');
+
+			this.storyName = commaParser.Consume();
+			this.dialogueName = commaParser.Consume();
+		}
 	}
-}
 }

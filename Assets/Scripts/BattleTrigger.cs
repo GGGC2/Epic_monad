@@ -24,7 +24,7 @@ public class BattleTrigger{
 
 	public BattleTrigger(string data)
 	{
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 
 		resultType = commaParser.ConsumeEnum<ResultType>();
 		if(resultType == ResultType.End)
