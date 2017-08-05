@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -222,8 +223,9 @@ namespace Battle.Turn{
 				Vector2 currPos = unit.GetPosition ();
 
 				//속박/기절 안 걸린 상태
-				if (BattleManager.GetIsMovePossibleState (battleData)) {
+				if (BattleManager.IsMovePossibleState (battleData)) {
 
+					//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 					if (currentAP >= selectedSkill.GetRequireAP ()) {
 						Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
 						Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, currPos);
@@ -285,7 +287,7 @@ namespace Battle.Turn{
 						int requireAP = 0;
 						Vector2 pos = unit.GetPosition ();
 
-						while ((!BattleManager.GetStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
+						while ((!BattleManager.IsStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
 							pos += battleData.tileManager.ToVector2 (Direction.RightDown);
 							Tile tile = battleData.tileManager.GetTile (pos);
 							if (tile == null) {
@@ -328,7 +330,7 @@ namespace Battle.Turn{
 
 				//속박/기절 걸린 상태
 				else{
-					//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브/비앙카/달케니르 > 다른 모든 유닛(지형지물 포함)
+					//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
 					if (currentAP < selectedSkill.GetRequireAP ())
 						break;
 
@@ -375,7 +377,7 @@ namespace Battle.Turn{
 				}
 			}
 
-			if (BattleManager.GetStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
+			if (BattleManager.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
 				yield return PassTurn ();
 			}
 			else {
@@ -539,7 +541,7 @@ namespace Battle.Turn{
 					yield return AISkill (selectedSkillIndex);
 				}
 				else {
-					if (BattleManager.GetStandbyPossible (battleData) && currentAP - requireAP < selectedUnit.GetStandardAP ()) {
+					if (BattleManager.IsStandbyPossible (battleData) && currentAP - requireAP < selectedUnit.GetStandardAP ()) {
 						yield return PassTurn ();
 					}
 					else {
@@ -744,4 +746,25 @@ namespace Battle.Turn{
 		}
 
 	}
+}
+
+public class AI{
+	private static BattleData battleData;
+	public static void SetBattleData(BattleData battleDataInstance){
+		battleData = battleDataInstance;
+	}
+	private static BattleManager battleManager;
+	public static void SetBattleManager(BattleManager battleManagerInstance){
+		battleManager = battleManagerInstance;
+	}
+
+	IEnumerator ActionAtTurn(Unit unit){
+		battleManager.StartUnitTurn (unit);
+
+		//yield return StartCoroutine(FocusToUnit(battleData));
+		yield break;
+
+		battleManager.EndUnitTurn();
+	}
+
 }

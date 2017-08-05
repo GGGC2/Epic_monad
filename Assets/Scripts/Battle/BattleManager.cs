@@ -35,6 +35,8 @@ public class BattleManager : MonoBehaviour{
 	void Start() {
         SoundManager.Instance.PlayBgm("Script_Tense");
 
+		AI.SetBattleManager (this);
+		AI.SetBattleData (battleData);
 		AIStates_old.SetBattleData (battleData);
 
 		battleData.unitManager.SetStandardActivityPoint();
@@ -81,7 +83,8 @@ public class BattleManager : MonoBehaviour{
 						yield return AIStates.AIStart(battleData);
 						// AI 코루틴이 어디서 끝나는지 몰라서 일단 여기 넣어놓음. 머리 위 화살표와 현재 턴 유닛 정보를 없애는 로직
 						battleData.uiManager.DisableSelectedUnitViewerUI();
-						battleData.selectedUnit.SetInactive();
+						if (battleData.selectedUnit != null)
+							battleData.selectedUnit.SetInactive();
 					}
 					else
 						yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
@@ -101,33 +104,47 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	IEnumerator ActionAtTurn(Unit unit){
+		StartUnitTurn(unit);
+
+		battleData.currentState = CurrentState.FocusToUnit;
+		yield return StartCoroutine(FocusToUnit(battleData));
+
+		EndUnitTurn ();
+	}
+
+	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
+	}
+	public void StartUnitTurn(Unit unit){
+		battleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		Debug.Log(unit.GetName() + "'s turn");
-        foreach(Unit otherUnit in battleData.unitManager.GetAllUnits())
-            SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
 
-        unit.TriggerTileStatusEffectAtTurnStart();
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
 		ChainList.RemoveChainsFromUnit(battleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
-		battleData.currentState = CurrentState.FocusToUnit;
+
+		battleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
+		unit.TriggerTileStatusEffectAtTurnStart();
 
 		battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
 		battleData.selectedUnit.SetActive();
+	}
+	public void EndUnitTurn(){
+		battleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 
-		yield return StartCoroutine(FocusToUnit(battleData));
-
-        battleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
-        
 		battleData.uiManager.DisableSelectedUnitViewerUI();
 		if (battleData.selectedUnit != null)
 			battleData.selectedUnit.SetInactive();
 	}
+	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
+		foreach(Unit caster in battleData.unitManager.GetAllUnits())
+			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
+	}
 
-	public static bool GetStandbyPossibleWithThisAP(BattleData battleData, Unit unit, int AP){
+	public static bool IsStandbyPossibleWithThisAP(BattleData battleData, Unit unit, int AP){
 		bool isPossible = false;
 		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
 			if ((anyUnit != unit) &&
@@ -139,45 +156,45 @@ public class BattleManager : MonoBehaviour{
 		}
 		return isPossible;
 	}
-	public static bool GetStandbyPossible(BattleData battleData){
-		bool isPossible = GetStandbyPossibleWithThisAP (battleData, battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
+	public static bool IsStandbyPossible(BattleData battleData){
+		bool isPossible = IsStandbyPossibleWithThisAP (battleData, battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
 		return isPossible;
 	}
-	private static void CheckStandbyPossible(BattleData battleData){
-		bool isPossible = GetStandbyPossible (battleData);
-
-		// Debug.Log("standbyButton : " + GameObject.Find("StandbyButton"));
-		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
+	public static bool IsMovePossibleState(BattleData battleData){
+		bool isPossible =  !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
+			battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint))
+			&& !(battleData.alreadyMoved);
+		return isPossible;
 	}
-
-	static void CheckSkillPossible(BattleData battleData)
-	{
-        Unit caster = battleData.selectedUnit;
+	public static bool IsSkillusePossible(BattleData battleData){
+		Unit caster = battleData.selectedUnit;
 		bool isPossible = false;
 
 		isPossible = !(caster.HasStatusEffect(StatusEffectType.Silence) ||
-					 caster.HasStatusEffect(StatusEffectType.Faint));
+			caster.HasStatusEffect(StatusEffectType.Faint));
 
-        Tile tileUnderCaster = caster.GetTileUnderUnit();
-        foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-            ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
-            if (originSkill != null) {
-                if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
-                    isPossible = false;
-                }
-            }
-        }
-
-        GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
-	}
-
-	public static bool GetIsMovePossibleState(BattleData battleData){
-		bool isPossible =  !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
-			battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint));
+		Tile tileUnderCaster = caster.GetTileUnderUnit();
+		foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
+			ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
+			if (originSkill != null) {
+				if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
+					isPossible = false;
+				}
+			}
+		}
 		return isPossible;
 	}
-	private static void CheckMovePossible(BattleData battleData){
-		bool isPossible = GetIsMovePossibleState(battleData) && !(battleData.alreadyMoved);
+	private static void OnOffStandbyButton(BattleData battleData){
+		bool isPossible = IsStandbyPossible (battleData);
+		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
+	}
+	private static void OnOffSkillButton(BattleData battleData)
+	{
+		bool isPossible = IsSkillusePossible (battleData);
+        GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
+	}
+	private static void OnOffMoveButton(BattleData battleData){
+		bool isPossible = IsMovePossibleState(battleData);
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
     
@@ -248,7 +265,6 @@ public class BattleManager : MonoBehaviour{
 	{
 		battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
 		battleData.deadUnits = battleData.unitManager.GetDeadUnits();
-
 		yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
 		yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
 	}
@@ -304,16 +320,15 @@ public class BattleManager : MonoBehaviour{
 			
 			yield return AtActionEnd(battleData);
 
-			MoveCameraToUnit(battleData.selectedUnit);
+			Unit unit = battleData.selectedUnit;
 
-			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnit.gameObject.transform.position);
+			MoveCameraToUnitAndDisplayUnitInfoViewer(battleData, unit);
 
-			battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
+			battleData.uiManager.SetCommandUIName(unit);
 
-			battleData.uiManager.SetCommandUIName(battleData.selectedUnit);
-			CheckStandbyPossible(battleData);
-			CheckMovePossible(battleData);
-			CheckSkillPossible(battleData);
+			OnOffStandbyButton(battleData);
+			OnOffMoveButton(battleData);
+			OnOffSkillButton(battleData);
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
@@ -345,6 +360,12 @@ public class BattleManager : MonoBehaviour{
 			}
 		}
 		yield return null;
+	}
+
+	public static void MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData battleData, Unit unit){
+		MoveCameraToUnit(unit);
+		battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)unit.gameObject.transform.position);
+		battleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}
 
 	public void CallbackMoveCommand()
