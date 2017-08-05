@@ -177,6 +177,45 @@ public class Unit : MonoBehaviour
 	public int GetStandardAP(){
 		return unitManager.GetStandardActivityPoint ();
 	}
+	public bool IsStandbyPossibleWithThisAP(BattleData battleData, int AP){
+		bool isPossible = false;
+		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
+			if ((anyUnit != this) &&
+				(anyUnit.GetCurrentActivityPoint() > AP))
+			{
+				isPossible = true;
+				return isPossible;
+			}
+		}
+		return isPossible;
+	}
+	public bool IsStandbyPossible(BattleData battleData){
+		bool isPossible = IsStandbyPossibleWithThisAP (battleData, GetCurrentActivityPoint ());
+		return isPossible;
+	}
+	public bool IsMovePossibleState(BattleData battleData){
+		bool isPossible =  !(HasStatusEffect(StatusEffectType.Bind) ||
+			HasStatusEffect(StatusEffectType.Faint))
+			&& !(battleData.alreadyMoved);
+		return isPossible;
+	}
+	public bool IsSkillUsePossibleState(BattleData battleData){
+		bool isPossible = false;
+
+		isPossible = !(HasStatusEffect(StatusEffectType.Silence) ||
+			HasStatusEffect(StatusEffectType.Faint));
+
+		Tile tileUnderCaster = GetTileUnderUnit();
+		foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
+			ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
+			if (originSkill != null) {
+				if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
+					isPossible = false;
+				}
+			}
+		}
+		return isPossible;
+	}
 	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp){
 		before.SetUnitOnTile(null);
 		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);

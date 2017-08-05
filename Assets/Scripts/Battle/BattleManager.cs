@@ -149,57 +149,17 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	public bool IsStandbyPossibleWithThisAP(Unit unit, int AP){
-		bool isPossible = false;
-		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
-			if ((anyUnit != unit) &&
-				(anyUnit.GetCurrentActivityPoint() > AP))
-			{
-				isPossible = true;
-				return isPossible;
-			}
-		}
-		return isPossible;
-	}
-	public bool IsStandbyPossible(BattleData battleData){
-		bool isPossible = IsStandbyPossibleWithThisAP (battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
-		return isPossible;
-	}
-	public bool IsMovePossibleState(BattleData battleData){
-		bool isPossible =  !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
-			battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint))
-			&& !(battleData.alreadyMoved);
-		return isPossible;
-	}
-	public bool IsSkillUsePossibleState(BattleData battleData){
-		Unit caster = battleData.selectedUnit;
-		bool isPossible = false;
-
-		isPossible = !(caster.HasStatusEffect(StatusEffectType.Silence) ||
-			caster.HasStatusEffect(StatusEffectType.Faint));
-
-		Tile tileUnderCaster = caster.GetTileUnderUnit();
-		foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-			ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
-			if (originSkill != null) {
-				if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
-					isPossible = false;
-				}
-			}
-		}
-		return isPossible;
-	}
 	private void OnOffStandbyButton(BattleData battleData){
-		bool isPossible = IsStandbyPossible (battleData);
+		bool isPossible = battleData.selectedUnit.IsStandbyPossible (battleData);
 		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
 	}
 	private void OnOffSkillButton(BattleData battleData)
 	{
-		bool isPossible = IsSkillUsePossibleState (battleData);
+		bool isPossible = battleData.selectedUnit.IsSkillUsePossibleState (battleData);
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
 	private void OnOffMoveButton(BattleData battleData){
-		bool isPossible = IsMovePossibleState(battleData);
+		bool isPossible = battleData.selectedUnit.IsMovePossibleState(battleData);
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
     
