@@ -704,6 +704,11 @@ public class Unit : MonoBehaviour
         return requireSkillAP;
     }
 
+	public void SetActivityPoint(int newAP)
+	{
+		activityPoint = newAP;
+		unitManager.UpdateUnitOrder();
+	}
 	public void UseActivityPoint(int amount)
 	{
 		activityPoint -= amount;

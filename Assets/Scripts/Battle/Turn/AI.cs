@@ -94,23 +94,21 @@ namespace Battle.Turn{
 		public static IEnumerator UnitTurn(Unit unit){
 			battleManager.StartUnitTurn (unit);
 
-			yield return PrepareUnitActAndDecideActionAndAct(unit);
+			yield return CheckUnitIsActiveAndDecideActionAndAct(unit);
 
 			battleManager.EndUnitTurn();
 		}
 
-		private static IEnumerator PrepareUnitActAndDecideActionAndAct(Unit unit){
+		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(Unit unit){
 			AIData unitAIData = unit.GetComponent<AIData>();
 
 			if (!unitAIData.IsActive())
 				CheckActiveTrigger(unit);
 
 			if (!unitAIData.IsActive ()) {
-				Debug.Log (unit.GetName () + " takes rest because of being deactivated");
-
-				//비활성화 유닛이 매 페이즈 휴식하는 걸 보는 게 시간낭비이므로 행동력을 민첩성만큼 깎고 (시간 소모 없이) 턴을 넘기는 게 어떨까 싶다
-				//기획자들에게 물어볼 계획
-				yield return TakeRest (unit);
+				yield return battleManager.BeforeActCommonAct ();
+				Debug.Log (unit.GetName () + " skips turn because of being deactivated");
+				yield return SkipDeactivatedUnitTurn(unit);
 				yield break;
 			}
 			else {
@@ -256,6 +254,10 @@ namespace Battle.Turn{
 		}
 		private static IEnumerator TakeRest(Unit unit){
 			yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+		}
+		private static IEnumerator SkipDeactivatedUnitTurn(Unit unit){
+			unit.SetActivityPoint (unit.GetStandardAP () - 1);
+			yield return new WaitForSeconds (0.05f);
 		}
 
 		private static void FocusToSelectedUnit(){
