@@ -37,44 +37,35 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
-	public bool IsScreenActive()
-	{
+	public bool IsScreenActive(){
 		return fadeoutScreenObject.activeInHierarchy;
 	}
 	
-	IEnumerator Start()
-	{
-		Time.timeScale = 0;
-
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		img.color = Color.black;
-		var tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
-
+	IEnumerator Start(){
+		yield return Fade(false);
 		fadeoutScreenObject.SetActive(false);
-
 		Time.timeScale = 1.0f;
 	}
 
-	IEnumerator Fadeout()
-	{
+	IEnumerator Fade(bool isBlack){
 		Time.timeScale = 0;
-
 		fadeoutScreenObject.SetActive(true);
 		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
+		Tweener tween;
+
+		if(isBlack)
+			tween = img.DOColor(Color.black, 1f).SetUpdate(true);
+		else{
+			img.color = Color.black;
+			tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
 		}
+
+		while(tween.IsPlaying())
+			yield return null;
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(){
-		yield return Fadeout();
+		yield return Fade(true);
 
         SceneData.isDialogue = false;
         if (!SceneData.isTestMode && !SceneData.isStageMode) {
@@ -87,9 +78,8 @@ public class SceneLoader : MonoBehaviour{
         }
     }
 
-	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
-	{
-		yield return Fadeout();
+	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName){
+		yield return Fade(true);
 
 		if (nextScriptFileName == "Title"){
 			Time.timeScale = 1.0f;
@@ -108,7 +98,7 @@ public class SceneLoader : MonoBehaviour{
 	}
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName){
-		yield return Fadeout();
+		yield return Fade(true);
 
 		// need use save data
 		WorldMapManager.currentStory = nextStoryName;

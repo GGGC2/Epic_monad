@@ -6,8 +6,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using GameData;
 
-public class DialogueManager : MonoBehaviour {
-
+public class DialogueManager : MonoBehaviour{
 	public TextAsset dialogueData;
 
 	Sprite transparent;
@@ -38,8 +37,7 @@ public class DialogueManager : MonoBehaviour {
 
     GameObject[] objects;
 
-	public void SkipDialogue()
-	{
+	public void SkipDialogue(){
 		InactiveSkipQuestionUI();
 
 		int newLine = line;
@@ -59,48 +57,40 @@ public class DialogueManager : MonoBehaviour {
 		ActiveAdventureUI();
 	}
 
-	string HandleSceneChange (DialogueData Data)
-	{
-		if (Data.GetCommandType () == "adv_start") 
-		{
+	string HandleSceneChange (DialogueData Data){
+		if (Data.GetCommandType () == "adv_start") {
 			ActiveAdventureUI ();
 			LoadAdventureObjects ();
 			return Data.GetCommandType();
 		}
-		else if (Data.GetCommandType () == "load_script") 
-		{
+		else if (Data.GetCommandType () == "load_script") {
 			string nextScriptName = Data.GetCommandSubType ();
 			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
 			return Data.GetCommandType();
 		}
-		else if (Data.GetCommandType () == "load_battle")
-		{
+		else if (Data.GetCommandType () == "load_battle"){
 			Debug.Log(Data.GetCommandSubType());
 			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
 			FindObjectOfType<SceneLoader>().LoadNextBattleScene();
 			return Data.GetCommandType();
 		}
-		else if(Data.GetCommandType() == "load_worldmap")
-		{
+		else if(Data.GetCommandType() == "load_worldmap"){
 			string nextStoryName = Data.GetCommandSubType();
 			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
 			return Data.GetCommandType();
 		}
-		else if(Data.GetCommandType() == "load_title")
-		{
+		else if(Data.GetCommandType() == "load_title"){
 			SceneManager.LoadScene("Title");
 			return Data.GetCommandType();
 		}
 		return "else";
 	}
 
-	void HandleCommand()
-	{
+	void HandleCommand(){
 		string CommandType = HandleSceneChange(dialogueDataList[line]);
 		if(CommandType != "else")
-		{
 			return;
-		}
+
 		else if (dialogueDataList[line].GetCommandType() == "appear")
 		{
 			if (dialogueDataList[line].GetCommandSubType() == "left")
@@ -178,8 +168,7 @@ public class DialogueManager : MonoBehaviour {
 		}
 	}
 
-	public void ReadEndLine()
-	{
+	public void ReadEndLine(){
 		StartCoroutine (PrintLinesFrom (endLine-1));
 	}
 
@@ -258,8 +247,7 @@ public class DialogueManager : MonoBehaviour {
 
 	void Initialize(){
 		Debug.Log(SceneData.dialogueName);
-        if (SceneData.dialogueName != null)
-        {
+        if (SceneData.dialogueName != null){
             TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.dialogueName, typeof(TextAsset)) as TextAsset;
             dialogueData = nextScriptFile;
         }
@@ -273,15 +261,14 @@ public class DialogueManager : MonoBehaviour {
 		dialogueDataList = Parser.GetParsedDialogueData(dialogueData);
 		
 		line = 0;
-		endLine = dialogueDataList.Count; 
+		endLine = dialogueDataList.Count;
 		
         adventureUI.SetActive(false);
 		
 		StartCoroutine(PrintLinesFrom(0));
 	}
 
-    IEnumerator PrintLinesFrom(int startLine)
-	{
+    IEnumerator PrintLinesFrom(int startLine){
 		// Initialize.
 		leftPortrait.sprite = transparent;
 		rightPortrait.sprite = transparent;
@@ -374,8 +361,7 @@ public class DialogueManager : MonoBehaviour {
 		}
 	}
 
-	void Start () 
-	{
+	void Start() {
 		Initialize();
 
 		if(dialogueData.name == "Scene#1-1")
