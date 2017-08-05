@@ -113,7 +113,7 @@ public class BattleManager : MonoBehaviour{
 		StartUnitTurn(unit);
 
 		battleData.currentState = CurrentState.FocusToUnit;
-		yield return StartCoroutine(FocusToUnit(battleData));
+		yield return StartCoroutine(PrepareUnitActAndGetCommand(battleData));
 
 		EndUnitTurn ();
 	}
@@ -221,15 +221,10 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit deadUnit in battleData.deadUnits){
+			Debug.Log(deadUnit.GetName() + " is dead");
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit));
-            RemoveAuraEffectFromDeadOrRetreatUnit(deadUnit);
-			battleData.unitManager.DeleteDeadUnit(deadUnit);
-			Debug.Log(deadUnit.GetName() + " is dead");
-			yield return BattleTriggerManager.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			yield return BattleTriggerManager.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
-			Destroy(deadUnit.gameObject);
+			yield return DestroyDeadOrRetreatUnit (battleData, deadUnit, BattleTrigger.ActionType.Kill);
 		}
 	}
 
@@ -238,14 +233,19 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit retreatUnit in battleData.retreatUnits){
-			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit));
-            RemoveAuraEffectFromDeadOrRetreatUnit(retreatUnit);
-            battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
-			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			yield return BattleTriggerManager.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
-			Destroy(retreatUnit.gameObject);
+			yield return DestroyDeadOrRetreatUnit (battleData, retreatUnit, BattleTrigger.ActionType.Retreat);
 		}
+	}
+
+	public static IEnumerator DestroyDeadOrRetreatUnit(BattleData battleData, Unit unit, BattleTrigger.ActionType deadOrRetreat)
+	{
+		yield return battleData.battleManager.StartCoroutine(FadeOutEffect(unit));
+		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
+		battleData.unitManager.DeleteRetreatUnit(unit);
+		yield return BattleTriggerManager.CountBattleCondition(unit, deadOrRetreat);
+		yield return BattleTriggerManager.CountBattleCondition(unit, BattleTrigger.ActionType.Neutralize);
+		Destroy(unit.gameObject);
 	}
 
     public static void RemoveAuraEffectFromDeadOrRetreatUnit(Unit unit) {
@@ -315,11 +315,12 @@ public class BattleManager : MonoBehaviour{
 		// 액션마다 갱신사항 종료
 	}
 
-	//FIXME : 이름 변경 계획
-	public IEnumerator FocusToUnit(BattleData battleData){
+	public IEnumerator PrepareUnitActAndGetCommand(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
+
+			yield return BeforeActCommonAct ();
 
 			//AI 턴에선 쓸모없는 부분
 			battleData.uiManager.ActivateCommandUIAndSetName(unit);
@@ -367,7 +368,7 @@ public class BattleManager : MonoBehaviour{
 		OnOffMoveButton(battleData);
 		OnOffSkillButton(battleData);
 	}
-	public IEnumerator StartingTurnCommonAct(){
+	public IEnumerator BeforeActCommonAct(){
 		yield return StartCoroutine(UpdateRetreatAndDeadUnits(battleData, this));
 		if (IsSelectedUnitRetreatOrDie(battleData))
 			yield break;
