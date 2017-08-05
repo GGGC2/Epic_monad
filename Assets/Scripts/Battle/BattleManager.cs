@@ -15,12 +15,18 @@ public class BattleManager : MonoBehaviour{
 	bool startFinished = false;
 	bool startTurnManager = false;
 	public BattleData battleData = new BattleData();
+	private static BattleManager instance;
+	public static BattleManager Instance{
+		get { return instance; }
+	}
 
 	public List<ChainInfo> GetChainList(){
 		return battleData.chainList;
 	}
 
 	void Awake (){
+		instance = this;
+
         if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
 
@@ -144,7 +150,7 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	public static bool IsStandbyPossibleWithThisAP(BattleData battleData, Unit unit, int AP){
+	public bool IsStandbyPossibleWithThisAP(Unit unit, int AP){
 		bool isPossible = false;
 		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
 			if ((anyUnit != unit) &&
@@ -156,17 +162,17 @@ public class BattleManager : MonoBehaviour{
 		}
 		return isPossible;
 	}
-	public static bool IsStandbyPossible(BattleData battleData){
-		bool isPossible = IsStandbyPossibleWithThisAP (battleData, battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
+	public bool IsStandbyPossible(BattleData battleData){
+		bool isPossible = IsStandbyPossibleWithThisAP (battleData.selectedUnit, battleData.selectedUnit.GetCurrentActivityPoint ());
 		return isPossible;
 	}
-	public static bool IsMovePossibleState(BattleData battleData){
+	public bool IsMovePossibleState(BattleData battleData){
 		bool isPossible =  !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
 			battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint))
 			&& !(battleData.alreadyMoved);
 		return isPossible;
 	}
-	public static bool IsSkillusePossible(BattleData battleData){
+	public bool IsSkillusePossible(BattleData battleData){
 		Unit caster = battleData.selectedUnit;
 		bool isPossible = false;
 
@@ -184,16 +190,16 @@ public class BattleManager : MonoBehaviour{
 		}
 		return isPossible;
 	}
-	private static void OnOffStandbyButton(BattleData battleData){
+	private void OnOffStandbyButton(BattleData battleData){
 		bool isPossible = IsStandbyPossible (battleData);
 		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
 	}
-	private static void OnOffSkillButton(BattleData battleData)
+	private void OnOffSkillButton(BattleData battleData)
 	{
 		bool isPossible = IsSkillusePossible (battleData);
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
-	private static void OnOffMoveButton(BattleData battleData){
+	private void OnOffMoveButton(BattleData battleData){
 		bool isPossible = IsMovePossibleState(battleData);
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
@@ -309,30 +315,17 @@ public class BattleManager : MonoBehaviour{
 		// 액션마다 갱신사항 종료
 	}
 
-	public static IEnumerator FocusToUnit(BattleData battleData){
+	//FIXME : 이름 변경 계획
+	public IEnumerator FocusToUnit(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
-			
-			yield return battleManager.StartCoroutine(UpdateRetreatAndDeadUnits(battleData, battleManager));
-
-			if (IsSelectedUnitRetreatOrDie(battleData))
-				yield break;
-			
-			yield return AtActionEnd(battleData);
-
 			Unit unit = battleData.selectedUnit;
 
-			MoveCameraToUnitAndDisplayUnitInfoViewer(battleData, unit);
+			//AI 턴에선 쓸모없는 부분
+			battleData.uiManager.ActivateCommandUIAndSetName(unit);
+			OnOffCommandButtons ();
 
-			battleData.uiManager.SetCommandUIName(unit);
-
-			OnOffStandbyButton(battleData);
-			OnOffMoveButton(battleData);
-			OnOffSkillButton(battleData);
-
-			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-			//이미 이동했으면 이동 빼고, 아니면 이동을 포함한 모든 종류의 actionCommand를 기다림
+			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (battleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.actionCommand, battleData.triggers.rightClicked));
 			else
@@ -353,19 +346,34 @@ public class BattleManager : MonoBehaviour{
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest){
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+				yield return null;
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Standby){
 				battleData.currentState = CurrentState.Standby;
 				yield return battleManager.StartCoroutine(Standby());
+				yield return null;
 			}
 		}
 		yield return null;
 	}
 
-	public static void MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData battleData, Unit unit){
+	public void MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData battleData, Unit unit){
 		MoveCameraToUnit(unit);
 		battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)unit.gameObject.transform.position);
 		battleData.uiManager.SetSelectedUnitViewerUI(unit);
+	}
+	private void OnOffCommandButtons(){
+		OnOffStandbyButton(battleData);
+		OnOffMoveButton(battleData);
+		OnOffSkillButton(battleData);
+	}
+	public IEnumerator StartingTurnCommonAct(){
+		yield return StartCoroutine(UpdateRetreatAndDeadUnits(battleData, this));
+		if (IsSelectedUnitRetreatOrDie(battleData))
+			yield break;
+		yield return AtActionEnd(battleData);
+		MoveCameraToUnitAndDisplayUnitInfoViewer(battleData, battleData.selectedUnit);
+		battleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (battleData.selectedUnit);
 	}
 
 	public void CallbackMoveCommand()

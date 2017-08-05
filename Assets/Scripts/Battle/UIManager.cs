@@ -70,7 +70,7 @@ public class UIManager : MonoBehaviour
 		apBarUI.UpdateAPDisplay(battleData, allUnits);
 	}
 
-	public void SetCommandUIName(Unit selectedUnit)
+	public void ActivateCommandUIAndSetName(Unit selectedUnit)
 	{
 		commandUI.SetActive(true);
 		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetName();
@@ -290,7 +290,6 @@ public class UIManager : MonoBehaviour
 	public void SetMovedUICanvasOnCenter(Vector2 position)
 	{
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
-		//FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
 		movedUICanvas.transform.position = newPosition;
 	}
 

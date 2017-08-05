@@ -223,7 +223,7 @@ namespace Battle.Turn{
 				Vector2 currPos = unit.GetPosition ();
 
 				//속박/기절 안 걸린 상태
-				if (BattleManager.IsMovePossibleState (battleData)) {
+				if (BattleManager.Instance.IsMovePossibleState (battleData)) {
 
 					//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 					if (currentAP >= selectedSkill.GetRequireAP ()) {
@@ -287,7 +287,7 @@ namespace Battle.Turn{
 						int requireAP = 0;
 						Vector2 pos = unit.GetPosition ();
 
-						while ((!BattleManager.IsStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
+						while ((!BattleManager.Instance.IsStandbyPossibleWithThisAP (unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
 							pos += battleData.tileManager.ToVector2 (Direction.RightDown);
 							Tile tile = battleData.tileManager.GetTile (pos);
 							if (tile == null) {
@@ -377,7 +377,7 @@ namespace Battle.Turn{
 				}
 			}
 
-			if (BattleManager.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
+			if (BattleManager.Instance.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
 				yield return PassTurn ();
 			}
 			else {
@@ -541,7 +541,7 @@ namespace Battle.Turn{
 					yield return AISkill (selectedSkillIndex);
 				}
 				else {
-					if (BattleManager.IsStandbyPossible (battleData) && currentAP - requireAP < selectedUnit.GetStandardAP ()) {
+					if (BattleManager.Instance.IsStandbyPossible (battleData) && currentAP - requireAP < selectedUnit.GetStandardAP ()) {
 						yield return PassTurn ();
 					}
 					else {
