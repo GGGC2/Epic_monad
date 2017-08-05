@@ -172,7 +172,7 @@ public class BattleManager : MonoBehaviour{
 			&& !(battleData.alreadyMoved);
 		return isPossible;
 	}
-	public bool IsSkillusePossible(BattleData battleData){
+	public bool IsSkillUsePossibleState(BattleData battleData){
 		Unit caster = battleData.selectedUnit;
 		bool isPossible = false;
 
@@ -196,7 +196,7 @@ public class BattleManager : MonoBehaviour{
 	}
 	private void OnOffSkillButton(BattleData battleData)
 	{
-		bool isPossible = IsSkillusePossible (battleData);
+		bool isPossible = IsSkillUsePossibleState (battleData);
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
 	private void OnOffMoveButton(BattleData battleData){

@@ -20,11 +20,11 @@ namespace Battle.Turn{
 			Side otherSide = GetOtherSide (mainUnit);
 
 			var positions = from tile in movableTiles
-					from unit in units
+				from unit in units
 					where unit.GetSide() == otherSide
-					let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
-					orderby distance
-					select tile.GetTilePos();
+				let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
+				orderby distance
+				select tile.GetTilePos();
 
 			List<Vector2> availablePositions = positions.ToList();
 			if (availablePositions.Count > 0)
@@ -43,10 +43,10 @@ namespace Battle.Turn{
 				Tile tile = pair.Value.tile;
 				Tile attackAbleTile = null;
 				if (skillTypeOfSelectedSkill != SkillType.Point)
-					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfDirectionSkill (tile);
+					attackAbleTile = AI.GetAttackableOtherSideUnitTileOfDirectionSkill (tile);
 				else
-					attackAbleTile = AIStates_old.GetAttackableOtherSideUnitTileOfPointSkill (tile);
-				
+					attackAbleTile = AI.GetAttackableOtherSideUnitTileOfPointSkill (tile);
+
 				if (attackAbleTile != null)
 					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
 			}
@@ -76,10 +76,10 @@ namespace Battle.Turn{
 			Side otherSide = GetOtherSide (mainUnit);
 
 			var tilesHaveEnemy = from tile in activeTileRange
-								 where tile.GetUnitOnTile() != null
-								 let unit = tile.GetUnitOnTile()
-								 where unit.GetSide() == otherSide
-								 select tile;
+					where tile.GetUnitOnTile() != null
+				let unit = tile.GetUnitOnTile()
+					where unit.GetSide() == otherSide
+				select tile;
 
 			return tilesHaveEnemy.FirstOrDefault();
 		}
@@ -100,7 +100,7 @@ namespace Battle.Turn{
 
 			if (!currentUnitAIData.IsActive())
 				CheckActiveTrigger(battleData);
-			
+
 			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
 			{
 				Debug.Log (currentUnit.GetName () + " take rest(휴식) because of being deactivated(비활성화) or faint(기절)");
@@ -192,7 +192,7 @@ namespace Battle.Turn{
 		}
 	}
 
-    public class AIStates_old{
+	public class AIStates_old{
 		private static BattleData battleData;
 		public static void SetBattleData(BattleData battleDataInstance){
 			battleData = battleDataInstance;
@@ -435,7 +435,7 @@ namespace Battle.Turn{
 				yield return KashastyAI();
 				yield break;
 			}
-			
+
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			int selectedSkillIndex = 1;
@@ -465,7 +465,7 @@ namespace Battle.Turn{
 
 			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
-		    Unit currentUnit = battleData.selectedUnit;
+			Unit currentUnit = battleData.selectedUnit;
 
 			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (selectedSkill, movableTilesWithPath, battleData);
 			Vector2 destPosition;
@@ -705,174 +705,452 @@ namespace Battle.Turn{
 
 		private static List<Tile> GetTilesInSkillRange(Tile targetTile, Unit selectedUnit = null)
 		{
-				ActiveSkill selectedSkill = battleData.SelectedSkill;
-				List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-																			targetTile.GetTilePos(),
-																			selectedSkill.GetSecondMinReach(),
-																			selectedSkill.GetSecondMaxReach(),
-																			selectedSkill.GetSecondWidth(),
-																			selectedUnit.GetDirection());
-				if (selectedSkill.GetSkillType() == SkillType.Auto)
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+			List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				targetTile.GetTilePos(),
+				selectedSkill.GetSecondMinReach(),
+				selectedSkill.GetSecondMaxReach(),
+				selectedSkill.GetSecondWidth(),
+				selectedUnit.GetDirection());
+			if (selectedSkill.GetSkillType() == SkillType.Auto)
+			{
+				if (selectedUnit != null)
 				{
-					if (selectedUnit != null)
-					{
-						selectedTiles.Remove(battleData.tileManager.GetTile(selectedUnit.GetPosition()));
-					}
-					else
-					{
-						selectedTiles.Remove(targetTile);
-					}
+					selectedTiles.Remove(battleData.tileManager.GetTile(selectedUnit.GetPosition()));
 				}
-				return selectedTiles;
+				else
+				{
+					selectedTiles.Remove(targetTile);
+				}
+			}
+			return selectedTiles;
 		}
 
 		private static List<Tile> GetTilesInFirstRange()
 		{
 			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-																battleData.selectedUnit.GetPosition(),
-																battleData.SelectedSkill.GetFirstMinReach(),
-																battleData.SelectedSkill.GetFirstMaxReach(),
-																battleData.SelectedSkill.GetFirstWidth(),
-																battleData.selectedUnit.GetDirection());
+				battleData.selectedUnit.GetPosition(),
+				battleData.SelectedSkill.GetFirstMinReach(),
+				battleData.SelectedSkill.GetFirstMaxReach(),
+				battleData.SelectedSkill.GetFirstWidth(),
+				battleData.selectedUnit.GetDirection());
 
 			return firstRange;
 		}
 
 	}
-}
 
-// FIXME : 제작중이고 아직 안 쓰인다
-public class AI{
-	private static BattleData battleData;
-	public static void SetBattleData(BattleData battleDataInstance){
-		battleData = battleDataInstance;
-	}
-	private static BattleManager battleManager;
-	public static void SetBattleManager(BattleManager battleManagerInstance){
-		battleManager = battleManagerInstance;
-	}
-
-	public static IEnumerator UnitTurn(Unit unit){
-		battleManager.StartUnitTurn (unit);
-
-		yield return PrepareUnitActAndDecideActionAndAct(unit);
-
-		battleManager.EndUnitTurn();
-	}
-
-	private static IEnumerator PrepareUnitActAndDecideActionAndAct(Unit unit){
-		yield return battleManager.BeforeActCommonAct ();
-
-		AIData unitAIData = unit.GetComponent<AIData>();
-
-		if (!unitAIData.IsActive())
-			CheckActiveTrigger(unit);
-
-		if (!unitAIData.IsActive ()) {
-			Debug.Log (unit.GetName () + " takes rest because of being deactivated");
-			yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
-			yield break;
+	// FIXME : 제작중이고 아직 안 쓰인다
+	public class AI{
+		private static BattleData battleData;
+		public static void SetBattleData(BattleData battleDataInstance){
+			battleData = battleDataInstance;
 		}
-		else {
-			yield return DecideActionAndAct (unit);
+		private static BattleManager battleManager;
+		public static void SetBattleManager(BattleManager battleManagerInstance){
+			battleManager = battleManagerInstance;
 		}
-	}
 
-	private static IEnumerator DecideActionAndAct(Unit unit){
-		if (unit.HasStatusEffect(StatusEffectType.Faint))
-		{
-			yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
-			yield break;
+		public static IEnumerator UnitTurn(Unit unit){
+			battleManager.StartUnitTurn (unit);
+
+			yield return PrepareUnitActAndDecideActionAndAct(unit);
+
+			battleManager.EndUnitTurn();
 		}
-		yield return DecideMoveAndMove (unit);
-		yield return DecideSkillAndUseSkill (unit);
-		yield return DecideRestOrStandbyAndDoThat (unit);
-	}
 
-	private static IEnumerator DecideMoveAndMove(Unit unit){
-		yield break;
-	}
-	private static IEnumerator DecideSkillAndUseSkill(Unit unit){
-		yield break;
-	}
-	private static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
-		yield break;
-	}
+		private static IEnumerator PrepareUnitActAndDecideActionAndAct(Unit unit){
+			AIData unitAIData = unit.GetComponent<AIData>();
 
-	private static void CheckActiveTrigger(Unit unit){
-		bool satisfyActiveCondition = false;
-		AIData unitAIData = unit.GetComponent<AIData> ();
-		// 전투 시작시 활성화
-		if (unitAIData.activeTriggers.Contains(1))
-		{
-			satisfyActiveCondition = true;
-		}
-		// 일정 페이즈부터 활성화
-		else if (unitAIData.activeTriggers.Contains(2))
-		{
-			if (battleData.currentPhase >= unitAIData.activePhase) {
-				Debug.Log (unit.GetName () + " is activated because enough phase passed");
-				satisfyActiveCondition = true;
+			if (!unitAIData.IsActive())
+				CheckActiveTrigger(unit);
+
+			if (!unitAIData.IsActive ()) {
+				Debug.Log (unit.GetName () + " takes rest because of being deactivated");
+
+				//비활성화 유닛이 매 페이즈 휴식하는 걸 보는 게 시간낭비이므로 행동력을 민첩성만큼 깎고 (시간 소모 없이) 턴을 넘기는 게 어떨까 싶다
+				//기획자들에게 물어볼 계획
+				yield return TakeRest (unit);
+				yield break;
+			}
+			else {
+				yield return DecideActionAndAct (unit);
 			}
 		}
-		// 자신 주위 일정 영역에 접근하면 활성화
-		else if (unitAIData.activeTriggers.Contains(3))
-		{
-			// 자신을 기준으로 한 상대좌표
-			List<List<Tile>> aroundTiles = unitAIData.trigger3Area;
-			List<Unit> aroundUnits = new List<Unit>();
 
-			aroundTiles.ForEach(eachArea => {
-				eachArea.ForEach(tile => {
-					if (tile.IsUnitOnTile())
-						aroundUnits.Add(tile.GetUnitOnTile());
-				});
-			});
-
-			if (aroundUnits.Contains(unit))
-				aroundUnits.Remove(unit);
-
-			bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
-
-			if (isThereAnotherSideUnit){
-				Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
-				satisfyActiveCondition = true;
-			}
+		private static IEnumerator DecideActionAndAct(Unit unit){
+			//이동->기술->대기/휴식의 순서로 이동이나 기술사용은 안 할 수도 있다
+			if(battleManager.IsMovePossibleState(battleData))
+				yield return DecideMoveAndMove (unit);
+			if (battleManager.IsSkillUsePossibleState (battleData))
+				yield return DecideSkillAndUseSkill (unit);
+			yield return DecideRestOrStandbyAndDoThat (unit);
 		}
-		// 맵 상의 특정 영역에 접근하면 활성화
-		else if (unitAIData.activeTriggers.Contains(4))
-		{
-			// 절대좌표
-			List<List<Tile>> aroundTiles = unitAIData.trigger4Area;
-			List<Unit> aroundUnits = new List<Unit>();
 
-			aroundTiles.ForEach(eachArea => {
-				eachArea.ForEach(tile => {
-					if (tile.IsUnitOnTile())
-					{
-						aroundUnits.Add(tile.GetUnitOnTile());
-					}
-				});
-			});
+		private static IEnumerator DecideMoveAndMove(Unit unit){
+			yield return battleManager.BeforeActCommonAct ();
 
-			if (aroundUnits.Contains(unit))
-				aroundUnits.Remove(unit);
+			Tile currentTile = unit.GetTileUnderUnit ();
 
-			bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
+			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
+			int selectedSkillIndex = 1;
+			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
-			if (isThereAnotherSideUnit)
+			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
+
+			Tile attackAbleTile;
+
+			if (skillTypeOfSelectedSkill != SkillType.Point)
+				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (currentTile);
+			else
+				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (currentTile);
+
+			//곧바로 공격 가능하면 이동하지 않는다
+			if (attackAbleTile != null) {
+				yield break;
+			}
+
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(battleData.selectedUnit);
+			List<Tile> movableTiles = new List<Tile>();
+			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 			{
-				Debug.Log (unit.GetName () + " is activated because its enemy came to absolute position range");
-				satisfyActiveCondition = true;
+				movableTiles.Add(movableTileWithPath.Value.tile);
+			}
+
+			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+
+			Unit currentUnit = battleData.selectedUnit;
+
+			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (selectedSkill, movableTilesWithPath, battleData);
+			Vector2 destPosition;
+			if (destTile == null) {
+				destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), battleData.selectedUnit);
+				destTile = battleData.tileManager.GetTile(destPosition);
+			}
+			else{
+				destPosition = destTile.GetTilePos();
+			}
+			TileWithPath pathToDestTile = movableTilesWithPath[destPosition];
+
+			if (pathToDestTile.path.Count > 0) {
+				Tile prevLastTile = pathToDestTile.path.Last ();
+				Vector2 prevLastTilePosition = prevLastTile.GetTilePos ();
+				int totalUseAP = movableTilesWithPath [destPosition].requireActivityPoint;
+
+				Direction finalDirection;
+				// 이동했을때 볼 방향 설정
+				Vector2 delta = destPosition - prevLastTilePosition;
+				if (delta == new Vector2 (1, 0))
+					finalDirection = Direction.RightDown;
+				else if (delta == new Vector2 (-1, 0))
+					finalDirection = Direction.LeftUp;
+				else if (delta == new Vector2 (0, 1))
+					finalDirection = Direction.RightUp;
+				else // delta == new Vector2 (0, -1)
+					finalDirection = Direction.LeftDown;
+
+				yield return Move(unit, destTile, finalDirection, totalUseAP);
 			}
 		}
-		// 자신을 대상으로 기술이 시전되면 활성화
-		else if (unitAIData.activeTriggers.Contains(5))
-		{
-			// 뭔가 기술의 영향을 받으면
-			// SkillAndChainState.ApplySkill에서 체크
+		private static IEnumerator DecideSkillAndUseSkill(Unit unit){
+			while (true) {
+				yield return battleManager.BeforeActCommonAct ();
+
+				int skillIndex = 1;
+				battleData.indexOfSelectedSkillByUser = skillIndex;
+				Unit selectedUnit = battleData.selectedUnit;
+				ActiveSkill skill = battleData.SelectedSkill;
+
+				if(skill == null){
+					yield break;
+				}
+
+				int currentAP = battleData.selectedUnit.GetCurrentActivityPoint ();
+				int requireAP = battleData.SelectedSkill.GetRequireAP ();
+				bool enoughAP = currentAP >= requireAP;
+				bool notInNonskillableEffect = !(selectedUnit.HasStatusEffect(StatusEffectType.Silence) ||
+					selectedUnit.HasStatusEffect(StatusEffectType.Faint));
+
+				if (enoughAP && notInNonskillableEffect) {
+					//FIXME : 에러 없애려고 패러미터 일단 넣어둔 거고 수정해야 함
+					yield return UseSkill (unit, Direction.RightUp,null);
+				}
+				else {
+					yield break;
+				}
+			}
 		}
-		if(satisfyActiveCondition)
-			unitAIData.SetActive();
+		private static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
+			yield return battleManager.BeforeActCommonAct ();
+			if (BattleManager.Instance.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
+				yield return Standby (unit);
+			}
+			else {
+				yield return TakeRest (unit);
+			}
+		}
+		private static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalUseAP){
+			unit.SetDirection (finalDirection);
+			FocusToSelectedUnit ();
+			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
+		}
+		private static IEnumerator UseSkill(Unit unit, Direction faceDirection, Tile targetTile){
+			/*
+			public static IEnumerator AISkill(int selectedSkillIndex)
+			{
+				BattleManager battleManager = battleData.battleManager;
+				ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
+				if (skillTypeOfSelectedSkill != SkillType.Point)
+				{
+					battleData.currentState = CurrentState.SelectSkillApplyDirection;
+					yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData.selectedUnit.GetDirection()));
+				}
+				else
+				{
+					battleData.currentState = CurrentState.SelectSkillApplyPoint;
+					yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData.selectedUnit.GetDirection()));
+				}
+
+				battleData.previewAPAction = null;
+				battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+			}*/
+
+
+			unit.SetDirection (faceDirection);
+			FocusToSelectedUnit ();
+			List<Tile> tilesInSkillRange = new List<Tile> ();
+			tilesInSkillRange.Add (targetTile);
+			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
+
+			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
+			FocusToSelectedUnit ();
+
+			battleData.uiManager.ResetSkillNamePanelUI ();
+		}
+		private static IEnumerator Standby(Unit unit){
+			yield return new WaitForSeconds(0.2f);
+		}
+		private static IEnumerator TakeRest(Unit unit){
+			yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+		}
+
+		private static void FocusToSelectedUnit(){
+			BattleManager.MoveCameraToUnit (battleData.selectedUnit);
+		}
+
+		private static void CheckActiveTrigger(Unit unit){
+			bool satisfyActiveCondition = false;
+			AIData unitAIData = unit.GetComponent<AIData> ();
+			// 전투 시작시 활성화
+			if (unitAIData.activeTriggers.Contains(1))
+			{
+				satisfyActiveCondition = true;
+			}
+			// 일정 페이즈부터 활성화
+			else if (unitAIData.activeTriggers.Contains(2))
+			{
+				if (battleData.currentPhase >= unitAIData.activePhase) {
+					Debug.Log (unit.GetName () + " is activated because enough phase passed");
+					satisfyActiveCondition = true;
+				}
+			}
+			// 자신 주위 일정 영역에 접근하면 활성화
+			else if (unitAIData.activeTriggers.Contains(3))
+			{
+				// 자신을 기준으로 한 상대좌표
+				List<List<Tile>> aroundTiles = unitAIData.trigger3Area;
+				List<Unit> aroundUnits = new List<Unit>();
+
+				aroundTiles.ForEach(eachArea => {
+					eachArea.ForEach(tile => {
+						if (tile.IsUnitOnTile())
+							aroundUnits.Add(tile.GetUnitOnTile());
+					});
+				});
+
+				if (aroundUnits.Contains(unit))
+					aroundUnits.Remove(unit);
+
+				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+
+				if (isThereAnotherSideUnit){
+					Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
+					satisfyActiveCondition = true;
+				}
+			}
+			// 맵 상의 특정 영역에 접근하면 활성화
+			else if (unitAIData.activeTriggers.Contains(4))
+			{
+				// 절대좌표
+				List<List<Tile>> aroundTiles = unitAIData.trigger4Area;
+				List<Unit> aroundUnits = new List<Unit>();
+
+				aroundTiles.ForEach(eachArea => {
+					eachArea.ForEach(tile => {
+						if (tile.IsUnitOnTile())
+						{
+							aroundUnits.Add(tile.GetUnitOnTile());
+						}
+					});
+				});
+
+				if (aroundUnits.Contains(unit))
+					aroundUnits.Remove(unit);
+
+				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+
+				if (isThereAnotherSideUnit)
+				{
+					Debug.Log (unit.GetName () + " is activated because its enemy came to absolute position range");
+					satisfyActiveCondition = true;
+				}
+			}
+			// 자신을 대상으로 기술이 시전되면 활성화
+			else if (unitAIData.activeTriggers.Contains(5))
+			{
+				// 뭔가 기술의 영향을 받으면
+				// SkillAndChainState.ApplySkill에서 체크
+			}
+			if(satisfyActiveCondition)
+				unitAIData.SetActive();
+		}
+		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(Tile unitTile){
+			List<Tile> selectedTiles = new List<Tile>();
+			Unit selectedUnit = battleData.selectedUnit;
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+			Tile castingTile = unitTile;
+
+			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점을 castingTile로 함. 범위 끝까지 가로막은 유닛이 없으면 범위 맨 끝 타일이 castingTile=null
+			if (selectedSkill.GetSkillType() == SkillType.Route) {
+				//FIXME : 리스트로 만들어야 되는데.... 전체적으로 혼파망이라서 일단 이렇게 놔둠
+				castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.LeftUp);
+				if(castingTile==null)
+					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.LeftDown);
+				if(castingTile==null)
+					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.RightUp);
+				if (castingTile == null)
+					castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.RightDown);
+			}
+
+			if (castingTile != null) {
+				selectedTiles = battleData.tileManager.GetTilesInRange (selectedSkill.GetSecondRangeForm (),
+					castingTile.GetTilePos (),
+					selectedSkill.GetSecondMinReach (),
+					selectedSkill.GetSecondMaxReach (),
+					selectedSkill.GetSecondWidth (),
+					selectedUnit.GetDirection ());
+			}
+			else {
+				selectedTiles = new List<Tile> ();
+			}
+
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(selectedTiles, battleData.selectedUnit);
+
+			return selectedTile;
+		}
+		private static Tile GetRouteSkillCastingTile(Unit unit, ActiveSkill routeSkill, Direction direction){				
+			List<Tile> firstRange = battleData.tileManager.GetTilesInRange(routeSkill.GetFirstRangeForm(),
+				unit.GetPosition(),
+				routeSkill.GetFirstMinReach(),
+				routeSkill.GetFirstMaxReach(),
+				routeSkill.GetFirstWidth(),
+				direction);
+			return SkillAndChainStates.GetRouteEnd(firstRange);
+		}
+
+		//  위 : 지정형 빼고 나머지 스킬
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//  아래 : 지정형 (Point) 스킬
+
+		public static IEnumerator SelectSkillApplyPoint(Direction originalDirection){
+
+			Unit selectedUnit = battleData.selectedUnit;
+			Direction beforeDirection = selectedUnit.GetDirection ();
+			Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill(selectedUnit.GetTileUnderUnit());
+
+			if (selectedTile == null)
+			{
+				Debug.Log(selectedUnit.GetName () + " cannot find unit for point attack. " );
+				// 아무것도 할 게 없을 경우 휴식
+				battleData.currentState = CurrentState.RestAndRecover;
+				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+				yield break;
+			}
+
+			Direction afterDirection = Utility.GetDirectionToTarget(selectedUnit, selectedTile.GetTilePos());
+			selectedUnit.SetDirection (afterDirection);
+
+			battleData.currentState = CurrentState.CheckApplyOrChain;
+
+			List<Tile> tilesInSkillRange = GetTilesInSkillRange(selectedTile, selectedUnit);
+			//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
+			List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
+
+			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
+
+			FocusToSelectedUnit ();
+			battleData.currentState = CurrentState.FocusToUnit;
+
+			battleData.uiManager.ResetSkillNamePanelUI();
+		}
+		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(Tile unitTile){
+			Unit selectedUnit = battleData.selectedUnit;
+			List<Tile> activeRange = new List<Tile>();
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+			activeRange = 
+				battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
+					unitTile.GetTilePos(),
+					selectedSkill.GetFirstMinReach(),
+					selectedSkill.GetFirstMaxReach(),
+					selectedSkill.GetFirstWidth(),
+					battleData.selectedUnit.GetDirection());
+
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(activeRange, battleData.selectedUnit);
+
+			return selectedTile;
+		}
+
+
+
+		private static List<Tile> GetTilesInSkillRange(Tile targetTile, Unit selectedUnit = null)
+		{
+			ActiveSkill selectedSkill = battleData.SelectedSkill;
+			List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
+				targetTile.GetTilePos(),
+				selectedSkill.GetSecondMinReach(),
+				selectedSkill.GetSecondMaxReach(),
+				selectedSkill.GetSecondWidth(),
+				selectedUnit.GetDirection());
+			if (selectedSkill.GetSkillType() == SkillType.Auto)
+			{
+				if (selectedUnit != null)
+				{
+					selectedTiles.Remove(battleData.tileManager.GetTile(selectedUnit.GetPosition()));
+				}
+				else
+				{
+					selectedTiles.Remove(targetTile);
+				}
+			}
+			return selectedTiles;
+		}
+
+		private static List<Tile> GetTilesInFirstRange()
+		{
+			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
+				battleData.selectedUnit.GetPosition(),
+				battleData.SelectedSkill.GetFirstMinReach(),
+				battleData.SelectedSkill.GetFirstMaxReach(),
+				battleData.SelectedSkill.GetFirstWidth(),
+				battleData.selectedUnit.GetDirection());
+
+			return firstRange;
+		}
 	}
+
 }
