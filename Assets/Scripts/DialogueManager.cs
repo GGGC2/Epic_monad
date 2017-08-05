@@ -273,21 +273,17 @@ public class DialogueManager : MonoBehaviour{
 		SetActiveAdventureUI(true);
 	}
 
-	void HandleDialogue()
-	{
+	void HandleDialogue(){
 		if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
 			(dialogueDataList[line].GetNameInCode() != rightUnit) &&
 			(Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
 		{
 			Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-			if (isLeftUnitOld)
-			{
+			if (isLeftUnitOld){
 				leftUnit = dialogueDataList[line].GetNameInCode();
 				leftPortrait.sprite = sprite;
 				isLeftUnitOld = false;
-			}
-			else
-			{
+			}else{
 				rightUnit = dialogueDataList[line].GetNameInCode();
 				rightPortrait.sprite = sprite;
 				isLeftUnitOld = true;
@@ -299,25 +295,19 @@ public class DialogueManager : MonoBehaviour{
 		else if (rightUnit == dialogueDataList[line].GetNameInCode())
 			rightPortrait.color = Color.white;
 
-		if (dialogueDataList[line].GetName() != "-")
-		{
+		if (dialogueDataList[line].GetName() != "-"){
 			nameText.text = dialogueDataList[line].GetName();
 			namePanel.enabled = true;
-		}
-		else
-		{
+		}else{
 			nameText.text = null;
 			namePanel.enabled = false;
 		}
 		dialogueText.text = dialogueDataList[line].GetDialogue();
 	}
 
-	public void OnClickDialogue()
-	{
+	public void OnClickDialogue(){
 		if (isWaitingMouseInput)
-		{
 			isWaitingMouseInput = false;
-		}
 	}
 
 	void Start() {
@@ -336,11 +326,8 @@ public class DialogueManager : MonoBehaviour{
 		}
 	}
 
-	void Update()
-	{
-		if(Input.GetMouseButtonDown(1) && skipQuestionUI.active)
-		{
+	void Update(){
+		if(Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf)
 			skipQuestionUI.SetActive(false);
-		}
 	}
 }
