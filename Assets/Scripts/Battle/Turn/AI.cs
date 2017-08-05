@@ -93,24 +93,17 @@ namespace Battle.Turn{
 		public static IEnumerator AIStart(BattleData battleData){
 			currentUnit = battleData.selectedUnit;
 
-			battleData.uiManager.SetSelectedUnitViewerUI(currentUnit);
-			currentUnit.SetActive();
-
-			//유닛이 트랩 같은 거 위에 있으면 터지게 함
-			currentUnit.TriggerTileStatusEffectAtTurnStart();
+			battleData.battleManager.StartUnitTurn (currentUnit);
 
 			currentUnitAIData = currentUnit.GetComponent<AIData>();
 			BattleManager battleManager = battleData.battleManager;
-			// if (currentUnit.isBoss)
-			// 보스 전용 AI
-			// else
-			// 기절 & 활성화되었는지 체크
+
 			if (!currentUnitAIData.IsActive())
 				CheckActiveTrigger(battleData);
 			
 			if (currentUnit.HasStatusEffect(StatusEffectType.Faint) || !currentUnitAIData.IsActive())
 			{
-				Debug.Log (currentUnit.GetName () + " take rest because of being faint or deactivated");
+				Debug.Log (currentUnit.GetName () + " take rest(휴식) because of being deactivated(비활성화) or faint(기절)");
 				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
 				yield break;
 			}
@@ -748,6 +741,7 @@ namespace Battle.Turn{
 	}
 }
 
+// FIXME : 제작중이고 아직 안 쓰인다
 public class AI{
 	private static BattleData battleData;
 	public static void SetBattleData(BattleData battleDataInstance){
@@ -758,13 +752,127 @@ public class AI{
 		battleManager = battleManagerInstance;
 	}
 
-	IEnumerator ActionAtTurn(Unit unit){
+	public static IEnumerator UnitTurn(Unit unit){
 		battleManager.StartUnitTurn (unit);
 
-		//yield return StartCoroutine(FocusToUnit(battleData));
-		yield break;
+		yield return PrepareUnitActAndDecideActionAndAct(unit);
 
 		battleManager.EndUnitTurn();
 	}
 
+	private static IEnumerator PrepareUnitActAndDecideActionAndAct(Unit unit){
+		yield return battleManager.BeforeActCommonAct ();
+
+		AIData unitAIData = unit.GetComponent<AIData>();
+
+		if (!unitAIData.IsActive())
+			CheckActiveTrigger(unit);
+
+		if (!unitAIData.IsActive ()) {
+			Debug.Log (unit.GetName () + " takes rest because of being deactivated");
+			yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+			yield break;
+		}
+		else {
+			yield return DecideActionAndAct (unit);
+		}
+	}
+
+	private static IEnumerator DecideActionAndAct(Unit unit){
+		if (unit.HasStatusEffect(StatusEffectType.Faint))
+		{
+			yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+			yield break;
+		}
+		yield return DecideMoveAndMove (unit);
+		yield return DecideSkillAndUseSkill (unit);
+		yield return DecideRestOrStandbyAndDoThat (unit);
+	}
+
+	private static IEnumerator DecideMoveAndMove(Unit unit){
+		yield break;
+	}
+	private static IEnumerator DecideSkillAndUseSkill(Unit unit){
+		yield break;
+	}
+	private static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
+		yield break;
+	}
+
+	private static void CheckActiveTrigger(Unit unit){
+		bool satisfyActiveCondition = false;
+		AIData unitAIData = unit.GetComponent<AIData> ();
+		// 전투 시작시 활성화
+		if (unitAIData.activeTriggers.Contains(1))
+		{
+			satisfyActiveCondition = true;
+		}
+		// 일정 페이즈부터 활성화
+		else if (unitAIData.activeTriggers.Contains(2))
+		{
+			if (battleData.currentPhase >= unitAIData.activePhase) {
+				Debug.Log (unit.GetName () + " is activated because enough phase passed");
+				satisfyActiveCondition = true;
+			}
+		}
+		// 자신 주위 일정 영역에 접근하면 활성화
+		else if (unitAIData.activeTriggers.Contains(3))
+		{
+			// 자신을 기준으로 한 상대좌표
+			List<List<Tile>> aroundTiles = unitAIData.trigger3Area;
+			List<Unit> aroundUnits = new List<Unit>();
+
+			aroundTiles.ForEach(eachArea => {
+				eachArea.ForEach(tile => {
+					if (tile.IsUnitOnTile())
+						aroundUnits.Add(tile.GetUnitOnTile());
+				});
+			});
+
+			if (aroundUnits.Contains(unit))
+				aroundUnits.Remove(unit);
+
+			bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+
+			if (isThereAnotherSideUnit){
+				Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
+				satisfyActiveCondition = true;
+			}
+		}
+		// 맵 상의 특정 영역에 접근하면 활성화
+		else if (unitAIData.activeTriggers.Contains(4))
+		{
+			// 절대좌표
+			List<List<Tile>> aroundTiles = unitAIData.trigger4Area;
+			List<Unit> aroundUnits = new List<Unit>();
+
+			aroundTiles.ForEach(eachArea => {
+				eachArea.ForEach(tile => {
+					if (tile.IsUnitOnTile())
+					{
+						aroundUnits.Add(tile.GetUnitOnTile());
+					}
+				});
+			});
+
+			if (aroundUnits.Contains(unit))
+				aroundUnits.Remove(unit);
+
+			bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+
+			if (isThereAnotherSideUnit)
+			{
+				Debug.Log (unit.GetName () + " is activated because its enemy came to absolute position range");
+				satisfyActiveCondition = true;
+			}
+		}
+		// 자신을 대상으로 기술이 시전되면 활성화
+		else if (unitAIData.activeTriggers.Contains(5))
+		{
+			// 뭔가 기술의 영향을 받으면
+			// SkillAndChainState.ApplySkill에서 체크
+		}
+		if(satisfyActiveCondition)
+			unitAIData.SetActive();
+	}
 }

@@ -113,7 +113,7 @@ public class BattleManager : MonoBehaviour{
 		StartUnitTurn(unit);
 
 		battleData.currentState = CurrentState.FocusToUnit;
-		yield return StartCoroutine(PrepareUnitActAndGetCommand(battleData));
+		yield return StartCoroutine(PrepareUnitActionAndGetCommand(battleData));
 
 		EndUnitTurn ();
 	}
@@ -315,7 +315,7 @@ public class BattleManager : MonoBehaviour{
 		// 액션마다 갱신사항 종료
 	}
 
-	public IEnumerator PrepareUnitActAndGetCommand(BattleData battleData){
+	public IEnumerator PrepareUnitActionAndGetCommand(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
