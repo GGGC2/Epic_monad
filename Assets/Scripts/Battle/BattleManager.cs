@@ -171,13 +171,13 @@ public class BattleManager : MonoBehaviour{
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
 
-	static void CheckMovePossible(BattleData battleData){
-		bool isPossible = false;
-
-		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
-					 battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint) ||
-					 battleData.alreadyMoved);
-
+	public static bool GetIsMovePossibleState(BattleData battleData){
+		bool isPossible =  !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
+			battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint));
+		return isPossible;
+	}
+	private static void CheckMovePossible(BattleData battleData){
+		bool isPossible = GetIsMovePossibleState(battleData) && !(battleData.alreadyMoved);
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
     

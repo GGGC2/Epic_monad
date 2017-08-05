@@ -205,78 +205,129 @@ namespace Battle.Turn{
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
 
-			while(true){
+			while (true) {
 				int selectedSkillIndex = 1;
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
-
 				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();//더블 샷이니 경로형일 것임
 
-				List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange(RangeForm.Straight,
-					unit.GetPosition(),
-					1,
-					8,
-					0,
-					Direction.RightDown);
-
 				//행동하기 전마다 체크해야 할 사항들(중요!)
-				yield return battleData.battleManager.StartCoroutine(BattleManager.UpdateRetreatAndDeadUnits(battleData, battleData.battleManager));
-				yield return BattleManager.AtActionEnd(battleData);
+				yield return battleData.battleManager.StartCoroutine (BattleManager.UpdateRetreatAndDeadUnits (battleData, battleData.battleManager));
+				yield return BattleManager.AtActionEnd (battleData);
 
-				Tile barrierTile = SkillAndChainStates.GetRouteEnd(frontEightTiles);
-				int currentAP = unit.GetCurrentActivityPoint();
+				//속박/기절 안 걸린 상태
+				if (BattleManager.GetIsMovePossibleState (battleData)) {
+					List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
+						                            unit.GetPosition (),
+						                            1,
+						                            8,
+						                            0,
+						                            Direction.RightDown);
 
-				if(barrierTile == null){
-					int step = 0;
-					int requireAP = 0;
-					Vector2 pos = unit.GetPosition ();
+					Tile barrierTile = SkillAndChainStates.GetRouteEnd (frontEightTiles);
+					int currentAP = unit.GetCurrentActivityPoint ();
 
-					while ((!BattleManager.GetStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
-						pos += battleData.tileManager.ToVector2 (Direction.RightDown);
-						Tile tile = battleData.tileManager.GetTile (pos);
-						if (tile == null) {
-							Debug.Log ("tile==null");
-							break;
+					if (barrierTile == null) {
+						int step = 0;
+						int requireAP = 0;
+						Vector2 pos = unit.GetPosition ();
+
+						while ((!BattleManager.GetStandbyPossibleWithThisAP (battleData, unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
+							pos += battleData.tileManager.ToVector2 (Direction.RightDown);
+							Tile tile = battleData.tileManager.GetTile (pos);
+							if (tile == null) {
+								Debug.Log ("tile==null");
+								break;
+							}
+							step++;
+							requireAP += 3 + 2 * (step - 1);
+							Debug.Log (step);
+							Debug.Log (requireAP);
 						}
-						step++;
-						requireAP += 3 + 2 * (step - 1);
-						Debug.Log (step);
-						Debug.Log (requireAP);
+
+						int totalUseAP = requireAP;
+						Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
+						Tile destTile = battleData.tileManager.GetTile (destPos);
+
+						battleData.currentState = CurrentState.CheckDestination;
+
+						// 카메라를 옮기고
+						Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
+						battleData.currentState = CurrentState.MoveToTile;
+						yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
+						yield return PassTurn ();
+						yield break;
+					} else {
+						if (currentAP < selectedSkill.GetRequireAP ())
+							break;
+
+						unit.SetDirection (Direction.RightDown);
+
+						battleData.currentState = CurrentState.CheckApplyOrChain;
+
+						List<Tile> tilesInSkillRange = new List<Tile> ();
+						tilesInSkillRange.Add (barrierTile);
+						List<Tile> tilesInRealEffectRange = tilesInSkillRange;
+
+						yield return SkillAndChainStates.ApplyChain (battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
+						FocusUnit (battleData.selectedUnit);
+						battleData.currentState = CurrentState.FocusToUnit;
+
+						battleData.uiManager.ResetSkillNamePanelUI ();
 					}
-
-					int totalUseAP = requireAP;
-					Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
-					Tile destTile=battleData.tileManager.GetTile(destPos);
-
-					battleData.currentState = CurrentState.CheckDestination;
-
-					// 카메라를 옮기고
-					Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
-					battleData.currentState = CurrentState.MoveToTile;
-					yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
-					break;
 				}
+
+				//속박/기절 걸린 상태
 				else{
+					//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브/비앙카/달케니르 > 다른 모든 유닛(지형지물 포함)
+					int currentAP = unit.GetCurrentActivityPoint ();
 					if (currentAP < selectedSkill.GetRequireAP ())
 						break;
 
-					unit.SetDirection (Direction.RightDown);
+					Tile rightDownTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit);
+					Tile leftUpTile = GetKashastyAttackRouteEnd(Direction.LeftUp, unit);
+					Tile rightUpTile = GetKashastyAttackRouteEnd(Direction.RightUp, unit);
+					Tile leftDownTile = GetKashastyAttackRouteEnd(Direction.LeftDown, unit);
 
-					battleData.currentState = CurrentState.CheckApplyOrChain;
-
-					List<Tile> tilesInSkillRange = new List<Tile>();
-					tilesInSkillRange.Add(barrierTile);
-					List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
-
-					yield return SkillAndChainStates.ApplyChain(battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
-					FocusUnit(battleData.selectedUnit);
-					battleData.currentState = CurrentState.FocusToUnit;
-
-					battleData.uiManager.ResetSkillNamePanelUI();
+					if (IsTastyTile (rightDownTile)) {
+						yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsTastyTile (leftUpTile)) {
+						yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+					if (IsTastyTile (rightUpTile)) {
+						yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
+						continue;
+					}
+					if (IsTastyTile (leftDownTile)) {
+						yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
+						continue;
+					}
+					if (IsDecentTile (rightDownTile)) {
+						yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsDecentTile (leftUpTile)) {
+						yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+					if (IsDecentTile (rightUpTile)) {
+						yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
+						continue;
+					}
+					if (IsDecentTile (leftDownTile)) {
+						yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
+						continue;
+					}
+					battleData.currentState = CurrentState.RestAndRecover;
+					yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+					yield break;
 				}
 			}
 
-			if (BattleManager.GetStandbyPossible (battleData)) {
+			if (BattleManager.GetStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
 				yield return PassTurn ();
 			}
 			else {
@@ -286,6 +337,41 @@ namespace Battle.Turn{
 
 			yield break;
 		}
+
+		private static Tile GetKashastyAttackRouteEnd(Direction direction, Unit unit){
+			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
+				unit.GetPosition (),
+				1,
+				8,
+				0,
+				direction);
+			Tile barrierTile = SkillAndChainStates.GetRouteEnd (frontEightTiles);
+			return barrierTile;
+		}
+		private static bool IsTastyPCOnThatTile(Tile tile){
+			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
+			return unitCodeName == "grenev" || unitCodeName == "darkenir" || unitCodeName == "bianca";
+		}
+		private static bool IsTastyTile(Tile tile){
+			return tile.IsUnitOnTile () && IsTastyPCOnThatTile (tile);
+		}
+		private static bool IsDecentTile(Tile tile){
+			return tile.IsUnitOnTile ();
+		}
+		private static IEnumerator AISkillFuncPiece(Unit unit, Direction direction, Tile targetTile){
+			unit.SetDirection (direction);
+			battleData.currentState = CurrentState.CheckApplyOrChain;
+			List<Tile> tilesInSkillRange = new List<Tile> ();
+			tilesInSkillRange.Add (targetTile);
+			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
+
+			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
+			FocusUnit (unit);
+			battleData.currentState = CurrentState.FocusToUnit;
+
+			battleData.uiManager.ResetSkillNamePanelUI ();
+		}
+
 		public static IEnumerator AIMove()
 		{
 			BattleManager battleManager = battleData.battleManager;
@@ -408,7 +494,7 @@ namespace Battle.Turn{
 					yield return AISkill (selectedSkillIndex);
 				}
 				else {
-					if (BattleManager.GetStandbyPossible (battleData)) {
+					if (BattleManager.GetStandbyPossible (battleData) && currentAP - requireAP < selectedUnit.GetStandardAP ()) {
 						yield return PassTurn ();
 					}
 					else {
