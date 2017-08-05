@@ -218,17 +218,67 @@ namespace Battle.Turn{
 				yield return battleData.battleManager.StartCoroutine (BattleManager.UpdateRetreatAndDeadUnits (battleData, battleData.battleManager));
 				yield return BattleManager.AtActionEnd (battleData);
 
+				int currentAP = unit.GetCurrentActivityPoint ();
+				Vector2 currPos = unit.GetPosition ();
+
 				//속박/기절 안 걸린 상태
 				if (BattleManager.GetIsMovePossibleState (battleData)) {
-					List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
-						                            unit.GetPosition (),
-						                            1,
-						                            8,
-						                            0,
-						                            Direction.RightDown);
 
-					Tile barrierTile = SkillAndChainStates.GetRouteEnd (frontEightTiles);
-					int currentAP = unit.GetCurrentActivityPoint ();
+					if (currentAP >= selectedSkill.GetRequireAP ()) {
+						Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
+						Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, currPos);
+						Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, currPos);
+						Tile leftDownTile = GetKashastyAttackRouteEnd (Direction.LeftDown, unit, currPos);
+						if (IsTastyTile (rightDownTile)) {
+							yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
+							continue;
+						}
+						if (IsTastyTile (leftUpTile)) {
+							yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
+							continue;
+						}
+						if (IsTastyTile (rightUpTile)) {
+							yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
+							continue;
+						}
+						if (IsTastyTile (leftDownTile)) {
+							yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
+							continue;
+						}
+					}
+					//아래를 일반화해서 좌/우/좌좌/우우/좌좌좌/우우우 순서로 확인해야 함
+					if (currentAP >= 3 + selectedSkill.GetRequireAP ()) {
+						Vector2 leftPos = currPos + battleData.tileManager.ToVector2 (Direction.RightUp);
+						Tile leftTile = battleData.tileManager.GetTile (leftPos);
+						if (leftTile != null && leftTile.IsUnitOnTile ()) {
+							Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, leftPos);
+							Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, leftPos);
+							Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, leftPos);
+							Tile leftDownTile = GetKashastyAttackRouteEnd (Direction.LeftDown, unit, leftPos);
+							if (IsTastyTile (rightDownTile)) {
+								yield return AIMoveFuncPiece(leftTile, 3);
+								yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
+								continue;
+							}
+							if (IsTastyTile (leftUpTile)) {
+								yield return AIMoveFuncPiece(leftTile, 3);
+								yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
+								continue;
+							}
+							if (IsTastyTile (rightUpTile)) {
+								yield return AIMoveFuncPiece(leftTile, 3);
+								yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
+								continue;
+							}
+							if (IsTastyTile (leftDownTile)) {
+								yield return AIMoveFuncPiece(leftTile, 3);
+								yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
+								continue;
+							}
+						}
+					}
+
+					Tile barrierTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit, currPos);
 
 					if (barrierTile == null) {
 						int step = 0;
@@ -251,13 +301,9 @@ namespace Battle.Turn{
 						int totalUseAP = requireAP;
 						Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
 						Tile destTile = battleData.tileManager.GetTile (destPos);
-
 						battleData.currentState = CurrentState.CheckDestination;
 
-						// 카메라를 옮기고
-						Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
-						battleData.currentState = CurrentState.MoveToTile;
-						yield return battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
+						yield return AIMoveFuncPiece(destTile, totalUseAP);
 						yield return PassTurn ();
 						yield break;
 					} else {
@@ -283,14 +329,13 @@ namespace Battle.Turn{
 				//속박/기절 걸린 상태
 				else{
 					//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브/비앙카/달케니르 > 다른 모든 유닛(지형지물 포함)
-					int currentAP = unit.GetCurrentActivityPoint ();
 					if (currentAP < selectedSkill.GetRequireAP ())
 						break;
 
-					Tile rightDownTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit);
-					Tile leftUpTile = GetKashastyAttackRouteEnd(Direction.LeftUp, unit);
-					Tile rightUpTile = GetKashastyAttackRouteEnd(Direction.RightUp, unit);
-					Tile leftDownTile = GetKashastyAttackRouteEnd(Direction.LeftDown, unit);
+					Tile rightDownTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit, currPos);
+					Tile leftUpTile = GetKashastyAttackRouteEnd(Direction.LeftUp, unit, currPos);
+					Tile rightUpTile = GetKashastyAttackRouteEnd(Direction.RightUp, unit, currPos);
+					Tile leftDownTile = GetKashastyAttackRouteEnd(Direction.LeftDown, unit, currPos);
 
 					if (IsTastyTile (rightDownTile)) {
 						yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
@@ -341,9 +386,9 @@ namespace Battle.Turn{
 			yield break;
 		}
 
-		private static Tile GetKashastyAttackRouteEnd(Direction direction, Unit unit){
+		private static Tile GetKashastyAttackRouteEnd(Direction direction, Unit unit, Vector2 pos){
 			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
-				unit.GetPosition (),
+				pos,
 				1,
 				8,
 				0,
@@ -377,6 +422,12 @@ namespace Battle.Turn{
 			battleData.currentState = CurrentState.FocusToUnit;
 
 			battleData.uiManager.ResetSkillNamePanelUI ();
+		}
+		private static IEnumerator AIMoveFuncPiece(Tile destTile,int totalUseAP){
+			Debug.Log ("AIMoveFuncPiece");
+			Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
+			battleData.currentState = CurrentState.MoveToTile;
+			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
 		}
 
 		public static IEnumerator AIMove()
