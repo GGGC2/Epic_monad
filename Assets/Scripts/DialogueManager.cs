@@ -146,6 +146,10 @@ public class DialogueManager : MonoBehaviour{
 		StartCoroutine (PrintLinesFrom (endLine-1));
 	}
 
+	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
+	public void ActiveSkipQuestionUI(){
+		skipQuestionUI.SetActive(true);
+	}
 	public void InactiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(false);
 	}
