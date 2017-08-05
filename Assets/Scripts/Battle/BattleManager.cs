@@ -43,7 +43,6 @@ public class BattleManager : MonoBehaviour{
 
 		AI.SetBattleManager (this);
 		AI.SetBattleData (battleData);
-		AIStates_old.SetBattleData (battleData);
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -86,7 +85,7 @@ public class BattleManager : MonoBehaviour{
 					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 					if (battleData.selectedUnit.GetComponent<AIData>() != null){
-						yield return AIStates.AIStart(battleData);
+						yield return AI.UnitTurn(battleData.selectedUnit);
 						// AI 코루틴이 어디서 끝나는지 몰라서 일단 여기 넣어놓음. 머리 위 화살표와 현재 턴 유닛 정보를 없애는 로직
 						battleData.uiManager.DisableSelectedUnitViewerUI();
 						if (battleData.selectedUnit != null)
