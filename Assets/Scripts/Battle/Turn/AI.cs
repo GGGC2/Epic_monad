@@ -541,7 +541,6 @@ namespace Battle.Turn{
 			yield return BreakAndEscape (unit);
 		}
 		private static IEnumerator TasteTastyTile(Unit unit){
-			//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 			while (true) {
 				yield return battleManager.BeforeActCommonAct ();
 
@@ -556,6 +555,7 @@ namespace Battle.Turn{
 				if (currentAP < unit.GetActualRequireSkillAP(skill))
 					break;
 
+				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 				Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
 				Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, currPos);
 				Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, currPos);
@@ -576,6 +576,83 @@ namespace Battle.Turn{
 					yield return AI.UseSkill (unit, Direction.LeftDown, leftDownTile);
 					continue;
 				}
+
+				if (currentAP < 3 + unit.GetActualRequireSkillAP(skill))
+					break;
+					
+				//좌 타일로 한칸 움직이는 경우도 확인
+				Vector2 movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp);
+				Tile movedTile = battleData.tileManager.GetTile (movedPos);
+				if (!movedTile.IsUnitOnTile ()) {
+					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
+					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					if (IsTastyTile (rightDownTile)) {
+						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
+						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsTastyTile (leftUpTile)) {
+						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
+						yield return AI.UseSkill (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+				}
+				//우 타일로 한칸
+				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown);
+				movedTile = battleData.tileManager.GetTile (movedPos);
+				if (!movedTile.IsUnitOnTile ()) {
+					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
+					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					if (IsTastyTile (rightDownTile)) {
+						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
+						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsTastyTile (leftUpTile)) {
+						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
+						yield return AI.UseSkill (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+				}
+
+				if (currentAP < 8 + unit.GetActualRequireSkillAP(skill))
+					break;
+
+				//좌 타일로 두칸
+				movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp) * 2;
+				movedTile = battleData.tileManager.GetTile (movedPos);
+				if (!movedTile.IsUnitOnTile ()) {
+					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
+					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					if (IsTastyTile (rightDownTile)) {
+						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
+						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsTastyTile (leftUpTile)) {
+						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
+						yield return AI.UseSkill (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+				}
+				//우 타일로 두칸
+				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown) * 2;
+				movedTile = battleData.tileManager.GetTile (movedPos);
+				if (!movedTile.IsUnitOnTile ()) {
+					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
+					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					if (IsTastyTile (rightDownTile)) {
+						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
+						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
+						continue;
+					}
+					if (IsTastyTile (leftUpTile)) {
+						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
+						yield return AI.UseSkill (unit, Direction.LeftUp, leftUpTile);
+						continue;
+					}
+				}
+
 				break;
 			}
 		}
