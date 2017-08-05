@@ -23,6 +23,5 @@ namespace Battle.Skills {
         public override void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, Tile tile, TileStatusEffect tileStatusEffect) {
             Trap.TriggerAtTurnStart(tileStatusEffect, tile, turnStarter);
         }
-
     }
 }

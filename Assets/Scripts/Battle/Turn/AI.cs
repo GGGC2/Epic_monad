@@ -95,6 +95,9 @@ namespace Battle.Turn{
 			battleData.uiManager.SetSelectedUnitViewerUI(currentUnit);
 			currentUnit.SetActive();
 
+			//유닛이 트랩 같은 거 위에 있으면 터지게 함
+			currentUnit.TriggerTileStatusEffectAtTurnStart();
+
 			currentUnitAIData = currentUnit.GetComponent<AIData>();
 			BattleManager battleManager = battleData.battleManager;
 			// if (currentUnit.isBoss)
@@ -349,14 +352,18 @@ namespace Battle.Turn{
 			return barrierTile;
 		}
 		private static bool IsTastyPCOnThatTile(Tile tile){
+			if (tile == null)
+				return false;
+			if (tile.GetUnitOnTile () == null)
+				return false;
 			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
 			return unitCodeName == "grenev" || unitCodeName == "darkenir" || unitCodeName == "bianca";
 		}
 		private static bool IsTastyTile(Tile tile){
-			return tile.IsUnitOnTile () && IsTastyPCOnThatTile (tile);
+			return tile != null && tile.IsUnitOnTile () && IsTastyPCOnThatTile (tile);
 		}
 		private static bool IsDecentTile(Tile tile){
-			return tile.IsUnitOnTile ();
+			return tile != null && tile.IsUnitOnTile ();
 		}
 		private static IEnumerator AISkillFuncPiece(Unit unit, Direction direction, Tile targetTile){
 			unit.SetDirection (direction);
@@ -377,9 +384,6 @@ namespace Battle.Turn{
 			BattleManager battleManager = battleData.battleManager;
 			Unit unit = battleData.selectedUnit;
 			Tile currentTile = unit.GetTileUnderUnit ();
-
-			//FIXME : 이 줄 쓸모 없을 것 같은데 일단 지우고 테스트해 보겠음
-			yield return battleManager.StartCoroutine(AIDie());
 
 			if(unit.GetNameInCode() == "kashasty_Escape"){
 				yield return KashastyAI();
@@ -455,16 +459,6 @@ namespace Battle.Turn{
 			}
 
 			yield return AIAct();
-		}
-
-		public static IEnumerator AIDie()
-		{
-			BattleManager battleManager = battleData.battleManager;
-			battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
-			battleData.deadUnits = battleData.unitManager.GetDeadUnits();
-
-			yield return battleManager.StartCoroutine(BattleManager.DestroyRetreatUnits(battleData));
-			yield return battleManager.StartCoroutine(BattleManager.DestroyDeadUnits(battleData));
 		}
 
 		public static IEnumerator AIAct(){
