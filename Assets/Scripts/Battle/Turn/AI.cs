@@ -7,21 +7,24 @@ using Enums;
 
 namespace Battle.Turn{
 	public class AIUtil{
-		public static Side GetOtherSide(Unit unit){
+		public static Side GetEnemySide(Unit unit){
+			//후에 제3세력 등장하면 조건이 바뀔 수 있음
 			Side mySide = unit.GetSide ();
-			Side otherSide;
+			Side enemySide;
 			if (mySide == Side.Ally)
-				otherSide = Side.Enemy;
+				enemySide = Side.Enemy;
 			else
-				otherSide = Side.Ally;
-			return otherSide;
+				enemySide = Side.Ally;
+			return enemySide;
+		}
+		public static bool IsEnemyToEachOther(Unit unit1,Unit unit2){
+			//후에 제3세력 등장하면 조건이 바뀔 수 있음
+			return unit1.GetSide () == GetEnemySide (unit2);
 		}
 		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit){
-			Side otherSide = GetOtherSide (mainUnit);
-
 			var positions = from tile in movableTiles
 				from unit in units
-					where unit.GetSide() == otherSide
+					where IsEnemyToEachOther(unit, mainUnit)
 				let distance = Vector2.Distance(tile.GetTilePos(), unit.GetPosition())
 				orderby distance
 				select tile.GetTilePos();
@@ -32,16 +35,15 @@ namespace Battle.Turn{
 
 			return mainUnit.GetPosition();
 		}
-		public static Tile FindNearestEnemyAttackableTile(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, BattleData battleData){
+		public static Tile FindNearestEnemyAttackableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, BattleData battleData){
 			Unit selectedUnit = battleData.selectedUnit;
-			Side otherSide = GetOtherSide (selectedUnit);
 			SkillType skillTypeOfSelectedSkill = skill.GetSkillType ();
 
 			Dictionary<Vector2, TileWithPath> enemyAttackableTilesWithPath = new Dictionary<Vector2, TileWithPath> ();
 
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
-				Tile attackAbleTile = AI.GetAttackableOtherSideUnitTile (tile, skill);
+				Tile attackAbleTile = AI.GetAttackableOtherSideUnitTile (caster, tile, skill);
 
 				if (attackAbleTile != null)
 					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
@@ -69,14 +71,11 @@ namespace Battle.Turn{
 
 		public static Tile FindOtherSideUnitTile(List<Tile> activeTileRange, Unit mainUnit)
 		{
-			Side otherSide = GetOtherSide (mainUnit);
-
 			var tilesHaveEnemy = from tile in activeTileRange
 					where tile.GetUnitOnTile() != null
 				let unit = tile.GetUnitOnTile()
-					where unit.GetSide() == otherSide
+					where IsEnemyToEachOther(unit, mainUnit)
 				select tile;
-
 			return tilesHaveEnemy.FirstOrDefault();
 		}
 	}
@@ -137,7 +136,7 @@ namespace Battle.Turn{
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
 
-			Tile attackAbleTile = GetAttackableOtherSideUnitTile (currentTile, selectedSkill);
+			Tile attackAbleTile = GetAttackableOtherSideUnitTile (unit, currentTile, selectedSkill);
 
 			//곧바로 공격 가능하면 이동하지 않는다
 			if (attackAbleTile != null) {
@@ -155,7 +154,7 @@ namespace Battle.Turn{
 
 			Unit currentUnit = battleData.selectedUnit;
 
-			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (selectedSkill, movableTilesWithPath, battleData);
+			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (unit, selectedSkill, movableTilesWithPath, battleData);
 			Vector2 destPosition;
 			if (destTile == null) {
 				destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), battleData.selectedUnit);
@@ -197,7 +196,7 @@ namespace Battle.Turn{
 				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
 
 				Tile currTile = unit.GetTileUnderUnit ();
-				Tile attackAbleTile = GetAttackableOtherSideUnitTile (currTile, selectedSkill);
+				Tile attackAbleTile = GetAttackableOtherSideUnitTile (unit, currTile, selectedSkill);
 
 				if (attackAbleTile == null) {
 					yield break;
@@ -240,13 +239,13 @@ namespace Battle.Turn{
 		private static IEnumerator UseSkill(Unit unit, Direction direction, Tile targetTile){
 			unit.SetDirection (direction);
 			FocusToSelectedUnit ();
+
 			List<Tile> tilesInSkillRange = new List<Tile> ();
 			tilesInSkillRange.Add (targetTile);
 			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-
 			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
-			FocusToSelectedUnit ();
 
+			FocusToSelectedUnit ();
 			battleData.uiManager.ResetSkillNamePanelUI ();
 		}
 		private static IEnumerator Standby(Unit unit){
@@ -297,7 +296,7 @@ namespace Battle.Turn{
 				if (aroundUnits.Contains(unit))
 					aroundUnits.Remove(unit);
 
-				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => AIUtil.IsEnemyToEachOther(anyUnit, unit));
 
 				if (isThereAnotherSideUnit){
 					Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
@@ -323,7 +322,7 @@ namespace Battle.Turn{
 				if (aroundUnits.Contains(unit))
 					aroundUnits.Remove(unit);
 
-				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => anyUnit.GetSide() != unit.GetSide());
+				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => AIUtil.IsEnemyToEachOther(anyUnit, unit));
 
 				if (isThereAnotherSideUnit)
 				{
@@ -341,19 +340,18 @@ namespace Battle.Turn{
 				unitAIData.SetActive();
 		}
 
-		public static Tile GetAttackableOtherSideUnitTile(Tile casterTile,ActiveSkill skill){
+		public static Tile GetAttackableOtherSideUnitTile(Unit caster, Tile casterTile,ActiveSkill skill){
 			Tile attackAbleTile;
 			SkillType skillType = skill.GetSkillType();
 			if (skillType != SkillType.Point)
-				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (casterTile);
+				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (caster, casterTile);
 			else
-				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (casterTile);
+				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (caster, casterTile);
 			return attackAbleTile;
 		}
 
-		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(Tile unitTile){
+		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(Unit caster, Tile unitTile){
 			List<Tile> selectedTiles = new List<Tile>();
-			Unit selectedUnit = battleData.selectedUnit;
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
 			Tile castingTile = unitTile;
@@ -361,28 +359,29 @@ namespace Battle.Turn{
 			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점을 castingTile로 함. 범위 끝까지 가로막은 유닛이 없으면 범위 맨 끝 타일이 castingTile=null
 			if (selectedSkill.GetSkillType() == SkillType.Route) {
 				//FIXME : 리스트로 만들어야 되는데.... 전체적으로 혼파망이라서 일단 이렇게 놔둠
-				castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.LeftUp);
+				castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.LeftUp);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.LeftDown);
+					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.LeftDown);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (selectedUnit, selectedSkill, Direction.RightUp);
+					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.RightUp);
 				if (castingTile == null)
-					castingTile = GetRouteSkillCastingTile ( selectedUnit, selectedSkill, Direction.RightDown);
+					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.RightDown);
 			}
 
+			//FIXME : 4방향 다 체크해야 하는데...
 			if (castingTile != null) {
 				selectedTiles = battleData.tileManager.GetTilesInRange (selectedSkill.GetSecondRangeForm (),
 					castingTile.GetTilePos (),
 					selectedSkill.GetSecondMinReach (),
 					selectedSkill.GetSecondMaxReach (),
 					selectedSkill.GetSecondWidth (),
-					selectedUnit.GetDirection ());
+					caster.GetDirection ());
 			}
 			else {
 				selectedTiles = new List<Tile> ();
 			}
 
-			Tile selectedTile = AIUtil.FindOtherSideUnitTile(selectedTiles, battleData.selectedUnit);
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(selectedTiles, caster);
 
 			return selectedTile;
 		}
@@ -395,60 +394,26 @@ namespace Battle.Turn{
 				direction);
 			return SkillAndChainStates.GetRouteEnd(firstRange);
 		}
-
 		//  위 : 지정형 빼고 나머지 스킬
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//  아래 : 지정형 (Point) 스킬
-
-		public static IEnumerator SelectSkillApplyPoint(Direction originalDirection){
-
-			Unit selectedUnit = battleData.selectedUnit;
-			Direction beforeDirection = selectedUnit.GetDirection ();
-			Tile selectedTile = GetAttackableOtherSideUnitTileOfPointSkill(selectedUnit.GetTileUnderUnit());
-
-			if (selectedTile == null)
-			{
-				Debug.Log(selectedUnit.GetName () + " cannot find unit for point attack. " );
-				// 아무것도 할 게 없을 경우 휴식
-				battleData.currentState = CurrentState.RestAndRecover;
-				yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
-				yield break;
-			}
-
-			Direction afterDirection = Utility.GetDirectionToTarget(selectedUnit, selectedTile.GetTilePos());
-			selectedUnit.SetDirection (afterDirection);
-
-			battleData.currentState = CurrentState.CheckApplyOrChain;
-
-			List<Tile> tilesInSkillRange = GetTilesInSkillRange(selectedTile, selectedUnit);
-			//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 한다. 일단 AI 유닛 스킬엔 없으니 생략
-			List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
-
-			yield return SkillAndChainStates.ApplyChain(battleData, selectedTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange());
-
-			FocusToSelectedUnit ();
-			battleData.currentState = CurrentState.FocusToUnit;
-
-			battleData.uiManager.ResetSkillNamePanelUI();
-		}
-		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(Tile unitTile){
-			Unit selectedUnit = battleData.selectedUnit;
+		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(Unit caster, Tile unitTile){
 			List<Tile> activeRange = new List<Tile>();
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
+
+			//FIXME : 1차범위 설정 후에 2차범위까지 적용해야 하는데...
 			activeRange = 
 				battleData.tileManager.GetTilesInRange(selectedSkill.GetFirstRangeForm(),
 					unitTile.GetTilePos(),
 					selectedSkill.GetFirstMinReach(),
 					selectedSkill.GetFirstMaxReach(),
 					selectedSkill.GetFirstWidth(),
-					battleData.selectedUnit.GetDirection());
+					caster.GetDirection());
 
-			Tile selectedTile = AIUtil.FindOtherSideUnitTile(activeRange, battleData.selectedUnit);
+			Tile selectedTile = AIUtil.FindOtherSideUnitTile(activeRange, caster);
 
 			return selectedTile;
 		}
-
-
 
 		private static List<Tile> GetTilesInSkillRange(Tile targetTile, Unit selectedUnit = null)
 		{
@@ -484,6 +449,10 @@ namespace Battle.Turn{
 
 			return firstRange;
 		}
+	}
+
+	public class AIKashasty{
+		
 	}
 
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
