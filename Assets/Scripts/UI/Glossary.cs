@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Glossary : MonoBehaviour{
+	public int page;
+	public Text InformationText;
 	public List<GlossaryData> GlossaryDataList = new List<GlossaryData>();
 	public List<Text> ButtonTextList;
 	void OnEnable(){
@@ -14,6 +16,10 @@ public class Glossary : MonoBehaviour{
 		for(int i = 0; i < 9; i++){
 			ButtonTextList[i].text = GlossaryDataList[i].name;
 		}
+	}
+
+	public void SetText(int number){
+		InformationText.text = GlossaryDataList[page*9+number].text;
 	}
 }
 
