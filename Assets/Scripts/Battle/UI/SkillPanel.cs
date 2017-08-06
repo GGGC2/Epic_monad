@@ -44,6 +44,7 @@ namespace BattleUI
             else nextButton.interactable = true;
         }
 		public void CallbackSkillIndex(int index){
+            index += page * 5;
 			battleManager.CallbackSkillIndex(index);
 		}
 
@@ -63,6 +64,7 @@ namespace BattleUI
 		}
 
 		public void CallbackPointerEnterSkillIndex(int index){
+            index += page * 5;
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
 			ActiveSkill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
@@ -90,6 +92,7 @@ namespace BattleUI
 		}
 
 		public void CallbackPointerExitSkillIndex(int index){
+            index += page * 5;
 			battleManager.CallbackPointerExitSkillIndex(index);
 			OnEnable();
 		}
