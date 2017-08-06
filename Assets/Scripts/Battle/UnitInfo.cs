@@ -121,6 +121,8 @@ public class UnitInfo {
 			return "달케니르";
 		else if(codeName == "yeong")
 			return "영";
+		else if(codeName == "bianca")
+			return "비앙카";
 		else if(codeName == "unselected")
 			return "Empty";
 		else{

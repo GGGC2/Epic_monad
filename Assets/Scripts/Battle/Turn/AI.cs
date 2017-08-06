@@ -17,8 +17,12 @@ namespace Battle.Turn{
 				enemySide = Side.Ally;
 			return enemySide;
 		}
+			
+		//AI 입장에서 다른 유닛이 적으로 인식되는지에 대한 함수이기 때문에 AI 부분에서만 써야 한다(은신 스킬 때문)
 		public static bool IsEnemyToEachOther(Unit unit1,Unit unit2){
 			//후에 제3세력 등장하면 조건이 바뀔 수 있음
+
+			//두 유닛 중에 누가 '은신' 효과(아직 미구현인 그레네브 스킬 효과)를 갖고 있는지 여기에서 확인해서 적용해야 할 것 (AI에게 적으로 인식되지 않음)
 			return unit1.GetSide () == GetEnemySide (unit2);
 		}
 		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit){
@@ -43,7 +47,7 @@ namespace Battle.Turn{
 
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
-				Tile attackAbleTile = AI.GetAttackableOtherSideUnitTile (caster, tile, skill);
+				Tile attackAbleTile = AI.GetAttackableEnemyUnitTile (caster, tile, skill);
 
 				if (attackAbleTile != null)
 					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
@@ -136,9 +140,8 @@ namespace Battle.Turn{
 			int selectedSkillIndex = 1;
 			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
-			SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
 
-			Tile attackAbleTile = GetAttackableOtherSideUnitTile (unit, currentTile, selectedSkill);
+			Tile attackAbleTile = GetAttackableEnemyUnitTile (unit, currentTile, selectedSkill);
 
 			//곧바로 공격 가능하면 이동하지 않는다
 			if (attackAbleTile != null) {
@@ -152,29 +155,30 @@ namespace Battle.Turn{
 				movableTiles.Add(movableTileWithPath.Value.tile);
 			}
 
-			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-			Unit currentUnit = battleData.selectedUnit;
-
 			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (unit, selectedSkill, movableTilesWithPath, battleData);
-			Vector2 destPosition;
+			//destTile이 null인 경우 : 이번 턴에 적을 공격 가능한 범위로 못 가는 경우. 그냥 가장 가까운 적을 향해 이동한다
+			//null이 아니면 적을 공격 가능한 타일 중 도달경로의 총 AP 소모량이 가장 적은 곳으로 간다
 			if (destTile == null) {
-				destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), battleData.selectedUnit);
+				Vector2 destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), battleData.selectedUnit);
 				destTile = battleData.tileManager.GetTile(destPosition);
 			}
-			else{
-				destPosition = destTile.GetTilePos();
-			}
-			TileWithPath pathToDestTile = movableTilesWithPath[destPosition];
 
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+
+		}
+		private static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			Vector2 destPos = destTile.GetTilePos ();
+			TileWithPath pathToDestTile = movableTilesWithPath[destPos];
+
+			//Count가 0이면 방향전환도 이동도 안 함
 			if (pathToDestTile.path.Count > 0) {
 				Tile prevLastTile = pathToDestTile.path.Last ();
 				Vector2 prevLastTilePosition = prevLastTile.GetTilePos ();
-				int totalUseAP = movableTilesWithPath [destPosition].requireActivityPoint;
+				int totalUseAP = movableTilesWithPath [destPos].requireActivityPoint;
 
 				// 이동했을때 볼 방향 설정
 				Direction finalDirection;
-				Vector2 delta = destPosition - prevLastTilePosition;
+				Vector2 delta = destPos - prevLastTilePosition;
 				if (delta == new Vector2 (1, 0))
 					finalDirection = Direction.RightDown;
 				else if (delta == new Vector2 (-1, 0))
@@ -186,6 +190,7 @@ namespace Battle.Turn{
 
 				yield return Move(unit, destTile, finalDirection, totalUseAP);
 			}
+
 		}
 		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
 			while (true) {
@@ -195,10 +200,8 @@ namespace Battle.Turn{
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill selectedSkill = battleData.SelectedSkill;
 
-				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();
-
 				Tile currTile = unit.GetTileUnderUnit ();
-				Tile attackAbleTile = GetAttackableOtherSideUnitTile (unit, currTile, selectedSkill);
+				Tile attackAbleTile = GetAttackableEnemyUnitTile (unit, currTile, selectedSkill);
 
 				if (attackAbleTile == null) {
 					yield break;
@@ -233,6 +236,7 @@ namespace Battle.Turn{
 				yield return TakeRest (unit);
 			}
 		}
+		//FIXME : 경로의 totalUseAP를 패러미터로 받지 않고 여기서 계산하는 게 깔끔할 것 같은데...
 		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalUseAP){
 			unit.SetDirection (finalDirection);
 			FocusToSelectedUnit ();
@@ -342,17 +346,17 @@ namespace Battle.Turn{
 				unitAIData.SetActive();
 		}
 
-		public static Tile GetAttackableOtherSideUnitTile(Unit caster, Tile casterTile,ActiveSkill skill){
+		public static Tile GetAttackableEnemyUnitTile(Unit caster, Tile casterTile,ActiveSkill skill){
 			Tile attackAbleTile;
 			SkillType skillType = skill.GetSkillType();
 			if (skillType != SkillType.Point)
-				attackAbleTile = GetAttackableOtherSideUnitTileOfDirectionSkill (caster, casterTile);
+				attackAbleTile = GetAttackableEnemyUnitTileOfDirectionSkill (caster, casterTile);
 			else
-				attackAbleTile = GetAttackableOtherSideUnitTileOfPointSkill (caster, casterTile);
+				attackAbleTile = GetAttackableEnemyUnitTileOfPointSkill (caster, casterTile);
 			return attackAbleTile;
 		}
 
-		public static Tile GetAttackableOtherSideUnitTileOfDirectionSkill(Unit caster, Tile unitTile){
+		public static Tile GetAttackableEnemyUnitTileOfDirectionSkill(Unit caster, Tile unitTile){
 			List<Tile> selectedTiles = new List<Tile>();
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
@@ -360,14 +364,15 @@ namespace Battle.Turn{
 
 			//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점을 castingTile로 함. 범위 끝까지 가로막은 유닛이 없으면 범위 맨 끝 타일이 castingTile=null
 			if (selectedSkill.GetSkillType() == SkillType.Route) {
+				Vector2 currPos = caster.GetPosition ();
 				//FIXME : 리스트로 만들어야 되는데.... 전체적으로 혼파망이라서 일단 이렇게 놔둠
-				castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.LeftUp);
+				castingTile = GetRouteSkillCastingTile (currPos, selectedSkill, Direction.LeftUp);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.LeftDown);
+					castingTile = GetRouteSkillCastingTile (currPos, selectedSkill, Direction.LeftDown);
 				if(castingTile==null)
-					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.RightUp);
+					castingTile = GetRouteSkillCastingTile (currPos, selectedSkill, Direction.RightUp);
 				if (castingTile == null)
-					castingTile = GetRouteSkillCastingTile (caster, selectedSkill, Direction.RightDown);
+					castingTile = GetRouteSkillCastingTile (currPos, selectedSkill, Direction.RightDown);
 			}
 
 			//FIXME : 4방향 다 체크해야 하는데...
@@ -387,9 +392,9 @@ namespace Battle.Turn{
 
 			return selectedTile;
 		}
-		private static Tile GetRouteSkillCastingTile(Unit unit, ActiveSkill routeSkill, Direction direction){				
+		public static Tile GetRouteSkillCastingTile(Vector2 unitPos, ActiveSkill routeSkill, Direction direction){				
 			List<Tile> firstRange = battleData.tileManager.GetTilesInRange(routeSkill.GetFirstRangeForm(),
-				unit.GetPosition(),
+				unitPos,
 				routeSkill.GetFirstMinReach(),
 				routeSkill.GetFirstMaxReach(),
 				routeSkill.GetFirstWidth(),
@@ -399,7 +404,7 @@ namespace Battle.Turn{
 		//  위 : 지정형 빼고 나머지 스킬
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//  아래 : 지정형 (Point) 스킬
-		public static Tile GetAttackableOtherSideUnitTileOfPointSkill(Unit caster, Tile unitTile){
+		public static Tile GetAttackableEnemyUnitTileOfPointSkill(Unit caster, Tile unitTile){
 			List<Tile> activeRange = new List<Tile>();
 			ActiveSkill selectedSkill = battleData.SelectedSkill;
 
@@ -491,10 +496,14 @@ namespace Battle.Turn{
 					break;
 
 				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
-				Tile rightDownTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit, currPos);
-				Tile leftUpTile = GetKashastyAttackRouteEnd(Direction.LeftUp, unit, currPos);
-				Tile rightUpTile = GetKashastyAttackRouteEnd(Direction.RightUp, unit, currPos);
-				Tile leftDownTile = GetKashastyAttackRouteEnd(Direction.LeftDown, unit, currPos);
+
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				//FIXME : 수정 계획...
+
+				Tile rightDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
+				Tile leftUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftUp);
+				Tile rightUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightUp);
+				Tile leftDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftDown);
 
 				if (IsTastyTile (rightDownTile)) {
 					yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
@@ -528,13 +537,39 @@ namespace Battle.Turn{
 					yield return AI.UseSkill (unit, Direction.LeftDown, leftDownTile);
 					continue;
 				}
-				battleData.currentState = CurrentState.RestAndRecover;
-				yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
+
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 				yield break;
 			}
 		}
 		private static IEnumerator OnlyMove(Unit unit){
-			yield break;
+			yield return battleManager.BeforeActCommonAct ();
+
+			int step = 0;
+			int currentAP = unit.GetCurrentActivityPoint ();
+			int requireAP = 0;
+			Vector2 pos = unit.GetPosition ();
+			Tile tile = unit.GetTileUnderUnit ();
+
+			while (currentAP - requireAP >= unit.GetStandardAP ()) {
+				Vector2 nextPos = pos + battleData.tileManager.ToVector2 (Direction.RightDown);
+				Tile nextTile = battleData.tileManager.GetTile (nextPos);
+				if (nextTile == null || nextTile.IsUnitOnTile()) {
+					break;
+				}
+				pos = nextPos;
+				tile = nextTile;
+				step++;
+				//FIXME : 아래 AP 소모량 구하는 줄은 임시로 넣은 거고 나중에 고쳐야 됨 ㅋㅋ
+				requireAP += 3 + 2 * (step - 1);
+				Debug.Log (step);
+				Debug.Log (requireAP);
+			}
+
+			int totalUseAP = requireAP;
+			Tile destTile = tile;
+			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP);
 		}
 		private static IEnumerator FreeState(Unit unit){
 			yield return TasteTastyTile (unit);
@@ -556,10 +591,10 @@ namespace Battle.Turn{
 					break;
 
 				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
-				Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
-				Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, currPos);
-				Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, currPos);
-				Tile leftDownTile = GetKashastyAttackRouteEnd (Direction.LeftDown, unit, currPos);
+				Tile rightDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
+				Tile leftUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftUp);
+				Tile rightUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightUp);
+				Tile leftDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftDown);
 				if (IsTastyTile (rightDownTile)) {
 					yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
 					continue;
@@ -577,15 +612,19 @@ namespace Battle.Turn{
 					continue;
 				}
 
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				//FIXME : 나중에 코드 제대로 수정할 계획
+
 				if (currentAP < 3 + unit.GetActualRequireSkillAP(skill))
 					break;
-					
+
 				//좌 타일로 한칸 움직이는 경우도 확인
 				Vector2 movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp);
 				Tile movedTile = battleData.tileManager.GetTile (movedPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
-					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
+					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
+
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
 						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
@@ -601,8 +640,8 @@ namespace Battle.Turn{
 				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown);
 				movedTile = battleData.tileManager.GetTile (movedPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
-					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
+					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
 						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
@@ -622,8 +661,8 @@ namespace Battle.Turn{
 				movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp) * 2;
 				movedTile = battleData.tileManager.GetTile (movedPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
-					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
+					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
 						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
@@ -639,8 +678,8 @@ namespace Battle.Turn{
 				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown) * 2;
 				movedTile = battleData.tileManager.GetTile (movedPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, movedPos);
-					leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, movedPos);
+					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
+					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);;
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
 						yield return AI.UseSkill (unit, Direction.RightDown, rightDownTile);
@@ -653,6 +692,8 @@ namespace Battle.Turn{
 					}
 				}
 
+				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 				break;
 			}
 		}
@@ -662,54 +703,21 @@ namespace Battle.Turn{
 
 				int currentAP = unit.GetCurrentActivityPoint ();
 				Vector2 currPos = unit.GetPosition ();
-				Tile barrierTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
+				int selectedSkillIndex = 1;
+				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill skill = battleData.SelectedSkill;
+
+				Tile barrierTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
 
 				if (barrierTile == null) {
-					int step = 0;
-					int requireAP = 0;
-					Vector2 pos = unit.GetPosition ();
-
-					while ((!unit.IsStandbyPossibleWithThisAP (battleData, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
-						pos += battleData.tileManager.ToVector2 (Direction.RightDown);
-						Tile tile = battleData.tileManager.GetTile (pos);
-						if (tile == null) {
-							Debug.Log ("tile==null");
-							break;
-						}
-						step++;
-						requireAP += 3 + 2 * (step - 1);
-						Debug.Log (step);
-						Debug.Log (requireAP);
-					}
-
-					int totalUseAP = requireAP;
-					Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
-					Tile destTile = battleData.tileManager.GetTile (destPos);
-					battleData.currentState = CurrentState.CheckDestination;
-
-					yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP);
-					yield break;
+					yield return OnlyMove (unit);
+					break;
 				} else {
-					int selectedSkillIndex = 1;
-					battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-					ActiveSkill skill = battleData.SelectedSkill;
-
 					if (currentAP < unit.GetActualRequireSkillAP (skill))
-						yield break;
-					
+						break;
 					yield return AI.UseSkill (unit, Direction.RightDown, barrierTile);
 				}
 			}
-		}
-		private static Tile GetKashastyAttackRouteEnd(Direction direction, Unit unit, Vector2 pos){
-			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
-				pos,
-				1,
-				8,
-				0,
-				direction);
-			Tile barrierTile = SkillAndChainStates.GetRouteEnd (frontEightTiles);
-			return barrierTile;
 		}
 		private static bool IsUnitOnThatTileTastyPC(Tile tile){
 			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
@@ -721,246 +729,6 @@ namespace Battle.Turn{
 		private static bool IsDecentTile(Tile tile){
 			return tile != null && tile.IsUnitOnTile ();
 		}
-
 	}
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	// 아래는 카샤스티 AI 짰던 부분
-	// 곧 참고해서 새로 짠 후 버릴 테니 가만히 놔두세요
-
-	/*
-	 * private static IEnumerator KashastyAI(){
-			BattleManager battleManager = battleData.battleManager;
-			Unit unit = battleData.selectedUnit;
-			Tile currentTile = unit.GetTileUnderUnit ();
-
-			while (true) {
-				int selectedSkillIndex = 1;
-				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill selectedSkill = battleData.SelectedSkill;
-				SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType ();//더블 샷이니 경로형일 것임
-
-				//행동하기 전마다 체크해야 할 사항들(중요!)
-				yield return battleData.battleManager.StartCoroutine (BattleManager.UpdateRetreatAndDeadUnits (battleData, battleData.battleManager));
-				yield return BattleManager.AtActionEnd (battleData);
-
-				int currentAP = unit.GetCurrentActivityPoint ();
-				Vector2 currPos = unit.GetPosition ();
-
-				//속박/기절 안 걸린 상태
-				if (BattleManager.Instance.IsMovePossibleState (battleData)) {
-
-					//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
-					if (currentAP >= selectedSkill.GetRequireAP ()) {
-						Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, currPos);
-						Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, currPos);
-						Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, currPos);
-						Tile leftDownTile = GetKashastyAttackRouteEnd (Direction.LeftDown, unit, currPos);
-						if (IsTastyTile (rightDownTile)) {
-							yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
-							continue;
-						}
-						if (IsTastyTile (leftUpTile)) {
-							yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
-							continue;
-						}
-						if (IsTastyTile (rightUpTile)) {
-							yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
-							continue;
-						}
-						if (IsTastyTile (leftDownTile)) {
-							yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
-							continue;
-						}
-					}
-					//아래를 일반화해서 좌/우/좌좌/우우/좌좌좌/우우우 순서로 확인해야 함
-					if (currentAP >= 3 + selectedSkill.GetRequireAP ()) {
-						Vector2 leftPos = currPos + battleData.tileManager.ToVector2 (Direction.RightUp);
-						Tile leftTile = battleData.tileManager.GetTile (leftPos);
-						if (leftTile != null && leftTile.IsUnitOnTile ()) {
-							Tile rightDownTile = GetKashastyAttackRouteEnd (Direction.RightDown, unit, leftPos);
-							Tile leftUpTile = GetKashastyAttackRouteEnd (Direction.LeftUp, unit, leftPos);
-							Tile rightUpTile = GetKashastyAttackRouteEnd (Direction.RightUp, unit, leftPos);
-							Tile leftDownTile = GetKashastyAttackRouteEnd (Direction.LeftDown, unit, leftPos);
-							if (IsTastyTile (rightDownTile)) {
-								yield return AIMoveFuncPiece(leftTile, 3);
-								yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
-								continue;
-							}
-							if (IsTastyTile (leftUpTile)) {
-								yield return AIMoveFuncPiece(leftTile, 3);
-								yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
-								continue;
-							}
-						}
-					}
-
-					Tile barrierTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit, currPos);
-
-					if (barrierTile == null) {
-						int step = 0;
-						int requireAP = 0;
-						Vector2 pos = unit.GetPosition ();
-
-						while ((!BattleManager.Instance.IsStandbyPossibleWithThisAP (unit, currentAP - requireAP)) || currentAP - requireAP >= unit.GetStandardAP ()) {
-							pos += battleData.tileManager.ToVector2 (Direction.RightDown);
-							Tile tile = battleData.tileManager.GetTile (pos);
-							if (tile == null) {
-								Debug.Log ("tile==null");
-								break;
-							}
-							step++;
-							requireAP += 3 + 2 * (step - 1);
-							Debug.Log (step);
-							Debug.Log (requireAP);
-						}
-
-						int totalUseAP = requireAP;
-						Vector2 destPos = unit.GetPosition () + battleData.tileManager.ToVector2 (Direction.RightDown) * step;
-						Tile destTile = battleData.tileManager.GetTile (destPos);
-						battleData.currentState = CurrentState.CheckDestination;
-
-						yield return AIMoveFuncPiece(destTile, totalUseAP);
-						yield return PassTurn ();
-						yield break;
-					} else {
-						if (currentAP < selectedSkill.GetRequireAP ())
-							break;
-
-						unit.SetDirection (Direction.RightDown);
-
-						battleData.currentState = CurrentState.CheckApplyOrChain;
-
-						List<Tile> tilesInSkillRange = new List<Tile> ();
-						tilesInSkillRange.Add (barrierTile);
-						List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-
-						yield return SkillAndChainStates.ApplyChain (battleData, barrierTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
-						FocusUnit (battleData.selectedUnit);
-						battleData.currentState = CurrentState.FocusToUnit;
-
-						battleData.uiManager.ResetSkillNamePanelUI ();
-					}
-				}
-
-				//속박/기절 걸린 상태
-				else{
-					//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
-					if (currentAP < selectedSkill.GetRequireAP ())
-						break;
-
-					Tile rightDownTile = GetKashastyAttackRouteEnd(Direction.RightDown, unit, currPos);
-					Tile leftUpTile = GetKashastyAttackRouteEnd(Direction.LeftUp, unit, currPos);
-					Tile rightUpTile = GetKashastyAttackRouteEnd(Direction.RightUp, unit, currPos);
-					Tile leftDownTile = GetKashastyAttackRouteEnd(Direction.LeftDown, unit, currPos);
-
-					if (IsTastyTile (rightDownTile)) {
-						yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsTastyTile (leftUpTile)) {
-						yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-					if (IsTastyTile (rightUpTile)) {
-						yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
-						continue;
-					}
-					if (IsTastyTile (leftDownTile)) {
-						yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
-						continue;
-					}
-					if (IsDecentTile (rightDownTile)) {
-						yield return AISkillFuncPiece (unit, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsDecentTile (leftUpTile)) {
-						yield return AISkillFuncPiece (unit, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-					if (IsDecentTile (rightUpTile)) {
-						yield return AISkillFuncPiece (unit, Direction.RightUp, rightUpTile);
-						continue;
-					}
-					if (IsDecentTile (leftDownTile)) {
-						yield return AISkillFuncPiece (unit, Direction.LeftDown, leftDownTile);
-						continue;
-					}
-					battleData.currentState = CurrentState.RestAndRecover;
-					yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
-					yield break;
-				}
-			}
-
-			if (BattleManager.Instance.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
-				yield return PassTurn ();
-			}
-			else {
-				battleData.currentState = CurrentState.RestAndRecover;
-				yield return battleData.battleManager.StartCoroutine (RestAndRecover.Run (battleData));
-			}
-
-			yield break;
-		}
-
-		private static Tile GetKashastyAttackRouteEnd(Direction direction, Unit unit, Vector2 pos){
-			List<Tile> frontEightTiles = battleData.tileManager.GetTilesInRange (RangeForm.Straight,
-				pos,
-				1,
-				8,
-				0,
-				direction);
-			Tile barrierTile = SkillAndChainStates.GetRouteEnd (frontEightTiles);
-			return barrierTile;
-		}
-		private static bool IsTastyPCOnThatTile(Tile tile){
-			if (tile == null)
-				return false;
-			if (tile.GetUnitOnTile () == null)
-				return false;
-			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
-			return unitCodeName == "grenev" || unitCodeName == "darkenir" || unitCodeName == "bianca";
-		}
-		private static bool IsTastyTile(Tile tile){
-			return tile != null && tile.IsUnitOnTile () && IsTastyPCOnThatTile (tile);
-		}
-		private static bool IsDecentTile(Tile tile){
-			return tile != null && tile.IsUnitOnTile ();
-		}
-		private static IEnumerator AISkillFuncPiece(Unit unit, Direction direction, Tile targetTile){
-			unit.SetDirection (direction);
-			battleData.currentState = CurrentState.CheckApplyOrChain;
-			List<Tile> tilesInSkillRange = new List<Tile> ();
-			tilesInSkillRange.Add (targetTile);
-			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-
-			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange ());
-			FocusUnit (unit);
-			battleData.currentState = CurrentState.FocusToUnit;
-
-			battleData.uiManager.ResetSkillNamePanelUI ();
-		}
-		private static IEnumerator AIMoveFuncPiece(Tile destTile,int totalUseAP){
-			Debug.Log ("AIMoveFuncPiece");
-			Camera.main.transform.position = new Vector3 (destTile.transform.position.x, destTile.transform.position.y, -10);
-			battleData.currentState = CurrentState.MoveToTile;
-			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
-		}
-
-		public static IEnumerator AIMove()
-		{
-			BattleManager battleManager = battleData.battleManager;
-			Unit unit = battleData.selectedUnit;
-			Tile currentTile = unit.GetTileUnderUnit ();
-
-			if(unit.GetNameInCode() == "kashasty_Escape"){
-				yield return KashastyAI();
-				yield break;
-			}
-			*/
-
-
-
 
 }
