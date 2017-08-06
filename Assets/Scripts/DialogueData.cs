@@ -62,10 +62,5 @@ public class DialogueData{
 			name = parser.Consume();
 			dialogue = parser.Consume();
 		}
-		/*catch (Exception e){
-			Debug.LogError("Parse error with " + unparsedDialogueDataString);
-			Debug.LogException(e);
-			throw e;
-		}*/
 	}
 }
