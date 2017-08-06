@@ -36,7 +36,7 @@ public class DamageCalculator
 		}
 	}
 
-	public static Dictionary<Unit, DamageInfo> CalculateTotalDamage(BattleData battleData, Tile centerTile, List<Tile> tilesInSkillRange, List<Tile> firstRange)
+	public static Dictionary<Unit, DamageInfo> CalculatePreviewTotalDamage(BattleData battleData, Tile centerTile, List<Tile> tilesInSkillRange, List<Tile> firstRange)
 	{
 		Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 
@@ -47,7 +47,7 @@ public class DamageCalculator
 
 		foreach (var chainInfo in allVaildChainInfo)
 		{
-			var damageListOfEachSkill = CalculateDamageOfEachSkill(chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculatePreviewDamageOfEachSkill(chainInfo, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
@@ -81,7 +81,7 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<Unit, DamageInfo> CalculateDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
 	{
 		var damageList = new Dictionary<Unit, DamageInfo>();
 		ActiveSkill appliedSkill = chainInfo.GetSkill();
@@ -180,22 +180,41 @@ public class DamageCalculator
 		attackDamage.chainBonus = ChainComboBonus(chainCombo);
 		attackDamage.smiteAmount = SmiteAmount(caster);
 
-        if(caster.GetElement() != Element.None){
-            StatusEffectType casterElementWeakness = EnumConverter.GetCorrespondingStatusEffectType(caster.GetElement());
+        Element casterElement = caster.GetElement();
+        if(casterElement != Element.None){
+            StatusEffectType casterElementWeakness = EnumConverter.GetCorrespondingStatusEffectType(casterElement);
             if (target.HasStatusEffect(casterElementWeakness)){
-                attackDamage.relativeDamageBonus *= target.CalculateActualAmount(1, casterElementWeakness);
+                float elementBonus = target.CalculateActualAmount(1, casterElementWeakness);
+                Debug.Log("\tElement bonus" + "(" + casterElement + ")" + " : " + elementBonus);
+                attackDamage.relativeDamageBonus *= elementBonus;
             }
         }
 
+        float originalRelativeDamageBonus = attackDamage.relativeDamageBonus;
+        float originalAbsoluteDamageBonus = attackDamage.absoluteDamageBonus;
+
         // 해당 기술의 추가데미지 계산
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
-		// 특성에 의한 추가데미지
-		List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
+        foreach (var statusEffect in target.GetStatusEffectList()) {
+            ActiveSkill originSkill = statusEffect.GetOriginSkill();
+            if (originSkill != null)
+                SkillLogicFactory.Get(originSkill).ApplyAdditionalDamageFromTargetStatusEffect(skillInstanceData, statusEffect);
+        }
+        printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillInstanceData.GetSkill().GetName());
+        originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+        originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+
+        // 특성에 의한 추가데미지
+        List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
-		// 시전자 효과에 의한 추가데미지
-		attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
-		// 특성에 의한 전략보너스 추가
-		SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
+        // 특성에 의한 전략보너스 추가
+        SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
+        originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+        originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+
+        // 시전자 효과에 의한 추가데미지
+        attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
+        printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, "buff from " + caster.GetNameInCode());
 
 		// '지형지물'은 방향 보너스를 받지 않음
 		if (target.IsObject()) attackDamage.directionBonus = 1.0f;
@@ -209,6 +228,17 @@ public class DamageCalculator
 
 		Debug.Log("resultDamage : " + attackDamage.resultDamage);
 	}
+
+    public static void printBonusDamageLog(AttackDamage damage, float originalAbsoluteDamageBonus, float originalRelativeDamageBonus, string damageSource) {
+        if (damage.relativeDamageBonus != originalRelativeDamageBonus) {
+            float bonus = damage.relativeDamageBonus / originalRelativeDamageBonus;
+            Debug.Log("\tRelative damage bonus from " + damageSource + " : " + bonus);
+        }
+        if (damage.absoluteDamageBonus != originalAbsoluteDamageBonus) {
+            float bonus = damage.absoluteDamageBonus - originalAbsoluteDamageBonus;
+            Debug.Log("\tAbsolute damage bonus from " + damageSource + " : " + bonus);
+        }
+    }
 
 	private static float PowerFactorDamage(ActiveSkill appliedSkill, Unit casterUnit)
 	{
@@ -306,6 +336,7 @@ public class DamageCalculator
             if (resistance <= -180) damage = damage * 10;
             else damage = damage * 200.0f / (200.0f + resistance);
         }
+        Debug.Log("resultDamage applying defense and resistance applied : " + damage);
         return damage;
     }
 	public static float CalculateDefense(ActiveSkill appliedSkill, Unit target, Unit caster) {

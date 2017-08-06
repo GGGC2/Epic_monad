@@ -66,14 +66,24 @@ namespace Battle.Skills
         }
 
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
+            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.ApplyBonusDamageFromEachPassive(skillInstanceData);
+                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             }
         }
 
         public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData) {
+            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.ApplyTacticalBonusFromEachPassive(skillInstanceData);
+                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             }
         }
 
