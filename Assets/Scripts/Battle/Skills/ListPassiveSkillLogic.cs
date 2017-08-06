@@ -12,11 +12,11 @@ namespace Battle.Skills
 		    this.passiveSkillLogics = passiveSkillLogics;
 	    }
 
-	    public override void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
+	    public override IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.TriggerOnKill(hitInfo, deadUnit);
+			    yield return skillLogic.TriggerOnKill(hitInfo, deadUnit);
 		    }
 	    }
 

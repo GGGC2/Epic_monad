@@ -9,8 +9,8 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill;
 
-	public virtual void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
-	{
+	public virtual IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
+        yield return null;
 	}
 
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)

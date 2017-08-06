@@ -197,6 +197,7 @@ public class BattleManager : MonoBehaviour{
 	{
 		yield return battleData.battleManager.StartCoroutine(FadeOutEffect(unit));
 		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
+        yield return battleData.battleManager.StartCoroutine(battleData.unitManager.DeleteDeadUnit(unit));
 		battleData.unitManager.DeleteRetreatUnit(unit);
 		yield return BattleTriggerManager.CountBattleCondition(unit, deadOrRetreat);
 		yield return BattleTriggerManager.CountBattleCondition(unit, BattleTrigger.ActionType.Neutralize);

@@ -87,7 +87,7 @@ public class Unit : MonoBehaviour
 	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
 	Vector2 startPositionOfPhase;
     //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
-    bool hasMovedThisTurn;
+    int notMovedTurnCount;
     //이 유닛이 이 턴에 스킬을 사용했을 경우에 true - 유진 스킬 '여행자의 발걸음', '길잡이'에서 체크
     bool hasUsedSkillThisTurn;
 
@@ -160,7 +160,7 @@ public class Unit : MonoBehaviour
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
     public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
-    public bool GetHasMovedThisTurn() { return hasMovedThisTurn; }
+    public int GetNotMovedTurnCount() { return notMovedTurnCount; }
     public bool GetHasUsedSkillThisTurn() { return hasUsedSkillThisTurn; }
     public void SetHasUsedSkillThisTurn(bool hasUsedSkillThisTurn) { this.hasUsedSkillThisTurn = hasUsedSkillThisTurn; }
     public Dictionary<string, int> GetUsedSkillDict() {return usedSkillDict;}
@@ -220,13 +220,20 @@ public class Unit : MonoBehaviour
 		this.activityPoint = snapshotAp;
 		unitManager.UpdateUnitOrder();
 	}
-    public void ChangePosition(Tile tileAfter) {
+    private void ChangePosition(Tile tileAfter) {
         Tile tileBefore = GetTileUnderUnit();
         tileBefore.SetUnitOnTile(null);
         transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
         SetPosition(tileAfter.GetTilePos());
         tileAfter.SetUnitOnTile(this);
+        notMovedTurnCount = 0;
 
+        SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
+        foreach (var statusEffect in GetStatusEffectList()) {
+            PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
+            if (originPassiveSkill != null)
+                SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
+        }
         BattleTriggerManager.CountBattleCondition(this, tileAfter);
         updateStats();
     }
@@ -240,7 +247,6 @@ public class Unit : MonoBehaviour
 	public void ApplyMove(Tile tileAfter, Direction direction, int costAp)
 	{
         ChangePosition(tileAfter);
-        hasMovedThisTurn = true;
 		SetDirection(direction);
 		UseActivityPoint(costAp);
 
@@ -249,12 +255,6 @@ public class Unit : MonoBehaviour
                 statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);
             }
-        }
-        SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
-        foreach (var statusEffect in GetStatusEffectList()) {
-            PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
-            if (originPassiveSkill != null)
-                SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
         }
     }
 
@@ -506,7 +506,7 @@ public class Unit : MonoBehaviour
 	public void UpdateStartPosition()
 	{
 		startPositionOfPhase = this.GetPosition();
-        hasMovedThisTurn = false;
+        notMovedTurnCount ++;
         hasUsedSkillThisTurn = false;
 	}
     

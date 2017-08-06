@@ -290,6 +290,12 @@ public static class SkillLogicFactory
             case "전쟁광":
             passiveSkillLogic = new Grenev_6_r_SkillLogic();
             break;
+            case "인내심":
+            passiveSkillLogic = new Grenev_7_m_SkillLogic();
+            break;
+            case "연쇄살인":
+            passiveSkillLogic = new Grenev_7_r_SkillLogic();
+            break;
 
             //노엘
             case "심판의 빛":

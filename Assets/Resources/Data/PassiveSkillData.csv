@@ -111,3 +111,5 @@ grenev,15,약자멸시,3,자신보다 공격력이 작은 상대에게 주는 �
 grenev,29,전망,1,본인이 대상보다 높이 3 이상 높은 타일에 있을시 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.,None,0,0,None,0,0
 grenev,36,암살,2,은신 상태에서 적에게 공격을 할 경우 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.,None,0,0,None,0,0
 grenev,36,전쟁광,3,그레네브의 최대체력을 <color=green>15%</color> 감소시키고 공격력을 <color=red>15%</color> 상승시킵니다.,None,0,0,None,0,0
+grenev,43,인내심,2,같은 타일에서 3번째로 페이즈를 시작할 때 공격력이 <color=red>20%</color>(<color=red>VALUE1</color>) (지속)올라갑니다. 다른 타일로 이동시 해제됩니다.,Power,0.2,0,None,0,0
+grenev,43,연쇄살인,3,그레네브가 1명 처치할 때마다 본인의 행동력이 <color=blue>0.6x민첩성</color>(<color=blue>VALUE1</color>)만큼 회복됩니다.,Agility,0.6,0,None,0,0
