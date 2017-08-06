@@ -57,11 +57,6 @@ public class Unit : MonoBehaviour
 	// 유닛 배치할때만 사용
 	Vector2 initPosition;
     
-	int baseHealth; // 체력
-	int basePower; // 공격력
-	int baseDefense; // 방어력
-	int baseResistance; // 저항력
-	int baseAgility; // 행동력
     Dictionary<Stat, int> baseStats;
 
     class ActualStat {
@@ -145,7 +140,7 @@ public class Unit : MonoBehaviour
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
     public List<StatusEffect> GetStatusEffectList() { return statusEffectList; }
 	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
-	public int GetMaxHealth() { return actualHealth.value; }
+	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
 	public int GetCurrentActivityPoint() { return activityPoint; }
 	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
@@ -719,7 +714,7 @@ public class Unit : MonoBehaviour
 	public void RegenerateActionPoint(){
 		if (!isObject) {
 			activityPoint = GetRegeneratedActionPoint ();
-			Debug.Log (name + " recover " + actualAgility.value + "AP. Current AP : " + activityPoint);
+			Debug.Log (name + " recover " + GetStat(Stat.Agility) + "AP. Current AP : " + activityPoint);
 		}
 	}
 
@@ -891,18 +886,13 @@ public class Unit : MonoBehaviour
 	void ApplyStats()
 	{
 		float partyLevel = (float)GameData.PartyData.level;
-
-        actualHealth = new ActualStat(baseHealth, Stat.MaxHealth);
-        actualPower  = new ActualStat(basePower, Stat.Power);
-        actualDefense = new ActualStat(baseDefense, Stat.Defense);
-        actualResistance = new ActualStat(baseResistance, Stat.Resistance);
-        actualAgility = new ActualStat(baseAgility, Stat.Agility);
+        
         actualStats = new Dictionary<Stat, ActualStat>();
-        actualStats.Add(Stat.MaxHealth, actualHealth);
-        actualStats.Add(Stat.Power, actualPower);
-        actualStats.Add(Stat.Defense, actualDefense);
-        actualStats.Add(Stat.Resistance, actualResistance);
-        actualStats.Add(Stat.Agility, actualAgility);
+        actualStats.Add(Stat.MaxHealth, new ActualStat(baseStats[Stat.MaxHealth], Stat.MaxHealth));
+        actualStats.Add(Stat.Power, new ActualStat(baseStats[Stat.Power], Stat.Power));
+        actualStats.Add(Stat.Defense, new ActualStat(baseStats[Stat.Defense], Stat.Defense));
+        actualStats.Add(Stat.Resistance, new ActualStat(baseStats[Stat.Resistance], Stat.Resistance));
+        actualStats.Add(Stat.Agility, new ActualStat(baseStats[Stat.Agility], Stat.Agility));
         actualStats.Add(Stat.Level, new ActualStat(GameData.PartyData.level, Stat.Level));
     }
     public void ApplyUnitInfo(UnitInfo unitInfo) {
@@ -912,17 +902,12 @@ public class Unit : MonoBehaviour
         this.side = unitInfo.side;
         this.initPosition = unitInfo.initPosition;
         this.direction = unitInfo.initDirection;
-        this.baseHealth = unitInfo.baseHealth;
-        this.basePower = unitInfo.basePower;
-        this.baseDefense = unitInfo.baseDefense;
-        this.baseResistance = unitInfo.baseResistance;
-        this.baseAgility = unitInfo.baseAgility;
         this.baseStats = new Dictionary<Stat, int>();
-        baseStats.Add(Stat.MaxHealth, baseHealth);
-        baseStats.Add(Stat.Power, basePower);
-        baseStats.Add(Stat.Defense, baseDefense);
-        baseStats.Add(Stat.Resistance, baseResistance);
-        baseStats.Add(Stat.Agility, baseAgility);
+        baseStats.Add(Stat.MaxHealth, unitInfo.baseHealth);
+        baseStats.Add(Stat.Power, unitInfo.basePower);
+        baseStats.Add(Stat.Defense, unitInfo.baseDefense);
+        baseStats.Add(Stat.Resistance, unitInfo.baseResistance);
+        baseStats.Add(Stat.Agility, unitInfo.baseAgility);
         baseStats.Add(Stat.Level, GameData.PartyData.level);
         this.unitClass = unitInfo.unitClass;
         this.element = unitInfo.element;
@@ -968,10 +953,10 @@ public class Unit : MonoBehaviour
 		UpdateSpriteByDirection();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
-		activityPoint = (int)(actualAgility.value * 0.5f) + unitManager.GetStandardActivityPoint();
+		activityPoint = (int)(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
 		
 		// 기본민첩성이 0인 유닛은 시작시 행동력이 0
-		if (baseAgility == 0)
+		if (baseStats[Stat.Agility] == 0)
 			activityPoint = 0;
 		
 		// skillList = SkillLoader.MakeSkillList();
