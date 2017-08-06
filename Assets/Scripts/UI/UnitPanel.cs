@@ -74,6 +74,8 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 
 	string ToKorean(string unitName)
 	{
+		//FIXME : 이 부분 UnitInfo.cs의 ConvertToKoreanName(string codeName)와 (dafault 케이스만 빼면)겹쳐서 하나로 합쳐야 할 듯..
+		//아니면 하드코딩하지 말고 csv로 빼거나
 		switch (unitName)
 		{
 			case "noel":		return "노엘";
@@ -82,6 +84,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			case "arcadia":		return "아르카디아";
 			case "darkenir":	return "달케니르";
 			case "yeong":		return "영";
+			case "bianca":		return "비앙카";
 			default:			return "--";
 		}
 	}
