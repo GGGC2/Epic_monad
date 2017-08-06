@@ -700,6 +700,41 @@ Prefab:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: prevButton
+      value: 
+      objectReference: {fileID: 1187713075}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: nextButton
+      value: 
+      objectReference: {fileID: 1187713074}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1187713073}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CallbackPrevPage
+      objectReference: {fileID: 0}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1187713073}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CallbackNextPage
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114166518329213646, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
     - {fileID: 114473523391831396, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
