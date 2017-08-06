@@ -92,8 +92,7 @@ public class StringParser{
 		}
 	}
 
-	public T ConsumeEnum<T>()
-	{
+	public T ConsumeEnum<T>(){
 		string beforeParsed = Consume();
 		try 
 		{

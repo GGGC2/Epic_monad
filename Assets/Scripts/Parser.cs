@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using WorldMap;
 using SkillTree;
 using GameData;
@@ -23,6 +23,33 @@ public class Parser : MonoBehaviour{
 
 		Debug.Log("RowData Not Found : " + searchingWord + "in " + text);
 		return null;
+	}
+
+	public enum ParsingDataType{Glossary, DialogueData};
+
+	public static List<T> GetParsedData<T>(TextAsset textAsset, ParsingDataType DataType){
+		List<T> DataList = new List<T>();
+		string[] rowDataList = textAsset.text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		for(int i = 1; i < rowDataList.Length; i++){
+			T data = CreateParsedObject<T>(DataType, rowDataList[i]);
+			DataList.Add(data);
+		}
+		Debug.Log("DataList.Count : "+DataList.Count);
+		return DataList;
+	}
+
+	public static T CreateParsedObject<T>(ParsingDataType DataType, string rowData){
+		if(DataType == ParsingDataType.Glossary){
+			object data = new GlossaryData(rowData);
+			return (T)data;
+		}
+		else{
+			Debug.LogError("Invalid Input");
+			//컴파일할 때 뭔가 리턴해야 해서 만듦
+			object garbage = null;
+			return (T)garbage;
+		}
 	}
 
 	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile){
