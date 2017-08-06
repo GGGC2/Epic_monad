@@ -265,7 +265,7 @@ public class UnitManager : MonoBehaviour {
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
 		foreach (var hitInfo in deadUnit.GetLatelyHitInfos()){
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
+			SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, deadUnit);
 
 			if (hitInfo.skill != null)
 				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);

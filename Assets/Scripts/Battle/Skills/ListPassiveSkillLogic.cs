@@ -12,11 +12,11 @@ namespace Battle.Skills
 		    this.passiveSkillLogics = passiveSkillLogics;
 	    }
 
-	    public override void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
+	    public override void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.ApplyStatusEffectByKill(hitInfo, deadUnit);
+			    skillLogic.TriggerOnKill(hitInfo, deadUnit);
 		    }
 	    }
 

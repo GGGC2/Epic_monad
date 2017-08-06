@@ -153,6 +153,11 @@ public class DamageCalculator
         attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
         // 해당 기술의 추가데미지 계산
         SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+        foreach(var statusEffect in target.GetStatusEffectList()) {
+            ActiveSkill originSkill = statusEffect.GetOriginSkill();
+            if(originSkill != null)
+                SkillLogicFactory.Get(originSkill).ApplyAdditionalDamageFromTargetStatusEffect(skillInstanceData, statusEffect);
+        }
         // 특성에 의한 추가데미지
         List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
         SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);

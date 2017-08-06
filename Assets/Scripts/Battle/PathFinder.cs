@@ -73,7 +73,7 @@ public class PathFinder {
 		int remainAP = unit.GetCurrentActivityPoint();
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
 		// 필요 행동력(이동) 증감 효과 적용
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange))
+		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange))
 		{
 			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
             float speed = unit.CalculateActualAmount(100, StatusEffectType.SpeedChange);

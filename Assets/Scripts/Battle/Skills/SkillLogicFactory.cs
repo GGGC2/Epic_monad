@@ -20,6 +20,15 @@ public static class SkillLogicFactory
 				skillLogic = new Grenev_1_m_SkillLogic();
 				skill.SetSoundEffectName ("Slash");
             break;
+            case "장전":
+                skillLogic = new Grenev_2_l_SkillLogic();
+            break;
+            case "암살표식":
+                skillLogic = new Grenev_3_m_SkillLogic();
+            break;
+            case "회심의 일격":
+                skillLogic = new Grenev_4_l_SkillLogic();
+            break;
 
             // 노엘
             case "파마의 섬광":
@@ -259,6 +268,12 @@ public static class SkillLogicFactory
             break;
             case "살의":
             passiveSkillLogic = new Grenev_1_r_SkillLogic();
+            break;
+            case "살육의 희열":
+            passiveSkillLogic = new Grenev_2_r_SkillLogic();
+            break;
+            case "약자멸시":
+            passiveSkillLogic = new Grenev_3_r_SkillLogic();
             break;
 
             //노엘
