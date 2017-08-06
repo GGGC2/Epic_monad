@@ -43,9 +43,10 @@ public class BaseSkillLogic
 		return requireAP;
 	}
 
-	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData)
-	{
+	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
 	}
+    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, StatusEffect statusEffect) {
+    }
 
 	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
 	{

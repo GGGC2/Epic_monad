@@ -8,7 +8,7 @@ using Battle.Damage;
 namespace Battle.Skills
 {
     public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
-	    public override void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
+	    public override void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 	    {
 		    TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		    Vector2 deadUnitPos = deadUnit.GetPosition();
