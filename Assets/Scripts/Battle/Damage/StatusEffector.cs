@@ -136,6 +136,7 @@ public static class StatusEffector
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(statusEffect, true, false);
+                target.UpdateSpriteByStealth();
             }
 		}
 	}

@@ -125,6 +125,7 @@ namespace Enums {
 
 	public enum StatusEffectType
 	{
+        MaxHealthChange,
         PowerChange,
         DefenseChange,
         ResistanceChange,
@@ -159,6 +160,7 @@ namespace Enums {
 		Taunt, // 도발
 		MeleeImmune, // 물리 면역
 		MagicImmune, // 마법 면역
+        Stealth,
 		AllImmune,  // 모든 피해 면역
         Aura,       //오오라
         Trap,
@@ -186,6 +188,8 @@ namespace Enums {
                 return Stat.Resistance;
             case StatusEffectType.AgilityChange:
                 return Stat.Agility;
+            case StatusEffectType.MaxHealthChange:
+                return Stat.MaxHealth;
             }
             return Stat.None;
         }
@@ -199,6 +203,8 @@ namespace Enums {
                 return StatusEffectType.ResistanceChange;
             case Stat.Agility:
                 return StatusEffectType.AgilityChange;
+            case Stat.MaxHealth:
+                return StatusEffectType.MaxHealthChange;
             }
             return StatusEffectType.Etc;
         }

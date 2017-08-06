@@ -24,7 +24,7 @@ namespace Battle.Turn{
 			//후에 제3세력 등장하면 조건이 바뀔 수 있음
 
 			//unit2가 '은신' 효과(아직 미구현인 그레네브 스킬 효과)를 갖고 있는지 여기에서 확인해서 적용해야 할 것 (AI 인unit1에게 적으로 인식되지 않음)
-			return unit2.GetSide () == GetEnemySide (unit1);
+			return unit2.GetSide () == GetEnemySide (unit1) && !unit2.HasStatusEffect(StatusEffectType.Stealth);
 		}
 		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit){
 			var positions = from tile in movableTiles

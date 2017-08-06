@@ -88,6 +88,7 @@ public class UnitManager : MonoBehaviour {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
                     unit.updateStats(statusEffect, false, false);
+                    unit.UpdateSpriteByStealth();
                 }
                 else
                     unit.RemoveStatusEffect(statusEffect);

@@ -29,6 +29,12 @@ public static class SkillLogicFactory
             case "회심의 일격":
                 skillLogic = new Grenev_4_l_SkillLogic();
             break;
+            case "은신":
+                skillLogic = new Grenev_5_m_SkillLogic();
+            break;
+            case "연사":
+                skillLogic = new Grenev_7_l_SkillLogic();
+            break;
 
             // 노엘
             case "파마의 섬광":
@@ -274,6 +280,15 @@ public static class SkillLogicFactory
             break;
             case "약자멸시":
             passiveSkillLogic = new Grenev_3_r_SkillLogic();
+            break;
+            case "전망":
+            passiveSkillLogic = new Grenev_5_l_SkillLogic();
+            break;
+            case "암살":
+            passiveSkillLogic = new Grenev_6_m_SkillLogic();
+            break;
+            case "전쟁광":
+            passiveSkillLogic = new Grenev_6_r_SkillLogic();
             break;
 
             //노엘

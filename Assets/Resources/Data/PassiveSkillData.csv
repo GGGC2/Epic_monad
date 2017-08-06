@@ -108,3 +108,6 @@ grenev,0,타고난 저격수,1,이동할 때 행동력 소모가 <color=red>30%<
 grenev,1,살의,3,6페이즈 이후부터 속도가 25 높아집니다.,None,0,0,None,0,0
 grenev,8,살육의 희열,3,그레네브가 1명 처치할 때마다 공격력이 <color=red>5%</color>(<color=red>VALUE1</color>) 영구적으로(스테이지 끝날 때까지 유지) 증가합니다.(중첩 가능),Power,0.05,0,None,0,0
 grenev,15,약자멸시,3,자신보다 공격력이 작은 상대에게 주는 피해량에 <color=red>25%</color> 보너스가 주어집니다.,None,0,0,None,0,0
+grenev,29,전망,1,본인이 대상보다 높이 3 이상 높은 타일에 있을시 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.,None,0,0,None,0,0
+grenev,36,암살,2,은신 상태에서 적에게 공격을 할 경우 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.,None,0,0,None,0,0
+grenev,36,전쟁광,3,그레네브의 최대체력을 <color=green>15%</color> 감소시키고 공격력을 <color=red>15%</color> 상승시킵니다.,None,0,0,None,0,0

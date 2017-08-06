@@ -20,6 +20,8 @@ namespace BattleUI
         Unit selectedUnit;
 		public Sprite transparent;
 		public List<Button> skillButtons;
+        public Button prevButton;
+        public Button nextButton;
 
 		public void Awake(){
 			battleManager = FindObjectOfType<BattleManager>();
@@ -37,8 +39,6 @@ namespace BattleUI
         public void triggerEnabled(Unit selectedUnit) {
             this.selectedUnit = selectedUnit;
             page = 0;
-            Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
-            Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
             prevButton.interactable = false;
             if (maxPage == 0) nextButton.interactable = false;
             else nextButton.interactable = true;
@@ -102,11 +102,9 @@ namespace BattleUI
         public void CallbackNextPage() {
             page += 1;
             if (page > 0) {
-                Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
                 prevButton.interactable = true;
             }
             if (page >= maxPage) {
-                Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
                 nextButton.interactable = false;
             }
             MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);
@@ -114,11 +112,9 @@ namespace BattleUI
         public void CallbackPrevPage() {
             page -= 1;
             if (page <= 0) {
-                Button prevButton = gameObject.transform.Find("PrevSkillPageButton").GetComponent<Button>();
                 prevButton.interactable = false;
             }
             if (page < maxPage) {
-                Button nextButton = gameObject.transform.Find("NextSkillPageButton").GetComponent<Button>();
                 nextButton.interactable = true;
             }
             MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);

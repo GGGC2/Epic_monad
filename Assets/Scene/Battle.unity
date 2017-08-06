@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -597,9 +597,73 @@ Prefab:
       propertyPath: m_AnchoredPosition.y
       value: 173
       objectReference: {fileID: 0}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 114327846787114110, guid: cc512d0c47c6641d6a69a15b7eb4e8a4,
+        type: 2}
+    - target: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CallbackNextPage
+      objectReference: {fileID: 0}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1187713073}
+    - target: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CallbackPrevPage
+      objectReference: {fileID: 0}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: prevButton
+      value: 
+      objectReference: {fileID: 1187713075}
+    - target: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: nextButton
+      value: 
+      objectReference: {fileID: 1187713074}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1187713073 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114135986347887712, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1187713072}
+  m_Script: {fileID: 11500000, guid: 10fbdd182fd42494c80e5b34125456a9, type: 3}
+--- !u!114 &1187713074 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114392867937528822, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1187713072}
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!114 &1187713075 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114958867113217140, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 1187713072}
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &1333908123
 Prefab:
   m_ObjectHideFlags: 0

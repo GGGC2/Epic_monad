@@ -263,6 +263,11 @@ public class Unit : MonoBehaviour
         }
     }
 
+    private void updateCurrentHealthRelativeToMaxHealth() {
+        if(currentHealth > GetMaxHealth())
+            currentHealth = GetMaxHealth();
+    }
+
     public void updateStats() {
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
@@ -270,6 +275,7 @@ public class Unit : MonoBehaviour
             if (statusEffectType != StatusEffectType.Etc)
                 actualStat.value = (int)CalculateActualAmount(baseStats[statType], statusEffectType);
         }
+        updateCurrentHealthRelativeToMaxHealth();
     }
     public void updateStats(StatusEffect statusEffect, bool isApplied, bool isRemoved) {
         List<ActualStat> statsToUpdate = new List<ActualStat>();
@@ -286,6 +292,7 @@ public class Unit : MonoBehaviour
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
             statsToUpdate[i].value = (int)CalculateActualAmount(baseStats[statsToUpdate[i].stat], statusEffectType);
         }
+        updateCurrentHealthRelativeToMaxHealth();
     }
     
     public void UpdateHealthViewer() {
@@ -371,6 +378,7 @@ public class Unit : MonoBehaviour
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             updateStats(statusEffect, false, true);
+            UpdateSpriteByStealth();
             if(statusEffect.IsOfType(StatusEffectType.Shield)) {
                 UpdateHealthViewer();
             }
@@ -814,6 +822,15 @@ public class Unit : MonoBehaviour
 		if (direction == Direction.RightDown)
 			GetComponent<SpriteRenderer>().sprite = spriteRightDown;
 	}
+
+    public void UpdateSpriteByStealth() {
+        Color color = GetComponent<SpriteRenderer>().color;
+        if(HasStatusEffect(StatusEffectType.Stealth))
+            color.a = 0.5f;
+        else
+            color.a = 1;
+        GetComponent<SpriteRenderer>().color = color;
+    }
     
 	// 보너스 텍스트 표시.
 	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage)
