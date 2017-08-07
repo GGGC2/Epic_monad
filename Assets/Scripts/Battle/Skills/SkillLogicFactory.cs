@@ -14,11 +14,9 @@ public static class SkillLogicFactory
             // 그레네브
 			case "저격":
 				skillLogic = new Grenev_1_l_SkillLogic ();
-				skill.SetSoundEffectName ("Gun");
             break;
             case "단검술":
 				skillLogic = new Grenev_1_m_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
             break;
             case "장전":
                 skillLogic = new Grenev_2_l_SkillLogic();
@@ -45,23 +43,19 @@ public static class SkillLogicFactory
             break;
             case "신의 가호":
 				skillLogic = new Noel_1_r_SkillLogic();
-				skill.SetSoundEffectName ("Shield");
             break;
 
             // 달케니르
             case "에테르 미사일":
 				skillLogic = new Darkenir_1_m_SkillLogic();
-				skill.SetSoundEffectName ("EtherMissile");
             break;
 
 			// 레이나
 			case "화염 폭발":
 				skillLogic = new Reina_1_l_SkillLogic();
-				skill.SetSoundEffectName ("Fire");
             break;
 			case "화염구":
 				skillLogic = new Reina_1_m_SkillLogic();
-				skill.SetSoundEffectName ("Fire");
             break;
 			// case "마력 연쇄":
 			// return new Reina_3_r_SkillLogic();
@@ -74,7 +68,6 @@ public static class SkillLogicFactory
 			//루키어스
 			case "가로베기":
 				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Slash");
 			break;
 
             // 루베리카
@@ -125,7 +118,6 @@ public static class SkillLogicFactory
             //세피아
             case "반달베기":
 				skillLogic = new Sepia_1_r_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
             break;
 
             //아르카디아
@@ -142,7 +134,6 @@ public static class SkillLogicFactory
 			// 영
 			case "은빛 베기": case "은빛 베기_test":
 				skillLogic = new Yeong_1_l_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
             break;
 			case "섬광 찌르기":
             skillLogic = new Yeong_2_l_SkillLogic();
@@ -243,12 +234,10 @@ public static class SkillLogicFactory
 			//soldier01
 			case "근접공격":
 				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Slash");
 				break;
 			//archer01 & asterArcher01
 			case "화살 발사":
 				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Bow");
 				break;
 
             default:

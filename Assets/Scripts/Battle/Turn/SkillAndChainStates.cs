@@ -221,7 +221,7 @@ namespace Battle.Turn {
                 battleData.tileManager.PaintTiles(secondRange, TileColor.Red);
 				//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
 				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
-				List<Tile> realEffectRange = skill.GetTilesInRealEffectRange(targetTile, secondRange);
+				List<Tile> realEffectRange = skill.GetTilesInRealEffectRange(targetTile, direction);
 
                 //데미지 미리보기
                 Debug.Log("/------- Damage preview -------\\");
@@ -276,8 +276,7 @@ namespace Battle.Turn {
                     // 체인이 가능한 스킬일 경우. 체인 발동.
                     // 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
                     // 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
-                    if (selectedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth
-                     || selectedSkill.GetSkillApplyType() == SkillApplyType.Debuff) {
+					if (selectedSkill.Chainable()) {
 						yield return ApplyChain(battleData, targetTile, secondRange, realEffectRange, firstRange);
                     }
                     // 체인이 불가능한 스킬일 경우, 그냥 발동.
@@ -315,36 +314,41 @@ namespace Battle.Turn {
 			if (GameData.SceneData.stageNumber < Setting.chainOpenStage)
 				return false;
 
-			bool isPossible = false;
+			// 스킬 타입으로 체크. 공격/약화 스킬만 체인을 걸 수 있음.
+			if (battleData.SelectedSkill.Chainable () == false)
+				return false;
+
             Unit caster = battleData.selectedUnit;
 
             // AP 조건으로 체크.
+			//FIXME : 조건이 이해 안 가는데 주석 달아주세요
             int requireAP = caster.GetActualRequireSkillAP(battleData.SelectedSkill);
             int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
+			bool isAPConditionPossible = false;
             foreach (var unit in battleData.unitManager.GetAllUnits()) {
                 if ((unit != caster) &&
                 (unit.GetCurrentActivityPoint() > remainAPAfterChain)) {
-                    isPossible = true;
+                    isAPConditionPossible = true;
                 }
-            }
-
-            // 스킬 타입으로 체크. 공격스킬만 체인을 걸 수 있음.
-            if (battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.DamageHealth
-             && battleData.SelectedSkill.GetSkillApplyType() != SkillApplyType.Debuff) {
-                isPossible = false;
-            }
+			}
+			if (!isAPConditionPossible)
+				return false;
             
+			bool tileStatusConditionPossible = true;
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
                 ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill != null) {
                     if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
-                        isPossible = false;
+						tileStatusConditionPossible = false;
                     }
                 }
             }
-            return isPossible;
+			if (tileStatusConditionPossible)
+				return true;
+			else
+				return false;
         }
 
 
@@ -420,11 +424,9 @@ namespace Battle.Turn {
             if (isChainable)
                 ChainList.RemoveChainsFromUnit(caster);
 
-			//스킬 고유 효과음 재생
-			if(appliedSkill.GetSoundEffectName () != null || appliedSkill.GetSoundEffectName () != "-")
-				SoundManager.Instance.PlaySE (appliedSkill.GetSoundEffectName ());
+			appliedSkill.ApplySoundEffect();
 
-			yield return battleManager.StartCoroutine(ApplySkillEffect(appliedSkill, caster, secondRange));
+			yield return battleManager.StartCoroutine(appliedSkill.ApplyVisualEffect (caster, secondRange));
             
 			foreach (var tile in realEffectRange) {
                 if (tile.IsUnitOnTile()) {
@@ -593,84 +595,6 @@ namespace Battle.Turn {
                 }
             }
             return units;
-        }
-
-        private static IEnumerator ApplySkillEffect(ActiveSkill appliedSkill, Unit unit, List<Tile> selectedTiles) {
-            string effectName = appliedSkill.GetEffectName();
-            if (effectName == "-") {
-                Debug.Log("There is no effect for " + appliedSkill.GetName());
-                yield break;
-            }
-
-            EffectVisualType effectVisualType = appliedSkill.GetEffectVisualType();
-            EffectMoveType effectMoveType = appliedSkill.GetEffectMoveType();
-
-            if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {
-                // 투사체, 범위형 이펙트.
-                Vector3 startPos = unit.gameObject.transform.position;
-                Vector3 endPos = new Vector3(0, 0, 0);
-                foreach (var tile in selectedTiles) {
-                    endPos += tile.gameObject.transform.position;
-                }
-                endPos = endPos / (float)selectedTiles.Count;
-
-                GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-                particle.transform.position = startPos - new Vector3(0, -0.5f, 0.01f);
-                yield return new WaitForSeconds(0.2f);
-                // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
-                // 유닛의 중앙 부분을 공격하기 위하여 y축으고 0.5 올린다.
-                iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, -0.5f, 5f), 0.5f);
-                yield return new WaitForSeconds(0.3f);
-                GameObject.Destroy(particle, 0.5f);
-                yield return null;
-            } else if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.NonMove)) {
-                // 고정형, 범위형 이펙트.
-                Vector3 targetPos = new Vector3(0, 0, 0);
-                foreach (var tile in selectedTiles) {
-                    targetPos += tile.transform.position;
-                }
-                targetPos = targetPos / (float)selectedTiles.Count;
-                targetPos = targetPos - new Vector3(0, -0.5f, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
-
-                GameObject particlePrefab = Resources.Load("Particle/" + effectName) as GameObject;
-                if (particlePrefab == null) {
-                    Debug.LogError("Cannot load particle " + effectName);
-                }
-                GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
-                particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
-                yield return new WaitForSeconds(0.5f);
-                GameObject.Destroy(particle, 0.5f);
-                yield return null;
-            } else if ((effectVisualType == EffectVisualType.Individual) && (effectMoveType == EffectMoveType.NonMove)) {
-                // 고정형, 개별 대상 이펙트.
-                List<Vector3> targetPosList = new List<Vector3>();
-                foreach (var tileObject in selectedTiles) {
-                    Tile tile = tileObject;
-                    if (tile.IsUnitOnTile()) {
-                        targetPosList.Add(tile.GetUnitOnTile().transform.position);
-                    }
-                }
-
-                foreach (var targetPos in targetPosList) {
-                    GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-                    particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
-                    GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
-                }
-
-                if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
-                {
-                    Vector3 midPos = new Vector3(0, 0, 0);
-                    foreach (var tile in selectedTiles) {
-                        midPos += tile.transform.position;
-                    }
-                    midPos = midPos / (float)selectedTiles.Count;
-
-                    GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + effectName)) as GameObject;
-                    particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
-                    GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
-                }
-                yield return new WaitForSeconds(0.5f);
-            }
         }
     }
 }

@@ -29,7 +29,7 @@ public class ActiveSkill : Skill{
 	SkillApplyType skillApplyType; // 대미지인지 힐인지 아니면 상태이상만 주는지
 	
 	// 이펙트 관련 정보
-	string effectName;
+	string visualEffectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
 
@@ -63,7 +63,7 @@ public class ActiveSkill : Skill{
 		secondWidth = commaParser.ConsumeInt();
 
 		skillApplyType = commaParser.ConsumeEnum<SkillApplyType>();
-		effectName = commaParser.Consume();
+		visualEffectName = commaParser.Consume();
 		effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 
@@ -84,7 +84,7 @@ public class ActiveSkill : Skill{
 				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
 				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
 				 SkillApplyType skillApplyType,  
-				 string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
+				 string visualEffectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
 				 string skillDataText, Stat firstTextValueType, float firstTextValueCoef, Stat secondTextValueType, float secondTextValueCoef)
 	{
 		this.owner = owner;
@@ -104,7 +104,7 @@ public class ActiveSkill : Skill{
 		this.secondMaxReach = secondMaxReach;
 		this.secondWidth = secondWidth;
 		this.skillApplyType = skillApplyType;
-		this.effectName = effectName;
+		this.effectName = visualEffectName;
 		this.effectVisualType = effectVisualType;
 		this.effectMoveType = effectMoveType;
 		this.soundEffectName = soundEffectName;
@@ -115,22 +115,22 @@ public class ActiveSkill : Skill{
 		this.secondTextValueCoef = secondTextValueCoef;
 	}*/
 	public List<Tile> GetTilesInFirstRange(Vector2 casterPos, Direction direction) {
-		var firstRange = battleData.tileManager.GetTilesInRange (GetFirstRangeForm (),
+		var firstRange = battleData.tileManager.GetTilesInRange (firstRangeForm,
 			                 casterPos,
-			                 GetFirstMinReach (),
-			                 GetFirstMaxReach (),
-			                 GetFirstWidth (),
+			                 firstMinReach,
+			                 firstMaxReach,
+			                 firstWidth,
 			                 direction);
 
 		//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점까지를 1차 범위로 함. 범위 끝까지 가로막은 유닛이 없으면 직선 전체가 1차 범위
-		if (GetSkillType() == SkillType.Route) {
+		if (skillType == SkillType.Route) {
 			firstRange = TileManager.GetRouteTiles(firstRange);
 		}
 
 		return firstRange;
 	}
 	public Tile GetRealTargetTileForAI(Vector2 casterPos, Direction direction, Tile targetTile=null){	
-		if (GetSkillType () == SkillType.Route) {
+		if (skillType == SkillType.Route) {
 			List<Tile> firstRange = GetTilesInFirstRange (casterPos, direction);
 			Tile routeEnd = TileManager.GetRouteEndForAI (firstRange);
 			return routeEnd;
@@ -138,7 +138,7 @@ public class ActiveSkill : Skill{
 		return targetTile;
 	}
 	public Tile GetRealTargetTileForPC(Vector2 casterPos, Direction direction, Tile targetTile=null){	
-		if (GetSkillType () == SkillType.Route) {
+		if (skillType == SkillType.Route) {
 			List<Tile> firstRange = GetTilesInFirstRange (casterPos, direction);
 			Tile routeEnd = TileManager.GetRouteEndForPC (firstRange);
 			return routeEnd;
@@ -147,26 +147,26 @@ public class ActiveSkill : Skill{
 	}
 	public List<Tile> GetTilesInSecondRange(Tile targetTile, Direction direction)
 	{
-		List<Tile> secondRange = battleData.tileManager.GetTilesInRange (GetSecondRangeForm (),
+		List<Tile> secondRange = battleData.tileManager.GetTilesInRange (secondRangeForm,
 			                           targetTile.GetTilePos (),
-			                           GetSecondMinReach (),
-			                           GetSecondMaxReach (),
-			                           GetSecondWidth (),
+			                           secondMinReach,
+			                           secondMaxReach,
+			                           secondWidth,
 			                           direction);
-		if (GetSkillType() == SkillType.Auto)
+		if (skillType == SkillType.Auto)
 		{
 			secondRange.Remove(targetTile);
 		}
 		return secondRange;
 	}
-	public List<Tile> GetTilesInRealEffectRange(Tile targetTile, List<Tile> secondRange){
-		List<Tile> tilesInRealEffectRange =secondRange;
-		//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
-		if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+	public List<Tile> GetTilesInRealEffectRange(Tile targetTile, Direction direction){
+		List<Tile> secondRange = GetTilesInSecondRange (targetTile, direction);
+		List<Tile> realEffectRange = secondRange;
+		if (battleData.SelectedSkill.skillType == SkillType.Route) {
 			if (!targetTile.IsUnitOnTile ())
-				tilesInRealEffectRange = new List<Tile>();
+				realEffectRange = new List<Tile>();
 		}
-		return tilesInRealEffectRange;
+		return realEffectRange;
 	}
 
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
@@ -203,6 +203,89 @@ public class ActiveSkill : Skill{
         }
     }
 
+	public void ApplySoundEffect(){
+		if(soundEffectName != null || soundEffectName != "-")
+			SoundManager.Instance.PlaySE (soundEffectName);
+	}
+	public IEnumerator ApplyVisualEffect(Unit unit, List<Tile> secondRange) {
+		if (visualEffectName == "-") {
+			Debug.Log("There is no visual effect for " + korName);
+			yield break;
+		}
+
+		if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {
+			// 투사체, 범위형 이펙트.
+			Vector3 startPos = unit.gameObject.transform.position;
+			Vector3 endPos = new Vector3(0, 0, 0);
+			foreach (var tile in secondRange) {
+				endPos += tile.gameObject.transform.position;
+			}
+			endPos = endPos / (float)secondRange.Count;
+
+			GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
+			particle.transform.position = startPos - new Vector3(0, -0.5f, 0.01f);
+			yield return new WaitForSeconds(0.2f);
+			// 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+			// 유닛의 중앙 부분을 공격하기 위하여 y축으고 0.5 올린다.
+			iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, -0.5f, 5f), 0.5f);
+			yield return new WaitForSeconds(0.3f);
+			GameObject.Destroy(particle, 0.5f);
+			yield return null;
+		} else if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.NonMove)) {
+			// 고정형, 범위형 이펙트.
+			Vector3 targetPos = new Vector3(0, 0, 0);
+			foreach (var tile in secondRange) {
+				targetPos += tile.transform.position;
+			}
+			targetPos = targetPos / (float)secondRange.Count;
+			targetPos = targetPos - new Vector3(0, -0.5f, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
+
+			GameObject particlePrefab = Resources.Load("Particle/" + visualEffectName) as GameObject;
+			if (particlePrefab == null) {
+				Debug.LogError("Cannot load particle " + visualEffectName);
+			}
+			GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
+			particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
+			yield return new WaitForSeconds(0.5f);
+			GameObject.Destroy(particle, 0.5f);
+			yield return null;
+		} else if ((effectVisualType == EffectVisualType.Individual) && (effectMoveType == EffectMoveType.NonMove)) {
+			// 고정형, 개별 대상 이펙트.
+			List<Vector3> targetPosList = new List<Vector3>();
+			foreach (var tileObject in secondRange) {
+				Tile tile = tileObject;
+				if (tile.IsUnitOnTile()) {
+					targetPosList.Add(tile.GetUnitOnTile().transform.position);
+				}
+			}
+
+			foreach (var targetPos in targetPosList) {
+				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
+				particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
+				GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
+			}
+
+			if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
+			{
+				Vector3 midPos = new Vector3(0, 0, 0);
+				foreach (var tile in secondRange) {
+					midPos += tile.transform.position;
+				}
+				midPos = midPos / (float)secondRange.Count;
+
+				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
+				particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
+				GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
+			}
+			yield return new WaitForSeconds(0.5f);
+		}
+	}
+
+	public bool Chainable(){
+		return skillApplyType == SkillApplyType.DamageHealth
+			|| skillApplyType == SkillApplyType.Debuff;
+	}
+
 	private static BattleData battleData;
 	public static void SetBattleData(BattleData battleDataInstance){
 		battleData=battleDataInstance;
@@ -226,11 +309,6 @@ public class ActiveSkill : Skill{
 	public int GetSecondMaxReach() {return secondMaxReach;}
 	public int GetSecondWidth() {return secondWidth;}
 	public SkillApplyType GetSkillApplyType() {return skillApplyType;}
-	public string GetEffectName() {return effectName;}
-	public EffectVisualType GetEffectVisualType() {return effectVisualType;}
-	public EffectMoveType GetEffectMoveType() {return effectMoveType;}
-	public string GetSoundEffectName() {return soundEffectName;}
-	public void SetSoundEffectName(string soundEffectName) { this.soundEffectName = soundEffectName; }
 	public string GetSkillDataText() {return skillDataText;}
     public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
     public List<TileStatusEffect.FixedElement> GetTileStatusEffectList() { return tileStatusEffectList; }
