@@ -23,8 +23,14 @@ public class SkillLocation {
 	public Tile CasterTile{
 		get { return casterTile; }
 	}
+	public Vector2 CasterPos{
+		get { return casterTile.GetTilePos (); }
+	}
 	public Tile TargetTile{
 		get { return targetTile; }
+	}
+	public Vector2 TargetPos{
+		get { return targetTile.GetTilePos (); }
 	}
 	public Direction Direction{
 		get { return direction; }

@@ -86,7 +86,7 @@ public class DamageCalculator
 		var damageList = new Dictionary<Unit, DamageInfo>();
 		ActiveSkill appliedSkill = chainInfo.GetSkill();
 		Unit caster = chainInfo.GetUnit();			
-		List<Tile> selectedTiles = chainInfo.GetTargetArea();
+		List<Tile> selectedTiles = chainInfo.GetSecondRange();
 		List<Unit> targets = GetTargetUnits(selectedTiles);
 
 		foreach (var target in targets)

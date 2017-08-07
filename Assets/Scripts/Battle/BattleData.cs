@@ -258,7 +258,7 @@ public class BattleData{
 		List<Unit> resultUnits = new List<Unit>();
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetTargetArea().Contains(tile))
+			if (chainInfo.GetSecondRange().Contains(tile))
 			{
 				resultUnits.Add(chainInfo.GetUnit());
 			}

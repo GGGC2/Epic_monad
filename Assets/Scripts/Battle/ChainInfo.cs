@@ -1,43 +1,43 @@
 ﻿using UnityEngine;
+using Enums;
 using System.Collections;
 using System.Collections.Generic;
 
 public class ChainInfo {
 
-	// 체인에 필요한 정보?
-	// 시전자, 중심, 영역, 시전스킬 + 경로형 여부, 경로범위
+	// 체인에 필요한 정보
+	// 시전자, 시전스킬, 위치정보
 	Unit unit;
-	Tile centerTile;
-	List<Tile> targetArea;
-	List<Tile> firstRange;
 	ActiveSkill skill;
+	SkillLocation skillLocation;
 
-	List<Tile> routeArea;
-
-	public ChainInfo (Unit unit, Tile centerTile, List<Tile> secondRange, ActiveSkill skill, List<Tile> firstRange)
+	public ChainInfo (Unit unit, ActiveSkill skill, SkillLocation skillLocation)
 	{
 		this.unit = unit;
-		this.centerTile = centerTile;
-		this.targetArea = secondRange;
 		this.skill = skill;
-
-		this.firstRange = firstRange;
+		this.skillLocation = skillLocation;
 	}
-	
-	public Unit GetUnit() {	return unit;	}
-	public Tile GetCenterTile() {	return centerTile;	}
-	public List<Tile> GetTargetArea() {	return targetArea;	}
+
+	public SkillLocation GetSkillLocation(){
+		return skillLocation;
+	}
+	public Unit GetUnit() {	 return unit;	}
+	public List<Tile> GetFirstRange() {	
+		return skill.GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
+	}
+	public List<Tile> GetSecondRange() {
+		return skill.GetTilesInSecondRange (skillLocation.TargetTile, skillLocation.Direction);	
+	}
 	public ActiveSkill GetSkill() {	return skill;	}
-	public bool IsRouteType() {	return skill.GetSkillType() == Enums.SkillType.Route;	}
+	public bool IsRouteType() {	return skill.GetSkillType() == SkillType.Route;	}
 	public List<Tile> GetRouteArea()
 	{
-		if (!IsRouteType())
-		{
-			Debug.LogError("Invaild access - not route type skill");
-			return new List<Tile>();
+		if (!IsRouteType ()) {
+			Debug.LogError ("Invaild access - not route type skill");
+			return new List<Tile> ();
 		}
 		else
-			return firstRange;
+			return GetFirstRange();
 	}
 	
 	public bool Overlapped(List<Tile> anotherTargetArea)
@@ -50,7 +50,7 @@ public class ChainInfo {
 		}
 		
 		List<Unit> targets = new List<Unit>();
-		foreach (var targetTile in targetArea)
+		foreach (var targetTile in GetSecondRange())
 		{
 			if (targetTile.IsUnitOnTile())
 				targets.Add(targetTile.GetUnitOnTile());

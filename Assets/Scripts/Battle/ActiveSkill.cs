@@ -126,8 +126,10 @@ public class ActiveSkill : Skill{
 		if (skillType == SkillType.Route) {
 			firstRange = TileManager.GetRouteTiles(firstRange);
 		}
-
 		return firstRange;
+	}
+	public List<Tile> GetTilesInFirstRange(Tile casterTile, Direction direction) {
+		return GetTilesInFirstRange (casterTile.GetTilePos (), direction);
 	}
 	public Tile GetRealTargetTileForAI(Vector2 casterPos, Direction direction, Tile targetTile=null){	
 		if (skillType == SkillType.Route) {
@@ -290,7 +292,7 @@ public class ActiveSkill : Skill{
 		List<Tile> tilesInSkillRange = new List<Tile> ();
 		tilesInSkillRange.Add (skillLocation.TargetTile);
 		List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-		yield return Battle.Turn.SkillAndChainStates.ApplyChain (battleData, skillLocation.TargetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(unit.GetPosition(), skillLocation.Direction));
+		yield return Battle.Turn.SkillAndChainStates.ApplyChain (battleData, skillLocation.TargetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(skillLocation.CasterTile, skillLocation.Direction));
 
 		BattleManager.MoveCameraToUnit (unit);
 		HideSkillNamePanelUI ();
