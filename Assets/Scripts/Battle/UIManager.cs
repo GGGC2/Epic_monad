@@ -169,12 +169,12 @@ public class UIManager : MonoBehaviour
 		skillUI.SetActive(false);
 	}
 
-	public void SetSkillCheckAP(Unit selectedUnit, ActiveSkill selectedSkill)
+	public void SetSkillCheckAP(Casting casting)
 	{
 		skillCheckUI.gameObject.SetActive(true);
-		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);
+		int requireAP = casting.RequireAP;
 		string newAPText = "소모 AP : " + requireAP + "\n" +
-			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - requireAP);
+			"잔여 AP : " + (casting.Caster.GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 

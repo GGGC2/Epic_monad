@@ -235,9 +235,9 @@ namespace Battle.Turn {
                 Debug.Log("\\------- Damage preview -------/");
 
 				bool isApplyPossible = SkillLogicFactory.Get(skill).CheckApplyPossible(caster, secondRange);
-                bool isChainPossible = CheckChainPossible(battleData);
+                bool isChainPossible = CheckChainPossible(battleData, casting);
                 battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
-                battleData.uiManager.SetSkillCheckAP(caster, skill);
+                battleData.uiManager.SetSkillCheckAP(casting);
 
                 battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
@@ -307,19 +307,19 @@ namespace Battle.Turn {
             yield return null;
         }
 
-        private static bool CheckChainPossible(BattleData battleData) {
+		private static bool CheckChainPossible(BattleData battleData, Casting casting) {
 			if (GameData.SceneData.stageNumber < Setting.chainOpenStage)
 				return false;
 
+			Unit caster = casting.Caster;
+			ActiveSkill skill = casting.Skill;
+
 			// 스킬 타입으로 체크. 공격/약화 스킬만 체인을 걸 수 있음.
-			if (battleData.SelectedSkill.IsChainable () == false)
+			if (skill.IsChainable () == false)
 				return false;
 
-            Unit caster = battleData.selectedUnit;
-
-            // AP 조건으로 체크.
-			//FIXME : 조건이 이해 안 가는데 주석 달아주세요
-            int requireAP = caster.GetActualRequireSkillAP(battleData.SelectedSkill);
+			// AP 조건 - 연계 대기해서 AP를 소모한 후에도 자신이 AP가 가장 높은 유닛일 경우 연계 불가
+			int requireAP = casting.RequireAP;
             int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
 			bool isAPConditionPossible = false;
