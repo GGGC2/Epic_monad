@@ -265,7 +265,9 @@ public class StatusEffect {
                     GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
                     GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
-
+    public string GetExplanation() {
+        return "";
+    }
     public void CalculateAmount(int i, float statusEffectVar) {
         flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
         if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();
