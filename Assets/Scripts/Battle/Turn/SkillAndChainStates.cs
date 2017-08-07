@@ -276,13 +276,13 @@ namespace Battle.Turn {
                     // 체인이 가능한 스킬일 경우. 체인 발동.
                     // 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
                     // 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
-					if (selectedSkill.Chainable()) {
+					if (selectedSkill.IsChainable()) {
 						yield return ApplyChain(battleData, targetTile, secondRange, realEffectRange, firstRange);
                     }
                     // 체인이 불가능한 스킬일 경우, 그냥 발동.
                     else {
                         battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, secondRange, realEffectRange, false, 1));
+						yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, secondRange, realEffectRange, 1));
 					}
 
 					BattleManager.MoveCameraToUnit(caster);
@@ -315,7 +315,7 @@ namespace Battle.Turn {
 				return false;
 
 			// 스킬 타입으로 체크. 공격/약화 스킬만 체인을 걸 수 있음.
-			if (battleData.SelectedSkill.Chainable () == false)
+			if (battleData.SelectedSkill.IsChainable () == false)
 				return false;
 
             Unit caster = battleData.selectedUnit;
@@ -371,13 +371,13 @@ namespace Battle.Turn {
 					BattleManager.MoveCameraToTile (focusedTile);
 					battleData.currentState = CurrentState.ApplySkill;
 					chainInfo.GetUnit ().HideChainIcon ();
-					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetTargetArea (), chainInfo.GetTargetArea (), true, chainCombo));
+					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetTargetArea (), chainInfo.GetTargetArea (), chainCombo));
 				}
 				battleData.selectedUnit.DisableChainText ();
 			}
 			//실제 데미지/효과가 가해지지 않는 경우(이펙트만 나옴) 연계가 발동하지 않고 그냥 그 스킬만 발동시킨다
 			else {
-				yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, secondRange, realEffectRange, false, 1));
+				yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, secondRange, realEffectRange, 1));
 			}
         }
 
@@ -405,7 +405,7 @@ namespace Battle.Turn {
             yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
 
-		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, ActiveSkill appliedSkill, List<Tile> secondRange, List<Tile> realEffectRange, bool isChainable, int chainCombo) {
+		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, ActiveSkill skill, List<Tile> secondRange, List<Tile> realEffectRange, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
 			List<Unit> targets = GetUnitsOnTiles(realEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
@@ -414,19 +414,18 @@ namespace Battle.Turn {
             //realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
             
             if (caster == battleData.selectedUnit) {
-                int requireAP = caster.GetActualRequireSkillAP(appliedSkill);
+                int requireAP = caster.GetActualRequireSkillAP(skill);
                 caster.UseActivityPoint(requireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
                 // 스킬 쿨다운 기록
-                if (appliedSkill.GetCooldown() > 0)
-                    caster.GetUsedSkillDict().Add(appliedSkill.GetName(), appliedSkill.GetCooldown());
+                if (skill.GetCooldown() > 0)
+                    caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
             }
 
-            if (isChainable)
+			if (skill.IsChainable())
                 ChainList.RemoveChainsFromUnit(caster);
 
-			appliedSkill.ApplySoundEffect();
-
-			yield return battleManager.StartCoroutine(appliedSkill.ApplyVisualEffect (caster, secondRange));
+			skill.ApplySoundEffect();
+			yield return battleManager.StartCoroutine(skill.ApplyVisualEffect (caster, secondRange));
             
 			foreach (var tile in realEffectRange) {
                 if (tile.IsUnitOnTile()) {
@@ -436,33 +435,34 @@ namespace Battle.Turn {
                     if (target.GetComponent<AIData>() != null) 
                         target.GetComponent<AIData>().SetActiveByExternalFactor();
 
-                    if (!isChainable || !CheckEvasion(battleData, caster, target)) {
-						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, realEffectRange, target, targets.Count);
+					//공격/약화계 스킬이면 회피 체크를 하고 아니라면 무조건 효과를 가한다
+					if (!skill.IsChainable() || !CheckEvasion(battleData, caster, target)) {
+						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), skill, caster, realEffectRange, target, targets.Count);
                         // 데미지 적용
-                        if (SkillLogicFactory.Get(appliedSkill).MayDisPlayDamageCoroutine(skillInstanceData)) {
-                            if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
+                        if (SkillLogicFactory.Get(skill).MayDisPlayDamageCoroutine(skillInstanceData)) {
+                            if (skill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                                 yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
                             } else {
                                 DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
                                 float amount = skillInstanceData.GetDamage().resultDamage;
-                                if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
+                                if (skill.GetSkillApplyType() == SkillApplyType.DamageAP) {
                                     yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
                                     battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-                                } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+                                } else if (skill.GetSkillApplyType() == SkillApplyType.HealHealth) {
                                     yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
                                     yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerApplyingHeal(skillInstanceData));
-                                } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
+                                } else if (skill.GetSkillApplyType() == SkillApplyType.HealAP) {
                                     yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
                                 }
                             }
                         }
 
                         // 효과 외의 부가 액션 (AP 감소 등)
-                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(appliedSkill).ActionInDamageRoutine(skillInstanceData));
+                        yield return battleManager.StartCoroutine(SkillLogicFactory.Get(skill).ActionInDamageRoutine(skillInstanceData));
                         yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).ActionInDamageRoutine(skillInstanceData));
 
                         // 기술의 상태이상은 기술이 적용된 후에 붙인다.
-                        if (appliedSkill.GetStatusEffectList().Count > 0) {
+                        if (skill.GetStatusEffectList().Count > 0) {
                             bool ignored = false;
                             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                                 ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
@@ -472,7 +472,7 @@ namespace Battle.Turn {
                                 }
                             }
                             if(!ignored)
-								StatusEffector.AttachStatusEffect(caster, appliedSkill, target, realEffectRange);
+								StatusEffector.AttachStatusEffect(caster, skill, target, realEffectRange);
                         }
                     }
                     caster.ActiveFalseAllBonusText();
@@ -484,7 +484,7 @@ namespace Battle.Turn {
 
                     target.UpdateHealthViewer();
                 }
-                StatusEffector.AttachStatusEffect(caster, appliedSkill, tile);
+                StatusEffector.AttachStatusEffect(caster, skill, tile);
             }
 
             // 기술 사용 시 적용되는 특성
@@ -497,14 +497,14 @@ namespace Battle.Turn {
             caster.SetHasUsedSkillThisTurn(true);
 
             // 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
-            if (isChainable) {
-                List<StatusEffect> statusEffectsToRemove = caster.GetStatusEffectList().FindAll(x => (x.GetIsOnce() &&
-                                                                                    (x.IsOfType(StatusEffectType.PowerChange) ||
-                                                                                    x.IsOfType(StatusEffectType.DamageChange) ||
-                                                                                    x.IsOfType(StatusEffectType.Smite))));
-                foreach(StatusEffect statusEffect in statusEffectsToRemove)
-                    caster.RemoveStatusEffect(statusEffect);
-            }
+			if (skill.GetSkillApplyType () == SkillApplyType.DamageHealth) {
+				List<StatusEffect> statusEffectsToRemove = caster.GetStatusEffectList ().FindAll (x => (x.GetIsOnce () &&
+				                                                       (x.IsOfType (StatusEffectType.PowerChange) ||
+				                                                       x.IsOfType (StatusEffectType.DamageChange) ||
+				                                                       x.IsOfType (StatusEffectType.Smite))));
+				foreach (StatusEffect statusEffect in statusEffectsToRemove)
+					caster.RemoveStatusEffect (statusEffect);
+			}
             battleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
             yield return new WaitForSeconds(0.5f);
@@ -534,7 +534,7 @@ namespace Battle.Turn {
         private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, BattleData battleData, int chainCombo, bool isLastTarget) {
             Unit unitInChain = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
-            ActiveSkill appliedSkill = skillInstanceData.GetSkill();
+            ActiveSkill skill = skillInstanceData.GetSkill();
             int targetCount = skillInstanceData.GetTargetCount();
 
             DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);

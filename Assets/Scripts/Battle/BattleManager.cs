@@ -116,6 +116,8 @@ public class BattleManager : MonoBehaviour{
 
 	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+		if (unit == null)
+			return;
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
 	}
 	public void StartUnitTurn(Unit unit){
@@ -234,21 +236,20 @@ public class BattleManager : MonoBehaviour{
 
 	public static void MoveCameraToUnit(Unit unit)
 	{
-		Camera.main.transform.position = new Vector3(
-				unit.gameObject.transform.position.x,
-				unit.gameObject.transform.position.y,
-				-10);
+		MoveCameraToObject (unit);
 	}
-
 	public static void MoveCameraToTile(Tile tile)
 	{
-		Camera.main.transform.position = new Vector3(
-				tile.gameObject.transform.position.x,
-				tile.gameObject.transform.position.y,
-				-10);	
+		MoveCameraToObject (tile);
 	}
-
-	public static void MoveCameraToPosition(Vector2 position)
+	private static void MoveCameraToObject(MonoBehaviour obj)
+	{
+		if (obj == null)
+			return;
+		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
+		MoveCameraToPosition (objPos);
+	}
+	private static void MoveCameraToPosition(Vector2 position)
 	{
 		Camera.main.transform.position = new Vector3(
 				position.x,
@@ -317,7 +318,7 @@ public class BattleManager : MonoBehaviour{
 
 	public void MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData battleData, Unit unit){
 		MoveCameraToUnit(unit);
-		battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)unit.gameObject.transform.position);
+		battleData.uiManager.SetMovedUICanvasOnUnitAsCenter(unit);
 		battleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}
 	private void OnOffCommandButtons(){

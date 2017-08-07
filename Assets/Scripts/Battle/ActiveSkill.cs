@@ -281,7 +281,7 @@ public class ActiveSkill : Skill{
 		}
 	}
 
-	public bool Chainable(){
+	public bool IsChainable(){
 		return skillApplyType == SkillApplyType.DamageHealth
 			|| skillApplyType == SkillApplyType.Debuff;
 	}

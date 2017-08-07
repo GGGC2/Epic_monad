@@ -94,7 +94,7 @@ namespace Battle.Turn{
 
 				// 카메라를 옮기고
 				BattleManager.MoveCameraToTile(destTile);
-				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
+				battleData.uiManager.SetMovedUICanvasOnTileAsCenter(destTile);
 				// 클릭 대기
 
 				battleData.uiManager.EnableCancelButtonUI();

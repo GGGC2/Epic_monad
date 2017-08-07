@@ -196,6 +196,9 @@ namespace Battle.Turn{
 			while (true) {
 				yield return battleManager.BeforeActCommonAct ();
 
+				if (unit == null)
+					break;
+
 				int selectedSkillIndex = 1;
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = battleData.SelectedSkill;

@@ -238,6 +238,8 @@ public class UIManager : MonoBehaviour
 
 	public void SetSelectedUnitViewerUI(Unit selectedUnit)
 	{
+		if (selectedUnit == null)
+			return;
 		selectedUnitViewerUI.SetActive(true);
 		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}
@@ -289,11 +291,27 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Set(skillName);
 	}
 
-	public void SetMovedUICanvasOnCenter(Vector2 position)
+	public void SetMovedUICanvasOnUnitAsCenter(Unit unit)
+	{
+		SetMovedUICanvasOnObjectAsCenter (unit);
+	}
+	public void SetMovedUICanvasOnTileAsCenter(Tile tile)
+	{
+		SetMovedUICanvasOnObjectAsCenter (tile);
+	}
+	private void SetMovedUICanvasOnObjectAsCenter(MonoBehaviour obj)
+	{
+		if (obj == null)
+			return;
+		Vector2 position = (Vector2)obj.gameObject.transform.position;
+		SetMovedUICanvasOnCenter (position);
+	}
+	private void SetMovedUICanvasOnCenter(Vector2 position)
 	{
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
 		movedUICanvas.transform.position = newPosition;
 	}
+
 
 	public void AppendNotImplementedLog(String text)
 	{
