@@ -25,10 +25,10 @@ public class ChainText : MonoBehaviour {
 		{
 			// 현재 턴인 유닛에게 강조표시.
 			if (!chainInfo.GetSecondRange().Any(k => k.IsUnitOnTile()))
-				newText += chainInfo.GetUnit().GetName() + " >> \n";
+				newText += chainInfo.Caster.GetName() + " >> \n";
 			else
 			{
-				string unitName = chainInfo.GetUnit().GetName();
+				string unitName = chainInfo.Caster.GetName();
 				foreach (var tileObject in chainInfo.GetSecondRange())
 				{
 					if (tileObject.GetComponent<Tile>().IsUnitOnTile())
