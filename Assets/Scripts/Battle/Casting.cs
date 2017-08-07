@@ -20,6 +20,9 @@ public class Casting {
 	public SkillLocation Location{
 		get { return location; }
 	}
+	public List<Tile> FirstRange{
+		get { return Skill.GetTilesInFirstRange (Location); }
+	}
 	public List<Tile> SecondRange{
 		get { return Skill.GetTilesInSecondRange (Location); }
 	}
