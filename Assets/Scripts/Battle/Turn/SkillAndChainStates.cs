@@ -279,17 +279,8 @@ namespace Battle.Turn {
                     }
 
                     battleData.skillApplyCommand = SkillApplyCommand.Waiting;
-                    // 체인이 가능한 스킬일 경우. 체인 발동.
-                    // 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
-                    // 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
-					if (skill.IsChainable()) {
-						yield return ApplyChain(casting);
-                    }
-                    // 체인이 불가능한 스킬일 경우, 그냥 발동.
-                    else {
-                        battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(casting.Cast(1));
-					}
+
+					yield return ApplyChain(casting);
 
 					BattleManager.MoveCameraToUnit(caster);
 					battleData.currentState = CurrentState.FocusToUnit;
@@ -353,36 +344,23 @@ namespace Battle.Turn {
 				return false;
         }
 
-
-		public static IEnumerator ApplyChain ( Casting casting) {
+		public static IEnumerator ApplyChain (Casting casting) {
             BattleManager battleManager = battleData.battleManager;
 			Unit caster = casting.Caster;
-			List<Tile> secondRange = casting.SecondRange;
-			List<Tile> realEffectRange = casting.RealEffectRange;
 
-			//실제 데미지/효과가 가해지지는 경우에만 연계가 발동
-			if (realEffectRange.Count != 0) {
-				// 자기 자신을 체인 리스트에 추가.
-				ChainList.AddChains (casting);
+			// 체인 체크, 순서대로 공격.
+			List<Chain> allVaildChain = ChainList.GetAllChainTriggered (casting);
+			int chainCombo = allVaildChain.Count;
 
-				// 체인 체크, 순서대로 공격.
-				List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea (caster, secondRange);
-				int chainCombo = allVaildChainInfo.Count;
+			caster.PrintChainBonus (chainCombo);
 
-				caster.PrintChainBonus (chainCombo);
-
-				foreach (var chainInfo in allVaildChainInfo) {
-					Tile focusedTile = chainInfo.GetSecondRange () [0];
-					BattleManager.MoveCameraToTile (focusedTile);
-					battleData.currentState = CurrentState.ApplySkill;
-					chainInfo.Caster.HideChainIcon ();
-					yield return battleManager.StartCoroutine (chainInfo.Casting.Cast(chainCombo));
-				}
+			foreach (var chain in allVaildChain) {
+				Tile focusedTile = chain.GetSecondRange () [0];
+				BattleManager.MoveCameraToTile (focusedTile);
+				battleData.currentState = CurrentState.ApplySkill;
+				chain.Caster.HideChainIcon ();
+				yield return battleManager.StartCoroutine (chain.Casting.Cast (chainCombo));
 				caster.DisableChainText ();
-			}
-			//실제 데미지/효과가 가해지지 않는 경우(이펙트만 나옴) 연계가 발동하지 않고 그냥 그 스킬만 발동시킨다
-			else {
-				yield return battleManager.StartCoroutine(casting.Cast(1));
 			}
         }
 

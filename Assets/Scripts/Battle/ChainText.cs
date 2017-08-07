@@ -17,19 +17,20 @@ public class ChainText : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		/*
 		string newText = "";
 
 		string titleText = "[Chain List]\n";
 		newText += titleText;
-		foreach (var chainInfo in battleManager.GetChainList())
+		foreach (var chain in battleManager.GetChainList())
 		{
 			// 현재 턴인 유닛에게 강조표시.
-			if (!chainInfo.GetSecondRange().Any(k => k.IsUnitOnTile()))
-				newText += chainInfo.Caster.GetName() + " >> \n";
+			if (!chain.GetSecondRange().Any(k => k.IsUnitOnTile()))
+				newText += chain.Caster.GetName() + " >> \n";
 			else
 			{
-				string unitName = chainInfo.Caster.GetName();
-				foreach (var tileObject in chainInfo.GetSecondRange())
+				string unitName = chain.Caster.GetName();
+				foreach (var tileObject in chain.GetSecondRange())
 				{
 					if (tileObject.GetComponent<Tile>().IsUnitOnTile())
 					{
@@ -39,5 +40,6 @@ public class ChainText : MonoBehaviour {
 			}
 		}
 		text.text = newText;
+		*/
 	}
 }

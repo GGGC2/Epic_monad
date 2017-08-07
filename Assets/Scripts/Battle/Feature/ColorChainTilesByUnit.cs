@@ -12,13 +12,13 @@ namespace Battle.Feature
 			BattleManager battleManager = GameObject.FindObjectOfType<BattleManager>();
 			BattleData battleData = battleManager.battleData;
 
-			ChainInfo chainInfo = battleData.GetChainInfo(unit);
-			if (chainInfo == null)
+			Chain chain = battleData.GetChain(unit);
+			if (chain == null)
 			{
 				return;
 			}
 
-			List<Tile> targetArea = chainInfo.GetSecondRange();
+			List<Tile> targetArea = chain.GetSecondRange();
 			battleData.tileManager.PaintTiles(targetArea, TileColor.Yellow);
 		}
 
@@ -27,13 +27,13 @@ namespace Battle.Feature
 			BattleManager battleManager = GameObject.FindObjectOfType<BattleManager>();
 			BattleData battleData = battleManager.battleData;
 
-			ChainInfo chainInfo = battleData.GetChainInfo(unit);
-			if (chainInfo == null)
+			Chain chain = battleData.GetChain(unit);
+			if (chain == null)
 			{
 				return;
 			}
 
-			List<Tile> targetArea = chainInfo.GetSecondRange();
+			List<Tile> targetArea = chain.GetSecondRange();
 			battleData.tileManager.DepaintTiles(targetArea, TileColor.Yellow);
 		}
 	}
