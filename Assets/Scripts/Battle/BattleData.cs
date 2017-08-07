@@ -245,7 +245,7 @@ public class BattleData{
 	{
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetUnit() == unit)
+			if (chainInfo.Caster == unit)
 			{
 				return chainInfo;
 			}
@@ -260,7 +260,7 @@ public class BattleData{
 		{
 			if (chainInfo.GetSecondRange().Contains(tile))
 			{
-				resultUnits.Add(chainInfo.GetUnit());
+				resultUnits.Add(chainInfo.Caster);
 			}
 		}
 

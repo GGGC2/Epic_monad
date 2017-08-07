@@ -5,14 +5,14 @@ using System.Collections.Generic;
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
-	public static void AddChains(Unit unit, ActiveSkill skill, SkillLocation skillLocation)
+	public static void AddChains(Casting casting)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(unit, skill, skillLocation);
+		ChainInfo newChainInfo = new ChainInfo(casting);
 		chainList.Add(newChainInfo);
 
-		SetChargeEffectToUnit(unit);
+		SetChargeEffectToUnit(casting.Caster);
 	}
 
 	static void SetChargeEffectToUnit(Unit unit)
@@ -26,7 +26,7 @@ public class ChainList : MonoBehaviour {
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo deleteChainInfo = chainList.Find(x => x.GetUnit() == unit);
+		ChainInfo deleteChainInfo = chainList.Find(x => x.Caster == unit);
         
 	    chainList.Remove(deleteChainInfo);
 
@@ -47,9 +47,9 @@ public class ChainList : MonoBehaviour {
 		foreach (var chainInfo in chainList)
 		{
 			// 공격범위 안의 유닛이 서로 겹치거나, 체인을 건 본인일 경우 추가.
-			if (((unit.GetSide() == chainInfo.GetUnit().GetSide())
+			if (((unit.GetSide() == chainInfo.Caster.GetSide())
 				 && (chainInfo.Overlapped(targetArea)))
-				 || (chainInfo.GetUnit() == unit))
+				 || (chainInfo.Caster == unit))
 			{
 				allChainInfoToTargetArea.Add(chainInfo);
 			}
@@ -66,9 +66,9 @@ public class ChainList : MonoBehaviour {
 		List<Unit> units = new List<Unit>();
 		foreach (var chainInfo in chainInfoList)
 		{
-			if (!units.Contains(chainInfo.GetUnit()));
+			if (!units.Contains(chainInfo.Caster));
 			{
-				units.Add(chainInfo.GetUnit());
+				units.Add(chainInfo.Caster);
 			}
 		}
 		return units;
