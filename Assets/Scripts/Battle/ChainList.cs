@@ -5,26 +5,6 @@ using System.Collections.Generic;
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
-	// *주의 : SkillAndChainStates.cs에서 같은 이름의 함수를 수정할 것!!
-	public static List<Tile> GetRouteTiles(List<Tile> tiles)
-	{
-		List<Tile> newRouteTiles = new List<Tile>();
-		foreach (var tile in tiles)
-		{
-			// 타일 단차에 의한 부분(미구현)
-			// 즉시 탐색을 종료한다.
-			// break;
-			
-			// 첫 유닛을 만난 경우
-			// 이번 타일을 마지막으로 종료한다.
-			newRouteTiles.Add(tile);
-			if (tile.IsUnitOnTile())
-				break;
-		}
-
-		return newRouteTiles;
-	}
-
 	// 체인리스트에서 경로형 기술 범위 재설정. 이동 후, 스킬시전 후(유닛 사망, 넉백, 풀링 등) 꼭 호출해줄 것
 	public static List<ChainInfo> RefreshChainInfo(List<ChainInfo> chainList)
 	{
@@ -35,7 +15,7 @@ public class ChainList : MonoBehaviour {
 		{
 			if (chainInfo.IsRouteType())
 			{
-				List<Tile> newRouteTiles = Battle.Turn.SkillAndChainStates.GetRouteTiles(chainInfo.GetRouteArea());
+				List<Tile> newRouteTiles = TileManager.GetRouteTiles(chainInfo.GetRouteArea());
 				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1];
 				ActiveSkill skill = chainInfo.GetSkill();
 				Unit unit = chainInfo.GetUnit();

@@ -43,6 +43,7 @@ public class BattleManager : MonoBehaviour{
 
 		AI.SetBattleManager (this);
 		AI.SetBattleData (battleData);
+		ActiveSkill.SetBattleData (battleData);
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;

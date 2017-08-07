@@ -5,7 +5,6 @@ using System;
 using UnityEngine;
 
 public class ActiveSkill : Skill{
-
 	// base info.
 	int requireAP;
 	int cooldown;
@@ -115,7 +114,61 @@ public class ActiveSkill : Skill{
 		this.secondTextValueType = secondTextValueType;
 		this.secondTextValueCoef = secondTextValueCoef;
 	}*/
-      
+	public List<Tile> GetTilesInFirstRange(Vector2 casterPos, Direction direction) {
+		var firstRange = battleData.tileManager.GetTilesInRange (GetFirstRangeForm (),
+			                 casterPos,
+			                 GetFirstMinReach (),
+			                 GetFirstMaxReach (),
+			                 GetFirstWidth (),
+			                 direction);
+
+		//투사체 스킬이면 직선경로상에서 유닛이 가로막은 지점까지를 1차 범위로 함. 범위 끝까지 가로막은 유닛이 없으면 직선 전체가 1차 범위
+		if (GetSkillType() == SkillType.Route) {
+			firstRange = TileManager.GetRouteTiles(firstRange);
+		}
+
+		return firstRange;
+	}
+	public Tile GetRealTargetTileForAI(Vector2 casterPos, Direction direction, Tile targetTile=null){	
+		if (GetSkillType () == SkillType.Route) {
+			List<Tile> firstRange = GetTilesInFirstRange (casterPos, direction);
+			Tile routeEnd = TileManager.GetRouteEndForAI (firstRange);
+			return routeEnd;
+		}
+		return targetTile;
+	}
+	public Tile GetRealTargetTileForPC(Vector2 casterPos, Direction direction, Tile targetTile=null){	
+		if (GetSkillType () == SkillType.Route) {
+			List<Tile> firstRange = GetTilesInFirstRange (casterPos, direction);
+			Tile routeEnd = TileManager.GetRouteEndForPC (firstRange);
+			return routeEnd;
+		}
+		return targetTile;
+	}
+	public List<Tile> GetTilesInSecondRange(Tile targetTile, Direction direction)
+	{
+		List<Tile> secondRange = battleData.tileManager.GetTilesInRange (GetSecondRangeForm (),
+			                           targetTile.GetTilePos (),
+			                           GetSecondMinReach (),
+			                           GetSecondMaxReach (),
+			                           GetSecondWidth (),
+			                           direction);
+		if (GetSkillType() == SkillType.Auto)
+		{
+			secondRange.Remove(targetTile);
+		}
+		return secondRange;
+	}
+	public List<Tile> GetTilesInRealEffectRange(Tile targetTile, List<Tile> secondRange){
+		List<Tile> tilesInRealEffectRange =secondRange;
+		//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
+		if (battleData.SelectedSkill.GetSkillType() == SkillType.Route) {
+			if (!targetTile.IsUnitOnTile ())
+				tilesInRealEffectRange = new List<Tile>();
+		}
+		return tilesInRealEffectRange;
+	}
+
     public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
     {
         StatusEffect.FixedElement previousStatusEffect = null;
@@ -149,6 +202,12 @@ public class ActiveSkill : Skill{
             previousStatusEffect = statusEffectToAdd;
         }
     }
+
+	private static BattleData battleData;
+	public static void SetBattleData(BattleData battleDataInstance){
+		battleData=battleDataInstance;
+	}
+
     public string GetOwner(){return owner;}
 	public int GetColumn() { return column; }
 	public string GetName() {return korName;}

@@ -19,11 +19,11 @@ namespace Battle.Turn{
 		}
 			
 		//AI 입장에서 다른 유닛이 적으로 인식되는지에 대한 함수이기 때문에 AI 부분에서만 써야 한다(은신 스킬 때문)
-		//왼쪽 unit1에는 무조건 AI 유닛이 들어가야 하고(unit1의 입장에서 보는 것임) unit2는 상관 없음
+		//왼쪽 unit1에는 무조건 AI 유닛이 들어가야 하고(unit1의 입장에서  unit2를 보는 것임) unit2엔 아무 유닛이나 들어감
 		public static bool IsSecondUnitEnemyToFirstUnit(Unit unit1,Unit unit2){
 			//후에 제3세력 등장하면 조건이 바뀔 수 있음
 
-			//unit2가 '은신' 효과(아직 미구현인 그레네브 스킬 효과)를 갖고 있는지 여기에서 확인해서 적용해야 할 것 (AI 인unit1에게 적으로 인식되지 않음)
+			//unit2가 '은신' 효과를 갖고 있으면 AI인 unit1에게 적으로 인식되지 않는다
 			return unit2.GetSide () == GetEnemySide (unit1) && !unit2.HasStatusEffect(StatusEffectType.Stealth);
 		}
 		public static Vector2 FindNearestEnemy(List<Tile> movableTiles, List<Unit> units, Unit mainUnit){
@@ -231,7 +231,7 @@ namespace Battle.Turn{
 					}
 				}
 
-				List<Tile> tilesInSkillRange = GetTilesInSkillRange(targetTile, unit);
+				List<Tile> tilesInSkillRange = skill.GetTilesInSecondRange (targetTile, direction);
 				//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 하나 AI는 그 경우 아예 스킬을 쓰지 않므로 그런 경우가 없음
 				List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
@@ -260,7 +260,7 @@ namespace Battle.Turn{
 			List<Tile> tilesInSkillRange = new List<Tile> ();
 			tilesInSkillRange.Add (targetTile);
 			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange (unit, skill));
+			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, skill.GetTilesInFirstRange(unit.GetPosition(),direction));
 
 			CameraFocusToUnit(unit);
 			battleData.uiManager.ResetSkillNamePanelUI ();
@@ -372,59 +372,58 @@ namespace Battle.Turn{
 
 			Dictionary<Direction, List<Tile>> attackAbleTilesGroups = new Dictionary<Direction, List<Tile>> ();
 
-			//투사체 스킬이면 4방향 직선경로상에서 유닛이 가로막은 지점들을 castingTiles로 함.
-			//그리고 각 castingTile에서 2차범위 적용해서 각 범위를 attackAbleTilesGroups에 넣는다
+			//투사체 스킬이면 4방향 직선경로상에서 유닛이 가로막은 지점들을 targetTiles로 함.
+			//그리고 각 targetTile에서 2차범위 적용해서 각 범위를 attackAbleTilesGroups에 넣는다
 			if (skillType == SkillType.Route) {
-				Dictionary<Direction, Tile> castingTiles = new Dictionary<Direction, Tile> ();
+				Dictionary<Direction, Tile> targetTiles = new Dictionary<Direction, Tile> ();
 				Vector2 casterPos = casterTile.GetTilePos ();
 
 				Tile routeEnd;
 				Direction direction;
 
 				direction= Direction.LeftDown;
-				routeEnd = GetRouteSkillCastingTile (casterPos, skill, direction);
+				routeEnd = skill.GetRealTargetTileForAI (casterPos, direction);
 				if (routeEnd != null)
-					castingTiles [direction] = routeEnd;
+					targetTiles [direction] = routeEnd;
 				direction = Direction.LeftUp;
-				routeEnd = GetRouteSkillCastingTile (casterPos, skill, direction);
+				routeEnd = skill.GetRealTargetTileForAI (casterPos, direction);
 				if (routeEnd != null)
-					castingTiles [direction] = routeEnd;
+					targetTiles [direction] = routeEnd;
 				direction = Direction.RightDown;
-				routeEnd = GetRouteSkillCastingTile (casterPos, skill, direction);
+				routeEnd = skill.GetRealTargetTileForAI (casterPos, direction);
 				if (routeEnd != null)
-					castingTiles [direction] = routeEnd;
+					targetTiles [direction] = routeEnd;
 				direction = Direction.RightUp;
-				routeEnd = GetRouteSkillCastingTile (casterPos, skill, direction);
+				routeEnd = skill.GetRealTargetTileForAI (casterPos, direction);
 				if (routeEnd != null)
-					castingTiles [direction] = routeEnd;
+					targetTiles [direction] = routeEnd;
 
-				foreach (var pair in castingTiles) {
+				foreach (var pair in targetTiles) {
 					direction = pair.Key;
-					Tile castingTile = pair.Value;
-					attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+					Tile targetTile = pair.Value;
+					attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 				}
 			}
-			//Auto 스킬은 시전자가 위치한 타일이 유일한 castingTile이며 네 방향의 범위를 각각 attackAbleTilesGroups에 넣는다
+			//Auto 스킬은 시전자가 위치한 타일이 유일한 targetTile이며 네 방향의 범위를 각각 attackAbleTilesGroups에 넣는다
 			else if (skillType == SkillType.Auto) {
-				Tile castingTile = casterTile;
+				Tile targetTile = casterTile;
 
 				Direction direction;
 				direction= Direction.LeftDown;
-				attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 				direction = Direction.LeftUp;
-				attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 				direction = Direction.RightDown;
-				attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 				direction = Direction.RightUp;
-				attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 			}
 			//skillType==SkillType.Self
 			//Self 스킬은 방향을 바꾸지 말고 써야 해서 시전자의 방향을 그대로 받아옴
 			else {
-				Tile castingTile = casterTile;
-
+				Tile targetTile = casterTile;
 				Direction direction = caster.GetDirection ();
-				attackAbleTilesGroups [direction] = GetSecondRangeTiles (castingTile, skill, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
 			}
 
 			Dictionary<Direction, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Direction, List<Tile>> ();
@@ -438,91 +437,29 @@ namespace Battle.Turn{
 
 			return attackAbleEnemyTilesGroups;
 		}
-		public static Tile GetRouteSkillCastingTile(Vector2 unitPos, ActiveSkill routeSkill, Direction direction){				
-			List<Tile> firstRange = battleData.tileManager.GetTilesInRange(routeSkill.GetFirstRangeForm(),
-				unitPos,
-				routeSkill.GetFirstMinReach(),
-				routeSkill.GetFirstMaxReach(),
-				routeSkill.GetFirstWidth(),
-				direction);
-			return SkillAndChainStates.GetRouteEnd(firstRange);
-		}
-		public static List<Tile> GetSecondRangeTiles(Tile targetTile, ActiveSkill skill, Direction direction){
-			return battleData.tileManager.GetTilesInRange (skill.GetSecondRangeForm (),
-				targetTile.GetTilePos (),
-				skill.GetSecondMinReach (),
-				skill.GetSecondMaxReach (),
-				skill.GetSecondWidth (),
-				direction);
-		}
-		public static List<Tile> GetFirstRangeTilesOfPointSkill(Tile casterTile, ActiveSkill skill){
-			//LeftDown을 넣은 이유는 point skill의 1차범위는 사방이 대칭적이기 때문에 암거나 집어넣어도 상관없어서
-			return battleData.tileManager.GetTilesInRange (skill.GetFirstRangeForm (),
-				casterTile.GetTilePos (),
-				skill.GetFirstMinReach (),
-				skill.GetFirstMaxReach (),
-				skill.GetFirstWidth (),
-				Direction.LeftDown);
-		}
 
 		public static Dictionary<Tile, List<Tile>> GetAttackableEnemyTilesOfPointSkill(Unit caster, Tile casterTile, ActiveSkill skill){
 			Dictionary<Tile, List<Tile>> attackAbleTilesGroups = new Dictionary<Tile, List<Tile>> ();
 
 			Vector2 casterPos = casterTile.GetTilePos ();
-			List<Tile> castingTiles = new List<Tile> ();
+			List<Tile> targetTiles = new List<Tile> ();
 
-			castingTiles = GetFirstRangeTilesOfPointSkill (casterTile, skill);
+			targetTiles = skill.GetTilesInFirstRange (casterPos, caster.GetDirection ());
 
-			foreach (Tile castingTile in castingTiles) {
-				//왜 Direction에 LeftDown을 넣냐면 Point(지정형) 스킬의 2차범위는 사방으로 대칭적이니까 아무거나 넣어도 됨
-				attackAbleTilesGroups [castingTile] = GetSecondRangeTiles (castingTile, skill, Direction.LeftDown);
+			foreach (Tile targetTile in targetTiles) {
+				attackAbleTilesGroups [targetTile] = skill.GetTilesInSecondRange (targetTile, caster.GetDirection ());
 			}
 
 			Dictionary<Tile, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Tile, List<Tile>> ();
 			foreach (var pair in attackAbleTilesGroups) {
-				Tile castingTile = pair.Key;
+				Tile targetTile = pair.Key;
 				List<Tile> tilesGroup = pair.Value;
 				List<Tile> enemyTilesGroup = AIUtil.FindEnemyTilesInTheseTiles (tilesGroup, caster);
 				if(enemyTilesGroup.Count != 0)
-					attackAbleEnemyTilesGroups [castingTile] = enemyTilesGroup;
+					attackAbleEnemyTilesGroups [targetTile] = enemyTilesGroup;
 			}
 
 			return attackAbleEnemyTilesGroups;
-		}
-
-		private static List<Tile> GetTilesInSkillRange(Tile targetTile, Unit selectedUnit = null)
-		{
-			ActiveSkill selectedSkill = battleData.SelectedSkill;
-			List<Tile> selectedTiles = battleData.tileManager.GetTilesInRange(selectedSkill.GetSecondRangeForm(),
-				targetTile.GetTilePos(),
-				selectedSkill.GetSecondMinReach(),
-				selectedSkill.GetSecondMaxReach(),
-				selectedSkill.GetSecondWidth(),
-				selectedUnit.GetDirection());
-			if (selectedSkill.GetSkillType() == SkillType.Auto)
-			{
-				if (selectedUnit != null)
-				{
-					selectedTiles.Remove(battleData.tileManager.GetTile(selectedUnit.GetPosition()));
-				}
-				else
-				{
-					selectedTiles.Remove(targetTile);
-				}
-			}
-			return selectedTiles;
-		}
-
-		private static List<Tile> GetTilesInFirstRange(Unit unit, ActiveSkill skill)
-		{
-			var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-				unit.GetPosition(),
-				battleData.SelectedSkill.GetFirstMinReach(),
-				battleData.SelectedSkill.GetFirstMaxReach(),
-				battleData.SelectedSkill.GetFirstWidth(),
-				unit.GetDirection());
-
-			return firstRange;
 		}
 	}
 
@@ -568,10 +505,16 @@ namespace Battle.Turn{
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				//FIXME : 수정 계획...
 
-				Tile rightDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
-				Tile leftUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftUp);
-				Tile rightUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightUp);
-				Tile leftDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftDown);
+				Vector2 casterPos = currPos;
+				Direction direction;
+				direction = Direction.RightDown;
+				Tile rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.LeftUp;
+				Tile leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.RightUp;
+				Tile rightUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.LeftDown;
+				Tile leftDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
 
 				if (IsTastyTile (rightDownTile)) {
 					yield return AI.UseSkill (unit, skill, Direction.RightDown, rightDownTile);
@@ -659,10 +602,17 @@ namespace Battle.Turn{
 					break;
 
 				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
-				Tile rightDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
-				Tile leftUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftUp);
-				Tile rightUpTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightUp);
-				Tile leftDownTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.LeftDown);
+				Vector2 casterPos = currPos;
+				Direction direction;
+				direction = Direction.RightDown;
+				Tile rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.LeftUp;
+				Tile leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.RightUp;
+				Tile rightUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				direction = Direction.LeftDown;
+				Tile leftDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+
 				if (IsTastyTile (rightDownTile)) {
 					yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
 					continue;
@@ -687,11 +637,13 @@ namespace Battle.Turn{
 					break;
 
 				//좌 타일로 한칸 움직이는 경우도 확인
-				Vector2 movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp);
-				Tile movedTile = battleData.tileManager.GetTile (movedPos);
+				casterPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp);
+				Tile movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
-					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
+					direction = Direction.RightDown;
+					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					direction = Direction.LeftUp;
+					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
 
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
@@ -705,11 +657,13 @@ namespace Battle.Turn{
 					}
 				}
 				//우 타일로 한칸
-				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown);
-				movedTile = battleData.tileManager.GetTile (movedPos);
+				casterPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown);
+				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
-					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
+					direction = Direction.RightDown;
+					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					direction = Direction.LeftUp;
+					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
 						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
@@ -726,11 +680,13 @@ namespace Battle.Turn{
 					break;
 
 				//좌 타일로 두칸
-				movedPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp) * 2;
-				movedTile = battleData.tileManager.GetTile (movedPos);
+				casterPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp) * 2;
+				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
-					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);
+					direction = Direction.RightDown;
+					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					direction = Direction.LeftUp;
+					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
 						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
@@ -743,11 +699,13 @@ namespace Battle.Turn{
 					}
 				}
 				//우 타일로 두칸
-				movedPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown) * 2;
-				movedTile = battleData.tileManager.GetTile (movedPos);
+				casterPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown) * 2;
+				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
-					rightDownTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.RightDown);
-					leftUpTile = AI.GetRouteSkillCastingTile (movedPos, skill, Direction.LeftUp);;
+					direction = Direction.RightDown;
+					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					direction = Direction.LeftUp;
+					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsTastyTile (rightDownTile)) {
 						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
 						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
@@ -775,7 +733,7 @@ namespace Battle.Turn{
 				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = battleData.SelectedSkill;
 
-				Tile barrierTile = AI.GetRouteSkillCastingTile (currPos, skill, Direction.RightDown);
+				Tile barrierTile = skill.GetRealTargetTileForAI (currPos, Direction.RightDown);
 
 				if (barrierTile == null) {
 					yield return OnlyMove (unit);

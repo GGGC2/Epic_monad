@@ -43,6 +43,45 @@ public class TileManager : MonoBehaviour {
 		return tile.transform.position;
 	}
 
+	public static List<Tile> GetRouteTiles(List<Tile> tiles) {
+		List<Tile> routeTiles = new List<Tile>();
+		foreach (var tile in tiles) {
+			// 타일 단차에 의한 부분(미구현)
+			// 즉시 탐색을 종료한다.
+			// break;
+
+			// 첫 유닛을 만난 경우
+			// 이번 타일을 마지막으로 종료한다.
+			routeTiles.Add(tile);
+			if (tile.IsUnitOnTile())
+				break;
+		}
+		return routeTiles;
+	}
+	public static Tile GetRouteEndForAI(List<Tile> tiles) {
+		foreach (var tile in tiles) {
+			// 타일 단차에 의한 부분(미구현)
+			// 즉시 null을 return한다.
+
+			// 첫 유닛을 만난 경우
+			// 이번 타일을 return하고 종료한다.
+			if (tile.IsUnitOnTile())
+				return tile;
+		}
+		return null;
+	}
+	public static Tile GetRouteEndForPC(List<Tile> tiles) {
+		foreach (var tile in tiles) {
+			// 타일 단차에 의한 부분(미구현)
+			// 즉시 null을 return한다.
+
+			// 첫 유닛을 만난 경우
+			// 이번 타일을 return하고 종료한다.
+			if (tile.IsUnitOnTile())
+				return tile;
+		}
+		return tiles.Last ();
+	}
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
 		if (form == RangeForm.Diamond)
