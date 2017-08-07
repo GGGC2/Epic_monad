@@ -22,8 +22,7 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
-	public void LoadNextDialogueScene(string nextSceneName)
-	{
+	public void LoadNextDialogueScene(string nextSceneName){
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
@@ -79,13 +78,12 @@ public class SceneLoader : MonoBehaviour{
         }
         if (SceneData.isTestMode || SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
             SceneManager.LoadScene("Battle");
-        else {
+        else
             SceneManager.LoadScene("BattleReady");
-        }
     }
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName){
-		yield return Fade(true);
+		yield return StartCoroutine(Fade(true));
 
 		if (nextScriptFileName == "Title"){
 			Time.timeScale = 1.0f;
@@ -94,9 +92,8 @@ public class SceneLoader : MonoBehaviour{
 		else{
 			SceneData.dialogueName = nextScriptFileName;
             SceneData.isDialogue = true;
-            if (!SceneData.isTestMode && !SceneData.isStageMode) {
+            if (!SceneData.isTestMode && !SceneData.isStageMode)
                 GameDataManager.Save();
-            }
 
 			SceneManager.LoadScene("Dialogue");
 		}

@@ -354,9 +354,21 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11487724, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406270, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &934956413 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 146222, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
+  m_PrefabInternal: {fileID: 934956412}
 --- !u!1001 &958830399
 Prefab:
   m_ObjectHideFlags: 0
@@ -396,6 +408,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 11415288, guid: bc386f479d5194a51b6edf44264b1149, type: 2}
+      propertyPath: musicPrelude
+      value: 
+      objectReference: {fileID: 8300000, guid: b28455b4a537ab04baa468bc667dfd71, type: 3}
+    - target: {fileID: 11415288, guid: bc386f479d5194a51b6edf44264b1149, type: 2}
+      propertyPath: musicNormal
+      value: 
+      objectReference: {fileID: 8300000, guid: 1700f4ff817394401ad0c43d33496f22, type: 3}
+    - target: {fileID: 11415288, guid: bc386f479d5194a51b6edf44264b1149, type: 2}
+      propertyPath: musicTense
+      value: 
+      objectReference: {fileID: 8300000, guid: c859bea6bdfb74ff2a82b7fbd91ae158, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc386f479d5194a51b6edf44264b1149, type: 2}
   m_IsPrefabParent: 0
@@ -508,6 +532,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cfcab888066814e668aadf383a349170, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1650128754 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11442202, guid: cfcab888066814e668aadf383a349170,
+    type: 2}
+  m_PrefabInternal: {fileID: 1650128753}
+  m_Script: {fileID: 11500000, guid: 57f3d8c6c102e4d929ac0ff67682787b, type: 3}
 --- !u!114 &1796239657 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11423962, guid: 55ec5618ddfe641c49a7965105624b56,
@@ -580,7 +610,7 @@ Prefab:
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: dialogueData
       value: 
-      objectReference: {fileID: 4900000, guid: 55a3f91478f55a94e8397fd1b57a8577, type: 3}
+      objectReference: {fileID: 4900000, guid: 3aca7bfbee9a14251acf63754c628ed3, type: 3}
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: namePanel
       value: 
@@ -589,6 +619,19 @@ Prefab:
       propertyPath: clickIcon
       value: 
       objectReference: {fileID: 1293466956}
+    - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
+      propertyPath: sceneLoader
+      value: 
+      objectReference: {fileID: 1650128754}
+    - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
+      propertyPath: skipQuestionUI
+      value: 
+      objectReference: {fileID: 934956413}
+    - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
+      propertyPath: transparent
+      value: 
+      objectReference: {fileID: 21300000, guid: 3373c79ee81354e64b614ef455ba7c9a,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
   m_IsPrefabParent: 0
