@@ -36,13 +36,14 @@ public class DamageCalculator
 		}
 	}
 
-	public static Dictionary<Unit, DamageInfo> CalculatePreviewTotalDamage(BattleData battleData, Tile centerTile, List<Tile> tilesInSkillRange, List<Tile> firstRange)
+	public static Dictionary<Unit, DamageInfo> CalculatePreviewTotalDamage(BattleData battleData, ActiveSkill skill, SkillLocation skillLocation)
 	{
 		Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
+			Unit caster = battleData.selectedUnit;
+		
+		ChainList.AddChains(caster, battleData.SelectedSkill, skillLocation);
 
-		ChainList.AddChains(battleData.selectedUnit, centerTile, tilesInSkillRange, battleData.SelectedSkill, firstRange);
-
-		List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(battleData.selectedUnit, tilesInSkillRange);
+			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(caster, skill.GetTilesInRealEffectRange(skillLocation));
 		int chainCombo = allVaildChainInfo.Count;
 
 		foreach (var chainInfo in allVaildChainInfo)
@@ -51,7 +52,7 @@ public class DamageCalculator
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
 
-		ChainList.RemoveChainsFromUnit(battleData.selectedUnit);
+		ChainList.RemoveChainsFromUnit(caster);
 
 		return damageList;
 	}
