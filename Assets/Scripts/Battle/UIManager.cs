@@ -281,7 +281,7 @@ public class UIManager : MonoBehaviour
 		cancelButtonUI.SetActive(false);
 	}
 
-	public void ResetSkillNamePanelUI()
+	public void HideSkillNamePanelUI()
 	{
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
