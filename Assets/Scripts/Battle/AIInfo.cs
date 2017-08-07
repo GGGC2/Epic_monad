@@ -16,7 +16,7 @@ public class AIInfo {
 	{
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 
 		this.index = commaParser.ConsumeInt();
 

@@ -10,6 +10,7 @@ namespace Battle.Skills{
             List<Tile> tilesInRange = tileManager.GetTilesInRange(RangeForm.Diamond, caster.GetPosition(), 1, 3, 0, Direction.Down);
             foreach(var tile in tilesInRange) {
                 if(tile.IsUnitOnTile()) {
+                    BattleManager.MoveCameraToUnit(caster);
                     Unit unit = tile.GetUnitOnTile();
                     yield return unit.RecoverHealth(unit.GetMaxHealth() * 0.05f);
                 }

@@ -1,8 +1,9 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Enums;
+using GameData;
 
 public class HealthViewer : MonoBehaviour {
     /*height order : 
@@ -33,8 +34,8 @@ public class HealthViewer : MonoBehaviour {
         float previewHealthRatio = AdjustBarScales(previewCurrentHealth, previewShieldAmount, barsToBeHealthScale, barsToBeShieldScale);
 
         if (previewHealthRatio <= 0)   killIcon.SetActive(true);
-		else if ((previewHealthRatio <= 0.1) && 
-                !(transform.parent.gameObject.GetComponent<Unit>().IsObject())) 
+		else if ((previewHealthRatio <= Setting.retreatHpFloat) && 
+                !(transform.parent.gameObject.GetComponent<Unit>().IsObject()) && SceneData.stageNumber >= Setting.retreatOpenStage)
                 retreatIcon.SetActive(true); // 오브젝트는 이탈하지 않음 (=오브젝트가 아닐 경우에만 이탈).
 	}
 	

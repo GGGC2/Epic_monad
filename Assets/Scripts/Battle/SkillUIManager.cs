@@ -18,8 +18,8 @@ public class SkillUIManager : MonoBehaviour {
 		if(SceneManager.GetActiveScene().name == "BattleReady")
 			NameText.text = skill.korName;
 			
-		ExplainText.text = skill.skillDataText.Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, unitName)).
-											   Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, unitName));
+		ExplainText.text = skill.skillDataText.Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, skill.firstTextValueBase, unitName)).
+											   Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, skill.secondTextValueBase, unitName));
 
 		if(skill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)skill;
@@ -64,12 +64,14 @@ public class SkillUIManager : MonoBehaviour {
 		return result + skill.GetFirstMaxReach();
 	}
 
-	string GetSkillValueText(Stat statType, float coef, string unitName){
-		if(statType == Stat.Power)
-			return ((int)((float)UnitInfo.GetStat(unitName, UnitInfo.StatType.Power)*coef)).ToString();
-		else{
-			Debug.Log("Unknown StatType");
-			return null;
-		}
+	string GetSkillValueText(Stat statType, float coef, float baseValue, string unitName){
+        if(statType == Stat.Level) {
+            return ((int)(GameData.PartyData.level * coef + baseValue)).ToString();
+        }
+        else if(SceneManager.GetActiveScene().name == "Battle") {
+            Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameInCode() == unitName);
+            return (Math.Round(unit.GetStat(statType) * coef + baseValue)).ToString();
+        }
+        else return ((int)((float)UnitInfo.GetStat(unitName, statType)*coef + baseValue)).ToString();
 	}
 }

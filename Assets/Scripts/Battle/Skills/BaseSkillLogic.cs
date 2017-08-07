@@ -43,9 +43,10 @@ public class BaseSkillLogic
 		return requireAP;
 	}
 
-	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData)
-	{
+	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
 	}
+    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, StatusEffect statusEffect) {
+    }
 
 	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
 	{
@@ -64,6 +65,9 @@ public class BaseSkillLogic
     }
     public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
+    }
+    public virtual bool MayDisPlayDamageCoroutine(SkillInstanceData skillInstanceData) {
+        return true;
     }
     public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
     {
@@ -108,22 +112,5 @@ public class BaseSkillLogic
     public virtual IEnumerator TriggerShieldAttacked(Unit target, float amount) {
         yield return null;
     }
-    public static List<Tile> GetTilesInFirstRange(BattleData battleData, Direction? direction = null)
-	{
-		Direction realDirection;
-		if (direction.HasValue) {
-			realDirection = direction.Value;
-		} else {
-			realDirection = battleData.selectedUnit.GetDirection();
-		}
-		var firstRange = battleData.tileManager.GetTilesInRange(battleData.SelectedSkill.GetFirstRangeForm(),
-															battleData.selectedUnit.GetPosition(),
-															battleData.SelectedSkill.GetFirstMinReach(),
-															battleData.SelectedSkill.GetFirstMaxReach(),
-															battleData.SelectedSkill.GetFirstWidth(),
-															realDirection);
-
-		return firstRange;
-	}
 }
 }

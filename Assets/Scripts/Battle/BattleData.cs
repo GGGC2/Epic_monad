@@ -214,6 +214,8 @@ public class BattleData{
 	public ActiveSkill SelectedSkill
 	{
 		get {
+			if(selectedUnit.GetSkillList().Count<indexOfSelectedSkillByUser)
+				return null;
 			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
 		}
 	}
@@ -243,7 +245,7 @@ public class BattleData{
 	{
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetUnit() == unit)
+			if (chainInfo.Caster == unit)
 			{
 				return chainInfo;
 			}
@@ -256,9 +258,9 @@ public class BattleData{
 		List<Unit> resultUnits = new List<Unit>();
 		foreach (ChainInfo chainInfo in chainList)
 		{
-			if (chainInfo.GetTargetArea().Contains(tile))
+			if (chainInfo.GetSecondRange().Contains(tile))
 			{
-				resultUnits.Add(chainInfo.GetUnit());
+				resultUnits.Add(chainInfo.Caster);
 			}
 		}
 

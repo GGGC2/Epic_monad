@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using WorldMap;
 using SkillTree;
+using GameData;
 
 public class Parser : MonoBehaviour{
 	public static string ExtractFromMatrix(string text, int row, int column){
@@ -24,24 +25,37 @@ public class Parser : MonoBehaviour{
 		return null;
 	}
 
-	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile)
-	{
-		List<DialogueData> dialogueDataList = new List<DialogueData>();
+	public enum ParsingDataType{Glossary, DialogueData};
 
-		string csvText = dialogueDataFile.text;
-		string[] unparsedDialogueDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+	public static List<T> GetParsedData<T>(TextAsset textAsset, ParsingDataType DataType){
+		List<T> DataList = new List<T>();
+		string[] rowDataList = textAsset.text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 0; i < unparsedDialogueDataStrings.Length; i++)
-		{
-			DialogueData dialogueData = new DialogueData(unparsedDialogueDataStrings[i]);
-			dialogueDataList.Add(dialogueData);
+		for(int i = 1; i < rowDataList.Length; i++){
+			T data = CreateParsedObject<T>(DataType, rowDataList[i]);
+			DataList.Add(data);
 		}
-
-		return dialogueDataList;
+		Debug.Log("DataList.Count : "+DataList.Count);
+		return DataList;
 	}
 
-	public static List<BattleTrigger> GetParsedBattleTriggerData()
-	{
+	public static T CreateParsedObject<T>(ParsingDataType DataType, string rowData){
+		if(DataType == ParsingDataType.Glossary){
+			object data = new GlossaryData(rowData);
+			return (T)data;
+		}else if(DataType == ParsingDataType.DialogueData){
+			object data = new DialogueData(rowData);
+			return (T)data;
+		}
+		else{
+			Debug.LogError("Invalid Input");
+			//컴파일할 때 뭔가 리턴해야 해서 만듦
+			object garbage = null;
+			return (T)garbage;
+		}
+	}
+
+	public static List<BattleTrigger> GetParsedBattleTriggerData(){
 		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
 
 		TextAsset csvFile = FindObjectOfType<BattleManager>().GetBattleConditionData() as TextAsset;
@@ -56,8 +70,7 @@ public class Parser : MonoBehaviour{
 		return battleEndTriggers;
 	}
 
-	public static List<AIInfo> GetParsedAIInfo()
-	{
+	public static List<AIInfo> GetParsedAIInfo(){
 		List<AIInfo> aiInfoList = new List<AIInfo>();
 		TextAsset csvFile = null;
 		if (FindObjectOfType<BattleManager>() != null)
@@ -145,12 +158,15 @@ public class Parser : MonoBehaviour{
 			Skills.Add(skill);
 		}
 
-		string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
-		string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-		for(int i = 1; i < passiveRowDataList.Length; i++){
-			Skill skill = new PassiveSkill(passiveRowDataList[i]);
-			Skills.Add(skill);
-		}
+		//if(SceneData.stageNumber >= Setting.passiveOpenStage){
+			Debug.Log("passiveOpen : " + SceneData.stageNumber + "Stage");
+			string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
+			string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+			for(int i = 1; i < passiveRowDataList.Length; i++){
+				Skill skill = new PassiveSkill(passiveRowDataList[i]);
+				Skills.Add(skill);
+			}
+		//}
 
 		return Skills;
 	}

@@ -9,8 +9,8 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill;
 
-	public virtual void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
-	{
+	public virtual IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
+        yield return null;
 	}
 
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)
@@ -55,8 +55,11 @@ public class BasePassiveSkillLogic
 	public virtual void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
 	{
 	}
-	
-	public virtual int GetEvasionChance()
+
+    public virtual IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+        yield return null;
+    }
+    public virtual int GetEvasionChance()
 	{
 		return 0;
 	}
@@ -79,7 +82,10 @@ public class BasePassiveSkillLogic
 	{
 	}
     
-    public virtual void TriggerDamaged(Unit target, int damage, Unit caster) 
+    public virtual bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        return true;
+    }
+    public virtual void TriggerAfterDamaged(Unit target, int damage, Unit caster) 
     {        
     }
 
@@ -98,7 +104,13 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
     }
+    public virtual IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+        yield return null;
+    }
     public virtual void TriggerOnMove(Unit caster) {
+    }
+    public virtual bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+        return true;
     }
     public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
         yield return null;
@@ -125,6 +137,9 @@ public class BasePassiveSkillLogic
     public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
     }
     public virtual void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+    }
+    public virtual bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+        return true;
     }
 }
 }

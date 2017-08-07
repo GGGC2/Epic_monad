@@ -5,7 +5,7 @@ using Enums;
 
 public class BattleTrigger{
 	public enum ResultType{Win, Lose, Bonus, End}
-	public enum UnitType{Target, Ally, Enemy, None}
+	public enum UnitType{Target, Ally, Enemy, None, PC}
 	public enum ActionType{Neutralize, Reach, Phase, Kill, Retreat}
 	public bool acquired;
 	public bool repeatable;
@@ -24,7 +24,7 @@ public class BattleTrigger{
 
 	public BattleTrigger(string data)
 	{
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 
 		resultType = commaParser.ConsumeEnum<ResultType>();
 		if(resultType == ResultType.End)

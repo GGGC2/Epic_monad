@@ -15,7 +15,7 @@ namespace GameData{
 		}
 
 		public static void SetDefault(){
-			Debug.Log("Set Default LEVEL 1");
+			//Debug.Log("Set Default LEVEL 1");
 			level = 1;
 			exp = 0;
 			reqExp = 100;
@@ -37,5 +37,7 @@ namespace GameData{
 		public static string dialogueName;
 		public static int stageNumber;
         public static bool isDialogue;
+        public static bool isTestMode = false;
+        public static bool isStageMode = false;
 	}
 }

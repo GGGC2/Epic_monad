@@ -21,18 +21,10 @@ public class UnitInfo {
 	public Element element;
 	public Celestial celestial;
 	public bool isObject;
-	
-	public enum StatType{
-		Health = 1,
-		Power = 2,
-		Defense = 3,
-		Resist = 4,
-		Agility = 5,
-	}
 
 	public UnitInfo (string data)
 	{
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 		this.index = commaParser.ConsumeInt(); 
 		this.name = commaParser.Consume();
 		this.nameInCode = commaParser.Consume();
@@ -52,21 +44,24 @@ public class UnitInfo {
 		this.isObject = commaParser.ConsumeBool();
 	}
 
-	public static int GetStat(string unitName, StatType type){
+	public static int GetStat(string unitName, Stat type){
 		TextAsset UnitDataMatrix = Resources.Load<TextAsset>("Data/UnitDataPC");
 		TextAsset CoefTable = Resources.Load<TextAsset>("Data/StatCoefTable");
-
-		int RelativePoint = Int32.Parse(Parser.FindRowDataOf(UnitDataMatrix.text, unitName)[(int)type]);
+        int RelativePoint = 0;
+        if((int)type <= 5)
+		    RelativePoint = Int32.Parse(Parser.FindRowDataOf(UnitDataMatrix.text, unitName)[(int)type]);
 
 		float acc = 0;
 		if((int)type < 3)
 			acc = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type, RelativePoint+5));
 
 		float coef = 0;
-		coef = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+2, RelativePoint+5));
+        if ((int)type <= 5)
+            coef = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+2, RelativePoint+5));
 
 		float basepoint = 0;
-		basepoint = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+7, RelativePoint+5));
+        if ((int)type <= 5)
+            basepoint = float.Parse(Parser.ExtractFromMatrix(CoefTable.text, (int)type+7, RelativePoint+5));
 
 		float level = PartyData.level;
 		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
@@ -75,37 +70,37 @@ public class UnitInfo {
 	public static UnitClass GetUnitClass(string PCName){
 		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[6];
 		if(className == "melee")
-			return Enums.UnitClass.Melee;
+			return UnitClass.Melee;
 		else if(className == "magic")
-			return Enums.UnitClass.Magic;
+			return UnitClass.Magic;
 		else
-			return Enums.UnitClass.None;
+			return UnitClass.None;
 	}
 
-	public static Enums.Element GetElement(string PCName){
+	public static Element GetElement(string PCName){
 		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[7];
 		if (element == "fire")
-			return Enums.Element.Fire;
+			return Element.Fire;
 		else if (element == "water")
-			return Enums.Element.Water;
+			return Element.Water;
 		else if (element == "plant")
-			return Enums.Element.Plant;
+			return Element.Plant;
 		else if (element == "metal")
-			return Enums.Element.Metal;
+			return Element.Metal;
 		else
-			return Enums.Element.None;
+			return Element.None;
 	}
 
-	public static Enums.Celestial GetCelestial(string PCName){
+	public static Celestial GetCelestial(string PCName){
 		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[8];
 		if (celestial == "sun")
-			return Enums.Celestial.Sun;
+			return Celestial.Sun;
 		else if (celestial == "moon")
-			return Enums.Celestial.Moon;
+			return Celestial.Moon;
 		else if (celestial == "earth")
-			return Enums.Celestial.Earth;
+			return Celestial.Earth;
 		else
-			return Enums.Celestial.None;
+			return Celestial.None;
 	}
 
 	void SetCelestialImage(string unitName){
@@ -126,6 +121,8 @@ public class UnitInfo {
 			return "달케니르";
 		else if(codeName == "yeong")
 			return "영";
+		else if(codeName == "bianca")
+			return "비앙카";
 		else if(codeName == "unselected")
 			return "Empty";
 		else{

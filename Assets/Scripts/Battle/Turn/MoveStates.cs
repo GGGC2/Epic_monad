@@ -94,7 +94,7 @@ namespace Battle.Turn{
 
 				// 카메라를 옮기고
 				BattleManager.MoveCameraToTile(destTile);
-				battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)destTile.transform.position);
+				battleData.uiManager.SetMovedUICanvasOnTileAsCenter(destTile);
 				// 클릭 대기
 
 				battleData.uiManager.EnableCancelButtonUI();
@@ -137,25 +137,20 @@ namespace Battle.Turn{
 		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction directionAtDest, int totalUseActivityPoint)
 		{
 			CaptureMoveSnapshot(battleData);
-
-			Tile beforeTile = battleData.SelectedUnitTile;
+            
 			Unit unit = battleData.selectedUnit;
-			unit.ApplyMove(beforeTile, destTile, directionAtDest, totalUseActivityPoint);
+			unit.ApplyMove(destTile, directionAtDest, totalUseActivityPoint);
 
 			battleData.previewAPAction = null;
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;
 			BattleManager battleManager = battleData.battleManager;
 
-			// 연계 정보 업데이트
-			battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
-
 			yield return null;
 		}
 
 		private static void CaptureMoveSnapshot(BattleData battleData)
 		{
-			Debug.Log("Capture move snapshot");
 			BattleData.MoveSnapshopt snapshot = new BattleData.MoveSnapshopt();
 			snapshot.tile = battleData.SelectedUnitTile;
 			snapshot.ap = battleData.selectedUnit.GetCurrentActivityPoint();
@@ -171,8 +166,6 @@ namespace Battle.Turn{
 			Tile beforeTile = battleData.SelectedUnitTile;
 			Tile nextTile = snapshot.tile;
 			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);
-			// 연계 정보 업데이트.
-			battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
 		}
 	}
 }

@@ -1,21 +1,13 @@
 ﻿using System.Collections.Generic;
-using Battle.Damage;
 using Enums;
-
+using UnityEngine;
 namespace Battle.Skills {
-    class Arcadia_1_m_SkillLogic : BasePassiveSkillLogic {
-        public override void TriggerOnActionEnd(Unit caster) {
-            Tile currentTile = caster.GetTileUnderUnit();
-            Element elementOfTile = currentTile.GetTileElement();
-            List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
-
-            if (elementOfTile != Element.Plant) {
-                StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "광합성");
-                if (statusEffect != null)
-                    caster.RemoveStatusEffect(statusEffect);
-            } else {
-                StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-            }
+    class Arcadia_1_m_SkillLogic : BaseSkillLogic {
+        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
+            if(i==0)
+                return caster.GetStat(Stat.MaxHealth);
+            else
+                return (float)(GameData.PartyData.level * 1.2 + 87);
         }
     }
 }

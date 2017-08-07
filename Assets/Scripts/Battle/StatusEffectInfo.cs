@@ -23,7 +23,7 @@ public class StatusEffectInfo {
 	public StatusEffectInfo(string data)
 	{
 		// Debug.Log(data);
-		CommaStringParser commaParser = new CommaStringParser(data);
+		StringParser commaParser = new StringParser(data, ',');
 
 		owner = commaParser.Consume();
         requireLevel = commaParser.ConsumeInt();
@@ -38,6 +38,7 @@ public class StatusEffectInfo {
 		int defaultPhase = commaParser.ConsumeInt();
 		StatusEffectVar stackVar = commaParser.ConsumeEnum<StatusEffectVar>();
 		int maxStack = commaParser.ConsumeInt();
+        bool amountNotEffectedByStack = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
 
 		string effectName = commaParser.Consume();
@@ -72,7 +73,7 @@ public class StatusEffectInfo {
 		this.statusEffect = new StatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isBuff, isInfinite, 
 											 isStackable, isOnce,
-											 defaultPhase, stackVar, maxStack, isRemovable, 
+											 defaultPhase, stackVar, maxStack, amountNotEffectedByStack, isRemovable, 
 											 effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}

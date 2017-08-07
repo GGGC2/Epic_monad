@@ -22,6 +22,7 @@ namespace Battle.Skills {
                     break;
                 }
             }
+            if(targets.Count == 0) allTargetsHaveSameElement = false;
             if (allTargetsHaveSameElement && originalStatusEffect != null && element == originalStatusEffect.GetElement()) {
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
             } else if (allTargetsHaveSameElement) {

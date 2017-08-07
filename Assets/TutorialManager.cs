@@ -2,26 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TutorialManager : MonoBehaviour {
 
 	int index;
 	public Image image;
 	CameraMover cm;
-	public string usedSceneName;
+	string usedSceneName;
 	public Button ReverseButton;
 
 	void Start () {
+		usedSceneName = SceneManager.GetActiveScene().name;
 		index = 0;
 
-		if(usedSceneName == "Battle"){
-			cm = FindObjectOfType<CameraMover>();
-			cm.mouseMoveActive = false;
-			cm.keyboardMoveActive = false;
-		}
-
-		OnClick();
-	}
+        if (usedSceneName == "Battle"){
+            cm = FindObjectOfType<CameraMover>();
+            cm.mouseMoveActive = false;
+            cm.keyboardMoveActive = false;
+        }
+        OnClick();
+        if (GameData.SceneData.isTestMode || GameData.SceneData.isStageMode) {
+            Skip();
+        }
+    }
 	
 	void OnClick(){
 		index += 1;

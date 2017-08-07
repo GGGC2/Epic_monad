@@ -89,14 +89,14 @@ public class Utility : MonoBehaviour {
 	
 	public static float GetDirectionBonus(Unit unit, Unit target)
 	{
-		if (target == null) return 1;
+		if (target == null) return 1.0f;
 
-		if (target.IsObject()) return 1; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
+		if (target.IsObject()) return 1.0f; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
 		
 		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
 		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;
 		else if ((deltaDegreeAtAttack < 135) || (deltaDegreeAtAttack > 225)) return 1.1f;
-		else return 1;
+		else return 1.0f;
 	}
 	
 	public static float GetCelestialBonus(Unit attacker, Unit defender)

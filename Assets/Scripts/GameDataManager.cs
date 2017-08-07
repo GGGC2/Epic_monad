@@ -26,7 +26,7 @@ public class GameDataManager {
         return result;
     }
     private static void ConvertStringToGameData(string str) {
-        CommaStringParser commastringParser = new CommaStringParser(str);
+        StringParser commastringParser = new StringParser(str, ',');
         PartyData.level = commastringParser.ConsumeInt();
         PartyData.exp = commastringParser.ConsumeInt();
         PartyData.reqExp = commastringParser.ConsumeInt();
@@ -36,7 +36,7 @@ public class GameDataManager {
     }
     public static void Save() {
         string data = ConvertGameDataToString();
-        Debug.Log("Saved " + data + " to " + filePath);
+        //Debug.Log("Saved " + data + " to " + filePath);
         File.WriteAllText(filePath, data, Encoding.UTF8);
     }
 
@@ -47,7 +47,7 @@ public class GameDataManager {
             return;
         }
 
-        Debug.Log("Save is loaded from " + filePath);
+        //Debug.Log("Save is loaded from " + filePath);
         string data = File.ReadAllText(filePath, Encoding.UTF8);
         ConvertStringToGameData(data);
     }

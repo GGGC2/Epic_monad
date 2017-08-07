@@ -10,106 +10,97 @@ public class SceneLoader : MonoBehaviour{
 	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
 
-	public void GoToTitle()
-	{
+	public void GoToTitle(){
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene()
-	{
+	public void LoadNextBattleScene(){
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
-	public void LoadNextDialogueScene(string nextSceneName)
-	{
+	public void LoadNextDialogueScene(string nextSceneName){
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
 	}
 
 	public void LoadNextWorldMapScene(string storyName)
 	{
 		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().InactiveAdventureUI();
+			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
 		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
-	public bool IsScreenActive()
-	{
+	public bool IsScreenActive(){
 		return fadeoutScreenObject.activeInHierarchy;
 	}
 	
-	IEnumerator Start()
-	{
-		Time.timeScale = 0;
+	void Awake(){
+		Application.backgroundLoadingPriority = ThreadPriority.Low;
+	}
 
-		fadeoutScreenObject.SetActive(true);
-		var img = fadeoutScreenObject.GetComponent<Image>();
-		img.color = Color.black;
-		var tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
-		}
-
+	IEnumerator Start(){
+		yield return Fade(false);
 		fadeoutScreenObject.SetActive(false);
-
 		Time.timeScale = 1.0f;
 	}
 
-	IEnumerator Fadeout()
-	{
+	public IEnumerator Fade(bool isBlack){
 		Time.timeScale = 0;
-
 		fadeoutScreenObject.SetActive(true);
 		var img = fadeoutScreenObject.GetComponent<Image>();
-		var tween = img.DOColor(Color.black,1f).SetUpdate(true);
-		while(tween.IsPlaying())
-		{
-			yield return null;
+		Tweener tween;
+
+		if(isBlack)
+			tween = img.DOColor(Color.black, 1f).SetUpdate(true);
+		else{
+			img.color = Color.black;
+			tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
 		}
+
+		while(tween.IsPlaying())
+			yield return null;
+
+		if(!isBlack)
+			fadeoutScreenObject.SetActive(false);
 	}
 
-	IEnumerator FadeoutAndLoadBattleScene()
-	{
-		yield return Fadeout();
+	IEnumerator FadeoutAndLoadBattleScene(){
+		yield return Fade(true);
 
         SceneData.isDialogue = false;
-        GameDataManager.Save();
-        if (SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
-            SceneManager.LoadScene("Battle");
-        else {
-            SceneManager.LoadScene("BattleReady");
+        if (!SceneData.isTestMode && !SceneData.isStageMode) {
+            GameDataManager.Save();
         }
+        if (SceneData.isTestMode || SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
+            SceneManager.LoadScene("Battle");
+        else
+            SceneManager.LoadScene("BattleReady");
     }
 
-	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName)
-	{
-		yield return Fadeout();
+	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName){
+		yield return StartCoroutine(Fade(true));
 
-		if (nextScriptFileName == "Title")
-		{
+		if (nextScriptFileName == "Title"){
 			Time.timeScale = 1.0f;
-			SceneManager.LoadScene("title");
+			SceneManager.LoadScene("Title");
 		}
-		else
-		{
+		else{
 			SceneData.dialogueName = nextScriptFileName;
             SceneData.isDialogue = true;
-            GameDataManager.Save();
-			Debug.Log("input next dialogue - " + SceneData.dialogueName);
+            if (!SceneData.isTestMode && !SceneData.isStageMode)
+                GameDataManager.Save();
 
-			SceneManager.LoadScene("dialogue");
+			SceneManager.LoadScene("Dialogue");
 		}
 	}
 
-	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName)
-	{
-		yield return Fadeout();
+	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName){
+		yield return Fade(true);
 
 		// need use save data
 		WorldMapManager.currentStory = nextStoryName;

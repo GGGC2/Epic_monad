@@ -14,11 +14,27 @@ public static class SkillLogicFactory
             // 그레네브
 			case "저격":
 				skillLogic = new Grenev_1_l_SkillLogic ();
-				skill.SetSoundEffectName ("Gun");
             break;
             case "단검술":
 				skillLogic = new Grenev_1_m_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
+            break;
+            case "장전":
+                skillLogic = new Grenev_2_l_SkillLogic();
+            break;
+            case "암살표식":
+                skillLogic = new Grenev_3_m_SkillLogic();
+            break;
+            case "회심의 일격":
+                skillLogic = new Grenev_4_l_SkillLogic();
+            break;
+            case "은신":
+                skillLogic = new Grenev_5_m_SkillLogic();
+            break;
+            case "연사":
+                skillLogic = new Grenev_7_l_SkillLogic();
+            break;
+            case "최후의 일격":
+                skillLogic = new Grenev_8_l_SkillLogic();
             break;
 
             // 노엘
@@ -27,23 +43,19 @@ public static class SkillLogicFactory
             break;
             case "신의 가호":
 				skillLogic = new Noel_1_r_SkillLogic();
-				skill.SetSoundEffectName ("Shield");
             break;
 
             // 달케니르
             case "에테르 미사일":
 				skillLogic = new Darkenir_1_m_SkillLogic();
-				skill.SetSoundEffectName ("EtherMissile");
             break;
 
 			// 레이나
 			case "화염 폭발":
 				skillLogic = new Reina_1_l_SkillLogic();
-				skill.SetSoundEffectName ("Fire");
             break;
 			case "화염구":
 				skillLogic = new Reina_1_m_SkillLogic();
-				skill.SetSoundEffectName ("Fire");
             break;
 			// case "마력 연쇄":
 			// return new Reina_3_r_SkillLogic();
@@ -56,7 +68,6 @@ public static class SkillLogicFactory
 			//루키어스
 			case "가로베기":
 				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Slash");
 			break;
 
             // 루베리카
@@ -107,18 +118,22 @@ public static class SkillLogicFactory
             //세피아
             case "반달베기":
 				skillLogic = new Sepia_1_r_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
             break;
 
             //아르카디아
+            case "생명의 요람":
+            skillLogic = new Arcadia_1_m_SkillLogic();
+            break;
+            case "계절풍":
+            skillLogic = new Arcadia_1_r_SkillLogic();
+            break;
             case "갈고리 씨앗":
-            skillLogic = new Arcadia_1_l_SkillLogic();
+            skillLogic = new Arcadia_2_r_SkillLogic();
             break;
 
 			// 영
 			case "은빛 베기": case "은빛 베기_test":
 				skillLogic = new Yeong_1_l_SkillLogic();
-				skill.SetSoundEffectName ("Slash");
             break;
 			case "섬광 찌르기":
             skillLogic = new Yeong_2_l_SkillLogic();
@@ -167,9 +182,18 @@ public static class SkillLogicFactory
             skillLogic = new Eugene_8_m_SkillLogic();
             break;
 
+            //제이선
+            case "그림자 일격":
+            skillLogic = new Json_1_l_SkillLogic();
+            break;
+
+            case "단검 투척":
+            skillLogic = new Json_1_r_SkillLogic();
+            break;
+
 			// 카샤스티
 			case "더블 샷":
-            skillLogic = new Kashyasty_1_l_SkillLogic();
+            skillLogic = new Kashasty_1_l_SkillLogic();
             break;
 
 			// Not used
@@ -206,18 +230,6 @@ public static class SkillLogicFactory
             skillLogic = new Curi_8_m_SkillLogic();
             break;
 
-
-			//soldier01
-			case "근접공격":
-				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Slash");
-				break;
-			//archer01 & asterArcher01
-			case "화살 발사":
-				skillLogic = new BaseSkillLogic();
-				skill.SetSoundEffectName ("Bow");
-				break;
-
             default:
             skillLogic = new BaseSkillLogic();
             break;
@@ -226,7 +238,7 @@ public static class SkillLogicFactory
         return skillLogic;
 	}
 
-	public static BasePassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
+	public static ListPassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
 	{
 		List<BasePassiveSkillLogic> passiveSkillLogic = passiveSkills.Select(skill => Get(skill))
 			.ToList();
@@ -239,11 +251,43 @@ public static class SkillLogicFactory
 		switch (passiveSkill.GetName())
 		{
             // 그레네브
+            case "타고난 저격수":
+            passiveSkillLogic = new Grenev_0_1_SkillLogic();
+            break;
             case "살의":
             passiveSkillLogic = new Grenev_1_r_SkillLogic();
             break;
+            case "살육의 희열":
+            passiveSkillLogic = new Grenev_2_r_SkillLogic();
+            break;
+            case "약자멸시":
+            passiveSkillLogic = new Grenev_3_r_SkillLogic();
+            break;
+            case "전망":
+            passiveSkillLogic = new Grenev_5_l_SkillLogic();
+            break;
+            case "암살":
+            passiveSkillLogic = new Grenev_6_m_SkillLogic();
+            break;
+            case "전쟁광":
+            passiveSkillLogic = new Grenev_6_r_SkillLogic();
+            break;
+            case "인내심":
+            passiveSkillLogic = new Grenev_7_m_SkillLogic();
+            break;
+            case "연쇄살인":
+            passiveSkillLogic = new Grenev_7_r_SkillLogic();
+            break;
+
+            //노엘
+            case "심판의 빛":
+            passiveSkillLogic = new Noel_0_l_SkillLogic();
+            break;
 
             // 달케니르
+            case "흐름 동화":
+            passiveSkillLogic = new Darkenir_0_1_SkillLogic();
+            break;
             case "공허의 장벽":
             passiveSkillLogic = new Darkenir_1_l_SkillLogic();
             break;
@@ -341,14 +385,22 @@ public static class SkillLogicFactory
 			passiveSkillLogic = new Lenien_7_r_SkillLogic();
 			break;
 
+            //비앙카
+            case "사뿐사뿐":
+            passiveSkillLogic = new Bianca_0_1_SkillLogic();
+            break;
+
             //세피아
             case "신뢰의 끈":
             passiveSkillLogic = new Sepia_1_m_SkillLogic();
             break;
 
             //아르카디아
+            case "뿌리 내리기":
+            passiveSkillLogic = new Arcadia_2_l_SkillLogic();
+            break;
             case "광합성":
-            passiveSkillLogic = new Arcadia_1_m_SkillLogic();
+            passiveSkillLogic = new Arcadia_3_m_SkillLogic();
             break;
 
 			// 영
@@ -447,6 +499,11 @@ public static class SkillLogicFactory
             passiveSkillLogic = new Eugene_7_r_SkillLogic();
             break;
 
+            //제이선
+            case "표식":
+            passiveSkillLogic = new Json_0_1_SkillLogic();
+            break;
+
 			// 트리아나
 			case "나무 껍질":
 			passiveSkillLogic = new Triana_2_r_SkillLogic();
@@ -454,10 +511,10 @@ public static class SkillLogicFactory
 
 			// 카샤스티
 			case "장미 속의 가시":
-			passiveSkillLogic = new Kashyasty_1_r_SkillLogic();
+			passiveSkillLogic = new Kashasty_1_r_SkillLogic();
 			break;
 			case "장미의 사수":
-			passiveSkillLogic = new Kashyasty_2_r_SkillLogic();
+			passiveSkillLogic = new Kashasty_2_r_SkillLogic();
 			break;
 
             // 큐리

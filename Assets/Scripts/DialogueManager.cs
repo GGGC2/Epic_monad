@@ -6,11 +6,10 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using GameData;
 
-public class DialogueManager : MonoBehaviour {
-
+public class DialogueManager : MonoBehaviour{
 	public TextAsset dialogueData;
 
-	Sprite transparent;
+	public Sprite transparent;
 	
     public GameObject dialogueUI;
     public GameObject adventureUI;
@@ -33,184 +32,138 @@ public class DialogueManager : MonoBehaviour {
 	
 	bool isLeftUnitOld;
 	
-	SceneLoader sceneLoader;
-	GameObject skipQuestionUI;
+	public SceneLoader sceneLoader;
+	public GameObject skipQuestionUI;
 
     GameObject[] objects;
 
-	public void SkipDialogue()
-	{
+	public void SkipDialogue(){
 		InactiveSkipQuestionUI();
 
 		int newLine = line;
-		for (int i = newLine; i < endLine; i++)
-		{
-			if (dialogueDataList[i].IsAdventureObject())
-			{
-				ActiveAdventureUI();
+		for (int i = newLine; i < endLine; i++){
+			if (dialogueDataList[i].IsAdventureObject()){
+				SetActiveAdventureUI(true);
 				break;
 			}
 			
-			if(HandleSceneChange(dialogueDataList[i]) != "else")
-			{
+			if(HandleSceneChange(dialogueDataList[i]) != DialogueData.CommandType.Else){
 				return;
 			}
 		}
-		ActiveAdventureUI();
+		SetActiveAdventureUI(true);
 	}
 
-	string HandleSceneChange (DialogueData Data)
-	{
-		if (Data.GetCommandType () == "adv_start") 
-		{
-			ActiveAdventureUI ();
+	DialogueData.CommandType HandleSceneChange (DialogueData Data){
+		if (Data.Command == DialogueData.CommandType.Adv){
+			SetActiveAdventureUI(true);
 			LoadAdventureObjects ();
-			return Data.GetCommandType();
-		}
-		else if (Data.GetCommandType () == "load_script") 
-		{
+			return Data.Command;
+		}else if (Data.Command == DialogueData.CommandType.Script){
 			string nextScriptName = Data.GetCommandSubType ();
-			FindObjectOfType<SceneLoader> ().LoadNextDialogueScene (nextScriptName);
-			return Data.GetCommandType();
+			sceneLoader.LoadNextDialogueScene (nextScriptName);
+			return Data.Command;
 		}
-		else if (Data.GetCommandType () == "load_battle")
-		{
+		else if (Data.Command == DialogueData.CommandType.Battle){
 			Debug.Log(Data.GetCommandSubType());
 			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
-			FindObjectOfType<SceneLoader>().LoadNextBattleScene();
-			return Data.GetCommandType();
+			sceneLoader.LoadNextBattleScene();
+			return Data.Command;
 		}
-		else if(Data.GetCommandType() == "load_worldmap")
-		{
+		else if(Data.Command == DialogueData.CommandType.Map){
 			string nextStoryName = Data.GetCommandSubType();
-			FindObjectOfType<SceneLoader>().LoadNextWorldMapScene(nextStoryName);
-			return Data.GetCommandType();
+			sceneLoader.LoadNextWorldMapScene(nextStoryName);
+			return Data.Command;
 		}
-		else if(Data.GetCommandType() == "load_title")
-		{
-			SceneManager.LoadScene("title");
-			return Data.GetCommandType();
+		else if(Data.Command == DialogueData.CommandType.Title){
+			SceneManager.LoadScene("Title");
+			return Data.Command;
 		}
-		return "else";
+		return DialogueData.CommandType.Else;
 	}
 
-	void HandleCommand()
-	{
-		string CommandType = HandleSceneChange(dialogueDataList[line]);
-		if(CommandType != "else")
-		{
-			return;
-		}
-		else if (dialogueDataList[line].GetCommandType() == "appear")
-		{
-			if (dialogueDataList[line].GetCommandSubType() == "left")
-			{
+	IEnumerator HandleCommand(){
+		DialogueData.CommandType Command = HandleSceneChange(dialogueDataList[line]);
+		if(Command != DialogueData.CommandType.Else)
+			yield break;
+
+		else if (dialogueDataList[line].Command == DialogueData.CommandType.App){
+			if (dialogueDataList[line].GetCommandSubType() == "left"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{
+				if (loadedSprite != null) {
 					leftUnit = dialogueDataList[line].GetNameInCode();               
 					leftPortrait.sprite = loadedSprite;
 					isLeftUnitOld = false;
 				}
-			}
-			else if (dialogueDataList[line].GetCommandSubType() == "right")
-			{
+			}else if (dialogueDataList[line].GetCommandSubType() == "right"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{      
+				if (loadedSprite != null) {      
 					rightUnit = dialogueDataList[line].GetNameInCode();         
 					rightPortrait.sprite = loadedSprite;
 					isLeftUnitOld = true;
 				}
-			}
-			else
-			{
+			}else
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "disappear")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.Disapp){
 			string commandSubType = dialogueDataList[line].GetCommandSubType();
-			if (commandSubType == "left" || commandSubType == leftUnit)
-			{
+			if (commandSubType == "left" || commandSubType == leftUnit){
 				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				leftPortrait.sprite = transparent;
 				isLeftUnitOld = false;
-			}
-			else if (commandSubType == "right" || commandSubType == rightUnit)
-			{
+			}else if (commandSubType == "right" || commandSubType == rightUnit){
 				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightPortrait.sprite = transparent;
 				isLeftUnitOld = true;
 			}
 			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-			else if (dialogueDataList[line].GetCommandSubType() == "all")
-			{
+			else if (dialogueDataList[line].GetCommandSubType() == "all"){
 				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				leftPortrait.sprite = transparent;
 				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightPortrait.sprite = transparent;
 				isLeftUnitOld = false;
-			}
-			else
-			{
+			}else
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-			}
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bgm")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BGM){
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlayBgm(bgmName);
-		}
-		else if (dialogueDataList[line].GetCommandType() == "bg")
-		{
-			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BG){
+			Sprite bgSprite = Resources.Load<Sprite>("Background/" + dialogueDataList[line].GetCommandSubType());
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
-		}
-		else if (dialogueDataList[line].GetCommandType() == "se")
-		{
+		}else if (dialogueDataList[line].Command == DialogueData.CommandType.SE){
 			string SEName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlaySE (SEName);
-		}
-		else
-		{
-			Debug.LogError("Undefined effectType : " + dialogueDataList[line].GetCommandType());
-		}
+		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FO){
+			yield return StartCoroutine(sceneLoader.Fade(true));
+		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FI){
+			ResetPortraits();
+			StartCoroutine(sceneLoader.Fade(false));
+		}else
+			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
-
-	public void ReadEndLine()
-	{
+	public void ReadEndLine(){
 		StartCoroutine (PrintLinesFrom (endLine-1));
 	}
 
-	public void ActiveSkipQuestionUI()
-	{
+	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
+	public void ActiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(true);
 	}
-
 	public void InactiveSkipQuestionUI(){
 		skipQuestionUI.SetActive(false);
 	}
 
-    public void ActiveAdventureUI()
-    {
-        adventureUI.SetActive(true);
-        dialogueUI.SetActive(false);
-    }
+	public void SetActiveAdventureUI(bool active){
+		adventureUI.SetActive(active);
+		if(active) { dialogueUI.SetActive(false); }
+	}
 
-    public void InactiveAdventureUI()
-    {
-        adventureUI.SetActive(false);
-    }
-
-    public void ActiveDialogueUI()
-    {
+    public void ActiveDialogueUI(){
         adventureUI.SetActive(false);
         dialogueUI.SetActive(true);
     }
 
-    public void LoadAdventureObjects()
-    {
+    public void LoadAdventureObjects(){
         objects = adventureUI.GetComponent<AdventureManager>().objects;
 
 		objects.ToList().ForEach(x => x.SetActive(true));
@@ -234,18 +187,15 @@ public class DialogueManager : MonoBehaviour {
 		}
     }
 
-    public void PrintLinesFromObjectIndex(int objectIndex)
-    {
+    public void PrintLinesFromObjectIndex(int objectIndex){
         GameObject buttonPanel = objects[objectIndex];
         buttonPanel.transform.Find("New").gameObject.SetActive(false);
         buttonPanel.transform.Find("Highlight").gameObject.SetActive(false);
         string objectName = buttonPanel.transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text;
         int startLine = 0;
 
-        for (int i = 0; i < endLine; i++)
-        {
-            if (dialogueDataList[i].GetObjectName() == objectName)
-            {
+        for (int i = 0; i < endLine; i++){
+            if (dialogueDataList[i].GetObjectName() == objectName){
                 startLine = i+1;
                 break;
             }
@@ -256,34 +206,25 @@ public class DialogueManager : MonoBehaviour {
         StartCoroutine(PrintLinesFrom(startLine));
     }
 
-	void Initialize()
-	{
-		Debug.Log(SceneData.dialogueName);
-        if (SceneData.dialogueName != null)
-        {
-            TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.dialogueName, typeof(TextAsset)) as TextAsset;
+	void Initialize(){
+        if (SceneData.dialogueName != null){
+            TextAsset nextScriptFile = Resources.Load<TextAsset>("Data/" + SceneData.dialogueName);
             dialogueData = nextScriptFile;
         }
 
-		sceneLoader = FindObjectOfType<SceneLoader>();
-		skipQuestionUI = GameObject.Find("SkipQuestion");
+		dialogueDataList = Parser.GetParsedData<DialogueData>(dialogueData, Parser.ParsingDataType.DialogueData);
+
 		InactiveSkipQuestionUI();
 		
-		transparent = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-		
-		dialogueDataList = Parser.GetParsedDialogueData(dialogueData);
-		
 		line = 0;
-		endLine = dialogueDataList.Count; 
+		endLine = dialogueDataList.Count;
 		
         adventureUI.SetActive(false);
 		
 		StartCoroutine(PrintLinesFrom(0));
 	}
 
-    IEnumerator PrintLinesFrom(int startLine)
-	{
-		// Initialize.
+	void ResetPortraits(){
 		leftPortrait.sprite = transparent;
 		rightPortrait.sprite = transparent;
 		
@@ -291,58 +232,49 @@ public class DialogueManager : MonoBehaviour {
 		rightUnit = null;
 
 		isLeftUnitOld = true;
+	}
+
+    IEnumerator PrintLinesFrom(int startLine){
+		// Initialize.
+		ResetPortraits();
 
 		line = startLine;
-		while (line < endLine)
-		{
+		while (line < endLine){
+			isWaitingMouseInput = true;
 			leftPortrait.color = Color.gray;
 			rightPortrait.color = Color.gray;
 
-			// Previous adventure dialogue is end
-			// If adventure object is clicked, PrintAllLine is called.
-			if (dialogueDataList[line].IsAdventureObject())
-			{
-				ActiveAdventureUI();
+			if (dialogueDataList[line].IsAdventureObject()){
+				SetActiveAdventureUI(true);
 				yield break;
-			}
-			else if (dialogueDataList[line].IsEffect())
-			{
-				HandleCommand();
+			}else if (dialogueDataList[line].IsEffect()){
+				/*yield return*/StartCoroutine(HandleCommand());
 				line++;
-			}
-			else
-			{
+			}else{
 				HandleDialogue();
 
-				isWaitingMouseInput = true;
 				while (isWaitingMouseInput)
-				{
 					yield return null;
-				}
 				line++;
 			}
 		}
 
 		yield return new WaitForSeconds(0.01f);
 
-		ActiveAdventureUI();
+		SetActiveAdventureUI(true);
 	}
 
-	void HandleDialogue()
-	{
+	void HandleDialogue(){
 		if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
 			(dialogueDataList[line].GetNameInCode() != rightUnit) &&
-			(Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
+			(Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing") != null))
 		{
-			Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-			if (isLeftUnitOld)
-			{
+			Sprite sprite = Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing");
+			if (isLeftUnitOld){
 				leftUnit = dialogueDataList[line].GetNameInCode();
 				leftPortrait.sprite = sprite;
 				isLeftUnitOld = false;
-			}
-			else
-			{
+			}else{
 				rightUnit = dialogueDataList[line].GetNameInCode();
 				rightPortrait.sprite = sprite;
 				isLeftUnitOld = true;
@@ -354,29 +286,22 @@ public class DialogueManager : MonoBehaviour {
 		else if (rightUnit == dialogueDataList[line].GetNameInCode())
 			rightPortrait.color = Color.white;
 
-		if (dialogueDataList[line].GetName() != "-")
-		{
+		if (dialogueDataList[line].GetName() != "-"){
 			nameText.text = dialogueDataList[line].GetName();
 			namePanel.enabled = true;
-		}
-		else
-		{
+		}else{
 			nameText.text = null;
 			namePanel.enabled = false;
 		}
 		dialogueText.text = dialogueDataList[line].GetDialogue();
 	}
 
-	public void OnClickDialogue()
-	{
+	public void OnClickDialogue(){
 		if (isWaitingMouseInput)
-		{
 			isWaitingMouseInput = false;
-		}
 	}
 
-	void Start () 
-	{
+	void Start() {
 		Initialize();
 
 		if(dialogueData.name == "Scene#1-1")
@@ -392,11 +317,8 @@ public class DialogueManager : MonoBehaviour {
 		}
 	}
 
-	void Update()
-	{
-		if(Input.GetMouseButtonDown(1) && skipQuestionUI.active)
-		{
+	void Update(){
+		if(Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf)
 			skipQuestionUI.SetActive(false);
-		}
 	}
 }

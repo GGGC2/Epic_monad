@@ -14,6 +14,7 @@ namespace Battle.Turn
 				unit.SetNotAlreadyBehavedObject ();
 			}
 			while (true) {
+				//yield return battleData.battleManager.BeforeActCommonAct ();
 				//오브젝트 때문에 오브젝트가 죽을 수도 있으니 하나 행동 끝날 때마다 매번 오브젝트유닛 목록을 다시 받아온다
 				objectUnits = battleData.GetObjectUnitsList();
 				Unit selectedObjectUnit = GetNotAlreadyBehavedObjectUnit (objectUnits);
@@ -41,8 +42,6 @@ namespace Battle.Turn
 			battleData.selectedUnit = objectUnit;
 			if (objectUnit.GetNameInCode() == "controller")
 				yield return ControllerAttack(objectUnit);
-			else
-				yield return AIStates_old.AIAct (battleData);
 			yield return null;
 		}
 
@@ -61,7 +60,7 @@ namespace Battle.Turn
 			{
 				BattleManager.MoveCameraToUnit(target);
 				float damageAmount = target.GetMaxHealth() * 0.15f;
-				yield return target.Damaged(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false);
+				yield return target.Damaged(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false, false);
 			}
 
 			MonoBehaviour.Destroy(effect);

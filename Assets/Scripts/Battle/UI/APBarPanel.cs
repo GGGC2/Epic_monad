@@ -299,7 +299,7 @@ namespace BattleUI
 			thisTurnUnits.Sort(SortHelper.Chain(new List<Comparison<UnitWrapper>>
 			{
 				SortHelper.CompareBy<UnitWrapper>(wrapper => GetActivityPoint(battleData, wrapper)),
-				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Agility)),
 				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
 			}, reverse:true));
 
@@ -307,10 +307,10 @@ namespace BattleUI
 			{
 				SortHelper.CompareBy<UnitWrapper>(wrapper => {
 					int ap = GetActivityPoint(battleData, wrapper);
-					int recover = wrapper.GetUnit().GetStat(Stat.Dexturity);
+					int recover = wrapper.GetUnit().GetStat(Stat.Agility);
 					return ap + recover;
 				}),
-				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Dexturity)),
+				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetUnit().GetStat(Stat.Agility)),
 				SortHelper.CompareBy<UnitWrapper>(wrapper => wrapper.GetGameObject().GetInstanceID())
 			}, reverse:true));
 

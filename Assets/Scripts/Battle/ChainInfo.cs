@@ -1,45 +1,19 @@
 ﻿using UnityEngine;
+using Enums;
 using System.Collections;
 using System.Collections.Generic;
 
 public class ChainInfo {
 
-	// 체인에 필요한 정보?
-	// 시전자, 중심, 영역, 시전스킬 + 경로형 여부, 경로범위
-	Unit unit;
-	Tile centerTile;
-	List<Tile> targetArea;
-	List<Tile> firstRange;
-	ActiveSkill skill;
+	// 체인에 필요한 정보
+	// 시전자, 시전스킬, 위치정보
+	Casting casting;
 
-	List<Tile> routeArea;
-
-	public ChainInfo (Unit unit, Tile centerTile, List<Tile> secondRange, ActiveSkill skill, List<Tile> firstRange)
+	public ChainInfo (Casting casting)
 	{
-		this.unit = unit;
-		this.centerTile = centerTile;
-		this.targetArea = secondRange;
-		this.skill = skill;
+		this.casting = casting;
+	}
 
-		this.firstRange = firstRange;
-	}
-	
-	public Unit GetUnit() {	return unit;	}
-	public Tile GetCenterTile() {	return centerTile;	}
-	public List<Tile> GetTargetArea() {	return targetArea;	}
-	public ActiveSkill GetSkill() {	return skill;	}
-	public bool IsRouteType() {	return skill.GetSkillType() == Enums.SkillType.Route;	}
-	public List<Tile> GetRouteArea()
-	{
-		if (!IsRouteType())
-		{
-			Debug.LogError("Invaild access - not route type skill");
-			return new List<Tile>();
-		}
-		else
-			return firstRange;
-	}
-	
 	public bool Overlapped(List<Tile> anotherTargetArea)
 	{
 		List<Unit> anotherTargets = new List<Unit>();
@@ -48,20 +22,28 @@ public class ChainInfo {
 			if (anotherTargetTile.IsUnitOnTile())
 				anotherTargets.Add(anotherTargetTile.GetUnitOnTile());
 		}
-		
 		List<Unit> targets = new List<Unit>();
-		foreach (var targetTile in targetArea)
+		foreach (var targetTile in GetSecondRange())
 		{
 			if (targetTile.IsUnitOnTile())
 				targets.Add(targetTile.GetUnitOnTile());
 		}
-
 		foreach (var anotherTarget in anotherTargets)
 		{
 			if (targets.Contains(anotherTarget))
 				return true;
 		}
-		
 		return false;
+	}
+
+	public Casting Casting { get { return casting; } }
+	public Unit Caster { get { return casting.Caster; } }
+	public ActiveSkill Skill { get { return casting.Skill; } }
+	public SkillLocation Location { get { return casting.Location; } }
+	public List<Tile> GetSecondRange() {
+		//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
+		Skill.SetRealTargetTileForSkillLocation(Location);
+		//체인 걸어둔 투사체 스킬이 아무것도 안 때리고 사라지면 발동 안 되므로 GetTilesInSecondRange가 아니라 GetTilesInRealEffectRange 호출
+		return Skill.GetTilesInRealEffectRange (Location);
 	}
 }

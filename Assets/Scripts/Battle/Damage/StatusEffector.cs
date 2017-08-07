@@ -75,7 +75,7 @@ public static class StatusEffector
 		return true;
 	}
 
-	private static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
+	public static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
 	{
 		List<StatusEffect> validStatusEffects = new List<StatusEffect>();
 		foreach (var statusEffect in statusEffects)
@@ -130,13 +130,13 @@ public static class StatusEffector
 				alreadyAppliedSameEffect.AddRemainStack(1);
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
-			else
-			{
+			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
                 List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(statusEffect, true, false);
+                target.UpdateSpriteByStealth();
             }
 		}
 	}

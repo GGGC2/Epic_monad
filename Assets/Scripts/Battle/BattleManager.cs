@@ -11,22 +11,29 @@ using Battle.Skills;
 using System.Linq;
 using GameData;
 
-public class BattleManager : MonoBehaviour
-{
+public class BattleManager : MonoBehaviour{
 	bool startFinished = false;
 	bool startTurnManager = false;
 	public BattleData battleData = new BattleData();
+	private static BattleManager instance;
+	public static BattleManager Instance{
+		get { return instance; }
+	}
 
-	public List<ChainInfo> GetChainList()
-	{
+	public List<ChainInfo> GetChainList(){
 		return battleData.chainList;
 	}
 
 	void Awake (){
-		GameDataManager.Load();
+		instance = this;
+
+        if (!SceneData.isTestMode && !SceneData.isStageMode)
+            GameDataManager.Load();
+
 		PartyData.CheckLevelZero();
-		GetStageDataFiles();
+		Load();
 		battleData.tileManager = FindObjectOfType<TileManager>();
+		SkillLocation.tileManager = battleData.tileManager;
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;
@@ -34,6 +41,11 @@ public class BattleManager : MonoBehaviour
 
 	void Start() {
         SoundManager.Instance.PlayBgm("Script_Tense");
+
+		AI.SetBattleManager (this);
+		AI.SetBattleData (battleData);
+		ActiveSkill.SetBattleData (battleData);
+		SkillAndChainStates.SetBattleData (battleData);
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -76,10 +88,7 @@ public class BattleManager : MonoBehaviour
 					battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 
 					if (battleData.selectedUnit.GetComponent<AIData>() != null){
-						yield return AIStates.AIStart(battleData);
-						// AI 코루틴이 어디서 끝나는지 몰라서 일단 여기 넣어놓음. 머리 위 화살표와 현재 턴 유닛 정보를 없애는 로직
-						battleData.uiManager.DisableSelectedUnitViewerUI();
-						battleData.selectedUnit.SetInactive();
+						yield return AI.UnitTurn(battleData.selectedUnit);
 					}
 					else
 						yield return StartCoroutine(ActionAtTurn(battleData.readiedUnits[0]));
@@ -99,75 +108,59 @@ public class BattleManager : MonoBehaviour
 	}
 
 	IEnumerator ActionAtTurn(Unit unit){
+		StartUnitTurn(unit);
+
+		battleData.currentState = CurrentState.FocusToUnit;
+		yield return StartCoroutine(PrepareUnitActionAndGetCommand(battleData));
+
+		EndUnitTurn ();
+	}
+
+	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+		if (unit == null)
+			return;
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
+	}
+	public void StartUnitTurn(Unit unit){
+		battleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		Debug.Log(unit.GetName() + "'s turn");
-        foreach(Unit otherUnit in battleData.unitManager.GetAllUnits())
-            SkillLogicFactory.Get(otherUnit.GetLearnedPassiveSkillList()).TriggerOnTurnStart(otherUnit, unit);
 
-        unit.TriggerTileStatusEffectAtTurnStart();
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
 		ChainList.RemoveChainsFromUnit(battleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
-		battleData.currentState = CurrentState.FocusToUnit;
+
+		battleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
+		unit.TriggerTileStatusEffectAtTurnStart();
 
 		battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
 		battleData.selectedUnit.SetActive();
+	}
+	public void EndUnitTurn(){
+		battleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 
-		yield return StartCoroutine(FocusToUnit(battleData));
-
-        battleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
-        
 		battleData.uiManager.DisableSelectedUnitViewerUI();
 		if (battleData.selectedUnit != null)
 			battleData.selectedUnit.SetInactive();
 	}
+	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
+		foreach(Unit caster in battleData.unitManager.GetAllUnits())
+			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
+	}
 
-	static void CheckStandbyPossible(BattleData battleData){
-		bool isPossible = false;
-
-		foreach (var unit in battleData.unitManager.GetAllUnits()){
-			if ((unit != battleData.selectedUnit) &&
-			(unit.GetCurrentActivityPoint() > battleData.selectedUnit.GetCurrentActivityPoint()))
-			{
-				isPossible = true;
-			}
-		}
-
-		// Debug.Log("standbyButton : " + GameObject.Find("StandbyButton"));
+	private void OnOffStandbyButton(BattleData battleData){
+		bool isPossible = battleData.selectedUnit.IsStandbyPossible (battleData);
 		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
 	}
-
-	static void CheckSkillPossible(BattleData battleData)
+	private void OnOffSkillButton(BattleData battleData)
 	{
-        Unit caster = battleData.selectedUnit;
-		bool isPossible = false;
-
-		isPossible = !(caster.HasStatusEffect(StatusEffectType.Silence) ||
-					 caster.HasStatusEffect(StatusEffectType.Faint));
-
-        Tile tileUnderCaster = caster.GetTileUnderUnit();
-        foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-            ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
-            if (originSkill != null) {
-                if (!SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
-                    isPossible = false;
-                }
-            }
-        }
-
+		bool isPossible = battleData.selectedUnit.IsSkillUsePossibleState (battleData);
         GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
 	}
-
-	static void CheckMovePossible(BattleData battleData){
-		bool isPossible = false;
-
-		isPossible = !(battleData.selectedUnit.HasStatusEffect(StatusEffectType.Bind) ||
-					 battleData.selectedUnit.HasStatusEffect(StatusEffectType.Faint) ||
-					 battleData.alreadyMoved);
-
+	private void OnOffMoveButton(BattleData battleData){
+		bool isPossible = battleData.selectedUnit.IsMovePossibleState(battleData);
 		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
 	}
     
@@ -188,14 +181,10 @@ public class BattleManager : MonoBehaviour
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit deadUnit in battleData.deadUnits){
+			Debug.Log(deadUnit.GetName() + " is dead");
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return battleManager.StartCoroutine(FadeOutEffect(deadUnit));
-			battleData.unitManager.DeleteDeadUnit(deadUnit);
-			Debug.Log(deadUnit.GetName() + " is dead");
-			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Kill);
-			yield return BattleTriggerChecker.CountBattleCondition(deadUnit, BattleTrigger.ActionType.Neutralize);
-			Destroy(deadUnit.gameObject);
+			yield return DestroyDeadOrRetreatUnit (battleData, deadUnit, BattleTrigger.ActionType.Kill);
 		}
 	}
 
@@ -204,14 +193,29 @@ public class BattleManager : MonoBehaviour
 		BattleManager battleManager = battleData.battleManager;
 
 		foreach (Unit retreatUnit in battleData.retreatUnits){
-			yield return battleManager.StartCoroutine(FadeOutEffect(retreatUnit));
-			battleData.unitManager.DeleteRetreatUnit(retreatUnit);
 			Debug.Log(retreatUnit.GetName() + " retreats");
-			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Retreat);
-			yield return BattleTriggerChecker.CountBattleCondition(retreatUnit, BattleTrigger.ActionType.Neutralize);
-			Destroy(retreatUnit.gameObject);
+			yield return DestroyDeadOrRetreatUnit (battleData, retreatUnit, BattleTrigger.ActionType.Retreat);
 		}
 	}
+
+	public static IEnumerator DestroyDeadOrRetreatUnit(BattleData battleData, Unit unit, BattleTrigger.ActionType deadOrRetreat)
+	{
+		yield return battleData.battleManager.StartCoroutine(FadeOutEffect(unit));
+		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
+        yield return battleData.battleManager.StartCoroutine(battleData.unitManager.DeleteDeadUnit(unit));
+		battleData.unitManager.DeleteRetreatUnit(unit);
+		yield return BattleTriggerManager.CountBattleCondition(unit, deadOrRetreat);
+		yield return BattleTriggerManager.CountBattleCondition(unit, BattleTrigger.ActionType.Neutralize);
+		Destroy(unit.gameObject);
+	}
+
+    public static void RemoveAuraEffectFromDeadOrRetreatUnit(Unit unit) {
+        foreach(var se in unit.GetStatusEffectList()) {
+            if(se.IsOfType(StatusEffectType.Aura)) {
+                Aura.TriggerOnRemoved(unit, se);
+            }
+        }
+    }
 
 	static bool IsSelectedUnitRetreatOrDie(BattleData battleData)
 	{
@@ -224,32 +228,30 @@ public class BattleManager : MonoBehaviour
 		return false;
 	}
 
-	static IEnumerator UpdateRetreatAndDeadUnits(BattleData battleData, BattleManager battleManager)
+	public static IEnumerator UpdateRetreatAndDeadUnits(BattleData battleData, BattleManager battleManager)
 	{
 		battleData.retreatUnits = battleData.unitManager.GetRetreatUnits();
 		battleData.deadUnits = battleData.unitManager.GetDeadUnits();
-
 		yield return battleManager.StartCoroutine(DestroyRetreatUnits(battleData));
 		yield return battleManager.StartCoroutine(DestroyDeadUnits(battleData));
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
 	{
-		Camera.main.transform.position = new Vector3(
-				unit.gameObject.transform.position.x,
-				unit.gameObject.transform.position.y,
-				-10);
+		MoveCameraToObject (unit);
 	}
-
 	public static void MoveCameraToTile(Tile tile)
 	{
-		Camera.main.transform.position = new Vector3(
-				tile.gameObject.transform.position.x,
-				tile.gameObject.transform.position.y,
-				-10);	
+		MoveCameraToObject (tile);
 	}
-
-	public static void MoveCameraToPosition(Vector2 position)
+	private static void MoveCameraToObject(MonoBehaviour obj)
+	{
+		if (obj == null)
+			return;
+		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
+		MoveCameraToPosition (objPos);
+	}
+	private static void MoveCameraToPosition(Vector2 position)
 	{
 		Camera.main.transform.position = new Vector3(
 				position.x,
@@ -257,42 +259,34 @@ public class BattleManager : MonoBehaviour
 				-10);	
 	}
 
-	public static IEnumerator FocusToUnit(BattleData battleData){
+	public static IEnumerator AtActionEnd(BattleData battleData){
+		BattleManager battleManager = battleData.battleManager;
+		// 매 액션이 끝날때마다 갱신하는 특성 조건들
+		battleData.unitManager.ResetLatelyHitUnits();
+		battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+		yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
+		battleData.unitManager.UpdateStatusEffectsAtActionEnd();
+		battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+
+		//승리 조건이 충족되었으면 결과창 출력하기
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
+		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+			Checker.InitializeResultPanel();
+		// 액션마다 갱신사항 종료
+	}
+
+	public IEnumerator PrepareUnitActionAndGetCommand(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = battleData.battleManager;
-			
-			yield return battleManager.StartCoroutine(UpdateRetreatAndDeadUnits(battleData, battleManager));
+			Unit unit = battleData.selectedUnit;
 
-			if (IsSelectedUnitRetreatOrDie(battleData))
-				yield break;
-			
-			// 매 액션이 끝날때마다 갱신하는 특성 조건들
-			battleData.unitManager.ResetLatelyHitUnits();
-			battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-            yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
-            battleData.unitManager.UpdateStatusEffectsAtActionEnd();
-            battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+			yield return BeforeActCommonAct ();
 
-			//승리 조건이 충족되었으면 결과창 출력하기
-			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
-			if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
-				Checker.InitializeResultPanel();
-			// 액션마다 갱신사항 종료
+			//AI 턴에선 쓸모없는 부분
+			battleData.uiManager.ActivateCommandUIAndSetName(unit);
+			OnOffCommandButtons ();
 
-			MoveCameraToUnit(battleData.selectedUnit);
-
-			battleData.uiManager.SetMovedUICanvasOnCenter((Vector2)battleData.selectedUnit.gameObject.transform.position);
-
-			battleData.uiManager.SetSelectedUnitViewerUI(battleData.selectedUnit);
-
-			battleData.uiManager.SetCommandUIName(battleData.selectedUnit);
-			CheckStandbyPossible(battleData);
-			CheckMovePossible(battleData);
-			CheckSkillPossible(battleData);
-
-			battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-
-			//이미 이동했으면 이동 빼고, 아니면 이동을 포함한 모든 종류의 actionCommand를 기다림
+			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (battleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.actionCommand, battleData.triggers.rightClicked));
 			else
@@ -308,18 +302,39 @@ public class BattleManager : MonoBehaviour
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Skill){
 				battleData.currentState = CurrentState.SelectSkill;
-				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
+				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState());
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest){
 				battleData.currentState = CurrentState.RestAndRecover;
 				yield return battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+				yield return null;
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Standby){
 				battleData.currentState = CurrentState.Standby;
 				yield return battleManager.StartCoroutine(Standby());
+				yield return null;
 			}
 		}
 		yield return null;
+	}
+
+	public void MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData battleData, Unit unit){
+		MoveCameraToUnit(unit);
+		battleData.uiManager.SetMovedUICanvasOnUnitAsCenter(unit);
+		battleData.uiManager.SetSelectedUnitViewerUI(unit);
+	}
+	private void OnOffCommandButtons(){
+		OnOffStandbyButton(battleData);
+		OnOffMoveButton(battleData);
+		OnOffSkillButton(battleData);
+	}
+	public IEnumerator BeforeActCommonAct(){
+		yield return StartCoroutine(UpdateRetreatAndDeadUnits(battleData, this));
+		if (IsSelectedUnitRetreatOrDie(battleData))
+			yield break;
+		yield return AtActionEnd(battleData);
+		MoveCameraToUnitAndDisplayUnitInfoViewer(battleData, battleData.selectedUnit);
+		battleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (battleData.selectedUnit);
 	}
 
 	public void CallbackMoveCommand()
@@ -455,7 +470,7 @@ public class BattleManager : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.CapsLock))
 		{
-			BattleTriggerChecker Checker = FindObjectOfType<BattleTriggerChecker>();
+			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 			Checker.InitializeResultPanel ();
 		}
 
@@ -503,7 +518,7 @@ public class BattleManager : MonoBehaviour
 
 	IEnumerator StartPhaseOnGameManager(){
 		battleData.currentPhase++;
-		BattleTriggerChecker.CountBattleCondition();
+		BattleTriggerManager.CountBattleCondition();
 
 		yield return StartCoroutine(battleData.uiManager.MovePhaseUI(battleData.currentPhase));
 
@@ -573,18 +588,23 @@ public class BattleManager : MonoBehaviour
 	}
 
 	void GetStageDataFiles(){
-		if (SceneData.stageNumber == 0)
-			SceneData.stageNumber = 1;	
+        if (SceneData.isTestMode) {
+            mapData = Resources.Load<TextAsset>("Data/EQ_test_map");
+            unitData = Resources.Load<TextAsset>("Data/EQ_test_unit");
+        } else {
+            if (SceneData.stageNumber == 0)
+                SceneData.stageNumber = 1;
 
-		TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
-		mapData = nextMapFile;
-		TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
-		unitData = nextUnitFile;
-		TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
-		aiData = nextAIDataFile;
-		TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
-		battleConditionData = nextBattleConditionFile;
-		TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
-		bgmData = nextBgmFile;
+            TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
+            mapData = nextMapFile;
+            TextAsset nextUnitFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_unit");
+            unitData = nextUnitFile;
+            TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
+            aiData = nextAIDataFile;
+            TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
+            battleConditionData = nextBattleConditionFile;
+            TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
+            bgmData = nextBgmFile;
+        }
 	}
 }

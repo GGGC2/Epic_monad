@@ -22,7 +22,7 @@ public class TileStatusEffectInfo {
 
     public TileStatusEffectInfo(string data) {
         // Debug.Log(data);
-        CommaStringParser commaParser = new CommaStringParser(data);
+        StringParser commaParser = new StringParser(data, ',');
 
         owner = commaParser.Consume();
         requireLevel = commaParser.ConsumeInt();

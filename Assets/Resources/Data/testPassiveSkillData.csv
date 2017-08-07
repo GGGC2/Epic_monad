@@ -1,4 +1,4 @@
-﻿owner,requireLevel,name,column,Text,Type1,Coef1,Type2,Coef2
+﻿owner,requireLevel,name,column,Text,Type1,Coef1,Base1,Type2,Coef2,Base2
 reina,0,핀토스의 긍지,1
 reina,8,상처 태우기,1
 reina,8,불의 파동,2
@@ -35,15 +35,15 @@ eren,29,영겁의 지식,2
 eren,36,진형 붕괴,2
 eren,43,압도적인 공포,1
 eren,43,천상의 전령,3
-kashyasty,1,장미 속의 가시,3
-kashyasty,8,산탄 장전,1
-kashyasty,8,장미의 사수,3
-kashyasty,15,그물탄,1
-kashyasty,15,마법공학 스캐너,3
-kashyasty,29,압축탄,1
-kashyasty,29,마법공학 조준경,3
-kashyasty,36,시들지 않는 의지,3
-kashyasty,43,에테르화,1
+kashasty,1,장미 속의 가시,3
+kashasty,8,산탄 장전,1
+kashasty,8,장미의 사수,3
+kashasty,15,그물탄,1
+kashasty,15,마법공학 스캐너,3
+kashasty,29,압축탄,1
+kashasty,29,마법공학 조준경,3
+kashasty,36,시들지 않는 의지,3
+kashasty,43,에테르화,1
 yeong,0,방랑자,1
 yeong,1,어려운 목표물,2
 yeong,1,동체 시력,3
@@ -97,7 +97,8 @@ eugene,36,야영 전문가,3
 eugene,43,청명수의 은총,1
 eugene,43,백색 파문,2
 eugene,43,길잡이,3
+json,0,표식,1
 sepia,1,신뢰의 끈,2
 darkenir,0,공허의 장벽,0
-arcadia,1,광합성,2
+arcadia,15,광합성,2
 grenev,1,살의,3,6페이즈 이후부터 속도가 25 높아집니다.,

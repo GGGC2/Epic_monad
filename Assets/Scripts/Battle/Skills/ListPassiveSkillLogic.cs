@@ -12,11 +12,11 @@ namespace Battle.Skills
 		    this.passiveSkillLogics = passiveSkillLogics;
 	    }
 
-	    public override void ApplyStatusEffectByKill(HitInfo hitInfo, Unit deadUnit)
+	    public override IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.ApplyStatusEffectByKill(hitInfo, deadUnit);
+			    yield return skillLogic.TriggerOnKill(hitInfo, deadUnit);
 		    }
 	    }
 
@@ -66,17 +66,32 @@ namespace Battle.Skills
         }
 
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
+            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.ApplyBonusDamageFromEachPassive(skillInstanceData);
+                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             }
         }
 
         public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData) {
+            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.ApplyTacticalBonusFromEachPassive(skillInstanceData);
+                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
             }
         }
 
+        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+            foreach(var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.ActionInDamageRoutine(skillInstanceData);
+            }
+        }
 
         public override int GetEvasionChance()
 	    {
@@ -116,10 +131,20 @@ namespace Battle.Skills
                 skillLogic.TriggerActiveSkillDamageApplied(caster, target);
             }
         }
-    
-        public override void TriggerDamaged(Unit target, int damage, Unit caster) {
+
+        public override bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                skillLogic.TriggerDamaged(target, damage, caster);
+                if (!skillLogic.TriggerDamaged(target, damage, caster, isSourceTrap)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
+        }
+
+        public override void TriggerAfterDamaged(Unit target, int damage, Unit caster) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerAfterDamaged(target, damage, caster);
             }
         }
 
@@ -150,10 +175,24 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(caster, targets);
 		    }
 	    }
+        public override IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+            foreach(var skillLogic in passiveSkillLogics) {
+                yield return skillLogic.TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(attacker, shieldCaster, target, amount);
+            }
+        }
         public override void TriggerOnMove(Unit caster) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerOnMove(caster);
             }
+        }
+        public override bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerOnForceMove(caster, tileAfter)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
         }
 
         public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
@@ -211,6 +250,15 @@ namespace Battle.Skills
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }
+        }
+        public override bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerOnSteppingTrap(caster, tile, trap)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
         }
     }
 }

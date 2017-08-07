@@ -24,9 +24,8 @@ public class SkillColumnInfo
 	public string column2Name;
 	public string column3Name;
 
-	public SkillColumnInfo(string line)
-	{
-		CommaStringParser commaParser = new CommaStringParser(line);
+	public SkillColumnInfo(string line){
+		StringParser commaParser = new StringParser(line, ',');
 		this.unitName = commaParser.Consume();
 		this.column1Name = commaParser.Consume();
 		this.column2Name = commaParser.Consume();

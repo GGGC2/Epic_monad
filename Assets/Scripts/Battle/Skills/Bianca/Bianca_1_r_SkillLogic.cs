@@ -15,12 +15,12 @@ namespace Battle.Skills {
         public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             if(caster == target) {
                 StatusEffect alreadyAppliedStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "떠밀기");
-                int stack = 1;
+                int stack = 2;
                 if (alreadyAppliedStatusEffect != null) {
                     stack += alreadyAppliedStatusEffect.GetRemainStack();
-                    int apCoef = (int)statusEffect.GetAmountOfType(StatusEffectType.Etc);
-                    skill.SetRequireAP(apCoef * stack * (stack + 1));
                 }
+                int apCoef = (int)statusEffect.GetAmountOfType(StatusEffectType.Etc);
+                skill.SetRequireAP(apCoef * (stack * (stack + 1))/2);
                 return true;
             }
             return false;
@@ -37,9 +37,8 @@ namespace Battle.Skills {
 
             StatusEffector.AttachStatusEffect(caster, skill, caster, tiles);
             Tile backTile = GetBackTile(caster, target);
-            if(backTile != null && !backTile.IsUnitOnTile()) {
-                target.SetPosition(backTile.position);
-            }
+            if(backTile != null && !backTile.IsUnitOnTile())
+                target.ForceMove(backTile);
 
             yield return new WaitForSeconds(0.5f);
         }

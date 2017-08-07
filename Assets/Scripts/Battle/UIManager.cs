@@ -70,7 +70,7 @@ public class UIManager : MonoBehaviour
 		apBarUI.UpdateAPDisplay(battleData, allUnits);
 	}
 
-	public void SetCommandUIName(Unit selectedUnit)
+	public void ActivateCommandUIAndSetName(Unit selectedUnit)
 	{
 		commandUI.SetActive(true);
 		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetName();
@@ -89,8 +89,7 @@ public class UIManager : MonoBehaviour
 			transform.gameObject.SetActive(true);
 		}
 	}
-    public void SetSkillUI() {
-        Unit selectedUnit = MonoBehaviour.FindObjectOfType<BattleManager>().battleData.selectedUnit;
+    public void SetSkillUI(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
         SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
         skillPanel.SetMaxPage((skillList.Count - 1) / skillButtonCount);
@@ -138,6 +137,7 @@ public class UIManager : MonoBehaviour
 			else
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";
 		}
+        CheckUsableSkill(selectedUnit);
 	}
 
 	public void CheckUsableSkill(Unit selectedUnit){
@@ -146,15 +146,17 @@ public class UIManager : MonoBehaviour
         Color enabledColor = new Color(1, 1, 1);
         Color disabledColor = new Color(1, 0, 0);
 
-		int iterationCount = Math.Min(skillButtonCount, skillList.Count);
+        int page = skillUI.GetComponent<SkillPanel>().GetPage();
+		int iterationCount = Math.Min(skillButtonCount, skillList.Count - skillButtonCount * page);
 		for (int i = 0; i < iterationCount; i++)
 		{
-            Button skillButton = GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>();
+            int skillIndex = i + skillButtonCount * page;
+            Button skillButton = skillUI.transform.Find((i + 1) + "SkillButton").GetComponent<Button>();
             skillButton.interactable = true;
 		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
 
-            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[i])
-			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
+            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[skillIndex])
+			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[skillIndex].GetName()))
 			{
                 skillButton.interactable = false;
 			    skillButton.GetComponentInChildren<Text>().color = disabledColor;
@@ -167,12 +169,12 @@ public class UIManager : MonoBehaviour
 		skillUI.SetActive(false);
 	}
 
-	public void SetSkillCheckAP(Unit selectedUnit, ActiveSkill selectedSkill)
+	public void SetSkillCheckAP(Casting casting)
 	{
 		skillCheckUI.gameObject.SetActive(true);
-		int requireAP = selectedUnit.GetActualRequireSkillAP(selectedSkill);
+		int requireAP = casting.RequireAP;
 		string newAPText = "소모 AP : " + requireAP + "\n" +
-			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - requireAP);
+			"잔여 AP : " + (casting.Caster.GetCurrentActivityPoint() - requireAP);
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
@@ -236,6 +238,8 @@ public class UIManager : MonoBehaviour
 
 	public void SetSelectedUnitViewerUI(Unit selectedUnit)
 	{
+		if (selectedUnit == null)
+			return;
 		selectedUnitViewerUI.SetActive(true);
 		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}
@@ -277,7 +281,7 @@ public class UIManager : MonoBehaviour
 		cancelButtonUI.SetActive(false);
 	}
 
-	public void ResetSkillNamePanelUI()
+	public void HideSkillNamePanelUI()
 	{
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
@@ -287,12 +291,27 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Set(skillName);
 	}
 
-	public void SetMovedUICanvasOnCenter(Vector2 position)
+	public void SetMovedUICanvasOnUnitAsCenter(Unit unit)
+	{
+		SetMovedUICanvasOnObjectAsCenter (unit);
+	}
+	public void SetMovedUICanvasOnTileAsCenter(Tile tile)
+	{
+		SetMovedUICanvasOnObjectAsCenter (tile);
+	}
+	private void SetMovedUICanvasOnObjectAsCenter(MonoBehaviour obj)
+	{
+		if (obj == null)
+			return;
+		Vector2 position = (Vector2)obj.gameObject.transform.position;
+		SetMovedUICanvasOnCenter (position);
+	}
+	private void SetMovedUICanvasOnCenter(Vector2 position)
 	{
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
-		//FindObjectOfType<CameraMover>().SetFixedPosition(newPosition);
 		movedUICanvas.transform.position = newPosition;
 	}
+
 
 	public void AppendNotImplementedLog(String text)
 	{

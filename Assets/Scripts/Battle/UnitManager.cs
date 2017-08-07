@@ -6,6 +6,7 @@ using Enums;
 using Util;
 using Battle.Skills;
 using System.Linq;
+using GameData;
 
 public class DeadUnitInfo{
 	public readonly string unitName;
@@ -17,8 +18,7 @@ public class DeadUnitInfo{
 	}
 }
 
-public class RetreatUnitInfo
-{
+public class RetreatUnitInfo{
 	public readonly string unitName;
 	public readonly Side unitSide;
 
@@ -30,7 +30,6 @@ public class RetreatUnitInfo
 }
 
 public class UnitManager : MonoBehaviour {
-
 	int standardActivityPoint;
 
 	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -59,8 +58,6 @@ public class UnitManager : MonoBehaviour {
 
     public void TriggerPassiveSkillsAtActionEnd() {
 		foreach(var unit in GetAllUnits()) {
-			if(unit.GetLearnedPassiveSkillList ().Count >	0 )
-				Debug.Log (unit.GetName() + "의 패시브 스킬 개수 : " + unit.GetLearnedPassiveSkillList ().Count);
             SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
         }
     }
@@ -91,6 +88,7 @@ public class UnitManager : MonoBehaviour {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
                     unit.updateStats(statusEffect, false, false);
+                    unit.UpdateSpriteByStealth();
                 }
                 else
                     unit.RemoveStatusEffect(statusEffect);
@@ -100,12 +98,16 @@ public class UnitManager : MonoBehaviour {
 
 	public List<Unit> GetRetreatUnits(){
 		retreatUnits.Clear();
+		
+		if(SceneData.stageNumber < Setting.retreatOpenStage)
+			return retreatUnits;
+
 		foreach (var unit in units){
 			// 오브젝트는 이탈하지 않는다
 			if (unit.IsObject()) continue;
 
 			float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
-			if (((percentHealth <= 10) && (unit.GetCurrentHealth() > 0)) ||
+			if (((percentHealth <= Setting.retreatHpPercent) && (unit.GetCurrentHealth() > 0)) ||
 				(retreatUnits.Contains(unit)))
 				retreatUnits.Add(unit);
 		}
@@ -179,22 +181,26 @@ public class UnitManager : MonoBehaviour {
 					
 					if (unitInfo.name != "Empty") {
 						unitInfo.nameInCode = PCName;
-						unitInfo.baseHealth = UnitInfo.GetStat(PCName, UnitInfo.StatType.Health);
-						unitInfo.basePower = UnitInfo.GetStat(PCName, UnitInfo.StatType.Power);
-						unitInfo.baseDefense = UnitInfo.GetStat(PCName, UnitInfo.StatType.Defense);
-						unitInfo.baseResistance = UnitInfo.GetStat(PCName, UnitInfo.StatType.Resist);
-						unitInfo.baseAgility = UnitInfo.GetStat(PCName, UnitInfo.StatType.Agility);
+						unitInfo.baseHealth = UnitInfo.GetStat(PCName, Stat.MaxHealth);
+						unitInfo.basePower = UnitInfo.GetStat(PCName, Stat.Power);
+						unitInfo.baseDefense = UnitInfo.GetStat(PCName, Stat.Defense);
+						unitInfo.baseResistance = UnitInfo.GetStat(PCName, Stat.Resistance);
+						unitInfo.baseAgility = UnitInfo.GetStat(PCName, Stat.Agility);
 						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
 
-						if(GameData.SceneData.stageNumber >= Setting.elementOpenStage){
+						if(SceneData.stageNumber >= Setting.elementOpenStage)
 							unitInfo.element = UnitInfo.GetElement(PCName);
+						if(SceneData.stageNumber >= Setting.celestialOpenStage)
 							unitInfo.celestial = UnitInfo.GetCelestial(PCName);
-						}
+
+						GeneratedPC += 1;
 					}
-					
-					GeneratedPC += 1;
 				}
 			}
+
+			Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
+			Debug.Log("GeneratedPC : " + GeneratedPC);
+			FindObjectOfType<BattleTriggerManager>().battleTriggers.Find(trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0).targetCount = GeneratedPC;
 			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
 
 			foreach (var unitInfo in unitInfoList){
@@ -217,19 +223,16 @@ public class UnitManager : MonoBehaviour {
 			List<string> controllableUnitNameList = new List<string>();
 			readyManager.selected.ToList().ForEach(panel => {
 				if (panel.unitName != "Empty")
-				{
 					controllableUnitNameList.Add(panel.unitName);
-				}
 			});
 			
 			units.ForEach(unit => {
-				if (controllableUnitNameList.Contains(unit.GetNameInCode()))
-				{
+				if (controllableUnitNameList.Contains(unit.GetNameInCode())){
 					Destroy(unit.GetComponent<AIData>());
 				}
 			});
 
-			Destroy(GameObject.Find("ReadyManager").gameObject);
+			Destroy(readyManager.gameObject);
 		}
 		else {
 			foreach (var unitInfo in unitInfoList){
@@ -259,13 +262,11 @@ public class UnitManager : MonoBehaviour {
 		// Debug.Log("Generate units complete");
 	}
 
-	public void DeleteDeadUnit(Unit deadUnit)
-	{
+	public IEnumerator DeleteDeadUnit(Unit deadUnit){
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnit.GetLatelyHitInfos())
-		{
+		foreach (var hitInfo in deadUnit.GetLatelyHitInfos()){
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyStatusEffectByKill(hitInfo, deadUnit);
+			yield return StartCoroutine(SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, deadUnit));
 
 			if (hitInfo.skill != null)
 				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
@@ -275,18 +276,15 @@ public class UnitManager : MonoBehaviour {
 		readiedUnits.Remove(deadUnit);
 	}
 
-	public void DeleteRetreatUnit(Unit retreateUnit)
-	{
+	public void DeleteRetreatUnit(Unit retreateUnit){
 		units.Remove(retreateUnit);
 		readiedUnits.Remove(retreateUnit);
 	}
 
-	public List<Unit> GetUpdatedReadiedUnits()
-	{
+	public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();
 		// check each unit and add all readied units.
-		foreach (var unit in units)
-		{
+		foreach (var unit in units){
 			// 오브젝트의 턴은 돌아오지 않는다
 			if (unit.IsObject()) continue;
 
@@ -301,19 +299,16 @@ public class UnitManager : MonoBehaviour {
 		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
 		return readiedUnits;
 	}
 
-    public List<Unit> GetEnemyUnits()
-    {
-        foreach (var unit in units)
-        {
-            if (unit.GetSide() == Side.Enemy)
-            {
+    public List<Unit> GetEnemyUnits(){
+        foreach (var unit in units){
+            if (unit.GetSide() == Side.Enemy){
                 enemyUnits.Add(unit);
                 // Debug.Log(unit.GetName() + " is enemy");
             }
@@ -380,24 +375,24 @@ public class UnitManager : MonoBehaviour {
 		passiveSkillList = Parser.GetPassiveSkills();
 	}
 
-    void LoadStatusEffects()
-    {
+    void LoadStatusEffects(){
         statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
     }
 
-    void LoadTileStatusEffects()
-    {
+    void LoadTileStatusEffects(){
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start () {
+	void Start() {
 		GameData.PartyData.CheckLevelZero();
 		LoadActiveSkills();
 		LoadPassiveSkills();
         LoadStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
-		ApplyAIInfo();
+        if (!GameData.SceneData.isTestMode) {
+            ApplyAIInfo();
+        }
         GetEnemyUnits();
 	}
 
@@ -411,7 +406,7 @@ public class UnitManager : MonoBehaviour {
 		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
 		{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
@@ -419,10 +414,10 @@ public class UnitManager : MonoBehaviour {
 		{
 			SortHelper.CompareBy<Unit>(go => {
 					int currentAP = go.GetCurrentActivityPoint();
-					int recover = go.GetStat(Stat.Dexturity);
+					int recover = go.GetStat(Stat.Agility);
 					return currentAP + recover;
 			}),
-			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Dexturity)),
+			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
 		}, reverse:true));
 
