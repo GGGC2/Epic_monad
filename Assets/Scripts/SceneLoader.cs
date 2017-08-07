@@ -40,6 +40,10 @@ public class SceneLoader : MonoBehaviour{
 		return fadeoutScreenObject.activeInHierarchy;
 	}
 	
+	void Awake(){
+		Application.backgroundLoadingPriority = ThreadPriority.Low;
+	}
+
 	IEnumerator Start(){
 		yield return Fade(false);
 		fadeoutScreenObject.SetActive(false);
@@ -93,7 +97,6 @@ public class SceneLoader : MonoBehaviour{
             if (!SceneData.isTestMode && !SceneData.isStageMode) {
                 GameDataManager.Save();
             }
-			Debug.Log("input next dialogue - " + SceneData.dialogueName);
 
 			SceneManager.LoadScene("Dialogue");
 		}

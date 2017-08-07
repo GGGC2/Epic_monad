@@ -15,7 +15,7 @@ namespace GameData{
 		}
 
 		public static void SetDefault(){
-			Debug.Log("Set Default LEVEL 1");
+			//Debug.Log("Set Default LEVEL 1");
 			level = 1;
 			exp = 0;
 			reqExp = 100;

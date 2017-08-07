@@ -1,59 +1,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 using Save;
 using System;
 
-namespace WorldMap
-{
-public class WorldMapManager : MonoBehaviour
-{
-	public static List<StoryInfo> storyInfos = new List<StoryInfo>();
+namespace WorldMap{
+	public class WorldMapManager : MonoBehaviour{
+		public static List<StoryInfo> storyInfos = new List<StoryInfo>();
 
-        public static string currentStory = "";
+			public static string currentStory = "";
 
-	public static string GetNextDialogue()
-	{
-		foreach (StoryInfo storyInfo in storyInfos)
-		{
-			if (storyInfo.storyName == currentStory)
-			{
-				return storyInfo.dialogueName;
+		public static string GetNextDialogue(){
+			foreach (StoryInfo storyInfo in storyInfos){
+				if (storyInfo.storyName == currentStory)
+					return storyInfo.dialogueName;
+			}
+
+			return null;
+		}
+
+		public static void ToSkillTree(){
+			SceneManager.LoadScene("SkillTree");
+		}
+
+
+		void Awake(){
+			if (storyInfos.Count == 0){
+				storyInfos = Parser.GetParsedStoryInfo();
+				Debug.Assert(storyInfos.Count != 0);
 			}
 		}
 
-		return null;
-	}
+		public static void ToNextDialogue(){
+			string nextDialogue = GetNextDialogue();
+			Debug.Assert(nextDialogue != null);
 
-	public static void ToSkillTree()
-	{
-		SceneManager.LoadScene("SkillTree");
-	}
-
-
-	void Awake()
-	{
-		if (storyInfos.Count == 0)
-		{
-			Debug.Log("WorldMapManager initialized");
-			storyInfos = Parser.GetParsedStoryInfo();
-			Debug.Assert(storyInfos.Count != 0);
-		}
-
-		if (currentStory == "")
-		{
-			//currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
-			Debug.Log("Set current story to " + currentStory);
+			FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextDialogue);
 		}
 	}
-
-	public static void ToNextDialogue()
-	{
-		string nextDialogue = GetNextDialogue();
-		Debug.Assert(nextDialogue != null);
-
-		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(nextDialogue);
-	}
-}
 }

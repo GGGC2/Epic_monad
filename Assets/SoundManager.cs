@@ -10,7 +10,6 @@ public class SoundManager : MonoBehaviour {
 	AudioSource audioSource;
 
 	public void PlayBgm(string name){
-		Debug.Log("Play bgm : " + "Sound/" + name);
 		AudioClip bgm = Resources.Load<AudioClip>("Sound/" + name);
 		if(audioSource.clip == null || audioSource.clip != bgm)
 			audioSource.clip = bgm;

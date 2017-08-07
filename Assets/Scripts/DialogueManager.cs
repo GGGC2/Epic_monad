@@ -207,7 +207,6 @@ public class DialogueManager : MonoBehaviour{
     }
 
 	void Initialize(){
-		Debug.Log(SceneData.dialogueName);
         if (SceneData.dialogueName != null){
             TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.dialogueName, typeof(TextAsset)) as TextAsset;
             dialogueData = nextScriptFile;
@@ -249,8 +248,6 @@ public class DialogueManager : MonoBehaviour{
 			leftPortrait.color = Color.gray;
 			rightPortrait.color = Color.gray;
 
-			// Previous adventure dialogue is end
-			// If adventure object is clicked, PrintAllLine is called.
 			if (dialogueDataList[line].IsAdventureObject()){
 				SetActiveAdventureUI(true);
 				yield break;

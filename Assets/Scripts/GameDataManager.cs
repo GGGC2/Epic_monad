@@ -36,7 +36,7 @@ public class GameDataManager {
     }
     public static void Save() {
         string data = ConvertGameDataToString();
-        Debug.Log("Saved " + data + " to " + filePath);
+        //Debug.Log("Saved " + data + " to " + filePath);
         File.WriteAllText(filePath, data, Encoding.UTF8);
     }
 
@@ -47,7 +47,7 @@ public class GameDataManager {
             return;
         }
 
-        Debug.Log("Save is loaded from " + filePath);
+        //Debug.Log("Save is loaded from " + filePath);
         string data = File.ReadAllText(filePath, Encoding.UTF8);
         ConvertStringToGameData(data);
     }
