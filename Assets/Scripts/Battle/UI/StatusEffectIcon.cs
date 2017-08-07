@@ -13,8 +13,34 @@ namespace BattleUI {
         public static readonly float HEIGHT = 20;
         static readonly float MARGIN = 5;
 
+        string GetSkillColumnRow(Skill skill) {
+            string column = "";
+            switch(skill.column) {
+            case 1:
+                column = "Left";
+            break;
+            case 2:
+                column = "Mid";
+            break;
+            case 3:
+                column = "Right";
+            break;
+            }
+            string row = ((skill.requireLevel + 6)/7).ToString();
+            return column + row;
+        }
+
         public void UpdateSprite() {
-            image.sprite = Resources.Load<Sprite>("Icon/Stat/attack");
+            string fileName;
+            if(statusEffect.GetOriginPassiveSkill() != null)    fileName = GetSkillColumnRow(statusEffect.GetOriginPassiveSkill());
+            else fileName = GetSkillColumnRow(statusEffect.GetOriginSkill());
+            string fileDirectory = "Icon/Skill/" + statusEffect.GetCaster().GetNameInCode() + "/" + fileName;
+            try {
+                image.sprite = Resources.Load<Sprite>(fileDirectory);
+            }
+            catch(UnityException e) {
+                image.sprite = Resources.Load<Sprite>("Icon/Empty");
+            }
             image.rectTransform.sizeDelta = new Vector2(WIDTH, HEIGHT);
         }
 
