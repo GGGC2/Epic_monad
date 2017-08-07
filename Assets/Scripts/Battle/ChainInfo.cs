@@ -42,6 +42,7 @@ public class ChainInfo {
 
 	public Unit GetUnit() {	 return unit;	}
 	public ActiveSkill GetSkill() {	return skill;	}
+	public SkillLocation GetSkillLocation() { return skillLocation; }
 	public List<Tile> GetFirstRange() {
 		return skill.GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
 	}

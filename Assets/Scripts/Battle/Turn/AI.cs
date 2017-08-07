@@ -258,7 +258,7 @@ namespace Battle.Turn{
 			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
 		}
 		public static IEnumerator UseSkill(Unit unit, ActiveSkill skill, SkillLocation skillLocation){
-			yield return skill.AIUseSkill (unit, skillLocation);
+			yield return skill.AIUseSkill (unit, skill, skillLocation);
 		}
 		public static IEnumerator Standby(Unit unit){
 			yield return new WaitForSeconds(0.2f);

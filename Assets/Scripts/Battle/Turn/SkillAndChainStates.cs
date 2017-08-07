@@ -131,9 +131,10 @@ namespace Battle.Turn {
                     BattleManager battleManager = battleData.battleManager;
                     battleData.currentState = CurrentState.CheckApplyOrChain;
 					var targetTile = battleData.SelectedUnitTile;
+					SkillLocation skillLocation = new SkillLocation (selectedUnit.GetTileUnderUnit (), targetTile, selectedUnit.GetDirection ());
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
-					targetTile=selectedSkill.GetRealTargetTileForPC(new SkillLocation(selectedUnit.GetPosition(), targetTile, selectedUnit.GetDirection()));
-					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, targetTile, originalDirection));
+					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
+					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, skillLocation, originalDirection));
                 }
 					
                 if (battleData.currentState != CurrentState.SelectSkillApplyDirection) {
@@ -202,18 +203,17 @@ namespace Battle.Turn {
 
                 BattleManager battleManager = battleData.battleManager;
                 battleData.currentState = CurrentState.CheckApplyOrChain;
-                yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, battleData.SelectedTile, originalDirection));
+				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, battleData.SelectedTile, selectedUnit.GetDirection ());
+                yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, skillLocation, originalDirection));
             }
         }
 
-        public static IEnumerator CheckApplyOrChain(BattleData battleData, Tile targetTile, Direction originalDirection) {
+		public static IEnumerator CheckApplyOrChain(BattleData battleData, SkillLocation skillLocation, Direction originalDirection) {
             while (battleData.currentState == CurrentState.CheckApplyOrChain) {
                 Unit caster = battleData.selectedUnit;
 				Vector2 casterPos = caster.GetPosition ();
-				Direction direction = caster.GetDirection ();
 				ActiveSkill skill = battleData.SelectedSkill;
-				SkillLocation skillLocation = new SkillLocation (casterPos, targetTile, caster.GetDirection ());
-                BattleManager.MoveCameraToTile(targetTile);
+                BattleManager.MoveCameraToTile(skillLocation.TargetTile);
 
 				//firstRange는 1차 범위(스킬 시전 가능 범위. 투사체의 경우 목표점까지의 경로) 내 타일들이고
 				//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들임. secondRange가 현재 단계에서 중요
@@ -226,18 +226,17 @@ namespace Battle.Turn {
 
                 //데미지 미리보기
                 Debug.Log("/------- Damage preview -------\\");
-				Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculatePreviewTotalDamage(battleData, targetTile, realEffectRange, firstRange);
+				Dictionary<Unit, DamageCalculator.DamageInfo> calculatedTotalDamage = DamageCalculator.CalculatePreviewTotalDamage(battleData, skill, skillLocation);
                 foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in calculatedTotalDamage) {
                     if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
                     else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
                 }
                 Debug.Log("\\------- Damage preview -------/");
 
-                bool isApplyPossible = SkillLogicFactory.Get(battleData.SelectedSkill).CheckApplyPossible(caster, secondRange);
+				bool isApplyPossible = SkillLogicFactory.Get(skill).CheckApplyPossible(caster, secondRange);
                 bool isChainPossible = CheckChainPossible(battleData);
                 battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
-                ActiveSkill selectedSkill = battleData.SelectedSkill;
-                battleData.uiManager.SetSkillCheckAP(caster, selectedSkill);
+                battleData.uiManager.SetSkillCheckAP(caster, skill);
 
                 battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
@@ -253,7 +252,7 @@ namespace Battle.Turn {
                     BattleManager.MoveCameraToUnit(caster);
                     battleData.uiManager.DisableSkillCheckUI();
                     caster.SetDirection(originalDirection);
-                    if (selectedSkill.GetSkillType() != SkillType.Point)
+                    if (skill.GetSkillType() != SkillType.Point)
                         battleData.currentState = CurrentState.SelectSkillApplyDirection;
                     else
                         battleData.currentState = CurrentState.SelectSkillApplyPoint;
@@ -277,13 +276,13 @@ namespace Battle.Turn {
                     // 체인이 가능한 스킬일 경우. 체인 발동.
                     // 왜 CheckChainPossible 안 쓴 거죠...? CheckChainPossible은 체인을 새로 만들때 체크
                     // 여기서는 체인을 새로 만드는 게 아니라 기존에 쌓인 체인을 소모하는 코드
-					if (selectedSkill.IsChainable()) {
-						yield return ApplyChain(battleData, targetTile, secondRange, realEffectRange, firstRange);
+					if (skill.IsChainable()) {
+						yield return ApplyChain(battleData, caster, skill, skillLocation);
                     }
                     // 체인이 불가능한 스킬일 경우, 그냥 발동.
                     else {
                         battleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, battleData.SelectedSkill, secondRange, realEffectRange, 1));
+						yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, skill, skillLocation, 1));
 					}
 
 					BattleManager.MoveCameraToUnit(caster);
@@ -298,7 +297,7 @@ namespace Battle.Turn {
                     battleData.skillApplyCommand = SkillApplyCommand.Waiting;
                     battleData.currentState = CurrentState.ChainAndStandby;
 					//투사체 스킬이고 타겟 타일에 유닛 없어도 연계 대기는 된다!(기획에서 결정된 사항)
-                    yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, secondRange, firstRange));
+                    yield return battleManager.StartCoroutine(ChainAndStandby(battleData, caster, skill, skillLocation));
                 } else {
                     Debug.LogError("Invalid State");
                     yield return null;
@@ -349,13 +348,10 @@ namespace Battle.Turn {
         }
 
 
-		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<Tile> secondRange, List<Tile> realEffectRange, List<Tile> firstRange) {
+		public static IEnumerator ApplyChain(BattleData battleData, Unit caster, ActiveSkill skill, SkillLocation skillLocation) {
             BattleManager battleManager = battleData.battleManager;
-			Unit caster = battleData.selectedUnit;
-			Tile casterTile = caster.GetTileUnderUnit ();
-			Direction direction = caster.GetDirection ();
-			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			ActiveSkill skill = battleData.SelectedSkill;
+			List<Tile> secondRange = skill.GetTilesInSecondRange (skillLocation);
+			List<Tile> realEffectRange = skill.GetTilesInRealEffectRange (skillLocation);
 
 			//실제 데미지/효과가 가해지지는 경우에만 연계가 발동
 			if (realEffectRange.Count != 0) {
@@ -366,32 +362,26 @@ namespace Battle.Turn {
 				List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea (caster, secondRange);
 				int chainCombo = allVaildChainInfo.Count;
 
-				battleData.selectedUnit.PrintChainBonus (chainCombo);
+				caster.PrintChainBonus (chainCombo);
 
 				foreach (var chainInfo in allVaildChainInfo) {
 					Tile focusedTile = chainInfo.GetSecondRange () [0];
 					BattleManager.MoveCameraToTile (focusedTile);
 					battleData.currentState = CurrentState.ApplySkill;
 					chainInfo.GetUnit ().HideChainIcon ();
-					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetSecondRange (), chainInfo.GetSecondRange (), chainCombo));
+					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetSkillLocation(), chainCombo));
 				}
-				battleData.selectedUnit.DisableChainText ();
+				caster.DisableChainText ();
 			}
 			//실제 데미지/효과가 가해지지 않는 경우(이펙트만 나옴) 연계가 발동하지 않고 그냥 그 스킬만 발동시킨다
 			else {
-				yield return battleManager.StartCoroutine(ApplySkill(battleData, battleData.selectedUnit, battleData.SelectedSkill, secondRange, realEffectRange, 1));
+				yield return battleManager.StartCoroutine(ApplySkill(battleData, caster, skill, skillLocation, 1));
 			}
         }
 
-        private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<Tile> selectedTiles, List<Tile> firstRange) {
-			Unit caster = battleData.selectedUnit;
-			Tile casterTile = caster.GetTileUnderUnit ();
-			Direction direction = caster.GetDirection ();
-			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			ActiveSkill skill = battleData.SelectedSkill;
-
+		private static IEnumerator ChainAndStandby(BattleData battleData, Unit caster, ActiveSkill skill, SkillLocation skillLocation) {
             // 방향 돌리기.
-            battleData.selectedUnit.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
+			caster.SetDirection(Utility.GetDirectionToTarget(caster, skill.GetTilesInSecondRange(skillLocation)));
 
             int originAP = skill.GetRequireAP();
 			//여기서 속도까지 적용한 실제 AP 소모량을 받아오는 거 맞나요? 왠지 아닌 듯...
@@ -414,8 +404,10 @@ namespace Battle.Turn {
             yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
 
-		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, ActiveSkill skill, List<Tile> secondRange, List<Tile> realEffectRange, int chainCombo) {
+		private static IEnumerator ApplySkill(BattleData battleData, Unit caster, ActiveSkill skill, SkillLocation skillLocation, int chainCombo) {
             BattleManager battleManager = battleData.battleManager;
+			List<Tile> secondRange = skill.GetTilesInSecondRange(skillLocation);
+			List<Tile> realEffectRange=skill.GetTilesInRealEffectRange(skillLocation);
 			List<Unit> targets = GetUnitsOnTiles(realEffectRange);
             List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
 
