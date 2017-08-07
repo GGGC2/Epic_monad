@@ -350,6 +350,11 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 265084405}
+    - target: {fileID: 224745599966720292, guid: 55ec5618ddfe641c49a7965105624b56,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 459
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 55ec5618ddfe641c49a7965105624b56, type: 2}
   m_IsPrefabParent: 0
@@ -576,7 +581,7 @@ Prefab:
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: dialogueData
       value: 
-      objectReference: {fileID: 4900000, guid: 55a3f91478f55a94e8397fd1b57a8577, type: 3}
+      objectReference: {fileID: 4900000, guid: 7e1d1d8e60c2a744dbb406919553dfe8, type: 3}
     - target: {fileID: 11408426, guid: 972bccab03b9a4b45a28d92acf456e8e, type: 2}
       propertyPath: namePanel
       value: 
