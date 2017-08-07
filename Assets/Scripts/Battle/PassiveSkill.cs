@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using Battle.Skills;
 
 public class PassiveSkill : Skill{
 	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
+	public BasePassiveSkillLogic SkillLogic {
+		get { return SkillLogicFactory.Get (this); }
+	}
 
 	public PassiveSkill(string skillData){
 		StringParser commaParser = new StringParser(skillData, ',');

@@ -40,9 +40,6 @@ public class ChainInfo {
 	public Unit Caster { get { return casting.Caster; } }
 	public ActiveSkill Skill { get { return casting.Skill; } }
 	public SkillLocation Location { get { return casting.Location; } }
-	public List<Tile> GetFirstRange() {
-		return Skill.GetTilesInFirstRange (Location.CasterPos, Location.Direction);
-	}
 	public List<Tile> GetSecondRange() {
 		//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
 		Skill.SetRealTargetTileForSkillLocation(Location);

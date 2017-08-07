@@ -519,6 +519,16 @@ public class TileManager : MonoBehaviour {
 		isTileGenerationFinished = true;
 	}
 
+	public static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {
+		List<Unit> units = new List<Unit>();
+		foreach (var tile in tiles) {
+			if (tile.IsUnitOnTile()) {
+				units.Add(tile.GetUnitOnTile());
+			}
+		}
+		return units;
+	}
+
 	void GenerateTile (TileInfo tileInfo)
 	{
 		if (tileInfo.IsEmptyTile()) return;

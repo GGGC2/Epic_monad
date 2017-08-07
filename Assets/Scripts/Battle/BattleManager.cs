@@ -45,6 +45,7 @@ public class BattleManager : MonoBehaviour{
 		AI.SetBattleManager (this);
 		AI.SetBattleData (battleData);
 		ActiveSkill.SetBattleData (battleData);
+		SkillAndChainStates.SetBattleData (battleData);
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -301,7 +302,7 @@ public class BattleManager : MonoBehaviour{
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Skill){
 				battleData.currentState = CurrentState.SelectSkill;
-				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState(battleData));
+				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState());
 			}
 			else if (battleData.triggers.actionCommand.Data == ActionCommand.Rest){
 				battleData.currentState = CurrentState.RestAndRecover;
