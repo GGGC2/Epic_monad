@@ -89,8 +89,7 @@ public class UIManager : MonoBehaviour
 			transform.gameObject.SetActive(true);
 		}
 	}
-    public void SetSkillUI() {
-        Unit selectedUnit = MonoBehaviour.FindObjectOfType<BattleManager>().battleData.selectedUnit;
+    public void SetSkillUI(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
         SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
         skillPanel.SetMaxPage((skillList.Count - 1) / skillButtonCount);
@@ -138,6 +137,7 @@ public class UIManager : MonoBehaviour
 			else
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";
 		}
+        CheckUsableSkill(selectedUnit);
 	}
 
 	public void CheckUsableSkill(Unit selectedUnit){
@@ -146,15 +146,17 @@ public class UIManager : MonoBehaviour
         Color enabledColor = new Color(1, 1, 1);
         Color disabledColor = new Color(1, 0, 0);
 
-		int iterationCount = Math.Min(skillButtonCount, skillList.Count);
+        int page = skillUI.GetComponent<SkillPanel>().GetPage();
+		int iterationCount = Math.Min(skillButtonCount, skillList.Count - skillButtonCount * page);
 		for (int i = 0; i < iterationCount; i++)
 		{
-            Button skillButton = GameObject.Find((i + 1).ToString() + "SkillButton").GetComponent<Button>();
+            int skillIndex = i + skillButtonCount * page;
+            Button skillButton = skillUI.transform.Find((i + 1) + "SkillButton").GetComponent<Button>();
             skillButton.interactable = true;
 		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
 
-            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[i])
-			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[i].GetName()))
+            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[skillIndex])
+			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[skillIndex].GetName()))
 			{
                 skillButton.interactable = false;
 			    skillButton.GetComponentInChildren<Text>().color = disabledColor;
