@@ -136,8 +136,8 @@ public class ActiveSkill : Skill{
 		}
 		return firstRange;
 	}
-	public List<Tile> GetTilesInFirstRange(Tile casterTile, Direction direction) {
-		return GetTilesInFirstRange (casterTile.GetTilePos (), direction);
+	public List<Tile> GetTilesInFirstRange(SkillLocation location) {
+		return GetTilesInFirstRange (location.CasterPos, location.Direction);
 	}
 	public Tile GetRealTargetTileForAI(Vector2 casterPos, Direction direction, Tile targetTile=null){	
 		if (skillType == SkillType.Route) {
@@ -621,7 +621,6 @@ public class ActiveSkill : Skill{
 		}
 	}
 
-
 	public IEnumerator AIUseSkill(Casting casting){
 		Unit caster = casting.Caster;
 		SkillLocation location = casting.Location;
@@ -630,7 +629,16 @@ public class ActiveSkill : Skill{
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
 
+		List<Tile> firstRange = casting.FirstRange;
+		battleData.tileManager.PaintTiles(firstRange, TileColor.Red);
+		yield return new WaitForSeconds (0.3f);
+		battleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+
+		List<Tile> secondRange = casting.SecondRange;
+		battleData.tileManager.PaintTiles (secondRange, TileColor.Red);
+		yield return new WaitForSeconds (0.3f);
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
+		battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
 		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();
