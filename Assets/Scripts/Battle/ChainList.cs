@@ -25,11 +25,8 @@ public class ChainList : MonoBehaviour {
 	public static void RemoveChainsFromUnit(Unit unit)
 	{
 		List<Chain> chainList = FindObjectOfType<BattleManager>().GetChainList();
-
-		Chain deleteChain = chainList.Find(x => x.Caster == unit);
-
-		chainList.Remove(deleteChain);
-
+		Chain myChain = chainList.Find(x => x.Caster == unit);
+		chainList.Remove(myChain);
 		RemoveChargeEffectToUnit(unit);
 	}
 
@@ -42,8 +39,8 @@ public class ChainList : MonoBehaviour {
 	public static List<Chain> GetAllChainTriggered(Casting casting)
 	{
 		Unit caster = casting.Caster;
-		List<Chain> allChainTriggered = new List<Chain>();
-		allChainTriggered.Add (new Chain (casting));
+		List<Chain> allTriggeredChains = new List<Chain>();
+		allTriggeredChains.Add (new Chain (casting));
 
 		//체인 발동계열 스킬(공격/약화)이어야 다른 체인을 발동시킨다.
 		//아니라면 그냥 현재 시전만 넣은 리스트를 반환하게 됨
@@ -53,10 +50,10 @@ public class ChainList : MonoBehaviour {
 				// 같은 진영이 대기한 체인 중 공격범위 안의 유닛이 서로 겹치면 추가
 				if (chain.Caster.IsAlly (caster)
 					&& chain.Overlapped (new Chain (casting))) {
-					allChainTriggered.Add (chain);
+					allTriggeredChains.Add (chain);
 				}
 			}
 		}
-		return allChainTriggered;
+		return allTriggeredChains;
 	}
 }

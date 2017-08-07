@@ -490,7 +490,7 @@ public class ActiveSkill : Skill{
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
 
-		yield return Battle.Turn.SkillAndChainStates.ApplyChain (casting);
+		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 
 		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();
