@@ -146,9 +146,6 @@ namespace Battle.Turn{
 			battleData.alreadyMoved = true;
 			BattleManager battleManager = battleData.battleManager;
 
-			// 연계 정보 업데이트
-			battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
-
 			yield return null;
 		}
 
@@ -169,8 +166,6 @@ namespace Battle.Turn{
 			Tile beforeTile = battleData.SelectedUnitTile;
 			Tile nextTile = snapshot.tile;
 			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);
-			// 연계 정보 업데이트.
-			battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
 		}
 	}
 }

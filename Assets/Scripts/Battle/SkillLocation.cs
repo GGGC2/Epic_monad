@@ -29,6 +29,9 @@ public class SkillLocation {
 	public Tile TargetTile{
 		get { return targetTile; }
 	}
+	public void SetTargetTile(Tile targetTile){
+		this.targetTile = targetTile;
+	}
 	public Vector2 TargetPos{
 		get { return targetTile.GetTilePos (); }
 	}

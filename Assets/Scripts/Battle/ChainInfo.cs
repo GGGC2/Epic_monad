@@ -18,28 +18,6 @@ public class ChainInfo {
 		this.skillLocation = skillLocation;
 	}
 
-	public SkillLocation GetSkillLocation(){
-		return skillLocation;
-	}
-	public Unit GetUnit() {	 return unit;	}
-	public List<Tile> GetFirstRange() {	
-		return skill.GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
-	}
-	public List<Tile> GetSecondRange() {
-		return skill.GetTilesInSecondRange (skillLocation.TargetTile, skillLocation.Direction);	
-	}
-	public ActiveSkill GetSkill() {	return skill;	}
-	public bool IsRouteType() {	return skill.GetSkillType() == SkillType.Route;	}
-	public List<Tile> GetRouteArea()
-	{
-		if (!IsRouteType ()) {
-			Debug.LogError ("Invaild access - not route type skill");
-			return new List<Tile> ();
-		}
-		else
-			return GetFirstRange();
-	}
-	
 	public bool Overlapped(List<Tile> anotherTargetArea)
 	{
 		List<Unit> anotherTargets = new List<Unit>();
@@ -48,20 +26,31 @@ public class ChainInfo {
 			if (anotherTargetTile.IsUnitOnTile())
 				anotherTargets.Add(anotherTargetTile.GetUnitOnTile());
 		}
-		
 		List<Unit> targets = new List<Unit>();
 		foreach (var targetTile in GetSecondRange())
 		{
 			if (targetTile.IsUnitOnTile())
 				targets.Add(targetTile.GetUnitOnTile());
 		}
-
 		foreach (var anotherTarget in anotherTargets)
 		{
 			if (targets.Contains(anotherTarget))
 				return true;
 		}
-		
 		return false;
+	}
+
+	public Unit GetUnit() {	 return unit;	}
+	public ActiveSkill GetSkill() {	return skill;	}
+	public List<Tile> GetFirstRange() {
+		//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
+		skillLocation.SetTargetTile (skill.GetRealTargetTileForPC (skillLocation));
+		return skill.GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
+	}
+	public List<Tile> GetSecondRange() {
+		//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
+		skillLocation.SetTargetTile (skill.GetRealTargetTileForPC (skillLocation));
+		//체인 걸어둔 투사체 스킬이 아무것도 안 때리고 사라지면 발동 안 되므로 GetTilesInSecondRange가 아니라 GetTilesInRealEffectRange 호출
+		return skill.GetTilesInRealEffectRange (skillLocation.TargetTile, skillLocation.Direction);
 	}
 }
