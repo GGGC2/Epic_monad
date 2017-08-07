@@ -281,6 +281,28 @@ public class ActiveSkill : Skill{
 		}
 	}
 
+
+	public IEnumerator AIUseSkill(Unit unit, Tile targetTile, Direction direction){
+		unit.SetDirection (direction);
+		BattleManager.MoveCameraToUnit (unit);
+		SetSkillNamePanelUI ();
+
+		List<Tile> tilesInSkillRange = new List<Tile> ();
+		tilesInSkillRange.Add (targetTile);
+		List<Tile> tilesInRealEffectRange = tilesInSkillRange;
+		yield return Battle.Turn.SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(unit.GetPosition(),direction));
+
+		BattleManager.MoveCameraToUnit (unit);
+		HideSkillNamePanelUI ();
+	}
+
+	public void SetSkillNamePanelUI(){
+		battleData.uiManager.SetSkillNamePanelUI(korName);
+	}
+	public void HideSkillNamePanelUI(){
+		battleData.uiManager.HideSkillNamePanelUI ();
+	}
+
 	public bool IsChainable(){
 		return skillApplyType == SkillApplyType.DamageHealth
 			|| skillApplyType == SkillApplyType.Debuff;

@@ -259,6 +259,7 @@ namespace Battle.Turn{
 		public static IEnumerator UseSkill(Unit unit, ActiveSkill skill, Direction direction, Tile targetTile){
 			unit.SetDirection (direction);
 			CameraFocusToUnit(unit);
+			skill.SetSkillNamePanelUI ();
 
 			List<Tile> tilesInSkillRange = new List<Tile> ();
 			tilesInSkillRange.Add (targetTile);
@@ -266,7 +267,7 @@ namespace Battle.Turn{
 			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, skill.GetTilesInFirstRange(unit.GetPosition(),direction));
 
 			CameraFocusToUnit(unit);
-			battleData.uiManager.ResetSkillNamePanelUI ();
+			skill.HideSkillNamePanelUI ();
 		}
 		public static IEnumerator Standby(Unit unit){
 			yield return new WaitForSeconds(0.2f);
