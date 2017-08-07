@@ -230,16 +230,6 @@ public static class SkillLogicFactory
             skillLogic = new Curi_8_m_SkillLogic();
             break;
 
-
-			//soldier01
-			case "근접공격":
-				skillLogic = new BaseSkillLogic();
-				break;
-			//archer01 & asterArcher01
-			case "화살 발사":
-				skillLogic = new BaseSkillLogic();
-				break;
-
             default:
             skillLogic = new BaseSkillLogic();
             break;
@@ -248,7 +238,7 @@ public static class SkillLogicFactory
         return skillLogic;
 	}
 
-	public static BasePassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
+	public static ListPassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
 	{
 		List<BasePassiveSkillLogic> passiveSkillLogic = passiveSkills.Select(skill => Get(skill))
 			.ToList();
