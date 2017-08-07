@@ -9,7 +9,7 @@ using GameData;
 public class DialogueManager : MonoBehaviour{
 	public TextAsset dialogueData;
 
-	Sprite transparent;
+	public Sprite transparent;
 	
     public GameObject dialogueUI;
     public GameObject adventureUI;
@@ -32,8 +32,8 @@ public class DialogueManager : MonoBehaviour{
 	
 	bool isLeftUnitOld;
 	
-	SceneLoader sceneLoader;
-	GameObject skipQuestionUI;
+	public SceneLoader sceneLoader;
+	public GameObject skipQuestionUI;
 
     GameObject[] objects;
 
@@ -108,19 +108,19 @@ public class DialogueManager : MonoBehaviour{
 			string commandSubType = dialogueDataList[line].GetCommandSubType();
 			if (commandSubType == "left" || commandSubType == leftUnit){
 				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				leftPortrait.sprite = transparent;
 				isLeftUnitOld = false;
 			}else if (commandSubType == "right" || commandSubType == rightUnit){
 				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightPortrait.sprite = transparent;
 				isLeftUnitOld = true;
 			}
 			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
 			else if (dialogueDataList[line].GetCommandSubType() == "all"){
 				leftUnit = null;
-				leftPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				leftPortrait.sprite = transparent;
 				rightUnit = null;
-				rightPortrait.sprite = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
+				rightPortrait.sprite = transparent;
 				isLeftUnitOld = false;
 			}else
 				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
@@ -128,7 +128,7 @@ public class DialogueManager : MonoBehaviour{
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlayBgm(bgmName);
 		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BG){
-			Sprite bgSprite = Resources.Load("Background/" + dialogueDataList[line].GetCommandSubType(), typeof(Sprite)) as Sprite;
+			Sprite bgSprite = Resources.Load<Sprite>("Background/" + dialogueDataList[line].GetCommandSubType());
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
 		}else if (dialogueDataList[line].Command == DialogueData.CommandType.SE){
 			string SEName = dialogueDataList [line].GetCommandSubType ();
@@ -208,17 +208,13 @@ public class DialogueManager : MonoBehaviour{
 
 	void Initialize(){
         if (SceneData.dialogueName != null){
-            TextAsset nextScriptFile = Resources.Load("Data/" + SceneData.dialogueName, typeof(TextAsset)) as TextAsset;
+            TextAsset nextScriptFile = Resources.Load<TextAsset>("Data/" + SceneData.dialogueName);
             dialogueData = nextScriptFile;
         }
 
-		sceneLoader = FindObjectOfType<SceneLoader>();
-		skipQuestionUI = GameObject.Find("SkipQuestion");
+		dialogueDataList = Parser.GetParsedData<DialogueData>(dialogueData, Parser.ParsingDataType.DialogueData);
+
 		InactiveSkipQuestionUI();
-		
-		transparent = Resources.Load("StandingImage/" + "transparent", typeof(Sprite)) as Sprite;
-		
-		dialogueDataList = Parser.GetParsedDialogueData(dialogueData);
 		
 		line = 0;
 		endLine = dialogueDataList.Count;
@@ -252,7 +248,7 @@ public class DialogueManager : MonoBehaviour{
 				SetActiveAdventureUI(true);
 				yield break;
 			}else if (dialogueDataList[line].IsEffect()){
-				yield return StartCoroutine(HandleCommand());
+				/*yield return*/StartCoroutine(HandleCommand());
 				line++;
 			}else{
 				HandleDialogue();
@@ -271,9 +267,9 @@ public class DialogueManager : MonoBehaviour{
 	void HandleDialogue(){
 		if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
 			(dialogueDataList[line].GetNameInCode() != rightUnit) &&
-			(Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite != null))
+			(Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing") != null))
 		{
-			Sprite sprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
+			Sprite sprite = Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing");
 			if (isLeftUnitOld){
 				leftUnit = dialogueDataList[line].GetNameInCode();
 				leftPortrait.sprite = sprite;

@@ -43,6 +43,9 @@ public class Parser : MonoBehaviour{
 		if(DataType == ParsingDataType.Glossary){
 			object data = new GlossaryData(rowData);
 			return (T)data;
+		}else if(DataType == ParsingDataType.DialogueData){
+			object data = new DialogueData(rowData);
+			return (T)data;
 		}
 		else{
 			Debug.LogError("Invalid Input");
@@ -50,20 +53,6 @@ public class Parser : MonoBehaviour{
 			object garbage = null;
 			return (T)garbage;
 		}
-	}
-
-	public static List<DialogueData> GetParsedDialogueData(TextAsset dialogueDataFile){
-		List<DialogueData> dialogueDataList = new List<DialogueData>();
-
-		string csvText = dialogueDataFile.text;
-		string[] unparsedDialogueDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 0; i < unparsedDialogueDataStrings.Length; i++){
-			DialogueData dialogueData = new DialogueData(unparsedDialogueDataStrings[i]);
-			dialogueDataList.Add(dialogueData);
-		}
-
-		return dialogueDataList;
 	}
 
 	public static List<BattleTrigger> GetParsedBattleTriggerData(){

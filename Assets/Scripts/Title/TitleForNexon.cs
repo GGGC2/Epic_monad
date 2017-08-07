@@ -20,55 +20,18 @@ public class TitleForNexon : MonoBehaviour
     public void Start() {
         GameDataManager.Load();
     }
-	public void Awake()
-	{
+	public void Awake(){
 		foreach (var button in worldMapButtons)
-		{
 			button.enabled = false;
-		}
 	}
 
-	public void OnLowLevelClicked()
-	{
+	public void NewGame(){
         GameDataManager.Reset();
 
 		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
 
-	public void OnHighLevelClicked()
-	{
-        SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
-        GameDataManager.Load();
-        if (SceneData.isDialogue) {
-            sceneLoader.LoadNextDialogueScene(SceneData.dialogueName);
-        }
-        else
-            sceneLoader.LoadNextBattleScene();
-		//ShowWorldMap();
-	}
-
-	public void OnBossLevelClicked()
-	{
-		SaveDataCenter.Reset();
-		SaveData saveData = SaveDataCenter.GetSaveData();
-
-		saveData.progress.worldMap = "Pintos9";
-		saveData.progress.dialogue = "Pintos#15-1";
-
-		saveData.party.partyLevel = 30;
-		saveData.party.partyUnitNames = new List<string>
-		{
-			"reina",
-			"sisterna",
-			"eren",
-			"luvericha"
-		};
-
-		ShowWorldMap();
-	}
-
-	private void ShowWorldMap()
-	{
+	private void ShowWorldMap(){
 		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
 
 		titlePath.DOPlay();
