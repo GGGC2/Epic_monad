@@ -18,7 +18,7 @@ namespace Battle.Feature
 				return;
 			}
 
-			List<Tile> targetArea = chainInfo.GetTargetArea();
+			List<Tile> targetArea = chainInfo.GetSecondRange();
 			battleData.tileManager.PaintTiles(targetArea, TileColor.Yellow);
 		}
 
@@ -33,7 +33,7 @@ namespace Battle.Feature
 				return;
 			}
 
-			List<Tile> targetArea = chainInfo.GetTargetArea();
+			List<Tile> targetArea = chainInfo.GetSecondRange();
 			battleData.tileManager.DepaintTiles(targetArea, TileColor.Yellow);
 		}
 	}

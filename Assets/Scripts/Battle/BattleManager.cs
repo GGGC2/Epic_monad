@@ -33,6 +33,7 @@ public class BattleManager : MonoBehaviour{
 		PartyData.CheckLevelZero();
 		Load();
 		battleData.tileManager = FindObjectOfType<TileManager>();
+		SkillLocation.tileManager = battleData.tileManager;
 		battleData.unitManager = FindObjectOfType<UnitManager>();
 		battleData.uiManager = FindObjectOfType<UIManager>();
 		battleData.battleManager = this;

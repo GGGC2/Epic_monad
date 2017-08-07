@@ -24,12 +24,12 @@ public class ChainText : MonoBehaviour {
 		foreach (var chainInfo in battleManager.GetChainList())
 		{
 			// 현재 턴인 유닛에게 강조표시.
-			if (!chainInfo.GetTargetArea().Any(k => k.IsUnitOnTile()))
+			if (!chainInfo.GetSecondRange().Any(k => k.IsUnitOnTile()))
 				newText += chainInfo.GetUnit().GetName() + " >> \n";
 			else
 			{
 				string unitName = chainInfo.GetUnit().GetName();
-				foreach (var tileObject in chainInfo.GetTargetArea())
+				foreach (var tileObject in chainInfo.GetSecondRange())
 				{
 					if (tileObject.GetComponent<Tile>().IsUnitOnTile())
 					{

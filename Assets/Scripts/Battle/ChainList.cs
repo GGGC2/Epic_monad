@@ -20,8 +20,9 @@ public class ChainList : MonoBehaviour {
 				ActiveSkill skill = chainInfo.GetSkill();
 				Unit unit = chainInfo.GetUnit();
 				List<Tile> newTargetTiles = skill.GetTilesInSecondRange (newCenterTile, unit.GetDirection ());
+				SkillLocation skillLocation = new SkillLocation (unit.GetTileUnderUnit (), newCenterTile, unit.GetDirection ());
 
-				ChainInfo newChainInfo = new ChainInfo(unit, newCenterTile, newTargetTiles, skill, chainInfo.GetRouteArea());
+				ChainInfo newChainInfo = new ChainInfo(unit, skill, skillLocation);
 				newChainList.Add(newChainInfo);
 			}
 			else
@@ -34,8 +35,9 @@ public class ChainList : MonoBehaviour {
 	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, ActiveSkill skill, List<Tile> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
+		SkillLocation skillLocation = new SkillLocation (unit.GetTileUnderUnit (), targetTile, unit.GetDirection ());
 
-		ChainInfo newChainInfo = new ChainInfo(unit, targetTile, targetArea, skill, firstRange);
+		ChainInfo newChainInfo = new ChainInfo(unit, skill, skillLocation);
 		chainList.Add(newChainInfo);
 
 		SetChargeEffectToUnit(unit);

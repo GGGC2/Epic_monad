@@ -367,11 +367,11 @@ namespace Battle.Turn {
 				battleData.selectedUnit.PrintChainBonus (chainCombo);
 
 				foreach (var chainInfo in allVaildChainInfo) {
-					Tile focusedTile = chainInfo.GetTargetArea () [0];
+					Tile focusedTile = chainInfo.GetSecondRange () [0];
 					BattleManager.MoveCameraToTile (focusedTile);
 					battleData.currentState = CurrentState.ApplySkill;
 					chainInfo.GetUnit ().HideChainIcon ();
-					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetTargetArea (), chainInfo.GetTargetArea (), chainCombo));
+					yield return battleManager.StartCoroutine (ApplySkill (battleData, chainInfo.GetUnit (), chainInfo.GetSkill (), chainInfo.GetSecondRange (), chainInfo.GetSecondRange (), chainCombo));
 				}
 				battleData.selectedUnit.DisableChainText ();
 			}
