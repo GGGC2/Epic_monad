@@ -132,7 +132,7 @@ namespace Battle.Turn {
                     battleData.currentState = CurrentState.CheckApplyOrChain;
 					var targetTile = battleData.SelectedUnitTile;
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
-					targetTile=selectedSkill.GetRealTargetTileForPC(selectedUnit.GetPosition(), selectedUnit.GetDirection(), targetTile);
+					targetTile=selectedSkill.GetRealTargetTileForPC(new SkillLocation(selectedUnit.GetPosition(), targetTile, selectedUnit.GetDirection()));
 					yield return battleManager.StartCoroutine(CheckApplyOrChain(battleData, targetTile, originalDirection));
                 }
 					
@@ -287,8 +287,6 @@ namespace Battle.Turn {
 
 					BattleManager.MoveCameraToUnit(caster);
 					battleData.currentState = CurrentState.FocusToUnit;
-					// 연계 정보 업데이트
-					battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
                 }
 				else if (battleData.skillApplyCommand == SkillApplyCommand.Chain) {
                     // 데미지 미리보기 해제.
@@ -300,8 +298,6 @@ namespace Battle.Turn {
                     battleData.currentState = CurrentState.ChainAndStandby;
 					//투사체 스킬이고 타겟 타일에 유닛 없어도 연계 대기는 된다!(기획에서 결정된 사항)
                     yield return battleManager.StartCoroutine(ChainAndStandby(battleData, targetTile, secondRange, firstRange));
-                    // 연계 정보 업데이트. 여기선 안 해줘도 될 것 같은데 혹시 몰라서...
-                    battleData.chainList = ChainList.RefreshChainInfo(battleData.chainList);
                 } else {
                     Debug.LogError("Invalid State");
                     yield return null;

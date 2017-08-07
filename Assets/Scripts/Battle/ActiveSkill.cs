@@ -139,13 +139,13 @@ public class ActiveSkill : Skill{
 		}
 		return targetTile;
 	}
-	public Tile GetRealTargetTileForPC(Vector2 casterPos, Direction direction, Tile targetTile=null){	
+	public Tile GetRealTargetTileForPC(SkillLocation skillLocation){
 		if (skillType == SkillType.Route) {
-			List<Tile> firstRange = GetTilesInFirstRange (casterPos, direction);
+			List<Tile> firstRange = GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
 			Tile routeEnd = TileManager.GetRouteEndForPC (firstRange);
 			return routeEnd;
 		}
-		return targetTile;
+		return skillLocation.TargetTile;
 	}
 	public List<Tile> GetTilesInSecondRange(Tile targetTile, Direction direction)
 	{

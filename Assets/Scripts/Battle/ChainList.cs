@@ -5,33 +5,6 @@ using System.Collections.Generic;
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
-	// 체인리스트에서 경로형 기술 범위 재설정. 이동 후, 스킬시전 후(유닛 사망, 넉백, 풀링 등) 꼭 호출해줄 것
-	public static List<ChainInfo> RefreshChainInfo(List<ChainInfo> chainList)
-	{
-		TileManager tileManager = FindObjectOfType<TileManager>();
-
-		List<ChainInfo> newChainList = new List<ChainInfo>();
-		foreach (var chainInfo in chainList)
-		{
-			if (chainInfo.IsRouteType())
-			{
-				List<Tile> newRouteTiles = TileManager.GetRouteTiles(chainInfo.GetRouteArea());
-				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1];
-				ActiveSkill skill = chainInfo.GetSkill();
-				Unit unit = chainInfo.GetUnit();
-				List<Tile> newTargetTiles = skill.GetTilesInSecondRange (newCenterTile, unit.GetDirection ());
-				SkillLocation skillLocation = new SkillLocation (unit.GetTileUnderUnit (), newCenterTile, unit.GetDirection ());
-
-				ChainInfo newChainInfo = new ChainInfo(unit, skill, skillLocation);
-				newChainList.Add(newChainInfo);
-			}
-			else
-				newChainList.Add(chainInfo);
-		}
-
-		return newChainList;
-	}
-
 	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, ActiveSkill skill, List<Tile> firstRange)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
