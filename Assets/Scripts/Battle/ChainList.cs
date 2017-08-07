@@ -19,12 +19,7 @@ public class ChainList : MonoBehaviour {
 				Tile newCenterTile = newRouteTiles[newRouteTiles.Count-1];
 				ActiveSkill skill = chainInfo.GetSkill();
 				Unit unit = chainInfo.GetUnit();
-				List<Tile> newTargetTiles = tileManager.GetTilesInRange(skill.GetSecondRangeForm(), 
-																	newCenterTile.GetTilePos(),
-																	skill.GetSecondMinReach(),
-																	skill.GetSecondMaxReach(),
-																	skill.GetSecondWidth(),
-																	unit.GetDirection());
+				List<Tile> newTargetTiles = skill.GetTilesInSecondRange (newCenterTile, unit.GetDirection ());
 
 				ChainInfo newChainInfo = new ChainInfo(unit, newCenterTile, newTargetTiles, skill, chainInfo.GetRouteArea());
 				newChainList.Add(newChainInfo);
