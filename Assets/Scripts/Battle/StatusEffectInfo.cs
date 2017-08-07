@@ -69,12 +69,17 @@ public class StatusEffectInfo {
 															isMultiply);
 			actualElements.Add(actualElement);
 		}
+        for (int i = num; i < 3; i++) {
+            for(int j = 0; j < 6; j++)
+                commaParser.Consume();
+        }
+        string explanation = commaParser.Consume();
 
 		this.statusEffect = new StatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isBuff, isInfinite, 
 											 isStackable, isOnce,
 											 defaultPhase, stackVar, maxStack, amountNotEffectedByStack, isRemovable, 
-											 effectName, effectVisualType, effectMoveType,
+											 explanation, effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}
 }

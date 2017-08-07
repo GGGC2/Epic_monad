@@ -24,7 +24,6 @@ namespace BattleUI {
 
         public void TriggerPointerEnter() {
             FindObjectOfType<UIManager>().ActivateStatusEffectDisplayPanelAndSetText(transform.position, statusEffect);
-            Debug.Log(transform.localPosition);
         }
 
         public void TriggerPointerExit() {
