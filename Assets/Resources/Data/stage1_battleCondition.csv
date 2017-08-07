@@ -1,5 +1,4 @@
 ﻿ResultType,UnitType,ActionType,targetCount,Repeatable,Reward,etc
-Bonus,적을 처치,Enemy,Kill,1,true,-20
 Win,모든 적 무력화,Enemy,Neutralize,4,false,100
 Win,탈출 지점에 도달,Ally,Reach,2,false,100,7,16,1,16,2,16,3,16,4,16,5,16,6,16,7
 Lose,20페이즈 경과,None,Phase,20,false,0

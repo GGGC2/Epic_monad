@@ -40,18 +40,14 @@ public class DamageCalculator
 	{
 		Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 		
-		ChainList.AddChains(casting);
-
-			List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea(casting.Caster, casting.Skill.GetTilesInRealEffectRange(casting.Location));
-		int chainCombo = allVaildChainInfo.Count;
-
-		foreach (var chainInfo in allVaildChainInfo)
+		List<Chain> allChainTriggered = ChainList.GetAllChainTriggered (casting);
+		int chainCombo = allChainTriggered.Count;
+		
+		foreach (var chain in allChainTriggered)
 		{
-			var damageListOfEachSkill = CalculatePreviewDamageOfEachSkill(chainInfo, chainCombo);
+			var damageListOfEachSkill = CalculatePreviewDamageOfEachSkill(chain, chainCombo);
 			damageList = MergeDamageList(damageList, damageListOfEachSkill);
 		}
-
-		ChainList.RemoveChainsFromUnit(casting.Caster);
 
 		return damageList;
 	}
@@ -81,17 +77,17 @@ public class DamageCalculator
 		return merged;
 	}
 
-	private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachSkill(ChainInfo chainInfo, int chainCombo)
+	private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachSkill(Chain chain, int chainCombo)
 	{
 		var damageList = new Dictionary<Unit, DamageInfo>();
-		ActiveSkill appliedSkill = chainInfo.Skill;
-		Unit caster = chainInfo.Caster;			
-		List<Tile> selectedTiles = chainInfo.GetSecondRange();
-		List<Unit> targets = GetTargetUnits(selectedTiles);
+		ActiveSkill appliedSkill = chain.Skill;
+		Unit caster = chain.Caster;			
+		List<Tile> realEffectRange = chain.GetRealEffectRange();
+		List<Unit> targets = GetTargetUnits(realEffectRange);
 
 		foreach (var target in targets)
 		{
-            SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, caster, selectedTiles, target, targets.Count);
+			SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, caster, realEffectRange, target, targets.Count);
 
             if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
                 CalculateAttackDamage(skillInstanceData, chainCombo);

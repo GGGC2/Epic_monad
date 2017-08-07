@@ -20,7 +20,7 @@ public class BattleManager : MonoBehaviour{
 		get { return instance; }
 	}
 
-	public List<ChainInfo> GetChainList(){
+	public List<Chain> GetChainList(){
 		return battleData.chainList;
 	}
 

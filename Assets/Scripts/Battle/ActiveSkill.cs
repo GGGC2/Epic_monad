@@ -177,13 +177,10 @@ public class ActiveSkill : Skill{
 		return secondRange;
 	}
 	public List<Tile> GetTilesInRealEffectRange(SkillLocation skillLocation){
-		List<Tile> secondRange = GetTilesInSecondRange (skillLocation);
-		List<Tile> realEffectRange = secondRange;
-		if (skillType == SkillType.Route) {
-			if (!skillLocation.TargetTile.IsUnitOnTile ())
-				realEffectRange = new List<Tile>();
-		}
-		return realEffectRange;
+		if (skillType == SkillType.Route && !skillLocation.TargetTile.IsUnitOnTile ())
+			return new List<Tile>();
+		else
+			return GetTilesInSecondRange (skillLocation);
 	}
 
 	public IEnumerator Apply(Casting casting, int chainCombo) {
@@ -493,7 +490,7 @@ public class ActiveSkill : Skill{
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
 
-		yield return Battle.Turn.SkillAndChainStates.ApplyChain (casting);
+		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 
 		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();

@@ -1,16 +1,16 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
 	public static void AddChains(Casting casting)
 	{
-		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
+		List<Chain> chainList = FindObjectOfType<BattleManager>().GetChainList();
 
-		ChainInfo newChainInfo = new ChainInfo(casting);
-		chainList.Add(newChainInfo);
+		Chain newChain = new Chain(casting);
+		chainList.Add(newChain);
 
 		SetChargeEffectToUnit(casting.Caster);
 	}
@@ -24,12 +24,9 @@ public class ChainList : MonoBehaviour {
 	// 자신이 건 체인 삭제.
 	public static void RemoveChainsFromUnit(Unit unit)
 	{
-		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
-
-		ChainInfo deleteChainInfo = chainList.Find(x => x.Caster == unit);
-        
-	    chainList.Remove(deleteChainInfo);
-
+		List<Chain> chainList = FindObjectOfType<BattleManager>().GetChainList();
+		Chain myChain = chainList.Find(x => x.Caster == unit);
+		chainList.Remove(myChain);
 		RemoveChargeEffectToUnit(unit);
 	}
 
@@ -38,39 +35,25 @@ public class ChainList : MonoBehaviour {
 		unit.RemoveChargeEffect();
 	}
 
-	// 해당 영역에 체인을 대기중인 모든 정보 추출 (같은 진영만)
-	public static List<ChainInfo> GetAllChainInfoToTargetArea(Unit unit, List<Tile> targetArea)
+	// 현재 기술 시전을 첫 원소로 넣은 후, 해당 시전 후 발동되는 모든 체인 추가
+	public static List<Chain> GetAllChainTriggered(Casting casting)
 	{
-		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
+		Unit caster = casting.Caster;
+		List<Chain> allTriggeredChains = new List<Chain>();
+		allTriggeredChains.Add (new Chain (casting));
 
-		List<ChainInfo> allChainInfoToTargetArea = new List<ChainInfo>();
-		foreach (var chainInfo in chainList)
-		{
-			// 공격범위 안의 유닛이 서로 겹치거나, 체인을 건 본인일 경우 추가.
-			if (((unit.GetSide() == chainInfo.Caster.GetSide())
-				 && (chainInfo.Overlapped(targetArea)))
-				 || (chainInfo.Caster == unit))
-			{
-				allChainInfoToTargetArea.Add(chainInfo);
+		//체인 발동계열 스킬(공격/약화)이어야 다른 체인을 발동시킨다.
+		//아니라면 그냥 현재 시전만 넣은 리스트를 반환하게 됨
+		if (casting.Skill.IsChainable ()) {
+			List<Chain> chainList = FindObjectOfType<BattleManager> ().GetChainList ();
+			foreach (var chain in chainList) {
+				// 같은 진영이 대기한 체인 중 공격범위 안의 유닛이 서로 겹치면 추가
+				if (chain.Caster.IsAlly (caster)
+					&& chain.Overlapped (new Chain (casting))) {
+					allTriggeredChains.Add (chain);
+				}
 			}
 		}
-
-		return allChainInfoToTargetArea;
-	}
-
-	// 서로 다른 모든 체인 유닛 추출
-	public static List<Unit> GetAllUnitsInChainList(List<ChainInfo> chainInfoList)
-	{
-		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
-
-		List<Unit> units = new List<Unit>();
-		foreach (var chainInfo in chainInfoList)
-		{
-			if (!units.Contains(chainInfo.Caster));
-			{
-				units.Add(chainInfo.Caster);
-			}
-		}
-		return units;
+		return allTriggeredChains;
 	}
 }
