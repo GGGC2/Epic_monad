@@ -282,15 +282,15 @@ public class ActiveSkill : Skill{
 	}
 
 
-	public IEnumerator AIUseSkill(Unit unit, Tile targetTile, Direction direction){
-		unit.SetDirection (direction);
+	public IEnumerator AIUseSkill(Unit unit, SkillLocation skillLocation){
+		unit.SetDirection (skillLocation.Direction);
 		BattleManager.MoveCameraToUnit (unit);
 		SetSkillNamePanelUI ();
 
 		List<Tile> tilesInSkillRange = new List<Tile> ();
-		tilesInSkillRange.Add (targetTile);
+		tilesInSkillRange.Add (skillLocation.TargetTile);
 		List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-		yield return Battle.Turn.SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(unit.GetPosition(),direction));
+		yield return Battle.Turn.SkillAndChainStates.ApplyChain (battleData, skillLocation.TargetTile, tilesInSkillRange, tilesInRealEffectRange, GetTilesInFirstRange(unit.GetPosition(), skillLocation.Direction));
 
 		BattleManager.MoveCameraToUnit (unit);
 		HideSkillNamePanelUI ();

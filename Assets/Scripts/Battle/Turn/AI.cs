@@ -238,7 +238,7 @@ namespace Battle.Turn{
 				//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 하나 AI는 그 경우 아예 스킬을 쓰지 않므로 그런 경우가 없음
 				List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
-				yield return UseSkill (unit, skill, direction,targetTile);
+				yield return UseSkill (unit, skill, new SkillLocation (currTile, targetTile, direction));
 			}
 		}
 		public static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
@@ -256,18 +256,8 @@ namespace Battle.Turn{
 			CameraFocusToUnit(unit);
 			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
 		}
-		public static IEnumerator UseSkill(Unit unit, ActiveSkill skill, Direction direction, Tile targetTile){
-			unit.SetDirection (direction);
-			CameraFocusToUnit(unit);
-			skill.SetSkillNamePanelUI ();
-
-			List<Tile> tilesInSkillRange = new List<Tile> ();
-			tilesInSkillRange.Add (targetTile);
-			List<Tile> tilesInRealEffectRange = tilesInSkillRange;
-			yield return SkillAndChainStates.ApplyChain (battleData, targetTile, tilesInSkillRange, tilesInRealEffectRange, skill.GetTilesInFirstRange(unit.GetPosition(),direction));
-
-			CameraFocusToUnit(unit);
-			skill.HideSkillNamePanelUI ();
+		public static IEnumerator UseSkill(Unit unit, ActiveSkill skill, SkillLocation skillLocation){
+			yield return skill.AIUseSkill (unit, skillLocation);
 		}
 		public static IEnumerator Standby(Unit unit){
 			yield return new WaitForSeconds(0.2f);
@@ -510,6 +500,7 @@ namespace Battle.Turn{
 				//FIXME : 수정 계획...
 
 				Vector2 casterPos = currPos;
+				Tile casterTile = battleData.tileManager.GetTile (casterPos);
 				Direction direction;
 				direction = Direction.RightDown;
 				Tile rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
@@ -521,35 +512,35 @@ namespace Battle.Turn{
 				Tile leftDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
 
 				if (IsTastyTile (rightDownTile)) {
-					yield return AI.UseSkill (unit, skill, Direction.RightDown, rightDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, rightDownTile, Direction.RightDown));
 					continue;
 				}
 				if (IsTastyTile (leftUpTile)) {
-					yield return AI.UseSkill (unit, skill, Direction.LeftUp, leftUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, leftUpTile, Direction.LeftUp));
 					continue;
 				}
 				if (IsTastyTile (rightUpTile)) {
-					yield return AI.UseSkill (unit, skill, Direction.RightUp, rightUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, rightUpTile, Direction.RightUp));
 					continue;
 				}
 				if (IsTastyTile (leftDownTile)) {
-					yield return AI.UseSkill (unit, skill, Direction.LeftDown, leftDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, leftDownTile, Direction.LeftDown));
 					continue;
 				}
 				if (IsDecentTile (rightDownTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, rightDownTile, Direction.RightDown));
 					continue;
 				}
 				if (IsDecentTile (leftUpTile)) {
-					yield return AI.UseSkill (unit, skill,  Direction.LeftUp, leftUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, leftUpTile, Direction.LeftUp));
 					continue;
 				}
 				if (IsDecentTile (rightUpTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.RightUp, rightUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, rightUpTile, Direction.RightUp));
 					continue;
 				}
 				if (IsDecentTile (leftDownTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.LeftDown, leftDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterTile, leftDownTile, Direction.LeftDown));
 					continue;
 				}
 
@@ -618,25 +609,25 @@ namespace Battle.Turn{
 				Tile leftDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
 
 				if (IsTastyTile (rightDownTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterPos, rightDownTile, Direction.RightDown));
 					continue;
 				}
 				if (IsTastyTile (leftUpTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.LeftUp, leftUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterPos, leftUpTile, Direction.LeftUp));
 					continue;
 				}
 				if (IsTastyTile (rightUpTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.RightUp, rightUpTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterPos, rightUpTile, Direction.RightUp));
 					continue;
 				}
 				if (IsTastyTile (leftDownTile)) {
-					yield return AI.UseSkill (unit,  skill, Direction.LeftDown, leftDownTile);
+					yield return AI.UseSkill (unit, skill, new SkillLocation (casterPos, leftDownTile, Direction.LeftDown));
 					continue;
 				}
 
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 				//FIXME : 나중에 코드 제대로 수정할 계획
-
+				/*
 				if (currentAP < 3 + unit.GetActualRequireSkillAP(skill))
 					break;
 
@@ -721,7 +712,7 @@ namespace Battle.Turn{
 						continue;
 					}
 				}
-
+				*/
 				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 				break;
@@ -745,7 +736,7 @@ namespace Battle.Turn{
 				} else {
 					if (currentAP < unit.GetActualRequireSkillAP (skill))
 						break;
-					yield return AI.UseSkill (unit,  skill, Direction.RightDown, barrierTile);
+					yield return AI.UseSkill (unit,  skill, new SkillLocation(currPos, barrierTile, Direction.RightDown));
 				}
 			}
 		}
