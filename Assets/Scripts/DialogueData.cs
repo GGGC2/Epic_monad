@@ -10,7 +10,7 @@ public enum DataType
 public class DialogueData{
 	public enum CommandType {App = 0, Disapp = 1, BGM = 2, BG = 3, SE = 4, Script = 5, Battle = 6, Map = 7,
 	//이하는 SubType이 필요없는 것들. 순서 중요하므로 바꿀 거면 신중할 것
-	Adv = 8, Title = 9, FIO = 10, Else};
+	Adv = 8, Title = 9, FO = 10, FI = 11, Else};
 	public CommandType Command;
 
 	bool isEffect;

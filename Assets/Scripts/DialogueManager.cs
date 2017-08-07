@@ -41,8 +41,7 @@ public class DialogueManager : MonoBehaviour{
 		InactiveSkipQuestionUI();
 
 		int newLine = line;
-		for (int i = newLine; i < endLine; i++)
-		{
+		for (int i = newLine; i < endLine; i++){
 			if (dialogueDataList[i].IsAdventureObject()){
 				SetActiveAdventureUI(true);
 				break;
@@ -91,16 +90,14 @@ public class DialogueManager : MonoBehaviour{
 		else if (dialogueDataList[line].Command == DialogueData.CommandType.App){
 			if (dialogueDataList[line].GetCommandSubType() == "left"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{
+				if (loadedSprite != null) {
 					leftUnit = dialogueDataList[line].GetNameInCode();               
 					leftPortrait.sprite = loadedSprite;
 					isLeftUnitOld = false;
 				}
 			}else if (dialogueDataList[line].GetCommandSubType() == "right"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
-				if (loadedSprite != null) 
-				{      
+				if (loadedSprite != null) {      
 					rightUnit = dialogueDataList[line].GetNameInCode();         
 					rightPortrait.sprite = loadedSprite;
 					isLeftUnitOld = true;
@@ -136,9 +133,11 @@ public class DialogueManager : MonoBehaviour{
 		}else if (dialogueDataList[line].Command == DialogueData.CommandType.SE){
 			string SEName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlaySE (SEName);
-		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FIO){
-			yield return sceneLoader.Fade(true);
-			yield return sceneLoader.Fade(false);
+		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FO){
+			yield return StartCoroutine(sceneLoader.Fade(true));
+		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FI){
+			ResetPortraits();
+			StartCoroutine(sceneLoader.Fade(false));
 		}else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
@@ -188,18 +187,15 @@ public class DialogueManager : MonoBehaviour{
 		}
     }
 
-    public void PrintLinesFromObjectIndex(int objectIndex)
-    {
+    public void PrintLinesFromObjectIndex(int objectIndex){
         GameObject buttonPanel = objects[objectIndex];
         buttonPanel.transform.Find("New").gameObject.SetActive(false);
         buttonPanel.transform.Find("Highlight").gameObject.SetActive(false);
         string objectName = buttonPanel.transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text;
         int startLine = 0;
 
-        for (int i = 0; i < endLine; i++)
-        {
-            if (dialogueDataList[i].GetObjectName() == objectName)
-            {
+        for (int i = 0; i < endLine; i++){
+            if (dialogueDataList[i].GetObjectName() == objectName){
                 startLine = i+1;
                 break;
             }
@@ -233,8 +229,7 @@ public class DialogueManager : MonoBehaviour{
 		StartCoroutine(PrintLinesFrom(0));
 	}
 
-    IEnumerator PrintLinesFrom(int startLine){
-		// Initialize.
+	void ResetPortraits(){
 		leftPortrait.sprite = transparent;
 		rightPortrait.sprite = transparent;
 		
@@ -242,9 +237,15 @@ public class DialogueManager : MonoBehaviour{
 		rightUnit = null;
 
 		isLeftUnitOld = true;
+	}
+
+    IEnumerator PrintLinesFrom(int startLine){
+		// Initialize.
+		ResetPortraits();
 
 		line = startLine;
 		while (line < endLine){
+			isWaitingMouseInput = true;
 			leftPortrait.color = Color.gray;
 			rightPortrait.color = Color.gray;
 
@@ -254,16 +255,13 @@ public class DialogueManager : MonoBehaviour{
 				SetActiveAdventureUI(true);
 				yield break;
 			}else if (dialogueDataList[line].IsEffect()){
-				StartCoroutine(HandleCommand());
+				yield return StartCoroutine(HandleCommand());
 				line++;
 			}else{
 				HandleDialogue();
 
-				isWaitingMouseInput = true;
 				while (isWaitingMouseInput)
-				{
 					yield return null;
-				}
 				line++;
 			}
 		}
