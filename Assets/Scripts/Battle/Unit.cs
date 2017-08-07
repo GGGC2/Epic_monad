@@ -552,13 +552,7 @@ public class Unit : MonoBehaviour
 
             finalDamage = (int)damage;
 
-            if (finalDamage > 0) {
-                currentHealth -= finalDamage;
-                latelyHitInfos.Add(new HitInfo(caster, null, finalDamage));
-
-                // 데미지를 받을 때 발동하는 피격자 특성
-                SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, finalDamage, caster);
-            }
+            currentHealth -= finalDamage;
 
 
             if (currentHealth < 0)
@@ -574,6 +568,12 @@ public class Unit : MonoBehaviour
 
             damageTextObject.SetActive(false);
 
+            if (finalDamage > 0) {
+                latelyHitInfos.Add(new HitInfo(caster, null, finalDamage));
+
+                // 데미지를 받을 때 발동하는 피격자 특성
+                SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, finalDamage, caster);
+            }
             foreach (var kv in attackedShieldDict) {
                 BattleManager battleManager = FindObjectOfType<BattleManager>();
                 StatusEffect statusEffect = kv.Key;

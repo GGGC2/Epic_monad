@@ -24,8 +24,7 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillState(BattleData battleData) {
             while (battleData.currentState == CurrentState.SelectSkill) {
-                battleData.uiManager.SetSkillUI();
-                battleData.uiManager.CheckUsableSkill(battleData.selectedUnit);
+                battleData.uiManager.SetSkillUI(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
                 battleData.indexOfSelectedSkillByUser = 0;
@@ -508,19 +507,21 @@ namespace Battle.Turn {
                     if (!isChainable || !CheckEvasion(battleData, caster, target)) {
 						SkillInstanceData skillInstanceData = new SkillInstanceData(new DamageCalculator.AttackDamage(), appliedSkill, caster, tilesInRealEffectRange, target, targets.Count);
                         // 데미지 적용
-                        if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-                            yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
-                        } else {
-                            DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
-                            float amount = skillInstanceData.GetDamage().resultDamage;
-                            if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
-                                yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
-                                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
-                            } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
-                                yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
-                                yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerApplyingHeal(skillInstanceData));
-                            } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
-                                yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
+                        if (SkillLogicFactory.Get(appliedSkill).MayDisPlayDamageCoroutine(skillInstanceData)) {
+                            if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
+                                yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, battleData, chainCombo, target == targets.Last()));
+                            } else {
+                                DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
+                                float amount = skillInstanceData.GetDamage().resultDamage;
+                                if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageAP) {
+                                    yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
+                                    battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+                                } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+                                    yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
+                                    yield return battleManager.StartCoroutine(SkillLogicFactory.Get(passiveSkillsOfCaster).TriggerApplyingHeal(skillInstanceData));
+                                } else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealAP) {
+                                    yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
+                                }
                             }
                         }
 

@@ -35,6 +35,9 @@ public static class SkillLogicFactory
             case "연사":
                 skillLogic = new Grenev_7_l_SkillLogic();
             break;
+            case "최후의 일격":
+                skillLogic = new Grenev_8_l_SkillLogic();
+            break;
 
             // 노엘
             case "파마의 섬광":
