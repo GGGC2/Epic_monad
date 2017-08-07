@@ -5,10 +5,9 @@ using System.Collections.Generic;
 public class ChainList : MonoBehaviour {
 	// 체인리스트 관련 함수.
 
-	public static void AddChains(Unit unit, Tile targetTile, List<Tile> targetArea, ActiveSkill skill, List<Tile> firstRange)
+	public static void AddChains(Unit unit, ActiveSkill skill, SkillLocation skillLocation)
 	{
 		List<ChainInfo> chainList = FindObjectOfType<BattleManager>().GetChainList();
-		SkillLocation skillLocation = new SkillLocation (unit.GetTileUnderUnit (), targetTile, unit.GetDirection ());
 
 		ChainInfo newChainInfo = new ChainInfo(unit, skill, skillLocation);
 		chainList.Add(newChainInfo);

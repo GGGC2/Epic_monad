@@ -212,16 +212,17 @@ namespace Battle.Turn {
 				Vector2 casterPos = caster.GetPosition ();
 				Direction direction = caster.GetDirection ();
 				ActiveSkill skill = battleData.SelectedSkill;
+				SkillLocation skillLocation = new SkillLocation (casterPos, targetTile, caster.GetDirection ());
                 BattleManager.MoveCameraToTile(targetTile);
 
 				//firstRange는 1차 범위(스킬 시전 가능 범위. 투사체의 경우 목표점까지의 경로) 내 타일들이고
 				//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들임. secondRange가 현재 단계에서 중요
 				List<Tile> firstRange = skill.GetTilesInFirstRange(casterPos, caster.GetDirection());
-				List<Tile> secondRange = skill.GetTilesInSecondRange (targetTile, direction);
+				List<Tile> secondRange = skill.GetTilesInSecondRange (skillLocation);
                 battleData.tileManager.PaintTiles(secondRange, TileColor.Red);
 				//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
 				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
-				List<Tile> realEffectRange = skill.GetTilesInRealEffectRange(targetTile, direction);
+				List<Tile> realEffectRange = skill.GetTilesInRealEffectRange(skillLocation);
 
                 //데미지 미리보기
                 Debug.Log("/------- Damage preview -------\\");
@@ -350,14 +351,19 @@ namespace Battle.Turn {
 
 		public static IEnumerator ApplyChain(BattleData battleData, Tile targetTile, List<Tile> secondRange, List<Tile> realEffectRange, List<Tile> firstRange) {
             BattleManager battleManager = battleData.battleManager;
+			Unit caster = battleData.selectedUnit;
+			Tile casterTile = caster.GetTileUnderUnit ();
+			Direction direction = caster.GetDirection ();
+			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			ActiveSkill skill = battleData.SelectedSkill;
 
 			//실제 데미지/효과가 가해지지는 경우에만 연계가 발동
 			if (realEffectRange.Count != 0) {
 				// 자기 자신을 체인 리스트에 추가.
-				ChainList.AddChains (battleData.selectedUnit, targetTile, secondRange, battleData.SelectedSkill, firstRange);
+				ChainList.AddChains (caster, skill, skillLocation);
 
 				// 체인 체크, 순서대로 공격.
-				List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea (battleData.selectedUnit, secondRange);
+				List<ChainInfo> allVaildChainInfo = ChainList.GetAllChainInfoToTargetArea (caster, secondRange);
 				int chainCombo = allVaildChainInfo.Count;
 
 				battleData.selectedUnit.PrintChainBonus (chainCombo);
@@ -378,23 +384,30 @@ namespace Battle.Turn {
         }
 
         private static IEnumerator ChainAndStandby(BattleData battleData, Tile targetTile, List<Tile> selectedTiles, List<Tile> firstRange) {
-            // 방향 돌리기.
-            battleData.selectedUnit.SetDirection(Utility.GetDirectionToTarget(battleData.selectedUnit, selectedTiles));
+			Unit caster = battleData.selectedUnit;
+			Tile casterTile = caster.GetTileUnderUnit ();
+			Direction direction = caster.GetDirection ();
+			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			ActiveSkill skill = battleData.SelectedSkill;
 
-            int originAP = battleData.SelectedSkill.GetRequireAP();
-            int requireAP = SkillLogicFactory.Get(battleData.SelectedSkill).CalculateAP(originAP, battleData.selectedUnit);
-            battleData.selectedUnit.UseActivityPoint(requireAP);
+            // 방향 돌리기.
+            battleData.selectedUnit.SetDirection(Utility.GetDirectionToTarget(caster, selectedTiles));
+
+            int originAP = skill.GetRequireAP();
+			//여기서 속도까지 적용한 실제 AP 소모량을 받아오는 거 맞나요? 왠지 아닌 듯...
+            int requireAP = SkillLogicFactory.Get(skill).CalculateAP(originAP, caster);
+            caster.UseActivityPoint(requireAP);
 
             // 스킬 쿨다운 기록
-            if (battleData.SelectedSkill.GetCooldown() > 0)
-                battleData.selectedUnit.GetUsedSkillDict().Add(battleData.SelectedSkill.GetName(), battleData.SelectedSkill.GetCooldown());
+            if (skill.GetCooldown() > 0)
+                caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
 
             // 체인 목록에 추가.
-            ChainList.AddChains(battleData.selectedUnit, targetTile, selectedTiles, battleData.SelectedSkill, firstRange);
+			ChainList.AddChains(caster, skill, skillLocation);
             battleData.indexOfSelectedSkillByUser = 0; // return to init value.
             yield return new WaitForSeconds(0.5f);
 
-            BattleManager.MoveCameraToUnit(battleData.selectedUnit);
+            BattleManager.MoveCameraToUnit(caster);
             battleData.currentState = CurrentState.Standby;
             battleData.alreadyMoved = false;
             BattleManager battleManager = battleData.battleManager;

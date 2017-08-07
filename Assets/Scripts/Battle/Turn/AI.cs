@@ -234,7 +234,8 @@ namespace Battle.Turn{
 					}
 				}
 
-				List<Tile> tilesInSkillRange = skill.GetTilesInSecondRange (targetTile, direction);
+				SkillLocation skillLocation = new SkillLocation (currTile, targetTile, direction);
+				List<Tile> tilesInSkillRange = skill.GetTilesInSecondRange (skillLocation);
 				//tilesInRealEffectRange는 투사체 스킬의 경우 경로상 유닛이 없으면 빈 List로 설정해야 하나 AI는 그 경우 아예 스킬을 쓰지 않므로 그런 경우가 없음
 				List<Tile> tilesInRealEffectRange =  tilesInSkillRange;
 
@@ -395,7 +396,8 @@ namespace Battle.Turn{
 				foreach (var pair in targetTiles) {
 					direction = pair.Key;
 					Tile targetTile = pair.Value;
-					attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+					SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+					attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 				}
 			}
 			//Auto 스킬은 시전자가 위치한 타일이 유일한 targetTile이며 네 방향의 범위를 각각 attackAbleTilesGroups에 넣는다
@@ -404,20 +406,25 @@ namespace Battle.Turn{
 
 				Direction direction;
 				direction= Direction.LeftDown;
-				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 				direction = Direction.LeftUp;
-				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+				skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 				direction = Direction.RightDown;
-				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+				skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 				direction = Direction.RightUp;
-				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+				skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 			}
 			//skillType==SkillType.Self
 			//Self 스킬은 방향을 바꾸지 말고 써야 해서 시전자의 방향을 그대로 받아옴
 			else {
 				Tile targetTile = casterTile;
 				Direction direction = caster.GetDirection ();
-				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (targetTile, direction);
+				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = skill.GetTilesInSecondRange (skillLocation);
 			}
 
 			Dictionary<Direction, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Direction, List<Tile>> ();
@@ -441,7 +448,8 @@ namespace Battle.Turn{
 			targetTiles = skill.GetTilesInFirstRange (casterPos, caster.GetDirection ());
 
 			foreach (Tile targetTile in targetTiles) {
-				attackAbleTilesGroups [targetTile] = skill.GetTilesInSecondRange (targetTile, caster.GetDirection ());
+				SkillLocation skillLocation = new SkillLocation (casterPos, targetTile, caster.GetDirection ());
+				attackAbleTilesGroups [targetTile] = skill.GetTilesInSecondRange (skillLocation);
 			}
 
 			Dictionary<Tile, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Tile, List<Tile>> ();

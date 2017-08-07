@@ -147,25 +147,32 @@ public class ActiveSkill : Skill{
 		}
 		return skillLocation.TargetTile;
 	}
-	public List<Tile> GetTilesInSecondRange(Tile targetTile, Direction direction)
+	public void SetRealTargetTileForSkillLocation(SkillLocation skillLocation){
+		if (skillType == SkillType.Route) {
+			List<Tile> firstRange = GetTilesInFirstRange (skillLocation.CasterPos, skillLocation.Direction);
+			Tile routeEnd = TileManager.GetRouteEndForPC (firstRange);
+			skillLocation.SetTargetTile (routeEnd);
+		}
+	}
+	public List<Tile> GetTilesInSecondRange(SkillLocation skillLocation)
 	{
 		List<Tile> secondRange = battleData.tileManager.GetTilesInRange (secondRangeForm,
-			                           targetTile.GetTilePos (),
+			                           skillLocation.TargetPos,
 			                           secondMinReach,
 			                           secondMaxReach,
 			                           secondWidth,
-			                           direction);
+			                           skillLocation.Direction);
 		if (skillType == SkillType.Auto)
 		{
-			secondRange.Remove(targetTile);
+			secondRange.Remove(skillLocation.TargetTile);
 		}
 		return secondRange;
 	}
-	public List<Tile> GetTilesInRealEffectRange(Tile targetTile, Direction direction){
-		List<Tile> secondRange = GetTilesInSecondRange (targetTile, direction);
+	public List<Tile> GetTilesInRealEffectRange(SkillLocation skillLocation){
+		List<Tile> secondRange = GetTilesInSecondRange (skillLocation);
 		List<Tile> realEffectRange = secondRange;
-		if (battleData.SelectedSkill.skillType == SkillType.Route) {
-			if (!targetTile.IsUnitOnTile ())
+		if (skillType == SkillType.Route) {
+			if (!skillLocation.TargetTile.IsUnitOnTile ())
 				realEffectRange = new List<Tile>();
 		}
 		return realEffectRange;
