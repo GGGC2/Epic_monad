@@ -14,6 +14,8 @@ namespace BattleUI {
         static readonly float MARGIN = 5;
 
         string GetSkillColumnRow(Skill skill) {
+            if(skill.requireLevel == 0)
+                return "Passive";
             string column = "";
             switch(skill.column) {
             case 1:
