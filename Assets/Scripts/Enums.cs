@@ -33,10 +33,7 @@ namespace Enums {
 		Flatland, Hill, Cliff, Water, HigherHill
 	}
 
-	public enum UnitClass
-	{
-		None, Melee, Magic
-	}
+	public enum UnitClass{ None, Melee, Magic }
 
 	public enum Celestial
 	{

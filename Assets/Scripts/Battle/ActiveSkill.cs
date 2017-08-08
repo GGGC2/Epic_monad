@@ -192,24 +192,23 @@ public class ActiveSkill : Skill{
 		}
 	}
 	public Casting GetBestAttack(Unit caster, Tile casterTile){
-		int minCurrHP = 99999;
+		int minCurrHP = 9999999;
 		Tile targetTile = casterTile;
 		Direction direction = caster.GetDirection ();
 		if (skillType == SkillType.Point) {
 			Dictionary<Tile, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfPointSkill (caster, casterTile);
 			foreach(var pair in attackableEnemyTiles){
-				int minCurrHPInThisRange = GetMinCurrHP (pair.Value);
+				int minCurrHPInThisRange = GetMinModifiedHP (caster, pair.Value);
 				if (minCurrHPInThisRange < minCurrHP) {
 					minCurrHP = minCurrHPInThisRange;
 					targetTile = pair.Key;
 					direction = Utility.GetDirectionToTarget (caster, targetTile.GetTilePos ());
 				}
 			}
-		}
-		else {
+		}else{
 			Dictionary<Direction, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile);
 			foreach(var pair in attackableEnemyTiles){
-				int minCurrHPInThisRange = GetMinCurrHP (pair.Value);
+				int minCurrHPInThisRange = GetMinModifiedHP (caster, pair.Value);
 				if (minCurrHPInThisRange < minCurrHP) {
 					direction = pair.Key;
 					if (skillType == SkillType.Route)
@@ -220,10 +219,10 @@ public class ActiveSkill : Skill{
 		Casting casting = new Casting (caster, this, new SkillLocation (casterTile, targetTile, direction));
 		return casting;
 	}
-	private static int GetMinCurrHP(List<Tile> unitTiles){
-		int minCurrHP = 99999;
+	private static int GetMinModifiedHP(Unit caster, List<Tile> unitTiles){
+		int minCurrHP = 9999999;
 		foreach (Tile tile in unitTiles) {
-			int currHP = tile.GetUnitOnTile ().GetCurrentHealth ();
+			int currHP = tile.GetUnitOnTile().GetModifiedHealth(caster.GetUnitClass());
 			if (currHP < minCurrHP) {
 				minCurrHP = currHP;
 			}

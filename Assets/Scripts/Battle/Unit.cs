@@ -9,8 +9,7 @@ using Battle.Skills;
 
 using Save;
 
-public class HitInfo
-{
+public class HitInfo{
 	public readonly Unit caster;
 	public readonly ActiveSkill skill;
     public readonly int finalDamage;
@@ -23,8 +22,7 @@ public class HitInfo
 	}
 }
 
-public class Unit : MonoBehaviour
-{
+public class Unit : MonoBehaviour{
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
@@ -105,8 +103,7 @@ public class Unit : MonoBehaviour
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
 	public Sprite GetDefaultSprite(){ return spriteLeftDown; }
-	public void SetChargeEffect(GameObject effect)
-	{
+	public void SetChargeEffect(GameObject effect){
 		if (chargeEffect != null) RemoveChargeEffect();
 		chargeEffect = effect;
 		effect.transform.position = gameObject.transform.position - new Vector3(0, 0, 0.01f);
@@ -142,6 +139,15 @@ public class Unit : MonoBehaviour
 	public void SetStatusEffectList(List<StatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
+	public int GetModifiedHealth(UnitClass casterClass){
+		if(casterClass == UnitClass.Melee)
+			return currentHealth*(GetStat(Stat.Defense)+200);
+		else if(casterClass == UnitClass.Magic)
+			return currentHealth*(GetStat(Stat.Resistance)+200);
+		else //casterClass == None
+			Debug.LogError("Invalid Input");
+			return 0;
+	}
 	public int GetCurrentActivityPoint() { return activityPoint; }
 	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
 	public UnitClass GetUnitClass() { return unitClass; }

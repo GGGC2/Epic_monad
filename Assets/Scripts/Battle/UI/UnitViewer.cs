@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
-using Enums;
+using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using GameData;
 
 // This component is used in two UI.
@@ -215,8 +216,11 @@ namespace BattleUI {
             defenseText = transform.Find("Defense").Find("DefenseText").GetComponent<Text>();
             resistanceText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
 
-            statusEffectIconBarPosition = transform.Find("StatusEffectIcons").GetComponent<RectTransform>().localPosition;
-            statusEffectIcons = new List<StatusEffectIcon>();
+            //효과 표시 내용은 BattleReady씬에서 켜면 에러가 생기기 때문에 씬 이름으로 조건 확인하고 실행
+            if(SceneManager.GetActiveScene().name == "Battle"){
+                statusEffectIconBarPosition = transform.Find("StatusEffectIcons").GetComponent<RectTransform>().localPosition;
+                statusEffectIcons = new List<StatusEffectIcon>();
+            }
             //statusEffectText = transform.Find("buffs").GetComponent<Text>();
         }
 

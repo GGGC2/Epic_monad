@@ -25,8 +25,7 @@ namespace Battle.Turn{
 				enemySide = Side.Ally;
 			return enemySide;
 		}
-		public static List<Tile> FindEnemyTilesInTheseTiles(List<Tile> tiles, Unit mainUnit)
-		{
+		public static List<Tile> FindEnemyTilesInTheseTiles(List<Tile> tiles, Unit mainUnit){
 			List<Tile> tilesHaveEnemy = (from tile in tiles
 				where tile.GetUnitOnTile() != null
 				let unit = tile.GetUnitOnTile()
@@ -60,8 +59,7 @@ namespace Battle.Turn{
 			return nearestTile;
 		}
 		private static Tile GetMinRequireAPTile(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			if (movableTilesWithPath.Count > 0)
-			{
+			if (movableTilesWithPath.Count > 0){
 				Tile nearestTile=null;
 				int minRequireAP = 99999;
 				foreach (var pair in movableTilesWithPath) {
@@ -183,7 +181,6 @@ namespace Battle.Turn{
 
 				yield return Move(unit, destTile, finalDirection, totalUseAP);
 			}
-
 		}
 		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
 			while (true) {
