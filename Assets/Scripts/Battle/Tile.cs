@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine.EventSystems;
 
 using Enums;
-using Battle.Feature;
 using Battle.Skills;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
@@ -168,13 +167,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		BattleData battleData = battleManager.battleData;
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Show(unitOnTile);
-
-			List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
-			foreach (Unit unit in unitsTargetThisTile)
-			{
-				unit.ShowChainIcon();
-			}
+			ChainList.ShowChainOfThisUnit(unitOnTile);
+			ChainList.ShowUnitsTargetingThisTile (this);
 
 			if (battleManager.EnemyUnitSelected()) return;
 
@@ -198,17 +192,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Hide(unitOnTile);
+			ChainList.HideChainOfThisUnit(unitOnTile);
+			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		BattleData battleData = battleManager.battleData;
-		List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
-		foreach (Unit unit in unitsTargetThisTile)
-		{
-			unit.HideChainIcon();
-		}
-
 		if (battleManager.EnemyUnitSelected()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
 

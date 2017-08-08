@@ -279,7 +279,7 @@ namespace Battle.Turn {
 
 		private static Dictionary<Unit, DamageCalculator.DamageInfo> DisplayPreviewDamage(Casting casting){
 			//데미지 미리보기
-			Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DamageCalculator.CalculatePreviewTotalDamage(battleData, casting);
+			Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(battleData, casting);
 			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
 				if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
 				else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
@@ -349,11 +349,11 @@ namespace Battle.Turn {
 
 			// 발동되는 모든 시전을 순서대로 실행
 			foreach (var chain in allTriggeredChains) {
-				Tile focusedTile = chain.GetSecondRange () [0];
+				Tile focusedTile = chain.SecondRange [0];
 				BattleManager.MoveCameraToTile (focusedTile);
 				battleData.currentState = CurrentState.ApplySkill;
 				chain.Caster.HideChainIcon ();
-				yield return battleManager.StartCoroutine (chain.Casting.Cast (chainCombo));
+				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
 				caster.DisableChainText ();
 			}
         }

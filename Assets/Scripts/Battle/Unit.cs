@@ -339,7 +339,7 @@ public class Unit : MonoBehaviour
 		if (statusEffect.IsOfType(StatusEffectType.Faint) ||
 			statusEffect.IsOfType(StatusEffectType.Silence))
 		{
-			ChainList.RemoveChainsFromUnit(this);
+			ChainList.RemoveChainOfThisUnit(this);
 		}
 	}
 

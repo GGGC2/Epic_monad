@@ -343,7 +343,7 @@ public class ActiveSkill : Skill{
 		}
 
 		if (IsChainable())
-			ChainList.RemoveChainsFromUnit(caster);
+			ChainList.RemoveChainOfThisUnit(caster);
 
 		ApplySoundEffect();
 		yield return battleManager.StartCoroutine(ApplyVisualEffect (caster, secondRange));
@@ -631,12 +631,12 @@ public class ActiveSkill : Skill{
 
 		List<Tile> firstRange = casting.FirstRange;
 		battleData.tileManager.PaintTiles(firstRange, TileColor.Red);
-		yield return new WaitForSeconds (0.3f);
+		yield return new WaitForSeconds (0.5f);
 		battleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		List<Tile> secondRange = casting.SecondRange;
 		battleData.tileManager.PaintTiles (secondRange, TileColor.Red);
-		yield return new WaitForSeconds (0.3f);
+		yield return new WaitForSeconds (0.1f);
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 

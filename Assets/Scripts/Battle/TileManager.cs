@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using Enums;
 
 public class TileManager : MonoBehaviour {
+	private static TileManager instance = null;
+	public static TileManager Instance { get { return instance; } }
+	public static void SetInstance() { instance = FindObjectOfType<TileManager>(); }
 
 	public GameObject tilePrefab;
 

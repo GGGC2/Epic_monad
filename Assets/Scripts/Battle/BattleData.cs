@@ -201,8 +201,6 @@ public class BattleData{
 	public List<Unit> readiedUnits = new List<Unit>();
 	public List<Unit> deadUnits = new List<Unit>();
 	public List<Unit> retreatUnits = new List<Unit>();
-	
-	public List<Chain> chainList = new List<Chain>();
 
 	public int currentPhase;
 
@@ -239,32 +237,6 @@ public class BattleData{
 		get {
 			return tileManager.GetTile(selectedUnit.GetPosition());
 		}
-	}
-
-	public Chain GetChain(Unit unit)
-	{
-		foreach (Chain chain in chainList)
-		{
-			if (chain.Caster == unit)
-			{
-				return chain;
-			}
-		}
-		return null;
-	}
-
-	public List<Unit> GetUnitsTargetThisTile(Tile tile)
-	{
-		List<Unit> resultUnits = new List<Unit>();
-		foreach (Chain chain in chainList)
-		{
-			if (chain.GetRealEffectRange().Contains(tile))
-			{
-				resultUnits.Add(chain.Caster);
-			}
-		}
-
-		return resultUnits;
 	}
 	public List<Unit> GetObjectUnitsList(){
 		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject () == true);
