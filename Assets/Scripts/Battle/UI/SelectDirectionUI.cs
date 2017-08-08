@@ -18,13 +18,16 @@ namespace BattleUI
 		}
 
 		public void CallbackDirection(string directionString){
+			Debug.Log("Direction CallBack");
 			if(!battleManager.onTutorial)
 				battleManager.CallbackDirection(directionString);
 			else{
-				TutorialScenario scenario = FindObjectOfType<TutorialScenario>();
-				if(scenario.mission == TutorialScenario.TutorialMission.SelectDirection && scenario.missionDirection.ToString() == directionString){
+				TutorialScenario scenario = battleManager.tutorialManager.currentScenario;
+				Debug.Log(scenario.mission);
+				Debug.Log(scenario.missionDirection.ToString());
+				if(scenario.mission == TutorialScenario.Mission.SelectDirection && scenario.missionDirection.ToString() == directionString){
 					battleManager.CallbackDirection(directionString);
-					scenario.NextStep();
+					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}

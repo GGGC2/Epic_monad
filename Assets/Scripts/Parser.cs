@@ -25,7 +25,7 @@ public class Parser : MonoBehaviour{
 		return null;
 	}
 
-	public enum ParsingDataType{Glossary, DialogueData};
+	public enum ParsingDataType{Glossary, DialogueData, TutorialScenario};
 
 	public static List<T> GetParsedData<T>(TextAsset textAsset, ParsingDataType DataType){
 		List<T> DataList = new List<T>();
@@ -45,6 +45,9 @@ public class Parser : MonoBehaviour{
 			return (T)data;
 		}else if(DataType == ParsingDataType.DialogueData){
 			object data = new DialogueData(rowData);
+			return (T)data;
+		}else if(DataType == ParsingDataType.TutorialScenario){
+			object data = new TutorialScenario(rowData);
 			return (T)data;
 		}
 		else{

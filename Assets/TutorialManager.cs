@@ -8,53 +8,57 @@ using GameData;
 public class TutorialManager : MonoBehaviour {
 	public Image image;
 	public Image DarkBG;
+	public int index;
 	CameraMover cm;
 	string usedSceneName;
 	public Button ReverseButton;
-	public TutorialScenario scenarioPrefab;
-	public TutorialScenario scenario;
+	List<TutorialScenario> scenarioList;
+	public TutorialScenario currentScenario;
 
 	public void OnEnable(){
 		usedSceneName = SceneManager.GetActiveScene().name;
+		TextAsset searchData = Resources.Load<TextAsset>("Tutorial/" + usedSceneName + SceneData.stageNumber.ToString());
+		cm = FindObjectOfType<CameraMover>();
 
-		Sprite searchedSprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + SceneData.stageNumber.ToString() + "_1");
-
-		if(searchedSprite == null || SceneData.isTestMode || SceneData.isStageMode){
-			//주석처리 안 한 상태에선 테스트씬에서 cm의 null reference 오류로 전투 시작이 안 돼서 임시로 주석처리함
-			/*if(usedSceneName == "Battle"){
+		if(searchData == null || SceneData.isTestMode || SceneData.isStageMode){
+			if(usedSceneName == "Battle"){
 				cm.mouseMoveActive = true;
 				cm.keyboardMoveActive = true;
-			}*/
+			}
 			gameObject.SetActive(false);
 		}
 		else{
-			scenario = Instantiate(scenarioPrefab);
-			scenario.Manager = this;
-			scenario.SetNewSprite();
+			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			battleManager.onTutorial = true;
-			battleManager.scenario = scenario;
+			NextStep();
 		}
     }
 
-	public void NextStep(){
-		scenario.NextStep();	
-	}
-	
-	/*void CheckReverseButtonActive(){
-		if(index <= 1)
-			ReverseButton.gameObject.SetActive(false);
+	void SetNewSprite(){
+		image.enabled = true;
+		DarkBG.enabled = true;
+		Sprite searchResult = Resources.Load<Sprite>("Tutorial/"+SceneManager.GetActiveScene().name + GameData.SceneData.stageNumber.ToString() + "_" + index);
+		if(searchResult != null)
+			image.sprite = searchResult;
 		else
-			ReverseButton.gameObject.SetActive(true);
-	}*/
+			Debug.LogError("Sprite NOT found!");
+	}
+
+	public void NextStep(){
+		index++;
+		TutorialScenario scenario = scenarioList.Find(data => data.index == index);
+		if(scenario == null){
+			SetNewSprite();
+		}else{
+			//Debug.Log("Step " + index);
+			image.enabled = false;
+			DarkBG.enabled = false;
+			currentScenario = scenario;
+		}
+	}
 
 	public void Skip(){
 		gameObject.SetActive(false);
 	}
-
-	/*public void Reverse(){
-		index -= 1;
-		CheckReverseButtonActive();
-		image.sprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + GameData.SceneData.stageNumber.ToString() + "_" + index.ToString());
-	}*/
 }

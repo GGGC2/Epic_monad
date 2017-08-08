@@ -12,10 +12,10 @@ namespace BattleUI{
 			if(!battleManager.onTutorial)
 				battleManager.CallbackApplyCommand();
 			else{
-				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
-				if(tutorial.mission == TutorialScenario.TutorialMission.ApplySkill){
+				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+				if(tutorial.mission == TutorialScenario.Mission.Apply){
 					battleManager.CallbackApplyCommand();
-					tutorial.NextStep();
+					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}

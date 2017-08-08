@@ -26,10 +26,10 @@ namespace BattleUI{
 			if(!battleManager.onTutorial)
 				battleManager.CallbackMoveCommand();
 			else{
-				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
-				if(tutorial.mission == TutorialScenario.TutorialMission.MoveCommand){
+				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+				if(tutorial.mission == TutorialScenario.Mission.MoveCommand){
 					battleManager.CallbackMoveCommand();
-					tutorial.NextStep();
+					battleManager.tutorialManager.NextStep();
 				}
 			}				
 		}
@@ -38,10 +38,10 @@ namespace BattleUI{
 			if(!battleManager.onTutorial)
 				battleManager.CallbackSkillCommand();
 			else{
-				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
-				if(tutorial.mission == TutorialScenario.TutorialMission.SkillCommand){
+				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+				if(tutorial.mission == TutorialScenario.Mission.SkillCommand){
 					battleManager.CallbackSkillCommand();
-					tutorial.NextStep();
+					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}
@@ -50,10 +50,10 @@ namespace BattleUI{
 			if(!battleManager.onTutorial)
 				battleManager.CallbackStandbyCommand();
 				else{
-				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
-				if(tutorial.mission == TutorialScenario.TutorialMission.StandbyCommand){
+				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+				if(tutorial.mission == TutorialScenario.Mission.Standby){
 					battleManager.CallbackStandbyCommand();
-					tutorial.NextStep();
+					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}

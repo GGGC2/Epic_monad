@@ -152,11 +152,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			if ((isPreSeleted))
 				battleManager.OnMouseDownHandlerFromTile(position);
 		}else{
-			TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
-			if(tutorial.mission == TutorialScenario.TutorialMission.SelectTile && tutorial.missionTile == position){
+			TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+			if(tutorial.mission == TutorialScenario.Mission.SelectTile && tutorial.missionTile == position){
 				if ((isPreSeleted))
 					battleManager.OnMouseDownHandlerFromTile(position);
-				tutorial.NextStep();
+				battleManager.tutorialManager.NextStep();
 			}		
 		}
 	}

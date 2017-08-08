@@ -25,6 +25,7 @@ public interface IEventTrigger
 {
 	void Begin();
 	void End();
+	void Revert();
 	bool Triggered { get; }
 }
 
@@ -42,6 +43,11 @@ public class EventTrigger: IEventTrigger{
 		{
 			triggered = true;
 		}
+	}
+
+	public void Revert(){
+		if(enabled)
+			triggered = false;
 	}
 
 	public IEnumerator Wait(){
@@ -76,14 +82,17 @@ public class EventTrigger: IEventTrigger{
 		while (looping){
 			BattleManager battleManager = GameObject.FindObjectOfType<BattleManager>();
 			foreach (var trigger in triggers){
-				//튜토리얼 중에는 취소 입력을 무시
-				if  (battleManager.onTutorial &&
-					(trigger == battleManager.battleData.triggers.rightClicked || trigger == battleManager.battleData.triggers.cancelClicked))
-				{
-					continue;
-				}else if (trigger.Triggered){
-					looping = false;
-					break;
+				if (trigger.Triggered){
+					//튜토리얼 중일 경우 취소 입력을 무효화
+					if  (battleManager.onTutorial &&
+						(trigger == battleManager.battleData.triggers.rightClicked || trigger == battleManager.battleData.triggers.cancelClicked))
+					{
+						trigger.Revert();
+						continue;
+					}else{
+						looping = false;
+						break;
+					}					
 				}
 			}
 			yield return null;
@@ -120,14 +129,11 @@ public class EventTrigger<T>: IEventTrigger{
 		}
 	}
 
-	public IEnumerator Wait()
-	{
+	public IEnumerator Wait(){
 		Begin();
 
 		while (triggered == false)
-		{
 			yield return null;
-		}
 
 		End();
 	}
@@ -144,6 +150,11 @@ public class EventTrigger<T>: IEventTrigger{
 	public void End()
 	{
 		enabled = false;
+	}
+
+	public void Revert(){
+		if(enabled)
+			triggered = false;
 	}
 }
 

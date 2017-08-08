@@ -828,6 +828,11 @@ Prefab:
       propertyPath: sceneLoader
       value: 
       objectReference: {fileID: 894933683}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: tutorialManager
+      value: 
+      objectReference: {fileID: 1436865757}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0
