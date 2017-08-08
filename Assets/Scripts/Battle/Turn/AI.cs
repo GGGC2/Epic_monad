@@ -146,10 +146,6 @@ namespace Battle.Turn{
 				movableTiles.Add(movableTileWithPath.Value.tile);
 			}
 
-			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
-			yield return new WaitForSeconds (0.2f);
-			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
-
 			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (unit, selectedSkill, movableTilesWithPath);
 			//destTile이 null이 아니면 적을 공격 가능한 타일 중 도달경로의 총 AP 소모량이 가장 적은 타일이 들어있는 것이다
 			//destTile이 null : 이번 턴에 적을 공격 가능한 범위로 못 가는 경우. 그냥 가장 가까운 적을 향해 이동한다
@@ -158,10 +154,10 @@ namespace Battle.Turn{
 				destTile = battleData.tileManager.GetTile(destPosition);
 			}
 
-			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
 
 		}
-		private static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		private static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Tile> movableTiles){
 			Vector2 destPos = destTile.GetTilePos ();
 			TileWithPath pathToDestTile = movableTilesWithPath[destPos];
 
@@ -183,7 +179,7 @@ namespace Battle.Turn{
 				else // delta == new Vector2 (0, -1)
 					finalDirection = Direction.LeftDown;
 
-				yield return Move(unit, destTile, finalDirection, totalUseAP);
+				yield return Move(unit, destTile, finalDirection, totalUseAP, movableTiles);
 			}
 		}
 		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
@@ -224,10 +220,12 @@ namespace Battle.Turn{
 			}
 		}
 
-		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
+		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost, List<Tile> movableTiles){
 			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
-			yield return new WaitForSeconds (0.2f);
+			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			yield return new WaitForSeconds (0.3f);
+			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, finalDirection, totalAPCost));
 		}
 		public static IEnumerator UseSkill(Casting casting){
@@ -436,8 +434,10 @@ namespace Battle.Turn{
 			int requireAP = 0;
 			Vector2 pos = unit.GetPosition ();
 			Tile tile = unit.GetTileUnderUnit ();
+			List<Tile> movableTiles = new List<Tile> ();
 
 			while (currentAP - requireAP >= unit.GetStandardAP ()) {
+				movableTiles.Add (tile);
 				Vector2 nextPos = pos + battleData.tileManager.ToVector2 (Direction.RightDown);
 				Tile nextTile = battleData.tileManager.GetTile (nextPos);
 				if (nextTile == null || nextTile.IsUnitOnTile()) {
@@ -454,7 +454,7 @@ namespace Battle.Turn{
 
 			int totalUseAP = requireAP;
 			Tile destTile = tile;
-			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP);
+			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP, movableTiles);
 		}
 		private static IEnumerator FreeState(Unit unit){
 			yield return TasteTastyTile (unit);
