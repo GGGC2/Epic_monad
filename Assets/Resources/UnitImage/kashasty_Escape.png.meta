@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 5887fc68732fc7e4798ab13400b1286e
-timeCreated: 1501776523
+guid: c22f204b4e00c424c9284741116ddbdf
+timeCreated: 1502120929
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: kashasty_Escape_0
-    21300002: kashasty_Escape_1
-    21300004: kashasty_Escape_2
-    21300006: kashasty_Escape_3
+    21300000: kashasty_0
+    21300002: kashasty_1
+    21300004: kashasty_2
+    21300006: kashasty_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,11 +70,27 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kashasty_Escape_0
+      name: kashasty_0
       rect:
         serializedVersion: 2
         x: 0
@@ -87,7 +103,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: kashasty_Escape_1
+      name: kashasty_1
       rect:
         serializedVersion: 2
         x: 250
@@ -100,7 +116,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: kashasty_Escape_2
+      name: kashasty_2
       rect:
         serializedVersion: 2
         x: 500
@@ -113,7 +129,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: kashasty_Escape_3
+      name: kashasty_3
       rect:
         serializedVersion: 2
         x: 750

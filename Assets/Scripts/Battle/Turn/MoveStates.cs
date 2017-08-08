@@ -34,6 +34,7 @@ namespace Battle.Turn{
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
 				battleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
+				battleData.tileManager.PreselectTiles (movableTiles);
 
 				battleData.uiManager.EnableCancelButtonUI();
 				battleData.isWaitingUserInput = true;
@@ -53,6 +54,7 @@ namespace Battle.Turn{
 					battleData.unitManager.UpdateUnitOrder();
 					battleData.uiManager.DisableCancelButtonUI();
 					battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
+					battleData.tileManager.DepreselectAllTiles ();
 
 					battleData.currentState = CurrentState.FocusToUnit;
 					battleData.isWaitingUserInput = false;
@@ -70,6 +72,7 @@ namespace Battle.Turn{
 				battleData.move.moveCount += distance;
 
 				battleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
+				battleData.tileManager.DepreselectAllTiles ();
 				battleData.currentState = CurrentState.CheckDestination;
 				battleData.uiManager.DisableCancelButtonUI();
 				BattleManager battleManager = battleData.battleManager;

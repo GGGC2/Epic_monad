@@ -20,11 +20,24 @@ public class Casting {
 	public SkillLocation Location{
 		get { return location; }
 	}
+	public List<Tile> FirstRange{
+		get { return Skill.GetTilesInFirstRange (Location); }
+	}
 	public List<Tile> SecondRange{
 		get { return Skill.GetTilesInSecondRange (Location); }
 	}
 	public List<Tile> RealEffectRange{
 		get { return Skill.GetTilesInRealEffectRange (Location); }
+	}
+	public List<Unit> CurrentTargets{
+		get {
+			List<Unit> targets = new List<Unit> ();
+			foreach (Tile targetTile in RealEffectRange) {
+				if (targetTile.IsUnitOnTile ())
+					targets.Add (targetTile.GetUnitOnTile ());
+			}
+			return targets;
+		}
 	}
 	public int RequireAP{
 		get { return Caster.GetActualRequireSkillAP(Skill); }

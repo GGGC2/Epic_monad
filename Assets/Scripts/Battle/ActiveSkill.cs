@@ -136,8 +136,8 @@ public class ActiveSkill : Skill{
 		}
 		return firstRange;
 	}
-	public List<Tile> GetTilesInFirstRange(Tile casterTile, Direction direction) {
-		return GetTilesInFirstRange (casterTile.GetTilePos (), direction);
+	public List<Tile> GetTilesInFirstRange(SkillLocation location) {
+		return GetTilesInFirstRange (location.CasterPos, location.Direction);
 	}
 	public Tile GetRealTargetTileForAI(Vector2 casterPos, Direction direction, Tile targetTile=null){	
 		if (skillType == SkillType.Route) {
@@ -177,13 +177,150 @@ public class ActiveSkill : Skill{
 		return secondRange;
 	}
 	public List<Tile> GetTilesInRealEffectRange(SkillLocation skillLocation){
-		List<Tile> secondRange = GetTilesInSecondRange (skillLocation);
-		List<Tile> realEffectRange = secondRange;
-		if (skillType == SkillType.Route) {
-			if (!skillLocation.TargetTile.IsUnitOnTile ())
-				realEffectRange = new List<Tile>();
+		if (skillType == SkillType.Route && !skillLocation.TargetTile.IsUnitOnTile ())
+			return new List<Tile>();
+		else
+			return GetTilesInSecondRange (skillLocation);
+	}
+		
+	public bool IsAttackableOnTheTile (Unit caster, Tile casterTile){
+		if (skillType == SkillType.Point) {
+			return GetAttackableEnemyTilesOfPointSkill (caster, casterTile).Count != 0;
 		}
-		return realEffectRange;
+		else {
+			return GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile).Count != 0;
+		}
+	}
+	public Casting GetBestAttack(Unit caster, Tile casterTile){
+		int minCurrHP = 99999;
+		Tile targetTile = casterTile;
+		Direction direction = caster.GetDirection ();
+		if (skillType == SkillType.Point) {
+			Dictionary<Tile, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfPointSkill (caster, casterTile);
+			foreach(var pair in attackableEnemyTiles){
+				int minCurrHPInThisRange = GetMinCurrHP (pair.Value);
+				if (minCurrHPInThisRange < minCurrHP) {
+					minCurrHP = minCurrHPInThisRange;
+					targetTile = pair.Key;
+					direction = Utility.GetDirectionToTarget (caster, targetTile.GetTilePos ());
+				}
+			}
+		}
+		else {
+			Dictionary<Direction, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile);
+			foreach(var pair in attackableEnemyTiles){
+				int minCurrHPInThisRange = GetMinCurrHP (pair.Value);
+				if (minCurrHPInThisRange < minCurrHP) {
+					direction = pair.Key;
+					if (skillType == SkillType.Route)
+						targetTile = GetRealTargetTileForAI (casterTile.GetTilePos (), direction, targetTile);
+				}
+			}
+		}
+		Casting casting = new Casting (caster, this, new SkillLocation (casterTile, targetTile, direction));
+		return casting;
+	}
+	private static int GetMinCurrHP(List<Tile> unitTiles){
+		int minCurrHP = 99999;
+		foreach (Tile tile in unitTiles) {
+			int currHP = tile.GetUnitOnTile ().GetCurrentHealth ();
+			if (currHP < minCurrHP) {
+				minCurrHP = currHP;
+			}
+		}
+		return minCurrHP;
+	}
+	private Dictionary<Direction, List<Tile>> GetAttackableEnemyTilesOfDirectionSkill(Unit caster, Tile casterTile){
+		Dictionary<Direction, List<Tile>> attackAbleTilesGroups = new Dictionary<Direction, List<Tile>> ();
+
+		//투사체 스킬이면 4방향 직선경로상에서 유닛이 가로막은 지점들을 targetTiles로 함.
+		//그리고 각 targetTile에서 2차범위 적용해서 각 범위를 attackAbleTilesGroups에 넣는다
+		if (skillType == SkillType.Route) {
+			Dictionary<Direction, Tile> targetTiles = new Dictionary<Direction, Tile> ();
+			Vector2 casterPos = casterTile.GetTilePos ();
+
+			Tile routeEnd;
+			Direction direction;
+
+			direction= Direction.LeftDown;
+			routeEnd = GetRealTargetTileForAI (casterPos, direction);
+			if (routeEnd != null)
+				targetTiles [direction] = routeEnd;
+			direction = Direction.LeftUp;
+			routeEnd = GetRealTargetTileForAI (casterPos, direction);
+			if (routeEnd != null)
+				targetTiles [direction] = routeEnd;
+			direction = Direction.RightDown;
+			routeEnd = GetRealTargetTileForAI (casterPos, direction);
+			if (routeEnd != null)
+				targetTiles [direction] = routeEnd;
+			direction = Direction.RightUp;
+			routeEnd = GetRealTargetTileForAI (casterPos, direction);
+			if (routeEnd != null)
+				targetTiles [direction] = routeEnd;
+
+			foreach (var pair in targetTiles) {
+				direction = pair.Key;
+				Tile targetTile = pair.Value;
+				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			}
+		}
+		//Auto 스킬은 시전자가 위치한 타일이 유일한 targetTile이며 네 방향의 범위를 각각 attackAbleTilesGroups에 넣는다
+		else if (skillType == SkillType.Auto) {
+			Tile targetTile = casterTile;
+
+			Direction direction;
+			direction= Direction.LeftDown;
+			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			direction = Direction.LeftUp;
+			skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			direction = Direction.RightDown;
+			skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			direction = Direction.RightUp;
+			skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+		}
+		//skillType==SkillType.Self
+		//Self 스킬은 방향을 바꾸지 말고 써야 해서 시전자의 방향을 그대로 받아옴
+		else {
+			Tile targetTile = casterTile;
+			Direction direction = caster.GetDirection ();
+			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+		}
+
+		Dictionary<Direction, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Direction, List<Tile>> ();
+		foreach (var pair in attackAbleTilesGroups) {
+			Direction direction = pair.Key;
+			List<Tile> tilesGroup = pair.Value;
+			List<Tile> enemyTilesGroup = Battle.Turn.AIUtil.FindEnemyTilesInTheseTiles (tilesGroup, caster);
+			if(enemyTilesGroup.Count != 0)
+				attackAbleEnemyTilesGroups [direction] = enemyTilesGroup;
+		}
+		return attackAbleEnemyTilesGroups;
+	}
+	private Dictionary<Tile, List<Tile>> GetAttackableEnemyTilesOfPointSkill(Unit caster, Tile casterTile){
+		Dictionary<Tile, List<Tile>> attackAbleTilesGroups = new Dictionary<Tile, List<Tile>> ();
+		Vector2 casterPos = casterTile.GetTilePos ();
+		List<Tile> targetTiles = GetTilesInFirstRange (casterPos, caster.GetDirection ());
+		foreach (Tile targetTile in targetTiles) {
+			SkillLocation skillLocation = new SkillLocation (casterPos, targetTile, caster.GetDirection ());
+			attackAbleTilesGroups [targetTile] = GetTilesInSecondRange (skillLocation);
+		}
+
+		Dictionary<Tile, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Tile, List<Tile>> ();
+		foreach (var pair in attackAbleTilesGroups) {
+			Tile targetTile = pair.Key;
+			List<Tile> tilesGroup = pair.Value;
+			List<Tile> enemyTilesGroup = Battle.Turn.AIUtil.FindEnemyTilesInTheseTiles (tilesGroup, caster);
+			if(enemyTilesGroup.Count != 0)
+				attackAbleEnemyTilesGroups [targetTile] = enemyTilesGroup;
+		}
+		return attackAbleEnemyTilesGroups;
 	}
 
 	public IEnumerator Apply(Casting casting, int chainCombo) {
@@ -206,7 +343,7 @@ public class ActiveSkill : Skill{
 		}
 
 		if (IsChainable())
-			ChainList.RemoveChainsFromUnit(caster);
+			ChainList.RemoveChainOfThisUnit(caster);
 
 		ApplySoundEffect();
 		yield return battleManager.StartCoroutine(ApplyVisualEffect (caster, secondRange));
@@ -484,7 +621,6 @@ public class ActiveSkill : Skill{
 		}
 	}
 
-
 	public IEnumerator AIUseSkill(Casting casting){
 		Unit caster = casting.Caster;
 		SkillLocation location = casting.Location;
@@ -493,7 +629,16 @@ public class ActiveSkill : Skill{
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
 
-		yield return Battle.Turn.SkillAndChainStates.ApplyChain (casting);
+		List<Tile> firstRange = casting.FirstRange;
+		battleData.tileManager.PaintTiles(firstRange, TileColor.Red);
+		yield return new WaitForSeconds (0.5f);
+		battleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+
+		List<Tile> secondRange = casting.SecondRange;
+		battleData.tileManager.PaintTiles (secondRange, TileColor.Red);
+		yield return new WaitForSeconds (0.1f);
+		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
+		battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
 		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();

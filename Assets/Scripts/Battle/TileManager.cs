@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using Enums;
 
 public class TileManager : MonoBehaviour {
+	private static TileManager instance = null;
+	public static TileManager Instance { get { return instance; } }
+	public static void SetInstance() { instance = FindObjectOfType<TileManager>(); }
 
 	public GameObject tilePrefab;
 
@@ -326,21 +329,33 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
+	public void PreselectTiles(List<Tile> tiles)
+	{
+		foreach (Tile tile in tiles)
+		{
+			tile.SetPreSelected (true);
+		}
+	}
+	public void DepreselectAllTiles()
+	{
+		foreach (Tile tile in GetTilesInGlobalRange())
+		{
+			tile.SetPreSelected (false);
+		}
+	}
+
 	public void PaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
 			tile.PaintTile(color);
-			tile.SetPreSelected(true);
 		}
 	}
-
 	public void DepaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
 			tile.DepaintTile(color);
-			tile.SetPreSelected(false);
 		}
 	}
 

@@ -155,7 +155,8 @@ public class Unit : MonoBehaviour
 	public int GetIndex() { return index; }
 	public string GetName() { return name; }
 	public void SetName(string name) { this.name = name; }
-	public Side GetSide() { return side; }	
+	public Side GetSide() { return side; }
+	public bool IsAlly(Unit unit) { return side == unit.GetSide (); }
 	public bool IsObject() { return isObject; }
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
@@ -338,7 +339,7 @@ public class Unit : MonoBehaviour
 		if (statusEffect.IsOfType(StatusEffectType.Faint) ||
 			statusEffect.IsOfType(StatusEffectType.Silence))
 		{
-			ChainList.RemoveChainsFromUnit(this);
+			ChainList.RemoveChainOfThisUnit(this);
 		}
 	}
 

@@ -57,7 +57,7 @@ public class BaseSkillLogic
 	{
         yield return null;
 	}
-    public virtual bool CheckApplyPossible(Unit caster, List<Tile> targetTiles) {
+    public virtual bool CheckApplyPossibleToTargetTiles(Unit caster, List<Tile> targetTiles) {
         return true;
     }
     public virtual bool IgnoreShield(SkillInstanceData skillInstanceData) {

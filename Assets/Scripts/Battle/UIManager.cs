@@ -27,6 +27,8 @@ public class UIManager : MonoBehaviour
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
 	GameObject phaseUI;
+    GameObject statusEffectDisplayPanel;
+    Vector3 originalStatusEffectDisplayPanelPosition;
 
 	GameObject notImplementedDebugPanel;
 
@@ -39,7 +41,8 @@ public class UIManager : MonoBehaviour
 		WaitButton = GameObject.Find("WaitButton");
 		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
-		selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
+        statusEffectDisplayPanel = GameObject.Find("StatusEffectDisplayPanel");
+        selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
@@ -55,12 +58,14 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.gameObject.SetActive(false);
 		destCheckUI.SetActive(false);
 		unitViewerUI.SetActive(false);
-		selectedUnitViewerUI.SetActive(false);
+        statusEffectDisplayPanel.SetActive(false);
+        selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
 		cancelButtonUI.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 
+        originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
 		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
@@ -231,9 +236,9 @@ public class UIManager : MonoBehaviour
 		return unitViewerUI.activeInHierarchy;
 	}
 
-	public void DisableUnitViewer()
-	{
-		unitViewerUI.SetActive(false);
+	public void DisableUnitViewer() {
+        unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList(); ;
+        unitViewerUI.SetActive(false);
 	}
 
 	public void SetSelectedUnitViewerUI(Unit selectedUnit)
@@ -244,10 +249,24 @@ public class UIManager : MonoBehaviour
 		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}
 
-	public void DisableSelectedUnitViewerUI()
-	{
-		selectedUnitViewerUI.SetActive(false);
+	public void DisableSelectedUnitViewerUI() {
+        unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList();
+        selectedUnitViewerUI.SetActive(false);
 	}
+
+    public void ActivateStatusEffectDisplayPanelAndSetText(Vector3 displacement, StatusEffect statusEffect) {
+        statusEffectDisplayPanel.SetActive(true);
+        RectTransform panelRect = statusEffectDisplayPanel.GetComponent<RectTransform>();
+        statusEffectDisplayPanel.transform.position = displacement + 
+                    new Vector3(panelRect.sizeDelta.x * panelRect.lossyScale.x / 2 + StatusEffectIcon.WIDTH/2,
+                                 panelRect.sizeDelta.y * panelRect.lossyScale.y / 2 +   StatusEffectIcon.HEIGHT/2, 0);
+        statusEffectDisplayPanel.GetComponent<StatusEffectDisplayPanel>().SetText(statusEffect);
+    }
+
+    public void DisableStatusEffectDisplayPanel() {
+        statusEffectDisplayPanel.transform.position = originalStatusEffectDisplayPanelPosition;
+        statusEffectDisplayPanel.SetActive(false);
+    }
 
 	public void SetTileViewer(Tile tile)
 	{

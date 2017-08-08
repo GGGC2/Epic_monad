@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace Battle.Skills {
     class Grenev_1_m_SkillLogic : BaseSkillLogic {
-        public override bool CheckApplyPossible(Unit caster, List<Tile> targetTiles) {
+        public override bool CheckApplyPossibleToTargetTiles(Unit caster, List<Tile> targetTiles) {
 			TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 			foreach(Tile tile in targetTiles){
 				if(tile.IsUnitOnTile()) {

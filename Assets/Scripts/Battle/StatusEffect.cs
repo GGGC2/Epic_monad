@@ -28,6 +28,7 @@ public class StatusEffect {
             public readonly int maxStack; // 최대 가능한 스택 수
             public readonly bool amountNotEffectedByStack;
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
+            public readonly string explanation;
 
             // 이펙트 관련 정보
             public readonly string effectName;
@@ -38,7 +39,7 @@ public class StatusEffect {
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
                   int defaultPhase, StatusEffectVar stackVar, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
+                  string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
                 this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
@@ -51,6 +52,7 @@ public class StatusEffect {
                 this.maxStack = maxStack;
                 this.amountNotEffectedByStack = amountNotEffectedByStack;
                 this.isRemovable = isRemovable;
+                this.explanation = explanation;
                 this.effectName = effectName;
                 this.effectVisualType = effectVisualType;
                 this.effectMoveType = effectMoveType;
@@ -85,12 +87,12 @@ public class StatusEffect {
                   bool isBuff, bool isInfinite,
                   bool isStackable, bool isOnce,
                   int defaultPhase, StatusEffectVar stackVar, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
-                  string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
+                  string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
             display = new DisplayElement(toBeReplaced, originSkillName, displayName,
                     isBuff, isInfinite,
                     isStackable, isOnce,
                     defaultPhase, stackVar, maxStack, amountNotEffectedByStack, isRemovable,
-                    effectName, effectVisualType, effectMoveType);
+                    explanation, effectName, effectVisualType, effectMoveType);
 
             actuals = actualEffects;
         }
@@ -265,7 +267,15 @@ public class StatusEffect {
                     GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
                     GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
-
+    public string GetExplanation() {
+        string text = fixedElem.display.explanation;
+        for(int i = 0; i < fixedElem.actuals.Count; i++) {
+            string amountString = GetAmount(i).ToString();
+            if(fixedElem.actuals[i].isPercent)  amountString += "%";
+            text = text.Replace("AMOUNT" + i, amountString);
+        }
+        return text;
+    }
     public void CalculateAmount(int i, float statusEffectVar) {
         flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
         if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();

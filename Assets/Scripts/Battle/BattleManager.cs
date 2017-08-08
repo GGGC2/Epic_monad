@@ -20,10 +20,6 @@ public class BattleManager : MonoBehaviour{
 		get { return instance; }
 	}
 
-	public List<ChainInfo> GetChainList(){
-		return battleData.chainList;
-	}
-
 	void Awake (){
 		instance = this;
 
@@ -32,6 +28,7 @@ public class BattleManager : MonoBehaviour{
 
 		PartyData.CheckLevelZero();
 		Load();
+		TileManager.SetInstance ();
 		battleData.tileManager = FindObjectOfType<TileManager>();
 		SkillLocation.tileManager = battleData.tileManager;
 		battleData.unitManager = FindObjectOfType<UnitManager>();
@@ -46,6 +43,7 @@ public class BattleManager : MonoBehaviour{
 		AI.SetBattleData (battleData);
 		ActiveSkill.SetBattleData (battleData);
 		SkillAndChainStates.SetBattleData (battleData);
+		ChainList.InitiateChainList ();
 
 		battleData.unitManager.SetStandardActivityPoint();
 		battleData.selectedUnit = null;
@@ -130,7 +128,7 @@ public class BattleManager : MonoBehaviour{
 		battleData.selectedUnit = unit;
 		battleData.move = new BattleData.Move();
 		battleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
-		ChainList.RemoveChainsFromUnit(battleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
+		ChainList.RemoveChainOfThisUnit(battleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 
 		battleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
 		unit.TriggerTileStatusEffectAtTurnStart();
@@ -200,6 +198,7 @@ public class BattleManager : MonoBehaviour{
 
 	public static IEnumerator DestroyDeadOrRetreatUnit(BattleData battleData, Unit unit, BattleTrigger.ActionType deadOrRetreat)
 	{
+		ChainList.RemoveChainOfThisUnit (unit);
 		yield return battleData.battleManager.StartCoroutine(FadeOutEffect(unit));
 		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
         yield return battleData.battleManager.StartCoroutine(battleData.unitManager.DeleteDeadUnit(unit));

@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine.EventSystems;
 
 using Enums;
-using Battle.Feature;
 using Battle.Skills;
 
 public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
@@ -20,8 +19,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public bool isHighlight;
 	public List<Color> colors;
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
-
-	public List<GameObject> projectileDirectionArrows;
 
 	bool isPreSeleted = false;
 
@@ -68,57 +65,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public bool IsUnitOnTile ()	{	return !(unitOnTile == null);	}
 
 	public void SetUnitOnTile(Unit unit)	{	unitOnTile = unit;	}
-
-	/* Tile painting related */
-	public void PaintTile(TileColor tileColor)
-	{
-		Color color = TileColorToColor(tileColor);
-		PaintTile(color);
-	}
-
-	public void PaintTile(TileColor tileColor, Direction projectileDirection)
-	{
-		Color color = TileColorToColor(tileColor);
-		PaintTile(color);
-	}
-
-	public void PaintTile(Color color) {
-		colors.Add(color);
-	}
-
-	public void DepaintTile(TileColor tileColor)
-	{
-		Color color = TileColorToColor(tileColor);
-		DepaintTile(color);
-	}
-
-	public void DepaintTile(Color color)
-	{
-		colors.Remove(color);
-	}
-
-	public Color TileColorToColor(TileColor color) {
-		if (color == TileColor.Red)
-			return new Color(1, 0.5f, 0.5f, 1);
-		else if (color == TileColor.Blue)
-			return new Color(0.6f, 0.6f, 1, 1);
-		else if (color == TileColor.Yellow)
-			return new Color(1, 0.9f, 0.016f, 1);
-		else
-			throw new NotImplementedException(color.ToString() + " is not a supported color");
-	}
-
-	public void PaintProjectileArrow(Color color, Direction projectileDirection)
-	{
-		if (!projectileDirectionArrows[(int)projectileDirection -1].activeInHierarchy)
-			projectileDirectionArrows[(int)projectileDirection -1].SetActive(true);
-		projectileDirectionArrows[(int)projectileDirection -1].GetComponent<SpriteRenderer>().color = color;	
-	}
-
-	public void DepaintProjectileArrow()
-	{
-		projectileDirectionArrows.ForEach(arrow => arrow.SetActive(false));
-	}
     
     public void RemoveStatusEffect(TileStatusEffect statusEffect) {
         bool toBeRemoved = true;
@@ -162,19 +108,14 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData)
 	{
-		isHighlight = true;
+		HighlightTile ();
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		BattleData battleData = battleManager.battleData;
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Show(unitOnTile);
-
-			List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
-			foreach (Unit unit in unitsTargetThisTile)
-			{
-				unit.ShowChainIcon();
-			}
+			ChainList.ShowChainOfThisUnit(unitOnTile);
+			ChainList.ShowUnitsTargetingThisTile (this);
 
 			if (battleManager.EnemyUnitSelected()) return;
 
@@ -191,24 +132,18 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData)
 	{
-		isHighlight = false;
+		DehighlightTile ();
 
 		if(FindObjectOfType<UIManager>() != null)
 			FindObjectOfType<UIManager>().DisableTileViewerUI();
 
 		if (IsUnitOnTile())
 		{
-			ColorChainTilesByUnit.Hide(unitOnTile);
+			ChainList.HideChainYellowDisplay ();
+			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		BattleData battleData = battleManager.battleData;
-		List<Unit> unitsTargetThisTile = battleData.GetUnitsTargetThisTile(this);
-		foreach (Unit unit in unitsTargetThisTile)
-		{
-			unit.HideChainIcon();
-		}
-
 		if (battleManager.EnemyUnitSelected()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
 
@@ -235,29 +170,72 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void Awake ()
 	{
 		sprite = gameObject.GetComponent<SpriteRenderer>();
-		isHighlight = false;
 		colors = new List<Color>();
-		projectileDirectionArrows.ForEach(arrow => arrow.SetActive(false));
+		DehighlightTile ();
 	}
 
-	void Update ()
+
+	/* Tile painting related */
+	void HighlightTile(){
+		isHighlight = true;
+		RenewColor ();
+	}
+	void DehighlightTile(){
+		isHighlight = false;
+		RenewColor ();
+	}
+
+	public void PaintTile(TileColor tileColor)
 	{
-		sprite.color = mixColors(colors);
-
-		if (isHighlight)
-			sprite.color -= new Color(0.3f, 0.3f, 0.3f, 0);
+		Color color = TileColorToColor(tileColor);
+		PaintTile(color);
+	}
+	public void PaintTile(TileColor tileColor, Direction projectileDirection)
+	{
+		Color color = TileColorToColor(tileColor);
+		PaintTile(color);
+	}
+	void PaintTile(Color color) {
+		colors.Add(color);
+		RenewColor ();
 	}
 
+	public void DepaintTile(TileColor tileColor)
+	{
+		Color color = TileColorToColor(tileColor);
+		DepaintTile(color);
+	}
+	void DepaintTile(Color color)
+	{
+		colors.Remove(color);
+		RenewColor ();
+	}
+
+	void RenewColor(){
+		sprite.color = mixColors (colors);
+	}
 	Color mixColors(List<Color> colors)
 	{
-		if (colors.Count == 0){
-			return Color.white;
-		}
-
-		return new Color(colors.Average(color => color.r),
-						 colors.Average(color => color.g),
-						 colors.Average(color => color.b),
-						 colors.Average(color => color.a));
+		Color color;
+		if (colors.Count == 0)
+			color = Color.white;
+		else color = new Color(colors.Average(_color => _color.r),
+						 colors.Average(_color => _color.g),
+						 colors.Average(_color => _color.b),
+						 colors.Average(_color => _color.a));
+		if (isHighlight)
+			color -= new Color(0.3f, 0.3f, 0.3f, 0);
+		return color;
+	}
+	Color TileColorToColor(TileColor color) {
+		if (color == TileColor.Red)
+			return new Color(1, 0.5f, 0.5f, 1);
+		else if (color == TileColor.Blue)
+			return new Color(0.6f, 0.6f, 1, 1);
+		else if (color == TileColor.Yellow)
+			return new Color(1, 0.9f, 0.016f, 1);
+		else
+			throw new NotImplementedException(color.ToString() + " is not a supported color");
 	}
 
 	// override object.Equals
