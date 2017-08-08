@@ -20,10 +20,11 @@ public class TutorialManager : MonoBehaviour {
 		Sprite searchedSprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + SceneData.stageNumber.ToString() + "_1");
 
 		if(searchedSprite == null || SceneData.isTestMode || SceneData.isStageMode){
-			if(usedSceneName == "Battle"){
+			//주석처리 안 한 상태에선 테스트씬에서 cm의 null reference 오류로 전투 시작이 안 돼서 임시로 주석처리함
+			/*if(usedSceneName == "Battle"){
 				cm.mouseMoveActive = true;
 				cm.keyboardMoveActive = true;
-			}
+			}*/
 			gameObject.SetActive(false);
 		}
 		else{
