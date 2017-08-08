@@ -28,8 +28,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public Vector2 GetTilePos()	{	return position;	}
 
-	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height, string displayName)
-	{
+	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height, string displayName){
 		string typeIndexString = typeIndex.ToString();
 		if (typeIndex < 10)
 			typeIndexString = "0" + typeIndexString;
@@ -85,35 +84,29 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
             }
         }
     }
-    public Unit GetUnitOnTile ()
-	{
+    public Unit GetUnitOnTile (){
 		return unitOnTile;
 	}
 
-	public string GetTileName()
-	{
+	public string GetTileName(){
 		return displayName;
 	}
 
-	int CalculatingRequireAPOfTile(int tileAPAtStandardHeight, int tileHeight)
-	{
+	int CalculatingRequireAPOfTile(int tileAPAtStandardHeight, int tileHeight){
 		if (tileAPAtStandardHeight >= 0 && tileHeight >= 0)
 			return tileAPAtStandardHeight * (1 + tileHeight); // 임시 공식.
-		else
-		{
+		else{
 			Debug.Log("Invaild input. tileAP : " + tileAPAtStandardHeight + " height : " + tileHeight);
 			return 1;
 		}
 	}
 
-	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData)
-	{
+	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
 		HighlightTile ();
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		BattleData battleData = battleManager.battleData;
-		if (IsUnitOnTile())
-		{
+		if (IsUnitOnTile()){
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
 
@@ -125,13 +118,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		FindObjectOfType<UIManager>().SetTileViewer(this);
 
 		if (isPreSeleted)
-		{
 			battleManager.OnMouseEnterHandlerFromTile(position);
-		}
 	}
 
-	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData)
-	{
+	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
 		DehighlightTile ();
 
 		if(FindObjectOfType<UIManager>() != null)
@@ -147,8 +137,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		if (battleManager.EnemyUnitSelected()) return;
 		FindObjectOfType<UIManager>().DisableUnitViewer();
 
-		if (isPreSeleted)
-		{
+		if (isPreSeleted){
 			battleManager.OnMouseExitHandlerFromTile(position);
 		}
 	}

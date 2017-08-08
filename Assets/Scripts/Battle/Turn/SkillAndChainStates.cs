@@ -27,32 +27,38 @@ namespace Battle.Turn {
             }
         }
 
-        public static IEnumerator SelectSkillState( ) {
-            while (battleData.currentState == CurrentState.SelectSkill) {
+        public static IEnumerator SelectSkillState( ){
+            while (battleData.currentState == CurrentState.SelectSkill){
+                BattleManager battleManager = battleData.battleManager;
                 battleData.uiManager.SetSkillUI(battleData.selectedUnit);
 
                 battleData.isWaitingUserInput = true;
                 battleData.indexOfSelectedSkillByUser = 0;
 
                 var update = UpdatePreviewAP();
-                battleData.battleManager.StartCoroutine(update);
-                yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    battleData.triggers.skillSelected,
-                    battleData.triggers.rightClicked,
-                    battleData.triggers.cancelClicked
-                ));
+                battleManager.StartCoroutine(update);
+
+                //튜토리얼 중일 경우 되돌아가는 입력 무시
+                if(battleManager.onTutorial){
+					yield return battleManager.StartCoroutine(battleData.triggers.skillSelected.Wait());
+				}else{
+					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
+					battleData.triggers.rightClicked,
+					battleData.triggers.cancelClicked,
+					battleData.triggers.skillSelected));
+				}
+
                 battleData.battleManager.StopCoroutine(update);
 
                 battleData.indexOfPreSelectedSkillByUser = 0;
                 battleData.isWaitingUserInput = false;
                 battleData.uiManager.DisableSkillUI();
 
-                if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered) {
+                if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered){
                     battleData.currentState = CurrentState.FocusToUnit;
                     yield break;
                 }
 
-                BattleManager battleManager = battleData.battleManager;
                 ActiveSkill selectedSkill = battleData.SelectedSkill;
                 SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
                 if (skillTypeOfSelectedSkill == SkillType.Auto ||
@@ -106,10 +112,8 @@ namespace Battle.Turn {
                 //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향도 돌림
                 var updateRedArea = UpdateRangeSkillMouseDirection(originalDirection);
                 battleData.battleManager.StartCoroutine(updateRedArea);
-
-				//지정형 스킬이 아니라면 4방향 화살표를 띄운다(본인 중심으로 4방향 대칭인 스킬도 화살표가 의미가 있는데, 스킬 시전 후의 시전자 시선 방향을 결정하기 때문)
-                if(battleData.SelectedSkill.GetSkillType() != SkillType.Point)
-                    battleData.uiManager.EnableSelectDirectionUI();
+                
+				battleData.uiManager.EnableSelectDirectionUI();
 
                 yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     battleData.triggers.rightClicked,

@@ -27,10 +27,12 @@ public class TutorialManager : MonoBehaviour {
 			gameObject.SetActive(false);
 		}
 		else{
-			FindObjectOfType<BattleManager>().onTutorial = true;
 			scenario = Instantiate(scenarioPrefab);
 			scenario.Manager = this;
 			scenario.SetNewSprite();
+			BattleManager battleManager = FindObjectOfType<BattleManager>();
+			battleManager.onTutorial = true;
+			battleManager.scenario = scenario;
 		}
     }
 

@@ -8,9 +8,11 @@ public class TutorialScenario : MonoBehaviour{
 	public List<Sprite> Stage1;
 	public int index;
 
-	public enum TutorialMission{None, MoveCommand, SkillCommand, SelectTile, SelectDirection}
+	public enum TutorialMission{None, MoveCommand, SkillCommand, StandbyCommand, SelectTile, SelectDirection, SelectSkill, ApplySkill}
 	public TutorialMission mission;
 	public Vector2 missionTile;
+	public Enums.Direction missionDirection;
+	public int missionSkillIndex;
 
 	public void SetNewSprite(){
 		Sprite searchResult = Resources.Load<Sprite>("Tutorial/"+SceneManager.GetActiveScene().name + GameData.SceneData.stageNumber.ToString() + "_" + index);
@@ -30,9 +32,47 @@ public class TutorialScenario : MonoBehaviour{
 			}else if(index == 6){
 				mission = TutorialMission.SelectTile;
 				missionTile = new Vector2(5,4);
-			}
-			else if(index == 7){
+			}else if(index == 7){
 				mission = TutorialMission.SelectDirection;
+				missionDirection = Enums.Direction.RightDown;
+			}else if(index == 8){
+				mission = TutorialMission.SkillCommand;
+			}else if(index == 9){
+				mission = TutorialMission.SelectSkill;
+				missionSkillIndex = 1;
+			}else if(index == 10){
+				mission = TutorialMission.SelectDirection;
+				missionDirection = Enums.Direction.RightDown;
+			}else if(index == 11){
+				mission = TutorialMission.ApplySkill;
+			}else if(index == 12){
+				mission = TutorialMission.MoveCommand;
+			}else if(index == 13){
+				mission = TutorialMission.SelectTile;
+				missionTile = new Vector2(6,5);
+			}else if(index == 14){
+				mission = TutorialMission.SelectDirection;
+				missionDirection = Enums.Direction.LeftDown;
+			}else if(index == 15){
+				mission = TutorialMission.SkillCommand;
+			}else if(index == 16){
+				mission = TutorialMission.SelectSkill;
+				missionSkillIndex = 1;
+			}else if(index == 17){
+				mission = TutorialMission.SelectDirection;
+				missionDirection = Enums.Direction.LeftDown;
+			}else if(index == 18){
+				mission = TutorialMission.ApplySkill;
+			}else if(index == 19){
+				mission = TutorialMission.StandbyCommand;
+			}else if(index == 20){
+				mission = TutorialMission.MoveCommand;
+			}else if(index == 21){
+				mission = TutorialMission.SelectTile;
+				missionTile = new Vector2(4,4);
+			}else if(index == 22){
+				mission = TutorialMission.SelectDirection;
+				missionDirection = Enums.Direction.LeftDown;
 			}
 			else
 				SetNewSprite();

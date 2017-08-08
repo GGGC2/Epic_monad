@@ -68,20 +68,20 @@ public class EventTrigger: IEventTrigger{
 		enabled = false;
 	}
 
-	public static IEnumerator WaitOr(params IEventTrigger[] triggers)
-	{
+	public static IEnumerator WaitOr(params IEventTrigger[] triggers){
 		foreach (var trigger in triggers)
-		{
 			trigger.Begin();
-		}
 
 		bool looping = true;
-		while (looping)
-		{
-			foreach (var trigger in triggers)
-			{
-				if (trigger.Triggered)
+		while (looping){
+			BattleManager battleManager = GameObject.FindObjectOfType<BattleManager>();
+			foreach (var trigger in triggers){
+				//튜토리얼 중에는 취소 입력을 무시
+				if  (battleManager.onTutorial &&
+					(trigger == battleManager.battleData.triggers.rightClicked || trigger == battleManager.battleData.triggers.cancelClicked))
 				{
+					continue;
+				}else if (trigger.Triggered){
 					looping = false;
 					break;
 				}
@@ -96,8 +96,7 @@ public class EventTrigger: IEventTrigger{
 	}
 }
 
-public class EventTrigger<T>: IEventTrigger
-{
+public class EventTrigger<T>: IEventTrigger{
 	private bool enabled = false;
 	private bool triggered = false;
 	private T data = default(T);
@@ -154,8 +153,7 @@ public class BattleData{
 	public UIManager uiManager;
 	public BattleManager battleManager;
 
-	public class Triggers
-	{
+	public class Triggers{
 		public EventTrigger rightClicked = new EventTrigger();
 		public EventTrigger cancelClicked = new EventTrigger();
 		public EventTrigger tileSelectedByUser = new EventTrigger();

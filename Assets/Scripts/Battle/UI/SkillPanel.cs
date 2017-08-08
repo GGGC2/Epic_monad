@@ -45,7 +45,15 @@ namespace BattleUI
         }
 		public void CallbackSkillIndex(int index){
             index += page * 5;
-			battleManager.CallbackSkillIndex(index);
+			if(!battleManager.onTutorial)
+				battleManager.CallbackSkillIndex(index);
+			else{
+				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
+				if(tutorial.mission == TutorialScenario.TutorialMission.SelectSkill && tutorial.missionSkillIndex == index){
+					battleManager.CallbackSkillIndex(index);
+					tutorial.NextStep();
+				}
+			}
 		}
 
 		public void Update(){

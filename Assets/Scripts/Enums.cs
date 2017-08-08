@@ -2,68 +2,20 @@
 using System.Collections;
 
 namespace Enums {
-
-	public enum ConditionType
-	{
-		Win, Lose, End, Bonus
-	}
-
-	public enum EffectVisualType
-	{
-		Individual, Area, None
-	}
-
-	public enum EffectMoveType
-	{
-		Move, NonMove, None
-	}
-
-	public enum Side
-	{
-		Ally, Enemy, Neutral
-	}
-
-	public enum TileColor // highlighting selected tile
-	{
-		Blue, Red, Yellow
-	}
-
-	public enum TileForm
-	{
-		Flatland, Hill, Cliff, Water, HigherHill
-	}
-
+	public enum ConditionType{ Win, Lose, End, Bonus }
+	public enum EffectVisualType{ Individual, Area, None }
+	public enum EffectMoveType{ Move, NonMove, None }
+	public enum Side{ Ally, Enemy, Neutral }
+	// highlighting selected tile
+	public enum TileColor{ Blue, Red, Yellow }
+	public enum TileForm{ Flatland, Hill, Cliff, Water, HigherHill }
 	public enum UnitClass{ None, Melee, Magic }
-
-	public enum Celestial
-	{
-		None, Sun, Moon, Earth
-	}
-
-	public enum Element
-	{
-		None, Fire, Water, Plant, Metal
-	}
-
-	public enum Direction
-	{
-		// 위 4개만이 실제 게임의 타일 방향, 아래 4개는 개발용 변수
-		LeftUp,
-        LeftDown,
-        RightUp,
-        RightDown,
-        Left,
-        Right,
-        Up,
-        Down
-	}
-
-	public enum SkillType
-	{
-		// 지정형, 경로형, 자동형, 재귀형
-		Point, Route, Auto, Self
-	}
-
+	public enum Celestial{ None, Sun, Moon, Earth }
+	public enum Element{ None, Fire, Water, Plant, Metal }
+	// 앞 4개만이 실제 게임의 타일 방향, 뒤 4개는 개발용 변수
+	public enum Direction{ LeftUp, LeftDown, RightUp, RightDown, Left, Right, Up, Down }
+	// 지정형, 경로형, 자동형, 재귀형
+	public enum SkillType{ Point, Route, Auto, Self }
     public enum Stat
     {
         MaxHealth = 1,

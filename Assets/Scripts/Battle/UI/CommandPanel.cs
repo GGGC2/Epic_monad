@@ -46,6 +46,18 @@ namespace BattleUI{
 			}
 		}
 
+		public void CallbackStandbyCommand(){
+			if(!battleManager.onTutorial)
+				battleManager.CallbackStandbyCommand();
+				else{
+				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
+				if(tutorial.mission == TutorialScenario.TutorialMission.StandbyCommand){
+					battleManager.CallbackStandbyCommand();
+					tutorial.NextStep();
+				}
+			}
+		}
+
 		public void CallbackRestCommand(){
 			if(!battleManager.onTutorial)
 				battleManager.CallbackRestCommand();
@@ -57,11 +69,6 @@ namespace BattleUI{
 
 		public void CallbackOnPointerExitRestCommand(){
 			battleManager.CallbackOnPointerExitRestCommand();
-		}
-
-		public void CallbackStandbyCommand(){
-			if(!battleManager.onTutorial)
-				battleManager.CallbackStandbyCommand();
 		}
 	}
 }

@@ -251,8 +251,7 @@ public class Unit : MonoBehaviour{
         }
     }
 
-	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost)
-	{
+	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
 		UseActivityPoint (totalAPCost);

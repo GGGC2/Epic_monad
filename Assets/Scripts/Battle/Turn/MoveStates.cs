@@ -13,9 +13,7 @@ namespace Battle.Turn{
 					movableTilesWithPath.ContainsKey(battleData.preSelectedTilePosition.Value) == false)
 				{
 					battleData.previewAPAction = null;
-				}
-				else
-				{
+				}else{
 					var preSelectedTile = battleData.preSelectedTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					battleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
@@ -43,15 +41,11 @@ namespace Battle.Turn{
 				var update = UpdatePreviewAP(battleData, movableTilesWithPath);
 				battleManager.StartCoroutine(update);
 
-				//튜토리얼 중일 경우 이동취소 입력을 무시한다
-				if(battleManager.onTutorial){
-					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.tileSelectedByUser));
-				}else{
-					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
+				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
 					battleData.triggers.rightClicked,
 					battleData.triggers.cancelClicked,
-					battleData.triggers.tileSelectedByUser));
-				}
+					battleData.triggers.tileSelectedByUser)
+				);
 				
 				battleManager.StopCoroutine(update);
 
@@ -87,10 +81,8 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(BattleData battleData, Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance)
-		{
-			while (battleData.currentState == CurrentState.CheckDestination)
-			{
+		private static IEnumerator CheckDestination(BattleData battleData, Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance){
+			while (battleData.currentState == CurrentState.CheckDestination){
 				// 목표지점만 푸른색으로 표시
 				// List<GameObject> destTileList = new List<GameObject>();
 				// destTileList.Add(destTile);
@@ -104,15 +96,18 @@ namespace Battle.Turn{
 				// 카메라를 옮기고
 				BattleManager.MoveCameraToTile(destTile);
 				battleData.uiManager.SetMovedUICanvasOnTileAsCenter(destTile);
+				
 				// 클릭 대기
-
 				battleData.uiManager.EnableCancelButtonUI();
 				battleData.isWaitingUserInput = true;
-				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-					battleData.triggers.directionSelectedByUser,
+
+				BattleManager battleManager = battleData.battleManager;
+				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
 					battleData.triggers.rightClicked,
-					battleData.triggers.cancelClicked
-				));
+					battleData.triggers.cancelClicked,
+					battleData.triggers.directionSelectedByUser)
+				);
+
 				battleData.isWaitingUserInput = false;
 				battleData.uiManager.DisableCancelButtonUI();
 
@@ -121,8 +116,7 @@ namespace Battle.Turn{
 				// 카메라 유닛 위치로 원상복구
 				// 이동가능 위치 다시 표시해주고
 				// UI 숨기고
-				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered)
-				{
+				if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered){
 					battleData.move.moveCount -= distance;
 					BattleManager.MoveCameraToUnit(battleData.selectedUnit);
 					battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
@@ -137,14 +131,12 @@ namespace Battle.Turn{
 				battleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 				battleData.currentState = CurrentState.MoveToTile;
 				battleData.uiManager.DisableDestCheckUI();
-				BattleManager battleManager = battleData.battleManager;
 				yield return battleManager.StartCoroutine(MoveToTile(battleData, destTile, battleData.move.selectedDirection, totalUseActivityPoint));
 			}
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction finalDirection, int totalAPCost)
-		{
+		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction finalDirection, int totalAPCost){
 			CaptureMoveSnapshot(battleData);
             
 			Unit unit = battleData.selectedUnit;

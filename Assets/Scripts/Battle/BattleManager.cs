@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour{
 	bool startFinished = false;
 	bool startTurnManager = false;
 	public bool onTutorial;
+	public TutorialScenario scenario;
 	public BattleData battleData = new BattleData();
 	private static BattleManager instance;
 	public static BattleManager Instance{
@@ -287,7 +288,7 @@ public class BattleManager : MonoBehaviour{
 			OnOffCommandButtons ();
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
-			if (battleData.alreadyMoved)
+			if (battleData.alreadyMoved && !battleManager.onTutorial)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.actionCommand, battleData.triggers.rightClicked));
 			else
 				yield return battleManager.StartCoroutine(battleData.triggers.actionCommand.Wait());
@@ -499,10 +500,8 @@ public class BattleManager : MonoBehaviour{
 		}
 	}
 
-	public void OnMouseDownHandlerFromTile(Vector2 position)
-	{
-		if (battleData.isWaitingUserInput)
-		{
+	public void OnMouseDownHandlerFromTile(Vector2 position){
+		if (battleData.isWaitingUserInput){
 			battleData.triggers.tileSelectedByUser.Trigger();
 			battleData.move.selectedTilePosition = position;
 		}
