@@ -16,6 +16,6 @@ ratice,4,-4,4,0,1,magic,plant,moon
 luvericha,-1,-1,-2,0,0,magic,plant,earth
 lucius,1,1,2,-1,1,melee,water,sun
 eugene,2,-3,0,4,-2,magic,water,sun
-json,0,2,-1,-2,4,melee,fire,moon
+json,0,2,-1,-1,4,melee,fire,moon
 karldrich,-4,4,-4,-4,4,melee,fire,earth
 curi,-4,3,0,-1,-1,magic,metal,sun
