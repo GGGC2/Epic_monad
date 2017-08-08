@@ -42,15 +42,9 @@ public class ChainList : MonoBehaviour {
 		List<Tile> targetArea = chain.SecondRange;
 		TileManager.Instance.PaintTiles(targetArea, TileColor.Yellow);
 	}
-	public static void HideChainOfThisUnit(Unit unit)
+	public static void HideChainYellowDisplay()
 	{
-		Chain chain = GetChainOfThisUnit(unit);
-		if (chain == null)
-		{
-			return;
-		}
-		List<Tile> targetArea = chain.SecondRange;
-		TileManager.Instance.DepaintTiles(targetArea, TileColor.Yellow);
+		TileManager.Instance.DepaintAllTiles (TileColor.Yellow);
 	}
 	private static Chain GetChainOfThisUnit(Unit unit)
 	{

@@ -198,6 +198,7 @@ public class BattleManager : MonoBehaviour{
 
 	public static IEnumerator DestroyDeadOrRetreatUnit(BattleData battleData, Unit unit, BattleTrigger.ActionType deadOrRetreat)
 	{
+		ChainList.RemoveChainOfThisUnit (unit);
 		yield return battleData.battleManager.StartCoroutine(FadeOutEffect(unit));
 		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
         yield return battleData.battleManager.StartCoroutine(battleData.unitManager.DeleteDeadUnit(unit));

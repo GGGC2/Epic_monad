@@ -337,7 +337,6 @@ public class TileManager : MonoBehaviour {
 			tile.SetPreSelected(true);
 		}
 	}
-
 	public void DepaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)

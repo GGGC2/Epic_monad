@@ -141,7 +141,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 		if (IsUnitOnTile())
 		{
-			ChainList.HideChainOfThisUnit(unitOnTile);
+			ChainList.HideChainYellowDisplay ();
 			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
