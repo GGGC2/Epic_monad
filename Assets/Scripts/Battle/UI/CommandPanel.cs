@@ -49,7 +49,7 @@ namespace BattleUI{
 		public void CallbackStandbyCommand(){
 			if(!battleManager.onTutorial)
 				battleManager.CallbackStandbyCommand();
-				else{
+			else{
 				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
 				if(tutorial.mission == TutorialScenario.Mission.Standby){
 					battleManager.CallbackStandbyCommand();
@@ -61,6 +61,13 @@ namespace BattleUI{
 		public void CallbackRestCommand(){
 			if(!battleManager.onTutorial)
 				battleManager.CallbackRestCommand();
+			else{
+				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
+				if(tutorial.mission == TutorialScenario.Mission.Rest){
+					battleManager.CallbackRestCommand();
+					battleManager.tutorialManager.NextStep();
+				}
+			}
 		}
 
 		public void CallbackOnPointerEnterRestCommand(){

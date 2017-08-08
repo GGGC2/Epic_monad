@@ -26,4 +26,23 @@
 29	SelectDirection	RightDown
 30	Apply
 31	Standby
-32
+32	MoveCommand
+33	SelectTile	8	6
+34	SelectDirection	LeftDown
+35	SkillCommand
+36	SelectSkill	1
+37	SelectDirection	LeftDown
+38	Apply
+39	Rest
+40	MoveCommand
+41	SelectTile	7	4
+42	SelectDirection	RightUp
+43	SkillCommand
+44	SelectSkill	1
+45	SelectDirection	RightUp
+46	Apply
+47	SkillCommand
+48	SelectSkill	1
+49	SelectDirection	RightUp
+50	Apply
+51	End

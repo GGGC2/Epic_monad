@@ -820,14 +820,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 119434, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
-      propertyPath: m_Name
-      value: BattleManager
-      objectReference: {fileID: 0}
     - target: {fileID: 11462164, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
       propertyPath: sceneLoader
       value: 
       objectReference: {fileID: 894933683}
+    - target: {fileID: 119434, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
+      propertyPath: m_Name
+      value: BattleManager
+      objectReference: {fileID: 0}
     - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
         type: 2}
       propertyPath: tutorialManager

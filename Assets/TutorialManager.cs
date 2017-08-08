@@ -55,6 +55,9 @@ public class TutorialManager : MonoBehaviour {
 			image.enabled = false;
 			DarkBG.enabled = false;
 			currentScenario = scenario;
+			if(currentScenario.mission == TutorialScenario.Mission.End){
+				gameObject.SetActive(false);
+			}
 		}
 	}
 

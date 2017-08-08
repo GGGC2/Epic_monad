@@ -6,7 +6,7 @@ using Enums;
 
 public class TutorialScenario{
 	public int index;
-	public enum Mission{None, MoveCommand, SkillCommand, Standby, SelectTile, SelectDirection, SelectSkill, Apply}
+	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, End}
 	public Mission mission;
 	public Vector2 missionTile;
 	public Direction missionDirection;
