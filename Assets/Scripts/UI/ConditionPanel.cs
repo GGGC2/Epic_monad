@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ConditionPanel : MonoBehaviour{
 	public Text Win;
 	public Text Lose;
+	public TutorialManager tutorial;
 
 	CameraMover cm;
 
@@ -28,5 +29,6 @@ public class ConditionPanel : MonoBehaviour{
 	public void OnClicked(){
 		cm.mouseMoveActive = true;
 		gameObject.SetActive(false);
+		tutorial.gameObject.SetActive(true);
 	}
 }

@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace BattleUI{
-	public class CommandPanel : MonoBehaviour
-	{
+	public class CommandPanel : MonoBehaviour{
 		private BattleManager battleManager;
 
 		void Start(){
@@ -24,15 +23,32 @@ namespace BattleUI{
 		}
 
 		public void CallbackMoveCommand(){
-			battleManager.CallbackMoveCommand();
+			if(!battleManager.onTutorial)
+				battleManager.CallbackMoveCommand();
+			else{
+				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
+				if(tutorial.mission == TutorialScenario.TutorialMission.MoveCommand){
+					battleManager.CallbackMoveCommand();
+					tutorial.NextStep();
+				}
+			}				
 		}
 
 		public void CallbackSkillCommand(){
-			battleManager.CallbackSkillCommand();
+			if(!battleManager.onTutorial)
+				battleManager.CallbackSkillCommand();
+			else{
+				TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
+				if(tutorial.mission == TutorialScenario.TutorialMission.SkillCommand){
+					battleManager.CallbackSkillCommand();
+					tutorial.NextStep();
+				}
+			}
 		}
 
 		public void CallbackRestCommand(){
-			battleManager.CallbackRestCommand();
+			if(!battleManager.onTutorial)
+				battleManager.CallbackRestCommand();
 		}
 
 		public void CallbackOnPointerEnterRestCommand(){
@@ -44,7 +60,8 @@ namespace BattleUI{
 		}
 
 		public void CallbackStandbyCommand(){
-			battleManager.CallbackStandbyCommand();
+			if(!battleManager.onTutorial)
+				battleManager.CallbackStandbyCommand();
 		}
 	}
 }

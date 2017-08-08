@@ -7,13 +7,14 @@ using GameData;
 
 public class TutorialManager : MonoBehaviour {
 	public Image image;
+	public Image DarkBG;
 	CameraMover cm;
 	string usedSceneName;
 	public Button ReverseButton;
 	public TutorialScenario scenarioPrefab;
 	public TutorialScenario scenario;
 
-	void Start () {
+	public void OnEnable(){
 		usedSceneName = SceneManager.GetActiveScene().name;
 
 		Sprite searchedSprite = Resources.Load<Sprite>("Tutorial/" + usedSceneName + SceneData.stageNumber.ToString() + "_1");
@@ -29,9 +30,13 @@ public class TutorialManager : MonoBehaviour {
 			FindObjectOfType<BattleManager>().onTutorial = true;
 			scenario = Instantiate(scenarioPrefab);
 			scenario.Manager = this;
-			scenario.Initialize();
+			scenario.SetNewSprite();
 		}
     }
+
+	public void NextStep(){
+		scenario.NextStep();	
+	}
 	
 	/*void CheckReverseButtonActive(){
 		if(index <= 1)
