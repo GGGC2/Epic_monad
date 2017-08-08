@@ -20,8 +20,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public List<Color> colors;
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
 
-	public List<GameObject> projectileDirectionArrows;
-
 	bool isPreSeleted = false;
 
 	public void SetPreSelected(bool input)	{	isPreSeleted = input;	}
@@ -174,7 +172,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		sprite = gameObject.GetComponent<SpriteRenderer>();
 		colors = new List<Color>();
 		DehighlightTile ();
-		projectileDirectionArrows.ForEach(arrow => arrow.SetActive(false));
 	}
 
 
@@ -212,17 +209,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	{
 		colors.Remove(color);
 		RenewColor ();
-	}
-
-	public void PaintProjectileArrow(Color color, Direction projectileDirection)
-	{
-		if (!projectileDirectionArrows[(int)projectileDirection -1].activeInHierarchy)
-			projectileDirectionArrows[(int)projectileDirection -1].SetActive(true);
-		projectileDirectionArrows[(int)projectileDirection -1].GetComponent<SpriteRenderer>().color = color;	
-	}
-	public void DepaintProjectileArrow()
-	{
-		projectileDirectionArrows.ForEach(arrow => arrow.SetActive(false));
 	}
 
 	void RenewColor(){

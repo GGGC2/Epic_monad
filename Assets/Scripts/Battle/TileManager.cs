@@ -329,12 +329,26 @@ public class TileManager : MonoBehaviour {
 		return tilesInRange;
 	}
 
+	public void PreselectTiles(List<Tile> tiles)
+	{
+		foreach (Tile tile in tiles)
+		{
+			tile.SetPreSelected (true);
+		}
+	}
+	public void DepreselectAllTiles()
+	{
+		foreach (Tile tile in GetTilesInGlobalRange())
+		{
+			tile.SetPreSelected (false);
+		}
+	}
+
 	public void PaintTiles(List<Tile> tiles, TileColor color)
 	{
 		foreach(var tile in tiles)
 		{
 			tile.PaintTile(color);
-			tile.SetPreSelected(true);
 		}
 	}
 	public void DepaintTiles(List<Tile> tiles, TileColor color)
@@ -342,7 +356,6 @@ public class TileManager : MonoBehaviour {
 		foreach(var tile in tiles)
 		{
 			tile.DepaintTile(color);
-			tile.SetPreSelected(false);
 		}
 	}
 

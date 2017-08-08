@@ -180,6 +180,7 @@ namespace Battle.Turn {
 				activeRange = selectedSkill.GetTilesInFirstRange (selectedUnitPos, selectedUnit.GetDirection ());
 
                 battleData.tileManager.PaintTiles(activeRange, TileColor.Red);
+				battleData.tileManager.PreselectTiles (activeRange);
                 battleData.uiManager.EnableCancelButtonUI();
                 battleData.isWaitingUserInput = true;
 
@@ -198,12 +199,14 @@ namespace Battle.Turn {
                     battleData.triggers.cancelClicked.Triggered) {
                     selectedUnit.SetDirection(originalDirection);
                     battleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
+					battleData.tileManager.DepreselectAllTiles ();
                     battleData.currentState = CurrentState.SelectSkill;
                     battleData.isWaitingUserInput = false;
                     yield break;
                 }
 
                 battleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
+				battleData.tileManager.DepreselectAllTiles ();
                 battleData.uiManager.DisableSkillUI();
 
                 BattleManager battleManager = battleData.battleManager;
