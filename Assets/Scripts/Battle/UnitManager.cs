@@ -200,7 +200,9 @@ public class UnitManager : MonoBehaviour {
 
 			Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
 			Debug.Log("GeneratedPC : " + GeneratedPC);
-			FindObjectOfType<BattleTriggerManager>().battleTriggers.Find(trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0).targetCount = GeneratedPC;
+			BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
+			if(countPC != null)
+				countPC.targetCount = GeneratedPC;
 			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
 
 			foreach (var unitInfo in unitInfoList){
