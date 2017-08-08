@@ -14,6 +14,7 @@ using GameData;
 public class BattleManager : MonoBehaviour{
 	bool startFinished = false;
 	bool startTurnManager = false;
+	public bool onTutorial;
 	public BattleData battleData = new BattleData();
 	private static BattleManager instance;
 	public static BattleManager Instance{

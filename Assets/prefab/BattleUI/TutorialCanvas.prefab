@@ -28,7 +28,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1453929110959156
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1992462433364362
 GameObject:
   m_ObjectHideFlags: 1
@@ -420,8 +420,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 114630687992352614}
-  usedSceneName: Battle
   ReverseButton: {fileID: 114955152433614124}
+  scenarioPrefab: {fileID: 114232185476394960, guid: d0675a25877c2594f949f206bcee33ec,
+    type: 2}
+  scenario: {fileID: 0}
 --- !u!114 &114879711850586500
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4509,10 +4509,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1566462969264870, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
   m_IsPrefabParent: 0
@@ -10543,7 +10539,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -722.75, y: 173.00002}
+  m_AnchoredPosition: {x: -722.75, y: 173}
   m_SizeDelta: {x: -645.5, y: -625}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &890242511
@@ -22054,7 +22050,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
