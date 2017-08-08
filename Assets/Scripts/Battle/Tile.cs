@@ -153,11 +153,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 				battleManager.OnMouseDownHandlerFromTile(position);
 		}else{
 			TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
-			if(tutorial.mission == TutorialScenario.Mission.SelectTile && tutorial.missionTile == position){
-				if ((isPreSeleted))
-					battleManager.OnMouseDownHandlerFromTile(position);
+			if(tutorial.mission == TutorialScenario.Mission.SelectTile && tutorial.missionTilePos == position){
+				battleManager.OnMouseDownHandlerFromTile(position);
 				battleManager.tutorialManager.NextStep();
-			}		
+			}
 		}
 	}
 
@@ -222,11 +221,17 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 	Color TileColorToColor(TileColor color) {
 		if (color == TileColor.Red)
-			return new Color(1, 0.5f, 0.5f, 1);
+			return new Color (1, 0.5f, 0.5f, 1);
 		else if (color == TileColor.Blue)
-			return new Color(0.6f, 0.6f, 1, 1);
+			return new Color (0.6f, 0.6f, 1, 1);
 		else if (color == TileColor.Yellow)
-			return new Color(1, 0.9f, 0.016f, 1);
+			return new Color (1, 0.9f, 0.016f, 1);
+		else if (color == TileColor.Purple)
+			return new Color (0.87f, 0.20f, 0.80f);
+		else if (color == TileColor.Green)
+			return new Color (0.65f, 0.177f, 0.147f);
+		else if (color == TileColor.Black)
+			return new Color (0, 0, 0);
 		else
 			throw new NotImplementedException(color.ToString() + " is not a supported color");
 	}

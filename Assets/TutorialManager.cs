@@ -46,15 +46,21 @@ public class TutorialManager : MonoBehaviour {
 	}
 
 	public void NextStep(){
+		TutorialScenario previousScenario = scenarioList.Find(data => data.index == index);
+		if(previousScenario != null){
+			previousScenario.ResetMissionCondition ();
+		}
+
 		index++;
-		TutorialScenario scenario = scenarioList.Find(data => data.index == index);
-		if(scenario == null){
+		TutorialScenario findCurrentScenario = scenarioList.Find(data => data.index == index);
+		if(findCurrentScenario == null){
 			SetNewSprite();
 		}else{
 			//Debug.Log("Step " + index);
+			currentScenario = findCurrentScenario;
+			currentScenario.SetMissionCondition ();
 			image.enabled = false;
 			DarkBG.enabled = false;
-			currentScenario = scenario;
 			if(currentScenario.mission == TutorialScenario.Mission.End){
 				gameObject.SetActive(false);
 			}

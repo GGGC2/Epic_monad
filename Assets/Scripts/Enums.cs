@@ -7,7 +7,7 @@ namespace Enums {
 	public enum EffectMoveType{ Move, NonMove, None }
 	public enum Side{ Ally, Enemy, Neutral }
 	// highlighting selected tile
-	public enum TileColor{ Blue, Red, Yellow }
+	public enum TileColor{ Blue, Red, Yellow, Purple, Green, Black }
 	public enum TileForm{ Flatland, Hill, Cliff, Water, HigherHill }
 	public enum UnitClass{ None, Melee, Magic }
 	public enum Celestial{ None, Sun, Moon, Earth }

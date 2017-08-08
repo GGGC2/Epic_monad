@@ -25,7 +25,6 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
-		Debug.Log(trigger.korName + "'s count : " + trigger.count);
 		if(trigger.count == trigger.targetCount && !trigger.acquired){
 			trigger.acquired = true;
 			Debug.Log("TriggerName : " + trigger.korName);
