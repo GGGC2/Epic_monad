@@ -1,5 +1,4 @@
-ResultType,korName,UnitType,ActionType,targetCount,Repeatable,Reward,etc
-Bonus,적을 처치,Enemy,Kill,1,true,-15
+﻿ResultType,korName,UnitType,ActionType,targetCount,Repeatable,Reward,etc
 Win,모든 적을 제압,Enemy,Neutralize,8,false,140
 Lose,20페이즈 경과,None,Phase,20,false,0
 Lose,모든 동료가 제압,PC,Neutralize,0,false,0

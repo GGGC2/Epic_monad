@@ -630,12 +630,11 @@ public class ActiveSkill : Skill{
 
 		List<Tile> firstRange = casting.FirstRange;
 		battleData.tileManager.PaintTiles(firstRange, TileColor.Red);
-		yield return new WaitForSeconds (0.5f);
+		yield return new WaitForSeconds (0.4f);
 		battleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		List<Tile> secondRange = casting.SecondRange;
 		battleData.tileManager.PaintTiles (secondRange, TileColor.Red);
-		yield return new WaitForSeconds (0.1f);
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 

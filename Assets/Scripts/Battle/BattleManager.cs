@@ -166,7 +166,7 @@ public class BattleManager : MonoBehaviour{
 
 	public static IEnumerator FadeOutEffect(Unit unit)
 	{
-		float time = 0.5f;
+		float time = 0.3f;
 		SpriteRenderer sr = unit.gameObject.GetComponent<SpriteRenderer>();
 		for (int i = 0; i < 10; i++)
 		{
