@@ -61,7 +61,7 @@ namespace Battle.Turn{
 		private static Tile GetMinRequireAPTile(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			if (movableTilesWithPath.Count > 0){
 				Tile nearestTile=null;
-				int minRequireAP = 99999;
+				int minRequireAP = Int32.MaxValue;
 				foreach (var pair in movableTilesWithPath) {
 					int requireAP = pair.Value.requireActivityPoint;
 					if (requireAP < minRequireAP) {
@@ -146,6 +146,10 @@ namespace Battle.Turn{
 				movableTiles.Add(movableTileWithPath.Value.tile);
 			}
 
+			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			yield return new WaitForSeconds (0.2f);
+			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
+
 			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (unit, selectedSkill, movableTilesWithPath);
 			//destTile이 null이 아니면 적을 공격 가능한 타일 중 도달경로의 총 AP 소모량이 가장 적은 타일이 들어있는 것이다
 			//destTile이 null : 이번 턴에 적을 공격 가능한 범위로 못 가는 경우. 그냥 가장 가까운 적을 향해 이동한다
@@ -219,11 +223,12 @@ namespace Battle.Turn{
 				yield return TakeRest (unit);
 			}
 		}
-		//FIXME : 경로의 totalUseAP를 패러미터로 받지 않고 여기서 계산하는 게 깔끔할 것 같은데...
-		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalUseAP){
+
+		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
 			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
-			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, Direction.RightDown, totalUseAP));
+			yield return new WaitForSeconds (0.2f);
+			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, finalDirection, totalAPCost));
 		}
 		public static IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
