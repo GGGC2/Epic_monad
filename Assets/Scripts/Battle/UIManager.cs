@@ -256,9 +256,10 @@ public class UIManager : MonoBehaviour
 
     public void ActivateStatusEffectDisplayPanelAndSetText(Vector3 displacement, StatusEffect statusEffect) {
         statusEffectDisplayPanel.SetActive(true);
-        Vector2 panelRect = statusEffectDisplayPanel.GetComponent<RectTransform>().sizeDelta;
+        RectTransform panelRect = statusEffectDisplayPanel.GetComponent<RectTransform>();
         statusEffectDisplayPanel.transform.position = displacement + 
-                    new Vector3(panelRect.x/4 + StatusEffectIcon.WIDTH/2, panelRect.y/4 + StatusEffectIcon.HEIGHT/2, 0);
+                    new Vector3(panelRect.sizeDelta.x * panelRect.lossyScale.x / 2 + StatusEffectIcon.WIDTH/2,
+                                 panelRect.sizeDelta.y * panelRect.lossyScale.y / 2 +   StatusEffectIcon.HEIGHT/2, 0);
         statusEffectDisplayPanel.GetComponent<StatusEffectDisplayPanel>().SetText(statusEffect);
     }
 

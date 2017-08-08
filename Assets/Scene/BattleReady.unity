@@ -6529,7 +6529,7 @@ GameObject:
   - component: {fileID: 1483457680}
   - component: {fileID: 1483457682}
   m_Layer: 0
-  m_Name: Fixed
+  m_Name: Passive
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

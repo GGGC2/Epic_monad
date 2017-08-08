@@ -11,7 +11,7 @@ namespace BattleUI {
         public Image image;
         public static readonly float WIDTH = 20;
         public static readonly float HEIGHT = 20;
-        static readonly float MARGIN = 5;
+        static readonly float MARGIN = 22;
 
         string GetSkillColumnRow(Skill skill) {
             if(skill.requireLevel == 0)
@@ -47,7 +47,7 @@ namespace BattleUI {
         }
 
         public void UpdatePosition(Vector3 pivot, int index) {
-            transform.localPosition = pivot + new Vector3(index * (WIDTH + MARGIN), 0, 0);
+            transform.localPosition = pivot + new Vector3(index * (WIDTH + MARGIN) * FindObjectOfType<RectTransform>().lossyScale.x, 0, 0);
         }
 
         public void TriggerPointerEnter() {
