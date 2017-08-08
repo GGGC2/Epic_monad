@@ -137,17 +137,16 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction directionAtDest, int totalUseActivityPoint)
+		public static IEnumerator MoveToTile(BattleData battleData, Tile destTile, Direction finalDirection, int totalAPCost)
 		{
 			CaptureMoveSnapshot(battleData);
             
 			Unit unit = battleData.selectedUnit;
-			unit.ApplyMove(destTile, directionAtDest, totalUseActivityPoint);
+			unit.ApplyMove(destTile, finalDirection, totalAPCost);
 
 			battleData.previewAPAction = null;
 			battleData.currentState = CurrentState.FocusToUnit;
 			battleData.alreadyMoved = true;
-			BattleManager battleManager = battleData.battleManager;
 
 			yield return null;
 		}

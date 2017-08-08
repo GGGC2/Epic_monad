@@ -192,7 +192,7 @@ public class ActiveSkill : Skill{
 		}
 	}
 	public Casting GetBestAttack(Unit caster, Tile casterTile){
-		int minCurrHP = 9999999;
+		int minCurrHP = Int32.MaxValue;
 		Tile targetTile = casterTile;
 		Direction direction = caster.GetDirection ();
 		if (skillType == SkillType.Point) {
@@ -220,7 +220,7 @@ public class ActiveSkill : Skill{
 		return casting;
 	}
 	private static int GetMinModifiedHP(Unit caster, List<Tile> unitTiles){
-		int minCurrHP = 9999999;
+		int minCurrHP = Int32.MaxValue;
 		foreach (Tile tile in unitTiles) {
 			int currHP = tile.GetUnitOnTile().GetModifiedHealth(caster.GetUnitClass());
 			if (currHP < minCurrHP) {

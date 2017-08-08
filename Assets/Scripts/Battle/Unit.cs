@@ -227,12 +227,12 @@ public class Unit : MonoBehaviour{
 		this.activityPoint = snapshotAp;
 		unitManager.UpdateUnitOrder();
 	}
-    private void ChangePosition(Tile tileAfter) {
+    private void ChangePosition(Tile destTile) {
         Tile tileBefore = GetTileUnderUnit();
         tileBefore.SetUnitOnTile(null);
-        transform.position = tileAfter.transform.position + new Vector3(0, 0, -0.05f);
-        SetPosition(tileAfter.GetTilePos());
-        tileAfter.SetUnitOnTile(this);
+        transform.position = destTile.transform.position + new Vector3(0, 0, -0.05f);
+        SetPosition(destTile.GetTilePos());
+        destTile.SetUnitOnTile(this);
         notMovedTurnCount = 0;
 
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
@@ -241,21 +241,21 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill != null)
                 SkillLogicFactory.Get(originPassiveSkill).TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CountBattleCondition(this, tileAfter);
+        BattleTriggerManager.CountBattleCondition(this, destTile);
         updateStats();
     }
 
-    public void ForceMove(Tile tileAfter) { //강제이동
-        if (SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, tileAfter)) {
-            ChangePosition(tileAfter);
+    public void ForceMove(Tile destTile) { //강제이동
+        if (SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
+			ChangePosition (destTile);
         }
     }
 
-	public void ApplyMove(Tile tileAfter, Direction direction, int costAp)
+	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost)
 	{
-        ChangePosition(tileAfter);
-		SetDirection(direction);
-		UseActivityPoint(costAp);
+		ChangePosition (destTile);
+		SetDirection (finalDirection);
+		UseActivityPoint (totalAPCost);
 
         foreach (StatusEffect statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
