@@ -8,8 +8,9 @@ public class TutorialScenario : MonoBehaviour{
 	public List<Sprite> Stage1;
 	public int index;
 
-	public enum TutorialMission{None, MoveCommand, SkillCommand}
+	public enum TutorialMission{None, MoveCommand, SkillCommand, SelectTile, SelectDirection}
 	public TutorialMission mission;
+	public Vector2 missionTile;
 
 	public void SetNewSprite(){
 		Sprite searchResult = Resources.Load<Sprite>("Tutorial/"+SceneManager.GetActiveScene().name + GameData.SceneData.stageNumber.ToString() + "_" + index);
@@ -26,6 +27,12 @@ public class TutorialScenario : MonoBehaviour{
 				mission = TutorialMission.MoveCommand;
 				Manager.image.enabled = false;
 				Manager.DarkBG.enabled = false;
+			}else if(index == 6){
+				mission = TutorialMission.SelectTile;
+				missionTile = new Vector2(5,4);
+			}
+			else if(index == 7){
+				mission = TutorialMission.SelectDirection;
 			}
 			else
 				SetNewSprite();

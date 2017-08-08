@@ -28,8 +28,7 @@ public interface IEventTrigger
 	bool Triggered { get; }
 }
 
-public class EventTrigger: IEventTrigger
-{
+public class EventTrigger: IEventTrigger{
 	private bool enabled = false;
 	private bool triggered = false;
 
@@ -38,16 +37,14 @@ public class EventTrigger: IEventTrigger
 		get { return triggered; }
 	}
 
-	public void Trigger()
-	{
+	public void Trigger(){
 		if (enabled)
 		{
 			triggered = true;
 		}
 	}
 
-	public IEnumerator Wait()
-	{
+	public IEnumerator Wait(){
 		Begin();
 
 		while (triggered == false)

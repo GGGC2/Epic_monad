@@ -39,14 +39,21 @@ namespace Battle.Turn{
 				battleData.uiManager.EnableCancelButtonUI();
 				battleData.isWaitingUserInput = true;
 
+				BattleManager battleManager = battleData.battleManager;
 				var update = UpdatePreviewAP(battleData, movableTilesWithPath);
-				battleData.battleManager.StartCoroutine(update);
-				yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+				battleManager.StartCoroutine(update);
+
+				//튜토리얼 중일 경우 이동취소 입력을 무시한다
+				if(battleManager.onTutorial){
+					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(battleData.triggers.tileSelectedByUser));
+				}else{
+					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
 					battleData.triggers.rightClicked,
 					battleData.triggers.cancelClicked,
-					battleData.triggers.tileSelectedByUser
-				));
-				battleData.battleManager.StopCoroutine(update);
+					battleData.triggers.tileSelectedByUser));
+				}
+				
+				battleManager.StopCoroutine(update);
 
 				battleData.isWaitingUserInput = false;
 
@@ -75,7 +82,6 @@ namespace Battle.Turn{
 				battleData.tileManager.DepreselectAllTiles ();
 				battleData.currentState = CurrentState.CheckDestination;
 				battleData.uiManager.DisableCancelButtonUI();
-				BattleManager battleManager = battleData.battleManager;
 				yield return battleManager.StartCoroutine(CheckDestination(battleData, destTile, destPath, totalUseActivityPoint, distance));
 			}
 			yield return null;

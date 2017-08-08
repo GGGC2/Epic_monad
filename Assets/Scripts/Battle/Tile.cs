@@ -154,21 +154,25 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 
-	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData)
-	{
-		if (pointerData.button != PointerEventData.InputButton.Left) {
+	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
+		if (pointerData.button != PointerEventData.InputButton.Left)
 			return;
-		}
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		if ((isPreSeleted) && (battleManager != null))
-		{
-			battleManager.OnMouseDownHandlerFromTile(position);
+		if(!battleManager.onTutorial){
+			if ((isPreSeleted))
+				battleManager.OnMouseDownHandlerFromTile(position);
+		}else{
+			TutorialScenario tutorial = FindObjectOfType<TutorialScenario>();
+			if(tutorial.mission == TutorialScenario.TutorialMission.SelectTile && tutorial.missionTile == position){
+				if ((isPreSeleted))
+					battleManager.OnMouseDownHandlerFromTile(position);
+				tutorial.NextStep();
+			}		
 		}
 	}
 
-	void Awake ()
-	{
+	void Awake (){
 		sprite = gameObject.GetComponent<SpriteRenderer>();
 		colors = new List<Color>();
 		DehighlightTile ();
