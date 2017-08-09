@@ -57,7 +57,7 @@ public class TutorialManager : MonoBehaviour {
 		if(findCurrentScenario == null){
 			SetNewSprite();
 		}else{
-			//Debug.Log("Step " + index);
+			Debug.Log("Step " + index);
 			currentScenario = findCurrentScenario;
 			currentScenario.SetMissionCondition ();
 			image.enabled = false;

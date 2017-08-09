@@ -152,16 +152,16 @@ public class BattleManager : MonoBehaviour{
 
 	private void OnOffStandbyButton(BattleData battleData){
 		bool isPossible = battleData.selectedUnit.IsStandbyPossible (battleData);
-		GameObject.Find("StandbyButton").GetComponent<Button>().interactable = isPossible;
+		battleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, isPossible);
 	}
 	private void OnOffSkillButton(BattleData battleData)
 	{
 		bool isPossible = battleData.selectedUnit.IsSkillUsePossibleState (battleData);
-        GameObject.Find("SkillButton").GetComponent<Button>().interactable = isPossible;
+		battleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
 	}
 	private void OnOffMoveButton(BattleData battleData){
 		bool isPossible = battleData.selectedUnit.IsMovePossibleState(battleData);
-		GameObject.Find("MoveButton").GetComponent<Button>().interactable = isPossible;
+		battleData.uiManager.commandPanel.OnOffButton (ActionCommand.Move, isPossible);
 	}
     
 

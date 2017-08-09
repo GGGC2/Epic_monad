@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
 
 	APBarPanel apBarUI;
 	GameObject commandUI;
+	public CommandPanel commandPanel;
 	GameObject skillUI;
 	SkillCheckPanel skillCheckUI;
     GameObject ApplyButton;
@@ -35,8 +36,9 @@ public class UIManager : MonoBehaviour
 	void Awake(){
 		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
-		TutorialScenario.commandPanel = commandUI.GetComponent<CommandPanel>();
-		commandUI.GetComponent<CommandPanel> ().Initialize ();
+		commandPanel = commandUI.GetComponent<CommandPanel> ();
+		TutorialScenario.commandPanel = commandPanel;
+		commandPanel.Initialize ();
 		skillUI = GameObject.Find("SkillPanel");
 		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
         ApplyButton = GameObject.Find("ApplyButton");

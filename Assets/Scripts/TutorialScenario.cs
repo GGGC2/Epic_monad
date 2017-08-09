@@ -57,9 +57,12 @@ public class TutorialScenario{
 			else
 				command = ActionCommand.Rest;
 			SetMissionCondition = () => {
+				commandPanel.TurnOnOnlyThisButton(command);
+				commandPanel.LockOnOffState();
 				commandPanel.AddListenerToButton (command, ToNextStep);
 			};
 			ResetMissionCondition = () => {
+				commandPanel.UnlockOnOffState();
 				commandPanel.RemoveListenerToButton (command, ToNextStep);
 			};
 		}
