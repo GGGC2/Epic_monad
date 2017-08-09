@@ -8,7 +8,7 @@ public class Utility : MonoBehaviour {
 
 	public static Direction GetMouseDirectionByUnit(Unit unit, Direction originalDirection){
 		Direction mouseDirectionByUnit;
-		Vector2 unitPosition = unit.gameObject.transform.position;
+		Vector2 unitPosition = unit.realPosition;
 		
 		string directionString = "";
 		Vector2 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3 (Input.mousePosition.x,Input.mousePosition.y,0));

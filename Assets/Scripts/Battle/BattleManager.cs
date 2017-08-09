@@ -120,7 +120,7 @@ public class BattleManager : MonoBehaviour{
 		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 		if (unit == null)
 			return;
-		FindObjectOfType<CameraMover>().SetFixedPosition(unit.transform.position);
+		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
 	}
 	public void StartUnitTurn(Unit unit){
 		battleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);

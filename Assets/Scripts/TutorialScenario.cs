@@ -15,7 +15,6 @@ public class TutorialScenario{
 	public Mission mission;
 	public Vector2 missionTilePos;
 	public Direction missionDirection;
-	public int missionSkillIndex;
 	public Action SetMissionCondition = () => {};
 	public Action ResetMissionCondition = () => {};
 
@@ -46,7 +45,7 @@ public class TutorialScenario{
 		} else if (mission == Mission.SelectDirection)
 			missionDirection = parser.ConsumeEnum<Direction> ();
 		else if (mission == Mission.SelectSkill) {
-			missionSkillIndex = parser.ConsumeInt ();
+			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
 				skillPanel.TurnOnOnlyOneSkill (missionSkillIndex);
 				skillPanel.LockSkillsOnOff ();

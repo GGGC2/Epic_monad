@@ -166,6 +166,9 @@ public class Unit : MonoBehaviour{
 	public bool IsObject() { return isObject; }
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
+	public Vector3 realPosition {
+		get { return transform.position; }
+	}
     public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
     public int GetNotMovedTurnCount() { return notMovedTurnCount; }
     public bool GetHasUsedSkillThisTurn() { return hasUsedSkillThisTurn; }
