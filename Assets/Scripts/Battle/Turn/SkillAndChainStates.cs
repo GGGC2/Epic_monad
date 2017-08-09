@@ -238,8 +238,7 @@ namespace Battle.Turn {
 
 				bool isApplyPossible = skill.SkillLogic.CheckApplyPossibleToTargetTiles(caster, secondRange);
                 bool isChainPossible = CheckChainPossible(casting);
-				//참고로 아래 함수에서 즉시시전(Apply) 불가한 상황엔 연계대기(Chain) 버튼도 못 누르게 되어있다
-                battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isChainPossible);
+                battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isApplyPossible && isChainPossible);
                 battleData.uiManager.SetSkillCheckAP(casting);
 
                 battleData.skillApplyCommand = SkillApplyCommand.Waiting;

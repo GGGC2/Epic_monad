@@ -11,7 +11,7 @@ public class TutorialScenario{
 	public static CommandPanel commandPanel;
 	public static SkillPanel skillPanel;
 	public int index;
-	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, End}
+	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
 	public Mission mission;
 	public Vector2 missionTilePos;
 	public Direction missionDirection;
@@ -48,17 +48,38 @@ public class TutorialScenario{
 		else if (mission == Mission.SelectSkill) {
 			missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
-				skillPanel.TurnOnOnlyOneSkill(missionSkillIndex);
-				skillPanel.LockSkillsOnOff();
+				skillPanel.TurnOnOnlyOneSkill (missionSkillIndex);
+				skillPanel.LockSkillsOnOff ();
 				skillPanel.AddListenerToSkillButton (missionSkillIndex, ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				skillPanel.RemoveListenerToSkillButton (missionSkillIndex, ToNextStep);
-				skillPanel.UnlockSkillsOnOff();
+				skillPanel.UnlockSkillsOnOff ();
 			};
 		}
-
-		if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
+		else if (mission == Mission.Apply) {
+			SetMissionCondition = () => {
+				UIManager.Instance.EnableSkillCheckWaitButton (true, false);
+				UIManager.Instance.LockApplyOrWaitOnOff ();
+				UIManager.Instance.AddListenerToApplyButton (ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				UIManager.Instance.RemoveListenerToApplyButton (ToNextStep);
+				UIManager.Instance.UnlockApplyOrWaitOnOff ();
+			};
+		}
+		else if (mission == Mission.Wait) {
+			SetMissionCondition = () => {
+				UIManager.Instance.EnableSkillCheckWaitButton (false, true);
+				UIManager.Instance.LockApplyOrWaitOnOff ();
+				UIManager.Instance.AddListenerToWaitButton (ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				UIManager.Instance.RemoveListenerToWaitButton (ToNextStep);
+				UIManager.Instance.UnlockApplyOrWaitOnOff ();
+			};
+		}
+		else if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
 			ActionCommand command;
 			if (mission == Mission.MoveCommand)
 				command = ActionCommand.Move;

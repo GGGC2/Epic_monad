@@ -9,15 +9,7 @@ namespace BattleUI{
 		}
 
 		public void CallbackApplyCommand(){
-			if(!battleManager.onTutorial)
-				battleManager.CallbackApplyCommand();
-			else{
-				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
-				if(tutorial.mission == TutorialScenario.Mission.Apply){
-					battleManager.CallbackApplyCommand();
-					battleManager.tutorialManager.NextStep();
-				}
-			}
+			battleManager.CallbackApplyCommand();
 		}
 
 		public void CallbackChainCommand()

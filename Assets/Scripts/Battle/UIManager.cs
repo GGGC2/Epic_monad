@@ -185,12 +185,33 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
+	public void AddListenerToApplyButton(UnityEngine.Events.UnityAction action){
+		ApplyButton.GetComponent<Button>().onClick.AddListener (action);
+	}
+	public void RemoveListenerToApplyButton(UnityEngine.Events.UnityAction action){
+		ApplyButton.GetComponent<Button>().onClick.RemoveListener (action);
+	}
+	public void AddListenerToWaitButton(UnityEngine.Events.UnityAction action){
+		WaitButton.GetComponent<Button>().onClick.AddListener (action);
+	}
+	public void RemoveListenerToWaitButton(UnityEngine.Events.UnityAction action){
+		WaitButton.GetComponent<Button>().onClick.RemoveListener (action);
+	}
+
+	bool applyOrWaitOnOffLockOn=false;
+	public void LockApplyOrWaitOnOff(){
+		applyOrWaitOnOffLockOn = true;
+	}
+	public void UnlockApplyOrWaitOnOff(){
+		applyOrWaitOnOffLockOn = false;
+	}
 	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible)
 	{
+		if (applyOrWaitOnOffLockOn)
+			return;
 		skillCheckUI.gameObject.SetActive(true);
         ApplyButton.GetComponent<Button>().interactable = isApplyPossible;
-		WaitButton.SetActive(isWaitPossible && isApplyPossible);
-		//GameObject.Find("WaitButton").GetComponent<Button>().interactable = isPossible;
+		WaitButton.SetActive (isWaitPossible);
 	}
 
 	public void DisableSkillCheckUI()
