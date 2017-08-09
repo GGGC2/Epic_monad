@@ -10,6 +10,7 @@ public class TutorialScenario{
 	public static TutorialManager tutorialManager;
 	public static CommandPanel commandPanel;
 	public static SkillPanel skillPanel;
+	public static SelectDirectionUI selectDirectionUI;
 	public int index;
 	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
 	public Mission mission;
@@ -36,16 +37,23 @@ public class TutorialScenario{
 				TileManager.Instance.PreselectTiles (clickableTiles);
 				TileManager.Instance.LockPreselect ();
 				TileManager.Instance.PaintTiles (clickableTiles, TileColor.Black);
-				missionTile.LeftClick.AddListener(ToNextStep);
+				missionTile.LeftClick.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				missionTile.LeftClick.RemoveListener(ToNextStep);
+				missionTile.LeftClick.RemoveListener (ToNextStep);
 				TileManager.Instance.DepaintAllTiles (TileColor.Black);
 				TileManager.Instance.UnlockPreselect ();
 				TileManager.Instance.DepreselectAllTiles ();
 			};
-		} else if (mission == Mission.SelectDirection)
+		}
+		else if (mission == Mission.SelectDirection) {
 			missionDirection = parser.ConsumeEnum<Direction> ();
+			SetMissionCondition = () => {
+				//FIXME : 구현중
+			};
+			ResetMissionCondition = () => {
+			};
+		}
 		else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {

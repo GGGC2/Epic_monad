@@ -63,6 +63,7 @@ public class UIManager : MonoBehaviour
 
 		TutorialScenario.commandPanel = commandPanel;
 		TutorialScenario.skillPanel = skillPanel;
+		TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
 
 	void Start(){
