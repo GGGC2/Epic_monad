@@ -13,6 +13,7 @@ public class TileManager : MonoBehaviour {
 	public GameObject tilePrefab;
 
 	Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
+	bool preselectLockOn=false;
 
 	float tileImageHeight = 0.5f*100/100;
 	float tileImageWidth = 0.5f*200/100;
@@ -331,17 +332,31 @@ public class TileManager : MonoBehaviour {
 
 	public void PreselectTiles(List<Tile> tiles)
 	{
-		foreach (Tile tile in tiles)
-		{
-			tile.SetPreSelected (true);
+		if (preselectLockOn)
+			Debug.Log ("preselect states are locked on");
+		else {
+			foreach (Tile tile in tiles) {
+				tile.SetPreSelected (true);
+			}
 		}
 	}
 	public void DepreselectAllTiles()
 	{
-		foreach (Tile tile in GetTilesInGlobalRange())
-		{
-			tile.SetPreSelected (false);
+		if (preselectLockOn)
+			Debug.Log ("preselect states are locked on");
+		else {
+			foreach (Tile tile in GetTilesInGlobalRange()) {
+				tile.SetPreSelected (false);
+			}
 		}
+	}
+	public void LockTilesPreselectState()
+	{
+		preselectLockOn = true;
+	}
+	public void UnlockTilesPreselectState()
+	{
+		preselectLockOn = false;
 	}
 
 	public void PaintTiles(List<Tile> tiles, TileColor color)

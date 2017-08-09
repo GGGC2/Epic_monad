@@ -32,14 +32,15 @@ public class TutorialScenario{
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
 			SetMissionCondition = () => {
-				//뭔가 해보려다 일단 중단한 거니 지우지 말 것
-				//TileManager.Instance.DepreselectAllTiles ();
-				//TileManager.Instance.PreselectTiles (clickableTiles);
+				TileManager.Instance.DepreselectAllTiles ();
+				TileManager.Instance.PreselectTiles (clickableTiles);
+				TileManager.Instance.LockTilesPreselectState();
 				TileManager.Instance.PaintTiles (clickableTiles, TileColor.Black);
 			};
 			ResetMissionCondition = () => {
-				//TileManager.Instance.DepreselectAllTiles ();
 				TileManager.Instance.DepaintAllTiles (TileColor.Black);
+				TileManager.Instance.UnlockTilesPreselectState();
+				TileManager.Instance.DepreselectAllTiles ();
 			};
 		} else if (mission == Mission.SelectDirection)
 			missionDirection = parser.ConsumeEnum<Direction> ();
@@ -62,8 +63,8 @@ public class TutorialScenario{
 				commandPanel.AddListenerToButton (command, ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				commandPanel.UnlockOnOffState();
 				commandPanel.RemoveListenerToButton (command, ToNextStep);
+				commandPanel.UnlockOnOffState();
 			};
 		}
 	}

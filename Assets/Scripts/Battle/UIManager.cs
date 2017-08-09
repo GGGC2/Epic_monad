@@ -10,7 +10,7 @@ using BattleUI;
 public class UIManager : MonoBehaviour
 {
 	public bool startFinished = false;
-	const int skillButtonCount = 5;
+	const int onePageButtonsNum = 5;
 
 	APBarPanel apBarUI;
 	GameObject commandUI;
@@ -101,7 +101,7 @@ public class UIManager : MonoBehaviour
     public void SetSkillUI(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
         SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
-        skillPanel.SetMaxPage((skillList.Count - 1) / skillButtonCount);
+        skillPanel.SetMaxPage((skillList.Count - 1) / onePageButtonsNum);
         skillPanel.triggerEnabled(selectedUnit);
         EnableSkillUI();
         
@@ -109,9 +109,9 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateSkillInfo(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        for (int i = 0; i < skillButtonCount; i++)
+        for (int i = 0; i < onePageButtonsNum; i++)
 		{
-            int skillIndex = i + skillButtonCount * skillUI.GetComponent<SkillPanel>().GetPage();
+            int skillIndex = i + onePageButtonsNum * skillUI.GetComponent<SkillPanel>().GetPage();
 			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
 			if (skillIndex >= skillList.Count)
 			{
@@ -152,24 +152,32 @@ public class UIManager : MonoBehaviour
 	public void CheckUsableSkill(Unit selectedUnit){
 		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
 
-        Color enabledColor = new Color(1, 1, 1);
-        Color disabledColor = new Color(1, 0, 0);
-
         int page = skillUI.GetComponent<SkillPanel>().GetPage();
-		int iterationCount = Math.Min(skillButtonCount, skillList.Count - skillButtonCount * page);
-		for (int i = 0; i < iterationCount; i++)
-		{
-            int skillIndex = i + skillButtonCount * page;
-            Button skillButton = skillUI.transform.Find((i + 1) + "SkillButton").GetComponent<Button>();
-            skillButton.interactable = true;
-		    skillButton.GetComponentInChildren<Text>().color = enabledColor;
+		int iterationCount = Math.Min(onePageButtonsNum, skillList.Count - onePageButtonsNum * page);
+		for (int i = 0; i < iterationCount; i++) {
+			int skillIndex = i + onePageButtonsNum * page;
+			Button skillButton = skillUI.transform.Find ((i + 1) + "SkillButton").GetComponent<Button> ();
+			if (selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex])
+			    || selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex].GetName ()))
+				OnOffSkillButton (skillIndex + 1, false);
+			else
+				OnOffSkillButton (skillIndex + 1, true);
+		}
+	}
+	public void OnOffSkillButton(int index, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
+		int indexInCurrentPage = (index - 1) % onePageButtonsNum + 1;
+		Button skillButton = skillUI.transform.Find((indexInCurrentPage) + "SkillButton").GetComponent<Button>();
 
-            if (selectedUnit.GetCurrentActivityPoint() < selectedUnit.GetActualRequireSkillAP(skillList[skillIndex])
-			|| selectedUnit.GetUsedSkillDict().ContainsKey(skillList[skillIndex].GetName()))
-			{
-                skillButton.interactable = false;
-			    skillButton.GetComponentInChildren<Text>().color = disabledColor;
-			}
+		Color enabledColor = new Color(1, 1, 1);
+		Color disabledColor = new Color(1, 0, 0);
+
+		if (turnOn) {
+			skillButton.interactable = true;
+			skillButton.GetComponentInChildren<Text> ().color = enabledColor;
+		}
+		else {
+			skillButton.interactable = false;
+			skillButton.GetComponentInChildren<Text> ().color = disabledColor;
 		}
 	}
 
