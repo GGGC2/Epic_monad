@@ -9,6 +9,7 @@ using BattleUI;
 public class TutorialScenario{
 	public static TutorialManager tutorialManager;
 	public static CommandPanel commandPanel;
+	public static SkillPanel skillPanel;
 	public int index;
 	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, End}
 	public Mission mission;
@@ -34,18 +35,28 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				TileManager.Instance.DepreselectAllTiles ();
 				TileManager.Instance.PreselectTiles (clickableTiles);
-				TileManager.Instance.LockTilesPreselectState();
+				TileManager.Instance.LockTilesPreselectState ();
 				TileManager.Instance.PaintTiles (clickableTiles, TileColor.Black);
 			};
 			ResetMissionCondition = () => {
 				TileManager.Instance.DepaintAllTiles (TileColor.Black);
-				TileManager.Instance.UnlockTilesPreselectState();
+				TileManager.Instance.UnlockTilesPreselectState ();
 				TileManager.Instance.DepreselectAllTiles ();
 			};
 		} else if (mission == Mission.SelectDirection)
 			missionDirection = parser.ConsumeEnum<Direction> ();
-		else if (mission == Mission.SelectSkill)
+		else if (mission == Mission.SelectSkill) {
 			missionSkillIndex = parser.ConsumeInt ();
+			SetMissionCondition = () => {
+				skillPanel.TurnOnOnlyOneSkill(missionSkillIndex);
+				skillPanel.LockSkillsOnOff();
+				skillPanel.AddListenerToSkillButton (missionSkillIndex, ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				skillPanel.RemoveListenerToSkillButton (missionSkillIndex, ToNextStep);
+				skillPanel.UnlockSkillsOnOff();
+			};
+		}
 
 		if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
 			ActionCommand command;
@@ -59,12 +70,12 @@ public class TutorialScenario{
 				command = ActionCommand.Rest;
 			SetMissionCondition = () => {
 				commandPanel.TurnOnOnlyThisButton(command);
-				commandPanel.LockOnOffState();
+				commandPanel.LockCommandsOnOff();
 				commandPanel.AddListenerToButton (command, ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				commandPanel.RemoveListenerToButton (command, ToNextStep);
-				commandPanel.UnlockOnOffState();
+				commandPanel.UnlockCommandsOnOff();
 			};
 		}
 	}

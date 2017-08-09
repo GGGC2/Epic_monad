@@ -8,7 +8,6 @@ namespace BattleUI{
 		private BattleManager battleManager;
 
 		Dictionary<ActionCommand, Button> buttons;
-		bool lockOn=false;
 
 		void Start(){
 			battleManager = FindObjectOfType<BattleManager>();
@@ -28,7 +27,7 @@ namespace BattleUI{
 		}
 
 		public void Initialize(){
-			lockOn = false;
+			commandsOnOffLockOn = false;
 			buttons = new Dictionary<ActionCommand, Button> ();
 			buttons[ActionCommand.Move]=GameObject.Find ("MoveButton").GetComponent<Button> ();
 			buttons[ActionCommand.Skill]=GameObject.Find("SkillButton").GetComponent<Button>();
@@ -37,12 +36,9 @@ namespace BattleUI{
 		}
 
 		public void OnOffButton(ActionCommand command, bool turnOn){
-			if (lockOn)
-				Debug.Log ("Command button onoff is locked");
-			else {
-				Debug.Log (turnOn + " command " + command);
-				buttons [command].interactable = turnOn;
-			}
+			if (commandsOnOffLockOn)
+				return;
+			buttons [command].interactable = turnOn;
 		}
 		public void TurnOnOnlyThisButton(ActionCommand command){
 			foreach (var pair in buttons) {
@@ -53,18 +49,19 @@ namespace BattleUI{
 				}
 			}
 		}
-		public void LockOnOffState(){
-			lockOn = true;
+
+		bool commandsOnOffLockOn=false;
+		public void LockCommandsOnOff(){
+			commandsOnOffLockOn = true;
 		}
-		public void UnlockOnOffState(){
-			lockOn = false;
+		public void UnlockCommandsOnOff(){
+			commandsOnOffLockOn = false;
 		}
+
 		public void AddListenerToButton(ActionCommand command, UnityEngine.Events.UnityAction action){
-			Debug.Log ("Add listener to command "+command);
 			buttons[command].onClick.AddListener (action);
 		}
 		public void RemoveListenerToButton(ActionCommand command, UnityEngine.Events.UnityAction action){
-			Debug.Log ("Remove listener to command "+command);
 			buttons[command].onClick.RemoveListener (action);
 		}
 

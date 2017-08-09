@@ -9,13 +9,18 @@ using BattleUI;
 
 public class UIManager : MonoBehaviour
 {
+	private static UIManager instance;
+	public static UIManager Instance{
+		get { return instance; }
+	}
+
 	public bool startFinished = false;
-	const int onePageButtonsNum = 5;
 
 	APBarPanel apBarUI;
 	GameObject commandUI;
 	public CommandPanel commandPanel;
 	GameObject skillUI;
+	public SkillPanel skillPanel;
 	SkillCheckPanel skillCheckUI;
     GameObject ApplyButton;
 	GameObject WaitButton;
@@ -34,12 +39,13 @@ public class UIManager : MonoBehaviour
 	GameObject notImplementedDebugPanel;
 
 	void Awake(){
+		instance = this;
 		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
 		commandPanel = commandUI.GetComponent<CommandPanel> ();
-		TutorialScenario.commandPanel = commandPanel;
 		commandPanel.Initialize ();
 		skillUI = GameObject.Find("SkillPanel");
+		skillPanel = skillUI.GetComponent<SkillPanel> ();
 		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
         ApplyButton = GameObject.Find("ApplyButton");
 		WaitButton = GameObject.Find("WaitButton");
@@ -54,6 +60,9 @@ public class UIManager : MonoBehaviour
 		movedUICanvas = GameObject.Find("MovingUICanvas");
 		phaseUI = GameObject.Find("PhasePanel");
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
+
+		TutorialScenario.commandPanel = commandPanel;
+		TutorialScenario.skillPanel = skillPanel;
 	}
 
 	void Start(){
@@ -100,8 +109,7 @@ public class UIManager : MonoBehaviour
 	}
     public void SetSkillUI(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        SkillPanel skillPanel = skillUI.GetComponent<SkillPanel>();
-        skillPanel.SetMaxPage((skillList.Count - 1) / onePageButtonsNum);
+        skillPanel.SetMaxPage((skillList.Count - 1) / SkillPanel.onePageButtonsNum);
         skillPanel.triggerEnabled(selectedUnit);
         EnableSkillUI();
         
@@ -109,9 +117,9 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateSkillInfo(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        for (int i = 0; i < onePageButtonsNum; i++)
+        for (int i = 0; i < SkillPanel.onePageButtonsNum; i++)
 		{
-            int skillIndex = i + onePageButtonsNum * skillUI.GetComponent<SkillPanel>().GetPage();
+			int skillIndex = i + SkillPanel.onePageButtonsNum * skillPanel.GetPage();
 			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
 			if (skillIndex >= skillList.Count)
 			{
@@ -146,38 +154,20 @@ public class UIManager : MonoBehaviour
 			else
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";
 		}
-        CheckUsableSkill(selectedUnit);
+        TurnOnOnlyUsableSkills(selectedUnit);
 	}
 
-	public void CheckUsableSkill(Unit selectedUnit){
+	public void TurnOnOnlyUsableSkills(Unit selectedUnit){
 		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
+		int page = skillPanel.GetPage();
 
-        int page = skillUI.GetComponent<SkillPanel>().GetPage();
-		int iterationCount = Math.Min(onePageButtonsNum, skillList.Count - onePageButtonsNum * page);
-		for (int i = 0; i < iterationCount; i++) {
-			int skillIndex = i + onePageButtonsNum * page;
-			Button skillButton = skillUI.transform.Find ((i + 1) + "SkillButton").GetComponent<Button> ();
-			if (selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex])
-			    || selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex].GetName ()))
-				OnOffSkillButton (skillIndex + 1, false);
+		for (int skillIndex = SkillPanel.onePageButtonsNum * page + 1; skillIndex <= SkillPanel.onePageButtonsNum * (page + 1); skillIndex++) {
+			if (skillIndex > skillList.Count
+				|| selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex - 1])
+				|| selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex - 1].GetName ()))
+				skillPanel.OnOffSkillButton (skillIndex, true);
 			else
-				OnOffSkillButton (skillIndex + 1, true);
-		}
-	}
-	public void OnOffSkillButton(int index, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
-		int indexInCurrentPage = (index - 1) % onePageButtonsNum + 1;
-		Button skillButton = skillUI.transform.Find((indexInCurrentPage) + "SkillButton").GetComponent<Button>();
-
-		Color enabledColor = new Color(1, 1, 1);
-		Color disabledColor = new Color(1, 0, 0);
-
-		if (turnOn) {
-			skillButton.interactable = true;
-			skillButton.GetComponentInChildren<Text> ().color = enabledColor;
-		}
-		else {
-			skillButton.interactable = false;
-			skillButton.GetComponentInChildren<Text> ().color = disabledColor;
+				skillPanel.OnOffSkillButton (skillIndex, false);
 		}
 	}
 

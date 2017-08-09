@@ -17,6 +17,7 @@ namespace BattleUI
 		public Image actualRange;
         int page = 0;
         int maxPage = 0;
+		public const int onePageButtonsNum = 5;
         Unit selectedUnit;
 		public Sprite transparent;
 		public List<Button> skillButtons;
@@ -46,6 +47,53 @@ namespace BattleUI
 		public void CallbackSkillIndex(int index){
             index += page * 5;
 			battleManager.CallbackSkillIndex(index);
+		}
+
+		public void OnOffSkillButton(int skillIndex, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
+			if (skillsOnOffLockOn)
+				return;
+
+			Color enabledColor = new Color(1, 1, 1);
+			Color disabledColor = new Color(1, 0, 0);
+
+			int indexInCurrentPage = IndexInCurrentPage(skillIndex);
+			Button skillButton = skillButtons [indexInCurrentPage];
+			if (skillButton == null)
+				return;
+
+			if (turnOn) {
+				skillButton.interactable = true;
+				skillButton.GetComponentInChildren<Text> ().color = enabledColor;
+			}
+			else {
+				skillButton.interactable = false;
+				skillButton.GetComponentInChildren<Text> ().color = disabledColor;
+			}
+		}
+
+		public void TurnOnOnlyOneSkill(int skillIndex){
+			for (int i = SkillPanel.onePageButtonsNum * page + 1; i <= SkillPanel.onePageButtonsNum * (page + 1); i++) {
+				OnOffSkillButton (i, i == skillIndex);
+			}
+		}
+
+		bool skillsOnOffLockOn = false;
+		public void LockSkillsOnOff(){
+			skillsOnOffLockOn = true;
+		}
+		public void UnlockSkillsOnOff(){
+			skillsOnOffLockOn = false;
+		}
+
+		public void AddListenerToSkillButton(int skillIndex, UnityEngine.Events.UnityAction action){
+			skillButtons [IndexInCurrentPage (skillIndex)].onClick.AddListener (action);
+		}
+		public void RemoveListenerToSkillButton(int skillIndex, UnityEngine.Events.UnityAction action){
+			skillButtons [IndexInCurrentPage (skillIndex)].onClick.RemoveListener (action);
+		}
+
+		int IndexInCurrentPage(int skillIndex){ // value : 0~4
+			return (skillIndex - 1) % onePageButtonsNum;
 		}
 
 		public void Update(){

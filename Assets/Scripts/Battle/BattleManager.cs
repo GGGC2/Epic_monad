@@ -385,19 +385,9 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CallbackSkillIndex(int index){
-		if(!onTutorial){
-			battleData.indexOfSelectedSkillByUser = index;
-			battleData.triggers.skillSelected.Trigger();
-			Debug.Log(index + "th skill is selected");
-		}else{
-			TutorialScenario tutorial = tutorialManager.currentScenario;
-			if(tutorial.mission == TutorialScenario.Mission.SelectSkill && tutorial.missionSkillIndex == index){
-				battleData.indexOfSelectedSkillByUser = index;
-				battleData.triggers.skillSelected.Trigger();
-				Debug.Log(index + "th skill is selected");
-				tutorialManager.NextStep();
-			}
-		}
+		battleData.indexOfSelectedSkillByUser = index;
+		battleData.triggers.skillSelected.Trigger();
+		Debug.Log(index + "th skill is selected");
 	}
 
 	public void CallbackPointerEnterSkillIndex(int index)
