@@ -165,9 +165,9 @@ public class UIManager : MonoBehaviour
 			if (skillIndex > skillList.Count
 				|| selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex - 1])
 				|| selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex - 1].GetName ()))
-				skillPanel.OnOffSkillButton (skillIndex, true);
-			else
 				skillPanel.OnOffSkillButton (skillIndex, false);
+			else
+				skillPanel.OnOffSkillButton (skillIndex, true);
 		}
 	}
 
