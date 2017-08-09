@@ -34,6 +34,7 @@ public class CameraMover : MonoBehaviour {
     }
 	
     void Start() {
+		FindObjectOfType<CameraMover>().CalculateBoundary();
     }
     public void CalculateBoundary() {
 

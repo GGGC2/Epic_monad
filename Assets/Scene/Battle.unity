@@ -384,24 +384,9 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114839069769702706, guid: 3e39e29690a384acf8c20d2f60be1ea3,
-        type: 2}
-      propertyPath: DarkBG
-      value: 
-      objectReference: {fileID: 355696535}
-    - target: {fileID: 1566462969264870, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3e39e29690a384acf8c20d2f60be1ea3, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &355696535 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114879711850586500, guid: 3e39e29690a384acf8c20d2f60be1ea3,
-    type: 2}
-  m_PrefabInternal: {fileID: 355696534}
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &894933682
 Prefab:
   m_ObjectHideFlags: 0
@@ -898,6 +883,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0

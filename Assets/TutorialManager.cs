@@ -54,11 +54,11 @@ public class TutorialManager : MonoBehaviour {
 			previousScenario.ResetMissionCondition ();
 
 		index++;
+		Debug.Log("Tutorial Step "+index);
 		TutorialScenario currentScenario = scenarioList.Find (data => data.index == index);
 		if (currentScenario == null)
 			SetNewSprite ();
 		else {
-			Debug.Log("Tutorial Step "+index);
 			currentScenario.SetMissionCondition ();
 			image.enabled = false;
 			DarkBG.enabled = false;
