@@ -299,9 +299,9 @@ public class UIManager : MonoBehaviour
 		FindObjectOfType<TileViewer>().UpdateTileViewer(tile);
 	}
 
-	public void DisableTileViewerUI()
-	{
-		tileViewerUI.SetActive(false);
+	public void DisableTileViewerUI() {
+        tileViewerUI.GetComponent<TileViewer>().RefreshStatusEffectIconList();
+        tileViewerUI.SetActive(false);
 	}
 
 	public void EnableSelectDirectionUI()

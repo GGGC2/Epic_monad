@@ -12,9 +12,9 @@ namespace Battle.Skills {
             Vector2 positionVector = target.GetPosition() + directionVector;
             return tileManager.GetTile(positionVector);
         }
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
+        public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             if(caster == target) {
-                StatusEffect alreadyAppliedStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "떠밀기");
+                UnitStatusEffect alreadyAppliedStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "떠밀기");
                 int stack = 2;
                 if (alreadyAppliedStatusEffect != null) {
                     stack += alreadyAppliedStatusEffect.GetRemainStack();
@@ -25,7 +25,7 @@ namespace Battle.Skills {
             }
             return false;
         }
-        public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
+        public override bool TriggerStatusEffectRemoved(UnitStatusEffect statusEffect, Unit target) {
             int ap = (int)statusEffect.GetAmountOfType(StatusEffectType.Etc);
             skill.SetRequireAP(ap);
             return true;

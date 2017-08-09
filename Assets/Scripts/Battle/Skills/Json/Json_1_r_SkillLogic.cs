@@ -9,9 +9,9 @@ namespace Battle.Skills {
             Unit caster = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
             PassiveSkill mark = caster.GetLearnedPassiveSkillList().Find(skill => skill.GetName() == "표식");
-            List<StatusEffect.FixedElement> fixedStatusEffects = mark.GetStatusEffectList();
-            List<StatusEffect> statusEffects = fixedStatusEffects
-                .Select(fixedElem => new StatusEffect(fixedElem, caster, target, null, mark))
+            List<UnitStatusEffect.FixedElement> fixedStatusEffects = mark.GetUnitStatusEffectList();
+            List<UnitStatusEffect> statusEffects = fixedStatusEffects
+                .Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, mark))
                 .ToList();
             StatusEffector.AttachStatusEffect(caster, statusEffects, target);
             yield return null;

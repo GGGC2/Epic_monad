@@ -7,7 +7,7 @@ using Battle.Damage;
 
 namespace Battle.Skills {
     class Bianca_1_l_SkillLogic : BaseSkillLogic {
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
+        public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             if(targetTiles.Count == 1)  return false;
             return true;
         }

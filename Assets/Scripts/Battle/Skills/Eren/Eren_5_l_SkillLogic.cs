@@ -9,7 +9,7 @@ namespace Battle.Skills
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
+        public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             return unitManager.GetAllUnits().Count(x => x.GetSide() == Enums.Side.Enemy);
         }

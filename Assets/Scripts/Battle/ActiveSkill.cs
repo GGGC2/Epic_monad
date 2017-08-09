@@ -40,7 +40,7 @@ public class ActiveSkill : Skill{
 	string soundEffectName;
     
     // 상태이상 관련 정보
-    List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
+    List<UnitStatusEffect.FixedElement> unitStatusEffectList = new List<UnitStatusEffect.FixedElement>();
     List<TileStatusEffect.FixedElement> tileStatusEffectList = new List<TileStatusEffect.FixedElement>();
 
 	public BaseSkillLogic SkillLogic {
@@ -345,12 +345,12 @@ public class ActiveSkill : Skill{
 					yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.ActionInDamageRoutine(skillInstanceData));
 
 					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
-					if (statusEffectList.Count > 0) {
+					if (unitStatusEffectList.Count > 0) {
 						bool ignored = false;
 						foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
-							ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
-							if (originSkill != null) {
-								if (!originSkill.SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(skillInstanceData, tile, tileStatusEffect))
+							Skill originSkill = tileStatusEffect.GetOriginSkill();
+							if (originSkill.GetType() == typeof(ActiveSkill)) {
+								if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(skillInstanceData, tile, tileStatusEffect))
 									ignored = true;
 							}
 						}
@@ -373,19 +373,19 @@ public class ActiveSkill : Skill{
 		// 기술 사용 시 적용되는 특성
 		passiveSkillLogicsOfCaster.TriggerUsingSkill(caster, targets);
 		foreach(var statusEffect in caster.GetStatusEffectList()) {
-			PassiveSkill originPassiveSkill = statusEffect.GetOriginPassiveSkill();
-			if(originPassiveSkill != null)
-				originPassiveSkill.SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
+			Skill originPassiveSkill = statusEffect.GetOriginSkill();
+			if(originPassiveSkill.GetType() == typeof(PassiveSkill))
+				((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
 		}
 		caster.SetHasUsedSkillThisTurn(true);
 
 		// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
 		if (skillApplyType == SkillApplyType.DamageHealth) {
-			List<StatusEffect> statusEffectsToRemove = caster.GetStatusEffectList ().FindAll (x => (x.GetIsOnce () &&
+			List<UnitStatusEffect> statusEffectsToRemove = caster.GetStatusEffectList ().FindAll (x => (x.GetIsOnce () &&
 				(x.IsOfType (StatusEffectType.PowerChange) ||
 					x.IsOfType (StatusEffectType.DamageChange) ||
 					x.IsOfType (StatusEffectType.Smite))));
-			foreach (StatusEffect statusEffect in statusEffectsToRemove)
+			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
 		battleData.indexOfSelectedSkillByUser = 0; // return to init value.
@@ -403,8 +403,8 @@ public class ActiveSkill : Skill{
 		int randomNumber = UnityEngine.Random.Range(0, 100);
 
 		// 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
-		List<StatusEffect> statusEffectsToRemove =  caster.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
-		foreach(StatusEffect statusEffect in statusEffectsToRemove)
+		List<UnitStatusEffect> statusEffectsToRemove =  caster.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
+		foreach(var statusEffect in statusEffectsToRemove)
 			caster.RemoveStatusEffect(statusEffect);
 
 		if (totalEvasionChance > randomNumber) {
@@ -462,8 +462,9 @@ public class ActiveSkill : Skill{
 				(statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
 				(statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect) {
-				if (statusEffect.GetOriginSkill() != null)
-					yield return battleManager.StartCoroutine(statusEffect.GetOriginSkill().SkillLogic.
+                Skill originSkill = statusEffect.GetOriginSkill();
+				if (originSkill.GetType() == typeof(ActiveSkill))
+					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.
 						TriggerStatusEffectAtReflection(target, statusEffect, caster));
 				if (statusEffect.GetIsOnce() == true)
 					target.RemoveStatusEffect(statusEffect);
@@ -471,18 +472,18 @@ public class ActiveSkill : Skill{
 		}
 	}
 
-    public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel)
+    public void ApplyUnitStatusEffectList(List<UnitStatusEffectInfo> statusEffectInfoList, int partyLevel)
     {
-        StatusEffect.FixedElement previousStatusEffect = null;
+        UnitStatusEffect.FixedElement previousStatusEffect = null;
         foreach (var statusEffectInfo in statusEffectInfoList) {
-            StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+            UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if(statusEffectInfo.GetRequireLevel() <= partyLevel) {
                 if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //이전의 previousStatusEffect에 대해서만 대체 여부를 확인함.
                                                                                                  //즉, 대체되어야 하는 StatusEffect는 csv 파일에서 바로 다음 줄에 만들어야 함.
-                    statusEffectList.Remove(previousStatusEffect);
+                    unitStatusEffectList.Remove(previousStatusEffect);
                 }
                 if(statusEffectInfo.GetOriginSkillName().Equals(korName)) {
-                    statusEffectList.Add(statusEffectToAdd);
+                    unitStatusEffectList.Add(statusEffectToAdd);
                 }
             }
             previousStatusEffect = statusEffectToAdd;
@@ -641,6 +642,6 @@ public class ActiveSkill : Skill{
 	public int GetSecondWidth() {return secondWidth;}
 	public SkillApplyType GetSkillApplyType() {return skillApplyType;}
 	public string GetSkillDataText() {return skillDataText;}
-    public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
+    public List<UnitStatusEffect.FixedElement> GetUnitStatusEffectList() {return unitStatusEffectList;}
     public List<TileStatusEffect.FixedElement> GetTileStatusEffectList() { return tileStatusEffectList; }
 }

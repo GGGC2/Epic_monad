@@ -7,10 +7,10 @@ namespace Battle.Skills {
         public override void TriggerOnActionEnd(Unit caster) {
             Tile currentTile = caster.GetTileUnderUnit();
             Element elementOfTile = currentTile.GetTileElement();
-            List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
+            List<UnitStatusEffect> statusEffectList = caster.GetStatusEffectList();
 
             if (elementOfTile != Element.Plant) {
-                StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "뿌리 내리기");
+                UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "뿌리 내리기");
                 if (statusEffect != null)
                     caster.RemoveStatusEffect(statusEffect);
             } else {

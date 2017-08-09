@@ -20,8 +20,10 @@ namespace BattleUI {
         }
         public void SetText(StatusEffect statusEffect) {
             displayName.text = statusEffect.GetDisplayName();
-            if(statusEffect.GetIsBuff())    displayName.color = Color.green;
-            else displayName.color = Color.red;
+            if (statusEffect.GetType() == typeof(UnitStatusEffect)) {
+                if (((UnitStatusEffect)statusEffect).GetIsBuff()) displayName.color = Color.green;
+                else displayName.color = Color.red;
+            }
             
             originSkillAndCaster.text = statusEffect.GetOriginSkillName() + "(" + statusEffect.GetCaster().GetName() + ")";
             explanation.text = statusEffect.GetExplanation();

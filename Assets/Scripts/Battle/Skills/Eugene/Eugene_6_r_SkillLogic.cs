@@ -6,17 +6,17 @@ namespace Battle.Skills {
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(UnitStatusEffect statusEffect, Unit caster, Unit target) {
             if (statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
                 Aura.TriggerOnApplied(statusEffect, caster, target);
             return true;
         }
-        public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) {
+        public override bool TriggerStatusEffectRemoved(UnitStatusEffect statusEffect, Unit target) {
             if(statusEffect.GetOriginSkillName() == "야영 전문가" && statusEffect.IsOfType(StatusEffectType.Aura))
                 Aura.TriggerOnRemoved(target, statusEffect);
             return true;
         }
-        public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsOnRest(Unit target, UnitStatusEffect statusEffect) {
             if (!statusEffect.IsOfType(StatusEffectType.Aura)) {
                 target.RemoveStatusEffect(statusEffect.GetCaster(), StatusEffectCategory.Debuff, 1);
             }

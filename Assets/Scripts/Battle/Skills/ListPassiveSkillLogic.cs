@@ -148,7 +148,7 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(UnitStatusEffect statusEffect, Unit caster, Unit target) {
             bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
                 if (!skillLogic.TriggerStatusEffectAppliedToOwner(statusEffect, caster, target)) {
@@ -158,7 +158,7 @@ namespace Battle.Skills
             return !ignored;
         }
 
-        public override bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) {
+        public override bool TriggerStatusEffectRemoved(UnitStatusEffect statusEffect, Unit unit) {
             bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
                 if (!skillLogic.TriggerStatusEffectRemoved(statusEffect, unit)) {
@@ -236,17 +236,17 @@ namespace Battle.Skills
                 skillLogic.TriggerOnTurnStart(caster, turnStarter);
             }
         }
-        public override void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsOnRest(Unit target, UnitStatusEffect statusEffect) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnRest(target, statusEffect);
             }
         }
-        public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, UnitStatusEffect statusEffect) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnUsingSkill(target, targetsOfSkill, statusEffect);
             }
         }
-        public override void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+        public override void TriggerStatusEffectsOnMove(Unit target, UnitStatusEffect statusEffect) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }

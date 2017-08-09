@@ -27,10 +27,13 @@ class Trap {
     }
     public static void ActivateTrap(TileStatusEffect trap, Tile tile) {
         Unit caster = trap.GetCaster();
-        ActiveSkill skill = trap.GetOriginSkill();
-        List<TileStatusEffect> statusEffects = skill.GetTileStatusEffectList()
-                    .Select(fixedElem => new TileStatusEffect(fixedElem, caster, skill, null))
-                    .ToList();
+        Skill skill = trap.GetOriginSkill();
+        List<TileStatusEffect> statusEffects = new List<TileStatusEffect>();
+        if (skill.GetType() == typeof(ActiveSkill)) {
+            statusEffects = ((ActiveSkill)skill).GetTileStatusEffectList()
+                        .Select(fixedElem => new TileStatusEffect(fixedElem, caster, tile, skill))
+                        .ToList();
+        }
         List<TileStatusEffect> trapStatusEffects = statusEffects.FindAll(se => se.IsOfType(StatusEffectType.Trap));
         foreach (var trapStatusEffect in trapStatusEffects) {
             List<Unit> unitsInRange = GetUnitsInRange(trapStatusEffect, tile);
@@ -44,8 +47,9 @@ class Trap {
         Unit caster = trap.GetCaster();
         List<Unit> unitsInRange = GetUnitsInRange(trap, tile);
         foreach (var unit in unitsInRange) {
-            ActiveSkill originSkill = trap.GetOriginSkill();
-            StatusEffector.AttachStatusEffect(caster, originSkill, unit, GetTilesInRange(trap, tile));
+            Skill originSkill = trap.GetOriginSkill();
+            if(originSkill.GetType() == typeof(ActiveSkill))
+                StatusEffector.AttachStatusEffect(caster, (ActiveSkill)originSkill, unit, GetTilesInRange(trap, tile));
         }
         if (unitsInRange.Count > 0)
             tile.RemoveStatusEffect(trap);

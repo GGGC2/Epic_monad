@@ -11,11 +11,11 @@ public static class StatusEffector
 {
 	public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Unit target, List<Tile> targetTiles)
 	{
-        List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
-		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, appliedSkill, null))
+        List<UnitStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetUnitStatusEffectList();
+		List<UnitStatusEffect> statusEffects = fixedStatusEffects
+			.Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, appliedSkill))
 			.ToList();
-        List<StatusEffect> newStatusEffects = new List<StatusEffect>();
+        List<UnitStatusEffect> newStatusEffects = new List<UnitStatusEffect>();
         foreach(var statusEffect in statusEffects) {
             bool ignoreStatusEffect = false;
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target, targetTiles) == false) {
@@ -30,11 +30,11 @@ public static class StatusEffector
 
 	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
 	{
-		List<StatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetStatusEffectList();
-		List<StatusEffect> statusEffects = fixedStatusEffects
-			.Select(fixedElem => new StatusEffect(fixedElem, caster, target, null, appliedSkill))
+		List<UnitStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetUnitStatusEffectList();
+		List<UnitStatusEffect> statusEffects = fixedStatusEffects
+			.Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, appliedSkill))
 			.ToList();
-        List<StatusEffect> newStatusEffects = new List<StatusEffect>();
+        List<UnitStatusEffect> newStatusEffects = new List<UnitStatusEffect>();
         foreach (var statusEffect in statusEffects) {
             bool ignoreStatusEffect = false;
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target) == false) {
@@ -64,7 +64,7 @@ public static class StatusEffector
 			return false; 
 	}
 
-	private static bool IsValid(StatusEffect se)
+	private static bool IsValid(UnitStatusEffect se)
 	{
 		int elems = se.fixedElem.actuals.Count;
 		/*for (int i = 0; i < elems; i++)
@@ -75,9 +75,9 @@ public static class StatusEffector
 		return true;
 	}
 
-	public static void AttachStatusEffect(Unit caster, List<StatusEffect> statusEffects, Unit target)
+	public static void AttachStatusEffect(Unit caster, List<UnitStatusEffect> statusEffects, Unit target)
 	{
-		List<StatusEffect> validStatusEffects = new List<StatusEffect>();
+		List<UnitStatusEffect> validStatusEffects = new List<UnitStatusEffect>();
 		foreach (var statusEffect in statusEffects)
 		{
 			if (IsValid(statusEffect))
@@ -91,11 +91,11 @@ public static class StatusEffector
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetName());
                 continue;
             }
-            List<StatusEffect> targetStatusEffectList = target.GetStatusEffectList();
-            foreach (StatusEffect targetStatusEffect in targetStatusEffectList) {
-                ActiveSkill skill = targetStatusEffect.GetOriginSkill();
-                if (skill != null) {
-                    if(SkillLogicFactory.Get(skill).TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false) {
+            List<UnitStatusEffect> targetStatusEffectList = target.GetStatusEffectList();
+            foreach (var targetStatusEffect in targetStatusEffectList) {
+                Skill originSkill = targetStatusEffect.GetOriginSkill();
+                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                    if(((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false) {
                         Debug.Log(statusEffect.GetDisplayName() + " ignored by " + targetStatusEffect.GetOriginSkillName() + " of " + target.GetName());
                         continue;
                     }
@@ -110,7 +110,7 @@ public static class StatusEffector
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
 				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
-                List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(alreadyAppliedSameEffect, false, true);
@@ -132,7 +132,7 @@ public static class StatusEffector
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetName() + target.GetPosition());
-                List<StatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
+                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(statusEffect, true, false);
@@ -145,7 +145,7 @@ public static class StatusEffector
     public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Tile targetTile) {
         List<TileStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetTileStatusEffectList();
         List<TileStatusEffect> statusEffects = fixedStatusEffects
-            .Select(fixedElem => new TileStatusEffect(fixedElem, caster, appliedSkill, null))
+            .Select(fixedElem => new TileStatusEffect(fixedElem, caster, targetTile, null))
             .ToList();
             List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
             foreach (var statusEffect in statusEffects) {

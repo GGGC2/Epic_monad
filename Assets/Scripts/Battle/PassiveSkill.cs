@@ -7,7 +7,7 @@ using UnityEngine;
 using Battle.Skills;
 
 public class PassiveSkill : Skill{
-	List<StatusEffect.FixedElement> statusEffectList = new List<StatusEffect.FixedElement>();
+	List<UnitStatusEffect.FixedElement> unitStatusEffectList = new List<UnitStatusEffect.FixedElement>();
 	public BasePassiveSkillLogic SkillLogic {
 		get { return SkillLogicFactory.Get (this); }
 	}
@@ -25,17 +25,17 @@ public class PassiveSkill : Skill{
         secondTextValueBase = commaParser.ConsumeFloat();
 	}
 
-	public void ApplyStatusEffectList(List<StatusEffectInfo> statusEffectInfoList, int partyLevel){
-        StatusEffect.FixedElement previousStatusEffect = null;
-        foreach (StatusEffectInfo statusEffectInfo in statusEffectInfoList) {
-            StatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+	public void ApplyUnitStatusEffectList(List<UnitStatusEffectInfo> statusEffectInfoList, int partyLevel){
+        UnitStatusEffect.FixedElement previousStatusEffect = null;
+        foreach (var statusEffectInfo in statusEffectInfoList) {
+            UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if (statusEffectInfo.GetRequireLevel() <= partyLevel) {
                 if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //������ previousStatusEffect�� ���ؼ��� ��ü ���θ� Ȯ����.
                                                                                                  //��, ��ü�Ǿ�� �ϴ� StatusEffect�� csv ���Ͽ��� �ٷ� ���� �ٿ� ������ ��.
-                    statusEffectList.Remove(previousStatusEffect);
+                    unitStatusEffectList.Remove(previousStatusEffect);
                 }
                 if (statusEffectInfo.GetOriginSkillName().Equals(korName)) {
-                    statusEffectList.Add(statusEffectToAdd);
+                    unitStatusEffectList.Add(statusEffectToAdd);
                 }
             }
             previousStatusEffect = statusEffectToAdd;
@@ -46,5 +46,5 @@ public class PassiveSkill : Skill{
 	public int GetColumn() { return column; }
 	public string GetName() {return korName;}
     public int GetRequireLevel() { return requireLevel;}
-    public List<StatusEffect.FixedElement> GetStatusEffectList() {return statusEffectList;}
+    public List<UnitStatusEffect.FixedElement> GetUnitStatusEffectList() {return unitStatusEffectList;}
 }

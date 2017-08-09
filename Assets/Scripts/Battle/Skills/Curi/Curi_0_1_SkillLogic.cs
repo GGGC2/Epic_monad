@@ -9,7 +9,7 @@ namespace Battle.Skills {
             bool firstTarget = true;
             Element element = Element.None;
 
-            StatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
+            UnitStatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
 
             foreach (var target in targets) {
                 if (firstTarget == true) {
@@ -35,7 +35,7 @@ namespace Battle.Skills {
         }
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
             Unit caster = skillInstanceData.GetCaster();
-            StatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
+            UnitStatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
             if (originalStatusEffect != null) {
                 skillInstanceData.GetDamage().relativeDamageBonus *= 1 + (0.05f * originalStatusEffect.GetRemainStack());
             }

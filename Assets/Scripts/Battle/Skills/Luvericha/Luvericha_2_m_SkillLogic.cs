@@ -11,7 +11,7 @@ namespace Battle.Skills {
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
+        public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             int numberOfInjuredAlly = 0;
             foreach(var unit in unitManager.GetAllUnits()) {

@@ -71,9 +71,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     
     public void RemoveStatusEffect(TileStatusEffect statusEffect) {
         bool toBeRemoved = true;
-        ActiveSkill originSkill = statusEffect.GetOriginSkill();
-        if (originSkill != null)
-            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectRemoved(this, statusEffect);
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if (originSkill.GetType() == typeof(ActiveSkill))
+            toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectRemoved(this, statusEffect);
         if (toBeRemoved) {
             Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);

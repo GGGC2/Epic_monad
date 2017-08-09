@@ -45,7 +45,7 @@ public class BaseSkillLogic
 
 	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
 	}
-    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, StatusEffect statusEffect) {
+    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, UnitStatusEffect statusEffect) {
     }
 
 	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
@@ -63,29 +63,29 @@ public class BaseSkillLogic
     public virtual bool IgnoreShield(SkillInstanceData skillInstanceData) {
         return false;
     }
-    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
+    public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
     }
     public virtual bool MayDisPlayDamageCoroutine(SkillInstanceData skillInstanceData) {
         return true;
     }
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
+    public virtual bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
     {
         return true;
     }
-    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit target) //unit의 StatusEffect가 사라질 때 발동. false를 리턴할 시 해당 StatusEffect가 사라지지 않음.
+    public virtual bool TriggerStatusEffectRemoved(UnitStatusEffect statusEffect, Unit target) //unit의 StatusEffect가 사라질 때 발동. false를 리턴할 시 해당 StatusEffect가 사라지지 않음.
     {
         return true;
     }
-    public virtual void TriggerStatusEffectAtPhaseStart(Unit target, StatusEffect statusEffect) {
+    public virtual void TriggerStatusEffectAtPhaseStart(Unit target, UnitStatusEffect statusEffect) {
     }
-    public virtual IEnumerator TriggerStatusEffectAtActionEnd(Unit target, StatusEffect statusEffect) {
+    public virtual IEnumerator TriggerStatusEffectAtActionEnd(Unit target, UnitStatusEffect statusEffect) {
         yield return null;
     }
-    public virtual IEnumerator TriggerStatusEffectAtReflection(Unit target, StatusEffect statusEffect, Unit reflectTarget) {
+    public virtual IEnumerator TriggerStatusEffectAtReflection(Unit target, UnitStatusEffect statusEffect, Unit reflectTarget) {
         yield return null;
     }
-    public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, StatusEffect statusEffect, StatusEffect appliedStatusEffect) {
+    public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, UnitStatusEffect statusEffect, UnitStatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
     }
     public virtual bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect, Unit caster, Tile targetTile) {

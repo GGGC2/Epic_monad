@@ -9,7 +9,7 @@ namespace Battle.Skills {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             Direction front = caster.GetDirection();
             List<Tile> tilesInRange = tileManager.GetTilesInRange(RangeForm.Straight, caster.GetPosition(), -2, -1, 1, front);
-			List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
+			List<UnitStatusEffect> statusEffectList = caster.GetStatusEffectList();
 
             foreach(var tile in tilesInRange) {
                 if(tile.IsUnitOnTile()) {
@@ -20,7 +20,7 @@ namespace Battle.Skills {
                     }
                 }
             }
-            StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "신뢰의 끈");
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "신뢰의 끈");
             if (statusEffect != null)
                 caster.RemoveStatusEffect(statusEffect);
         }
