@@ -1,5 +1,6 @@
-﻿*	bg	Forest
-*	bgm	Script_Tense
+﻿Script#6
+*	BG	Forest
+*	BGM	Script_Tense
 
 yeong	-	영	뭐 하는 거야?!
 triana	-	트리아나	…….
@@ -25,7 +26,4 @@ blank	-	-	자신이 일행을 공격한다는 예상치 못한 전개. 그리고
 agent	-	아스터 요원	잠깐, 도망친다!
 blank	-	-	그리고 그 빈틈을 노려 포위망을 뚫어냈다. 스스로를 돕지 않는 자는 누구도 도울 수 없으니까.
 yeong	-	영	(한동안 다시 떠돌이 신세가 되겠군.)
-
-*	load_script	Scene#7
-yeong	-	영	(한동안 다시 떠돌이 신세가 되겠군.)
-*	load_title
+*	Script	Scene#7

@@ -1,5 +1,6 @@
-﻿*	bg	Forest
-*	bgm	Script_Prelude
+﻿Script#5
+*	BG	Forest
+*	BGM	Script_Prelude
 
 blank	-	-	제국력 518년 1월 20일, 콜로헤임 동부 숲지대
 yeong	-	영	(내가 쓸데없는 짓을 하는 걸까?)
@@ -15,7 +16,7 @@ yeong	-	영	정말 갈 곳이 없는 거라면, 일단 유니티 제국은 위�
 blank	-	-	아까부터 계속 그랬지만, 여전히 반응은 없다.
 yeong	-	영	듣고 있는 거야?
 
-*	bgm	Script_Tense
+*	BGM	Script_Tense
 
 blank	-	-	순간 트리아나의 오른팔에서 불그스름한 빛무리가 뿜어져 나왔다. 연회장에서 본 것과 같은 형태.
 blank	-	-	설마 공격하려는 건가, 하는 생각이 들었지만 조금 떨어진 위치의 풀숲이 폭발하고 그 뒤에 있던 적들이 모습을 드러냈다.
@@ -25,4 +26,4 @@ agent	-	아스터 요원	흥, 제법이군. 하지만 이번엔 도망치지 못
 json	-	제이선	……시작해.
 blank	-	-	지휘자가 미묘하게 힘없는 목소리로 명령하자,  적들은 일제히 이쪽으로 달려들기 시작했다.
 
-*	load_battle	3
+*	Battle	3

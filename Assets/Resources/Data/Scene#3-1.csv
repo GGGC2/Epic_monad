@@ -1,5 +1,6 @@
-﻿*	bg	MeetingRoom
-*	bgm	Script_Normal
+﻿Script#3-1
+*	BG	MeetingRoom
+*	BGM	Script_Normal
 
 blank	-	-	제국력 518년 1월 19일, 회의실
 noel	-	노엘	작전은 실패다.
@@ -35,6 +36,6 @@ noel	-	노엘	나머지는 내일 핀토스 저택을 수색하러 간다. 목�
 noel	-	노엘	적의 본거지인 만큼 무엇이 있을지 모르니 모두 만반의 준비를 갖추도록.
 sepia	-	세피아	명을 받들겠습니다.
 
-*	load_script	Scene#3-2
+*	Script	Scene#3-2
 sepia	-	세피아	명을 받들겠습니다.
-*	load_battle	2
+*	Battle	2

@@ -1,5 +1,6 @@
-﻿*	bg	PartyRoom
-*	bgm	Script_Sad
+﻿Script#4
+*	BG	PartyRoom
+*	BGM	Script_Sad
 
 noel	-	노엘	…….
 blank	-	-	비록, 반역자보다는 요원의 안전을 우선하겠다고는 했지만, 이런 걸 원한 건 아니었다.
@@ -18,6 +19,6 @@ grenev	-	그레네브	달리 명령이라도 있으신지?
 noel	-	노엘	……이만 철수한다.
 blank	-	-	앞으로는 이 부대에 주의를 기울일 필요가 있을 것 같다고 생각하며 발길을 돌렸다.
 
-*	load_script	Scene#5
+*	Script	Scene#5
 blank	-	-	앞으로는 이 부대에 주의를 기울일 필요가 있을 것 같다고 생각하며 발길을 돌렸다.
-*	load_battle	3
+*	Battle	3
