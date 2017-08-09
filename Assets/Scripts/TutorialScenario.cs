@@ -34,12 +34,14 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				TileManager.Instance.DepreselectAllTiles ();
 				TileManager.Instance.PreselectTiles (clickableTiles);
-				TileManager.Instance.LockTilesPreselectState ();
+				TileManager.Instance.LockPreselect ();
 				TileManager.Instance.PaintTiles (clickableTiles, TileColor.Black);
+				missionTile.LeftClick.AddListener(ToNextStep);
 			};
 			ResetMissionCondition = () => {
+				missionTile.LeftClick.RemoveListener(ToNextStep);
 				TileManager.Instance.DepaintAllTiles (TileColor.Black);
-				TileManager.Instance.UnlockTilesPreselectState ();
+				TileManager.Instance.UnlockPreselect ();
 				TileManager.Instance.DepreselectAllTiles ();
 			};
 		} else if (mission == Mission.SelectDirection)

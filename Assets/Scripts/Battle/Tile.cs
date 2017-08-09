@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 using Enums;
@@ -145,28 +146,27 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		}
 	}
 
-
+	public UnityEvent LeftClick;
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
-		if (pointerData.button != PointerEventData.InputButton.Left)
-			return;
-
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		if(!battleManager.onTutorial){
-			if ((isPreSeleted))
-				battleManager.OnMouseDownHandlerFromTile(position);
-		}else{
-			TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
-			if(tutorial.mission == TutorialScenario.Mission.SelectTile && tutorial.missionTilePos == position){
-				battleManager.OnMouseDownHandlerFromTile(position);
-				battleManager.tutorialManager.NextStep();
-			}
-		}
+		if (pointerData.button == PointerEventData.InputButton.Left)
+			LeftClick.Invoke ();
 	}
 
 	void Awake (){
 		sprite = gameObject.GetComponent<SpriteRenderer>();
 		colors = new List<Color>();
 		DehighlightTile ();
+
+		InitializeEvents ();
+	}
+
+	void InitializeEvents(){
+		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		UnityEngine.Events.UnityAction OnClick = () => {
+			if (isPreSeleted)
+				battleManager.OnMouseDownHandlerFromTile (position);
+		};
+		LeftClick.AddListener (OnClick);
 	}
 
 

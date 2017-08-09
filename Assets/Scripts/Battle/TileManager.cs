@@ -333,7 +333,7 @@ public class TileManager : MonoBehaviour {
 	public void PreselectTiles(List<Tile> tiles)
 	{
 		if (preselectLockOn)
-			Debug.Log ("preselect states are locked on");
+			return;
 		else {
 			foreach (Tile tile in tiles) {
 				tile.SetPreSelected (true);
@@ -343,18 +343,18 @@ public class TileManager : MonoBehaviour {
 	public void DepreselectAllTiles()
 	{
 		if (preselectLockOn)
-			Debug.Log ("preselect states are locked on");
+			return;
 		else {
 			foreach (Tile tile in GetTilesInGlobalRange()) {
 				tile.SetPreSelected (false);
 			}
 		}
 	}
-	public void LockTilesPreselectState()
+	public void LockPreselect()
 	{
 		preselectLockOn = true;
 	}
-	public void UnlockTilesPreselectState()
+	public void UnlockPreselect()
 	{
 		preselectLockOn = false;
 	}
