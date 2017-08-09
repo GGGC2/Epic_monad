@@ -15,14 +15,14 @@ namespace BattleUI{
 
 		void Update(){
 			if(battleManager.battleData.currentState == CurrentState.FocusToUnit){
-				if(buttons[ActionCommand.Move].interactable && Input.GetKeyDown(KeyCode.Q))
-					CallbackMoveCommand();
-				else if(buttons[ActionCommand.Skill].interactable && Input.GetKeyDown(KeyCode.W))
-					CallbackSkillCommand();
-				else if(buttons[ActionCommand.Standby].interactable && Input.GetKeyDown(KeyCode.E))
-					CallbackStandbyCommand();
-				else if(buttons[ActionCommand.Rest].interactable && Input.GetKeyDown(KeyCode.R))
-					CallbackRestCommand();
+				if (buttons [ActionCommand.Move].interactable && Input.GetKeyDown (KeyCode.Q))
+					buttons [ActionCommand.Move].onClick.Invoke ();
+				else if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.W))
+					buttons [ActionCommand.Skill].onClick.Invoke ();
+				else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.E))
+					buttons [ActionCommand.Standby].onClick.Invoke ();
+				else if (buttons [ActionCommand.Rest].interactable && Input.GetKeyDown (KeyCode.R))
+					buttons [ActionCommand.Rest].onClick.Invoke ();
 			}
 		}
 

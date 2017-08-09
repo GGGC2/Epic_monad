@@ -98,16 +98,16 @@ namespace BattleUI
 
 		public void Update(){
 			if(battleManager.battleData.currentState == CurrentState.SelectSkill){
-				if(Input.GetKeyDown(KeyCode.A) && skillButtons[0].interactable && skillButtons[0].gameObject.activeSelf)
-					battleManager.CallbackSkillIndex(1 + page * 5);
+				if (Input.GetKeyDown (KeyCode.A) && skillButtons [0].interactable && skillButtons [0].gameObject.activeSelf)
+					skillButtons [0].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.S) && skillButtons[1].interactable && skillButtons[1].gameObject.activeSelf)
-					battleManager.CallbackSkillIndex(2 + page * 5);
+					skillButtons [1].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.D) && skillButtons[2].interactable && skillButtons[2].gameObject.activeSelf)
-					battleManager.CallbackSkillIndex(3 + page * 5);
+					skillButtons [2].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.F) && skillButtons[3].interactable && skillButtons[3].gameObject.activeSelf)
-					battleManager.CallbackSkillIndex(4 + page * 5);
+					skillButtons [3].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.G) && skillButtons[4].interactable && skillButtons[4].gameObject.activeSelf)
-					battleManager.CallbackSkillIndex(5 + page * 5);
+					skillButtons [4].onClick.Invoke ();
 			}
 		}
 

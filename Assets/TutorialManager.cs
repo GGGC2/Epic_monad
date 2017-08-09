@@ -26,7 +26,7 @@ public class TutorialManager : MonoBehaviour {
 				cm.mouseMoveActive = true;
 				cm.keyboardMoveActive = true;
 			}
-			gameObject.SetActive(false);
+			Skip ();
 		}
 		else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
@@ -34,7 +34,10 @@ public class TutorialManager : MonoBehaviour {
 			battleManager.onTutorial = true;
 			NextStep();
 		}
-    }
+	}
+	public void Skip(){
+		gameObject.SetActive(false);
+	}
 
 	void SetNewSprite(){
 		image.enabled = true;
@@ -66,9 +69,5 @@ public class TutorialManager : MonoBehaviour {
 				gameObject.SetActive(false);
 			}
 		}
-	}
-
-	public void Skip(){
-		gameObject.SetActive(false);
 	}
 }
