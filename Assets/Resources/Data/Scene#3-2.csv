@@ -1,6 +1,6 @@
 ﻿Script#3-2
 *	BG	Garden
-*	BGM	Script_Tense
+*	BGM	Script_Prelude
 
 blank	-	-	제국력 518년 1월 20일, 핀토스 저택
 noel	-	노엘	(그만한 지위에 있으면서도 분수에 맞지 않는 것을 탐하다가 모든 것을 잃다니, 인간의 욕망이란 얼마나 어리석은가.)
@@ -12,6 +12,7 @@ blank	-	-	이 안에는 무엇이 있을지 모른다. 되도록 희생은 적�
 grenev	-	그레네브	하핫! 알겠습니다앗!
 blank	-	-	……악용하지는 말았으면 좋겠는데.
 
+*	BGM	Script_Tense
 *	SE	Invasion Alarm
 blank	-	-	신호와 동시에 일제히 저택으로 진입하자마자, 경보 장치가 작동하고 보이지 않는 곳에서 아스터 집행부를 공격하기 시작했다.
 sepia	-	세피아	큿…….
