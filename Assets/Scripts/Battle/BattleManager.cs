@@ -273,8 +273,9 @@ public class BattleManager : MonoBehaviour{
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 			Checker.InitializeResultPanel();
-		// 액션마다 갱신사항 종료
-	}
+        FindObjectOfType<CameraMover>().CalculateBoundary();
+        // 액션마다 갱신사항 종료
+    }
 
 	public IEnumerator PrepareUnitActionAndGetCommand(BattleData battleData){
 		while (battleData.currentState == CurrentState.FocusToUnit){
