@@ -8,7 +8,6 @@ using GameData;
 
 public class DialogueManager : MonoBehaviour{
 	public TextAsset dialogueData;
-
 	public Sprite transparent;
 	
     public GameObject dialogueUI;

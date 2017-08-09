@@ -94,12 +94,11 @@ public class StringParser{
 
 	public T ConsumeEnum<T>(){
 		string beforeParsed = Consume();
-		try {
+		try{
 			if (beforeParsed == "X" || beforeParsed == "O") return (T)Enum.Parse(typeof(T), "None");
 			else if (beforeParsed == "-") return (T)Enum.Parse(typeof(T), "Once");
 			else return (T)Enum.Parse(typeof(T), beforeParsed);
-		}
-		catch (ArgumentException e){
+		}catch (ArgumentException e){
 			Debug.LogError("Invalid enum value " + beforeParsed + " : " + typeof(T).FullName);
 			return default(T); // null
 		}
