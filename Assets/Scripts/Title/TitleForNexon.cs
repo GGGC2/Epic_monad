@@ -30,8 +30,17 @@ public class TitleForNexon : MonoBehaviour
 
 		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
+    public void LoadGame() {
+        SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
+        GameDataManager.Load();
+        if (SceneData.isDialogue) {
+            sceneLoader.LoadNextDialogueScene(SceneData.dialogueName);
+        } else
+            sceneLoader.LoadNextBattleScene();
+        //ShowWorldMap();
+    }
 
-	private void ShowWorldMap(){
+    private void ShowWorldMap(){
 		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
 
 		titlePath.DOPlay();
