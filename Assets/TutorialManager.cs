@@ -16,6 +16,7 @@ public class TutorialManager : MonoBehaviour {
 	public TutorialScenario currentScenario;
 
 	public void OnEnable(){
+		TutorialScenario.tutorialManager = this;
 		usedSceneName = SceneManager.GetActiveScene().name;
 		TextAsset searchData = Resources.Load<TextAsset>("Tutorial/" + usedSceneName + SceneData.stageNumber.ToString());
 		cm = FindObjectOfType<CameraMover>();

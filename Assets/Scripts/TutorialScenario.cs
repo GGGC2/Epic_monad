@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Enums;
+using BattleUI;
 
 public class TutorialScenario{
+	public static TutorialManager tutorialManager;
+	public static CommandPanel commandPanel;
 	public int index;
 	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, End}
 	public Mission mission;
@@ -19,6 +22,9 @@ public class TutorialScenario{
 		StringParser parser = new StringParser(data, '\t');
 		index = parser.ConsumeInt();
 		mission = parser.ConsumeEnum<Mission>();
+		UnityEngine.Events.UnityAction ToNextStep = () => {
+			tutorialManager.NextStep ();
+		};
 
 		if (mission == Mission.SelectTile) {
 			missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
@@ -35,10 +41,27 @@ public class TutorialScenario{
 				//TileManager.Instance.DepreselectAllTiles ();
 				TileManager.Instance.DepaintAllTiles (TileColor.Black);
 			};
+		} else if (mission == Mission.SelectDirection)
+			missionDirection = parser.ConsumeEnum<Direction> ();
+		else if (mission == Mission.SelectSkill)
+			missionSkillIndex = parser.ConsumeInt ();
+
+		if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
+			ActionCommand command;
+			if (mission == Mission.MoveCommand)
+				command = ActionCommand.Move;
+			else if (mission == Mission.SkillCommand)
+				command = ActionCommand.Skill;
+			else if (mission == Mission.Standby)
+				command = ActionCommand.Standby;
+			else
+				command = ActionCommand.Rest;
+			SetMissionCondition = () => {
+				commandPanel.AddListenerToButton (command, ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				commandPanel.RemoveListenerToButton (command, ToNextStep);
+			};
 		}
-		else if(mission == Mission.SelectDirection)
-			missionDirection = parser.ConsumeEnum<Direction>();
-		else if(mission == Mission.SelectSkill)
-			missionSkillIndex = parser.ConsumeInt();
 	}
 }

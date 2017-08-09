@@ -35,6 +35,8 @@ public class UIManager : MonoBehaviour
 	void Awake(){
 		apBarUI = FindObjectOfType<APBarPanel>();
 		commandUI = GameObject.Find("CommandPanel");
+		TutorialScenario.commandPanel = commandUI.GetComponent<CommandPanel>();
+		commandUI.GetComponent<CommandPanel> ().Initialize ();
 		skillUI = GameObject.Find("SkillPanel");
 		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
         ApplyButton = GameObject.Find("ApplyButton");

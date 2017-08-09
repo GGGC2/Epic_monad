@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,23 +7,41 @@ namespace BattleUI{
 	public class CommandPanel : MonoBehaviour{
 		private BattleManager battleManager;
 
+		Dictionary<ActionCommand, Button> buttons;
+
 		void Start(){
 			battleManager = FindObjectOfType<BattleManager>();
 		}
 
 		void Update(){
 			if(battleManager.battleData.currentState == CurrentState.FocusToUnit){
-				if(GameObject.Find("MoveButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.Q))
+				if(buttons[ActionCommand.Move].interactable && Input.GetKeyDown(KeyCode.Q))
 					CallbackMoveCommand();
-				else if(GameObject.Find("SkillButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.W))
+				else if(buttons[ActionCommand.Skill].interactable && Input.GetKeyDown(KeyCode.W))
 					CallbackSkillCommand();
-				else if(GameObject.Find("StandbyButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.E))
+				else if(buttons[ActionCommand.Standby].interactable && Input.GetKeyDown(KeyCode.E))
 					CallbackStandbyCommand();
-				else if(GameObject.Find("RestButton").GetComponent<Button>().interactable && Input.GetKeyDown(KeyCode.R))
+				else if(buttons[ActionCommand.Rest].interactable && Input.GetKeyDown(KeyCode.R))
 					CallbackRestCommand();
 			}
 		}
 
+		public void Initialize(){
+			buttons = new Dictionary<ActionCommand, Button> ();
+			buttons[ActionCommand.Move]=GameObject.Find ("MoveButton").GetComponent<Button> ();
+			buttons[ActionCommand.Skill]=GameObject.Find("SkillButton").GetComponent<Button>();
+			buttons[ActionCommand.Standby]=GameObject.Find("StandbyButton").GetComponent<Button>();
+			buttons[ActionCommand.Rest]=GameObject.Find("RestButton").GetComponent<Button>();
+		}
+
+		public void AddListenerToButton(ActionCommand command, UnityEngine.Events.UnityAction action){
+			Debug.Log ("Add listener to commnad No."+command);
+			buttons[command].onClick.AddListener (action);
+		}
+		public void RemoveListenerToButton(ActionCommand command, UnityEngine.Events.UnityAction action){
+			Debug.Log ("Remove listener to command No."+command);
+			buttons[command].onClick.RemoveListener (action);
+		}
 		public void CallbackMoveCommand(){
 			if(!battleManager.onTutorial)
 				battleManager.CallbackMoveCommand();
@@ -29,7 +49,6 @@ namespace BattleUI{
 				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
 				if(tutorial.mission == TutorialScenario.Mission.MoveCommand){
 					battleManager.CallbackMoveCommand();
-					battleManager.tutorialManager.NextStep();
 				}
 			}				
 		}
@@ -41,7 +60,6 @@ namespace BattleUI{
 				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
 				if(tutorial.mission == TutorialScenario.Mission.SkillCommand){
 					battleManager.CallbackSkillCommand();
-					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}
@@ -53,7 +71,6 @@ namespace BattleUI{
 				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
 				if(tutorial.mission == TutorialScenario.Mission.Standby){
 					battleManager.CallbackStandbyCommand();
-					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}
@@ -65,7 +82,6 @@ namespace BattleUI{
 				TutorialScenario tutorial = battleManager.tutorialManager.currentScenario;
 				if(tutorial.mission == TutorialScenario.Mission.Rest){
 					battleManager.CallbackRestCommand();
-					battleManager.tutorialManager.NextStep();
 				}
 			}
 		}
