@@ -9,35 +9,34 @@ using Battle.Damage;
 using UnityEngine;
 
 public class ActiveSkill : Skill{
-	// base info.
+	
 	int requireAP;
 	int cooldown;
 	
-	// damage factors in datatype Dictionary
+	// (보통)공격력에 곱해서 기술 위력을 결정하는 계수
 	float powerFactor;
 	
 	// reach & range
-	// 지정/범위/경로. 
 	SkillType skillType;
-	// 1차범위.
+	// 1차범위
 	RangeForm firstRangeForm;
 	int firstMinReach;
 	int firstMaxReach;
 	int firstWidth;
-	// 2차범위.   ** 범위형의 경우 반드시 1차범위 = 2차범위! **
+	// 2차범위   ** 자동형의 경우 반드시 1차범위 = 2차범위! **
 	RangeForm secondRangeForm;
 	int secondMinReach;
 	int secondMaxReach;
 	int secondWidth;
 	
-	SkillApplyType skillApplyType; // 대미지인지 힐인지 아니면 상태이상만 주는지
+	SkillApplyType skillApplyType; // DamageHealth,DamageAP,HealHealth,HealAP,Buff,Debuff,Move,Tile,Etc
 	
-	// 이펙트 관련 정보
+	// 시각적 이펙트
 	string visualEffectName;
 	EffectVisualType effectVisualType;
 	EffectMoveType effectMoveType;
 
-	// 스킬 SE 이름
+	// 효과음
 	string soundEffectName;
     
     // 상태이상 관련 정보
@@ -85,43 +84,7 @@ public class ActiveSkill : Skill{
 		secondTextValueCoef = commaParser.ConsumeFloat();
         secondTextValueBase = commaParser.ConsumeFloat();
 	}
-    
-	/*public ActiveSkill(string owner, int column, string name, int requireLevel, int requireAP, int cooldown, 
-                 float powerFactor,
-				 SkillType skillType,
-				 RangeForm firstRangeForm, int firstMinReach, int firstMaxReach, int firstWidth,
-				 RangeForm secondRangeForm, int secondMinReach, int secondMaxReach, int secondWidth,
-				 SkillApplyType skillApplyType,  
-				 string visualEffectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, string soundEffectName,
-				 string skillDataText, Stat firstTextValueType, float firstTextValueCoef, Stat secondTextValueType, float secondTextValueCoef)
-	{
-		this.owner = owner;
-		this.column = column;
-		this.korName = name;
-        this.requireLevel = requireLevel;
-		this.requireAP = requireAP;
-		this.cooldown = cooldown;
-		this.powerFactor = powerFactor;
-		this.skillType = skillType;
-		this.firstRangeForm = firstRangeForm;
-		this.firstMinReach = firstMinReach;
-		this.firstMaxReach = firstMaxReach;
-		this.firstWidth = firstWidth;
-		this.secondRangeForm = secondRangeForm;
-		this.secondMinReach = secondMinReach;
-		this.secondMaxReach = secondMaxReach;
-		this.secondWidth = secondWidth;
-		this.skillApplyType = skillApplyType;
-		this.effectName = visualEffectName;
-		this.effectVisualType = effectVisualType;
-		this.effectMoveType = effectMoveType;
-		this.soundEffectName = soundEffectName;
-		this.skillDataText = skillDataText;
-		this.firstTextValueType = firstTextValueType;
-		this.firstTextValueCoef = firstTextValueCoef;
-		this.secondTextValueType = secondTextValueType;
-		this.secondTextValueCoef = secondTextValueCoef;
-	}*/
+
 	public List<Tile> GetTilesInFirstRange(Vector2 casterPos, Direction direction) {
 		var firstRange = battleData.tileManager.GetTilesInRange (firstRangeForm,
 			                 casterPos,

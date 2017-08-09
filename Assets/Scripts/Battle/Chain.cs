@@ -4,37 +4,39 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Chain {
-	// 체인에 필요한 정보
-	// 시전자, 시전스킬, 위치정보를 담은 Casting 인스턴스
 	Casting casting;
-
-	public Chain (Casting casting)
-	{
+	public Chain (Casting casting){
 		this.casting = casting;
 	}
-
-	private Casting Casting { get { return casting; } }
 	public Unit Caster { get { return casting.Caster; } }
 	public ActiveSkill Skill { get { return casting.Skill; } }
-	private SkillLocation Location { get { return casting.Location; } }
+	SkillLocation Location { get { return casting.Location; } }
+	void UpdateLocation(){
+		Skill.SetRealTargetTileForSkillLocation (Location);
+	}
 	public List<Unit> CurrentTargets{
-		get { return casting.CurrentTargets; }
+		get {
+			List<Unit> targets = new List<Unit> ();
+			foreach (Tile targetTile in RealEffectRange) {
+				if (targetTile.IsUnitOnTile ())
+					targets.Add (targetTile.GetUnitOnTile ());
+			}
+			return targets;
+		}
 	}
 	public List<Tile> SecondRange {
 		get {
 			//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
-			Skill.SetRealTargetTileForSkillLocation (Location);
-			return Skill.GetTilesInSecondRange (Location);
+			UpdateLocation();
+			return casting.SecondRange;
 		}
 	}
 	public List<Tile> RealEffectRange {
 		get {
-			//투사체 스킬은 타일 위 유닛 배치에 따라 targetTile이 변하므로 새로 갱신
-			Skill.SetRealTargetTileForSkillLocation (Location);
-			return Skill.GetTilesInRealEffectRange (Location);
+			UpdateLocation();
+			return casting.RealEffectRange;
 		}
 	}
-
 	public bool Overlapped(Chain allyChain)
 	{
 		List<Unit> myTargets = CurrentTargets;
@@ -46,8 +48,8 @@ public class Chain {
 		}
 		return false;
 	}
-
 	public IEnumerator Cast(int chainCombo){
+		UpdateLocation();
 		yield return casting.Cast (chainCombo);
 	}
 }
