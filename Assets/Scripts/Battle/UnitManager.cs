@@ -214,7 +214,7 @@ public class UnitManager : MonoBehaviour {
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
 				respawnPos -= new Vector3(0, 0, 0.05f);
-				unit.gameObject.transform.position = respawnPos;
+				unit.transform.position = respawnPos;
 
 				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 				tileUnderUnit.SetUnitOnTile(unit);
@@ -246,7 +246,7 @@ public class UnitManager : MonoBehaviour {
 				Vector2 initPosition = unit.GetInitPosition();
 				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
 				respawnPos -= new Vector3(0, 0, 0.05f);
-				unit.gameObject.transform.position = respawnPos;
+				unit.transform.position = respawnPos;
 
 				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 				tileUnderUnit.SetUnitOnTile(unit);

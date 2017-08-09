@@ -14,6 +14,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public int height;
 	string displayName;
 	public Vector2 position;
+	public Vector3 realPosition {
+		get { return transform.position; }
+	}
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public bool isHighlight;

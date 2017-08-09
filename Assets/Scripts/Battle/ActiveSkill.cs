@@ -554,10 +554,10 @@ public class ActiveSkill : Skill{
 
 		if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {
 			// 투사체, 범위형 이펙트.
-			Vector3 startPos = unit.gameObject.transform.position;
+			Vector3 startPos = unit.realPosition;
 			Vector3 endPos = new Vector3(0, 0, 0);
 			foreach (var tile in secondRange) {
-				endPos += tile.gameObject.transform.position;
+				endPos += tile.realPosition;
 			}
 			endPos = endPos / (float)secondRange.Count;
 
@@ -574,7 +574,7 @@ public class ActiveSkill : Skill{
 			// 고정형, 범위형 이펙트.
 			Vector3 targetPos = new Vector3(0, 0, 0);
 			foreach (var tile in secondRange) {
-				targetPos += tile.transform.position;
+				targetPos += tile.realPosition;
 			}
 			targetPos = targetPos / (float)secondRange.Count;
 			targetPos = targetPos - new Vector3(0, -0.5f, 5f); // 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
@@ -594,7 +594,7 @@ public class ActiveSkill : Skill{
 			foreach (var tileObject in secondRange) {
 				Tile tile = tileObject;
 				if (tile.IsUnitOnTile()) {
-					targetPosList.Add(tile.GetUnitOnTile().transform.position);
+					targetPosList.Add(tile.GetUnitOnTile().realPosition);
 				}
 			}
 
@@ -608,7 +608,7 @@ public class ActiveSkill : Skill{
 			{
 				Vector3 midPos = new Vector3(0, 0, 0);
 				foreach (var tile in secondRange) {
-					midPos += tile.transform.position;
+					midPos += tile.realPosition;
 				}
 				midPos = midPos / (float)secondRange.Count;
 

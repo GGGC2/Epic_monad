@@ -12,7 +12,7 @@ public class ArrowButton : MonoBehaviour
 	{
 		Vector3 mousePositionScreen = Input.mousePosition;
 		Vector3 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePositionScreen);
-		Vector3 unitPosition = FindObjectOfType<BattleManager>().battleData.selectedUnit.transform.position;
+		Vector3 unitPosition = FindObjectOfType<BattleManager>().battleData.selectedUnit.realPosition;
 		
 		//Debug.Log("mousePosition : " + mousePositionWorld);
 		//Debug.Log("UnitPosition : " + unitPosition);
