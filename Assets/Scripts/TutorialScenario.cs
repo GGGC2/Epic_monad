@@ -11,11 +11,12 @@ public class TutorialScenario{
 	public static CommandPanel commandPanel;
 	public static SkillPanel skillPanel;
 	public static SelectDirectionUI selectDirectionUI;
+
 	public int index;
-	public enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
-	public Mission mission;
-	public Vector2 missionTilePos;
-	public Direction missionDirection;
+	enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
+	Mission mission;
+	public bool IsEndMission { get { return mission == Mission.End; } }
+	Direction missionDirection;
 	public Action SetMissionCondition = () => {};
 	public Action ResetMissionCondition = () => {};
 
@@ -24,11 +25,11 @@ public class TutorialScenario{
 		index = parser.ConsumeInt();
 		mission = parser.ConsumeEnum<Mission>();
 		UnityEngine.Events.UnityAction ToNextStep = () => {
-			tutorialManager.NextStep ();
+			tutorialManager.ToNextStep ();
 		};
 
 		if (mission == Mission.SelectTile) {
-			missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
+			Vector2 missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
 			Tile missionTile = TileManager.Instance.GetTile (missionTilePos);
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
@@ -49,9 +50,12 @@ public class TutorialScenario{
 		else if (mission == Mission.SelectDirection) {
 			missionDirection = parser.ConsumeEnum<Direction> ();
 			SetMissionCondition = () => {
-				//FIXME : 구현중
+				selectDirectionUI.EnableOnlyThisDirection(missionDirection);
+				selectDirectionUI.AddListenerToDirection(missionDirection, ToNextStep);
 			};
 			ResetMissionCondition = () => {
+				selectDirectionUI.RemoveListenerToDirection(missionDirection, ToNextStep);
+				selectDirectionUI.EnableAllDirection();
 			};
 		}
 		else if (mission == Mission.SelectSkill) {

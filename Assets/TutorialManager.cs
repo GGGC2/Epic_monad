@@ -13,7 +13,6 @@ public class TutorialManager : MonoBehaviour {
 	string usedSceneName;
 	public Button ReverseButton;
 	List<TutorialScenario> scenarioList;
-	public TutorialScenario currentScenario;
 
 	public void OnEnable(){
 		TutorialScenario.tutorialManager = this;
@@ -32,7 +31,7 @@ public class TutorialManager : MonoBehaviour {
 			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			battleManager.onTutorial = true;
-			NextStep();
+			ToNextStep();
 		}
 	}
 	public void Skip(){
@@ -49,24 +48,22 @@ public class TutorialManager : MonoBehaviour {
 			Debug.LogError("Sprite NOT found!");
 	}
 
-	public void NextStep(){
-		TutorialScenario previousScenario = scenarioList.Find(data => data.index == index);
-		if(previousScenario != null){
+	public void ToNextStep(){
+		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
+		if (previousScenario != null)
 			previousScenario.ResetMissionCondition ();
-		}
 
 		index++;
-		TutorialScenario findCurrentScenario = scenarioList.Find(data => data.index == index);
-		if(findCurrentScenario == null){
-			SetNewSprite();
-		}else{
-			Debug.Log("Step " + index);
-			currentScenario = findCurrentScenario;
+		TutorialScenario currentScenario = scenarioList.Find (data => data.index == index);
+		if (currentScenario == null)
+			SetNewSprite ();
+		else {
+			Debug.Log("Tutorial Step "+index);
 			currentScenario.SetMissionCondition ();
 			image.enabled = false;
 			DarkBG.enabled = false;
-			if(currentScenario.mission == TutorialScenario.Mission.End){
-				gameObject.SetActive(false);
+			if (currentScenario.IsEndMission) {
+				Skip ();
 			}
 		}
 	}

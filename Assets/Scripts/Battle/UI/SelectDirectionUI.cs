@@ -11,6 +11,8 @@ namespace BattleUI
 		Dictionary<Direction, ArrowButton> arrowButtons;
 
 		public void Start(){
+		}
+		public void Initialize(){
 			battleManager = FindObjectOfType<BattleManager>();
 			arrowButtons = new Dictionary<Direction, ArrowButton> ();
 			arrowButtons [Direction.RightUp] = ArrowButtons [0];
@@ -24,6 +26,18 @@ namespace BattleUI
 				button.CheckAndHighlightImage();
 		}
 
+		public void EnableOnlyThisDirection(Direction direction){
+			foreach(var pair in arrowButtons){
+				if (pair.Key == direction)
+					pair.Value.button.interactable = true;
+				else
+					pair.Value.button.interactable = false;
+			}
+		}
+		public void EnableAllDirection(){
+			foreach (var pair in arrowButtons)
+				pair.Value.button.interactable = true;
+		}
 		public void AddListenerToDirection(Direction direction, UnityEngine.Events.UnityAction action){
 			arrowButtons [direction].button.onClick.AddListener (action);
 		}
@@ -32,18 +46,7 @@ namespace BattleUI
 		}
 
 		public void CallbackDirection(string directionString){
-			Debug.Log("Direction CallBack");
-			if(!battleManager.onTutorial)
-				battleManager.CallbackDirection(directionString);
-			else{
-				TutorialScenario scenario = battleManager.tutorialManager.currentScenario;
-				Debug.Log(scenario.mission);
-				Debug.Log(scenario.missionDirection.ToString());
-				if(scenario.mission == TutorialScenario.Mission.SelectDirection && scenario.missionDirection.ToString() == directionString){
-					battleManager.CallbackDirection(directionString);
-					battleManager.tutorialManager.NextStep();
-				}
-			}
+			battleManager.CallbackDirection(directionString);
 		}
 	}
 }

@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
         selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
+		selectDirectionUI.Initialize ();
 		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovingUICanvas");
