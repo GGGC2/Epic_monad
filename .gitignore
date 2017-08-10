@@ -37,7 +37,7 @@ ExportedObj/
 .Trashes
 Icon?
 ehthumbs.db
-Thumbs.db
+*Thumbs.db*
 *.app
 
 # ignore per project vimrc
