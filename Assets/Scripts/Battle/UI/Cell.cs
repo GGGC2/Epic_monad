@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Cell : MonoBehaviour {
 	Vector2 size;
 	RectTransform rect;
-	SpriteRenderer spriteRenderer;
+	Image image;
 	void Awake(){
 		rect = GetComponent<RectTransform> ();
-		spriteRenderer = GetComponent<SpriteRenderer> ();
+		image = GetComponent<Image> ();
 	}
 	public void SetSize(Vector2 size){
 		this.size = size;
@@ -19,6 +20,6 @@ public class Cell : MonoBehaviour {
 		transform.localPosition = realPos;
 	}
 	public void SetColor(Color color){
-		spriteRenderer.color = color;
+		image.color = color;
 	}
 }

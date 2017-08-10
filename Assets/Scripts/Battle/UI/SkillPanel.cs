@@ -14,7 +14,6 @@ namespace BattleUI
 		public Text rangeText;
 		Text skillCooldownText;
 		public Image rangeType;
-		public Image actualRange;
         int page = 0;
         int maxPage = 0;
 		public const int onePageButtonsNum = 5;
@@ -123,7 +122,6 @@ namespace BattleUI
 			skillApText.text = "";
 			skillCooldownText.text = "";	
 			skillDataText.text = "";
-			actualRange.sprite = transparent;
 			rangeType.sprite = transparent;
 			rangeText.text = "";
 		}
