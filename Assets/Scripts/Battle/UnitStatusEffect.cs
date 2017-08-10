@@ -61,11 +61,7 @@ public class UnitStatusEffect : StatusEffect {
         }
     }
     public bool GetIsBuff() { return ((FixedElement.DisplayElement)fixedElem.display).isBuff; }
-    public Unit GetOwner() {
-        FlexibleElement convertedFlexible = (UnitStatusEffect.FlexibleElement) flexibleElem;
-        FlexibleElement.DisplayElement convertedDisplay = (UnitStatusEffect.FlexibleElement.DisplayElement) flexibleElem.display;
-        return convertedDisplay.owner; 
-    }
+    public Unit GetOwner() { return ((UnitStatusEffect.FlexibleElement.DisplayElement)flexibleElem.display).owner; }
     protected override float GetStatusEffectVar(int i) {
         float statusEffectVar;
         if (GetOriginSkill().GetType() == typeof(ActiveSkill))

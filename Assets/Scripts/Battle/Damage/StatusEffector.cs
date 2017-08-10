@@ -145,7 +145,7 @@ public static class StatusEffector
     public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Tile targetTile) {
         List<TileStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetTileStatusEffectList();
         List<TileStatusEffect> statusEffects = fixedStatusEffects
-            .Select(fixedElem => new TileStatusEffect(fixedElem, caster, targetTile, null))
+            .Select(fixedElem => new TileStatusEffect(fixedElem, caster, targetTile, appliedSkill))
             .ToList();
             List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
             foreach (var statusEffect in statusEffects) {
