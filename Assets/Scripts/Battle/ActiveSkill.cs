@@ -145,22 +145,14 @@ public class ActiveSkill : Skill{
 		else
 			return GetTilesInSecondRange (skillLocation);
 	}
-	public Dictionary<TileColor, List<Vector2>> AllPaintingRangesForSecondRangeDisplay(int rowNum){
-		Dictionary<TileColor, List<Vector2>> allPaintingRanges = new Dictionary<TileColor, List<Vector2>> ();
+	public Dictionary<Vector2, Color> RangeColorsForSecondRangeDisplay(int rowNum){
 		Vector2 center = new Vector2 ((rowNum - 1) / 2, (rowNum - 1) / 2);
+		Dictionary<Vector2, Color> rangeColors = new Dictionary<Vector2, Color> ();
 
-		List<Vector2> blackRange = new List<Vector2> ();
-		if(skillType == SkillType.Auto || skillType==SkillType.Self){
-			blackRange.Add (center);
-		}
-		allPaintingRanges [TileColor.Black] = blackRange;
-
-		List<Vector2> yellowRange = new List<Vector2> ();
-		if (skillType == SkillType.Point || skillType == SkillType.Route) {
-			yellowRange.Add (center);
-		}
-		allPaintingRanges [TileColor.Yellow] = yellowRange;
-
+		for (int x = 0; x < rowNum; x++)
+			for (int y = 0; y < rowNum; y++)
+				rangeColors [new Vector2 (x, y)] = Color.white;
+		
 		List<Vector2> redRange = new List<Vector2> ();
 		if (secondRangeForm == RangeForm.Global){
 			for (int x = 0; x < rowNum; x++)
@@ -169,9 +161,16 @@ public class ActiveSkill : Skill{
 		}
 		else
 			redRange = Utility.GetRange (secondRangeForm, center, secondMinReach, secondMaxReach, secondWidth, Direction.RightUp);
-		allPaintingRanges [TileColor.Red] = redRange;
 
-		return allPaintingRanges;
+		foreach (var pos in redRange)
+			rangeColors [pos] = Color.red;
+
+		if (skillType == SkillType.Auto || skillType == SkillType.Self)
+			rangeColors [center] = Color.black;
+		if(skillType == SkillType.Point || skillType == SkillType.Route)
+			rangeColors [center] = Color.yellow;
+		
+		return rangeColors;
 	}
 		
 	public bool IsAttackableOnTheTile (Unit caster, Tile casterTile){
