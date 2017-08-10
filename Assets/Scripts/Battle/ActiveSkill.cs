@@ -145,7 +145,7 @@ public class ActiveSkill : Skill{
 		else
 			return GetTilesInSecondRange (skillLocation);
 	}
-	public Dictionary<TileColor, List<Vector2>> PaintingInfoForSecondRangeDisplay(int rowNum){
+	public Dictionary<TileColor, List<Vector2>> AllPaintingRangesForSecondRangeDisplay(int rowNum){
 		Dictionary<TileColor, List<Vector2>> allPaintingRanges = new Dictionary<TileColor, List<Vector2>> ();
 		Vector2 center = new Vector2 ((rowNum - 1) / 2, (rowNum - 1) / 2);
 
