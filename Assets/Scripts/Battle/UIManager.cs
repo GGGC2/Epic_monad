@@ -82,7 +82,8 @@ public class UIManager : MonoBehaviour
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
-		StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
+		//FindObjectOfType<BattleManager>().Initialize();
+		//StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
 	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) {

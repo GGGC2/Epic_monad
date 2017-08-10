@@ -512,8 +512,7 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void UpdateStartPosition()
-	{
+	public void UpdateStartPosition(){
 		startPositionOfPhase = this.GetPosition();
         notMovedTurnCount ++;
         hasUsedSkillThisTurn = false;
@@ -756,20 +755,17 @@ public class Unit : MonoBehaviour{
         return requireSkillAP;
     }
 
-	public void SetActivityPoint(int newAP)
-	{
+	public void SetActivityPoint(int newAP){
 		activityPoint = newAP;
 		unitManager.UpdateUnitOrder();
 	}
-	public void UseActivityPoint(int amount)
-	{
+	public void UseActivityPoint(int amount){
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 		unitManager.UpdateUnitOrder();
 	}
 
-	public IEnumerator ApplyTriggerOnPhaseStart(int phase)
-	{
+	public IEnumerator ApplyTriggerOnPhaseStart(int phase){
 		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (var statusEffect in statusEffectList) {
             Skill originSkill = statusEffect.GetOriginSkill();
@@ -894,8 +890,7 @@ public class Unit : MonoBehaviour{
 		chainAttackerIcon.SetActive(false);
 	}
 
-	void ApplyStats()
-	{
+	void ApplyStats(){
 		float partyLevel = (float)GameData.PartyData.level;
         
         actualStats = new Dictionary<Stat, ActualStat>();
@@ -955,8 +950,7 @@ public class Unit : MonoBehaviour{
 		}
     }
     UnitManager unitManager;
-	void Initialize()
-	{
+	void Initialize(){
 		gameObject.name = nameInCode;
 
 		position = initPosition;
@@ -1001,18 +995,6 @@ public class Unit : MonoBehaviour{
 		// GetComponent<SpriteRenderer>().sprite = spriteLeftUp;
 	}
 
-	// Use this for initialization
-	void Start(){
-		ApplyStats();
-		LoadSprite();
-		Initialize();
-
-		chainBonusTextObject.SetActive(false);
-		celestialBonusTextObject.SetActive(false);
-		directionBonusTextObject.SetActive(false);
-		heightBonusTextObject.SetActive(false);
-	}
-
 	void Awake(){
 		chainBonusTextObject = GameObject.Find("ChainBonusPanel");
 		damageTextObject = transform.Find("DamageText").gameObject;
@@ -1022,8 +1004,18 @@ public class Unit : MonoBehaviour{
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		directionBonusTextObject = GameObject.Find("DirectionBonusPanel");
 		heightBonusTextObject = GameObject.Find("HeightBonusPanel");
-
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
+	}
+
+	void Start(){
+		ApplyStats();
+		LoadSprite();
+		Initialize();
+
+		chainBonusTextObject.SetActive(false);
+		celestialBonusTextObject.SetActive(false);
+		directionBonusTextObject.SetActive(false);
+		heightBonusTextObject.SetActive(false);
 	}
 
 	void Update(){

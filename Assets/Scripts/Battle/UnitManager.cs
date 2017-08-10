@@ -22,8 +22,7 @@ public class RetreatUnitInfo{
 	public readonly string unitName;
 	public readonly Side unitSide;
 
-	public RetreatUnitInfo(Unit unit)
-	{
+	public RetreatUnitInfo(Unit unit){
 		unitName = unit.GetName();
 		unitSide = unit.GetSide();
 	}
@@ -166,7 +165,7 @@ public class UnitManager : MonoBehaviour {
 		});
 	}
 
-	public void GenerateUnits (){
+	public void GenerateUnits(){
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 		int GeneratedPC = 0;
 
@@ -289,16 +288,14 @@ public class UnitManager : MonoBehaviour {
 			// 오브젝트의 턴은 돌아오지 않는다
 			if (unit.IsObject()) continue;
 
-			if (unit.GetCurrentActivityPoint() >= standardActivityPoint)
-			{
+			if (unit.GetCurrentActivityPoint() >= standardActivityPoint){
 				readiedUnits.Add(unit);
 				// Debug.Log(unit.GetName() + " is readied");
 			}
 		}
 
 		// AP가 큰 순서대로 소팅.
-		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
-		{
+		readiedUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
 			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())
@@ -404,8 +401,7 @@ public class UnitManager : MonoBehaviour {
 		List<Unit> nextPhaseUnits =
 			units.FindAll(go => go.GetCurrentActivityPoint() < standardActivityPoint);
 
-		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>
-		{
+		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
 			SortHelper.CompareBy<Unit>(go => go.GetStat(Stat.Agility)),
 			SortHelper.CompareBy<Unit>(go => go.gameObject.GetInstanceID())

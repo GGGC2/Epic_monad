@@ -12,15 +12,12 @@ using System.Linq;
 using GameData;
 
 public class BattleManager : MonoBehaviour{
-	bool startFinished = false;
 	bool startTurnManager = false;
 	public bool onTutorial;
 	public TutorialManager tutorialManager;
 	public BattleData battleData = new BattleData();
 	private static BattleManager instance;
-	public static BattleManager Instance{
-		get { return instance; }
-	}
+	public static BattleManager Instance{ get { return instance; } }
 
 	void Awake (){
 		instance = this;
@@ -38,7 +35,7 @@ public class BattleManager : MonoBehaviour{
 		battleData.battleManager = this;
 	}
 
-	void Start() {
+	public IEnumerator Start(){
         SoundManager.Instance.PlayBgm("Script_Tense");
 
 		AI.SetBattleManager (this);
@@ -52,8 +49,10 @@ public class BattleManager : MonoBehaviour{
 		battleData.currentPhase = 0;
 
 		InitCameraPosition(); // temp init position;
-
-		startFinished = true;
+		yield return null;
+		battleData.readiedUnits = battleData.unitManager.GetUpdatedReadiedUnits();
+		battleData.selectedUnit = battleData.readiedUnits[0];
+		battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
 	}
 
 	public void StartTurnManager(){
@@ -71,13 +70,10 @@ public class BattleManager : MonoBehaviour{
 		return battleData.selectedUnit;
 	}
 
-	void InitCameraPosition()
-	{
-		Camera.main.transform.position = new Vector3(0, 0, -10);
-	}
+	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
 
 	public IEnumerator InstantiateTurnManager(){
-        if(startFinished && battleData.uiManager.startFinished){
+        if(battleData.uiManager.startFinished){
 			while (true){
 				yield return StartCoroutine(StartPhaseOnGameManager());
 

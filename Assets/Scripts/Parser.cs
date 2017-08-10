@@ -267,8 +267,7 @@ public class Parser : MonoBehaviour{
         return tileStatusEffectInfoList;
     }
 
-    public static List<TileInfo> GetParsedTileInfo()
-	{
+    public static List<TileInfo> GetParsedTileInfo(){
 		List<TileInfo> tileInfoList = new List<TileInfo>();
 
 		TextAsset csvFile;

@@ -18,13 +18,11 @@ public class TileManager : MonoBehaviour {
 	float tileImageHeight = 0.5f*100/100;
 	float tileImageWidth = 0.5f*200/100;
 
-	public Dictionary<Vector2, Tile> GetAllTiles()
-	{
+	public Dictionary<Vector2, Tile> GetAllTiles(){
 		return tiles;
 	}
 
-	public Tile GetTile(int x, int y)
-	{
+	public Tile GetTile(int x, int y){
 		Vector2 key = new Vector2 (x, y);
 		if (tiles.ContainsKey(key))
 			return tiles[key];
@@ -32,8 +30,7 @@ public class TileManager : MonoBehaviour {
 			return null;
 	}
 
-	public Tile GetTile(Vector2 position)
-	{
+	public Tile GetTile(Vector2 position){
 		Vector2 key = position;
 		if (tiles.ContainsKey(key))
 			return tiles[key];
@@ -41,9 +38,10 @@ public class TileManager : MonoBehaviour {
 			return null;
 	}
 
-	public Vector3 GetTilePos(Vector2 position)
-	{
+	public Vector3 GetTilePos(Vector2 position){
 		Tile tile = GetTile(position);
+		if(tile == null)
+			Debug.Log("NO GetTile(" + position.x + "," + position.y + ")");
 		return tile.transform.position;
 	}
 
@@ -283,14 +281,9 @@ public class TileManager : MonoBehaviour {
         foreach (var tile in GetAllTiles())
             tile.Value.UpdateRemainPhaseAtPhaseEnd();
     }
-    public bool isTileGenerationFinished = false;
-	public void GenerateTiles (List<TileInfo> tileInfoList)
-	{
+	public void GenerateTiles (List<TileInfo> tileInfoList){
 		foreach (var tileInfo in tileInfoList)
-		{
 			GenerateTile(tileInfo);
-		}
-		isTileGenerationFinished = true;
 	}
 
 	public static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {
@@ -303,8 +296,7 @@ public class TileManager : MonoBehaviour {
 		return units;
 	}
 
-	void GenerateTile (TileInfo tileInfo)
-	{
+	void GenerateTile (TileInfo tileInfo){
 		if (tileInfo.IsEmptyTile()) return;
 
 		Vector2 tilePosition = tileInfo.GetTilePosition();
