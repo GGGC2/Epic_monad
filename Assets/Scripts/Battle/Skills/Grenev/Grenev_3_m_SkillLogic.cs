@@ -1,7 +1,7 @@
 ﻿
 namespace Battle.Skills {
     class Grenev_3_m_SkillLogic : BaseSkillLogic {
-        public override void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, StatusEffect statusEffect) {
+        public override void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, UnitStatusEffect statusEffect) {
             Unit caster = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
 

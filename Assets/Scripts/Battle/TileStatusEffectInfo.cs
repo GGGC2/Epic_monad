@@ -35,6 +35,7 @@ public class TileStatusEffectInfo {
         bool isOnce = commaParser.ConsumeBool();
         int defaultPhase = commaParser.ConsumeInt();
         int maxStack = commaParser.ConsumeInt();
+        bool amountNotEffectedByStack = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
 
         string effectName = commaParser.Consume();
@@ -52,6 +53,7 @@ public class TileStatusEffectInfo {
             float statusEffectCoef = commaParser.ConsumeFloat("X", 0);
             float statusEffectBase = commaParser.ConsumeFloat("X", 0);
 
+            bool isPercent = commaParser.ConsumeBool("NONE", false);
             bool isMultiply = commaParser.ConsumeBool("NONE", false);
 
             TileStatusEffect.FixedElement.ActualElement actualElement =
@@ -59,13 +61,19 @@ public class TileStatusEffectInfo {
                                                             statusEffectVar,
                                                             statusEffectCoef,
                                                             statusEffectBase,
+                                                            isPercent,
                                                             isMultiply);
             actualElements.Add(actualElement);
         }
 
+        for (int i = num; i < 3; i++) {
+            for (int j = 0; j < 6; j++)
+                commaParser.Consume();
+        }
+        string explanation = commaParser.Consume();
         this.statusEffect = new TileStatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isInfinite, isStackable, isOnce,
-                                             defaultPhase, maxStack, isRemovable,
+                                             defaultPhase, maxStack, amountNotEffectedByStack, isRemovable, explanation,
                                              effectName, effectVisualType, effectMoveType,
                                              actualElements);
     }

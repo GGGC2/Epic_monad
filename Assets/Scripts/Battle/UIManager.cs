@@ -256,11 +256,12 @@ public class UIManager : MonoBehaviour
 		unitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(unitOnTile);
 	}
 
-	public bool IsUnitViewerShowing()
-	{
+	public bool IsUnitViewerShowing() {
 		return unitViewerUI.activeInHierarchy;
 	}
-
+    public bool IsTileViewerShowing() {
+        return tileViewerUI.activeInHierarchy;
+    }
 	public void DisableUnitViewer() {
         unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList(); ;
         unitViewerUI.SetActive(false);
@@ -279,13 +280,20 @@ public class UIManager : MonoBehaviour
         selectedUnitViewerUI.SetActive(false);
 	}
 
-    public void ActivateStatusEffectDisplayPanelAndSetText(Vector3 displacement, StatusEffect statusEffect) {
+    public void ActivateStatusEffectDisplayPanelAndSetText(Vector3 pivot, StatusEffect statusEffect) {
         statusEffectDisplayPanel.SetActive(true);
-        RectTransform panelRect = statusEffectDisplayPanel.GetComponent<RectTransform>();
-        statusEffectDisplayPanel.transform.position = displacement + 
-                    new Vector3(panelRect.sizeDelta.x * panelRect.lossyScale.x / 2 + StatusEffectIcon.WIDTH/2,
-                                 panelRect.sizeDelta.y * panelRect.lossyScale.y / 2 +   StatusEffectIcon.HEIGHT/2, 0);
+        statusEffectDisplayPanel.transform.position = CalculateStatusEffectDisplayPanelPosition(pivot);
         statusEffectDisplayPanel.GetComponent<StatusEffectDisplayPanel>().SetText(statusEffect);
+    }
+
+    public Vector3 CalculateStatusEffectDisplayPanelPosition(Vector3 pivot) {
+        RectTransform panelRect = statusEffectDisplayPanel.GetComponent<RectTransform>();
+        Vector3 displacement = pivot + new Vector3(panelRect.sizeDelta.x * panelRect.lossyScale.x / 2 + StatusEffectIcon.WIDTH / 2,
+                                 panelRect.sizeDelta.y * panelRect.lossyScale.y / 2 + StatusEffectIcon.HEIGHT / 2, 0);
+        if(displacement.x + panelRect.sizeDelta.x * panelRect.lossyScale.x/2 >= Screen.width) {
+            displacement.x = Screen.width - panelRect.sizeDelta.x * panelRect.lossyScale.x/2;
+        }
+        return displacement;
     }
 
     public void DisableStatusEffectDisplayPanel() {
@@ -299,9 +307,9 @@ public class UIManager : MonoBehaviour
 		FindObjectOfType<TileViewer>().UpdateTileViewer(tile);
 	}
 
-	public void DisableTileViewerUI()
-	{
-		tileViewerUI.SetActive(false);
+	public void DisableTileViewerUI() {
+        tileViewerUI.GetComponent<TileViewer>().RefreshStatusEffectIconList();
+        tileViewerUI.SetActive(false);
 	}
 
 	public void EnableSelectDirectionUI()

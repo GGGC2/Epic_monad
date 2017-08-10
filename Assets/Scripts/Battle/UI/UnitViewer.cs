@@ -95,11 +95,9 @@ namespace BattleUI {
 
         void UpdateEffect(Unit unit) {
             RefreshStatusEffectIconList();
-            List<StatusEffect> effectList = unit.GetStatusEffectList();
-            // Debug.Log(unit.GetName() + " has " + effectList.Count + " se");
+            List<UnitStatusEffect> effectList = unit.GetStatusEffectList();
             int numberOfEffects = effectList.Count;
             for (int i = 0; i < numberOfEffects; i++) {
-                StatusEffect statusEffect = effectList[i];
                 StatusEffectIcon statusEffectIcon = Instantiate(statusEffectIconPrefab).GetComponent<StatusEffectIcon>();
                 statusEffectIcon.statusEffect = effectList[i];
                 statusEffectIcon.transform.SetParent(transform);
@@ -221,7 +219,6 @@ namespace BattleUI {
                 statusEffectIconBarPosition = transform.Find("StatusEffectIcons").GetComponent<RectTransform>().localPosition;
                 statusEffectIcons = new List<StatusEffectIcon>();
             }
-            //statusEffectText = transform.Find("buffs").GetComponent<Text>();
         }
 
         void Start() {

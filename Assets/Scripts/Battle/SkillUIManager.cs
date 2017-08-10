@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 using Enums;
@@ -11,7 +12,8 @@ public class SkillUIManager : MonoBehaviour {
 	public Text RangeText;
 	public Text NameText;
 	public Text ExplainText;
-	public Image ActualRange;
+	public GameObject CellPrefab;
+	public List<Cell> cells = new List<Cell> ();
 	public Image RangeType;
 
 	public void UpdateSkillInfoUI(Skill skill, string unitName){
@@ -32,10 +34,6 @@ public class SkillUIManager : MonoBehaviour {
 			else
 				CooldownText.text = "";
 
-			Sprite actualRangeImage = Resources.Load<Sprite>("SkillRange/"+unitName+activeSkill.GetColumn()+"_"+activeSkill.GetRequireLevel());
-			if(actualRangeImage != null)
-				ActualRange.sprite = actualRangeImage;
-
 			RangeText.text = "";
 			if(activeSkill.GetSkillType() == Enums.SkillType.Point){
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
@@ -47,11 +45,13 @@ public class SkillUIManager : MonoBehaviour {
 			}
 			else
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+
+			DisplaySecondRange ((ActiveSkill)skill);
 		}
 		else{
 			ApText.text = "";
 			CooldownText.text = "특성(자동 적용)";
-			ActualRange.sprite = Resources.Load<Sprite>("Icon/Empty");
+			HideSecondRange ();
 			RangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
 			RangeText.text = "";
 		}
@@ -73,5 +73,32 @@ public class SkillUIManager : MonoBehaviour {
             return (Math.Round(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
         else return ((int)((float)UnitInfo.GetStat(unitName, statType)*coef + baseValue)).ToString();
+	}
+
+	void DisplaySecondRange(ActiveSkill skill){
+		for (int i = cells.Count - 1; i >= 0; i--) {
+			Cell cell = cells [i];
+			cells.Remove (cell);
+			Destroy (cell.gameObject);
+		}
+		int rowNum = 11;
+		Dictionary<Vector2, Color> rangeColors = skill.RangeColorsForSecondRangeDisplay (rowNum);
+		for (int x = 0; x < rowNum; x++) {
+			for (int y = 0; y < rowNum; y++) {
+				Cell cell = Instantiate (CellPrefab, RangeText.transform).GetComponent<Cell> ();
+				cells.Add (cell);
+				cell.SetSize (new Vector2 (9, 9));
+				Vector2 pos = new Vector2 (x, y);
+				cell.SetPosition (pos, new Vector2(-65, -145));
+				cell.SetColor (rangeColors [pos]);
+			}
+		}
+	}
+	void HideSecondRange(){
+		for (int i = cells.Count - 1; i >= 0; i--) {
+			Cell cell = cells [i];
+			cells.Remove (cell);
+			Destroy (cell.gameObject);
+		}
 	}
 }

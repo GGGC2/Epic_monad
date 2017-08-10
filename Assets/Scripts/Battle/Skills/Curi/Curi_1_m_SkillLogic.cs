@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Battle.Skills {
     public class Curi_1_m_SkillLogic : BaseSkillLogic {
-        public override IEnumerator TriggerStatusEffectAtActionEnd(Unit target, StatusEffect statusEffect) { //'가연성 부착물' 스킬로직
+        public override IEnumerator TriggerStatusEffectAtActionEnd(Unit target, UnitStatusEffect statusEffect) { //'가연성 부착물' 스킬로직
             if (statusEffect.GetDisplayName() == "가연성 부착물") {
                 Unit caster = statusEffect.GetCaster();
                 Tile tileUnderUnit = target.GetTileUnderUnit();

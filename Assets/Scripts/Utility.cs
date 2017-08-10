@@ -144,4 +144,160 @@ public class Utility : MonoBehaviour {
 	{
 		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
 	}
+
+	public static List<Vector2> GetRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
+		if (form == RangeForm.Diamond)
+			return GetDiamondRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Square)
+			return GetSquareRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Straight)
+			return GetStraightRange(mid, minReach, maxReach, dir);
+		else if (form == RangeForm.Cross)
+			return GetCrossRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Diagonal)
+			return GetDiagonalCrossRange(mid, minReach, maxReach);
+		else if (form == RangeForm.AllDirection)
+			return GetAllDirectionRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Front)
+			return GetFrontRange(mid, minReach, maxReach, width, dir);
+		else if (form == RangeForm.Sector)
+			return GetSectorRange(mid, minReach, maxReach, dir);
+		else
+			return GetDiamondRange(mid, minReach, maxReach); // default return value
+	}
+	public static List<Vector2> GetDiamondRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<Vector2> range = new List<Vector2>();
+		int midX = (int)mid.x;
+		int midY = (int)mid.y;
+		for (int x = midX - maxReach; x <= midX + maxReach; x++) {
+			for (int y =midY - maxReach; y <= midY + maxReach; y++) {
+				Vector2 pos = new Vector2 (x, y);
+				if (GetDistance (mid, pos) <= maxReach && GetDistance (mid, pos) >= minReach)
+					range.Add (pos);
+			}
+		}
+		return range;
+	}
+	public static List<Vector2> GetSquareRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<Vector2> range = new List<Vector2>();
+		int midX = (int)mid.x;
+		int midY = (int)mid.y;
+		for (int x = midX - maxReach; x <= midX + maxReach; x++) {
+			for (int y = midY - maxReach; y <= midY + maxReach; y++) {
+				Vector2 pos = new Vector2 (x, y);
+				if ((x <= midX - minReach || x >= midX + minReach)
+				    && (y <= midY - minReach || y >= midY + minReach))
+					range.Add (pos);
+			}
+		}
+		return range;
+	}
+	public static List<Vector2> GetStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
+	{
+		List<Vector2> range = GetFrontRange(mid, minReach, maxReach, 1, dir);
+		return range;
+	}
+	public static List<Vector2> GetCrossRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<Vector2> range = new List<Vector2>();
+		if (minReach == 0)
+			range.Add(mid);
+		int newMinReach = Math.Max(1, minReach);
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.LeftUp));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.LeftDown));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.RightUp));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.RightDown));
+		return range;
+	}
+	public static List<Vector2> GetDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<Vector2> range = new List<Vector2>();
+		if (minReach == 0)
+			range.Add(mid);
+		int newMinReach = Math.Max(1, minReach);
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Left));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Right));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Up));
+		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Down));
+		return range;
+	}
+	public static List<Vector2> GetAllDirectionRange(Vector2 mid, int minReach, int maxReach)
+	{
+		List<Vector2> range = new List<Vector2>();
+		range.AddRange (GetCrossRange (mid, minReach, maxReach));
+		range.AddRange (GetDiagonalCrossRange (mid, minReach, maxReach));
+		return range;
+	}
+	public static List<Vector2> GetFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
+	{
+		List<Vector2> range = new List<Vector2>();
+		Vector2 frontVector = ToVector2 (dir);
+		Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
+		int sideOffset = (width - 1) / 2;
+		for (int side = - sideOffset; side <=  sideOffset; side++) {
+			for (int front = minReach; front <= maxReach; front++) {
+				Vector2 pos = mid + side * perpendicularVector + front * frontVector;
+				range.Add (pos);
+			}
+		}
+		return range;
+	}
+	public static List<Vector2> GetSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
+	{
+		List<Vector2> range = new List<Vector2>();
+		Vector2 frontVector = ToVector2 (dir);
+		Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
+		for (int front = minReach; front <= maxReach; front++) {
+			int sideOffset = front - 1;
+			if (minReach == 0)
+				sideOffset++;
+			for (int side = - sideOffset; side <=  sideOffset; side++) {
+				Vector2 pos = mid + side * perpendicularVector + front * frontVector;
+				range.Add (pos);
+			}
+		}
+		return range;
+	}
+
+	public  static Vector2 ToVector2(Direction dir)
+	{
+		if(dir == Direction.LeftUp)
+		{
+			return Vector2.left;
+		}
+
+		else if(dir == Direction.LeftDown)
+		{
+			return Vector2.down;
+		}
+
+		else if(dir == Direction.RightUp)
+		{
+			return Vector2.up;
+		}
+
+		else if(dir == Direction.RightDown)
+		{
+			return Vector2.right;
+		}
+
+		else if(dir == Direction.Left)
+		{
+			return Vector2.left+Vector2.down;
+		}
+
+		else if(dir == Direction.Right)
+		{
+			return Vector2.right+Vector2.up;
+		}
+
+		else if(dir == Direction.Up)
+		{
+			return Vector2.left+Vector2.up;
+		}
+
+		else return Vector2.right+Vector2.down;
+	}
 }

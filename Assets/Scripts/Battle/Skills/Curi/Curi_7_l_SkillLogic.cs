@@ -8,7 +8,7 @@ namespace Battle.Skills {
         public override void TriggerOnStart(Unit caster) {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
-        public override float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {
+        public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
             UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
             List<Unit> unitsExceptThis = new List<Unit>();
             foreach(Unit unit in unitManager.GetAllUnits()) {

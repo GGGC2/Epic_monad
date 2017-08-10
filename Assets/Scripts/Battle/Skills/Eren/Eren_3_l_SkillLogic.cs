@@ -23,7 +23,7 @@ public class Eren_3_l_SkillLogic : BaseSkillLogic {
 
 	public override int CalculateAP(int originAP, Unit caster)
 	{
-		StatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
+		UnitStatusEffect uniqueStatusEffect = caster.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
 		int stack = 0;
 
 		if (uniqueStatusEffect != null)

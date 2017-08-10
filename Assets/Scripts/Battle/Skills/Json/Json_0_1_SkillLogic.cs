@@ -9,7 +9,7 @@ namespace Battle.Skills {
             Unit caster = skillInstanceData.GetCaster();
             Unit target = skillInstanceData.GetMainTarget();
 
-            StatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "표식");
+            UnitStatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "표식");
             if(alreadyAppliedStatusEffect != null && alreadyAppliedStatusEffect.GetRemainStack() >= 4) {
                 float lifeStealPercent = alreadyAppliedStatusEffect.GetAmountOfType(StatusEffectType.Etc);
                 HitInfo hitInfo = target.GetLatelyHitInfos().Find(hi => hi.caster == caster);

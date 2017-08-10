@@ -86,237 +86,22 @@ public class TileManager : MonoBehaviour {
 		}
 		return tiles.Last ();
 	}
+	public List<Tile> GetTilesInPositionRange(List<Vector2> positionRange){
+		List<Tile> tiles = new List<Tile> ();
+		foreach (Vector2 pos in positionRange) {
+			Tile tile = GetTile (pos);
+			if (tile != null)
+				tiles.Add (tile);
+		}
+		return tiles;
+	}
+
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
-		if (form == RangeForm.Diamond)
-		{
-			return GetTilesInDiamondRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Square)
-		{
-			return GetTilesInSquareRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Straight)
-		{
-			return GetTilesInStraightRange(mid, minReach, maxReach, dir);
-		}
-		else if (form == RangeForm.Cross)
-		{
-			return GetTilesInCrossRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Diagonal)
-		{
-			return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.AllDirection)
-		{
-			return GetTilesInAllDirectionRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Front)
-		{
-			return GetTilesInFrontRange(mid, minReach, maxReach, width, dir);
-		}
-		else if (form == RangeForm.Sector)
-		{
-			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
-		}
-		else if (form == RangeForm.Global)
-		{
-			return GetTilesInGlobalRange();
-		}
+		if (form == RangeForm.Global)
+			return GetTilesInGlobalRange ();
 		else
-			return GetTilesInDiamondRange(mid, minReach, maxReach); // temp return value.
-	}
-
-	List<Tile> GetTilesInDiamondRange(Vector2 mid, int minReach, int maxReach)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-		tilesInRange.Add(GetTile(mid));
-		for (int i = 1; i <= maxReach; i++)
-		{
-			tilesInRange = AddNearbyTiles(tilesInRange);
-		}
-
-		List<Tile> exceptTiles = new List<Tile>();
-		if (minReach > 0)
-			exceptTiles.Add(GetTile(mid));
-		for (int i = 1; i < minReach; i++)
-		{
-			exceptTiles = AddNearbyTiles(exceptTiles);
-		}
-
-		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
-
-		return resultTiles;
-	}
-
-	List<Tile> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-		tilesInRange.Add(GetTile(mid));
-		for (int i = 1; i <= maxReach; i++)
-		{
-			tilesInRange = AddNearbySquareTiles(tilesInRange);
-		}
-
-		List<Tile> exceptTiles = new List<Tile>();
-		if (minReach > 0)
-			exceptTiles.Add(GetTile(mid));
-		for (int i = 1; i < minReach; i++)
-		{
-			exceptTiles = AddNearbySquareTiles(exceptTiles);
-		}
-
-		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
-
-		return resultTiles;
-	}
-
-	List<Tile> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-
-		for(int i = minReach; i < maxReach+1; i++)
-		{
-			Vector2 position = mid + ToVector2(dir)*i;
-			if (GetTile(position) != null && !tilesInRange.Contains(GetTile(position)))
-			{
-				tilesInRange.Add(GetTile(position));
-			}
-		}
-
-		tilesInRange = tilesInRange.FindAll(t => t != null);
-
-		return tilesInRange;
-	}
-
-	List<Tile> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-
-		if (minReach == 0) tilesInRange.Add(GetTile(mid));
-		minReach = Math.Max(1, minReach);
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftUp)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.LeftDown)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightUp)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.RightDown)).ToList();
-
-		tilesInRange = tilesInRange.FindAll(t => t != null);
-
-		// Debug.Log("No. of selected tiles : " + tilesInRange.Count);
-		return tilesInRange;
-	}
-
-	List<Tile> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-
-		if (minReach == 0) tilesInRange.Add(GetTile(mid));
-		minReach = Math.Max(1, minReach);
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Left)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Right)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Up)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInStraightRange(mid, minReach, maxReach, Direction.Down)).ToList();
-
-		tilesInRange = tilesInRange.FindAll(t => t != null);
-
-		return tilesInRange;
-	}
-
-	List<Tile> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-
-		if (minReach == 0) tilesInRange.Add(GetTile(mid));
-		minReach = Math.Max(1, minReach);
-		tilesInRange = tilesInRange.Concat(GetTilesInCrossRange(mid, minReach,maxReach)).ToList();
-		tilesInRange = tilesInRange.Concat(GetTilesInDiagonalCrossRange(mid, minReach, maxReach)).ToList();
-
-		tilesInRange = tilesInRange.FindAll(t => t != null);
-
-		return tilesInRange;
-	}
-
-	List<Tile> GetTilesInFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 바라보는 방향과 수직인 벡터
-
-		for (int i = minReach; i <= maxReach; i++)
-		{
-			Vector2 centerPos = mid + ToVector2(dir) * i;
-			tilesInRange.Add(GetTile(centerPos));
-			int subwidth = 0;
-			for (int j = width; j > 1; j -= 2)
-			{
-				subwidth += 1;
-				if (mid.x == centerPos.x)
-				{
-					// x좌표로 펼친다
-					Vector2 leftSide = centerPos + new Vector2(subwidth, 0);
-					tilesInRange.Add(GetTile(leftSide));
-					Vector2 rightSide = centerPos + new Vector2(-subwidth, 0);
-					tilesInRange.Add(GetTile(rightSide));
-				}
-				else
-				{
-					// y좌표로 펼친다
-					Vector2 leftSide = centerPos + new Vector2(0, subwidth);
-					tilesInRange.Add(GetTile(leftSide));
-					Vector2 rightSide = centerPos + new Vector2(0, -subwidth);
-					tilesInRange.Add(GetTile(rightSide));
-				} 
-			}
-		}
-
-		tilesInRange = tilesInRange.FindAll(t => t != null);
-
-		return tilesInRange;
-	}
-
-	List<Tile> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
-		List<Tile> tilesInRange = new List<Tile>();
-		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 부채꼴 방향과 수직인 벡터
-
-		if (minReach == 0)
-		{
-			for(int i = 0; i <= maxReach; i++)
-			{
-				int j = i;
-				Vector2 position = mid + ToVector2(dir) * i;
-				tilesInRange.Add(GetTile(position));
-				while(j > 0)
-				{
-					tilesInRange.Add(GetTile(position + perpendicular*j));
-					tilesInRange.Add(GetTile(position - perpendicular*j));
-					j--;
-				}
-			}
-		}
-		else
-		{
-			for(int i = 1; i <= maxReach; i++)
-			{
-				int j = i-1;
-				Vector2 position = mid + ToVector2(dir) * i;
-				tilesInRange.Add(GetTile(position));
-				while(j > 0)
-				{
-					tilesInRange.Add(GetTile(position + perpendicular*j));
-					tilesInRange.Add(GetTile(position - perpendicular*j));
-					j--;
-				}
-			}
-		}
-
-		List<Tile> exceptTiles = new List<Tile>();
-
-		List<Tile> resultTiles = tilesInRange.Except(exceptTiles).ToList();
-
-		resultTiles = resultTiles.FindAll(t => t != null);
-
-		return resultTiles;
+			return GetTilesInPositionRange (Utility.GetRange (form, mid, minReach, maxReach, width, dir));
 	}
 
 	List<Tile> GetTilesInGlobalRange()
@@ -326,7 +111,6 @@ public class TileManager : MonoBehaviour {
 		{
 			tilesInRange.Add(tiles[key]);
 		}
-
 		return tilesInRange;
 	}
 
@@ -472,46 +256,6 @@ public class TileManager : MonoBehaviour {
 		}
 
 		return newTileList;
-	}
-
-	public Vector2 ToVector2(Direction dir)
-	{
-		if(dir == Direction.LeftUp)
-		{
-			return Vector2.left;
-		}
-
-		else if(dir == Direction.LeftDown)
-		{
-			return Vector2.down;
-		}
-
-		else if(dir == Direction.RightUp)
-		{
-			return Vector2.up;
-		}
-
-		else if(dir == Direction.RightDown)
-		{
-			return Vector2.right;
-		}
-
-		else if(dir == Direction.Left)
-		{
-			return Vector2.left+Vector2.down;
-		}
-
-		else if(dir == Direction.Right)
-		{
-			return Vector2.right+Vector2.up;
-		}
-
-		else if(dir == Direction.Up)
-		{
-			return Vector2.left+Vector2.up;
-		}
-
-		else return Vector2.right+Vector2.down;
 	}
 
     public void UpdateTileStatusEffectsAtActionEnd() {

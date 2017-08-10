@@ -11,7 +11,7 @@ namespace Battle.Skills {
             caster.UpdateHealthViewer();
             yield return null;
         }
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
+        public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             if(caster != target)    return false;
             int targetCount = 0;
             foreach(var tile in targetTiles) {

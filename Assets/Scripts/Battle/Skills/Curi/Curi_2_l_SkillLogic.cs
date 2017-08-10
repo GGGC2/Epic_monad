@@ -7,10 +7,10 @@ namespace Battle.Skills {
         public override void TriggerOnActionEnd(Unit caster) {
             Tile currentTile = caster.GetTileUnderUnit();
             Element elementOfTile = currentTile.GetTileElement();
-            List<StatusEffect> statusEffectList = caster.GetStatusEffectList();
+            List<UnitStatusEffect> statusEffectList = caster.GetStatusEffectList();
 
             if(elementOfTile != Element.Fire) {
-                StatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "신속 반응");
+                UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "신속 반응");
                 if(statusEffect != null)
                     caster.RemoveStatusEffect(statusEffect);
             }

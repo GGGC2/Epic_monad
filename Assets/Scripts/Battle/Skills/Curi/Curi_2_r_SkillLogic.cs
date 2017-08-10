@@ -12,7 +12,7 @@ namespace Battle.Skills {
             }
             skillInstanceData.GetDamage().relativeDamageBonus *= (1 + waterTileCount * 0.1f);
         }
-        public override bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
+        public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             bool isAllTileWater = true;
             foreach (Tile tile in targetTiles) {
                 if (tile.GetTileElement() != Element.Water)

@@ -34,7 +34,7 @@ public class UnitManager : MonoBehaviour {
 
 	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
-    List<StatusEffectInfo> statusEffectInfoList = new List<StatusEffectInfo>();
+    List<UnitStatusEffectInfo> statusEffectInfoList = new List<UnitStatusEffectInfo>();
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
 	public GameObject unitPrefab;
@@ -64,26 +64,25 @@ public class UnitManager : MonoBehaviour {
 
     public IEnumerator TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
-            List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-            foreach (StatusEffect statusEffect in statusEffectList) {
-                ActiveSkill skill = statusEffect.GetOriginSkill();
-                PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
-                if (skill != null)
-                    yield return StartCoroutine(SkillLogicFactory.Get(skill).TriggerStatusEffectAtActionEnd(unit, statusEffect));
+            List<UnitStatusEffect> statusEffectList = unit.GetStatusEffectList();
+            foreach (UnitStatusEffect statusEffect in statusEffectList) {
+                Skill skill = statusEffect.GetOriginSkill();
+                if (skill.GetType() == typeof(ActiveSkill))
+                    yield return StartCoroutine(((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect));
             }
         }
     }
 
     public void UpdateStatusEffectsAtActionEnd() {
         foreach (var unit in GetAllUnits()) {
-            foreach (StatusEffect statusEffect in unit.GetStatusEffectList()) {
+            foreach (var statusEffect in unit.GetStatusEffectList()) {
                 if(statusEffect.IsOfType(StatusEffectType.Aura)) {
                     Aura.Update(unit, statusEffect);
                 }
             }
         }
         foreach (var unit in GetAllUnits()) {
-            foreach(StatusEffect statusEffect in unit.GetStatusEffectList()) {
+            foreach(UnitStatusEffect statusEffect in unit.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
@@ -377,8 +376,8 @@ public class UnitManager : MonoBehaviour {
 		passiveSkillList = Parser.GetPassiveSkills();
 	}
 
-    void LoadStatusEffects(){
-        statusEffectInfoList = Parser.GetParsedStatusEffectInfo();
+    void LoadUnitStatusEffects(){
+        statusEffectInfoList = Parser.GetParsedUnitStatusEffectInfo();
     }
 
     void LoadTileStatusEffects(){
@@ -389,7 +388,7 @@ public class UnitManager : MonoBehaviour {
 		GameData.PartyData.CheckLevelZero();
 		LoadActiveSkills();
 		LoadPassiveSkills();
-        LoadStatusEffects();
+        LoadUnitStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
         if (!GameData.SceneData.isTestMode) {

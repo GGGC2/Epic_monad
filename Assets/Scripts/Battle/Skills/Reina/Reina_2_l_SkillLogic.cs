@@ -10,7 +10,7 @@ namespace Battle.Skills
         {
             StatusEffector.AttachStatusEffect(caster, this.passiveSkill, target);
         }
-        public override bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) {
+        public override bool TriggerStatusEffectAppliedToOwner(UnitStatusEffect statusEffect, Unit caster, Unit target) {
             int numberOfBuffsFromOthers = caster.GetStatusEffectList().Count(x => x.GetIsBuff() && (x.GetCaster() != caster));
             statusEffect.CalculateAmount(0, numberOfBuffsFromOthers);
             return true;

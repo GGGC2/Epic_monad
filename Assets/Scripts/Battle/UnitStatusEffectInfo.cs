@@ -4,23 +4,23 @@ using UnityEngine;
 using Enums;
 using System.Collections.Generic;
 
-public class StatusEffectInfo {
+public class UnitStatusEffectInfo {
 
 	string owner;
     int requireLevel;
     bool toBeReplaced;
 	string originSkillName; // 효과를 유발하는 기술/특성의 이름
 	string displayName; // 상태창에 표시되는 효과의 이름
-	StatusEffect.FixedElement statusEffect;
+	UnitStatusEffect.FixedElement statusEffect;
 	
 	public string GetOwner(){ return owner; }
     public int GetRequireLevel() { return requireLevel; }
     public bool GetToBeReplaced() { return toBeReplaced; }
     public string GetOriginSkillName() { return originSkillName; }
     public string GetDisplayName() { return displayName; }
-    public StatusEffect.FixedElement GetStatusEffect() { return statusEffect; }
+    public UnitStatusEffect.FixedElement GetStatusEffect() { return statusEffect; }
 	
-	public StatusEffectInfo(string data)
+	public UnitStatusEffectInfo(string data)
 	{
 		// Debug.Log(data);
 		StringParser commaParser = new StringParser(data, ',');
@@ -36,7 +36,6 @@ public class StatusEffectInfo {
         bool isStackable = commaParser.ConsumeBool();
 		bool isOnce = commaParser.ConsumeBool();
 		int defaultPhase = commaParser.ConsumeInt();
-		StatusEffectVar stackVar = commaParser.ConsumeEnum<StatusEffectVar>();
 		int maxStack = commaParser.ConsumeInt();
         bool amountNotEffectedByStack = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
@@ -45,7 +44,7 @@ public class StatusEffectInfo {
 		EffectVisualType effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		EffectMoveType effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
 		
-		List<StatusEffect.FixedElement.ActualElement> actualElements = new List<StatusEffect.FixedElement.ActualElement>();
+		List<UnitStatusEffect.FixedElement.ActualElement> actualElements = new List<UnitStatusEffect.FixedElement.ActualElement>();
 
 		int num = commaParser.ConsumeInt();
 
@@ -60,8 +59,8 @@ public class StatusEffectInfo {
 			bool isPercent = commaParser.ConsumeBool();
 			bool isMultiply = commaParser.ConsumeBool("NONE", false);
 
-			StatusEffect.FixedElement.ActualElement actualElement = 
-				new StatusEffect.FixedElement.ActualElement(statusEffectType, 
+			UnitStatusEffect.FixedElement.ActualElement actualElement = 
+				new UnitStatusEffect.FixedElement.ActualElement(statusEffectType, 
 															statusEffectVar,
 															statusEffectCoef,
 															statusEffectBase, 
@@ -75,10 +74,10 @@ public class StatusEffectInfo {
         }
         string explanation = commaParser.Consume();
 
-		this.statusEffect = new StatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
+		this.statusEffect = new UnitStatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isBuff, isInfinite, 
 											 isStackable, isOnce,
-											 defaultPhase, stackVar, maxStack, amountNotEffectedByStack, isRemovable, 
+											 defaultPhase, maxStack, amountNotEffectedByStack, isRemovable, 
 											 explanation, effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}

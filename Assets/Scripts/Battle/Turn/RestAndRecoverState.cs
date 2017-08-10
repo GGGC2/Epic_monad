@@ -29,11 +29,11 @@ public class RestAndRecover {
 
 		// 휴식시 발동되는 특성 및 statusEffect
 		SkillLogicFactory.Get(passiveSkillList).TriggerOnRest(unit);
-        List<StatusEffect> statusEffectList = unit.GetStatusEffectList();
-        foreach(StatusEffect statusEffect in statusEffectList) {
-            PassiveSkill passiveSkill = statusEffect.GetOriginPassiveSkill();
-            if(passiveSkill != null) {
-                SkillLogicFactory.Get(passiveSkill).TriggerStatusEffectsOnRest(unit, statusEffect);
+        List<UnitStatusEffect> statusEffectList = unit.GetStatusEffectList();
+        foreach(UnitStatusEffect statusEffect in statusEffectList) {
+            Skill passiveSkill = statusEffect.GetOriginSkill();
+            if(passiveSkill.GetType() == typeof(PassiveSkill)) {
+                ((PassiveSkill)passiveSkill).SkillLogic.TriggerStatusEffectsOnRest(unit, statusEffect);
             }
         }
 

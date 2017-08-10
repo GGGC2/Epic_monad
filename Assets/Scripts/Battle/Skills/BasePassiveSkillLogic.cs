@@ -63,7 +63,7 @@ public class BasePassiveSkillLogic
 	{
 		return 0;
 	}
-    public virtual float GetStatusEffectVar(StatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect�� i��° actualElement �� seVar ���� ����.
+    public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect�� i��° actualElement �� seVar ���� ����.
         return 0;
     }
     public virtual float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
@@ -89,16 +89,16 @@ public class BasePassiveSkillLogic
     {        
     }
 
-    public virtual bool TriggerStatusEffectApplied(StatusEffect statusEffect, Unit caster, Unit target) {
+    public virtual bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target) {
         return true;
     }
 
-    public virtual bool TriggerStatusEffectAppliedToOwner(StatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
+    public virtual bool TriggerStatusEffectAppliedToOwner(UnitStatusEffect statusEffect, Unit caster, Unit target) //unit���� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� ����.
     {
         return true;
     }
 
-    public virtual bool TriggerStatusEffectRemoved(StatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� �������?����.
+    public virtual bool TriggerStatusEffectRemoved(UnitStatusEffect statusEffect, Unit unit) //unit�� StatusEffect�� �����?�� �ߵ�. false�� ������ �� �ش� StatusEffect�� �������?����.
     {
         return true;
     }
@@ -132,11 +132,11 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerOnTurnStart(Unit caster, Unit turnStarter) {
     }
-    public virtual void TriggerStatusEffectsOnRest(Unit target, StatusEffect statusEffect) {
+    public virtual void TriggerStatusEffectsOnRest(Unit target, UnitStatusEffect statusEffect) {
     }
-    public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, StatusEffect statusEffect) {
+    public virtual void TriggerStatusEffectsOnUsingSkill(Unit target, List<Unit> targetsOfSkill, UnitStatusEffect statusEffect) {
     }
-    public virtual void TriggerStatusEffectsOnMove(Unit target, StatusEffect statusEffect) {
+    public virtual void TriggerStatusEffectsOnMove(Unit target, UnitStatusEffect statusEffect) {
     }
     public virtual bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
         return true;

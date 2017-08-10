@@ -71,9 +71,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     
     public void RemoveStatusEffect(TileStatusEffect statusEffect) {
         bool toBeRemoved = true;
-        ActiveSkill originSkill = statusEffect.GetOriginSkill();
-        if (originSkill != null)
-            toBeRemoved = SkillLogicFactory.Get(originSkill).TriggerTileStatusEffectRemoved(this, statusEffect);
+        Skill originSkill = statusEffect.GetOriginSkill();
+        if (originSkill.GetType() == typeof(ActiveSkill))
+            toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectRemoved(this, statusEffect);
         if (toBeRemoved) {
             Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
@@ -114,12 +114,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
 
-			if (battleManager.EnemyUnitSelected()) return;
-
-			FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
+			if (!battleManager.EnemyUnitSelected())
+                FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
 		}
-
-		FindObjectOfType<UIManager>().SetTileViewer(this);
+        if(!battleManager.TileSelected())
+		    FindObjectOfType<UIManager>().SetTileViewer(this);
 
 		if (isPreSeleted)
 			battleManager.OnMouseEnterHandlerFromTile(position);
@@ -128,8 +127,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
 		DehighlightTile ();
 
-		if(FindObjectOfType<UIManager>() != null)
-			FindObjectOfType<UIManager>().DisableTileViewerUI();
 
 		if (IsUnitOnTile())
 		{
@@ -138,8 +135,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		}
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		if (battleManager.EnemyUnitSelected()) return;
-		FindObjectOfType<UIManager>().DisableUnitViewer();
+        if (!battleManager.TileSelected())
+            FindObjectOfType<UIManager>().DisableTileViewerUI();
+        if (!battleManager.EnemyUnitSelected())
+		    FindObjectOfType<UIManager>().DisableUnitViewer();
 
 		if (isPreSeleted){
 			battleManager.OnMouseExitHandlerFromTile(position);

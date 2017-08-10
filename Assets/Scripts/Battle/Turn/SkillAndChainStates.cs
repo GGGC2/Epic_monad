@@ -329,9 +329,9 @@ namespace Battle.Turn {
 			bool tileStatusConditionPossible = true;
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
-                ActiveSkill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill != null) {
-                    if (!originSkill.SkillLogic.TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
+                Skill originSkill = tileStatusEffect.GetOriginSkill();
+                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                    if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
 						tileStatusConditionPossible = false;
                     }
                 }
