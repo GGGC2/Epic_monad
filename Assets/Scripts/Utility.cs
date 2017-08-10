@@ -205,10 +205,8 @@ public class Utility : MonoBehaviour {
 		if (minReach == 0)
 			range.Add(mid);
 		int newMinReach = Math.Max(1, minReach);
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.LeftUp));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.LeftDown));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.RightUp));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.RightDown));
+		foreach (Direction direction in EnumUtil.GetDirections())
+			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}
 	public static List<Vector2> GetDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
@@ -217,10 +215,8 @@ public class Utility : MonoBehaviour {
 		if (minReach == 0)
 			range.Add(mid);
 		int newMinReach = Math.Max(1, minReach);
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Left));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Right));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Up));
-		range.AddRange (GetStraightRange (mid, newMinReach, maxReach, Direction.Down));
+		foreach(Direction direction in EnumUtil.GetNonTileDirections())
+			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}
 	public static List<Vector2> GetAllDirectionRange(Vector2 mid, int minReach, int maxReach)

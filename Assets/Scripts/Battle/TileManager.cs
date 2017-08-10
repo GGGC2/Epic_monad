@@ -84,15 +84,6 @@ public class TileManager : MonoBehaviour {
 		}
 		return tiles.Last ();
 	}
-	public List<Tile> GetTilesInPositionRange(List<Vector2> positionRange){
-		List<Tile> tiles = new List<Tile> ();
-		foreach (Vector2 pos in positionRange) {
-			Tile tile = GetTile (pos);
-			if (tile != null)
-				tiles.Add (tile);
-		}
-		return tiles;
-	}
 
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
@@ -101,8 +92,7 @@ public class TileManager : MonoBehaviour {
 		else
 			return GetTilesInPositionRange (Utility.GetRange (form, mid, minReach, maxReach, width, dir));
 	}
-
-	List<Tile> GetTilesInGlobalRange()
+	public List<Tile> GetTilesInGlobalRange()
 	{
 		List<Tile> tilesInRange = new List<Tile>();
 		foreach (var key in tiles.Keys)
@@ -110,6 +100,15 @@ public class TileManager : MonoBehaviour {
 			tilesInRange.Add(tiles[key]);
 		}
 		return tilesInRange;
+	}
+	public List<Tile> GetTilesInPositionRange(List<Vector2> positionRange){
+		List<Tile> tiles = new List<Tile> ();
+		foreach (Vector2 pos in positionRange) {
+			Tile tile = GetTile (pos);
+			if (tile != null)
+				tiles.Add (tile);
+		}
+		return tiles;
 	}
 
 	public void PreselectTiles(List<Tile> tiles)
@@ -159,101 +158,6 @@ public class TileManager : MonoBehaviour {
 	public void DepaintAllTiles(TileColor color)
 	{
 		DepaintTiles(GetTilesInGlobalRange(), color);
-	}
-
-	public List<Tile> AddNearbyTiles(List<Tile> tileList)
-	{
-		List<Tile> newTileList = new List<Tile>();
-		foreach (var tile in tileList)
-		{
-			Vector2 position = tile.GetTilePos();
-
-			if (!newTileList.Contains(tile))
-			{
-				newTileList.Add(tile);
-			}
-
-			Tile nearbyUpTile = GetTile(position + Vector2.up);
-			if (nearbyUpTile != null && !newTileList.Contains(nearbyUpTile))
-			{
-				newTileList.Add(nearbyUpTile);
-			}
-			Tile nearbyDownTile = GetTile(position + Vector2.down);
-			if (nearbyDownTile != null && !newTileList.Contains(nearbyDownTile))
-			{
-				newTileList.Add(nearbyDownTile);
-			}
-			Tile nearbyLeftTile = GetTile(position + Vector2.left);
-			if (nearbyLeftTile != null && !newTileList.Contains(nearbyLeftTile))
-			{
-				newTileList.Add(nearbyLeftTile);
-			}
-			Tile nearbyRightTile = GetTile(position + Vector2.right);
-			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
-			{
-				newTileList.Add(nearbyRightTile);
-			}
-		}
-
-		return newTileList;
-	}
-
-	public List<Tile> AddNearbySquareTiles(List<Tile> tileList)
-	{
-		List<Tile> newTileList = new List<Tile>();
-		foreach (var tile in tileList)
-		{
-			Vector2 position = tile.GetTilePos();
-
-			if (!newTileList.Contains(tile))
-			{
-				newTileList.Add(tile);
-			}
-
-			Tile nearbyUpTile = GetTile(position + Vector2.up);
-			if (nearbyUpTile != null && !newTileList.Contains(nearbyUpTile))
-			{
-				newTileList.Add(nearbyUpTile);
-			}
-			Tile nearbyDownTile = GetTile(position + Vector2.down);
-			if (nearbyDownTile != null && !newTileList.Contains(nearbyDownTile))
-			{
-				newTileList.Add(nearbyDownTile);
-			}
-			Tile nearbyLeftTile = GetTile(position + Vector2.left);
-			if (nearbyLeftTile != null && !newTileList.Contains(nearbyLeftTile))
-			{
-				newTileList.Add(nearbyLeftTile);
-			}
-			Tile nearbyRightTile = GetTile(position + Vector2.right);
-			if (nearbyRightTile != null && !newTileList.Contains(nearbyRightTile))
-			{
-				newTileList.Add(nearbyRightTile);
-			}
-
-			Tile nearbyUpLeftTile = GetTile(position + Vector2.up + Vector2.left);
-			if (nearbyUpLeftTile != null && !newTileList.Contains(nearbyUpLeftTile))
-			{
-				newTileList.Add(nearbyUpLeftTile);
-			}
-			Tile nearbyUpRightTile = GetTile(position + Vector2.up + Vector2.right);
-			if (nearbyUpRightTile != null && !newTileList.Contains(nearbyUpRightTile))
-			{
-				newTileList.Add(nearbyUpRightTile);
-			}
-			Tile nearbyDownLeftTile = GetTile(position + Vector2.down + Vector2.left);
-			if (nearbyDownLeftTile != null && !newTileList.Contains(nearbyDownLeftTile))
-			{
-				newTileList.Add(nearbyDownLeftTile);
-			}
-			Tile nearbyDownRightTile = GetTile(position + Vector2.down + Vector2.right);
-			if (nearbyDownRightTile != null && !newTileList.Contains(nearbyDownRightTile))
-			{
-				newTileList.Add(nearbyDownRightTile);
-			}
-		}
-
-		return newTileList;
 	}
 
     public void UpdateTileStatusEffectsAtActionEnd() {

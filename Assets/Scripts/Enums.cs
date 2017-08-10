@@ -20,6 +20,15 @@ namespace Enums {
 			directions.Add (Direction.RightUp);
 			return directions;
 		}
+			
+		public static List<Direction> GetNonTileDirections(){
+			List<Direction> directions = new List<Direction> ();
+			directions.Add (Direction.Left);
+			directions.Add (Direction.Right);
+			directions.Add (Direction.Up);
+			directions.Add (Direction.Down);
+			return directions;
+		}
 	}
 	public enum ConditionType{ Win, Lose, End, Bonus }
 	public enum EffectVisualType{ Individual, Area, None }
