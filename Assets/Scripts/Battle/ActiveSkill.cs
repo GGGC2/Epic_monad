@@ -163,8 +163,6 @@ public class ActiveSkill : Skill{
 
 		List<Vector2> redRange = new List<Vector2> ();
 
-		//FIXME : 구현중
-
 		return allPaintingRanges;
 	}
 		

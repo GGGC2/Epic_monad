@@ -98,84 +98,10 @@ public class TileManager : MonoBehaviour {
 
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
-		if (form == RangeForm.Diamond)
-		{
-			return GetTilesInDiamondRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Square)
-		{
-			return GetTilesInSquareRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Straight)
-		{
-			return GetTilesInStraightRange(mid, minReach, maxReach, dir);
-		}
-		else if (form == RangeForm.Cross)
-		{
-			return GetTilesInCrossRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Diagonal)
-		{
-			return GetTilesInDiagonalCrossRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.AllDirection)
-		{
-			return GetTilesInAllDirectionRange(mid, minReach, maxReach);
-		}
-		else if (form == RangeForm.Front)
-		{
-			return GetTilesInFrontRange(mid, minReach, maxReach, width, dir);
-		}
-		else if (form == RangeForm.Sector)
-		{
-			return GetTilesInSectorRange(mid, minReach, maxReach, dir);
-		}
-		else if (form == RangeForm.Global)
-		{
-			return GetTilesInGlobalRange();
-		}
+		if (form == RangeForm.Global)
+			return GetTilesInGlobalRange ();
 		else
-			return GetTilesInDiamondRange(mid, minReach, maxReach); // temp return value.
-	}
-
-	List<Tile> GetTilesInDiamondRange(Vector2 mid, int minReach, int maxReach)
-	{
-		return GetTilesInPositionRange (Utility.GetDiamondRange (mid, minReach, maxReach));
-	}
-
-	List<Tile> GetTilesInSquareRange(Vector2 mid, int minReach, int maxReach)
-	{
-		return GetTilesInPositionRange (Utility.GetSquareRange (mid, minReach, maxReach));
-	}
-
-	List<Tile> GetTilesInStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
-		return GetTilesInPositionRange (Utility.GetStraightRange (mid, minReach, maxReach, dir));
-	}
-
-	List<Tile> GetTilesInCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
-		return GetTilesInPositionRange (Utility.GetCrossRange (mid, minReach, maxReach));
-	}
-
-	List<Tile> GetTilesInDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
-		return GetTilesInPositionRange (Utility.GetDiagonalCrossRange (mid, minReach, maxReach));
-	}
-
-	List<Tile> GetTilesInAllDirectionRange(Vector2 mid, int minReach, int maxReach)
-	{
-		return GetTilesInPositionRange (Utility.GetAllDirectionRange (mid, minReach, maxReach));
-	}
-
-	List<Tile> GetTilesInFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
-	{
-		return GetTilesInPositionRange (Utility.GetFrontRange (mid, minReach, maxReach, width, dir));
-	}
-
-	List<Tile> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
-		return GetTilesInPositionRange (Utility.GetSectorRange (mid, minReach, maxReach, dir));
+			return GetTilesInPositionRange (Utility.GetRange (form, mid, minReach, maxReach, width, dir));
 	}
 
 	List<Tile> GetTilesInGlobalRange()

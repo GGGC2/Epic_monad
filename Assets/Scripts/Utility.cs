@@ -145,6 +145,26 @@ public class Utility : MonoBehaviour {
 		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
 	}
 
+	public static List<Vector2> GetRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
+		if (form == RangeForm.Diamond)
+			return GetDiamondRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Square)
+			return GetSquareRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Straight)
+			return GetStraightRange(mid, minReach, maxReach, dir);
+		else if (form == RangeForm.Cross)
+			return GetCrossRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Diagonal)
+			return GetDiagonalCrossRange(mid, minReach, maxReach);
+		else if (form == RangeForm.AllDirection)
+			return GetAllDirectionRange(mid, minReach, maxReach);
+		else if (form == RangeForm.Front)
+			return GetFrontRange(mid, minReach, maxReach, width, dir);
+		else if (form == RangeForm.Sector)
+			return GetSectorRange(mid, minReach, maxReach, dir);
+		else
+			return GetDiamondRange(mid, minReach, maxReach); // default return value
+	}
 	public static List<Vector2> GetDiamondRange(Vector2 mid, int minReach, int maxReach)
 	{
 		List<Vector2> range = new List<Vector2>();
