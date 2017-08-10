@@ -362,68 +362,31 @@ namespace Battle.Turn{
 					break;
 
 				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
-
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-				//FIXME : 수정 계획...
-
 				Vector2 casterPos = currPos;
 				Tile casterTile = battleData.tileManager.GetTile (casterPos);
-				Direction direction;
-				Tile targetTile;
+				bool attacked = false;
 
-				direction = Direction.RightDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
+				foreach(Direction direction in EnumUtil.GetDirections()){
+					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					if (IsTastyTile (targetTile)) {
+						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
+						attacked = true;
+						break;
+					}
 				}
-				direction = Direction.LeftUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
+				if (attacked)
 					continue;
-				}
-				direction = Direction.RightUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-				direction = Direction.LeftDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
 
-				direction = Direction.RightDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsDecentTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
+				foreach(Direction direction in EnumUtil.GetDirections()){
+					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					if (IsDecentTile (targetTile)) {
+						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
+						attacked = true;
+						break;
+					}
 				}
-				direction = Direction.LeftUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsDecentTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-				direction = Direction.RightUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsDecentTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-				direction = Direction.LeftDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsDecentTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-				yield break;
+				if(!attacked)
+					break;
 			}
 		}
 		private static IEnumerator OnlyMove(Unit unit){
@@ -478,125 +441,18 @@ namespace Battle.Turn{
 				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 				Vector2 casterPos = currPos;
 				Tile casterTile = battleData.tileManager.GetTile (casterPos);
-				Direction direction;
-				Tile targetTile;
+				bool attacked = false;
 
-				direction = Direction.RightDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
+				foreach(Direction direction in EnumUtil.GetDirections()){
+					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
+					if (IsTastyTile (targetTile)) {
+						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
+						attacked = true;
+						break;
+					}
 				}
-				direction = Direction.LeftUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-				direction = Direction.RightUp;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-				direction = Direction.LeftDown;
-				targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-					continue;
-				}
-
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-				//FIXME : 나중에 코드 제대로 수정할 계획
-				/*
-				if (currentAP < 3 + unit.GetActualRequireSkillAP(skill))
+				if (!attacked)
 					break;
-
-				//좌 타일로 한칸 움직이는 경우도 확인
-				casterPos = currPos + Utility.ToVector2(Direction.RightUp);
-				Tile movedTile = battleData.tileManager.GetTile (casterPos);
-				if (!movedTile.IsUnitOnTile ()) {
-					direction = Direction.RightDown;
-					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					direction = Direction.LeftUp;
-					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
-
-					if (IsTastyTile (rightDownTile)) {
-						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
-						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsTastyTile (leftUpTile)) {
-						yield return AI.Move (unit, movedTile, Direction.RightUp, 3);
-						yield return AI.UseSkill (unit,  skill, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-				}
-				//우 타일로 한칸
-				casterPos = currPos + Utility.ToVector2(Direction.LeftDown);
-				movedTile = battleData.tileManager.GetTile (casterPos);
-				if (!movedTile.IsUnitOnTile ()) {
-					direction = Direction.RightDown;
-					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					direction = Direction.LeftUp;
-					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsTastyTile (rightDownTile)) {
-						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
-						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsTastyTile (leftUpTile)) {
-						yield return AI.Move (unit, movedTile, Direction.LeftDown, 3);
-						yield return AI.UseSkill (unit,  skill, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-				}
-
-				if (currentAP < 8 + unit.GetActualRequireSkillAP(skill))
-					break;
-
-				//좌 타일로 두칸
-				casterPos = currPos + Utility.ToVector2(Direction.RightUp) * 2;
-				movedTile = battleData.tileManager.GetTile (casterPos);
-				if (!movedTile.IsUnitOnTile ()) {
-					direction = Direction.RightDown;
-					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					direction = Direction.LeftUp;
-					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsTastyTile (rightDownTile)) {
-						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
-						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsTastyTile (leftUpTile)) {
-						yield return AI.Move (unit, movedTile, Direction.RightUp, 8);
-						yield return AI.UseSkill (unit,  skill, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-				}
-				//우 타일로 두칸
-				casterPos = currPos + Utility.ToVector2(Direction.LeftDown) * 2;
-				movedTile = battleData.tileManager.GetTile (casterPos);
-				if (!movedTile.IsUnitOnTile ()) {
-					direction = Direction.RightDown;
-					rightDownTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					direction = Direction.LeftUp;
-					leftUpTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsTastyTile (rightDownTile)) {
-						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
-						yield return AI.UseSkill (unit,  skill, Direction.RightDown, rightDownTile);
-						continue;
-					}
-					if (IsTastyTile (leftUpTile)) {
-						yield return AI.Move (unit, movedTile, Direction.LeftDown, 8);
-						yield return AI.UseSkill (unit,  skill, Direction.LeftUp, leftUpTile);
-						continue;
-					}
-				}
-				*/
-				//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-				break;
 			}
 		}
 		private static IEnumerator BreakAndEscape(Unit unit){

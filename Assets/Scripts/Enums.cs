@@ -1,7 +1,26 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Enums {
+	public class EnumUtil{
+		public static IEnumerable<T> GetValues<T>(){
+			return Enum.GetValues(typeof(T)).Cast<T>();
+		}
+
+		//원랜 GetValues<Direction>으로 4방향을 받아올 수 있어야 하는데 개발용 변수 Left/Right/Up/Down 때문에 8개를 받아와버려서...
+		//따로 함수를 만들었다!!
+		public static List<Direction> GetDirections(){
+			List<Direction> directions = new List<Direction> ();
+			directions.Add (Direction.LeftDown);
+			directions.Add (Direction.RightDown);
+			directions.Add (Direction.LeftUp);
+			directions.Add (Direction.RightUp);
+			return directions;
+		}
+	}
 	public enum ConditionType{ Win, Lose, End, Bonus }
 	public enum EffectVisualType{ Individual, Area, None }
 	public enum EffectMoveType{ Move, NonMove, None }

@@ -228,28 +228,14 @@ public class ActiveSkill : Skill{
 			Dictionary<Direction, Tile> targetTiles = new Dictionary<Direction, Tile> ();
 			Vector2 casterPos = casterTile.GetTilePos ();
 
-			Tile routeEnd;
-			Direction direction;
-
-			direction= Direction.LeftDown;
-			routeEnd = GetRealTargetTileForAI (casterPos, direction);
-			if (routeEnd != null)
-				targetTiles [direction] = routeEnd;
-			direction = Direction.LeftUp;
-			routeEnd = GetRealTargetTileForAI (casterPos, direction);
-			if (routeEnd != null)
-				targetTiles [direction] = routeEnd;
-			direction = Direction.RightDown;
-			routeEnd = GetRealTargetTileForAI (casterPos, direction);
-			if (routeEnd != null)
-				targetTiles [direction] = routeEnd;
-			direction = Direction.RightUp;
-			routeEnd = GetRealTargetTileForAI (casterPos, direction);
-			if (routeEnd != null)
-				targetTiles [direction] = routeEnd;
+			foreach (Direction direction in EnumUtil.GetDirections()) {
+				Tile routeEnd = GetRealTargetTileForAI (casterPos, direction);
+				if (routeEnd != null)
+					targetTiles [direction] = routeEnd;
+			}
 
 			foreach (var pair in targetTiles) {
-				direction = pair.Key;
+				Direction direction = pair.Key;
 				Tile targetTile = pair.Value;
 				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
 				attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
@@ -259,19 +245,10 @@ public class ActiveSkill : Skill{
 		else if (skillType == SkillType.Auto) {
 			Tile targetTile = casterTile;
 
-			Direction direction;
-			direction= Direction.LeftDown;
-			SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
-			direction = Direction.LeftUp;
-			skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
-			direction = Direction.RightDown;
-			skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
-			direction = Direction.RightUp;
-			skillLocation = new SkillLocation (casterTile, targetTile, direction);
-			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			foreach (Direction direction in EnumUtil.GetDirections()) {
+				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
+				attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
+			}
 		}
 		//skillType==SkillType.Self
 		//Self 스킬은 방향을 바꾸지 말고 써야 해서 시전자의 방향을 그대로 받아옴
