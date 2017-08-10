@@ -183,6 +183,7 @@ public class BattleData{
 	public int rewardPoint;
 	public bool isWaitingUserInput = false;
 	public bool enemyUnitSelected = false;
+    public bool tileSelected = false;
 
 	public SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 

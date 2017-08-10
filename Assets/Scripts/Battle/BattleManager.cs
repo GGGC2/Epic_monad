@@ -451,23 +451,26 @@ public class BattleManager : MonoBehaviour{
 
 	void Update(){
 		if (Input.GetMouseButtonDown(1)){
-			if (battleData.enemyUnitSelected)
-				battleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
-			else
-				CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
+            if (battleData.enemyUnitSelected || battleData.tileSelected) {
+                battleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
+                battleData.tileSelected = false;
+            } else
+                CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
 		}
 
 		if (battleData.currentState != CurrentState.FocusToUnit)
 		{
+            battleData.tileSelected = false;
 			battleData.enemyUnitSelected = false; // 행동을 선택하면 홀드가 자동으로 풀림.
 		}
 
-		if (Input.GetMouseButtonDown(0))
-		{
-			// 유닛 뷰어가 뜬 상태에서 좌클릭하면, 유닛 뷰어가 고정된다. 단, 행동 선택 상태(FocusToUnit)에서만 가능.
-			if ((battleData.currentState == CurrentState.FocusToUnit) && (battleData.uiManager.IsUnitViewerShowing()))
-				battleData.enemyUnitSelected = true;
-		}
+        if (Input.GetMouseButtonDown(0)) {
+            // 유닛 뷰어가 뜬 상태에서 좌클릭하면, 유닛 뷰어가 고정된다. 단, 행동 선택 상태(FocusToUnit)에서만 가능.
+            if ((battleData.currentState == CurrentState.FocusToUnit) && (battleData.uiManager.IsUnitViewerShowing()))
+                battleData.enemyUnitSelected = true;
+            if ((battleData.currentState == CurrentState.FocusToUnit) && (battleData.uiManager.IsTileViewerShowing()))
+                battleData.tileSelected = true;
+        }
 
 		if (Input.GetKeyDown(KeyCode.CapsLock))
 		{
@@ -483,6 +486,9 @@ public class BattleManager : MonoBehaviour{
 	{
 		return battleData.enemyUnitSelected;
 	}
+    public bool TileSelected() {
+        return battleData.tileSelected;
+    }
 
 	public void OnMouseEnterHandlerFromTile(Vector2 position)
 	{
