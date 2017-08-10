@@ -162,6 +162,14 @@ public class ActiveSkill : Skill{
 		allPaintingRanges [TileColor.Yellow] = yellowRange;
 
 		List<Vector2> redRange = new List<Vector2> ();
+		if (secondRangeForm == RangeForm.Global){
+			for (int x = 0; x < rowNum; x++)
+				for (int y = 0; y < rowNum; y++)
+					redRange.Add (new Vector2 (x, y));
+		}
+		else
+			redRange = Utility.GetRange (secondRangeForm, center, secondMinReach, secondMaxReach, secondWidth, Direction.RightUp);
+		allPaintingRanges [TileColor.Red] = redRange;
 
 		return allPaintingRanges;
 	}
