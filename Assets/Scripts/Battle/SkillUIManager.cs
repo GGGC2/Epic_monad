@@ -34,8 +34,6 @@ public class SkillUIManager : MonoBehaviour {
 			else
 				CooldownText.text = "";
 
-			DisplaySecondRange ((ActiveSkill)skill);
-
 			RangeText.text = "";
 			if(activeSkill.GetSkillType() == Enums.SkillType.Point){
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
@@ -47,6 +45,8 @@ public class SkillUIManager : MonoBehaviour {
 			}
 			else
 				RangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");
+
+			DisplaySecondRange ((ActiveSkill)skill);
 		}
 		else{
 			ApText.text = "";
@@ -85,12 +85,11 @@ public class SkillUIManager : MonoBehaviour {
 		Dictionary<Vector2, Color> rangeColors = skill.RangeColorsForSecondRangeDisplay (rowNum);
 		for (int x = 0; x < rowNum; x++) {
 			for (int y = 0; y < rowNum; y++) {
-				Debug.Log (x + " " + y);
-				Cell cell = Instantiate (CellPrefab, transform).GetComponent<Cell> ();
+				Cell cell = Instantiate (CellPrefab, RangeText.transform).GetComponent<Cell> ();
 				cells.Add (cell);
 				cell.SetSize (new Vector2 (9, 9));
 				Vector2 pos = new Vector2 (x, y);
-				cell.SetPosition (pos, new Vector2(25, -290));
+				cell.SetPosition (pos, new Vector2(-65, -145));
 				cell.SetColor (rangeColors [pos]);
 			}
 		}
