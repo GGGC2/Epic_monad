@@ -438,7 +438,7 @@ namespace Battle.Turn{
 
 			while (currentAP - requireAP >= unit.GetStandardAP ()) {
 				movableTiles.Add (tile);
-				Vector2 nextPos = pos + battleData.tileManager.ToVector2 (Direction.RightDown);
+				Vector2 nextPos = pos + Utility.ToVector2 (Direction.RightDown);
 				Tile nextTile = battleData.tileManager.GetTile (nextPos);
 				if (nextTile == null || nextTile.IsUnitOnTile()) {
 					break;
@@ -513,7 +513,7 @@ namespace Battle.Turn{
 					break;
 
 				//좌 타일로 한칸 움직이는 경우도 확인
-				casterPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp);
+				casterPos = currPos + Utility.ToVector2(Direction.RightUp);
 				Tile movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
 					direction = Direction.RightDown;
@@ -533,7 +533,7 @@ namespace Battle.Turn{
 					}
 				}
 				//우 타일로 한칸
-				casterPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown);
+				casterPos = currPos + Utility.ToVector2(Direction.LeftDown);
 				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
 					direction = Direction.RightDown;
@@ -556,7 +556,7 @@ namespace Battle.Turn{
 					break;
 
 				//좌 타일로 두칸
-				casterPos = currPos + battleData.tileManager.ToVector2(Direction.RightUp) * 2;
+				casterPos = currPos + Utility.ToVector2(Direction.RightUp) * 2;
 				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
 					direction = Direction.RightDown;
@@ -575,7 +575,7 @@ namespace Battle.Turn{
 					}
 				}
 				//우 타일로 두칸
-				casterPos = currPos + battleData.tileManager.ToVector2(Direction.LeftDown) * 2;
+				casterPos = currPos + Utility.ToVector2(Direction.LeftDown) * 2;
 				movedTile = battleData.tileManager.GetTile (casterPos);
 				if (!movedTile.IsUnitOnTile ()) {
 					direction = Direction.RightDown;

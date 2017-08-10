@@ -178,7 +178,7 @@ public class TileManager : MonoBehaviour {
 
 		for(int i = minReach; i < maxReach+1; i++)
 		{
-			Vector2 position = mid + ToVector2(dir)*i;
+			Vector2 position = mid + Utility.ToVector2(dir)*i;
 			if (GetTile(position) != null && !tilesInRange.Contains(GetTile(position)))
 			{
 				tilesInRange.Add(GetTile(position));
@@ -240,11 +240,11 @@ public class TileManager : MonoBehaviour {
 	List<Tile> GetTilesInFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
 	{
 		List<Tile> tilesInRange = new List<Tile>();
-		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 바라보는 방향과 수직인 벡터
+		Vector2 perpendicular = new Vector2(Utility.ToVector2(dir).y, Utility.ToVector2(dir).x); // 바라보는 방향과 수직인 벡터
 
 		for (int i = minReach; i <= maxReach; i++)
 		{
-			Vector2 centerPos = mid + ToVector2(dir) * i;
+			Vector2 centerPos = mid + Utility.ToVector2(dir) * i;
 			tilesInRange.Add(GetTile(centerPos));
 			int subwidth = 0;
 			for (int j = width; j > 1; j -= 2)
@@ -277,14 +277,14 @@ public class TileManager : MonoBehaviour {
 	List<Tile> GetTilesInSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
 	{
 		List<Tile> tilesInRange = new List<Tile>();
-		Vector2 perpendicular = new Vector2(ToVector2(dir).y, ToVector2(dir).x); // 부채꼴 방향과 수직인 벡터
+		Vector2 perpendicular = new Vector2(Utility.ToVector2(dir).y, Utility.ToVector2(dir).x); // 부채꼴 방향과 수직인 벡터
 
 		if (minReach == 0)
 		{
 			for(int i = 0; i <= maxReach; i++)
 			{
 				int j = i;
-				Vector2 position = mid + ToVector2(dir) * i;
+				Vector2 position = mid + Utility.ToVector2(dir) * i;
 				tilesInRange.Add(GetTile(position));
 				while(j > 0)
 				{
@@ -299,7 +299,7 @@ public class TileManager : MonoBehaviour {
 			for(int i = 1; i <= maxReach; i++)
 			{
 				int j = i-1;
-				Vector2 position = mid + ToVector2(dir) * i;
+				Vector2 position = mid + Utility.ToVector2(dir) * i;
 				tilesInRange.Add(GetTile(position));
 				while(j > 0)
 				{
@@ -472,46 +472,6 @@ public class TileManager : MonoBehaviour {
 		}
 
 		return newTileList;
-	}
-
-	public Vector2 ToVector2(Direction dir)
-	{
-		if(dir == Direction.LeftUp)
-		{
-			return Vector2.left;
-		}
-
-		else if(dir == Direction.LeftDown)
-		{
-			return Vector2.down;
-		}
-
-		else if(dir == Direction.RightUp)
-		{
-			return Vector2.up;
-		}
-
-		else if(dir == Direction.RightDown)
-		{
-			return Vector2.right;
-		}
-
-		else if(dir == Direction.Left)
-		{
-			return Vector2.left+Vector2.down;
-		}
-
-		else if(dir == Direction.Right)
-		{
-			return Vector2.right+Vector2.up;
-		}
-
-		else if(dir == Direction.Up)
-		{
-			return Vector2.left+Vector2.up;
-		}
-
-		else return Vector2.right+Vector2.down;
 	}
 
     public void UpdateTileStatusEffectsAtActionEnd() {

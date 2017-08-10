@@ -145,6 +145,28 @@ public class ActiveSkill : Skill{
 		else
 			return GetTilesInSecondRange (skillLocation);
 	}
+	public Dictionary<TileColor, List<Vector2>> PaintingInfoForSecondRangeDisplay(int rowNum){
+		Dictionary<TileColor, List<Vector2>> allPaintingRanges = new Dictionary<TileColor, List<Vector2>> ();
+		Vector2 center = new Vector2 ((rowNum - 1) / 2, (rowNum - 1) / 2);
+
+		List<Vector2> blackRange = new List<Vector2> ();
+		if(skillType == SkillType.Auto || skillType==SkillType.Self){
+			blackRange.Add (center);
+		}
+		allPaintingRanges [TileColor.Black] = blackRange;
+
+		List<Vector2> yellowRange = new List<Vector2> ();
+		if (skillType == SkillType.Point || skillType == SkillType.Route) {
+			yellowRange.Add (center);
+		}
+		allPaintingRanges [TileColor.Yellow] = yellowRange;
+
+		List<Vector2> redRange = new List<Vector2> ();
+
+		//FIXME : 구현중
+
+		return allPaintingRanges;
+	}
 		
 	public bool IsAttackableOnTheTile (Unit caster, Tile casterTile){
 		if (skillType == SkillType.Point) {

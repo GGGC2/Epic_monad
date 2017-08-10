@@ -10,7 +10,7 @@ namespace Battle.Skills {
 			foreach(Tile tile in targetTiles){
 				if(tile.IsUnitOnTile()) {
 					Unit target = tile.GetUnitOnTile();
-					Vector2 targetDirection = tileManager.ToVector2(target.GetDirection());
+					Vector2 targetDirection = Utility.ToVector2(target.GetDirection());
 					Vector2 skillDirection = (target.GetPosition() - caster.GetPosition()).normalized;
 					if(targetDirection == skillDirection) {
 						return true;
