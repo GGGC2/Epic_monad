@@ -251,7 +251,7 @@ public class StatusEffect {
     public string GetExplanation() {
         string text = fixedElem.display.explanation;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {
-            string amountString = GetAmount(i).ToString();
+            string amountString = ((int)GetAmount(i)).ToString();
             if(fixedElem.actuals[i].isPercent)  amountString += "%";
             text = text.Replace("AMOUNT" + i, amountString);
         }
