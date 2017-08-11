@@ -190,12 +190,8 @@ namespace Battle.Turn{
 				ActiveSkill skill = BattleData.SelectedSkill;
 				SkillType skillType = skill.GetSkillType ();
 
-				int currentAP = unit.GetCurrentActivityPoint ();
-				int requireAP = unit.GetActualRequireSkillAP(skill);
-				bool enoughAP = currentAP >= requireAP;
-				if (!enoughAP) {
+				if (!unit.HasEnoughAPToUseSkill (skill))
 					yield break;
-				}
 
 				Tile currTile = unit.GetTileUnderUnit ();
 				bool attackAble = skill.IsAttackableOnTheTile (unit, currTile);
@@ -349,38 +345,30 @@ namespace Battle.Turn{
 				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
-				int currentAP = unit.GetCurrentActivityPoint ();
-
-				//AP 부족하면 할 거 없으니 끝내고
-				if (currentAP < unit.GetActualRequireSkillAP(skill))
+				if (!unit.HasEnoughAPToUseSkill (skill))
 					break;
 
 				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
 				Vector2 casterPos = currPos;
 				Tile casterTile = BattleData.tileManager.GetTile (casterPos);
-				bool attacked = false;
+				Direction? attackDirection;
+				Tile targetTile;
 
-				foreach(Direction direction in EnumUtil.directions){
-					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsTastyTile (targetTile)) {
-						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-						attacked = true;
-						break;
-					}
-				}
-				if (attacked)
+				attackDirection = TastyTileAttackDirectionOnThatPosition (casterPos, skill);
+				if (attackDirection != null) {
+					targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
+					yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
 					continue;
-
-				foreach(Direction direction in EnumUtil.directions){
-					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsDecentTile (targetTile)) {
-						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
-						attacked = true;
-						break;
-					}
 				}
-				if(!attacked)
-					break;
+
+				attackDirection = DecentTileAttackDirectionOnThatPosition (casterPos, skill);
+				if (attackDirection != null) {
+					targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
+					yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
+					continue;
+				}
+
+				break;
 			}
 		}
 		private static IEnumerator OnlyMove(Unit unit){
@@ -426,25 +414,36 @@ namespace Battle.Turn{
 				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
-				int currentAP = unit.GetCurrentActivityPoint ();
 
-				//AP 부족하면 할 거 없으니 끝내고
-				if (currentAP < unit.GetActualRequireSkillAP(skill))
+				if (!unit.HasEnoughAPToUseSkill (skill))
 					break;
 
-				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
-				Vector2 casterPos = currPos;
-				Tile casterTile = BattleData.tileManager.GetTile (casterPos);
 				bool attacked = false;
 
-				foreach(Direction direction in EnumUtil.directions){
-					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-					if (IsTastyTile (targetTile)) {
-						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
+				//FIXME : 가장 가까운 타일부터(현타일->1칸이동범위->2칸이동->..) 확인해야 되는데 아직 안 함 ;;
+				//FIXME : 이동 소모 AP + 기술 소모 AP를 합친 값과 현 행동력을 비교해야 하는데 그것도 안 함 ;;
+				foreach(Tile tile in BattleData.tileManager.GetTilesInRange(RangeForm.Diamond, currPos, 0, 3, 0, Direction.LeftDown)){
+					if (tile.IsUnitOnTile ())
+						continue;
+					//FIXME : 막혀서 그 타일로 3칸 안에 못가는 경우는 빼야 하는데 아직 안 함
+
+					Vector2 casterPos = tile.GetTilePos ();
+					Tile casterTile = tile;
+					Direction? attackDirection;
+					Tile targetTile;
+
+					attackDirection = TastyTileAttackDirectionOnThatPosition (casterPos, skill);
+					//해당 타일에서 그레/비앙/달케 공격 가능할 시 그곳으로 이동하고 공격
+					if (attackDirection != null) {
+						targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
+						//FIXME : AI.Move에서 이동 후 방향설정도 안 해서 일단 Direction.LeftDown 넣어두고 소모 AP량도 지금 0이고 moveableTiles(파란 범위)도 비워놨는데 고칠 것이다
+						yield return AI.Move(unit, tile, Direction.LeftDown, 0, new List<Tile>());
+						yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
 						attacked = true;
 						break;
 					}
 				}
+
 				if (!attacked)
 					break;
 			}
@@ -464,12 +463,39 @@ namespace Battle.Turn{
 				if (barrierTile == null) {
 					yield return OnlyMove (unit);
 					break;
-				} else {
-					if (currentAP < unit.GetActualRequireSkillAP (skill))
+				}
+				else {
+					if (!unit.HasEnoughAPToUseSkill (skill))
 						break;
 					yield return AI.UseSkill (new Casting(unit,  skill, new SkillLocation(currPos, barrierTile, Direction.RightDown)));
 				}
 			}
+		}
+		private static Direction? TastyTileAttackDirectionOnThatPosition(Vector2 casterPos, ActiveSkill skill){
+			Tile casterTile = BattleData.tileManager.GetTile (casterPos);
+			Direction? attackDirection = null;
+
+			foreach(Direction direction in EnumUtil.directions){
+				Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				if (IsTastyTile (targetTile)) {
+					attackDirection = direction;
+					break;
+				}
+			}
+			return attackDirection;
+		}
+		private static Direction? DecentTileAttackDirectionOnThatPosition(Vector2 casterPos, ActiveSkill skill){
+			Tile casterTile = BattleData.tileManager.GetTile (casterPos);
+			Direction? attackDirection = null;
+
+			foreach(Direction direction in EnumUtil.directions){
+				Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
+				if (IsDecentTile (targetTile)) {
+					attackDirection = direction;
+					break;
+				}
+			}
+			return attackDirection;
 		}
 		private static bool IsUnitOnThatTileTastyPC(Tile tile){
 			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
@@ -482,5 +508,4 @@ namespace Battle.Turn{
 			return tile != null && tile.IsUnitOnTile ();
 		}
 	}
-
 }
