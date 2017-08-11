@@ -30,21 +30,22 @@ public class TutorialScenario{
 
 		if (mission == Mission.SelectTile) {
 			Vector2 missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
-			Tile missionTile = TileManager.Instance.GetTile (missionTilePos);
+			TileManager TM = TileManager.Instance;
+			Tile missionTile = TM.GetTile (missionTilePos);
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
 			SetMissionCondition = () => {
-				TileManager.Instance.DepreselectAllTiles ();
-				TileManager.Instance.PreselectTiles (clickableTiles);
-				TileManager.Instance.LockPreselect ();
-				TileManager.Instance.PaintTiles (clickableTiles, TileColor.Black);
+				TM.DepreselectAllTiles ();
+				TM.PreselectTiles (clickableTiles);
+				TM.LockPreselect ();
+				TM.SetHighlightTiles (clickableTiles, true);
 				missionTile.LeftClick.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				missionTile.LeftClick.RemoveListener (ToNextStep);
-				TileManager.Instance.DepaintAllTiles (TileColor.Black);
-				TileManager.Instance.UnlockPreselect ();
-				TileManager.Instance.DepreselectAllTiles ();
+				TM.SetHighlightTiles(TM.GetTilesInGlobalRange(), false);
+				TM.UnlockPreselect ();
+				TM.DepreselectAllTiles ();
 			};
 		}
 		else if (mission == Mission.SelectDirection) {

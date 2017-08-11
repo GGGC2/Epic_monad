@@ -20,17 +20,18 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
-	public bool isHighlight;
+	public GameObject highlightWall;
+	public bool isMouseOver;
 	public List<Color> colors;
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
 
 	bool isPreSeleted = false;
 
-	public void SetPreSelected(bool input)	{	isPreSeleted = input;	}
+	public void SetPreSelected(bool input) {isPreSeleted = input;}
 
-	public void SetTilePos(int x, int y)	{	position = new Vector2(x, y);	}
+	public void SetTilePos(int x, int y) {position = new Vector2(x, y);}
 
-	public Vector2 GetTilePos()	{	return position;	}
+	public Vector2 GetTilePos() {return position;}
 
 	public void SetTileInfo(Element element, int typeIndex, int APAtStandardHeight, int height, string displayName){
 		string typeIndexString = typeIndex.ToString();
@@ -106,7 +107,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
-		HighlightTile ();
+		OnMouseOver ();
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		if (IsUnitOnTile()){
@@ -124,11 +125,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
-		DehighlightTile ();
+		OnMouseExit ();
 
-
-		if (IsUnitOnTile())
-		{
+		if (IsUnitOnTile()){
 			ChainList.HideChainYellowDisplay ();
 			ChainList.HideUnitsTargetingThisTile (this);
 		}
@@ -151,10 +150,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void Awake (){
-		sprite = gameObject.GetComponent<SpriteRenderer>();
 		colors = new List<Color>();
-		DehighlightTile ();
-
+		OnMouseExit ();
 		InitializeEvents ();
 	}
 
@@ -169,22 +166,23 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 
 	/* Tile painting related */
-	void HighlightTile(){
-		isHighlight = true;
+	void OnMouseOver(){
+		isMouseOver = true;
 		RenewColor ();
 	}
-	void DehighlightTile(){
-		isHighlight = false;
+	void OnMouseExit(){
+		isMouseOver = false;
 		RenewColor ();
+	}
+	public void SetHighlight(bool action){
+		highlightWall.SetActive(action);
 	}
 
-	public void PaintTile(TileColor tileColor)
-	{
+	public void PaintTile(TileColor tileColor){
 		Color color = TileColorToColor(tileColor);
 		PaintTile(color);
 	}
-	public void PaintTile(TileColor tileColor, Direction projectileDirection)
-	{
+	public void PaintTile(TileColor tileColor, Direction projectileDirection){
 		Color color = TileColorToColor(tileColor);
 		PaintTile(color);
 	}
@@ -193,15 +191,14 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		RenewColor ();
 	}
 
-	public void DepaintTile(TileColor tileColor)
-	{
-		Color color = TileColorToColor(tileColor);
-		DepaintTile(color);
-	}
-	void DepaintTile(Color color)
-	{
+	void DepaintTile(Color color){
 		colors.Remove(color);
 		RenewColor ();
+	}
+
+	public void DepaintTile(TileColor tileColor){
+		Color color = TileColorToColor(tileColor);
+		DepaintTile(color);
 	}
 
 	void RenewColor(){
@@ -216,7 +213,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 						 colors.Average(_color => _color.g),
 						 colors.Average(_color => _color.b),
 						 colors.Average(_color => _color.a));
-		if (isHighlight)
+		if (isMouseOver)
 			color -= new Color(0.3f, 0.3f, 0.3f, 0);
 		return color;
 	}

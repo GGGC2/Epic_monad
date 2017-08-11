@@ -140,23 +140,21 @@ public class TileManager : MonoBehaviour {
 		preselectLockOn = false;
 	}
 
-	public void PaintTiles(List<Tile> tiles, TileColor color)
-	{
+	public void PaintTiles(List<Tile> tiles, TileColor color){
 		foreach(var tile in tiles)
-		{
 			tile.PaintTile(color);
-		}
 	}
-	public void DepaintTiles(List<Tile> tiles, TileColor color)
-	{
+	public void DepaintTiles(List<Tile> tiles, TileColor color){
 		foreach(var tile in tiles)
-		{
 			tile.DepaintTile(color);
+	}
+	public void SetHighlightTiles(List<Tile> tiles, bool action){
+		foreach(var tile in tiles){
+			tile.SetHighlight(action);
 		}
 	}
 
-	public void DepaintAllTiles(TileColor color)
-	{
+	public void DepaintAllTiles(TileColor color){
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}
 
