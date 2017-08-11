@@ -18,10 +18,7 @@ namespace BattleUI {
         Image classImage;
         Image elementImage;
         GameObject elementBuffIcon;
-        GameObject elementDebuffIcon;
         Image celestialImage;
-        GameObject celestialBuffIcon;
-        GameObject celestialDebuffIcon;
 
         Text hpText;
 
@@ -109,7 +106,6 @@ namespace BattleUI {
 
         void CheckElementBuff(Unit unit) {
             elementBuffIcon.SetActive(false);
-            elementDebuffIcon.SetActive(false);
 
             if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement() && unit.GetElement() != Element.None)
                 elementBuffIcon.SetActive(true);
@@ -201,11 +197,8 @@ namespace BattleUI {
 
             elementImage = transform.Find("ElementImage").GetComponent<Image>();
             elementBuffIcon = transform.Find("ElementImage").Find("BuffImage").gameObject;
-            elementDebuffIcon = transform.Find("ElementImage").Find("DebuffImage").gameObject;
 
             celestialImage = transform.Find("CelestialImage").GetComponent<Image>();
-            celestialBuffIcon = transform.Find("CelestialImage").Find("BuffImage").gameObject;
-            celestialDebuffIcon = transform.Find("CelestialImage").Find("DebuffImage").gameObject;
 
             hpText = transform.Find("HP").Find("HPText").GetComponent<Text>();
             apText = transform.Find("AP").Find("APText").GetComponent<Text>();
@@ -223,10 +216,6 @@ namespace BattleUI {
 
         void Start() {
             elementBuffIcon.SetActive(false);
-            elementDebuffIcon.SetActive(false);
-
-            celestialBuffIcon.SetActive(false);
-            celestialDebuffIcon.SetActive(false);
         }
     }
 }
