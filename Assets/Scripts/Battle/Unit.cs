@@ -182,6 +182,9 @@ public class Unit : MonoBehaviour{
 	public int GetStandardAP(){
 		return unitManager.GetStandardActivityPoint ();
 	}
+	public bool HasEnoughAPToUseSkill(ActiveSkill skill){
+		return activityPoint >= GetActualRequireSkillAP (skill);
+	}
 	public bool IsStandbyPossibleWithThisAP(int AP){
 		bool isPossible = false;
 		foreach (var anyUnit in BattleData.unitManager.GetAllUnits()){
@@ -732,12 +735,12 @@ public class Unit : MonoBehaviour{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
 
-    public int GetActualRequireSkillAP(ActiveSkill selectedSkill)
+    public int GetActualRequireSkillAP(ActiveSkill skill)
     {
-        int requireSkillAP = selectedSkill.GetRequireAP();
+        int requireSkillAP = skill.GetRequireAP();
 
 		// 기술 자체에 붙은 행동력 소모 증감효과 적용
-		requireSkillAP = SkillLogicFactory.Get(selectedSkill).CalculateAP(requireSkillAP, this);
+		requireSkillAP = SkillLogicFactory.Get(skill).CalculateAP(requireSkillAP, this);
 
         // 행동력(기술) 소모 증감 효과 적용
         if (HasStatusEffect(StatusEffectType.RequireSkillAPChange) || HasStatusEffect(StatusEffectType.SpeedChange)) {
@@ -747,9 +750,9 @@ public class Unit : MonoBehaviour{
         }
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
-		if (selectedSkill.GetRequireAP() == 1000)
+		if (skill.GetRequireAP() == 1000)
 		{
-			requireSkillAP = GetCurrentActivityPoint();
+			requireSkillAP = activityPoint;
 		}
 
         return requireSkillAP;
