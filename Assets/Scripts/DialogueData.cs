@@ -25,6 +25,7 @@ public class DialogueData{
 	string objectName;
 	string objectSubName;
 	int glossaryIndex;
+	int glossarySetLevel;
 
 	public bool IsEffect() { return isEffect; }
 	public string GetNameInCode() { return nameInCode; }
@@ -36,6 +37,7 @@ public class DialogueData{
 	public string GetObjectName() { return objectName; }
 	public string GetObjectSubName() { return objectSubName; }
 	public int GetGlossaryIndex() { return glossaryIndex; }
+	public int GetGlossarySetLevel() { return glossarySetLevel; }
 
 	public DialogueData (string unparsedDialogueDataString){
 		StringParser parser = new StringParser(unparsedDialogueDataString, '\t');
@@ -52,6 +54,7 @@ public class DialogueData{
 				nameInCode = parser.Consume();
 			else if(Command == CommandType.Glos)
 				glossaryIndex = parser.ConsumeInt();
+				glossarySetLevel = parser.ConsumeInt();
 		}else if (inputType == "**"){
 			// adventure objects.
 			isEffect = false;

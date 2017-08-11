@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using System.Linq;
 using UnityEngine.SceneManagement;
 using GameData;
 
@@ -141,21 +142,16 @@ public class DialogueManager : MonoBehaviour{
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
 		}else if(Command == DialogueData.CommandType.Glos){
-			Debug.Log(subType + " / " + data.GetGlossaryIndex());
-			GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == subType && x.index == data.GetGlossaryIndex()).level += 1;
+			GlossaryData glos = GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == subType && x.index == data.GetGlossaryIndex());
+			glos.level = Math.Max(glos.level, data.GetGlossarySetLevel());
 		}
 		else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
 
-	/*bool CheckGlossaryDataCorrect(GlossaryData data, string subType, int number){
-		Debug.Log(data.Type.ToString() == subType);
-		Debug.Log(data.index == number);
-		return data.Type.ToString() == subType & data.index == number;
-	}*/
-	public void ReadEndLine(){
+	/*public void ReadEndLine(){
 		StartCoroutine (PrintLinesFrom (endLine-1));
-	}
+	}*/
 
 	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
 	public void ActiveSkipQuestionUI(){
