@@ -25,7 +25,7 @@ public class TutorialManager : MonoBehaviour {
 				cm.mouseMoveActive = true;
 				cm.keyboardMoveActive = true;
 			}
-			Skip ();
+			EndTutorial ();
 		}
 		else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
@@ -34,7 +34,7 @@ public class TutorialManager : MonoBehaviour {
 			ToNextStep();
 		}
 	}
-	public void Skip(){
+	public void EndTutorial(){
 		gameObject.SetActive(false);
 	}
 
@@ -58,12 +58,12 @@ public class TutorialManager : MonoBehaviour {
 		TutorialScenario currentScenario = scenarioList.Find (data => data.index == index);
 		if (currentScenario == null)
 			SetNewSprite ();
-		else {
+		else{
 			currentScenario.SetMissionCondition ();
 			image.enabled = false;
 			DarkBG.enabled = false;
 			if (currentScenario.IsEndMission) {
-				Skip ();
+				EndTutorial ();
 			}
 		}
 	}
