@@ -36,7 +36,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator Start(){
-        SoundManager.Instance.PlayBgm("Script_Tense");
+        SoundManager.Instance.PlayBGM("Script_Tense");
 
 		AI.SetBattleManager (this);
 		AI.SetBattleData (battleData);
