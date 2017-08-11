@@ -7,20 +7,20 @@ namespace Battle.Turn
 {
 	public class ObjectUnitBehaviour{
 		
-		public static IEnumerator AllObjectUnitsBehave(BattleData battleData)
+		public static IEnumerator AllObjectUnitsBehave()
 		{
-			List<Unit> objectUnits = battleData.GetObjectUnitsList();
+			List<Unit> objectUnits = BattleData.GetObjectUnitsList();
 			foreach (var unit in objectUnits) {
 				unit.SetNotAlreadyBehavedObject ();
 			}
 			while (true) {
-				//yield return battleData.battleManager.BeforeActCommonAct ();
+				//yield return BattleData.battleManager.BeforeActCommonAct ();
 				//오브젝트 때문에 오브젝트가 죽을 수도 있으니 하나 행동 끝날 때마다 매번 오브젝트유닛 목록을 다시 받아온다
-				objectUnits = battleData.GetObjectUnitsList();
+				objectUnits = BattleData.GetObjectUnitsList();
 				Unit selectedObjectUnit = GetNotAlreadyBehavedObjectUnit (objectUnits);
 				if (selectedObjectUnit == null)
 					break;
-				yield return AnObjectUnitBehave (battleData, selectedObjectUnit);
+				yield return AnObjectUnitBehave (selectedObjectUnit);
 				selectedObjectUnit.SetAlreadyBehavedObject ();
 			}
 			yield return null;
@@ -37,9 +37,9 @@ namespace Battle.Turn
 			return notAlreadyBehavedObjectUnit;
 		}
 
-		private static IEnumerator AnObjectUnitBehave(BattleData battleData, Unit objectUnit){
+		private static IEnumerator AnObjectUnitBehave(Unit objectUnit){
 			Debug.Log ("An object behaves");
-			battleData.selectedUnit = objectUnit;
+			BattleData.selectedUnit = objectUnit;
 			if (objectUnit.GetNameInCode() == "controller")
 				yield return ControllerAttack(objectUnit);
 			yield return null;

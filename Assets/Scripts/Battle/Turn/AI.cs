@@ -76,10 +76,6 @@ namespace Battle.Turn{
 	}
 
 	public class AI{
-		private static BattleData battleData;
-		public static void SetBattleData(BattleData battleDataInstance){
-			battleData = battleDataInstance;
-		}
 		private static BattleManager battleManager;
 		public static void SetBattleManager(BattleManager battleManagerInstance){
 			battleManager = battleManagerInstance;
@@ -106,7 +102,7 @@ namespace Battle.Turn{
 				yield break;
 			}
 			if (unit.GetNameInCode () == "kashasty_Escape") {
-				yield return AIKashasty.DecideActionAndAct (battleData, unit);
+				yield return AIKashasty.DecideActionAndAct (unit);
 				yield break;
 			}
 			yield return DecideActionAndAct (unit);
@@ -114,9 +110,9 @@ namespace Battle.Turn{
 
 		private static IEnumerator DecideActionAndAct(Unit unit){
 			//이동->기술->대기/휴식의 순서로 이동이나 기술사용은 안 할 수도 있다
-			if(unit.IsMovePossibleState(battleData))
+			if(unit.IsMovePossibleState())
 				yield return DecideMoveAndMove (unit);
-			if (unit.IsSkillUsePossibleState (battleData))
+			if (unit.IsSkillUsePossibleState ())
 				yield return DecideSkillTargetAndUseSkill (unit);
 			yield return DecideRestOrStandbyAndDoThat (unit);
 		}
@@ -129,8 +125,8 @@ namespace Battle.Turn{
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			int selectedSkillIndex = 1;
-			battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-			ActiveSkill selectedSkill = battleData.SelectedSkill;
+			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
 			bool attackAble = selectedSkill.IsAttackableOnTheTile (unit, currentTile);
 
@@ -150,8 +146,8 @@ namespace Battle.Turn{
 			//destTile이 null이 아니면 적을 공격 가능한 타일 중 도달경로의 총 AP 소모량이 가장 적은 타일이 들어있는 것이다
 			//destTile이 null : 이번 턴에 적을 공격 가능한 범위로 못 가는 경우. 그냥 가장 가까운 적을 향해 이동한다
 			if (destTile == null) {
-				Vector2 destPosition = AIUtil.FindNearestEnemy (movableTiles, battleData.unitManager.GetAllUnits (), unit);
-				destTile = battleData.tileManager.GetTile(destPosition);
+				Vector2 destPosition = AIUtil.FindNearestEnemy (movableTiles, BattleData.unitManager.GetAllUnits (), unit);
+				destTile = BattleData.tileManager.GetTile(destPosition);
 			}
 
 			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
@@ -190,8 +186,8 @@ namespace Battle.Turn{
 					break;
 
 				int selectedSkillIndex = 1;
-				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = battleData.SelectedSkill;
+				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill skill = BattleData.SelectedSkill;
 				SkillType skillType = skill.GetSkillType ();
 
 				int currentAP = unit.GetCurrentActivityPoint ();
@@ -212,7 +208,7 @@ namespace Battle.Turn{
 		}
 		public static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
 			yield return battleManager.BeforeActCommonAct ();
-			if (unit.IsStandbyPossible (battleData) && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
+			if (unit.IsStandbyPossible () && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
 				yield return Standby (unit);
 			}
 			else {
@@ -226,7 +222,7 @@ namespace Battle.Turn{
 			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
 			yield return new WaitForSeconds (0.3f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
-			yield return battleData.battleManager.StartCoroutine (MoveStates.MoveToTile (battleData, destTile, finalDirection, totalAPCost));
+			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost));
 		}
 		public static IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
@@ -235,7 +231,7 @@ namespace Battle.Turn{
 			yield return new WaitForSeconds(0.2f);
 		}
 		public static IEnumerator TakeRest(Unit unit){
-			yield return battleData.battleManager.StartCoroutine(RestAndRecover.Run(battleData));
+			yield return BattleData.battleManager.StartCoroutine(RestAndRecover.Run());
 		}
 		private static IEnumerator SkipDeactivatedUnitTurn(Unit unit){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);
@@ -257,7 +253,7 @@ namespace Battle.Turn{
 			// 일정 페이즈부터 활성화
 			else if (unitAIData.activeTriggers.Contains(2))
 			{
-				if (battleData.currentPhase >= unitAIData.activePhase) {
+				if (BattleData.currentPhase >= unitAIData.activePhase) {
 					Debug.Log (unit.GetName () + " is activated because enough phase passed");
 					satisfyActiveCondition = true;
 				}
@@ -325,13 +321,11 @@ namespace Battle.Turn{
 	}
 
 	public class AIKashasty{
-		private static BattleData battleData;
 		private static BattleManager battleManager;
-		public static IEnumerator DecideActionAndAct(BattleData battleDataInstance, Unit unit){
-			battleData = battleDataInstance;
-			battleManager = battleData.battleManager;
-			bool moveable = unit.IsMovePossibleState (battleData);
-			bool skilluseable = unit.IsSkillUsePossibleState (battleData);
+		public static IEnumerator DecideActionAndAct(Unit unit){
+			battleManager = BattleData.battleManager;
+			bool moveable = unit.IsMovePossibleState ();
+			bool skilluseable = unit.IsSkillUsePossibleState ();
 			if (!moveable && !skilluseable) {
 				//do nothing
 			}
@@ -351,8 +345,8 @@ namespace Battle.Turn{
 				yield return battleManager.BeforeActCommonAct ();
 
 				int selectedSkillIndex = 1;
-				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = battleData.SelectedSkill;
+				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
 				int currentAP = unit.GetCurrentActivityPoint ();
@@ -363,7 +357,7 @@ namespace Battle.Turn{
 
 				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
 				Vector2 casterPos = currPos;
-				Tile casterTile = battleData.tileManager.GetTile (casterPos);
+				Tile casterTile = BattleData.tileManager.GetTile (casterPos);
 				bool attacked = false;
 
 				foreach(Direction direction in EnumUtil.directions){
@@ -402,7 +396,7 @@ namespace Battle.Turn{
 			while (currentAP - requireAP >= unit.GetStandardAP ()) {
 				movableTiles.Add (tile);
 				Vector2 nextPos = pos + Utility.ToVector2 (Direction.RightDown);
-				Tile nextTile = battleData.tileManager.GetTile (nextPos);
+				Tile nextTile = BattleData.tileManager.GetTile (nextPos);
 				if (nextTile == null || nextTile.IsUnitOnTile()) {
 					break;
 				}
@@ -428,8 +422,8 @@ namespace Battle.Turn{
 				yield return battleManager.BeforeActCommonAct ();
 
 				int selectedSkillIndex = 1;
-				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = battleData.SelectedSkill;
+				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
 				int currentAP = unit.GetCurrentActivityPoint ();
@@ -440,7 +434,7 @@ namespace Battle.Turn{
 
 				//현 타일에서 그레/비앙/달케 공격 가능할 시 공격
 				Vector2 casterPos = currPos;
-				Tile casterTile = battleData.tileManager.GetTile (casterPos);
+				Tile casterTile = BattleData.tileManager.GetTile (casterPos);
 				bool attacked = false;
 
 				foreach(Direction direction in EnumUtil.directions){
@@ -462,8 +456,8 @@ namespace Battle.Turn{
 				int currentAP = unit.GetCurrentActivityPoint ();
 				Vector2 currPos = unit.GetPosition ();
 				int selectedSkillIndex = 1;
-				battleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = battleData.SelectedSkill;
+				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Tile barrierTile = skill.GetRealTargetTileForAI (currPos, Direction.RightDown);
 

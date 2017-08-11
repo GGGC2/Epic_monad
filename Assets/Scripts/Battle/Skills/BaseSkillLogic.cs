@@ -37,9 +37,9 @@ public class BaseSkillLogic
 		return resistance;
 	}
 
-	public virtual int CalculateAP(BattleData battleData, List<Tile> selectedTiles)
+	public virtual int CalculateAP(List<Tile> selectedTiles)
 	{
-		int requireAP = battleData.selectedUnit.GetActualRequireSkillAP(battleData.SelectedSkill);
+		int requireAP = BattleData.selectedUnit.GetActualRequireSkillAP(BattleData.SelectedSkill);
 		return requireAP;
 	}
 

@@ -18,7 +18,7 @@ namespace Battle.Skills
             bool isThereAnyUnitHigherThanCaster = allUnit.Any(x => x.GetHeight() > casterHeight);
 
             BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-            int currentPhase = battleManager.battleData.currentPhase;
+            int currentPhase = BattleData.currentPhase;
 
             // 짝수 페이즈 시작 시, 자신보다 높은 유닛이 없으면 반경 2 영역 대상에게 기절 1페이즈
             if ((currentPhase % 2 == 0) && (!isThereAnyUnitHigherThanCaster))

@@ -182,9 +182,9 @@ public class Unit : MonoBehaviour{
 	public int GetStandardAP(){
 		return unitManager.GetStandardActivityPoint ();
 	}
-	public bool IsStandbyPossibleWithThisAP(BattleData battleData, int AP){
+	public bool IsStandbyPossibleWithThisAP(int AP){
 		bool isPossible = false;
-		foreach (var anyUnit in battleData.unitManager.GetAllUnits()){
+		foreach (var anyUnit in BattleData.unitManager.GetAllUnits()){
 			if ((anyUnit != this) &&
 				(anyUnit.GetCurrentActivityPoint() > AP))
 			{
@@ -194,17 +194,17 @@ public class Unit : MonoBehaviour{
 		}
 		return isPossible;
 	}
-	public bool IsStandbyPossible(BattleData battleData){
-		bool isPossible = IsStandbyPossibleWithThisAP (battleData, GetCurrentActivityPoint ());
+	public bool IsStandbyPossible(){
+		bool isPossible = IsStandbyPossibleWithThisAP (GetCurrentActivityPoint ());
 		return isPossible;
 	}
-	public bool IsMovePossibleState(BattleData battleData){
+	public bool IsMovePossibleState(){
 		bool isPossible =  !(HasStatusEffect(StatusEffectType.Bind) ||
 			HasStatusEffect(StatusEffectType.Faint))
-			&& !(battleData.alreadyMoved);
+			&& !(BattleData.alreadyMoved);
 		return isPossible;
 	}
-	public bool IsSkillUsePossibleState(BattleData battleData){
+	public bool IsSkillUsePossibleState(){
 		bool isPossible = false;
 
 		isPossible = !(HasStatusEffect(StatusEffectType.Silence) ||
@@ -804,7 +804,7 @@ public class Unit : MonoBehaviour{
         }
     }
 
-	public void GetKnockedBack(BattleData battleData, Tile destTile)
+	public void GetKnockedBack(Tile destTile)
 	{
 		Tile currentTile = GetTileUnderUnit();
 		currentTile.SetUnitOnTile(null);

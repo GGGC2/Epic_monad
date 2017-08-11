@@ -85,7 +85,7 @@ public class EventTrigger: IEventTrigger{
 				if (trigger.Triggered){
 					//튜토리얼 중일 경우 취소 입력을 무효화
 					if  (battleManager.onTutorial &&
-						(trigger == battleManager.battleData.triggers.rightClicked || trigger == battleManager.battleData.triggers.cancelClicked))
+						(trigger == BattleData.triggers.rightClicked || trigger == BattleData.triggers.cancelClicked))
 					{
 						trigger.Revert();
 						continue;
@@ -158,11 +158,11 @@ public class EventTrigger<T>: IEventTrigger{
 	}
 }
 
-public class BattleData{
-	public TileManager tileManager;
-	public UnitManager unitManager;
-	public UIManager uiManager;
-	public BattleManager battleManager;
+public static class BattleData{
+	public static TileManager tileManager;
+	public static UnitManager unitManager;
+	public static UIManager uiManager;
+	public static BattleManager battleManager;
 
 	public class Triggers{
 		public EventTrigger rightClicked = new EventTrigger();
@@ -174,18 +174,18 @@ public class BattleData{
 		public EventTrigger<ActionCommand> actionCommand = new EventTrigger<ActionCommand>();
 	}
 
-	public Triggers triggers = new Triggers();
-	public CurrentState currentState = CurrentState.None;
+	public static Triggers triggers = new Triggers();
+	public static CurrentState currentState = CurrentState.None;
 
-	public Vector2? preSelectedTilePosition;
-	public int indexOfPreSelectedSkillByUser = 0;
-	public int indexOfSelectedSkillByUser = 0;
-	public int rewardPoint;
-	public bool isWaitingUserInput = false;
-	public bool enemyUnitSelected = false;
-    public bool tileSelected = false;
+	public static Vector2? preSelectedTilePosition;
+	public static int indexOfPreSelectedSkillByUser = 0;
+	public static int indexOfSelectedSkillByUser = 0;
+	public static int rewardPoint;
+	public static bool isWaitingUserInput = false;
+	public static bool enemyUnitSelected = false;
+    public static bool tileSelected = false;
 
-	public SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
+	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
 	public class Move {
 		public int moveCount = 0;
@@ -193,30 +193,59 @@ public class BattleData{
 		public Direction selectedDirection = Direction.LeftUp;
 	}
 
-	public class MoveSnapshopt {
+	public class MoveSnapshot {
 		public Tile tile;
 		public int ap;
 		public Direction direction;
 	}
 
-	public Move move = new Move();
-	public bool alreadyMoved;
-	// 이동을 취소하기 위해서 필요
-	public MoveSnapshopt moveSnapshot;
+	public static Move move = new Move();
+	public static bool alreadyMoved;
+	public static MoveSnapshot moveSnapshot; // 이동을 취소하기 위해서 필요
 
-	public Unit selectedUnit; // 현재 턴의 유닛
-	public List<Unit> readiedUnits = new List<Unit>();
-	public List<Unit> deadUnits = new List<Unit>();
-	public List<Unit> retreatUnits = new List<Unit>();
+	public static Unit selectedUnit; // 현재 턴의 유닛
+	public static List<Unit> readiedUnits = new List<Unit>();
+	public static List<Unit> deadUnits = new List<Unit> ();
+	public static List<Unit> retreatUnits = new List<Unit> ();
 
-	public int currentPhase;
+	public static int currentPhase;
 
-	// temp values.
-	public int chainDamageFactor = 1;
+	public static APAction previewAPAction;
 
-	public APAction previewAPAction;
+	public static void Initialize(TileManager tileManagerInstance, UnitManager unitManagerInstance, UIManager uiManagerInstance, BattleManager battleManagerInstance){
+		tileManager = tileManagerInstance;
+		unitManager = unitManagerInstance;
+		uiManager = uiManagerInstance;
+		battleManager = battleManagerInstance;
 
-	public ActiveSkill SelectedSkill
+		triggers = new Triggers();
+		currentState = CurrentState.None;
+
+		preSelectedTilePosition=null;
+		indexOfPreSelectedSkillByUser = 0;
+		indexOfSelectedSkillByUser = 0;
+		rewardPoint = 0;
+		isWaitingUserInput = false;
+		enemyUnitSelected = false;
+		tileSelected = false;
+
+		skillApplyCommand = SkillApplyCommand.Waiting;
+
+		move = new Move();
+		alreadyMoved = false;
+		moveSnapshot=new MoveSnapshot();
+
+		selectedUnit = null;
+		readiedUnits = new List<Unit>();
+		deadUnits = new List<Unit>();
+		retreatUnits = new List<Unit>();
+
+		currentPhase = 0;
+
+		previewAPAction = null;
+	}
+
+	public static ActiveSkill SelectedSkill
 	{
 		get {
 			if(selectedUnit.GetSkillList().Count<indexOfSelectedSkillByUser)
@@ -225,27 +254,27 @@ public class BattleData{
 		}
 	}
 
-	public ActiveSkill PreSelectedSkill
+	public static ActiveSkill PreSelectedSkill
 	{
 		get {
 			return selectedUnit.GetSkillList()[indexOfPreSelectedSkillByUser - 1];
 		}
 	}
 
-	public Tile SelectedTile
+	public static Tile SelectedTile
 	{
 		get {
 			return tileManager.GetTile(move.selectedTilePosition);
 		}
 	}
 
-	public Tile SelectedUnitTile
+	public static Tile SelectedUnitTile
 	{
 		get {
 			return tileManager.GetTile(selectedUnit.GetPosition());
 		}
 	}
-	public List<Unit> GetObjectUnitsList(){
+	public static List<Unit> GetObjectUnitsList(){
 		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject () == true);
 	}
 }

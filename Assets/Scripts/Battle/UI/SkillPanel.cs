@@ -95,7 +95,7 @@ namespace BattleUI
 		}
 
 		public void Update(){
-			if(battleManager.battleData.currentState == CurrentState.SelectSkill){
+			if(BattleData.currentState == CurrentState.SelectSkill){
 				if (Input.GetKeyDown (KeyCode.A) && skillButtons [0].interactable && skillButtons [0].gameObject.activeSelf)
 					skillButtons [0].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.S) && skillButtons[1].interactable && skillButtons[1].gameObject.activeSelf)
@@ -113,8 +113,8 @@ namespace BattleUI
             index += page * 5;
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
-			ActiveSkill preSelectedSkill = battleManager.battleData.PreSelectedSkill;
-			skillPanel.UpdateSkillInfoUI(preSelectedSkill, battleManager.battleData.selectedUnit.name);
+			ActiveSkill preSelectedSkill = BattleData.PreSelectedSkill;
+			skillPanel.UpdateSkillInfoUI(preSelectedSkill, BattleData.selectedUnit.name);
 		}
 
 		void OnEnable(){

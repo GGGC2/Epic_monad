@@ -17,7 +17,7 @@ public class ArrowButton : MonoBehaviour
 	{
 		Vector3 mousePositionScreen = Input.mousePosition;
 		Vector3 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePositionScreen);
-		Vector3 unitPosition = FindObjectOfType<BattleManager>().battleData.selectedUnit.realPosition;
+		Vector3 unitPosition = BattleData.selectedUnit.realPosition;
 
 		if(DirectionType == DirectionTypeIndex.UpLeft && mousePositionWorld.x < unitPosition.x && mousePositionWorld.y > unitPosition.y)
 		{

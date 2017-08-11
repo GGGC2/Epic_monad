@@ -19,6 +19,7 @@ public class TitleForNexon : MonoBehaviour
 	public List<DOTweenAnimation> worldMapButtonAnimations;
     public void Start() {
         GameDataManager.Load();
+		SoundManager.Instance.PlayBGM ("Monad_Title");
     }
 	public void Awake(){
 		foreach (var button in worldMapButtons)

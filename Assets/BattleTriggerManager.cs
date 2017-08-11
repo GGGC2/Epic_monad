@@ -8,7 +8,6 @@ using Enums;
 
 public class BattleTriggerManager : MonoBehaviour {
 	UnitManager unitManager;
-	public BattleData battleData;
 	public SceneLoader sceneLoader;
 	ResultPanel resultPanel;
 
@@ -18,7 +17,6 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public string nextScriptName;
 
-	public BattleData BattleData { get { return battleData; } }
 	public SceneLoader SceneLoader { get { return sceneLoader; } }
 	public List<Vector2> TargetTiles { get { return targetTiles; } }
 	public List<string> ReachedTargetUnitNames { get { return reachedTargetUnitNames; } }
@@ -29,16 +27,16 @@ public class BattleTriggerManager : MonoBehaviour {
 			trigger.acquired = true;
 			Debug.Log("TriggerName : " + trigger.korName);
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
-				battleData.rewardPoint += trigger.reward;
+				BattleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win)
-				battleData.rewardPoint += trigger.reward;
+				BattleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
 				Debug.Log("Mission FAIL : "+trigger.korName);
 				sceneLoader.LoadNextDialogueScene("Title");
 			}
 		}
 		else if(trigger.repeatable)
-			battleData.rewardPoint += trigger.reward;
+			BattleData.rewardPoint += trigger.reward;
 	}
 
 	public void InitializeResultPanel(){
@@ -58,8 +56,7 @@ public class BattleTriggerManager : MonoBehaviour {
 			FindObjectOfType<ConditionPanel>().Initialize(battleTriggers);
 	}
 	void Start () {
-		battleData = FindObjectOfType<BattleManager>().battleData;
-		unitManager = battleData.unitManager;
+		unitManager = BattleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 

@@ -110,11 +110,11 @@ namespace Battle.Skills
             return baseAmount;
         }
 
-        public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
+        public override void TriggerOnEvasionEvent(Unit caster, Unit target)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.TriggerOnEvasionEvent(battleData, caster, target);
+			    skillLogic.TriggerOnEvasionEvent(caster, target);
 		    }
 	    }
 

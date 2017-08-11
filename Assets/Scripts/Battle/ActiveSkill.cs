@@ -86,7 +86,7 @@ public class ActiveSkill : Skill{
 	}
 
 	public List<Tile> GetTilesInFirstRange(Vector2 casterPos, Direction direction) {
-		var firstRange = battleData.tileManager.GetTilesInRange (firstRangeForm,
+		var firstRange = BattleData.tileManager.GetTilesInRange (firstRangeForm,
 			                 casterPos,
 			                 firstMinReach,
 			                 firstMaxReach,
@@ -127,7 +127,7 @@ public class ActiveSkill : Skill{
 	}
 	public List<Tile> GetTilesInSecondRange(SkillLocation skillLocation)
 	{
-		List<Tile> secondRange = battleData.tileManager.GetTilesInRange (secondRangeForm,
+		List<Tile> secondRange = BattleData.tileManager.GetTilesInRange (secondRangeForm,
 			                           skillLocation.TargetPos,
 			                           secondMinReach,
 			                           secondMaxReach,
@@ -290,7 +290,7 @@ public class ActiveSkill : Skill{
 	}
 
 	public IEnumerator Apply(Casting casting, int chainCombo) {
-		BattleManager battleManager = battleData.battleManager;
+		BattleManager battleManager = BattleData.battleManager;
 		Unit caster = casting.Caster;
 		List<Tile> secondRange = casting.SecondRange;
 		List<Tile> realEffectRange = casting.RealEffectRange;
@@ -301,7 +301,7 @@ public class ActiveSkill : Skill{
 		//secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
 		//realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
-		if (caster == battleData.selectedUnit) {
+		if (caster == BattleData.selectedUnit) {
 			caster.UseActivityPoint(casting.RequireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
 			// 스킬 쿨다운 기록
 			if (cooldown > 0)
@@ -334,7 +334,7 @@ public class ActiveSkill : Skill{
 							float amount = skillInstanceData.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
 								yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
-								battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+								BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
 								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
 								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(skillInstanceData));
@@ -364,10 +364,10 @@ public class ActiveSkill : Skill{
 				}
 				caster.ActiveFalseAllBonusText();
 				// 사이사이에도 특성 발동 조건을 체크해준다.
-				battleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-				yield return battleManager.StartCoroutine(battleData.unitManager.TriggerStatusEffectsAtActionEnd());
-				battleData.unitManager.UpdateStatusEffectsAtActionEnd();
-				battleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+				BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+				yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
+				BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
+				BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
 				target.UpdateHealthViewer();
 			}
@@ -392,10 +392,10 @@ public class ActiveSkill : Skill{
 			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
-		battleData.indexOfSelectedSkillByUser = 0; // return to init value.
+		BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
 
 		yield return new WaitForSeconds(0.5f);
-		battleData.alreadyMoved = false;
+		BattleData.alreadyMoved = false;
 	}
 
 	private static bool CheckEvasion(Unit caster, Unit target) {
@@ -412,9 +412,9 @@ public class ActiveSkill : Skill{
 			caster.RemoveStatusEffect(statusEffect);
 
 		if (totalEvasionChance > randomNumber) {
-			battleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+			BattleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
 			// (타겟이) 회피 성공했을 경우 추가 효과
-			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent(battleData, caster, target);
+			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent(caster, target);
 			return true;
 		} else return false;
 	}
@@ -433,7 +433,7 @@ public class ActiveSkill : Skill{
 		if (attackDamage.chainBonus > 1) caster.PrintChainBonus(chainCombo);
 		if (attackDamage.heightBonus != 1) caster.PrintHeightBonus(attackDamage.heightBonus);
 
-		BattleManager battleManager = battleData.battleManager;
+		BattleManager battleManager = BattleData.battleManager;
 		// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
 		// FIXME : 반사데미지는 다른 데미지 함수로 뺄 것! Damaged 함수 쓰면 원 공격자 스킬의 부가효과도 적용됨.
 		UnitClass damageType = caster.GetUnitClass();
@@ -458,7 +458,7 @@ public class ActiveSkill : Skill{
 	}
 	private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
 		UnitClass damageType = caster.GetUnitClass();
-		BattleManager battleManager = battleData.battleManager;
+		BattleManager battleManager = BattleData.battleManager;
 		yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false, false));
 
 		foreach (var statusEffect in target.GetStatusEffectList()) {
@@ -511,7 +511,7 @@ public class ActiveSkill : Skill{
     }
 
 	public void ApplySoundEffect(){
-		if(soundEffectName != null || soundEffectName != "-")
+		if(soundEffectName != null && soundEffectName != "-")
 			SoundManager.Instance.PlaySE (soundEffectName);
 	}
 	public IEnumerator ApplyVisualEffect(Unit unit, List<Tile> secondRange) {
@@ -597,34 +597,29 @@ public class ActiveSkill : Skill{
 		SetSkillNamePanelUI ();
 
 		List<Tile> firstRange = casting.FirstRange;
-		battleData.tileManager.PaintTiles(firstRange, TileColor.Red);
+		BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
 		yield return new WaitForSeconds (0.4f);
-		battleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+		BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		List<Tile> secondRange = casting.SecondRange;
-		battleData.tileManager.PaintTiles (secondRange, TileColor.Red);
+		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
-		battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
+		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
 		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();
 	}
 
 	public void SetSkillNamePanelUI(){
-		battleData.uiManager.SetSkillNamePanelUI(korName);
+		BattleData.uiManager.SetSkillNamePanelUI(korName);
 	}
 	public void HideSkillNamePanelUI(){
-		battleData.uiManager.HideSkillNamePanelUI ();
+		BattleData.uiManager.HideSkillNamePanelUI ();
 	}
 
 	public bool IsChainable(){
 		return skillApplyType == SkillApplyType.DamageHealth
-			|| skillApplyType == SkillApplyType.Debuff;
-	}
-
-	private static BattleData battleData;
-	public static void SetBattleData(BattleData battleDataInstance){
-		battleData=battleDataInstance;
+		|| skillApplyType == SkillApplyType.Debuff;
 	}
 
     public string GetOwner(){return owner;}

@@ -31,17 +31,17 @@ public class ResultPanel : MonoBehaviour{
 			}
 		}
 
-		ScoreText.text = "점수 : " + Checker.battleData.rewardPoint;
+		ScoreText.text = "점수 : " + BattleData.rewardPoint;
 		yield return new WaitForSeconds(0.5f);
 
-		int expTick = Checker.battleData.rewardPoint/runningFrame;
-		while(Checker.battleData.rewardPoint > 0){
+		int expTick = BattleData.rewardPoint/runningFrame;
+		while(BattleData.rewardPoint > 0){
 			if(expTick == 0)
 				UpdateExp(1);
-			else if(Checker.battleData.rewardPoint >= expTick)
+			else if(BattleData.rewardPoint >= expTick)
 				UpdateExp(expTick);
 			else
-				UpdateExp(Checker.battleData.rewardPoint);
+				UpdateExp(BattleData.rewardPoint);
 			yield return null;
 		}
 
@@ -60,8 +60,8 @@ public class ResultPanel : MonoBehaviour{
 
 	void UpdateExp(int point){
 		PartyData.AddExp(point);
-		Checker.battleData.rewardPoint -= point;
-		UpdatePanel(Checker.battleData.rewardPoint);
+		BattleData.rewardPoint -= point;
+		UpdatePanel(BattleData.rewardPoint);
 	}
 
 	public void UpdatePanel(int remainScore){
