@@ -35,7 +35,6 @@ public class Parser : MonoBehaviour{
 			T data = CreateParsedObject<T>(DataType, rowDataList[i]);
 			DataList.Add(data);
 		}
-		Debug.Log("DataList.Count : "+DataList.Count);
 		return DataList;
 	}
 
