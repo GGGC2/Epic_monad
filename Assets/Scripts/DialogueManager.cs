@@ -46,55 +46,58 @@ public class DialogueManager : MonoBehaviour{
 				break;
 			}
 			
-			if(HandleSceneChange(dialogueDataList[i]) != DialogueData.CommandType.Else){
+			if(HandleSceneChange(dialogueDataList[i])){
 				return;
 			}
 		}
 		SetActiveAdventureUI(true);
 	}
 
-	DialogueData.CommandType HandleSceneChange (DialogueData Data){
+	bool HandleSceneChange (DialogueData Data){
+		//뭔가 명령이 인식됐으면 true, 아무것도 하지 않았으면 false
 		if (Data.Command == DialogueData.CommandType.Adv){
 			SetActiveAdventureUI(true);
 			LoadAdventureObjects ();
-			return Data.Command;
+			return true;
 		}else if (Data.Command == DialogueData.CommandType.Script){
 			string nextScriptName = Data.GetCommandSubType ();
 			sceneLoader.LoadNextDialogueScene (nextScriptName);
-			return Data.Command;
+			return true;
 		}
 		else if (Data.Command == DialogueData.CommandType.Battle){
 			Debug.Log(Data.GetCommandSubType());
 			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
 			sceneLoader.LoadNextBattleScene();
-			return Data.Command;
+			return true;
 		}
 		else if(Data.Command == DialogueData.CommandType.Map){
 			string nextStoryName = Data.GetCommandSubType();
 			sceneLoader.LoadNextWorldMapScene(nextStoryName);
-			return Data.Command;
+			return true;
 		}
 		else if(Data.Command == DialogueData.CommandType.Title){
 			SceneManager.LoadScene("Title");
-			return Data.Command;
+			return true;
 		}
-		return DialogueData.CommandType.Else;
+		return false;
 	}
 
 	IEnumerator HandleCommand(){
-		DialogueData.CommandType Command = HandleSceneChange(dialogueDataList[line]);
-		if(Command != DialogueData.CommandType.Else)
-			yield break;
+		DialogueData data = dialogueDataList[line];
+		DialogueData.CommandType Command = data.Command;
+		string subType = data.GetCommandSubType();
 
-		else if (dialogueDataList[line].Command == DialogueData.CommandType.App){
-			if (dialogueDataList[line].GetCommandSubType() == "left"){
+		if(HandleSceneChange(data))
+			yield break;
+		else if(Command == DialogueData.CommandType.App){
+			if (subType == "left"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) {
 					leftUnit = dialogueDataList[line].GetNameInCode();               
 					leftPortrait.sprite = loadedSprite;
 					isLeftUnitOld = false;
 				}
-			}else if (dialogueDataList[line].GetCommandSubType() == "right"){
+			}else if (subType == "right"){
 				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) {      
 					rightUnit = dialogueDataList[line].GetNameInCode();         
@@ -102,9 +105,9 @@ public class DialogueManager : MonoBehaviour{
 					isLeftUnitOld = true;
 				}
 			}else
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-		}else if (dialogueDataList[line].Command == DialogueData.CommandType.Disapp){
-			string commandSubType = dialogueDataList[line].GetCommandSubType();
+				Debug.LogError("Undefined effectSubType : " + subType);
+		}else if (Command == DialogueData.CommandType.Disapp){
+			string commandSubType = subType;
 			if (commandSubType == "left" || commandSubType == leftUnit){
 				leftUnit = null;
 				leftPortrait.sprite = transparent;
@@ -115,31 +118,41 @@ public class DialogueManager : MonoBehaviour{
 				isLeftUnitOld = true;
 			}
 			// 양쪽을 동시에 제거할경우 다음 유닛은 무조건 왼쪽에서 등장. 오른쪽 등장 명령어 사용하는 경우는 예외.
-			else if (dialogueDataList[line].GetCommandSubType() == "all"){
+			else if (subType == "all"){
 				leftUnit = null;
 				leftPortrait.sprite = transparent;
 				rightUnit = null;
 				rightPortrait.sprite = transparent;
 				isLeftUnitOld = false;
 			}else
-				Debug.LogError("Undefined effectSubType : " + dialogueDataList[line].GetCommandSubType());
-		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BGM){
+				Debug.LogError("Undefined effectSubType : " + subType);
+		}else if(Command == DialogueData.CommandType.BGM){
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlayBGM(bgmName);
-		}else if (dialogueDataList[line].Command == DialogueData.CommandType.BG){
-			Sprite bgSprite = Resources.Load<Sprite>("Background/" + dialogueDataList[line].GetCommandSubType());
+		}else if(Command == DialogueData.CommandType.BG){
+			Sprite bgSprite = Resources.Load<Sprite>("Background/" + subType);
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;
-		}else if (dialogueDataList[line].Command == DialogueData.CommandType.SE){
+		}else if(Command == DialogueData.CommandType.SE){
 			string SEName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlaySE (SEName);
-		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FO){
+		}else if(Command == DialogueData.CommandType.FO){
 			yield return StartCoroutine(sceneLoader.Fade(true));
-		}else if(dialogueDataList[line].Command == DialogueData.CommandType.FI){
+		}else if(Command == DialogueData.CommandType.FI){
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
-		}else
+		}else if(Command == DialogueData.CommandType.Glos){
+			Debug.Log(subType + " / " + data.GetGlossaryIndex());
+			GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == subType && x.index == data.GetGlossaryIndex()).level += 1;
+		}
+		else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
+
+	/*bool CheckGlossaryDataCorrect(GlossaryData data, string subType, int number){
+		Debug.Log(data.Type.ToString() == subType);
+		Debug.Log(data.index == number);
+		return data.Type.ToString() == subType & data.index == number;
+	}*/
 	public void ReadEndLine(){
 		StartCoroutine (PrintLinesFrom (endLine-1));
 	}

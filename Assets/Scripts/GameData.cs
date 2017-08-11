@@ -15,7 +15,6 @@ namespace GameData{
 		}
 
 		public static void SetDefault(){
-			//Debug.Log("Set Default LEVEL 1");
 			level = 1;
 			exp = 0;
 			reqExp = 100;
@@ -39,5 +38,15 @@ namespace GameData{
         public static bool isDialogue;
         public static bool isTestMode = false;
         public static bool isStageMode = false;
+	}
+
+	public class GlobalData{
+		public static List<GlossaryData> GlossaryDataList = new List<GlossaryData>();
+
+		public static void ViewAllGlossaryData(){
+			foreach(GlossaryData data in GlossaryDataList){
+				Debug.Log("" + data.Type + data.index + " : LEVEL" + data.level);
+			}
+		}
 	}
 }

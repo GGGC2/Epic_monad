@@ -2,6 +2,7 @@
 *	BG	PartyRoom
 *	BGM	Script_Normal
 blank	-	-	<color=yellow>제국력 518년 1월 4일, 핀토스 저택</color>
+*	Glos	Group	1
 blank	-	-	새해 첫 태양일에 이루어진 <color=red>핀토스 가</color>의 저녁 만찬. 가문의 대표자인 레이나 핀토스가 화려한 휘장이 수놓인 초청장을 꺼내며 이야기를 꺼냈다.
 reina	-	레이나	황제로부터 연회 초대장이 왔어요.
 aron	-	아론	늘상 있던 일이잖아. 설마 그딴 이야기를 하자고 죄다 불러모은 거라면 난 돌아가겠어.

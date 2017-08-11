@@ -8,9 +8,9 @@ public enum DataType
 }
 
 public class DialogueData{
-	public enum CommandType {App = 0, Disapp = 1, BGM = 2, BG = 3, SE = 4, Script = 5, Battle = 6, Map = 7,
+	public enum CommandType {App = 0, Disapp = 1, BGM = 2, BG = 3, SE = 4, Script = 5, Battle = 6, Map = 7, Glos = 8,
 	//이하는 SubType이 필요없는 것들. 순서 중요하므로 바꿀 거면 신중할 것
-	Adv = 8, Title = 9, FO = 10, FI = 11, Else};
+	Adv = 9, Title = 10, FO = 11, FI = 12, Else};
 	public CommandType Command;
 
 	bool isEffect;
@@ -24,6 +24,7 @@ public class DialogueData{
 	bool isAdventureObject;
 	string objectName;
 	string objectSubName;
+	int glossaryIndex;
 
 	public bool IsEffect() { return isEffect; }
 	public string GetNameInCode() { return nameInCode; }
@@ -34,6 +35,7 @@ public class DialogueData{
 	public bool IsAdventureObject() { return isAdventureObject; }
 	public string GetObjectName() { return objectName; }
 	public string GetObjectSubName() { return objectSubName; }
+	public int GetGlossaryIndex() { return glossaryIndex; }
 
 	public DialogueData (string unparsedDialogueDataString){
 		StringParser parser = new StringParser(unparsedDialogueDataString, '\t');
@@ -43,10 +45,13 @@ public class DialogueData{
 			isAdventureObject = false;
 			Command = parser.ConsumeEnum<CommandType>();
 
-			if((int)Command <= 7)
+			if((int)Command < (int)CommandType.Adv)
 				commandSubType = parser.Consume();
+
 			if(Command == CommandType.App)
 				nameInCode = parser.Consume();
+			else if(Command == CommandType.Glos)
+				glossaryIndex = parser.ConsumeInt();
 		}else if (inputType == "**"){
 			// adventure objects.
 			isEffect = false;
