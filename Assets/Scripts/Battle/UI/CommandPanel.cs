@@ -14,7 +14,7 @@ namespace BattleUI{
 		}
 
 		void Update(){
-			if(battleManager.battleData.currentState == CurrentState.FocusToUnit){
+			if(BattleData.currentState == CurrentState.FocusToUnit){
 				if (buttons [ActionCommand.Move].interactable && Input.GetKeyDown (KeyCode.Q))
 					buttons [ActionCommand.Move].onClick.Invoke ();
 				else if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.W))

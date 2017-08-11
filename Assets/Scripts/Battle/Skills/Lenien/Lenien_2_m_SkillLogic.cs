@@ -8,8 +8,7 @@ public class Lenien_2_m_SkillLogic : BaseSkillLogic {
 	// 조건부 기절 추가.
 	public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles)
 	{
-		BattleData battleData = MonoBehaviour.FindObjectOfType<BattleManager>().battleData;
-		Tile midPointTile = battleData.SelectedTile;
+		Tile midPointTile = BattleData.SelectedTile;
 
 		if (GetDistance(target, midPointTile) > 1)
 			return true;

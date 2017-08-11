@@ -9,94 +9,89 @@ using Battle.Damage;
 
 namespace Battle.Turn {
     public class SkillAndChainStates {
-		private static BattleData battleData;
-		public static void SetBattleData(BattleData battleDataInstance){
-			battleData=battleDataInstance;
-		}
-
         private static IEnumerator UpdatePreviewAP( ) {
             while (true) {
-                if (battleData.indexOfPreSelectedSkillByUser != 0) {
-                    ActiveSkill preSelectedSkill = battleData.PreSelectedSkill;
+                if (BattleData.indexOfPreSelectedSkillByUser != 0) {
+                    ActiveSkill preSelectedSkill = BattleData.PreSelectedSkill;
                     int requireAP = preSelectedSkill.GetRequireAP();
-                    battleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
+                    BattleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
                 }else 
-                    battleData.previewAPAction = null;
-                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+                    BattleData.previewAPAction = null;
+                BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
                 yield return null;
             }
         }
 
         public static IEnumerator SelectSkillState( ){
-            while (battleData.currentState == CurrentState.SelectSkill){
-                BattleManager battleManager = battleData.battleManager;
-                battleData.uiManager.SetSkillUI(battleData.selectedUnit);
+            while (BattleData.currentState == CurrentState.SelectSkill){
+                BattleManager battleManager = BattleData.battleManager;
+                BattleData.uiManager.SetSkillUI(BattleData.selectedUnit);
 
-                battleData.isWaitingUserInput = true;
-                battleData.indexOfSelectedSkillByUser = 0;
+                BattleData.isWaitingUserInput = true;
+                BattleData.indexOfSelectedSkillByUser = 0;
 
                 var update = UpdatePreviewAP();
                 battleManager.StartCoroutine(update);
 
                 //튜토리얼 중일 경우 되돌아가는 입력 무시
                 if(battleManager.onTutorial){
-					yield return battleManager.StartCoroutine(battleData.triggers.skillSelected.Wait());
+					yield return battleManager.StartCoroutine(BattleData.triggers.skillSelected.Wait());
 				}else{
 					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
-					battleData.triggers.rightClicked,
-					battleData.triggers.cancelClicked,
-					battleData.triggers.skillSelected));
+					BattleData.triggers.rightClicked,
+					BattleData.triggers.cancelClicked,
+					BattleData.triggers.skillSelected));
 				}
 
-                battleData.battleManager.StopCoroutine(update);
+                BattleData.battleManager.StopCoroutine(update);
 
-                battleData.indexOfPreSelectedSkillByUser = 0;
-                battleData.isWaitingUserInput = false;
-                battleData.uiManager.DisableSkillUI();
+                BattleData.indexOfPreSelectedSkillByUser = 0;
+                BattleData.isWaitingUserInput = false;
+                BattleData.uiManager.DisableSkillUI();
 
-                if (battleData.triggers.rightClicked.Triggered || battleData.triggers.cancelClicked.Triggered){
-                    battleData.currentState = CurrentState.FocusToUnit;
+                if (BattleData.triggers.rightClicked.Triggered || BattleData.triggers.cancelClicked.Triggered){
+                    BattleData.currentState = CurrentState.FocusToUnit;
                     yield break;
                 }
 
-                ActiveSkill selectedSkill = battleData.SelectedSkill;
+                ActiveSkill selectedSkill = BattleData.SelectedSkill;
                 SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
                 if (skillTypeOfSelectedSkill == SkillType.Auto ||
                     skillTypeOfSelectedSkill == SkillType.Self ||
                     skillTypeOfSelectedSkill == SkillType.Route) {
-                    battleData.currentState = CurrentState.SelectSkillApplyDirection;
-                    yield return battleManager.StartCoroutine(SelectSkillApplyDirection(battleData.selectedUnit.GetDirection()));
+                    BattleData.currentState = CurrentState.SelectSkillApplyDirection;
+                    yield return battleManager.StartCoroutine(SelectSkillApplyDirection(BattleData.selectedUnit.GetDirection()));
                 }
                 else{
-                    battleData.currentState = CurrentState.SelectSkillApplyPoint;
-                    yield return battleManager.StartCoroutine(SelectSkillApplyPoint(battleData.selectedUnit.GetDirection()));
+                    BattleData.currentState = CurrentState.SelectSkillApplyPoint;
+                    yield return battleManager.StartCoroutine(SelectSkillApplyPoint(BattleData.selectedUnit.GetDirection()));
                 }
 
-                battleData.previewAPAction = null;
-                battleData.uiManager.UpdateApBarUI(battleData, battleData.unitManager.GetAllUnits());
+                BattleData.previewAPAction = null;
+                BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 
                 yield return null;
             }
         }
 
         private static IEnumerator UpdateRangeSkillMouseDirection(Direction originalDirection) {
-            Unit selectedUnit = battleData.selectedUnit;
+            Unit selectedUnit = BattleData.selectedUnit;
 			Vector2 unitPos = selectedUnit.GetPosition ();
-            ActiveSkill selectedSkill = battleData.SelectedSkill;
+            ActiveSkill selectedSkill = BattleData.SelectedSkill;
 			var selectedTiles = selectedSkill.GetTilesInFirstRange (unitPos, originalDirection);
-            battleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+            BattleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 
             while (true) {
-                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
-                Direction beforeDirection = battleData.selectedUnit.GetDirection();
+                Direction newDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
+                Direction beforeDirection = BattleData.selectedUnit.GetDirection();
 				var selectedTilesByBeforeDirection = selectedSkill.GetTilesInFirstRange (unitPos, beforeDirection);
 				var selectedTilesByNewDirection = selectedSkill.GetTilesInFirstRange (unitPos, newDirection);
 
                 if (beforeDirection != newDirection) {
-                    battleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
+                    BattleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
                     beforeDirection = newDirection;
-                    battleData.selectedUnit.SetDirection(newDirection);
-                    battleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
+                    BattleData.selectedUnit.SetDirection(newDirection);
+                    BattleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
                 }
                 yield return null;
             }
@@ -104,51 +99,51 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillApplyDirection(Direction originalDirection) {
             Direction beforeDirection = originalDirection;
-            Unit selectedUnit = battleData.selectedUnit;
-            ActiveSkill selectedSkill = battleData.SelectedSkill;
+            Unit selectedUnit = BattleData.selectedUnit;
+            ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
             while (true) {
-                battleData.isWaitingUserInput = true;
+                BattleData.isWaitingUserInput = true;
                 //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향도 돌림
                 var updateRedArea = UpdateRangeSkillMouseDirection(originalDirection);
-                battleData.battleManager.StartCoroutine(updateRedArea);
+                BattleData.battleManager.StartCoroutine(updateRedArea);
                 
-				battleData.uiManager.EnableSelectDirectionUI();
+				BattleData.uiManager.EnableSelectDirectionUI();
 
-                yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    battleData.triggers.rightClicked,
-                    battleData.triggers.cancelClicked,
-                    battleData.triggers.tileSelectedByUser,
-                    battleData.triggers.directionSelectedByUser
+                yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+                    BattleData.triggers.rightClicked,
+                    BattleData.triggers.cancelClicked,
+                    BattleData.triggers.tileSelectedByUser,
+                    BattleData.triggers.directionSelectedByUser
                 ));
-                battleData.battleManager.StopCoroutine(updateRedArea);
-                battleData.isWaitingUserInput = false;
+                BattleData.battleManager.StopCoroutine(updateRedArea);
+                BattleData.isWaitingUserInput = false;
 
-                battleData.tileManager.DepaintAllTiles(TileColor.Red);
+                BattleData.tileManager.DepaintAllTiles(TileColor.Red);
 
 				//취소선택시->1. 4방향 화살표 제거 2. 유닛이 원래 방향을 바라보게 되돌림 3. currentState는 스킬을 고르는 단계로 돌려놓는다
-                if (battleData.triggers.rightClicked.Triggered ||
-                    battleData.triggers.cancelClicked.Triggered) {
-                    battleData.uiManager.DisableSelectDirectionUI();
+                if (BattleData.triggers.rightClicked.Triggered ||
+                    BattleData.triggers.cancelClicked.Triggered) {
+                    BattleData.uiManager.DisableSelectDirectionUI();
                     selectedUnit.SetDirection(originalDirection);
-                    battleData.currentState = CurrentState.SelectSkill;
+                    BattleData.currentState = CurrentState.SelectSkill;
                     yield break;
                 }
 				//범위 내 타일이나 방향(사분면 중 하나)을 선택했을시->1. currentState는 즉시시전/연계대기를 선택하는 단계로 한다
 				//2. 현재 선택된 타겟 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 타겟 타일로 한다.
                 else{
-                    BattleManager battleManager = battleData.battleManager;
-                    battleData.currentState = CurrentState.CheckApplyOrChain;
-					var targetTile = battleData.SelectedUnitTile;
+                    BattleManager battleManager = BattleData.battleManager;
+                    BattleData.currentState = CurrentState.CheckApplyOrChain;
+					var targetTile = BattleData.SelectedUnitTile;
 					SkillLocation skillLocation = new SkillLocation (selectedUnit.GetTileUnderUnit (), targetTile, selectedUnit.GetDirection ());
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
 					yield return battleManager.StartCoroutine(CheckApplyOrChain(new Casting(selectedUnit, selectedSkill, skillLocation), originalDirection));
                 }
 					
-                if (battleData.currentState != CurrentState.SelectSkillApplyDirection) {
+                if (BattleData.currentState != CurrentState.SelectSkillApplyDirection) {
 					//이제 취소 버튼 UI 없으니 이 줄은 필요없지 않나
-                    battleData.uiManager.DisableCancelButtonUI();
+                    BattleData.uiManager.DisableCancelButtonUI();
                     
 					yield break;
                 }
@@ -156,12 +151,12 @@ namespace Battle.Turn {
         }
 
         private static IEnumerator UpdatePointSkillMouseDirection(Direction originalDirection) {
-            Direction beforeDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
+            Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
             while (true) {
-                Direction newDirection = Utility.GetMouseDirectionByUnit(battleData.selectedUnit, originalDirection);
+                Direction newDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
                 if (beforeDirection != newDirection) {
                     beforeDirection = newDirection;
-                    battleData.selectedUnit.SetDirection(newDirection);
+                    BattleData.selectedUnit.SetDirection(newDirection);
                 }
                 yield return null;
             }
@@ -169,66 +164,66 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillApplyPoint ( Direction originalDirection) {
             Direction beforeDirection = originalDirection;
-            Unit selectedUnit = battleData.selectedUnit;
+            Unit selectedUnit = BattleData.selectedUnit;
 
-            if (battleData.currentState == CurrentState.SelectSkill) {
-                battleData.uiManager.DisableCancelButtonUI();
+            if (BattleData.currentState == CurrentState.SelectSkill) {
+                BattleData.uiManager.DisableCancelButtonUI();
                 yield break;
             }
 
-            while (battleData.currentState == CurrentState.SelectSkillApplyPoint) {
-                Vector2 selectedUnitPos = battleData.selectedUnit.GetPosition();
+            while (BattleData.currentState == CurrentState.SelectSkillApplyPoint) {
+                Vector2 selectedUnitPos = BattleData.selectedUnit.GetPosition();
 
                 List<Tile> activeRange = new List<Tile>();
-                ActiveSkill selectedSkill = battleData.SelectedSkill;
+                ActiveSkill selectedSkill = BattleData.SelectedSkill;
 				activeRange = selectedSkill.GetTilesInFirstRange (selectedUnitPos, selectedUnit.GetDirection ());
 
-                battleData.tileManager.PaintTiles(activeRange, TileColor.Red);
-				battleData.tileManager.PreselectTiles (activeRange);
-                battleData.uiManager.EnableCancelButtonUI();
-                battleData.isWaitingUserInput = true;
+                BattleData.tileManager.PaintTiles(activeRange, TileColor.Red);
+				BattleData.tileManager.PreselectTiles (activeRange);
+                BattleData.uiManager.EnableCancelButtonUI();
+                BattleData.isWaitingUserInput = true;
 
                 var update = UpdatePointSkillMouseDirection(originalDirection);
-                battleData.battleManager.StartCoroutine(update);
-                yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    battleData.triggers.tileSelectedByUser,
-                    battleData.triggers.rightClicked,
-                    battleData.triggers.cancelClicked
+                BattleData.battleManager.StartCoroutine(update);
+                yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+                    BattleData.triggers.tileSelectedByUser,
+                    BattleData.triggers.rightClicked,
+                    BattleData.triggers.cancelClicked
                 ));
-                battleData.battleManager.StopCoroutine(update);
-                battleData.isWaitingUserInput = false;
-                battleData.uiManager.DisableCancelButtonUI();
+                BattleData.battleManager.StopCoroutine(update);
+                BattleData.isWaitingUserInput = false;
+                BattleData.uiManager.DisableCancelButtonUI();
 
-                if (battleData.triggers.rightClicked.Triggered ||
-                    battleData.triggers.cancelClicked.Triggered) {
+                if (BattleData.triggers.rightClicked.Triggered ||
+                    BattleData.triggers.cancelClicked.Triggered) {
                     selectedUnit.SetDirection(originalDirection);
-                    battleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
-					battleData.tileManager.DepreselectAllTiles ();
-                    battleData.currentState = CurrentState.SelectSkill;
-                    battleData.isWaitingUserInput = false;
+                    BattleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
+					BattleData.tileManager.DepreselectAllTiles ();
+                    BattleData.currentState = CurrentState.SelectSkill;
+                    BattleData.isWaitingUserInput = false;
                     yield break;
                 }
 
-                battleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
-				battleData.tileManager.DepreselectAllTiles ();
-                battleData.uiManager.DisableSkillUI();
+                BattleData.tileManager.DepaintTiles(activeRange, TileColor.Red);
+				BattleData.tileManager.DepreselectAllTiles ();
+                BattleData.uiManager.DisableSkillUI();
 
-                BattleManager battleManager = battleData.battleManager;
-                battleData.currentState = CurrentState.CheckApplyOrChain;
-				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, battleData.SelectedTile, selectedUnit.GetDirection ());
+                BattleManager battleManager = BattleData.battleManager;
+                BattleData.currentState = CurrentState.CheckApplyOrChain;
+				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
 				yield return battleManager.StartCoroutine(CheckApplyOrChain(new Casting(selectedUnit, selectedSkill, skillLocation), originalDirection));
             }
         }
 
 		public static IEnumerator CheckApplyOrChain (Casting casting, Direction originalDirection) {
-            while (battleData.currentState == CurrentState.CheckApplyOrChain) {
+            while (BattleData.currentState == CurrentState.CheckApplyOrChain) {
 				Unit caster = casting.Caster;
 				ActiveSkill skill = casting.Skill;
                 BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 				//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들이며 빨갛게 칠한다
 				List<Tile> secondRange = casting.SecondRange;
-                battleData.tileManager.PaintTiles(secondRange, TileColor.Red);
+                BattleData.tileManager.PaintTiles(secondRange, TileColor.Red);
 				//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
 				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
 				List<Tile> realEffectRange = casting.RealEffectRange;
@@ -238,42 +233,42 @@ namespace Battle.Turn {
 
 				bool isApplyPossible = skill.SkillLogic.CheckApplyPossibleToTargetTiles(caster, secondRange);
                 bool isChainPossible = CheckChainPossible(casting);
-                battleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isApplyPossible && isChainPossible);
-                battleData.uiManager.SetSkillCheckAP(casting);
+                BattleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isApplyPossible && isChainPossible);
+                BattleData.uiManager.SetSkillCheckAP(casting);
 
-                battleData.skillApplyCommand = SkillApplyCommand.Waiting;
-                yield return battleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    battleData.triggers.cancelClicked,
-                    battleData.triggers.rightClicked,
-                    battleData.triggers.skillApplyCommandChanged
+                BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+                yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
+                    BattleData.triggers.cancelClicked,
+                    BattleData.triggers.rightClicked,
+                    BattleData.triggers.skillApplyCommandChanged
                 ));
 
 				// 데미지 미리보기 해제.
 				HidePreviewDamage(allCalculatedTotalDamages);
-                battleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
+                BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
-                if (battleData.triggers.rightClicked.Triggered ||
-					battleData.triggers.cancelClicked.Triggered) {
+                if (BattleData.triggers.rightClicked.Triggered ||
+					BattleData.triggers.cancelClicked.Triggered) {
                     BattleManager.MoveCameraToUnit(caster);
-                    battleData.uiManager.DisableSkillCheckUI();
+                    BattleData.uiManager.DisableSkillCheckUI();
                     caster.SetDirection(originalDirection);
                     if (skill.GetSkillType() != SkillType.Point)
-                        battleData.currentState = CurrentState.SelectSkillApplyDirection;
+                        BattleData.currentState = CurrentState.SelectSkillApplyDirection;
                     else
-                        battleData.currentState = CurrentState.SelectSkillApplyPoint;
+                        BattleData.currentState = CurrentState.SelectSkillApplyPoint;
                     yield break;
                 }
 
-                BattleManager battleManager = battleData.battleManager;
-                if (battleData.skillApplyCommand == SkillApplyCommand.Apply) {
-                    battleData.skillApplyCommand = SkillApplyCommand.Waiting;
+                BattleManager battleManager = BattleData.battleManager;
+                if (BattleData.skillApplyCommand == SkillApplyCommand.Apply) {
+                    BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					yield return ApplyAllTriggeredChains(casting);
 					BattleManager.MoveCameraToUnit(caster);
-					battleData.currentState = CurrentState.FocusToUnit;
+					BattleData.currentState = CurrentState.FocusToUnit;
                 }
-				else if (battleData.skillApplyCommand == SkillApplyCommand.Chain) {
-                    battleData.skillApplyCommand = SkillApplyCommand.Waiting;
-                    battleData.currentState = CurrentState.ChainAndStandby;
+				else if (BattleData.skillApplyCommand == SkillApplyCommand.Chain) {
+                    BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+                    BattleData.currentState = CurrentState.ChainAndStandby;
 					yield return battleManager.StartCoroutine(StandbyChain(casting));
                 } else {
                     Debug.LogError("Invalid State");
@@ -285,7 +280,7 @@ namespace Battle.Turn {
 
 		private static Dictionary<Unit, DamageCalculator.DamageInfo> DisplayPreviewDamage(Casting casting){
 			//데미지 미리보기
-			Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(battleData, casting);
+			Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(casting);
 			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
 				if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
 				else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
@@ -316,7 +311,7 @@ namespace Battle.Turn {
             int remainAPAfterChain = caster.GetCurrentActivityPoint() - requireAP;
 
 			bool isAPConditionPossible = false;
-            foreach (var unit in battleData.unitManager.GetAllUnits()) {
+            foreach (var unit in BattleData.unitManager.GetAllUnits()) {
                 if ((unit != caster) &&
                 (unit.GetCurrentActivityPoint() > remainAPAfterChain)) {
                     isAPConditionPossible = true;
@@ -343,7 +338,7 @@ namespace Battle.Turn {
         }
 
 		public static IEnumerator ApplyAllTriggeredChains (Casting casting) {
-            BattleManager battleManager = battleData.battleManager;
+            BattleManager battleManager = BattleData.battleManager;
 			Unit caster = casting.Caster;
 
 			// 현재 시전으로 발동되는 모든 시전의 리스트(현재 시전 포함)를 받는다.
@@ -357,7 +352,7 @@ namespace Battle.Turn {
 			foreach (var chain in allTriggeredChains) {
 				Tile focusedTile = chain.SecondRange [0];
 				BattleManager.MoveCameraToTile (focusedTile);
-				battleData.currentState = CurrentState.ApplySkill;
+				BattleData.currentState = CurrentState.ApplySkill;
 				chain.Caster.HideChainIcon ();
 				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
 				caster.DisableChainText ();
@@ -378,13 +373,13 @@ namespace Battle.Turn {
 
             // 체인 목록에 추가.
 			ChainList.AddChains(casting);
-            battleData.indexOfSelectedSkillByUser = 0; // return to init value.
+            BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
             yield return new WaitForSeconds(0.5f);
 
             BattleManager.MoveCameraToUnit(caster);
-            battleData.currentState = CurrentState.Standby;
-            battleData.alreadyMoved = false;
-            BattleManager battleManager = battleData.battleManager;
+            BattleData.currentState = CurrentState.Standby;
+            BattleData.alreadyMoved = false;
+            BattleManager battleManager = BattleData.battleManager;
             yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
     }

@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using Battle.Skills;
 
 public class RestAndRecover {
-	public static int GetRestCostAP(BattleData battleData)
+	public static int GetRestCostAP()
 	{
-		return (int)(battleData.selectedUnit.GetCurrentActivityPoint() * 0.5f);
+		return (int)(BattleData.selectedUnit.GetCurrentActivityPoint() * 0.5f);
 	}
 
-	public static IEnumerator Run(BattleData battleData)
+	public static IEnumerator Run()
 	{
-        Unit unit = battleData.selectedUnit;
+        Unit unit = BattleData.selectedUnit;
         List<PassiveSkill> passiveSkillList = unit.GetLearnedPassiveSkillList();
-        int usingActivityPointToRest = GetRestCostAP(battleData);
+        int usingActivityPointToRest = GetRestCostAP();
 		int maxHealthOfUnit = unit.GetStat(Stat.MaxHealth);
 		int level = GameData.PartyData.level;
 		//Debug.Log("Float : " + ((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest));
@@ -24,7 +24,7 @@ public class RestAndRecover {
 		unit.UseActivityPoint(usingActivityPointToRest);
 		IEnumerator recoverHealthCoroutine = unit.RecoverHealth(recoverHealthDuringRest);
 
-		BattleManager battleManager = battleData.battleManager;
+		BattleManager battleManager = BattleData.battleManager;
 		yield return battleManager.StartCoroutine(recoverHealthCoroutine);
 
 		// 휴식시 발동되는 특성 및 statusEffect

@@ -7,7 +7,7 @@ namespace Battle.Skills
 {
     public class Yeong_3_m_SkillLogic : BasePassiveSkillLogic {
 
-	    public override void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit yeong)
+	    public override void TriggerOnEvasionEvent(Unit caster, Unit yeong)
 	    {
 		    StatusEffector.AttachStatusEffect(yeong, this.passiveSkill, yeong);
 	    }

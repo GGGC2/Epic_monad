@@ -36,7 +36,7 @@ namespace Battle
 			}
 		}
 
-		public static Dictionary<Unit, DamageInfo> CalculateAllPreviewTotalDamages(BattleData battleData, Casting casting)
+		public static Dictionary<Unit, DamageInfo> CalculateAllPreviewTotalDamages(Casting casting)
 		{
 			Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 

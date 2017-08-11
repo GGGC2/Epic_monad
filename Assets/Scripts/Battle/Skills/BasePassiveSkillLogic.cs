@@ -70,7 +70,7 @@ public class BasePassiveSkillLogic
         return baseAmount;
     }
 
-	public virtual void TriggerOnEvasionEvent(BattleData battleData, Unit caster, Unit target)
+	public virtual void TriggerOnEvasionEvent(Unit caster, Unit target)
 	{
 	}
 

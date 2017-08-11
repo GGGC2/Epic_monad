@@ -86,9 +86,9 @@ public class UIManager : MonoBehaviour
 		//StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
-	public void UpdateApBarUI(BattleData battleData, List<Unit> allUnits) {
+	public void UpdateApBarUI(List<Unit> allUnits) {
 		apBarUI.gameObject.SetActive(true);
-		apBarUI.UpdateAPDisplay(battleData, allUnits);
+		apBarUI.UpdateAPDisplay(allUnits);
 	}
 
 	public void ActivateCommandUIAndSetName(Unit selectedUnit)

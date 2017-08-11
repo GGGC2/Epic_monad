@@ -109,7 +109,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		HighlightTile ();
 
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		BattleData battleData = battleManager.battleData;
 		if (IsUnitOnTile()){
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
