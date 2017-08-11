@@ -205,7 +205,7 @@ public class Utility : MonoBehaviour {
 		if (minReach == 0)
 			range.Add(mid);
 		int newMinReach = Math.Max(1, minReach);
-		foreach (Direction direction in EnumUtil.GetDirections())
+		foreach (Direction direction in EnumUtil.directions)
 			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}
@@ -215,7 +215,7 @@ public class Utility : MonoBehaviour {
 		if (minReach == 0)
 			range.Add(mid);
 		int newMinReach = Math.Max(1, minReach);
-		foreach(Direction direction in EnumUtil.GetNonTileDirections())
+		foreach(Direction direction in EnumUtil.nonTileDirections)
 			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}

@@ -366,7 +366,7 @@ namespace Battle.Turn{
 				Tile casterTile = battleData.tileManager.GetTile (casterPos);
 				bool attacked = false;
 
-				foreach(Direction direction in EnumUtil.GetDirections()){
+				foreach(Direction direction in EnumUtil.directions){
 					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsTastyTile (targetTile)) {
 						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
@@ -377,7 +377,7 @@ namespace Battle.Turn{
 				if (attacked)
 					continue;
 
-				foreach(Direction direction in EnumUtil.GetDirections()){
+				foreach(Direction direction in EnumUtil.directions){
 					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsDecentTile (targetTile)) {
 						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
@@ -443,7 +443,7 @@ namespace Battle.Turn{
 				Tile casterTile = battleData.tileManager.GetTile (casterPos);
 				bool attacked = false;
 
-				foreach(Direction direction in EnumUtil.GetDirections()){
+				foreach(Direction direction in EnumUtil.directions){
 					Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
 					if (IsTastyTile (targetTile)) {
 						yield return AI.UseSkill (new Casting(unit, skill, new SkillLocation (casterTile, targetTile, direction)));
