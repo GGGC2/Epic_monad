@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 namespace BattleUI
 {
-	public class SkillPanel : MonoBehaviour
-	{
+	public class SkillPanel : MonoBehaviour{
 		private BattleManager battleManager;
 		public SkillUIManager skillPanel;
 		Text skillApText;
@@ -141,6 +140,7 @@ namespace BattleUI
             index += page * 5;
 			battleManager.CallbackPointerExitSkillIndex(index);
 			OnEnable();
+			skillPanel.HideSecondRange();
 		}
 
 		public void CallbackSkillUICancel()

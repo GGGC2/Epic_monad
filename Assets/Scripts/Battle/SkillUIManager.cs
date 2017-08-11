@@ -94,7 +94,7 @@ public class SkillUIManager : MonoBehaviour {
 			}
 		}
 	}
-	void HideSecondRange(){
+	public void HideSecondRange(){
 		for (int i = cells.Count - 1; i >= 0; i--) {
 			Cell cell = cells [i];
 			cells.Remove (cell);
