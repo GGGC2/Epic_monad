@@ -511,7 +511,7 @@ public class ActiveSkill : Skill{
     }
 
 	public void ApplySoundEffect(){
-		if(soundEffectName != null || soundEffectName != "-")
+		if(soundEffectName != null && soundEffectName != "-")
 			SoundManager.Instance.PlaySE (soundEffectName);
 	}
 	public IEnumerator ApplyVisualEffect(Unit unit, List<Tile> secondRange) {
