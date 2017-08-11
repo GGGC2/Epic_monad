@@ -20,10 +20,9 @@ public class UnitStatusEffectInfo {
     public string GetDisplayName() { return displayName; }
     public UnitStatusEffect.FixedElement GetStatusEffect() { return statusEffect; }
 	
-	public UnitStatusEffectInfo(string data)
-	{
+	public UnitStatusEffectInfo(string data){
 		// Debug.Log(data);
-		StringParser commaParser = new StringParser(data, ',');
+		StringParser commaParser = new StringParser(data, '\t');
 
 		owner = commaParser.Consume();
         requireLevel = commaParser.ConsumeInt();
@@ -48,8 +47,7 @@ public class UnitStatusEffectInfo {
 
 		int num = commaParser.ConsumeInt();
 
-		for (int i = 0; i < num; i++)
-		{
+		for (int i = 0; i < num; i++){
 			StatusEffectType statusEffectType = commaParser.ConsumeEnum<StatusEffectType>();
 
 			StatusEffectVar statusEffectVar = commaParser.ConsumeEnum<StatusEffectVar>();

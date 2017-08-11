@@ -374,7 +374,8 @@ public class UnitManager : MonoBehaviour {
 	}
 
     void LoadUnitStatusEffects(){
-        statusEffectInfoList = Parser.GetParsedUnitStatusEffectInfo();
+		TextAsset text = Resources.Load<TextAsset>("Data/UnitStatusEffectData");
+        statusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>(text, Parser.ParsingDataType.UnitStatusEffect);
     }
 
     void LoadTileStatusEffects(){

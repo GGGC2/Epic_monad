@@ -25,7 +25,7 @@ public class Parser : MonoBehaviour{
 		return null;
 	}
 
-	public enum ParsingDataType{Glossary, DialogueData, TutorialScenario};
+	public enum ParsingDataType{Glossary, DialogueData, TutorialScenario, UnitStatusEffect};
 
 	public static List<T> GetParsedData<T>(TextAsset textAsset, ParsingDataType DataType){
 		List<T> DataList = new List<T>();
@@ -48,6 +48,9 @@ public class Parser : MonoBehaviour{
 			return (T)data;
 		}else if(DataType == ParsingDataType.TutorialScenario){
 			object data = new TutorialScenario(rowData);
+			return (T)data;
+		}else if(DataType == ParsingDataType.UnitStatusEffect){
+			object data = new UnitStatusEffectInfo(rowData);
 			return (T)data;
 		}
 		else{
@@ -236,21 +239,6 @@ public class Parser : MonoBehaviour{
 			throw e;
 		}
 	}
-
-    public static List<UnitStatusEffectInfo> GetParsedUnitStatusEffectInfo() {
-        List<UnitStatusEffectInfo> statusEffectInfoList = new List<UnitStatusEffectInfo>();
-
-        TextAsset csvFile = Resources.Load("Data/StatusEffectData") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedStatusEffectInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedStatusEffectInfoStrings.Length; i++) {
-            UnitStatusEffectInfo statusEffectInfo = new UnitStatusEffectInfo(unparsedStatusEffectInfoStrings[i]);
-			statusEffectInfoList.Add(statusEffectInfo);
-		}
-
-		return statusEffectInfoList;
-    }
 
     public static List<TileStatusEffectInfo> GetParsedTileStatusEffectInfo() {
         List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
