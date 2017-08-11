@@ -44,7 +44,7 @@ curi,29,FALSE,재결정,공격력 증가,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,N
 curi,29,FALSE,도금,기절,FALSE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,Faint,X,X,X,FALSE,NONE,,,,,,,,,,,,,아무 것도 할 수 없습니다.
 curi,29,FALSE,도금,물리 면역,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,MeleeImmune,X,X,X,FALSE,NONE,,,,,,,,,,,,,물리 공격에 면역이 됩니다.
 curi,36,FALSE,유독성 촉매,강타,TRUE,TRUE,FALSE,TRUE,9999,1,FALSE,TRUE,None,None,None,1,Smite,Power,0.7,0,FALSE,FALSE,,,,,,,,,,,,,다음 공격 시 <color=red>AMOUNT0</color>의 추가 피해를 줍니다.
-curi,43,FALSE,에테르 폭탄,침묵,FALSE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,,스킬을 사용할 수 없습니다.
+curi,43,FALSE,에테르 폭탄,침묵,FALSE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,,기술을 사용할 수 없습니다.
 curi,43,FALSE,제한 구역,공격력 상승,TRUE,TRUE,FALSE,FALSE,9999,99,FALSE,FALSE,None,None,None,1,PowerChange,Stack,4,0,TRUE,TRUE,,,,,,,,,,,,,공격력이 <color=green>AMOUNT0</color> 증가합니다.
 curi,50,FALSE,초강산 혼합물,초강산 혼합물,FALSE,FALSE,FALSE,FALSE,3,1,FALSE,TRUE,None,None,None,3,DefenseChange,Level,-1.7,-132,FALSE,FALSE,ResistanceChange,Level,-1.7,-132,FALSE,FALSE,DamageOverPhase,O,0.08,0,FALSE,NONE,방어력과 저항력이 <color=red>AMOUNT0</color> 증가하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 지속 피해를 받습니다.
 eugene,1,TRUE,순백의 방패,순백의 방패,TRUE,FALSE,FALSE,FALSE,3,1,FALSE,TRUE,None,None,None,1,Aura,O,0,2,FALSE,NONE,,,,,,,,,,,,,반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
@@ -55,7 +55,7 @@ eugene,36,FALSE,순백의 방패,저항력 상승,TRUE,TRUE,TRUE,FALSE,9999,2,FA
 eugene,8,TRUE,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,HealOverPhase,Power,0.7,0,FALSE,NONE,,,,,,,,,,,,,페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복합니다.
 eugene,29,TRUE,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,2,HealOverPhase,Power,0.7,0,FALSE,NONE,Etc,O,0,1.2,TRUE,TRUE,,,,,,,페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 됩니다.
 eugene,43,FALSE,청명수의 축복,지속 회복,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,3,HealOverPhase,Power,0.7,0,FALSE,NONE,Etc,O,0,1.2,TRUE,TRUE,Etc,O,0,0,FALSE,NONE,페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 되고 약화 효과가 하나 제거됩니다.
-eugene,15,FALSE,거울 방패,마법 반사,TRUE,FALSE,FALSE,TRUE,9999,1,FALSE,TRUE,None,None,None,1,MagicReflect,O,0,100,TRUE,TRUE,,,,,,,,,,,,,다음 마법 스킬의 데미지를 <color=red>AMOUNT0</color>만큼 반사합니다.
+eugene,15,FALSE,거울 방패,마법 반사,TRUE,FALSE,FALSE,TRUE,9999,1,FALSE,TRUE,None,None,None,1,MagicReflect,O,0,100,TRUE,TRUE,,,,,,,,,,,,,다음 번 마법 피해를 <color=red>AMOUNT0</color>만큼 반사합니다.
 eugene,15,true,여행자의 발걸음,속도 상승,TRUE,TRUE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,SpeedChange,O,0,20,TRUE,TRUE,,,,,,,,,,,,,속도가 <color=red>AMOUNT0</color> 증가합니다.
 eugene,43,false,길잡이,길잡이,TRUE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,Etc,O,0,2,FALSE,NONE,,,,,,,,,,,,,반경AMOUNT0 영역에서 턴을 시작한 동료의 속도를 증가시킵니다.
 eugene,43,false,길잡이,속도 상승,TRUE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,SpeedChange,O,0,20,TRUE,TRUE,,,,,,,,,,,,,속도가 <color=red>AMOUNT0</color> 증가합니다.
@@ -72,11 +72,11 @@ luvericha,43,FALSE,헌신,헌신,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,N
 luvericha,50,FALSE,4분 33초,침묵,FALSE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,,
 luvericha,50,FALSE,환상곡,환상곡,TRUE,FALSE,FALSE,FALSE,3,1,FALSE,TRUE,None,None,None,2,HealOverPhase,Power,0.9,0,FALSE,FALSE,TakenHealChange,0,0,15,TRUE,TRUE,,,,,,,
 json,0,false,표식,표식,FALSE,TRUE,TRUE,FALSE,9999,4,TRUE,TRUE,None,None,None,1,Etc,O,0,10,TRUE,NONE,,,,,,,,,,,,,
-sepia,1,false,신뢰의 끈,방어력 상승,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,None,None,1,DefenseChange,Level,0.6,48,FALSE,FALSE,,,,,,,,,,,,,
+sepia,1,false,신뢰의 끈,방어력 상승,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,None,None,1,DefenseChange,Level,0.6,48,FALSE,FALSE,,,,,,,,,,,,,방어력이 높아집니다.
 sepia,1,false,반달베기,보호막,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,Shield,Power,0.2,0,FALSE,FALSE,,,,,,,,,,,,,
-noel,1,false,파마의 섬광,침묵,FALSE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,,
-noel,1,false,신의 가호,신의 가호,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,Shield,Power,1.5,0,FALSE,FALSE,,,,,,,,,,,,,
-arcadia,1,false,생명의 요람,생명의 요람,TRUE,FALSE,FALSE,FALSE,3,1,FALSE,TRUE,None,None,None,3,HealOverPhase,O,0.1,0,FALSE,FALSE,DefenseChange,Level,1.2,87,FALSE,FALSE,ResistanceChange,Level,1.2,87,FALSE,FALSE,
+noel,1,false,파마의 섬광,침묵,FALSE,FALSE,FALSE,FALSE,1,1,FALSE,TRUE,None,None,None,1,Silence,X,X,X,FALSE,NONE,,,,,,,,,,,,,기술을 사용할 수 없습니다.
+noel,1,false,신의 가호,보호막,TRUE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,Shield,Power,1.5,0,FALSE,FALSE,,,,,,,,,,,,,받는 피해를 상쇄합니다.
+arcadia,1,false,생명의 요람,생명의 요람,TRUE,FALSE,FALSE,FALSE,3,1,FALSE,TRUE,None,None,None,3,HealOverPhase,O,0.1,0,FALSE,FALSE,DefenseChange,Level,1.2,87,FALSE,FALSE,ResistanceChange,Level,1.2,87,FALSE,FALSE,페이즈를 시작할 때마다 체력을 회복하며 방어력과 저항력이 높아집니다.
 arcadia,8,false,뿌리 내리기,뿌리 내리기,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,None,None,2,DefenseChange,Level,0.9,59,FALSE,FALSE,ResistanceChange,Level,0.9,59,FALSE,FALSE,,,,,,,
 arcadia,8,false,갈고리 씨앗,지속 피해,FALSE,FALSE,FALSE,FALSE,2,1,FALSE,TRUE,None,None,None,1,DamageOverPhase,Power,0.5,0,FALSE,FALSE,,,,,,,,,,,,,
 arcadia,15,false,광합성,안식,TRUE,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,None,None,1,TakenHealChange,O,0,50,TRUE,TRUE,,,,,,,,,,,,,
