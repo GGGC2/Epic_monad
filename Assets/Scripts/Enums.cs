@@ -5,29 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Enums {
-	public class EnumUtil{
-		public static IEnumerable<T> GetValues<T>(){
-			return Enum.GetValues(typeof(T)).Cast<T>();
-		}
-
-		//원랜 GetValues<Direction>으로 4방향을 받아올 수 있어야 하는데 개발용 변수 Left/Right/Up/Down 때문에 8개를 받아와버려서...
-		//따로 함수를 만들었다!!
-		public static List<Direction> GetDirections(){
-			List<Direction> directions = new List<Direction> ();
+	public static class EnumUtil{
+		public static List<Direction> directions;
+		public static List<Direction> nonTileDirections;
+		static EnumUtil(){
+			directions = new List<Direction> ();
 			directions.Add (Direction.LeftDown);
 			directions.Add (Direction.RightDown);
 			directions.Add (Direction.LeftUp);
 			directions.Add (Direction.RightUp);
-			return directions;
+			nonTileDirections = new List<Direction> ();
+			nonTileDirections.Add (Direction.Left);
+			nonTileDirections.Add (Direction.Right);
+			nonTileDirections.Add (Direction.Up);
+			nonTileDirections.Add (Direction.Down);
 		}
-			
-		public static List<Direction> GetNonTileDirections(){
-			List<Direction> directions = new List<Direction> ();
-			directions.Add (Direction.Left);
-			directions.Add (Direction.Right);
-			directions.Add (Direction.Up);
-			directions.Add (Direction.Down);
-			return directions;
+		public static IEnumerable<T> GetValues<T>(){
+			return Enum.GetValues(typeof(T)).Cast<T>();
 		}
 	}
 	public enum ConditionType{ Win, Lose, End, Bonus }

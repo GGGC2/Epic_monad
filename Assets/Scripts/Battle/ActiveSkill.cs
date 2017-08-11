@@ -228,7 +228,7 @@ public class ActiveSkill : Skill{
 			Dictionary<Direction, Tile> targetTiles = new Dictionary<Direction, Tile> ();
 			Vector2 casterPos = casterTile.GetTilePos ();
 
-			foreach (Direction direction in EnumUtil.GetDirections()) {
+			foreach (Direction direction in EnumUtil.directions) {
 				Tile routeEnd = GetRealTargetTileForAI (casterPos, direction);
 				if (routeEnd != null)
 					targetTiles [direction] = routeEnd;
@@ -245,7 +245,7 @@ public class ActiveSkill : Skill{
 		else if (skillType == SkillType.Auto) {
 			Tile targetTile = casterTile;
 
-			foreach (Direction direction in EnumUtil.GetDirections()) {
+			foreach (Direction direction in EnumUtil.directions) {
 				SkillLocation skillLocation = new SkillLocation (casterTile, targetTile, direction);
 				attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
 			}
