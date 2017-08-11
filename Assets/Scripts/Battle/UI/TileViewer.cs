@@ -34,7 +34,7 @@ namespace BattleUI {
             int requiredAP = tile.GetRequireAPAtTile();
             int unclimbableAP = 200;
             if (requiredAP < unclimbableAP) {
-                apText.text = "AP " + requiredAP;
+                apText.text = "소모 행동력 " + requiredAP;
             } else {
                 apText.text = "-";
             }
