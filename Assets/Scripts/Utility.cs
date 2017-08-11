@@ -13,7 +13,7 @@ public class Utility : MonoBehaviour {
 		string directionString = "";
 		Vector2 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3 (Input.mousePosition.x,Input.mousePosition.y,0));
 
-		if(unit.GetTileUnderUnit().isHighlight){ return originalDirection; }
+		if(unit.GetTileUnderUnit().isMouseOver){ return originalDirection; }
 		
 		if (mousePosition.x < unitPosition.x)
 			directionString += "Left";
