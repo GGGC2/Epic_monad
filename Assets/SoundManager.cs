@@ -13,9 +13,7 @@ public class SoundManager : MonoBehaviour {
 	static Dictionary<string, AudioClip> SEs;
 
 	public void PlayBGM(string name){
-		AudioClip bgm = BGMs [name];
-		if(audioSource.clip == null || audioSource.clip != bgm)
-			audioSource.clip = bgm;
+		audioSource.clip = BGMs [name];
 		if(!audioSource.isPlaying)
 			audioSource.Play();
 	}
