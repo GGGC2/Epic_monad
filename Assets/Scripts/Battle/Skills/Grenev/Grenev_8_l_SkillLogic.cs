@@ -9,14 +9,14 @@ namespace Battle.Skills {
             return (float)target.currentHealth / (float)target.GetMaxHealth() <= 0.35f;
         }
         public override bool MayDisPlayDamageCoroutine(SkillInstanceData skillInstanceData) {
-            if (isHealthRatioSmallEnough(skillInstanceData.GetMainTarget())) {
+            if (isHealthRatioSmallEnough(skillInstanceData.GetTarget())) {
                 return false;
             }
             return true;
         }
         public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
             Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetMainTarget();
+            Unit target = skillInstanceData.GetTarget();
             if (isHealthRatioSmallEnough(target)) {
                 BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
                 yield return battleManager.StartCoroutine(target.
@@ -25,7 +25,7 @@ namespace Battle.Skills {
             else yield return null;
         }
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
-            if(isHealthRatioSmallEnough(skillInstanceData.GetMainTarget())) {
+            if(isHealthRatioSmallEnough(skillInstanceData.GetTarget())) {
                 skillInstanceData.GetDamage().relativeDamageBonus = 0;
             }
         }

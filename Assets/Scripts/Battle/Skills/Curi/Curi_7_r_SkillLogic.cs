@@ -10,7 +10,7 @@ namespace Battle.Skills {
             return false;
         }
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
-            if(skillInstanceData.GetMainTarget().GetUnitClass() != UnitClass.Magic) {
+            if(skillInstanceData.GetTarget().GetUnitClass() != UnitClass.Magic) {
                 skillInstanceData.GetDamage().relativeDamageBonus = 0;
             }
         }

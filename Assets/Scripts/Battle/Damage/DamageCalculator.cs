@@ -81,12 +81,11 @@ namespace Battle
 			var damageList = new Dictionary<Unit, DamageInfo>();
 			ActiveSkill appliedSkill = chain.Skill;
 			Unit caster = chain.Caster;			
-			List<Tile> realEffectRange = chain.RealEffectRange;
 			List<Unit> targets = chain.CurrentTargets;
 
 			foreach (var target in targets)
 			{
-				SkillInstanceData skillInstanceData = new SkillInstanceData(new AttackDamage(), appliedSkill, caster, realEffectRange, target, targets.Count);
+				SkillInstanceData skillInstanceData = new SkillInstanceData(chain.Casting, target);
 
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
 					CalculateAttackDamage(skillInstanceData, chainCombo);
@@ -138,7 +137,7 @@ namespace Battle
 
 		public static void CalculateAmountOtherThanAttackDamage(SkillInstanceData skillInstanceData) {
 			Unit caster = skillInstanceData.GetCaster();
-			Unit target = skillInstanceData.GetMainTarget();
+			Unit target = skillInstanceData.GetTarget();
 			AttackDamage attackDamage = skillInstanceData.GetDamage();
 			ActiveSkill appliedSkill = skillInstanceData.GetSkill();
 
@@ -160,7 +159,7 @@ namespace Battle
 		public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
 		{
 			Unit caster = skillInstanceData.GetCaster();
-			Unit target = skillInstanceData.GetMainTarget();
+			Unit target = skillInstanceData.GetTarget();
 			AttackDamage attackDamage = skillInstanceData.GetDamage();
 			ActiveSkill appliedSkill = skillInstanceData.GetSkill();
 

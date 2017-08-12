@@ -3,7 +3,7 @@ namespace Battle.Skills {
     class Luvericha_6_l_SkillLogic : BaseSkillLogic {
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
             Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetMainTarget();
+            Unit target = skillInstanceData.GetTarget();
             skillInstanceData.GetDamage().baseDamage = caster.GetMaxHealth();
             
             if(target.GetCurrentHealth() < caster.GetMaxHealth()) {

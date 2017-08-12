@@ -8,6 +8,7 @@ public class Chain {
 	public Chain (Casting casting){
 		this.casting = casting;
 	}
+	public Casting Casting { get { return casting; } }
 	public Unit Caster { get { return casting.Caster; } }
 	public ActiveSkill Skill { get { return casting.Skill; } }
 	SkillLocation Location { get { return casting.Location; } }

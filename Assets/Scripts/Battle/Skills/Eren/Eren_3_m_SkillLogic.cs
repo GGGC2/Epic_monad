@@ -9,7 +9,7 @@ public class Eren_3_m_SkillLogic : BasePassiveSkillLogic {
     {
 		float damageBonus = 1.2f;
 		
-		if (skillInstanceData.GetMainTarget().GetMaxHealth() < skillInstanceData.GetCaster().GetMaxHealth())
+		if (skillInstanceData.GetTarget().GetMaxHealth() < skillInstanceData.GetCaster().GetMaxHealth())
 			skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
 	}
 }

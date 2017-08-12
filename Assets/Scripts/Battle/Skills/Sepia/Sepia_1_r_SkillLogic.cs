@@ -7,7 +7,7 @@ namespace Battle.Skills {
     class Sepia_1_r_SkillLogic : BaseSkillLogic {
         public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
             Unit caster = skillInstanceData.GetCaster();
-            StatusEffector.AttachStatusEffect(caster, skill, caster, skillInstanceData.GetTiles());
+            StatusEffector.AttachStatusEffect(caster, skill, caster, skillInstanceData.GetRealEffectRange());
             caster.UpdateHealthViewer();
             yield return null;
         }

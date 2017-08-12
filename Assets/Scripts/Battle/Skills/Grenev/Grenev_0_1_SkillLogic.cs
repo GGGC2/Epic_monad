@@ -7,7 +7,7 @@ namespace Battle.Skills {
         }
         public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
             Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetMainTarget();
+            Unit target = skillInstanceData.GetTarget();
             DamageCalculator.AttackDamage attackDamage = skillInstanceData.GetDamage();
 
             int distance = Utility.GetDistance(caster.GetPosition(), target.GetPosition());

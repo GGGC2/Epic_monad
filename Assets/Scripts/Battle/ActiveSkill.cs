@@ -324,7 +324,7 @@ public class ActiveSkill : Skill{
 
 				//공격/약화계 스킬이면 회피 체크를 하고 아니라면 무조건 효과를 가한다
 				if (!IsChainable() || !CheckEvasion(caster, target)) {
-					SkillInstanceData skillInstanceData = new SkillInstanceData(new Battle.DamageCalculator.AttackDamage(), this, caster, realEffectRange, target, targets.Count);
+					SkillInstanceData skillInstanceData = new SkillInstanceData(casting, target);
 					// 데미지 적용
 					if (SkillLogic.MayDisPlayDamageCoroutine(skillInstanceData)) {
 						if (skillApplyType == SkillApplyType.DamageHealth) {
@@ -421,7 +421,7 @@ public class ActiveSkill : Skill{
 
 	private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, int chainCombo, bool isLastTarget) {
 		Unit caster = skillInstanceData.GetCaster();
-		Unit target = skillInstanceData.GetMainTarget();
+		Unit target = skillInstanceData.GetTarget();
 		ActiveSkill skill = skillInstanceData.GetSkill();
 		int targetCount = skillInstanceData.GetTargetCount();
 

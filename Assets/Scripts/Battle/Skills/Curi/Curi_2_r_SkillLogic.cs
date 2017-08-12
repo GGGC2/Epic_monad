@@ -6,7 +6,7 @@ namespace Battle.Skills {
     public class Curi_2_r_SkillLogic : BaseSkillLogic {
         public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
             int waterTileCount = 0;
-            foreach(Tile tile in skillInstanceData.GetTiles()) {
+            foreach(Tile tile in skillInstanceData.GetRealEffectRange()) {
                 if(tile.GetTileElement() == Element.Water)
                     waterTileCount++;
             }

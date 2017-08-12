@@ -31,9 +31,9 @@ namespace Battle.Skills {
             return true;
         }
         public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            List<Tile> tiles = skillInstanceData.GetTiles();
+            List<Tile> tiles = skillInstanceData.GetRealEffectRange();
             Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetMainTarget();
+            Unit target = skillInstanceData.GetTarget();
 
             StatusEffector.AttachStatusEffect(caster, skill, caster, tiles);
             Tile backTile = GetBackTile(caster, target);
