@@ -520,7 +520,125 @@ public class Unit : MonoBehaviour{
         notMovedTurnCount ++;
         hasUsedSkillThisTurn = false;
 	}
+
+	public IEnumerator ApplyDamageByCasting(SkillInstanceData skillInstanceData, bool isHealth) {
+		Unit caster = skillInstanceData.GetCaster();
+		ActiveSkill skill = skillInstanceData.GetSkill();
+		bool ignoreShield = SkillLogicFactory.Get(skill).IgnoreShield(skillInstanceData);
+		int realDamage = (int)CalculateDamageByCasting (skillInstanceData, isHealth);
+		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+	}
+	public int CalculateDamageByCasting(SkillInstanceData skillInstanceData, bool isHealth){
+		Unit caster = skillInstanceData.GetCaster();
+		ActiveSkill appliedSkill = skillInstanceData.GetSkill();
+		float damage = skillInstanceData.GetDamage().resultDamage;
+		if (isHealth == true) {
+			// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
+			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
+			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
+
+			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
+			damage = CalculateActualAmount (damage, StatusEffectType.TakenDamageChange);
+
+			float defense = Battle.DamageCalculator.CalculateDefense(appliedSkill, this, caster);
+			float resistance = Battle.DamageCalculator.CalculateResistance(appliedSkill, this, caster);
+			damage = Battle.DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
+		}
+		return (int)damage;
+	}
+	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
+		int realDamage = (int)CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
+		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+	}
+	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
+		float damage = originalDamage;
+
+		if (isHealth) {
+			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
+			damage = CalculateActualAmount (damage, StatusEffectType.TakenDamageChange);
+			// 방어력 및 저항력 적용
+			float defense = GetStat(Stat.Defense) + additionalDefense;
+			float resistance = GetStat(Stat.Resistance) + additionalResistance;
+			damage = Battle.DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
+
+			// 비앙카 고유스킬 - 덫 데미지 안 받음
+			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamaged (this, damage, caster, isSourceTrap)) {
+				damage = 0;
+			}
+		}
+		return (int)damage;
+	}
     
+	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
+		if (isHealth) {
+			int damageAfterShieldApply = damage;
+			// 실드 차감. 먼저 걸린 실드부터 차감.
+			Dictionary<UnitStatusEffect, int> attackedShieldDict = new Dictionary<UnitStatusEffect, int>();
+			if (!ignoreShield) {
+				foreach (var se in statusEffectList) {
+					int num = se.fixedElem.actuals.Count;
+					for (int i = 0; i < num; i++) {
+						if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
+							int remainShieldAmount = (int)se.GetRemainAmount(i);
+							if (remainShieldAmount >= damageAfterShieldApply) {
+								se.SubAmount(i, damageAfterShieldApply);
+								attackedShieldDict.Add(se, damageAfterShieldApply);
+								damageAfterShieldApply = 0;
+							}
+							else {
+								se.SubAmount(i, remainShieldAmount);
+								attackedShieldDict.Add(se, remainShieldAmount);
+								RemoveStatusEffect(se);
+								damageAfterShieldApply -= remainShieldAmount;
+							}
+						}
+					}
+					if (damage == 0) break;
+				}
+			}
+			currentHealth -= damageAfterShieldApply;
+
+			if (currentHealth < 0)
+				currentHealth = 0;
+
+			Debug.Log(damageAfterShieldApply + " damage applied to " + GetName());
+
+			DisplayDamageText(damageAfterShieldApply);
+
+			UpdateHealthViewer();
+
+			yield return new WaitForSeconds(1);
+
+			damageTextObject.SetActive(false);
+
+			if (damageAfterShieldApply > 0) {
+				latelyHitInfos.Add(new HitInfo(caster, null, damageAfterShieldApply));
+
+				// 데미지를 받을 때 발동하는 피격자 특성
+				SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, damageAfterShieldApply, caster);
+			}
+			foreach (var kv in attackedShieldDict) {
+				BattleManager battleManager = FindObjectOfType<BattleManager>();
+				UnitStatusEffect statusEffect = kv.Key;
+				Skill originSkill = statusEffect.GetOriginSkill();
+				if (originSkill.GetType() == typeof(ActiveSkill))
+					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value));
+				Unit shieldCaster = statusEffect.GetCaster();
+				List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
+				yield return battleManager.StartCoroutine(SkillLogicFactory.Get(shieldCastersPassiveSkills).
+					TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value));
+			}
+
+		}
+		else {
+			if (activityPoint >= damage)
+				activityPoint -= damage;
+			else
+				activityPoint = 0;
+			Debug.Log(GetName() + " loses " + damage + "AP.");
+		}
+	}
+
 	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap) {
         int finalDamage = (int) damage;
         float defense = GetStat(Stat.Defense) + additionalDefense;
@@ -621,8 +739,6 @@ public class Unit : MonoBehaviour{
         Unit target = skillInstanceData.GetMainTarget();
         ActiveSkill appliedSkill = skillInstanceData.GetSkill();
         float damage = skillInstanceData.GetDamage().resultDamage;
-        // 체력 깎임
-        // 체인 해제
         float defense = Battle.DamageCalculator.CalculateDefense(appliedSkill, target, caster);
         float resistance = Battle.DamageCalculator.CalculateResistance(appliedSkill, target, caster);
         if (isHealth == true) {
