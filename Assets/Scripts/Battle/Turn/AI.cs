@@ -423,7 +423,7 @@ namespace Battle.Turn{
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
 				AI.PaintMovableTiles(movableTilesWithPath);
 				
-				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, 45);
+				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint() - 24);
 
 				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;
