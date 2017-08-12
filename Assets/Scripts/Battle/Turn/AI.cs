@@ -47,7 +47,7 @@ namespace Battle.Turn{
 
 			return mainUnit.GetPosition();
 		}
-		public static Tile GetBestMoveableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		public static Tile GetBestMoveableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor){
 			Tile bestTile = caster.GetTileUnderUnit ();
 			int currAP = caster.GetCurrentActivityPoint ();
 			int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -61,7 +61,7 @@ namespace Battle.Turn{
 				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 				if (bestCastingOnThisTile != null) {
 					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					reward = singleCastingReward * (currAP - requireAP) / skillRequireAP;
+					reward = singleCastingReward * (currAP - requireAP - moveRestrainFactor) / skillRequireAP;
 
 					if (reward > maxReward) {
 						maxReward = reward;
@@ -148,12 +148,12 @@ namespace Battle.Turn{
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				movableTiles.Add (movableTileWithPath.Value.tile);
 
-			Tile destTile = AIUtil.GetBestMoveableTile (unit, selectedSkill, movableTilesWithPath);
+			Tile destTile = AIUtil.GetBestMoveableTile (unit, selectedSkill, movableTilesWithPath, 0);
 
 			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
 
 		}
-		private static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Tile> movableTiles){
+		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Tile> movableTiles){
 			Vector2 destPos = destTile.GetTilePos ();
 			TileWithPath pathToDestTile = movableTilesWithPath[destPos];
 
@@ -188,7 +188,6 @@ namespace Battle.Turn{
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = BattleData.SelectedSkill;
-				SkillType skillType = skill.GetSkillType ();
 
 				if (!unit.HasEnoughAPToUseSkill (skill))
 					yield break;
@@ -414,38 +413,28 @@ namespace Battle.Turn{
 				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
+				List<Tile> movableTiles = new List<Tile>();
+				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
+					movableTiles.Add (movableTileWithPath.Value.tile);
+				
+				Tile destTile = AIUtil.GetBestMoveableTile (unit, skill, movableTilesWithPath, 45);
 
-				if (!unit.HasEnoughAPToUseSkill (skill))
-					break;
+				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
+					yield break;
 
-				bool attacked = false;
+				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
 
-				//FIXME : 가장 가까운 타일부터(현타일->1칸이동범위->2칸이동->..) 확인해야 되는데 아직 안 함 ;;
-				//FIXME : 이동 소모 AP + 기술 소모 AP를 합친 값과 현 행동력을 비교해야 하는데 그것도 안 함 ;;
-				foreach(Tile tile in BattleData.tileManager.GetTilesInRange(RangeForm.Diamond, currPos, 0, 3, 0, Direction.LeftDown)){
-					if (tile.IsUnitOnTile ())
-						continue;
-					//FIXME : 막혀서 그 타일로 3칸 안에 못가는 경우는 빼야 하는데 아직 안 함
-
-					Vector2 casterPos = tile.GetTilePos ();
-					Tile casterTile = tile;
-					Direction? attackDirection;
-					Tile targetTile;
-
-					attackDirection = TastyTileAttackDirectionOnThatPosition (casterPos, skill);
-					//해당 타일에서 그레/비앙/달케 공격 가능할 시 그곳으로 이동하고 공격
-					if (attackDirection != null) {
-						targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
-						//FIXME : AI.Move에서 이동 후 방향설정도 안 해서 일단 Direction.LeftDown 넣어두고 소모 AP량도 지금 0이고 moveableTiles(파란 범위)도 비워놨는데 고칠 것이다
-						yield return AI.Move(unit, tile, Direction.LeftDown, 0, new List<Tile>());
-						yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
-						attacked = true;
+				while (true) {
+					yield return battleManager.BeforeActCommonAct ();
+					if (!unit.HasEnoughAPToUseSkill (skill))
+						yield break;
+					Tile currTile = unit.GetTileUnderUnit ();
+					Casting casting = skill.GetBestAttack (unit, currTile);
+					yield return AI.UseSkill (casting);
+					if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 						break;
-					}
 				}
-
-				if (!attacked)
-					break;
 			}
 		}
 		private static IEnumerator BreakAndEscape(Unit unit){
