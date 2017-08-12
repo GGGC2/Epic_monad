@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using Enums;
 using GameData;
 
-// This component is used in two UI.
-// SelectedUnitViewer and UnitViewer.
+// This component is used in two UI : SelectedUnitViewer and UnitViewer.
 namespace BattleUI {
     public class UnitViewer : MonoBehaviour {
 
@@ -32,6 +31,9 @@ namespace BattleUI {
         Vector3 statusEffectIconBarPosition;
         List<StatusEffectIcon> statusEffectIcons;
         Text statusEffectText;
+        public GameObject HpBar;
+        public GameObject CurrentApBar;
+        public GameObject NextApBar;
 
         public void UpdateUnitViewer(Unit unit) {
             unitImage.sprite = unit.GetDefaultSprite();
@@ -111,12 +113,15 @@ namespace BattleUI {
                 elementBuffIcon.SetActive(true);
         }
 
-        void UpdateHp(Unit unit) {
+        void UpdateHp(Unit unit){
             hpText.text = unit.GetCurrentHealth() + " / " + unit.GetStat(Stat.MaxHealth);
+            HpBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetHpRatio()*175, 22);
         }
 
         void UpdateAp(Unit unit) {
             apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Agility) + ")";
+            CurrentApBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetApRatio(unit.GetCurrentActivityPoint())*175, 22);
+            NextApBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility))*175, 22);
         }
 
         void UpdatePower(Unit unit) {

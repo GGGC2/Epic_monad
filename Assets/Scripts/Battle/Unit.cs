@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
 using Enums;
 using Battle.Skills;
 using Battle;
+using GameData;
 
 using Save;
 
@@ -140,6 +141,13 @@ public class Unit : MonoBehaviour{
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
+	public float GetHpRatio() {return (float)GetCurrentHealth()/(float)GetMaxHealth();}
+	public float GetApRatio(int number){
+		int MaxAp = actualStats[Stat.Agility].value + PartyData.level + 60;
+		float ratio = (float)number/(float)MaxAp;
+		if(ratio < 1) {return ratio;}
+		else {return 1;}
+	}
 	public int GetModifiedHealth(UnitClass casterClass){
 		if(casterClass == UnitClass.Melee)
 			return currentHealth*(GetStat(Stat.Defense)+200);

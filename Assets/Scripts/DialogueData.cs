@@ -47,14 +47,13 @@ public class DialogueData{
 			isAdventureObject = false;
 			Command = parser.ConsumeEnum<CommandType>();
 
-			if((int)Command < (int)CommandType.Adv)
-				commandSubType = parser.Consume();
+			if((int)Command < (int)CommandType.Adv) {commandSubType = parser.Consume();}
 
-			if(Command == CommandType.App)
-				nameInCode = parser.Consume();
-			else if(Command == CommandType.Glos)
+			if(Command == CommandType.App) {nameInCode = parser.Consume();}
+			else if(Command == CommandType.Glos){
 				glossaryIndex = parser.ConsumeInt();
 				glossarySetLevel = parser.ConsumeInt();
+			}
 		}else if (inputType == "**"){
 			// adventure objects.
 			isEffect = false;

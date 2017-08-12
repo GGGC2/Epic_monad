@@ -32,13 +32,13 @@ public class Glossary : MonoBehaviour{
 	}
 
 	public void UpdateButtonName(){
-		GlobalData.ViewAllGlossaryData();
+		//GlobalData.ViewAllGlossaryData();
 		Debug.Log(currentType.ToString());
 		for(int i = 0; i < 9; i++){
 			GlossaryData searchResult = GlobalData.GlossaryDataList.Find(data => data.Type == currentType && data.index == i+1);
 
 			if(searchResult != null && searchResult.level > 0){
-				Debug.Log("FOUND");
+				//Debug.Log("FOUND");
 				ButtonTextList[i].text = searchResult.name;
 			}
 			else
