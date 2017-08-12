@@ -51,7 +51,7 @@ namespace Battle.Turn{
 			Dictionary<Vector2, TileWithPath> enemyAttackableTilesWithPath = new Dictionary<Vector2, TileWithPath> ();
 			foreach (var pair in movableTilesWithPath) {
 				Tile movedTile = pair.Value.tile;
-				bool attackAble = skill.IsAttackableOnTheTile (caster, movedTile);
+				bool attackAble = (skill.GetBestAttack (caster, movedTile) != null);
 				if (attackAble)
 					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
 			}
@@ -128,7 +128,7 @@ namespace Battle.Turn{
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			bool attackAble = selectedSkill.IsAttackableOnTheTile (unit, currentTile);
+			bool attackAble = (selectedSkill.GetBestAttack (unit, currentTile) != null);
 
 			//곧바로 공격 가능하면 이동하지 않는다
 			if (attackAble) {
@@ -194,11 +194,11 @@ namespace Battle.Turn{
 					yield break;
 
 				Tile currTile = unit.GetTileUnderUnit ();
-				bool attackAble = skill.IsAttackableOnTheTile (unit, currTile);
-				if (!attackAble) {
-					yield break;
-				}
 				Casting casting = skill.GetBestAttack (unit, currTile);
+
+				if (casting == null)
+					yield break;
+				
 				yield return UseSkill (casting);
 			}
 		}

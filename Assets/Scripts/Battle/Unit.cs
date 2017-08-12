@@ -778,6 +778,22 @@ public class Unit : MonoBehaviour{
         return requireSkillAP;
     }
 
+	// 아래 - AI용 함수들
+
+	// FIXME : AI가 공격 외의 기술을 갖게 되는 시점이 오면 reward 함수를 확장해야 한다
+	public float CalculateRewardByThisCastingApply(Casting casting){
+		CastingApply castingApply = new CastingApply (casting, this);
+		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
+		DamageCalculator.CalculateAttackDamage(castingApply, 1);
+		int damage = CalculateDamageByCasting(castingApply, true);
+
+		float reward = 0;
+		reward = damage * GetStat (Stat.Power);
+		return reward;
+	}
+
+	// 위 - AI용 함수들
+
 	public void SetActivityPoint(int newAP){
 		activityPoint = newAP;
 		unitManager.UpdateUnitOrder();
