@@ -172,53 +172,62 @@ public class ActiveSkill : Skill{
 		
 		return rangeColors;
 	}
-		
-	public bool IsAttackableOnTheTile (Unit caster, Tile casterTile){
-		if (skillType == SkillType.Point) {
-			return GetAttackableEnemyTilesOfPointSkill (caster, casterTile).Count != 0;
-		}
-		else {
-			return GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile).Count != 0;
-		}
-	}
+
 	public Casting GetBestAttack(Unit caster, Tile casterTile){
-		int minCurrHP = Int32.MaxValue;
+		// just default values
 		Tile targetTile = casterTile;
 		Direction direction = caster.GetDirection ();
+
+		Casting bestCasting = null;
+		float maxReward = 0;
+
 		if (skillType == SkillType.Point) {
 			Dictionary<Tile, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfPointSkill (caster, casterTile);
 			foreach(var pair in attackableEnemyTiles){
-				int minCurrHPInThisRange = GetMinModifiedHP (caster, pair.Value);
-				if (minCurrHPInThisRange < minCurrHP) {
-					minCurrHP = minCurrHPInThisRange;
-					targetTile = pair.Key;
-					direction = Utility.GetDirectionToTarget (caster, targetTile.GetTilePos ());
+				targetTile = pair.Key;
+				direction = Utility.GetDirectionToTarget (caster, targetTile.GetTilePos ());
+				SkillLocation location = new SkillLocation (casterTile, targetTile, direction);
+				Casting casting = new Casting (caster, this, location);
+
+				float reward = GetRewardByCasting (casting);
+				if (reward > maxReward) {
+					bestCasting = casting;
+					maxReward = reward;
 				}
 			}
-		}else{
+		}
+		else{
 			Dictionary<Direction, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile);
 			foreach(var pair in attackableEnemyTiles){
-				int minCurrHPInThisRange = GetMinModifiedHP (caster, pair.Value);
-				if (minCurrHPInThisRange < minCurrHP) {
-					direction = pair.Key;
-					if (skillType == SkillType.Route)
-						targetTile = GetRealTargetTileForAI (casterTile.GetTilePos (), direction, targetTile);
+				if (skillType == SkillType.Route)
+					targetTile = GetRealTargetTileForAI (casterTile.GetTilePos (), direction, targetTile);
+				direction = pair.Key;
+				SkillLocation location = new SkillLocation (casterTile, targetTile, direction);
+				Casting casting = new Casting (caster, this, location);
+
+				float reward = GetRewardByCasting (casting);
+				if (reward > maxReward) {
+					bestCasting = casting;
+					maxReward = reward;
+				}
+				else if (reward == maxReward && direction == caster.GetDirection()) {
+					// 자동형 스킬 중 4방향으로 범위가 똑같은 애들을 쓸 때는 괜히 방향 바꾸지 않도록 함
+					bestCasting = casting;
 				}
 			}
 		}
-		Casting casting = new Casting (caster, this, new SkillLocation (casterTile, targetTile, direction));
-		return casting;
+		return bestCasting;
 	}
-	private static int GetMinModifiedHP(Unit caster, List<Tile> unitTiles){
-		int minCurrHP = Int32.MaxValue;
-		foreach (Tile tile in unitTiles) {
-			int currHP = tile.GetUnitOnTile().GetModifiedHealth(caster.GetUnitClass());
-			if (currHP < minCurrHP) {
-				minCurrHP = currHP;
-			}
+	public float GetRewardByCasting(Casting casting){
+		Chain chain = new Chain (casting);
+
+		float totalReward = 0;
+		foreach (Unit target in chain.CurrentTargets) {
+			totalReward += target.CalculateRewardByCastingToThisUnit (casting);
 		}
-		return minCurrHP;
+		return totalReward;
 	}
+
 	private Dictionary<Direction, List<Tile>> GetAttackableEnemyTilesOfDirectionSkill(Unit caster, Tile casterTile){
 		Dictionary<Direction, List<Tile>> attackAbleTilesGroups = new Dictionary<Direction, List<Tile>> ();
 
