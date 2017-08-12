@@ -172,6 +172,7 @@ public class Unit : MonoBehaviour{
 	public void SetName(string name) { this.name = name; }
 	public Side GetSide() { return side; }
 	public bool IsAlly(Unit unit) { return side == unit.GetSide (); }
+	public bool IsSeenAsEnemyToThisAIUnit(Unit unit) { return Battle.Turn.AIUtil.IsSecondUnitEnemyToFirstUnit (unit, this); } //은신 상태에선 적으로 인식되지 않음
 	public bool IsObject() { return isObject; }
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
@@ -795,9 +796,16 @@ public class Unit : MonoBehaviour{
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
 		int damage = CalculateDamageByCasting(castingApply, true);
 
+		float sideFactor = 0;
+		Unit caster = casting.Caster;
+		if (IsAlly (caster))
+			sideFactor = -0.6f;
+		if (IsSeenAsEnemyToThisAIUnit (caster))
+			sideFactor = 1;
+
 		// FIXME : 이 공격으로 죽는 경우를 지금보다 잘 고려해야 하고 방어막도 고려해야 함
 		float reward = 0;
-		reward = GetStat (Stat.Power) * damage / GetCurrentHealth ();
+		reward = sideFactor * GetStat (Stat.Power) * damage / GetCurrentHealth ();
 		return reward;
 	}
 
