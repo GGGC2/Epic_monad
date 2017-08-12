@@ -7,8 +7,8 @@ using Enums;
 using GameData;
 
 // This component is used in two UI : SelectedUnitViewer and UnitViewer.
-namespace BattleUI {
-    public class UnitViewer : MonoBehaviour {
+namespace BattleUI{
+    public class UnitViewer : MonoBehaviour{
 
         TileManager tileManager;
 
@@ -31,9 +31,10 @@ namespace BattleUI {
         Vector3 statusEffectIconBarPosition;
         List<StatusEffectIcon> statusEffectIcons;
         Text statusEffectText;
-        public GameObject HpBar;
-        public GameObject CurrentApBar;
-        public GameObject NextApBar;
+        public Image HpBar;
+        public Image CurrentApBar;
+        public Image NextApBar;
+        public GameObject ApBarArrow;
 
         public void UpdateUnitViewer(Unit unit) {
             unitImage.sprite = unit.GetDefaultSprite();
@@ -92,11 +93,11 @@ namespace BattleUI {
             unitImage.sprite = transparentSprite;
         }
 
-        void UpdateEffect(Unit unit) {
+        void UpdateEffect(Unit unit){
             RefreshStatusEffectIconList();
             List<UnitStatusEffect> effectList = unit.GetStatusEffectList();
             int numberOfEffects = effectList.Count;
-            for (int i = 0; i < numberOfEffects; i++) {
+            for (int i = 0; i < numberOfEffects; i++){
                 StatusEffectIcon statusEffectIcon = Instantiate(statusEffectIconPrefab).GetComponent<StatusEffectIcon>();
                 statusEffectIcon.statusEffect = effectList[i];
                 statusEffectIcon.transform.SetParent(transform);
@@ -115,13 +116,15 @@ namespace BattleUI {
 
         void UpdateHp(Unit unit){
             hpText.text = unit.GetCurrentHealth() + " / " + unit.GetStat(Stat.MaxHealth);
-            HpBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetHpRatio()*175, 22);
+            HpBar.color = HealthViewer.SideToHealthColor(unit.side);
+            HpBar.fillAmount = unit.GetHpRatio();
         }
 
         void UpdateAp(Unit unit) {
             apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Agility) + ")";
-            CurrentApBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetApRatio(unit.GetCurrentActivityPoint())*175, 22);
-            NextApBar.GetComponent<RectTransform>().sizeDelta = new Vector2(unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility))*175, 22);
+            CurrentApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
+            NextApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility));
+            ApBarArrow.GetComponent<RectTransform>().localPosition = new Vector3(unit.GetApRatio(PartyData.level+60)*175, -14, 0);
         }
 
         void UpdatePower(Unit unit) {

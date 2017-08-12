@@ -34,7 +34,6 @@ public class Unit : MonoBehaviour{
 	GameObject heightBonusTextObject;
 	HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
-
 	List<HitInfo> latelyHitInfos;
 
 	int index; // 유닛의 고유 인덱스

@@ -80,8 +80,7 @@ public class HealthViewer : MonoBehaviour {
         retreatIcon.SetActive(false);
     }
 
-    public void SetInitHealth(int maxHealth, Side side)
-	{
+    public void SetInitHealth(int maxHealth, Side side){
 		this.currentHealth = maxHealth;
 		this.maxHealth = maxHealth;
 		
@@ -91,20 +90,14 @@ public class HealthViewer : MonoBehaviour {
 		damageBar.transform.localScale = initHealthScale;
         shieldBar.transform.localScale = initHealthScale;
         shieldDamageBar.transform.localScale = initHealthScale;
-		
-		if (side == Side.Ally)
-		{
-			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.cyan;	
-		}
-		else if (side == Side.Neutral)
-		{
-			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.gray;
-		}
-		else
-		{
-			currentHealthBar.GetComponent<SpriteRenderer>().color = Color.yellow;
-		}
+		currentHealthBar.GetComponent<SpriteRenderer>().color = SideToHealthColor(side);
 	}
+
+    public static Color SideToHealthColor(Side side){
+        if (side == Side.Ally) {return Color.cyan;}
+		else if (side == Side.Neutral) {return Color.gray;}
+		else {return Color.yellow;}
+    }
 
 	void Awake () {
 		currentHealthBar = transform.Find("currentHealthBar").gameObject;
