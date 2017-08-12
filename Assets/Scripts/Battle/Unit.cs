@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.UI;
 using Enums;
 using Battle.Skills;
+using Battle;
 
 using Save;
 
@@ -525,6 +526,11 @@ public class Unit : MonoBehaviour{
 		Unit caster = skillInstanceData.GetCaster();
 		ActiveSkill skill = skillInstanceData.GetSkill();
 		bool ignoreShield = SkillLogicFactory.Get(skill).IgnoreShield(skillInstanceData);
+
+		// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
+		var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
+		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
+
 		int realDamage = (int)CalculateDamageByCasting (skillInstanceData, isHealth);
 		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
@@ -533,16 +539,15 @@ public class Unit : MonoBehaviour{
 		ActiveSkill appliedSkill = skillInstanceData.GetSkill();
 		float damage = skillInstanceData.GetDamage().resultDamage;
 		if (isHealth == true) {
-			// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
-			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
+			float reflectDamage = DamageCalculator.CalculateReflectDamage(damage, this, caster, caster.GetUnitClass());
+			damage -= reflectDamage;
 
 			// 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
 			damage = CalculateActualAmount (damage, StatusEffectType.TakenDamageChange);
 
-			float defense = Battle.DamageCalculator.CalculateDefense(appliedSkill, this, caster);
-			float resistance = Battle.DamageCalculator.CalculateResistance(appliedSkill, this, caster);
-			damage = Battle.DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
+			float defense = DamageCalculator.CalculateDefense(appliedSkill, this, caster);
+			float resistance = DamageCalculator.CalculateResistance(appliedSkill, this, caster);
+			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
 		}
 		return (int)damage;
 	}
@@ -559,7 +564,7 @@ public class Unit : MonoBehaviour{
 			// 방어력 및 저항력 적용
 			float defense = GetStat(Stat.Defense) + additionalDefense;
 			float resistance = GetStat(Stat.Resistance) + additionalResistance;
-			damage = Battle.DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
+			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
 
 			// 비앙카 고유스킬 - 덫 데미지 안 받음
 			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamaged (this, damage, caster, isSourceTrap)) {
@@ -639,90 +644,6 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public IEnumerator Damaged(float damage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap) {
-        int finalDamage = (int) damage;
-        float defense = GetStat(Stat.Defense) + additionalDefense;
-        float resistance = GetStat(Stat.Resistance) + additionalResistance;
-
-        if (isHealth) {
-            // 피격자의 효과/특성으로 인한 대미지 증감 효과 적용 - 아직 미완성
-            damage = CalculateActualAmount(damage, StatusEffectType.TakenDamageChange);
-            // 방어력 및 저항력 적용
-            damage = Battle.DamageCalculator.ApplyDefenseAndResistance(damage, caster.GetUnitClass(), defense, resistance);
-
-            if (!SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerDamaged(this, damage, caster, isSourceTrap)) {
-                damage = 0;
-            }
-            // 실드 차감. 먼저 걸린 실드부터 차감.
-            Dictionary<UnitStatusEffect, int> attackedShieldDict = new Dictionary<UnitStatusEffect, int>();
-            if (!ignoreShield) {
-                foreach (var se in statusEffectList) {
-                    int num = se.fixedElem.actuals.Count;
-                    for (int i = 0; i < num; i++) {
-                        if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
-                            float remainShieldAmount = se.GetRemainAmount(i);
-                            if (remainShieldAmount >= (int)damage) {
-                                se.SubAmount(i, (int)damage);
-                                attackedShieldDict.Add(se, (int)damage);
-
-                                damage = 0;
-                            } else {
-                                se.SubAmount(i, remainShieldAmount);
-                                attackedShieldDict.Add(se, (int)remainShieldAmount);
-
-                                RemoveStatusEffect(se);
-                                damage -= remainShieldAmount;
-                            }
-                        }
-                    }
-                    if (damage == 0) break;
-                }
-            }
-
-            finalDamage = (int)damage;
-
-            currentHealth -= finalDamage;
-
-
-            if (currentHealth < 0)
-                currentHealth = 0;
-
-            Debug.Log(finalDamage + " damage applied to " + GetName());
-
-			DisplayDamageText(finalDamage);
-
-            UpdateHealthViewer();
-
-            yield return new WaitForSeconds(1);
-
-            damageTextObject.SetActive(false);
-
-            if (finalDamage > 0) {
-                latelyHitInfos.Add(new HitInfo(caster, null, finalDamage));
-
-                // 데미지를 받을 때 발동하는 피격자 특성
-                SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, finalDamage, caster);
-            }
-            foreach (var kv in attackedShieldDict) {
-                BattleManager battleManager = FindObjectOfType<BattleManager>();
-                UnitStatusEffect statusEffect = kv.Key;
-                Skill originSkill = statusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill))
-                    yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value));
-                Unit shieldCaster = statusEffect.GetCaster();
-                List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
-                yield return battleManager.StartCoroutine(SkillLogicFactory.Get(shieldCastersPassiveSkills).
-                                    TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value));
-            }
-
-        } else {
-            if (activityPoint >= finalDamage) {
-                activityPoint -= finalDamage;
-            } else activityPoint = 0;
-            Debug.Log(GetName() + " loses " + finalDamage + "AP.");
-        }
-    }
-
 	public void DisplayDamageText(int damage){
 		damageTextObject.SetActive(true);
 		damageTextObject.GetComponent<CustomWorldText>().text = damage.ToString();
@@ -732,23 +653,6 @@ public class Unit : MonoBehaviour{
 		recoverTextObject.SetActive(true);
 		recoverTextObject.GetComponent<CustomWorldText>().text = recover.ToString();
 		recoverTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.RECOVER);
-	}
-
-	public IEnumerator DamagedBySkill(SkillInstanceData skillInstanceData, bool isHealth) {
-        Unit caster = skillInstanceData.GetCaster();
-        Unit target = skillInstanceData.GetMainTarget();
-        ActiveSkill appliedSkill = skillInstanceData.GetSkill();
-        float damage = skillInstanceData.GetDamage().resultDamage;
-        float defense = Battle.DamageCalculator.CalculateDefense(appliedSkill, target, caster);
-        float resistance = Battle.DamageCalculator.CalculateResistance(appliedSkill, target, caster);
-        if (isHealth == true) {
-			// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
-			var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
-		}
-        bool ignoreShield = SkillLogicFactory.Get(appliedSkill).IgnoreShield(skillInstanceData);
-        yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, defense - GetStat(Stat.Defense), resistance - GetStat(Stat.Resistance), isHealth, ignoreShield, false));
-		unitManager.UpdateUnitOrder();
 	}
 
     private bool checkIfSourceIsTrap(UnitStatusEffect se) {
@@ -776,7 +680,7 @@ public class Unit : MonoBehaviour{
                     Unit caster = se.GetCaster();
 
                     bool isSourceTrap = checkIfSourceIsTrap(se);
-                    yield return FindObjectOfType<BattleManager>().StartCoroutine(Damaged(damage, caster, 0, 0, true, false, isSourceTrap));
+					yield return FindObjectOfType<BattleManager>().StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
                 }
             }
         }
@@ -954,7 +858,7 @@ public class Unit : MonoBehaviour{
     }
     
 	// 보너스 텍스트 표시.
-	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage)
+	public void PrintDirectionBonus(DamageCalculator.AttackDamage attackDamage)
 	{
 		directionBonusTextObject.SetActive (true);
 		if (attackDamage.attackDirection == DirectionCategory.Side)

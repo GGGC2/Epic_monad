@@ -11,7 +11,7 @@ namespace Battle.Skills {
             float defense = target.GetStat(Stat.Defense);
             float resistance = target.GetStat(Stat.Resistance);
             if (target == caster) {
-                yield return battleManager.StartCoroutine(target.Damaged(target.GetMaxHealth() * 0.1f, caster, 
+				yield return battleManager.StartCoroutine(target.ApplyDamageByNonCasting(target.GetMaxHealth() * 0.1f, caster, 
                                         -defense, -resistance, true, false, false));
             }
         }

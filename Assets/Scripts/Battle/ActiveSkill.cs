@@ -333,7 +333,7 @@ public class ActiveSkill : Skill{
 							Battle.DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
 							float amount = skillInstanceData.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
-								yield return battleManager.StartCoroutine(target.DamagedBySkill(skillInstanceData, false));
+								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(skillInstanceData, false));
 								BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
 								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
@@ -446,7 +446,7 @@ public class ActiveSkill : Skill{
 			attackDamage.resultDamage -= reflectAmount;
 		}
 
-		var damageCoroutine = target.DamagedBySkill(skillInstanceData, true);
+		var damageCoroutine = target.ApplyDamageByCasting(skillInstanceData, true);
 		if (isLastTarget) {
 			yield return battleManager.StartCoroutine(damageCoroutine);
 		} else {
@@ -459,7 +459,7 @@ public class ActiveSkill : Skill{
 	private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
 		UnitClass damageType = caster.GetUnitClass();
 		BattleManager battleManager = BattleData.battleManager;
-		yield return battleManager.StartCoroutine(caster.Damaged(reflectAmount, target, 0, 0, true, false, false));
+		yield return battleManager.StartCoroutine(caster.ApplyDamageByNonCasting(reflectAmount, target, 0, 0, true, false, false));
 
 		foreach (var statusEffect in target.GetStatusEffectList()) {
 			bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||

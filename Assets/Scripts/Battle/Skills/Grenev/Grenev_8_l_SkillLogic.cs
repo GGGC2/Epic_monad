@@ -20,7 +20,7 @@ namespace Battle.Skills {
             if (isHealthRatioSmallEnough(target)) {
                 BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
                 yield return battleManager.StartCoroutine(target.
-                        Damaged(target.currentHealth, caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
+					ApplyDamageByNonCasting(target.currentHealth, caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
             }
             else yield return null;
         }

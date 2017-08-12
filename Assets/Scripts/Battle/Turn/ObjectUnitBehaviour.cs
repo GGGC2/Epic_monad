@@ -60,7 +60,7 @@ namespace Battle.Turn
 			{
 				BattleManager.MoveCameraToUnit(target);
 				float damageAmount = target.GetMaxHealth() * 0.15f;
-				yield return target.Damaged(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false, false);
+				yield return target.ApplyDamageByNonCasting(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false, false);
 			}
 
 			MonoBehaviour.Destroy(effect);

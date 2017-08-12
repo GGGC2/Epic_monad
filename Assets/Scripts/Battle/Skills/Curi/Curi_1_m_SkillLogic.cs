@@ -24,7 +24,7 @@ namespace Battle.Skills {
                     foreach (var secondaryTarget in damagedUnitList) {
                         //secondaryTarget.Damaged(skillInstanceData, true);
                         BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-                        yield return battleManager.StartCoroutine(secondaryTarget.Damaged(damage, caster, 0, 0, true, false, false));
+						yield return battleManager.StartCoroutine(secondaryTarget.ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, false));
                     }
                 }
             }

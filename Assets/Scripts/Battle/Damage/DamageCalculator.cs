@@ -76,7 +76,6 @@ namespace Battle
 			return merged;
 		}
 
-		//FIXME : 프리뷰 데미지 계산하는 부분과 실제로 기술 가할 때 데미지 계산하는 부분이 코드가 중복되니 일부를 함수로 빼야 할 듯합니다
 		private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachChain(Chain chain, int chainCombo)
 		{
 			var damageList = new Dictionary<Unit, DamageInfo>();
@@ -92,13 +91,10 @@ namespace Battle
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
 					CalculateAttackDamage(skillInstanceData, chainCombo);
 
-					float actualDamage = skillInstanceData.GetDamage().resultDamage;
-					float reflectDamage = CalculateReflectDamage(actualDamage, target, caster, caster.GetUnitClass());
-					actualDamage -= reflectDamage;
+					float damageBeforeReflection = skillInstanceData.GetDamage().resultDamage;
+					float reflectDamage = CalculateReflectDamage(damageBeforeReflection, target, caster, caster.GetUnitClass());
 
-					float targetDefense = CalculateDefense(appliedSkill, target, caster);
-					float targetResistance = CalculateResistance(appliedSkill, target, caster);
-					actualDamage = ApplyDefenseAndResistance(actualDamage, caster.GetUnitClass(), targetDefense, targetResistance);
+					float actualDamage = target.CalculateDamageByCasting (skillInstanceData, true);
 
 					DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
 					damageList.Add(target, damageInfo);
