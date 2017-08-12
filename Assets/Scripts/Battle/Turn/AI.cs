@@ -47,16 +47,29 @@ namespace Battle.Turn{
 
 			return mainUnit.GetPosition();
 		}
-		public static Tile FindNearestEnemyAttackableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			Dictionary<Vector2, TileWithPath> enemyAttackableTilesWithPath = new Dictionary<Vector2, TileWithPath> ();
+		public static Tile GetBestMoveableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			Tile bestTile = caster.GetTileUnderUnit ();
+			int currAP = caster.GetCurrentActivityPoint ();
+			int skillRequireAP = caster.GetActualRequireSkillAP (skill);
+			float maxReward = 0;
+
 			foreach (var pair in movableTilesWithPath) {
-				Tile movedTile = pair.Value.tile;
-				bool attackAble = (skill.GetBestAttack (caster, movedTile) != null);
-				if (attackAble)
-					enemyAttackableTilesWithPath [pair.Key] = pair.Value;
+				Tile tile = pair.Value.tile;
+				int requireAP = pair.Value.requireActivityPoint;
+
+				float reward = 0;
+				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+				if (bestCastingOnThisTile != null) {
+					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
+					reward = singleCastingReward * (currAP - requireAP) / skillRequireAP;
+
+					if (reward > maxReward) {
+						maxReward = reward;
+						bestTile = tile;
+					}
+				}
 			}
-			Tile nearestTile = GetMinRequireAPTile (enemyAttackableTilesWithPath);
-			return nearestTile;
+			return bestTile;
 		}
 		private static Tile GetMinRequireAPTile(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			if (movableTilesWithPath.Count > 0){
@@ -128,27 +141,14 @@ namespace Battle.Turn{
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			bool attackAble = (selectedSkill.GetBestAttack (unit, currentTile) != null);
-
-			//곧바로 공격 가능하면 이동하지 않는다
-			if (attackAble) {
-				yield break;
-			}
-
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
+
+			//movableTiles는 사실 알고리즘상으론 필요 없는데 이동 때의 파란 이동범위 표시를 위한 변수임
 			List<Tile> movableTiles = new List<Tile>();
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
-			{
-				movableTiles.Add(movableTileWithPath.Value.tile);
-			}
+				movableTiles.Add (movableTileWithPath.Value.tile);
 
-			Tile destTile=AIUtil.FindNearestEnemyAttackableTile (unit, selectedSkill, movableTilesWithPath);
-			//destTile이 null이 아니면 적을 공격 가능한 타일 중 도달경로의 총 AP 소모량이 가장 적은 타일이 들어있는 것이다
-			//destTile이 null : 이번 턴에 적을 공격 가능한 범위로 못 가는 경우. 그냥 가장 가까운 적을 향해 이동한다
-			if (destTile == null) {
-				Vector2 destPosition = AIUtil.FindNearestEnemy (movableTiles, BattleData.unitManager.GetAllUnits (), unit);
-				destTile = BattleData.tileManager.GetTile(destPosition);
-			}
+			Tile destTile = AIUtil.GetBestMoveableTile (unit, selectedSkill, movableTilesWithPath);
 
 			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
 
@@ -216,7 +216,7 @@ namespace Battle.Turn{
 			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
 			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
-			yield return new WaitForSeconds (0.3f);
+			yield return new WaitForSeconds (1f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost));
 		}

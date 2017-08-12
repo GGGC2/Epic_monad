@@ -189,7 +189,7 @@ public class ActiveSkill : Skill{
 				SkillLocation location = new SkillLocation (casterTile, targetTile, direction);
 				Casting casting = new Casting (caster, this, location);
 
-				float reward = GetTotalRewardByCasting (casting);
+				float reward = GetRewardByCasting (casting);
 				if (reward > maxReward) {
 					bestCasting = casting;
 					maxReward = reward;
@@ -205,21 +205,25 @@ public class ActiveSkill : Skill{
 				SkillLocation location = new SkillLocation (casterTile, targetTile, direction);
 				Casting casting = new Casting (caster, this, location);
 
-				float reward = GetTotalRewardByCasting (casting);
+				float reward = GetRewardByCasting (casting);
 				if (reward > maxReward) {
 					bestCasting = casting;
 					maxReward = reward;
+				}
+				else if (reward == maxReward && direction == caster.GetDirection()) {
+					// 자동형 스킬 중 4방향으로 범위가 똑같은 애들을 쓸 때는 괜히 방향 바꾸지 않도록 함
+					bestCasting = casting;
 				}
 			}
 		}
 		return bestCasting;
 	}
-	private static float GetTotalRewardByCasting(Casting casting){
+	public float GetRewardByCasting(Casting casting){
 		Chain chain = new Chain (casting);
 
 		float totalReward = 0;
 		foreach (Unit target in chain.CurrentTargets) {
-			totalReward += target.CalculateRewardByThisCastingApply (casting);
+			totalReward += target.CalculateRewardByCastingToThisUnit (casting);
 		}
 		return totalReward;
 	}
