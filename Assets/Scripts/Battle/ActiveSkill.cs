@@ -167,8 +167,8 @@ public class ActiveSkill : Skill{
 
 		if (skillType == SkillType.Auto || skillType == SkillType.Self)
 			rangeColors [center] = Color.black;
-		if(skillType == SkillType.Point || skillType == SkillType.Route)
-			rangeColors [center] = Color.yellow;
+		if (skillType == SkillType.Point || skillType == SkillType.Route)
+			rangeColors [center] = new Color (1, 0.6f, 0);
 		
 		return rangeColors;
 	}
