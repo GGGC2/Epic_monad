@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillInstanceData {
-	Battle.DamageCalculator.AttackDamage damage = new Battle.DamageCalculator.AttackDamage ();
+public class CastingApply {
 	Casting casting;
-    Unit target;
-    public SkillInstanceData(Casting casting, Unit target) {
+	Unit target;
+	Battle.DamageCalculator.AttackDamage damage = new Battle.DamageCalculator.AttackDamage ();
+
+    public CastingApply(Casting casting, Unit target) {
 		this.casting = casting;
         this.target = target;
     }

@@ -17,9 +17,9 @@ namespace Battle.Skills {
             }
             return frontTile;
         }
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetTarget();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
+            Unit target = castingApply.GetTarget();
             
             Tile frontTile = GetFrontTile(caster, target);
             target.ForceMove(frontTile);

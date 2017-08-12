@@ -8,15 +8,15 @@ namespace Battle.Skills {
         private bool isHealthRatioSmallEnough(Unit target) {
             return (float)target.currentHealth / (float)target.GetMaxHealth() <= 0.35f;
         }
-        public override bool MayDisPlayDamageCoroutine(SkillInstanceData skillInstanceData) {
-            if (isHealthRatioSmallEnough(skillInstanceData.GetTarget())) {
+        public override bool MayDisPlayDamageCoroutine(CastingApply castingApply) {
+            if (isHealthRatioSmallEnough(castingApply.GetTarget())) {
                 return false;
             }
             return true;
         }
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetTarget();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
+            Unit target = castingApply.GetTarget();
             if (isHealthRatioSmallEnough(target)) {
                 BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
                 yield return battleManager.StartCoroutine(target.
@@ -24,9 +24,9 @@ namespace Battle.Skills {
             }
             else yield return null;
         }
-        public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
-            if(isHealthRatioSmallEnough(skillInstanceData.GetTarget())) {
-                skillInstanceData.GetDamage().relativeDamageBonus = 0;
+        public override void ApplyAdditionalDamage(CastingApply castingApply) {
+            if(isHealthRatioSmallEnough(castingApply.GetTarget())) {
+                castingApply.GetDamage().relativeDamageBonus = 0;
             }
         }
         public override float ApplyIgnoreDefenceRelativeValueBySkill(float defense, Unit caster, Unit target) {

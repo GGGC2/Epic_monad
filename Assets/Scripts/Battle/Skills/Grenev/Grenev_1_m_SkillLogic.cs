@@ -19,7 +19,7 @@ namespace Battle.Skills {
 			}
             return false;
         }
-        public override bool IgnoreShield(SkillInstanceData skillInstanceData) {
+        public override bool IgnoreShield(CastingApply castingApply) {
             return true;
         }
         public override float ApplyIgnoreDefenceAbsoluteValueBySkill(float defense, Unit caster, Unit target) {

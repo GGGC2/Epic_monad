@@ -522,22 +522,22 @@ public class Unit : MonoBehaviour{
         hasUsedSkillThisTurn = false;
 	}
 
-	public IEnumerator ApplyDamageByCasting(SkillInstanceData skillInstanceData, bool isHealth) {
-		Unit caster = skillInstanceData.GetCaster();
-		ActiveSkill skill = skillInstanceData.GetSkill();
-		bool ignoreShield = SkillLogicFactory.Get(skill).IgnoreShield(skillInstanceData);
+	public IEnumerator ApplyDamageByCasting(CastingApply castingApply, bool isHealth) {
+		Unit caster = castingApply.GetCaster();
+		ActiveSkill skill = castingApply.GetSkill();
+		bool ignoreShield = SkillLogicFactory.Get(skill).IgnoreShield(castingApply);
 
 		// 대상에게 스킬로 데미지를 줄때 발동하는 공격자 특성
 		var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
-		int realDamage = (int)CalculateDamageByCasting (skillInstanceData, isHealth);
+		int realDamage = (int)CalculateDamageByCasting (castingApply, isHealth);
 		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
-	public int CalculateDamageByCasting(SkillInstanceData skillInstanceData, bool isHealth){
-		Unit caster = skillInstanceData.GetCaster();
-		ActiveSkill appliedSkill = skillInstanceData.GetSkill();
-		float damage = skillInstanceData.GetDamage().resultDamage;
+	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
+		Unit caster = castingApply.GetCaster();
+		ActiveSkill appliedSkill = castingApply.GetSkill();
+		float damage = castingApply.GetDamage().resultDamage;
 		if (isHealth == true) {
 			float reflectDamage = DamageCalculator.CalculateReflectDamage(damage, this, caster, caster.GetUnitClass());
 			damage -= reflectDamage;

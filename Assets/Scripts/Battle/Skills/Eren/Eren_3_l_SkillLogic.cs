@@ -7,11 +7,11 @@ using System.Linq;
 namespace Battle.Skills
 {
 public class Eren_3_l_SkillLogic : BaseSkillLogic {
-	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData)
+	public override void ApplyAdditionalDamage(CastingApply castingApply)
 	{
-		Unit target = skillInstanceData.GetTarget();
+		Unit target = castingApply.GetTarget();
 		float damagedRatio = 1.0f - ((float)target.GetCurrentHealth()/(float)target.GetMaxHealth());
-		skillInstanceData.GetDamage().baseDamage *= (1.0f + damagedRatio);
+		castingApply.GetDamage().baseDamage *= (1.0f + damagedRatio);
 	}
 
 	public override void OnKill(HitInfo hitInfo)

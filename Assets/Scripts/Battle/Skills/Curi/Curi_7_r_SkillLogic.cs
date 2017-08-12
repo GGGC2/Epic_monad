@@ -9,9 +9,9 @@ namespace Battle.Skills {
             }
             return false;
         }
-        public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
-            if(skillInstanceData.GetTarget().GetUnitClass() != UnitClass.Magic) {
-                skillInstanceData.GetDamage().relativeDamageBonus = 0;
+        public override void ApplyAdditionalDamage(CastingApply castingApply) {
+            if(castingApply.GetTarget().GetUnitClass() != UnitClass.Magic) {
+                castingApply.GetDamage().relativeDamageBonus = 0;
             }
         }
     }

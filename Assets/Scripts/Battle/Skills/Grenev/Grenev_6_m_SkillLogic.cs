@@ -2,10 +2,10 @@
 
 namespace Battle.Skills {
     class Grenev_6_m_SkillLogic : BasePassiveSkillLogic {
-        public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
+        public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
             if(caster.HasStatusEffect(StatusEffectType.Stealth)) {
-                skillInstanceData.GetDamage().relativeDamageBonus *= 1.5f;
+                castingApply.GetDamage().relativeDamageBonus *= 1.5f;
             }
         }
     }

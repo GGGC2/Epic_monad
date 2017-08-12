@@ -1,9 +1,9 @@
 ﻿
 namespace Battle.Skills {
     public class Curi_3_m_SkillLogic : BasePassiveSkillLogic {
-        public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
-            if (skillInstanceData.GetSkill().GetName() == "수상한 덩어리")
-                skillInstanceData.GetDamage().relativeDamageBonus *= 0.6f;
+        public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {
+            if (castingApply.GetSkill().GetName() == "수상한 덩어리")
+                castingApply.GetDamage().relativeDamageBonus *= 0.6f;
         }
     }
 }

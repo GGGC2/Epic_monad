@@ -8,8 +8,8 @@ namespace Battle.Skills {
             }
             return true;
         }
-        public override bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(SkillInstanceData skillInstanceData, Tile tile, TileStatusEffect tileStatusEffect) {
-            Unit caster = skillInstanceData.GetCaster();
+        public override bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(CastingApply castingApply, Tile tile, TileStatusEffect tileStatusEffect) {
+            Unit caster = castingApply.GetCaster();
             if(caster.GetUnitClass() == UnitClass.Magic) {
                 return false;
             }

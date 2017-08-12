@@ -43,30 +43,30 @@ public class BaseSkillLogic
 		return requireAP;
 	}
 
-	public virtual void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) {
+	public virtual void ApplyAdditionalDamage(CastingApply castingApply) {
 	}
-    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(SkillInstanceData skillInstanceData, UnitStatusEffect statusEffect) {
+    public virtual void ApplyAdditionalDamageFromTargetStatusEffect(CastingApply castingApply, UnitStatusEffect statusEffect) {
     }
 
-	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(SkillInstanceData skillInstanceData)
+	public virtual DamageCalculator.AttackDamage GetAdditionalSkillOption(CastingApply castingApply)
 	{
-		return skillInstanceData.GetDamage();
+		return castingApply.GetDamage();
 	}
 
-	public virtual IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData)
+	public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply)
 	{
         yield return null;
 	}
     public virtual bool CheckApplyPossibleToTargetTiles(Unit caster, List<Tile> targetTiles) {
         return true;
     }
-    public virtual bool IgnoreShield(SkillInstanceData skillInstanceData) {
+    public virtual bool IgnoreShield(CastingApply castingApply) {
         return false;
     }
     public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect의 i번째 actualElement 의 seVar 값을 구함.
         return 0;
     }
-    public virtual bool MayDisPlayDamageCoroutine(SkillInstanceData skillInstanceData) {
+    public virtual bool MayDisPlayDamageCoroutine(CastingApply castingApply) {
         return true;
     }
     public virtual bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) //StatusEffect가 적용될 때 발동. false를 반환할 경우 해당 StatusEffect가 적용되지 않음
@@ -102,7 +102,7 @@ public class BaseSkillLogic
     public virtual bool TriggerTileStatusEffectWhenUnitTryToUseSkill(Tile tile, TileStatusEffect tileStatusEffect) {
         return true;    //false를 리턴할 경우 해당 타일 위의 유닛은 스킬을 사용할 수 없다.
     }
-    public virtual bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(SkillInstanceData skillInstanceData, Tile tile, TileStatusEffect tileStatusEffect) {
+    public virtual bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(CastingApply castingApply, Tile tile, TileStatusEffect tileStatusEffect) {
         return true;    //false를 리턴할 경우 해당 타일 위의 유닛에게 적용되는 statusEffect는 무시된다.
     }
     public virtual void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, Tile tile, TileStatusEffect tileStatusEffect) {

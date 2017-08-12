@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Battle.Skills {
     class Json_0_1_SkillLogic : BasePassiveSkillLogic {
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetTarget();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
+            Unit target = castingApply.GetTarget();
 
             UnitStatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "표식");
             if(alreadyAppliedStatusEffect != null && alreadyAppliedStatusEffect.GetRemainStack() >= 4) {

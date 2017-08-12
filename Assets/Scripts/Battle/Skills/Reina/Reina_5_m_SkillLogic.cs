@@ -5,12 +5,12 @@ namespace Battle.Skills
 {
 public class Reina_5_m_SkillLogic : BasePassiveSkillLogic {
 
-	public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) 
+	public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) 
     {
 		float damageBonus = 1.25f;
 
-		if ((skillInstanceData.GetSkill().GetName() == "화염구") && (skillInstanceData.GetTargetCount() == 1))
-			skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
+		if ((castingApply.GetSkill().GetName() == "화염구") && (castingApply.GetTargetCount() == 1))
+			castingApply.GetDamage().relativeDamageBonus *= damageBonus;
 	}
 }
 }

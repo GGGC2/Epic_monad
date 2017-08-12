@@ -5,9 +5,9 @@ using Battle.Damage;
 
 namespace Battle.Skills {
     class Json_1_r_SkillLogic : BaseSkillLogic {
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetTarget();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
+            Unit target = castingApply.GetTarget();
             PassiveSkill mark = caster.GetLearnedPassiveSkillList().Find(skill => skill.GetName() == "표식");
             List<UnitStatusEffect.FixedElement> fixedStatusEffects = mark.GetUnitStatusEffectList();
             List<UnitStatusEffect> statusEffects = fixedStatusEffects

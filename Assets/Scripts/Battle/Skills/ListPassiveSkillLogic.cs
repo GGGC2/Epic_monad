@@ -65,31 +65,31 @@ namespace Battle.Skills
             return defense;
         }
 
-        public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
-            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+        public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {
+            float originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
-                skillLogic.ApplyBonusDamageFromEachPassive(skillInstanceData);
-                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
-                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+                skillLogic.ApplyBonusDamageFromEachPassive(castingApply);
+                DamageCalculator.printBonusDamageLog(castingApply.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
             }
         }
 
-        public override void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData) {
-            float originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-            float originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+        public override void ApplyTacticalBonusFromEachPassive(CastingApply castingApply) {
+            float originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+            float originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
             foreach (var skillLogic in passiveSkillLogics) {
-                skillLogic.ApplyTacticalBonusFromEachPassive(skillInstanceData);
-                DamageCalculator.printBonusDamageLog(skillInstanceData.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
-                originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-                originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+                skillLogic.ApplyTacticalBonusFromEachPassive(castingApply);
+                DamageCalculator.printBonusDamageLog(castingApply.GetDamage(), originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillLogic.passiveSkill.GetName());
+                originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+                originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
             }
         }
 
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
             foreach(var skillLogic in passiveSkillLogics) {
-                yield return skillLogic.ActionInDamageRoutine(skillInstanceData);
+                yield return skillLogic.ActionInDamageRoutine(castingApply);
             }
         }
 
@@ -195,9 +195,9 @@ namespace Battle.Skills
             return !ignored;
         }
 
-        public override IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
+        public override IEnumerator TriggerApplyingHeal(CastingApply castingApply) {
             foreach (var skillLogic in passiveSkillLogics) {
-                yield return skillLogic.TriggerApplyingHeal(skillInstanceData);
+                yield return skillLogic.TriggerApplyingHeal(castingApply);
             }
         }
 

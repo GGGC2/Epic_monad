@@ -33,11 +33,11 @@ namespace Battle.Skills {
             } else if(originalStatusEffect != null)
                 caster.RemoveStatusEffect(originalStatusEffect);
         }
-        public override void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
+        public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
             UnitStatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
             if (originalStatusEffect != null) {
-                skillInstanceData.GetDamage().relativeDamageBonus *= 1 + (0.05f * originalStatusEffect.GetRemainStack());
+                castingApply.GetDamage().relativeDamageBonus *= 1 + (0.05f * originalStatusEffect.GetRemainStack());
             }
         }
     }

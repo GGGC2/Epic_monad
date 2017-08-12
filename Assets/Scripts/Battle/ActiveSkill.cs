@@ -324,20 +324,20 @@ public class ActiveSkill : Skill{
 
 				//공격/약화계 스킬이면 회피 체크를 하고 아니라면 무조건 효과를 가한다
 				if (!IsChainable() || !CheckEvasion(caster, target)) {
-					SkillInstanceData skillInstanceData = new SkillInstanceData(casting, target);
+					CastingApply castingApply = new CastingApply(casting, target);
 					// 데미지 적용
-					if (SkillLogic.MayDisPlayDamageCoroutine(skillInstanceData)) {
+					if (SkillLogic.MayDisPlayDamageCoroutine(castingApply)) {
 						if (skillApplyType == SkillApplyType.DamageHealth) {
-							yield return battleManager.StartCoroutine(ApplyDamage(skillInstanceData, chainCombo, target == targets.Last()));
+							yield return battleManager.StartCoroutine(ApplyDamage(castingApply, chainCombo, target == targets.Last()));
 						} else {
-							Battle.DamageCalculator.CalculateAmountOtherThanAttackDamage(skillInstanceData);
-							float amount = skillInstanceData.GetDamage().resultDamage;
+							Battle.DamageCalculator.CalculateAmountOtherThanAttackDamage(castingApply);
+							float amount = castingApply.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
-								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(skillInstanceData, false));
+								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(castingApply, false));
 								BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
 								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
-								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(skillInstanceData));
+								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(castingApply));
 							} else if (skillApplyType == SkillApplyType.HealAP) {
 								yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
 							}
@@ -345,8 +345,8 @@ public class ActiveSkill : Skill{
 					}
 
 					// 효과 외의 부가 액션 (AP 감소 등)
-					yield return battleManager.StartCoroutine(SkillLogic.ActionInDamageRoutine(skillInstanceData));
-					yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.ActionInDamageRoutine(skillInstanceData));
+					yield return battleManager.StartCoroutine(SkillLogic.ActionInDamageRoutine(castingApply));
+					yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.ActionInDamageRoutine(castingApply));
 
 					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 					if (unitStatusEffectList.Count > 0) {
@@ -354,7 +354,7 @@ public class ActiveSkill : Skill{
 						foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
 							Skill originSkill = tileStatusEffect.GetOriginSkill();
 							if (originSkill.GetType() == typeof(ActiveSkill)) {
-								if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(skillInstanceData, tile, tileStatusEffect))
+								if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(castingApply, tile, tileStatusEffect))
 									ignored = true;
 							}
 						}
@@ -419,14 +419,14 @@ public class ActiveSkill : Skill{
 		} else return false;
 	}
 
-	private static IEnumerator ApplyDamage(SkillInstanceData skillInstanceData, int chainCombo, bool isLastTarget) {
-		Unit caster = skillInstanceData.GetCaster();
-		Unit target = skillInstanceData.GetTarget();
-		ActiveSkill skill = skillInstanceData.GetSkill();
-		int targetCount = skillInstanceData.GetTargetCount();
+	private static IEnumerator ApplyDamage(CastingApply castingApply, int chainCombo, bool isLastTarget) {
+		Unit caster = castingApply.GetCaster();
+		Unit target = castingApply.GetTarget();
+		ActiveSkill skill = castingApply.GetSkill();
+		int targetCount = castingApply.GetTargetCount();
 
-		DamageCalculator.CalculateAttackDamage(skillInstanceData, chainCombo);
-		DamageCalculator.AttackDamage attackDamage = skillInstanceData.GetDamage();
+		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
+		DamageCalculator.AttackDamage attackDamage = castingApply.GetDamage();
 
 		if (attackDamage.directionBonus > 1) caster.PrintDirectionBonus(attackDamage);
 		if (attackDamage.celestialBonus != 1) caster.PrintCelestialBonus(attackDamage.celestialBonus);
@@ -446,7 +446,7 @@ public class ActiveSkill : Skill{
 			attackDamage.resultDamage -= reflectAmount;
 		}
 
-		var damageCoroutine = target.ApplyDamageByCasting(skillInstanceData, true);
+		var damageCoroutine = target.ApplyDamageByCasting(castingApply, true);
 		if (isLastTarget) {
 			yield return battleManager.StartCoroutine(damageCoroutine);
 		} else {

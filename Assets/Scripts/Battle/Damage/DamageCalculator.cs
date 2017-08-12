@@ -85,15 +85,15 @@ namespace Battle
 
 			foreach (var target in targets)
 			{
-				SkillInstanceData skillInstanceData = new SkillInstanceData(chain.Casting, target);
+				CastingApply castingApply = new CastingApply(chain.Casting, target);
 
 				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-					CalculateAttackDamage(skillInstanceData, chainCombo);
+					CalculateAttackDamage(castingApply, chainCombo);
 
-					float damageBeforeReflection = skillInstanceData.GetDamage().resultDamage;
+					float damageBeforeReflection = castingApply.GetDamage().resultDamage;
 					float reflectDamage = CalculateReflectDamage(damageBeforeReflection, target, caster, caster.GetUnitClass());
 
-					float actualDamage = target.CalculateDamageByCasting (skillInstanceData, true);
+					float actualDamage = target.CalculateDamageByCasting (castingApply, true);
 
 					DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
 					damageList.Add(target, damageInfo);
@@ -112,8 +112,8 @@ namespace Battle
 					}
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
-					CalculateAmountOtherThanAttackDamage(skillInstanceData);
-					float actualHealAmount = skillInstanceData.GetDamage().resultDamage;
+					CalculateAmountOtherThanAttackDamage(castingApply);
+					float actualHealAmount = castingApply.GetDamage().resultDamage;
 					DamageInfo damageInfo = new DamageInfo(caster, -actualHealAmount);
 					damageList.Add(target, damageInfo);
 
@@ -135,33 +135,33 @@ namespace Battle
 			return targets;
 		}
 
-		public static void CalculateAmountOtherThanAttackDamage(SkillInstanceData skillInstanceData) {
-			Unit caster = skillInstanceData.GetCaster();
-			Unit target = skillInstanceData.GetTarget();
-			AttackDamage attackDamage = skillInstanceData.GetDamage();
-			ActiveSkill appliedSkill = skillInstanceData.GetSkill();
+		public static void CalculateAmountOtherThanAttackDamage(CastingApply castingApply) {
+			Unit caster = castingApply.GetCaster();
+			Unit target = castingApply.GetTarget();
+			AttackDamage attackDamage = castingApply.GetDamage();
+			ActiveSkill appliedSkill = castingApply.GetSkill();
 
 			attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 			// 해당 기술의 추가데미지 계산
-			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
 			foreach(var statusEffect in target.GetStatusEffectList()) {
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if(originSkill.GetType() == typeof(ActiveSkill))
-					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(skillInstanceData, statusEffect);
+					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
 			// 특성에 의한 추가데미지
 			List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
+			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(castingApply);
 
 			attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
 			Debug.Log("resultAmount : " + attackDamage.resultDamage);
 		}
-		public static void CalculateAttackDamage(SkillInstanceData skillInstanceData, int chainCombo)
+		public static void CalculateAttackDamage(CastingApply castingApply, int chainCombo)
 		{
-			Unit caster = skillInstanceData.GetCaster();
-			Unit target = skillInstanceData.GetTarget();
-			AttackDamage attackDamage = skillInstanceData.GetDamage();
-			ActiveSkill appliedSkill = skillInstanceData.GetSkill();
+			Unit caster = castingApply.GetCaster();
+			Unit target = castingApply.GetTarget();
+			AttackDamage attackDamage = castingApply.GetDamage();
+			ActiveSkill appliedSkill = castingApply.GetSkill();
 
 			attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 			attackDamage.directionBonus = DirectionBonus(caster, target);
@@ -185,23 +185,23 @@ namespace Battle
 			float originalAbsoluteDamageBonus = attackDamage.absoluteDamageBonus;
 
 			// 해당 기술의 추가데미지 계산
-			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(skillInstanceData);
+			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
 			foreach (var statusEffect in target.GetStatusEffectList()) {
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill.GetType() == typeof(ActiveSkill))
-                    ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(skillInstanceData, statusEffect);
+                    ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
-			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, skillInstanceData.GetSkill().GetName());
-			originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-			originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, castingApply.GetSkill().GetName());
+			originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+			originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
 
 			// 특성에 의한 추가데미지
 			List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(skillInstanceData);
+			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(castingApply);
 			// 특성에 의한 전략보너스 추가
-			SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(skillInstanceData);
-			originalRelativeDamageBonus = skillInstanceData.GetDamage().relativeDamageBonus;
-			originalAbsoluteDamageBonus = skillInstanceData.GetDamage().absoluteDamageBonus;
+			SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(castingApply);
+			originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
+			originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
 
 			// 시전자 효과에 의한 추가데미지
 			attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);

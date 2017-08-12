@@ -5,9 +5,9 @@ using Battle.Damage;
 
 namespace Battle.Skills {
     class Sepia_1_r_SkillLogic : BaseSkillLogic {
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            Unit caster = skillInstanceData.GetCaster();
-            StatusEffector.AttachStatusEffect(caster, skill, caster, skillInstanceData.GetRealEffectRange());
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            Unit caster = castingApply.GetCaster();
+            StatusEffector.AttachStatusEffect(caster, skill, caster, castingApply.GetRealEffectRange());
             caster.UpdateHealthViewer();
             yield return null;
         }

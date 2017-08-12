@@ -30,10 +30,10 @@ namespace Battle.Skills {
             skill.SetRequireAP(ap);
             return true;
         }
-        public override IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
-            List<Tile> tiles = skillInstanceData.GetRealEffectRange();
-            Unit caster = skillInstanceData.GetCaster();
-            Unit target = skillInstanceData.GetTarget();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+            List<Tile> tiles = castingApply.GetRealEffectRange();
+            Unit caster = castingApply.GetCaster();
+            Unit target = castingApply.GetTarget();
 
             StatusEffector.AttachStatusEffect(caster, skill, caster, tiles);
             Tile backTile = GetBackTile(caster, target);

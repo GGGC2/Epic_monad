@@ -7,11 +7,11 @@ using Enums;
 namespace Battle.Skills
 {
 public class Yeong_2_l_SkillLogic : BaseSkillLogic {
-	public override void ApplyAdditionalDamage(SkillInstanceData skillInstanceData) 
+	public override void ApplyAdditionalDamage(CastingApply castingApply) 
     {
 		int totalEvasion = 0;
 
-		List<UnitStatusEffect> statusEffects = skillInstanceData.GetCaster().GetStatusEffectList();
+		List<UnitStatusEffect> statusEffects = castingApply.GetCaster().GetStatusEffectList();
 		foreach (var statusEffect in statusEffects)
 		{
 			int num = statusEffect.fixedElem.actuals.Count;
@@ -25,7 +25,7 @@ public class Yeong_2_l_SkillLogic : BaseSkillLogic {
 		}
 
 		float damageBonus = (float)(100 + totalEvasion) / 100;
-		skillInstanceData.GetDamage().relativeDamageBonus *= damageBonus;
+		castingApply.GetDamage().relativeDamageBonus *= damageBonus;
 
 		Debug.Log("Evasion : " + totalEvasion + '\n' + "damage bonus : " + damageBonus);
 	}

@@ -48,15 +48,15 @@ public class BasePassiveSkillLogic
 		return resistance;
 	}
 
-	public virtual void ApplyBonusDamageFromEachPassive(SkillInstanceData skillInstanceData)
+	public virtual void ApplyBonusDamageFromEachPassive(CastingApply castingApply)
 	{
 	}
 
-	public virtual void ApplyTacticalBonusFromEachPassive(SkillInstanceData skillInstanceData)
+	public virtual void ApplyTacticalBonusFromEachPassive(CastingApply castingApply)
 	{
 	}
 
-    public virtual IEnumerator ActionInDamageRoutine(SkillInstanceData skillInstanceData) {
+    public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
         yield return null;
     }
     public virtual int GetEvasionChance()
@@ -112,7 +112,7 @@ public class BasePassiveSkillLogic
     public virtual bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
         return true;
     }
-    public virtual IEnumerator TriggerApplyingHeal(SkillInstanceData skillInstanceData) {
+    public virtual IEnumerator TriggerApplyingHeal(CastingApply castingApply) {
         yield return null;
     }
 
