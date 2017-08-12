@@ -47,7 +47,7 @@ namespace Battle.Turn{
 
 			return mainUnit.GetPosition();
 		}
-		public static Tile GetBestMoveableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor){
+		public static Tile GetBestMovableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor){
 			Tile bestTile = caster.GetTileUnderUnit ();
 			int currAP = caster.GetCurrentActivityPoint ();
 			int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -95,6 +95,8 @@ namespace Battle.Turn{
 		}
 
 		public static IEnumerator UnitTurn(Unit unit){
+			CameraFocusToUnit(unit);
+
 			battleManager.StartUnitTurn (unit);
 
 			yield return CheckUnitIsActiveAndDecideActionAndAct(unit);
@@ -143,17 +145,21 @@ namespace Battle.Turn{
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
 
-			//movableTiles는 사실 알고리즘상으론 필요 없는데 이동 때의 파란 이동범위 표시를 위한 변수임
+			yield return PaintMovableTiles(movableTilesWithPath);
+
+			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPath, 0);
+
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+
+		}
+		public static IEnumerator PaintMovableTiles(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			List<Tile> movableTiles = new List<Tile>();
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				movableTiles.Add (movableTileWithPath.Value.tile);
-
-			Tile destTile = AIUtil.GetBestMoveableTile (unit, selectedSkill, movableTilesWithPath, 0);
-
-			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
-
+			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			yield return null;
 		}
-		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Tile> movableTiles){
+		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			Vector2 destPos = destTile.GetTilePos ();
 			TileWithPath pathToDestTile = movableTilesWithPath[destPos];
 
@@ -175,7 +181,9 @@ namespace Battle.Turn{
 				else // delta == new Vector2 (0, -1)
 					finalDirection = Direction.LeftDown;
 
-				yield return Move(unit, destTile, finalDirection, totalUseAP, movableTiles);
+				yield return Move (unit, destTile, finalDirection, totalUseAP);
+			} else {
+				TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			}
 		}
 		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
@@ -211,11 +219,10 @@ namespace Battle.Turn{
 			}
 		}
 
-		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost, List<Tile> movableTiles){
+		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
 			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
-			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
-			yield return new WaitForSeconds (1f);
+			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost));
 		}
@@ -319,15 +326,15 @@ namespace Battle.Turn{
 		private static BattleManager battleManager;
 		public static IEnumerator DecideActionAndAct(Unit unit){
 			battleManager = BattleData.battleManager;
-			bool moveable = unit.IsMovePossibleState ();
-			bool skilluseable = unit.IsSkillUsePossibleState ();
-			if (!moveable && !skilluseable) {
+			bool movable = unit.IsMovePossibleState ();
+			bool skillusable = unit.IsSkillUsePossibleState ();
+			if (!movable && !skillusable) {
 				//do nothing
 			}
-			else if (!moveable && skilluseable) {
+			else if (!movable && skillusable) {
 				yield return OnlyAttack (unit);
 			}
-			else if (moveable && !skilluseable) {
+			else if (movable && !skillusable) {
 				yield return OnlyMove (unit);
 			}
 			else {
@@ -398,7 +405,7 @@ namespace Battle.Turn{
 
 			int totalUseAP = requireAP;
 			Tile destTile = tile;
-			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP, movableTiles);
+			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP);
 		}
 		private static IEnumerator FreeState(Unit unit){
 			yield return TasteTastyTile (unit);
@@ -414,16 +421,14 @@ namespace Battle.Turn{
 
 				Vector2 currPos = unit.GetPosition ();
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
-				List<Tile> movableTiles = new List<Tile>();
-				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
-					movableTiles.Add (movableTileWithPath.Value.tile);
+				AI.PaintMovableTiles(movableTilesWithPath);
 				
-				Tile destTile = AIUtil.GetBestMoveableTile (unit, skill, movableTilesWithPath, 45);
+				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, 45);
 
 				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;
 
-				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath, movableTiles);
+				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
 
 				while (true) {
 					yield return battleManager.BeforeActCommonAct ();

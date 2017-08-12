@@ -795,9 +795,9 @@ public class Unit : MonoBehaviour{
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
 		int damage = CalculateDamageByCasting(castingApply, true);
 
-		// FIXME : 이 공격으로 죽는 경우도 고려해야 하고 방어막도 고려해야 함
+		// FIXME : 이 공격으로 죽는 경우를 지금보다 잘 고려해야 하고 방어막도 고려해야 함
 		float reward = 0;
-		reward = damage * (GetStat (Stat.Power) / 100f);
+		reward = GetStat (Stat.Power) * damage / GetCurrentHealth ();
 		return reward;
 	}
 
