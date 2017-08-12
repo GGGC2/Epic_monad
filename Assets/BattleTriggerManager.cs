@@ -103,7 +103,7 @@ public class BattleTriggerManager : MonoBehaviour {
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.GetComponent<AIData>() == null)
+		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsAI == false)
 			return true;
 		else
 			return false;

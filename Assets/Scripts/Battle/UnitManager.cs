@@ -160,8 +160,8 @@ public class UnitManager : MonoBehaviour {
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;
 			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
-
 			targetUnit.gameObject.GetComponent<AIData>().SetAIInfo(aiInfo);
+			targetUnit.SetAsAI();
 		});
 	}
 

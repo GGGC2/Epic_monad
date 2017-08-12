@@ -25,7 +25,8 @@ namespace BattleUI{
 
         Text powerText;
         Text defenseText;
-        Text resistanceText;
+		Text resistanceText;
+		Text speedText;
         // FIXME : 버프/디버프 표시 임시로 텍스트로.
         public GameObject statusEffectIconPrefab;
         Vector3 statusEffectIconBarPosition;
@@ -47,7 +48,8 @@ namespace BattleUI{
             UpdateAp(unit);
             UpdatePower(unit);
             UpdateDefense(unit);
-            UpdateResistance(unit);
+			UpdateResistance(unit);
+			UpdateSpeed (unit);
 
             UpdateEffect(unit);
         }
@@ -163,6 +165,18 @@ namespace BattleUI{
                 resistanceText.color = Color.red;
         }
 
+		void UpdateSpeed(Unit unit) {
+			int actualSpeed = (int)unit.GetSpeed ();
+			int originSpeed = 100;
+
+			speedText.color = Color.white;
+			speedText.text = actualSpeed.ToString ();
+			if (actualSpeed > originSpeed)
+				speedText.color = Color.green;
+			else if (actualSpeed < originSpeed)
+				speedText.color = Color.red;
+		}
+
         void SetClassImage(UnitClass unitClass) {
             if (unitClass == UnitClass.Melee)
                 classImage.sprite = Resources.Load<Sprite>("Icon/Stat/meleeClass");
@@ -214,6 +228,7 @@ namespace BattleUI{
             powerText = transform.Find("Power").Find("PowerText").GetComponent<Text>();
             defenseText = transform.Find("Defense").Find("DefenseText").GetComponent<Text>();
             resistanceText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
+			speedText = transform.Find ("Speed").Find ("SpeedText").GetComponent<Text> ();
 
             //효과 표시 내용은 BattleReady씬에서 켜면 에러가 생기기 때문에 씬 이름으로 조건 확인하고 실행
             if(SceneManager.GetActiveScene().name == "Battle"){

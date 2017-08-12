@@ -74,11 +74,11 @@ public class BattleManager : MonoBehaviour{
 					BattleData.selectedUnit = BattleData.readiedUnits[0];
 					BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 
-					if (BattleData.selectedUnit.GetComponent<AIData>() != null){
+					if (BattleData.selectedUnit.IsAI){
 						yield return AI.UnitTurn(BattleData.selectedUnit);
 					}
 					else
-						yield return StartCoroutine(ActionAtTurn(BattleData.readiedUnits[0]));
+						yield return StartCoroutine(ActionAtTurn(BattleData.selectedUnit));
 
 					BattleData.selectedUnit = null;
 

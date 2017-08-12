@@ -41,13 +41,14 @@ public class Unit : MonoBehaviour{
 	string nameInCode; // 영어이름
 
 	public Side side; // 진영. 적/아군
-	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않는다.
+	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(아래에 get 함수로 있음)의 return 값을 받아야 한다
+	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않으며 기술이 있을 경우 매 페이즈 모든 유닛의 턴이 끝난 후에 1회 행동한다
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 
-	// 스킬리스트.
+	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
-	// 사용한 스킬 정보 저장(쿨타임 산정용).
+	// 사용한 스킬 정보 저장(쿨타임 산정용)
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
     // 효과 리스트
@@ -120,6 +121,12 @@ public class Unit : MonoBehaviour{
             return baseStats[stat];
         return 0;
     }
+	public float GetSpeed(){
+		float speed = 100;
+		if (HasStatusEffect(StatusEffectType.SpeedChange))
+			speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
+		return speed;
+	}
     public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
     public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
@@ -171,6 +178,10 @@ public class Unit : MonoBehaviour{
 	public void SetName(string name) { this.name = name; }
 	public Side GetSide() { return side; }
 	public bool IsAlly(Unit unit) { return side == unit.GetSide (); }
+	public bool IsSeenAsEnemyToThisAIUnit(Unit unit) { return Battle.Turn.AIUtil.IsSecondUnitEnemyToFirstUnit (unit, this); } //은신 상태에선 적으로 인식되지 않음
+	public void SetAsAI() { isAI = true; }
+	public bool IsAI { get { return isAI; } }
+	public bool IsPC { get { return (!isAI) && (!isObject); } }
 	public bool IsObject() { return isObject; }
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
@@ -769,12 +780,12 @@ public class Unit : MonoBehaviour{
 		// 기술 자체에 붙은 행동력 소모 증감효과 적용
 		requireSkillAP = SkillLogicFactory.Get(skill).CalculateAP(requireSkillAP, this);
 
-        // 행동력(기술) 소모 증감 효과 적용
-        if (HasStatusEffect(StatusEffectType.RequireSkillAPChange) || HasStatusEffect(StatusEffectType.SpeedChange)) {
+        // 기술의 행동력 소모 증감 효과 적용
+        if (HasStatusEffect(StatusEffectType.RequireSkillAPChange)) {
 			requireSkillAP = (int) CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange);
-            float speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
-            requireSkillAP = (int)(requireSkillAP * (100f / speed));
-        }
+		}
+		float speed = GetSpeed ();
+		requireSkillAP = (int)(requireSkillAP * (100f / speed));
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
 		if (skill.GetRequireAP() == 1000)
@@ -792,11 +803,36 @@ public class Unit : MonoBehaviour{
 		CastingApply castingApply = new CastingApply (casting, this);
 		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
-		int damage = CalculateDamageByCasting(castingApply, true);
+		int damage = CalculateDamageByCasting(castingApply, true);	
+		Debug.Log ("damage " + damage);
+		int remainHP = GetCurrentHealth () + GetRemainShield();
+		Debug.Log ("remainHP " + remainHP);
+		damage = Math.Min (damage, remainHP);
 
-		// FIXME : 이 공격으로 죽는 경우도 고려해야 하고 방어막도 고려해야 함
+		float killNeedCount;
+		//원턴킬 가능시 보너스로 1이 아니라 작은 값으로 설정
+		if (damage == remainHP)
+			killNeedCount = 0.3f;
+		else
+			killNeedCount = remainHP / damage;
+		Debug.Log ("killNeedCount "+killNeedCount);
+
+		float sideFactor = 0;
+		Unit caster = casting.Caster;
+		if (IsAlly (caster))
+			sideFactor = -0.6f;
+		if (IsSeenAsEnemyToThisAIUnit (caster))
+			sideFactor = 1;
+		Debug.Log ("side factor " + sideFactor);
+
+		float PCFactor = 1;
+		if (IsPC)
+			PCFactor = 3;
+		Debug.Log ("PC factor " + PCFactor);
+
 		float reward = 0;
-		reward = damage * (GetStat (Stat.Power) / 100f);
+		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
+		Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
 		return reward;
 	}
 
