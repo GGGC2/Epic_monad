@@ -121,6 +121,12 @@ public class Unit : MonoBehaviour{
             return baseStats[stat];
         return 0;
     }
+	public float GetSpeed(){
+		float speed = 100;
+		if (HasStatusEffect(StatusEffectType.SpeedChange))
+			speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
+		return speed;
+	}
     public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
     public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
@@ -771,12 +777,12 @@ public class Unit : MonoBehaviour{
 		// 기술 자체에 붙은 행동력 소모 증감효과 적용
 		requireSkillAP = SkillLogicFactory.Get(skill).CalculateAP(requireSkillAP, this);
 
-        // 행동력(기술) 소모 증감 효과 적용
-        if (HasStatusEffect(StatusEffectType.RequireSkillAPChange) || HasStatusEffect(StatusEffectType.SpeedChange)) {
+        // 기술의 행동력 소모 증감 효과 적용
+        if (HasStatusEffect(StatusEffectType.RequireSkillAPChange)) {
 			requireSkillAP = (int) CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange);
-            float speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
-            requireSkillAP = (int)(requireSkillAP * (100f / speed));
-        }
+		}
+		float speed = GetSpeed ();
+		requireSkillAP = (int)(requireSkillAP * (100f / speed));
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
 		if (skill.GetRequireAP() == 1000)
@@ -795,13 +801,12 @@ public class Unit : MonoBehaviour{
 		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
 		int damage = CalculateDamageByCasting(castingApply, true);	
-		// FIXME : 방어막도 고려해야 함
-		int currHP = GetCurrentHealth ();
-		damage = Math.Max (damage, currHP);
+		int remainHP = GetCurrentHealth () + GetRemainShield();
+		damage = Math.Max (damage, remainHP);
 
 		float killNeedCount;
 		//원턴킬 가능시 보너스로 1이 아니라 작은 값으로 설정
-		if (damage == currHP)
+		if (damage == remainHP)
 			killNeedCount = 0.3f;
 		else
 			killNeedCount = GetCurrentHealth () / damage;

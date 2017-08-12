@@ -44,10 +44,10 @@ public class PathFinder {
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right);
 		}
         //// queue가 비었으면 loop를 탈출.		
-        if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)) {
+		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)) {
+			float speed = unit.GetSpeed ();
             foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
                 tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount(tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
-                float speed = unit.CalculateActualAmount(100, StatusEffectType.SpeedChange);
                 tileWithPath.requireActivityPoint = (int)(tileWithPath.requireActivityPoint * (100f / speed));
             }
         }
@@ -76,7 +76,7 @@ public class PathFinder {
 		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange))
 		{
 			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
-            float speed = unit.CalculateActualAmount(100, StatusEffectType.SpeedChange);
+			float speed = unit.GetSpeed ();
             requireAP = (int)(requireAP * (100f / speed));
         }
 		if (requireAP > remainAP) return;
