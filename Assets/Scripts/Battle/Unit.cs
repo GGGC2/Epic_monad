@@ -794,7 +794,17 @@ public class Unit : MonoBehaviour{
 		CastingApply castingApply = new CastingApply (casting, this);
 		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
-		int damage = CalculateDamageByCasting(castingApply, true);
+		int damage = CalculateDamageByCasting(castingApply, true);	
+		// FIXME : 방어막도 고려해야 함
+		int currHP = GetCurrentHealth ();
+		damage = Math.Max (damage, currHP);
+
+		float killNeedCount;
+		//원턴킬 가능시 보너스로 1이 아니라 작은 값으로 설정
+		if (damage == currHP)
+			killNeedCount = 0.3f;
+		else
+			killNeedCount = GetCurrentHealth () / damage;
 
 		float sideFactor = 0;
 		Unit caster = casting.Caster;
@@ -803,9 +813,8 @@ public class Unit : MonoBehaviour{
 		if (IsSeenAsEnemyToThisAIUnit (caster))
 			sideFactor = 1;
 
-		// FIXME : 이 공격으로 죽는 경우를 지금보다 잘 고려해야 하고 방어막도 고려해야 함
 		float reward = 0;
-		reward = sideFactor * GetStat (Stat.Power) * damage / GetCurrentHealth ();
+		reward = sideFactor * GetStat (Stat.Power) / killNeedCount;
 		return reward;
 	}
 
