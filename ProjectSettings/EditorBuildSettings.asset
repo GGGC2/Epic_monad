@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scene/Title.unity
+    path: Assets/Scene/title.unity
     guid: b00048fa0774c41ed8bc1e857250ce52
   - enabled: 0
     path: 
@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: 
     guid: 6a8f178b8bd6644169bf89778da907c9
   - enabled: 1
-    path: Assets/Scene/Dialogue.unity
+    path: Assets/Scene/dialogue.unity
     guid: e0d0971895ebc4947936555fe1dd9341
   - enabled: 0
     path: 
@@ -26,7 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/Battle.unity
     guid: 4b4c540e51c224d6780c166d84212cb2
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scene/worldMap.unity
     guid: 2231e6fe04d5645b9aa544975377056a
   - enabled: 0
