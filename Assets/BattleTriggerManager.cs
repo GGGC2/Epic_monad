@@ -66,7 +66,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(actionType == BattleTrigger.ActionType.Kill && unit.IsObject())
+			else if(actionType == BattleTrigger.ActionType.Kill && unit.IsObject)
 				continue;
 			else{
 				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))

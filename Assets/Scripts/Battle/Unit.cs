@@ -41,7 +41,7 @@ public class Unit : MonoBehaviour{
 	string nameInCode; // 영어이름
 
 	public Side side; // 진영. 적/아군
-	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(아래에 get 함수로 있음)의 return 값을 받아야 한다
+	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(=!isAI && !isObject로 아래에 get 함수로 있음)의 return 값을 받아야 한다
 	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않으며 기술이 있을 경우 매 페이즈 모든 유닛의 턴이 끝난 후에 1회 행동한다
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 
@@ -182,7 +182,7 @@ public class Unit : MonoBehaviour{
 	public void SetAsAI() { isAI = true; }
 	public bool IsAI { get { return isAI; } }
 	public bool IsPC { get { return (!isAI) && (!isObject); } }
-	public bool IsObject() { return isObject; }
+	public bool IsObject { get { return isObject; } }
     public Vector2 GetPosition() { return position; }
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {
@@ -271,7 +271,7 @@ public class Unit : MonoBehaviour{
     }
 
     public void ForceMove(Tile destTile) { //강제이동
-        if (SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
+		if (!IsObject && SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
 			ChangePosition (destTile);
         }
     }
