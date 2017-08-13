@@ -35,7 +35,7 @@ public class HealthViewer : MonoBehaviour {
 
         if (previewHealthRatio <= 0)   killIcon.SetActive(true);
 		else if ((previewHealthRatio <= Setting.retreatHpFloat) && 
-                !(transform.parent.gameObject.GetComponent<Unit>().IsObject()) && SceneData.stageNumber >= Setting.retreatOpenStage)
+                !(transform.parent.gameObject.GetComponent<Unit>().IsObject) && SceneData.stageNumber >= Setting.retreatOpenStage)
                 retreatIcon.SetActive(true); // 오브젝트는 이탈하지 않음 (=오브젝트가 아닐 경우에만 이탈).
 	}
 	

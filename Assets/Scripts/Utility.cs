@@ -91,7 +91,7 @@ public class Utility : MonoBehaviour {
 	{
 		if (target == null) return 1.0f;
 
-		if (target.IsObject()) return 1.0f; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
+		if (target.IsObject) return 1.0f; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
 		
 		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
 		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;

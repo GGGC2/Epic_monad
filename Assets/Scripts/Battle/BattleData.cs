@@ -275,6 +275,6 @@ public static class BattleData{
 		}
 	}
 	public static List<Unit> GetObjectUnitsList(){
-		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject () == true);
+		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject == true);
 	}
 }
