@@ -1,48 +1,48 @@
-﻿Index	Mission	Etc
-5	MoveCommand
-6	SelectTile	5	4
-7	SelectDirection	RightDown
-8	SkillCommand
-9	SelectSkill	1
-10	SelectDirection	RightDown
-11	Apply
-12	MoveCommand
-13	SelectTile	6	5
-14	SelectDirection	LeftDown
-15	SkillCommand
-16	SelectSkill	1
-17	SelectDirection	LeftDown
-18	Apply
-19	Standby
-20	MoveCommand
-21	SelectTile	4	4
-22	SelectDirection	RightDown
-23	SkillCommand
-24	SelectSkill	2
-25	SelectDirection	RightDown
-26	Apply
-27	SkillCommand
-28	SelectSkill	2
-29	SelectDirection	RightDown
-30	Apply
-31	Standby
-32	MoveCommand
-33	SelectTile	8	6
-34	SelectDirection	LeftDown
-35	SkillCommand
-36	SelectSkill	1
-37	SelectDirection	LeftDown
-38	Apply
-39	Rest
-40	MoveCommand
-41	SelectTile	7	4
-42	SelectDirection	RightUp
-43	SkillCommand
-44	SelectSkill	1
-45	SelectDirection	RightUp
-46	Apply
-47	SkillCommand
-48	SelectSkill	1
-49	SelectDirection	RightUp
-50	Apply
-51	End
+Index	Mission	Etc	
+7	MoveCommand		
+8	SelectTile	5	4
+9	SelectDirection	RightDown	
+11	SkillCommand		
+14	SelectSkill	1	
+15	SelectDirection	RightDown	
+16	Apply		
+19	MoveCommand		
+20	SelectTile	6	5
+21	SelectDirection	LeftDown	
+22	SkillCommand		
+23	SelectSkill	1	
+24	SelectDirection	LeftDown	
+25	Apply		
+27	Standby		
+29	MoveCommand		
+30	SelectTile	4	4
+31	SelectDirection	RightDown	
+33	SkillCommand		
+34	SelectSkill	2	
+35	SelectDirection	RightDown	
+36	Apply		
+37	SkillCommand		
+38	SelectSkill	2	
+39	SelectDirection	RightDown	
+40	Apply		
+41	Standby		
+42	MoveCommand		
+43	SelectTile	8	6
+44	SelectDirection	LeftDown	
+45	SkillCommand		
+46	SelectSkill	1	
+47	SelectDirection	LeftDown	
+48	Apply		
+49	Rest		
+50	MoveCommand		
+51	SelectTile	7	4
+52	SelectDirection	RightUp	
+53	SkillCommand		
+54	SelectSkill	1	
+55	SelectDirection	RightUp	
+56	Apply		
+57	SkillCommand		
+58	SelectSkill	1	
+59	SelectDirection	RightUp	
+60	Apply		
+61	End		
