@@ -11,12 +11,7 @@ public class Glossary : MonoBehaviour{
 	public Text InformationText;
 	
 	public List<Text> ButtonTextList;
-	void OnEnable(){
-		if(GlobalData.GlossaryDataList.Count == 0)
-			GlobalData.GlossaryDataList = Parser.GetParsedData<GlossaryData>(Resources.Load<TextAsset>("Data/Glossary"), Parser.ParsingDataType.Glossary);
-		
-		UpdateButtonName();
-	}
+	void OnEnable() {UpdateButtonName();}
 	public void SetText(int number){
 		if(number == 0){
 			InformationText.text = "";	

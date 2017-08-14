@@ -142,16 +142,13 @@ public class DialogueManager : MonoBehaviour{
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
 		}else if(Command == DialogueData.CommandType.Glos){
+			Debug.Assert(GlobalData.GlossaryDataList.Count != 0);
 			GlossaryData glos = GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == subType && x.index == data.GetGlossaryIndex());
 			glos.level = Math.Max(glos.level, data.GetGlossarySetLevel());
 		}
 		else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
-
-	/*public void ReadEndLine(){
-		StartCoroutine (PrintLinesFrom (endLine-1));
-	}*/
 
 	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
 	public void ActiveSkipQuestionUI(){
@@ -311,6 +308,7 @@ public class DialogueManager : MonoBehaviour{
 
 	void Start() {
 		Initialize();
+		GlobalData.SetGlossaryDataList();
 
 		if(dialogueData.name == "Scene#1-1")
 			StartCoroutine(BlinkClickIcon());
