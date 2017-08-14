@@ -438,8 +438,6 @@ public class ActiveSkill : Skill{
 		if (attackDamage.heightBonus != 1) caster.PrintHeightBonus(attackDamage.heightBonus);
 
 		BattleManager battleManager = BattleData.battleManager;
-		// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
-		// FIXME : 반사데미지는 다른 데미지 함수로 뺄 것! Damaged 함수 쓰면 원 공격자 스킬의 부가효과도 적용됨.
 		UnitClass damageType = caster.GetUnitClass();
 		bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
 			(target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||

@@ -829,8 +829,16 @@ public class Unit : MonoBehaviour{
 
 		float reward = 0;
 		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
-		Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
+		//Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
 		return reward;
+	}
+
+	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다
+	public float CalculatePredictReward(Unit caster, ActiveSkill skill){
+		// 접근했을 때 실제로 서로가 위치한 타일도 모르고 어느 방향으로 기술 시전할지도 모르므로 가짜로 넣어둠
+		SkillLocation pseudoLocation = new SkillLocation(caster.GetTileUnderUnit(), this.GetTileUnderUnit(), Direction.LeftDown);
+		Casting pseudoCasting = new Casting (caster, skill, pseudoLocation);
+		return CalculateRewardByCastingToThisUnit (pseudoCasting);
 	}
 
 	// 위 - AI용 함수들
