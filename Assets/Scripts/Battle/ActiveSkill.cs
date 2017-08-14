@@ -165,10 +165,12 @@ public class ActiveSkill : Skill{
 		foreach (var pos in redRange)
 			rangeColors [pos] = Color.red;
 
+		/*
 		if (skillType == SkillType.Auto || skillType == SkillType.Self)
 			rangeColors [center] = Color.black;
 		if (skillType == SkillType.Point || skillType == SkillType.Route)
 			rangeColors [center] = new Color (1, 0.6f, 0);
+			*/
 		
 		return rangeColors;
 	}

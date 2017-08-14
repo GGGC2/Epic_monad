@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Cell : MonoBehaviour {
+	public Sprite dotCellSprite;
 	Vector2 size;
 	RectTransform rect;
 	Image image;
@@ -21,5 +22,8 @@ public class Cell : MonoBehaviour {
 	}
 	public void SetColor(Color color){
 		image.color = color;
+	}
+	public void SetAsDotCell(){
+		image.sprite = dotCellSprite;
 	}
 }

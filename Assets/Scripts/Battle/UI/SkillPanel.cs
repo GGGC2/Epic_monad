@@ -125,6 +125,10 @@ namespace BattleUI
 			rangeText.text = "";
 		}
 
+		void OnDisable(){
+			skillPanel.HideSecondRange();
+		}
+
 		string GetFirstRangeText(ActiveSkill skill){
 			string result = "";
 			if(skill.GetFirstMinReach() > 1)

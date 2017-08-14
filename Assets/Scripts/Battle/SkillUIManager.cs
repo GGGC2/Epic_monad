@@ -91,6 +91,8 @@ public class SkillUIManager : MonoBehaviour {
 				Vector2 pos = new Vector2 (x, y);
 				cell.SetPosition (pos, new Vector2(-65, -145));
 				cell.SetColor (rangeColors [pos]);
+				if (x == (rowNum - 1) / 2 && x == y)
+					cell.SetAsDotCell ();
 			}
 		}
 	}
