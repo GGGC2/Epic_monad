@@ -7,11 +7,10 @@ using GameData;
 
 public class TutorialManager : MonoBehaviour {
 	public Image image;
-	public Image DarkBG;
+	public Button NextButton;
 	public int index;
 	CameraMover cm;
 	string usedSceneName;
-	public Button ReverseButton;
 	List<TutorialScenario> scenarioList;
 
 	public void OnEnable(){
@@ -38,33 +37,33 @@ public class TutorialManager : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	void SetNewSprite(){
-		image.enabled = true;
-		DarkBG.enabled = true;
-		Sprite searchResult = Resources.Load<Sprite>("Tutorial/"+SceneManager.GetActiveScene().name + GameData.SceneData.stageNumber.ToString() + "_" + index);
-		if(searchResult != null)
-			image.sprite = searchResult;
-		else
-			Debug.LogError("Sprite NOT found!");
+	void TryNewSprite(){
+		if(SearchSprite() != null) {image.sprite = SearchSprite();}
+		else {image.sprite = Resources.Load<Sprite>("transparent");}
 	}
 
 	public void ToNextStep(){
 		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
-		if (previousScenario != null)
-			previousScenario.ResetMissionCondition ();
+		if (previousScenario != null) {previousScenario.ResetMissionCondition ();}
 
 		index++;
 		Debug.Log("Tutorial Step "+index);
 		TutorialScenario currentScenario = scenarioList.Find (data => data.index == index);
-		if (currentScenario == null)
-			SetNewSprite ();
-		else{
+		TryNewSprite();
+		if (currentScenario != null){
+			if (currentScenario.IsEndMission) {EndTutorial ();}
 			currentScenario.SetMissionCondition ();
-			image.enabled = false;
-			DarkBG.enabled = false;
-			if (currentScenario.IsEndMission) {
-				EndTutorial ();
-			}
-		}
+			SetControl(true);
+		}else {SetControl(false);}
+	}
+
+	Sprite SearchSprite(){
+		return Resources.Load<Sprite>("Tutorial/"+SceneManager.GetActiveScene().name + SceneData.stageNumber.ToString() + "_" + index);
+	}
+
+	//able이 true이면 통제권을 주고, false이면 빼앗음
+	void SetControl(bool able){
+		NextButton.enabled = !able;
+		image.raycastTarget = !able;
 	}
 }
