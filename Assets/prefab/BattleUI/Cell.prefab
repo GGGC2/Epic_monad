@@ -40,6 +40,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b971abc8d7a35b4e84e9e4f17f4dab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dotCellSprite: {fileID: 21300000, guid: 08b58f5d62c36487d8d5de295e1ef935, type: 3}
 --- !u!114 &114969111949510794
 MonoBehaviour:
   m_ObjectHideFlags: 1
