@@ -312,13 +312,6 @@ public class ActiveSkill : Skill{
 		//secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
 		//realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
-		if (caster == BattleData.selectedUnit) {
-			caster.UseActivityPoint(casting.RequireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
-			// 스킬 쿨다운 기록
-			if (cooldown > 0)
-				caster.GetUsedSkillDict().Add(korName, cooldown);
-		}
-
 		if (IsChainable())
 			ChainList.RemoveChainOfThisUnit(caster);
 
@@ -606,6 +599,9 @@ public class ActiveSkill : Skill{
 		caster.SetDirection (location.Direction);
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
+
+		caster.UseActivityPoint (casting.RequireAP);
+		UIManager.Instance.UpdateSelectedUnitViewerUI (caster);
 
 		List<Tile> firstRange = casting.FirstRange;
 		BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);

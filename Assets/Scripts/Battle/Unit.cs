@@ -277,9 +277,10 @@ public class Unit : MonoBehaviour{
     }
 
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
+		UseActivityPoint (totalAPCost);
+		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
-		UseActivityPoint (totalAPCost);
 
         foreach (var statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
