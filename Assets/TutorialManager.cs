@@ -29,11 +29,15 @@ public class TutorialManager : MonoBehaviour {
 		else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
-			battleManager.onTutorial = true;
+			BattleData.onTutorial = true;
+			BattleData.rightClickLock = true;
 			ToNextStep();
 		}
 	}
 	public void EndTutorial(){
+		Debug.Log ("Tutorial ended");
+		BattleData.rightClickLock = false;
+		BattleData.onTutorial = false;
 		gameObject.SetActive(false);
 	}
 
@@ -54,7 +58,8 @@ public class TutorialManager : MonoBehaviour {
 			if (currentScenario.IsEndMission) {EndTutorial ();}
 			currentScenario.SetMissionCondition ();
 			SetControl(true);
-		}else {SetControl(false);}
+		}
+		else {SetControl(false);}
 	}
 
 	Sprite SearchSprite(){

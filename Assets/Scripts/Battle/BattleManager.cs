@@ -13,13 +13,18 @@ using GameData;
 
 public class BattleManager : MonoBehaviour{
 	bool startTurnManager = false;
-	public bool onTutorial;
 	public TutorialManager tutorialManager;
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
 
 	void Awake (){
-		instance = this;
+		if (instance != null && instance != this) {
+			Destroy (this.gameObject);
+			return;
+		} else {
+			instance = this;
+		}
+
 		BattleData.Initialize (FindObjectOfType<TileManager> (), FindObjectOfType<UnitManager> (), FindObjectOfType<UIManager> (), this);
 
         if (!SceneData.isTestMode && !SceneData.isStageMode)
@@ -276,7 +281,7 @@ public class BattleManager : MonoBehaviour{
 			OnOffCommandButtons ();
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
-			if (BattleData.alreadyMoved && !battleManager.onTutorial)
+			if (BattleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, BattleData.triggers.rightClicked));
 			else
 				yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
@@ -441,8 +446,10 @@ public class BattleManager : MonoBehaviour{
             if (BattleData.enemyUnitSelected || BattleData.tileSelected) {
                 BattleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
                 BattleData.tileSelected = false;
-            } else
-                CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
+			} else{
+				if(!BattleData.rightClickLock)
+	                CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
+			}
 		}
 
 		if (BattleData.currentState != CurrentState.FocusToUnit)

@@ -77,22 +77,14 @@ public class EventTrigger: IEventTrigger{
 	public static IEnumerator WaitOr(params IEventTrigger[] triggers){
 		foreach (var trigger in triggers)
 			trigger.Begin();
-
+		
 		bool looping = true;
 		while (looping){
-			BattleManager battleManager = GameObject.FindObjectOfType<BattleManager>();
+			BattleManager battleManager = BattleManager.Instance;
 			foreach (var trigger in triggers){
-				if (trigger.Triggered){
-					//튜토리얼 중일 경우 취소 입력을 무효화
-					if  (battleManager.onTutorial &&
-						(trigger == BattleData.triggers.rightClicked || trigger == BattleData.triggers.cancelClicked))
-					{
-						trigger.Revert();
-						continue;
-					}else{
-						looping = false;
-						break;
-					}					
+				if (trigger.Triggered) {
+					looping = false;
+					break;
 				}
 			}
 			yield return null;
@@ -174,6 +166,9 @@ public static class BattleData{
 		public EventTrigger<ActionCommand> actionCommand = new EventTrigger<ActionCommand>();
 	}
 
+	public static bool onTutorial = false;
+	public static bool rightClickLock = false;
+
 	public static Triggers triggers = new Triggers();
 	public static CurrentState currentState = CurrentState.None;
 
@@ -212,11 +207,17 @@ public static class BattleData{
 
 	public static APAction previewAPAction;
 
+	// 중요 - BattleData 클래스 내 모든 변수는 static이라서 Initialize 함수 내에서 초기화를 해야 하므로
+	// 변수 하나 추가할 때마다 반드시 여기에 초기화하는 코드도 추가할 것
+	// 또 전투 시작할 때 반드시 Initialize() 함수를 불러야 한다(현재는 BattleManager 인스턴스의 Awake()시 호출함)
 	public static void Initialize(TileManager tileManagerInstance, UnitManager unitManagerInstance, UIManager uiManagerInstance, BattleManager battleManagerInstance){
 		tileManager = tileManagerInstance;
 		unitManager = unitManagerInstance;
 		uiManager = uiManagerInstance;
 		battleManager = battleManagerInstance;
+
+		onTutorial = false;
+		rightClickLock = false;
 
 		triggers = new Triggers();
 		currentState = CurrentState.None;

@@ -33,15 +33,10 @@ namespace Battle.Turn {
                 var update = UpdatePreviewAP();
                 battleManager.StartCoroutine(update);
 
-                //튜토리얼 중일 경우 되돌아가는 입력 무시
-                if(battleManager.onTutorial){
-					yield return battleManager.StartCoroutine(BattleData.triggers.skillSelected.Wait());
-				}else{
-					yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
+              	yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
 					BattleData.triggers.rightClicked,
 					BattleData.triggers.cancelClicked,
 					BattleData.triggers.skillSelected));
-				}
 
                 BattleData.battleManager.StopCoroutine(update);
 
