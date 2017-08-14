@@ -804,9 +804,9 @@ public class Unit : MonoBehaviour{
 		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
 		int damage = CalculateDamageByCasting(castingApply, true);	
-		Debug.Log ("damage " + damage);
 		int remainHP = GetCurrentHealth () + GetRemainShield();
-		Debug.Log ("remainHP " + remainHP);
+		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage)
+			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
 		damage = Math.Min (damage, remainHP);
 
 		float killNeedCount;
@@ -815,7 +815,6 @@ public class Unit : MonoBehaviour{
 			killNeedCount = 0.3f;
 		else
 			killNeedCount = remainHP / damage;
-		Debug.Log ("killNeedCount "+killNeedCount);
 
 		float sideFactor = 0;
 		Unit caster = casting.Caster;
@@ -823,12 +822,10 @@ public class Unit : MonoBehaviour{
 			sideFactor = -0.6f;
 		if (IsSeenAsEnemyToThisAIUnit (caster))
 			sideFactor = 1;
-		Debug.Log ("side factor " + sideFactor);
 
 		float PCFactor = 1;
 		if (IsPC)
 			PCFactor = 3;
-		Debug.Log ("PC factor " + PCFactor);
 
 		float reward = 0;
 		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;

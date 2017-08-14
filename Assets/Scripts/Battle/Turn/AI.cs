@@ -57,6 +57,9 @@ namespace Battle.Turn{
 				Tile tile = pair.Value.tile;
 				int requireAP = pair.Value.requireActivityPoint;
 
+				if (currAP - requireAP - moveRestrainFactor <= 0)
+					continue;
+
 				float reward = 0;
 				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 				if (bestCastingOnThisTile != null) {
