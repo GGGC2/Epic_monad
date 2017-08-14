@@ -258,7 +258,6 @@ namespace Battle.Turn {
                 if (BattleData.skillApplyCommand == SkillApplyCommand.Apply) {
                     BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					caster.UseActivityPoint (casting.RequireAP);
-					UIManager.Instance.UpdateSelectedUnitViewerUI (caster);
 					if (skill.GetCooldown() > 0)
 						caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
 					yield return ApplyAllTriggeredChains(casting);
@@ -269,7 +268,6 @@ namespace Battle.Turn {
                     BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
 					BattleData.currentState = CurrentState.ChainAndStandby;
 					caster.UseActivityPoint (casting.RequireAP);
-					UIManager.Instance.UpdateSelectedUnitViewerUI (caster);
 					yield return battleManager.StartCoroutine(StandbyChain(casting));
                 } else {
                     Debug.LogError("Invalid State");

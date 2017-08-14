@@ -278,7 +278,6 @@ public class Unit : MonoBehaviour{
 
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
 		UseActivityPoint (totalAPCost);
-		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
 
@@ -847,6 +846,7 @@ public class Unit : MonoBehaviour{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 		unitManager.UpdateUnitOrder();
+		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
 	public IEnumerator ApplyTriggerOnPhaseStart(int phase){

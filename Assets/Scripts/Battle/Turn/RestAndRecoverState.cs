@@ -22,7 +22,6 @@ public class RestAndRecover {
 		int recoverHealthDuringRest = (int)((0.9f + maxHealthOfUnit * 0.0006f + level * 0.04f) * usingActivityPointToRest);
         recoverHealthDuringRest = (int)SkillLogicFactory.Get(passiveSkillList).ApplyAdditionalRecoverHealthDuringRest(unit, recoverHealthDuringRest);
 		unit.UseActivityPoint(usingActivityPointToRest);
-		UIManager.Instance.UpdateSelectedUnitViewerUI (unit);
 		IEnumerator recoverHealthCoroutine = unit.RecoverHealth(recoverHealthDuringRest);
 
 		BattleManager battleManager = BattleData.battleManager;

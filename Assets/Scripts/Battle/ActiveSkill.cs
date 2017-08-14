@@ -600,13 +600,12 @@ public class ActiveSkill : Skill{
 		BattleManager.MoveCameraToUnit (caster);
 		SetSkillNamePanelUI ();
 
-		caster.UseActivityPoint (casting.RequireAP);
-		UIManager.Instance.UpdateSelectedUnitViewerUI (caster);
-
 		List<Tile> firstRange = casting.FirstRange;
 		BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
 		yield return new WaitForSeconds (0.4f);
 		BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+
+		caster.UseActivityPoint (casting.RequireAP);
 
 		List<Tile> secondRange = casting.SecondRange;
 		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);
