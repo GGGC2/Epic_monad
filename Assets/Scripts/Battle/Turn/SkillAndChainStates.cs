@@ -257,13 +257,17 @@ namespace Battle.Turn {
                 BattleManager battleManager = BattleData.battleManager;
                 if (BattleData.skillApplyCommand == SkillApplyCommand.Apply) {
                     BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+					caster.UseActivityPoint (casting.RequireAP);
+					if (skill.GetCooldown() > 0)
+						caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
 					yield return ApplyAllTriggeredChains(casting);
 					BattleManager.MoveCameraToUnit(caster);
 					BattleData.currentState = CurrentState.FocusToUnit;
                 }
 				else if (BattleData.skillApplyCommand == SkillApplyCommand.Chain) {
                     BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-                    BattleData.currentState = CurrentState.ChainAndStandby;
+					BattleData.currentState = CurrentState.ChainAndStandby;
+					caster.UseActivityPoint (casting.RequireAP);
 					yield return battleManager.StartCoroutine(StandbyChain(casting));
                 } else {
                     Debug.LogError("Invalid State");
@@ -360,7 +364,6 @@ namespace Battle.Turn {
 			SkillLocation location = casting.Location;
 
 			caster.SetDirection(location.Direction);
-			caster.UseActivityPoint(casting.RequireAP);
 
             // 스킬 쿨다운 기록
             if (skill.GetCooldown() > 0)

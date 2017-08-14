@@ -29,6 +29,18 @@ public class RetreatUnitInfo{
 }
 
 public class UnitManager : MonoBehaviour {
+	private static UnitManager instance;
+	public static UnitManager Instance{ get { return instance; } }
+
+	void Awake(){
+		if (instance != null && instance != this) {
+			Destroy (this.gameObject);
+			return;
+		} else {
+			instance = this;
+		}
+	}
+
 	int standardActivityPoint;
 
 	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -304,15 +316,24 @@ public class UnitManager : MonoBehaviour {
 		return readiedUnits;
 	}
 
-    public List<Unit> GetEnemyUnits(){
+	public List<Unit> GetEnemyUnits(){
+		List<Unit> enemyUnits = new List<Unit> ();
         foreach (var unit in units){
             if (unit.GetSide() == Side.Enemy){
                 enemyUnits.Add(unit);
-                // Debug.Log(unit.GetName() + " is enemy");
             }
         }
         return enemyUnits;
     }
+
+	public List<Unit> GetEnemyUnitsToThisAIUnit(Unit AIUnit){
+		List<Unit> enemyUnits = new List<Unit> ();
+		foreach (var unit in units){
+			if (unit.IsSeenAsEnemyToThisAIUnit(AIUnit))
+				enemyUnits.Add(unit);
+		}
+		return enemyUnits;
+	}
 
 	public IEnumerator ApplyEachDOT() {
         List<Unit> unitList = new List<Unit>();

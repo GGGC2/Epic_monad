@@ -277,9 +277,9 @@ public class Unit : MonoBehaviour{
     }
 
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
+		UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
-		UseActivityPoint (totalAPCost);
 
         foreach (var statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
@@ -804,9 +804,9 @@ public class Unit : MonoBehaviour{
 		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
 		DamageCalculator.CalculateAttackDamage(castingApply, 1);
 		int damage = CalculateDamageByCasting(castingApply, true);	
-		Debug.Log ("damage " + damage);
 		int remainHP = GetCurrentHealth () + GetRemainShield();
-		Debug.Log ("remainHP " + remainHP);
+		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage)
+			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
 		damage = Math.Min (damage, remainHP);
 
 		float killNeedCount;
@@ -815,7 +815,6 @@ public class Unit : MonoBehaviour{
 			killNeedCount = 0.3f;
 		else
 			killNeedCount = remainHP / damage;
-		Debug.Log ("killNeedCount "+killNeedCount);
 
 		float sideFactor = 0;
 		Unit caster = casting.Caster;
@@ -823,17 +822,23 @@ public class Unit : MonoBehaviour{
 			sideFactor = -0.6f;
 		if (IsSeenAsEnemyToThisAIUnit (caster))
 			sideFactor = 1;
-		Debug.Log ("side factor " + sideFactor);
 
 		float PCFactor = 1;
 		if (IsPC)
 			PCFactor = 3;
-		Debug.Log ("PC factor " + PCFactor);
 
 		float reward = 0;
 		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
-		Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
+		//Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
 		return reward;
+	}
+
+	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다
+	public float CalculatePredictReward(Unit caster, ActiveSkill skill){
+		// 접근했을 때 실제로 서로가 위치한 타일도 모르고 어느 방향으로 기술 시전할지도 모르므로 가짜로 넣어둠
+		SkillLocation pseudoLocation = new SkillLocation(caster.GetTileUnderUnit(), this.GetTileUnderUnit(), Direction.LeftDown);
+		Casting pseudoCasting = new Casting (caster, skill, pseudoLocation);
+		return CalculateRewardByCastingToThisUnit (pseudoCasting);
 	}
 
 	// 위 - AI용 함수들
@@ -846,6 +851,7 @@ public class Unit : MonoBehaviour{
 		activityPoint -= amount;
 		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 		unitManager.UpdateUnitOrder();
+		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
 	public IEnumerator ApplyTriggerOnPhaseStart(int phase){
