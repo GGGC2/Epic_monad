@@ -107,8 +107,7 @@ namespace Battle.Turn{
 		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(Unit unit){
 			AIData unitAIData = unit.GetComponent<AIData>();
 
-			if (!unitAIData.IsActive())
-				CheckActiveTrigger(unit);
+			if (!unitAIData.IsActive()) {CheckActiveTrigger(unit);}
 
 			if (!unitAIData.IsActive ()) {
 				yield return battleManager.BeforeActCommonAct ();
@@ -182,31 +181,26 @@ namespace Battle.Turn{
 					finalDirection = Direction.LeftDown;
 
 				yield return Move (unit, destTile, finalDirection, totalUseAP);
-			} else {
-				TileManager.Instance.DepaintAllTiles (TileColor.Blue);
-			}
+			}else {TileManager.Instance.DepaintAllTiles(TileColor.Blue);}
 		}
 		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
-			while (true) {
+			while(true){
 				yield return battleManager.BeforeActCommonAct ();
-
-				if (unit == null)
-					break;
+				
+				if (unit == null) {break;}
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = BattleData.SelectedSkill;
 
-				if (!unit.HasEnoughAPToUseSkill (skill))
-					yield break;
+				if (!unit.HasEnoughAPToUseSkill(skill)) {yield break;}
 
 				Tile currTile = unit.GetTileUnderUnit ();
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
-				if (casting == null)
-					yield break;
+				if (casting == null) {yield break;}
 				
-				yield return UseSkill (casting);
+				yield return UseSkill(casting);
 			}
 		}
 		public static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
