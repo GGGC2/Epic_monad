@@ -455,7 +455,7 @@ namespace Battle.Turn{
 
 				Vector2 currPos = unit.GetPosition ();
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
-				AI.PaintMovableTiles(movableTilesWithPath);
+				yield return AI.PaintMovableTiles(movableTilesWithPath);
 				
 				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);
 
