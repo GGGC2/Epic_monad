@@ -205,7 +205,7 @@ public class Unit : MonoBehaviour{
 		return activityPoint >= GetActualRequireSkillAP (skill);
 	}
 	public int MinAPUseForStandbyForAI(){
-		return activityPoint - GetStandardAP ();
+		return activityPoint - (GetStandardAP () - 1);
 	}
 	public int MinAPUseForStandbyForPC(){
 		int myAP = activityPoint;
@@ -273,6 +273,7 @@ public class Unit : MonoBehaviour{
         destTile.SetUnitOnTile(this);
         notMovedTurnCount = 0;
 
+		ChainList.RemoveChainOfThisUnit (this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
         foreach (var statusEffect in GetStatusEffectList()) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
@@ -905,15 +906,6 @@ public class Unit : MonoBehaviour{
             }
         }
     }
-
-	public void GetKnockedBack(Tile destTile)
-	{
-		Tile currentTile = GetTileUnderUnit();
-		currentTile.SetUnitOnTile(null);
-		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
-		SetPosition(destTile.GetTilePos());
-		destTile.SetUnitOnTile(this);
-	}
 
 	public void UpdateSpriteByDirection()
 	{
