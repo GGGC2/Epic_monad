@@ -41,6 +41,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void InitializeResultPanel(){
 		resultPanel.gameObject.SetActive(true);
+		resultPanel.Active();
 		resultPanel.UpdatePanel(0);
 	}
 
