@@ -204,20 +204,33 @@ public class Unit : MonoBehaviour{
 	public bool HasEnoughAPToUseSkill(ActiveSkill skill){
 		return activityPoint >= GetActualRequireSkillAP (skill);
 	}
-	public bool IsStandbyPossibleWithThisAP(int AP){
-		bool isPossible = false;
+	public int MinAPUseForStandbyForAI(){
+		return activityPoint - GetStandardAP ();
+	}
+	public int MinAPUseForStandbyForPC(){
+		int myAP = activityPoint;
+		int maxOtherUnitAP = -1;
 		foreach (var anyUnit in BattleData.unitManager.GetAllUnits()){
-			if ((anyUnit != this) &&
-				(anyUnit.GetCurrentActivityPoint() > AP))
-			{
-				isPossible = true;
-				return isPossible;
+			int unitAP = anyUnit.GetCurrentActivityPoint ();
+			if (anyUnit != this && unitAP > maxOtherUnitAP) {
+				maxOtherUnitAP = anyUnit.GetCurrentActivityPoint ();
 			}
 		}
-		return isPossible;
+		int minAPUse;
+		if (maxOtherUnitAP == -1) { // 현 페이즈 행동가능 유닛이 본인밖에 없을 경우
+			minAPUse = myAP - (GetStandardAP () - 1);
+		}
+		else if (maxOtherUnitAP == myAP) {
+			minAPUse = 1;
+		}
+		else {
+			minAPUse = myAP - maxOtherUnitAP;
+		}
+		Debug.Log (name + "의 대기를 위한 최소 소모 AP " + minAPUse);
+		return minAPUse;
 	}
 	public bool IsStandbyPossible(){
-		bool isPossible = IsStandbyPossibleWithThisAP (GetCurrentActivityPoint ());
+		bool isPossible = (MinAPUseForStandbyForPC () <= 0);
 		return isPossible;
 	}
 	public bool IsMovePossibleState(){
