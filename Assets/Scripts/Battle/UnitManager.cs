@@ -302,7 +302,6 @@ public class UnitManager : MonoBehaviour {
 
 			if (unit.GetCurrentActivityPoint() >= standardActivityPoint){
 				readiedUnits.Add(unit);
-				// Debug.Log(unit.GetName() + " is readied");
 			}
 		}
 

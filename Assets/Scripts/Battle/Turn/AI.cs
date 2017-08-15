@@ -59,12 +59,14 @@ namespace Battle.Turn{
 
 				foreach (var enemy in enemies) {
 					float approachReward = 0;
-					// FIXME : 원래는 칸 거리가 아니라 필요 AP를 계산해야 하는데 임시로 이걸 넣어둔 거임
-					int distance = Utility.GetDistance(tile.GetTilePos(), enemy.GetPosition());
+					int APdistance = PathFinder.GetAPDistanceFromTileToUnit (caster, tile, enemy);
+					Debug.Log (enemy.name+"까지의 AP거리 : "+APdistance);
+					if (APdistance == -1) // 길이 막힌 경우
+						continue;
 					float enemyReward = enemiesWithReward [enemy];
 
 					// 거리의 영향을 좀더 줄여야 함
-					approachReward = (enemyReward / (distance+5) ) / requireAP;
+					approachReward = (enemyReward / (float)Math.Sqrt(APdistance + minAPUse) ) / requireAP;
 					Debug.Log (tile.GetTilePos().x+" : "+tile.GetTilePos().y+" approach reward "+approachReward);
 
 					if (approachReward > maxReward) {
@@ -86,15 +88,17 @@ namespace Battle.Turn{
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
 				int requireAP = pair.Value.requireActivityPoint;
+				int actualRemainAP = currAP - requireAP - moveRestrainFactor;
+				int possibleSkillUseCount = actualRemainAP / skillRequireAP;
 
-				if (currAP - requireAP - moveRestrainFactor < skillRequireAP)
+				if (possibleSkillUseCount <= 0)
 					continue;
 
 				float reward = 0;
 				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 				if (bestCastingOnThisTile != null) {
 					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					reward = singleCastingReward * (int)((currAP - requireAP - moveRestrainFactor) / skillRequireAP);
+					reward = singleCastingReward * possibleSkillUseCount;
 
 					if (reward > maxReward) {
 						maxReward = reward;
@@ -178,7 +182,7 @@ namespace Battle.Turn{
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
 
 			yield return PaintMovableTiles(movableTilesWithPath);
 
@@ -454,7 +458,7 @@ namespace Battle.Turn{
 				int spareableAP = 24 + unit.GetActualRequireSkillAP (skill) * 2;
 
 				Vector2 currPos = unit.GetPosition ();
-				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
 				yield return AI.PaintMovableTiles(movableTilesWithPath);
 				
 				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);

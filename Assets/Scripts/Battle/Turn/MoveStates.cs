@@ -25,7 +25,7 @@ namespace Battle.Turn{
 
 		public static IEnumerator SelectMovingPointState(){
 			while (BattleData.currentState == CurrentState.SelectMovingPoint){
-				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(BattleData.selectedUnit);
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
 				List<Tile> movableTiles = new List<Tile>();
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
 				{

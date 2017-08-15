@@ -210,23 +210,19 @@ public class Unit : MonoBehaviour{
 	public int MinAPUseForStandbyForPC(){
 		int myAP = activityPoint;
 		int maxOtherUnitAP = -1;
-		foreach (var anyUnit in BattleData.unitManager.GetAllUnits()){
+		foreach (var anyUnit in BattleData.unitManager.GetUpdatedReadiedUnits()){
 			int unitAP = anyUnit.GetCurrentActivityPoint ();
 			if (anyUnit != this && unitAP > maxOtherUnitAP) {
 				maxOtherUnitAP = anyUnit.GetCurrentActivityPoint ();
 			}
 		}
 		int minAPUse;
-		if (maxOtherUnitAP == -1) { // 현 페이즈 행동가능 유닛이 본인밖에 없을 경우
+		if (maxOtherUnitAP == -1) { // 현 페이즈 행동가능 유닛이 본인밖에 없다면 AP가 턴 기준값보다 낮도록 만들어야 넘길 수 있음
 			minAPUse = myAP - (GetStandardAP () - 1);
 		}
-		else if (maxOtherUnitAP == myAP) {
-			minAPUse = 1;
-		}
 		else {
-			minAPUse = myAP - maxOtherUnitAP;
+			minAPUse = myAP - (maxOtherUnitAP - 1);
 		}
-		Debug.Log (name + "의 대기를 위한 최소 소모 AP " + minAPUse);
 		return minAPUse;
 	}
 	public bool IsStandbyPossible(){
