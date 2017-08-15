@@ -64,8 +64,8 @@ namespace Battle.Turn{
 					float enemyReward = enemiesWithReward [enemy];
 
 					// 거리의 영향을 좀더 줄여야 함
-					approachReward = (enemyReward / distance) / requireAP;
-					Debug.Log ("Reward"+approachReward);
+					approachReward = (enemyReward / (distance+5) ) / requireAP;
+					Debug.Log (tile.GetTilePos().x+" : "+tile.GetTilePos().y+" approach reward "+approachReward);
 
 					if (approachReward > maxReward) {
 						maxReward = approachReward;
@@ -87,14 +87,14 @@ namespace Battle.Turn{
 				Tile tile = pair.Value.tile;
 				int requireAP = pair.Value.requireActivityPoint;
 
-				if (currAP - requireAP - moveRestrainFactor <= 0)
+				if (currAP - requireAP - moveRestrainFactor < skillRequireAP)
 					continue;
 
 				float reward = 0;
 				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 				if (bestCastingOnThisTile != null) {
 					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					reward = singleCastingReward * (currAP - requireAP - moveRestrainFactor) / skillRequireAP;
+					reward = singleCastingReward * (int)((currAP - requireAP - moveRestrainFactor) / skillRequireAP);
 
 					if (reward > maxReward) {
 						maxReward = reward;
@@ -254,7 +254,6 @@ namespace Battle.Turn{
 		}
 
 		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
-			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
@@ -452,12 +451,13 @@ namespace Battle.Turn{
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = BattleData.SelectedSkill;
+				int spareableAP = 24 + unit.GetActualRequireSkillAP (skill) * 2;
 
 				Vector2 currPos = unit.GetPosition ();
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
-				AI.PaintMovableTiles(movableTilesWithPath);
+				yield return AI.PaintMovableTiles(movableTilesWithPath);
 				
-				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint() - 24);
+				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);
 
 				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;
