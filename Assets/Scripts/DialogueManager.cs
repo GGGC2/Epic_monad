@@ -42,14 +42,13 @@ public class DialogueManager : MonoBehaviour{
 
 		int newLine = line;
 		for (int i = newLine; i < endLine; i++){
-			if (dialogueDataList[i].IsAdventureObject()){
+			DialogueData data = dialogueDataList[i];
+			if (data.IsAdventureObject()){
 				SetActiveAdventureUI(true);
 				break;
-			}
+			}else if(data.Command == DialogueData.CommandType.Glos) {SetGlossaryLevel(data);}
 			
-			if(HandleSceneChange(dialogueDataList[i])){
-				return;
-			}
+			if(HandleSceneChange(dialogueDataList[i])) {return;}
 		}
 		SetActiveAdventureUI(true);
 	}
@@ -125,8 +124,7 @@ public class DialogueManager : MonoBehaviour{
 				rightUnit = null;
 				rightPortrait.sprite = transparent;
 				isLeftUnitOld = false;
-			}else
-				Debug.LogError("Undefined effectSubType : " + subType);
+			}else {Debug.LogError("Undefined effectSubType : " + subType);}
 		}else if(Command == DialogueData.CommandType.BGM){
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
 			SoundManager.Instance.PlayBGM(bgmName);
@@ -141,17 +139,16 @@ public class DialogueManager : MonoBehaviour{
 		}else if(Command == DialogueData.CommandType.FI){
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
-		}else if(Command == DialogueData.CommandType.Glos){
-			GlossaryData glos = GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == subType && x.index == data.GetGlossaryIndex());
-			glos.level = Math.Max(glos.level, data.GetGlossarySetLevel());
-		}
+		}else if(Command == DialogueData.CommandType.Glos) {SetGlossaryLevel(data);}
 		else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 	}
 
-	/*public void ReadEndLine(){
-		StartCoroutine (PrintLinesFrom (endLine-1));
-	}*/
+	void SetGlossaryLevel(DialogueData data){
+		Debug.Assert(GlobalData.GlossaryDataList.Count != 0);
+		GlossaryData glos = GlobalData.GlossaryDataList.Find(x => x.Type.ToString() == data.GetCommandSubType() && x.index == data.GetGlossaryIndex());
+		glos.level = Math.Max(glos.level, data.GetGlossarySetLevel());
+	}
 
 	//유니티 씬에서 쓰는 것이므로 레퍼런스 없더라도 지우지 말 것
 	public void ActiveSkipQuestionUI(){
@@ -311,6 +308,7 @@ public class DialogueManager : MonoBehaviour{
 
 	void Start() {
 		Initialize();
+		GlobalData.SetGlossaryDataList();
 
 		if(dialogueData.name == "Scene#1-1")
 			StartCoroutine(BlinkClickIcon());

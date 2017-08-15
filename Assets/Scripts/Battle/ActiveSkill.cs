@@ -165,10 +165,12 @@ public class ActiveSkill : Skill{
 		foreach (var pos in redRange)
 			rangeColors [pos] = Color.red;
 
+		/*
 		if (skillType == SkillType.Auto || skillType == SkillType.Self)
 			rangeColors [center] = Color.black;
 		if (skillType == SkillType.Point || skillType == SkillType.Route)
 			rangeColors [center] = new Color (1, 0.6f, 0);
+			*/
 		
 		return rangeColors;
 	}
@@ -310,13 +312,6 @@ public class ActiveSkill : Skill{
 		//secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
 		//realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
-		if (caster == BattleData.selectedUnit) {
-			caster.UseActivityPoint(casting.RequireAP); // 즉시시전을 한 유닛만 AP를 차감. 나머지는 연계대기할 때 이미 차감되었으므로 패스.
-			// 스킬 쿨다운 기록
-			if (cooldown > 0)
-				caster.GetUsedSkillDict().Add(korName, cooldown);
-		}
-
 		if (IsChainable())
 			ChainList.RemoveChainOfThisUnit(caster);
 
@@ -443,8 +438,6 @@ public class ActiveSkill : Skill{
 		if (attackDamage.heightBonus != 1) caster.PrintHeightBonus(attackDamage.heightBonus);
 
 		BattleManager battleManager = BattleData.battleManager;
-		// targetUnit이 반사 효과를 지니고 있을 경우 반사 대미지 코루틴 준비
-		// FIXME : 반사데미지는 다른 데미지 함수로 뺄 것! Damaged 함수 쓰면 원 공격자 스킬의 부가효과도 적용됨.
 		UnitClass damageType = caster.GetUnitClass();
 		bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
 			(target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
@@ -609,6 +602,8 @@ public class ActiveSkill : Skill{
 		BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
 		yield return new WaitForSeconds (0.4f);
 		BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+
+		caster.UseActivityPoint (casting.RequireAP);
 
 		List<Tile> secondRange = casting.SecondRange;
 		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);

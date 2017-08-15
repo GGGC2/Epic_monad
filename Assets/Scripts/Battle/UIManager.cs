@@ -275,6 +275,9 @@ public class UIManager : MonoBehaviour
 		selectedUnitViewerUI.SetActive(true);
 		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}
+	public void UpdateSelectedUnitViewerUI(Unit selectedUnit){
+		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
+	}
 
 	public void DisableSelectedUnitViewerUI() {
         unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList();
