@@ -111,8 +111,7 @@ public class TileManager : MonoBehaviour {
 		return tiles;
 	}
 
-	public void PreselectTiles(List<Tile> tiles)
-	{
+	public void PreselectTiles(List<Tile> tiles){
 		if (preselectLockOn)
 			return;
 		else {
@@ -121,24 +120,17 @@ public class TileManager : MonoBehaviour {
 			}
 		}
 	}
-	public void DepreselectAllTiles()
-	{
-		if (preselectLockOn)
-			return;
-		else {
+
+	public void DepreselectAllTiles(){
+		if(preselectLockOn) {return;}
+		else{
 			foreach (Tile tile in GetTilesInGlobalRange()) {
 				tile.SetPreSelected (false);
 			}
 		}
 	}
-	public void LockPreselect()
-	{
-		preselectLockOn = true;
-	}
-	public void UnlockPreselect()
-	{
-		preselectLockOn = false;
-	}
+
+	public void SetPreselectLock(bool OnOff) {preselectLockOn = OnOff;}
 
 	public void PaintTiles(List<Tile> tiles, TileColor color){
 		foreach(var tile in tiles)

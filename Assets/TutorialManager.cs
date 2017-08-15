@@ -69,5 +69,6 @@ public class TutorialManager : MonoBehaviour {
 	void SetControl(bool able){
 		NextButton.enabled = !able;
 		image.raycastTarget = !able;
+		Setting.shortcutEnable = able;
 	}
 }
