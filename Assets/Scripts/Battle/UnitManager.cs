@@ -360,8 +360,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units){
 			unit.UpdateStartPosition();
 			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart(phase));
-            if(phase == 1)
-                unit.ApplyTriggerOnStart();
+			if (phase == 1) {unit.ApplyTriggerOnStart ();}
 		}
 	}
 
@@ -372,17 +371,11 @@ public class UnitManager : MonoBehaviour {
 			unit.UpdateSkillCooldown();
 		}
 
-		foreach (var unit in units)
-		{
-			unit.RegenerateActionPoint();
-		}
+		foreach (var unit in units) {unit.RegenerateActionPoint();}
 		//행동력 회복시킨 후 순서 정렬하는 역할
 		UpdateUnitOrder();
 
-		foreach (var unit in units)
-        {
-            unit.ApplyTriggerOnPhaseEnd();
-        }
+		foreach (var unit in units) {unit.ApplyTriggerOnPhaseEnd();}
 	}
 
 	void LoadActiveSkills(){

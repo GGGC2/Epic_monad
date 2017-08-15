@@ -25,8 +25,7 @@ public class TutorialManager : MonoBehaviour {
 				cm.keyboardMoveActive = true;
 			}
 			EndTutorial ();
-		}
-		else{
+		}else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			BattleData.onTutorial = true;

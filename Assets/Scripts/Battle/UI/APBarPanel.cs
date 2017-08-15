@@ -24,8 +24,7 @@ namespace BattleUI
 
 		const int maxUICount = 13;
 
-		void Awake()
-		{
+		void Awake(){
 			bigProfile = transform.Find("Big/Profile").gameObject;
 
 			otherProfiles = GetChildObjects(transform.Find("Profiles"));
