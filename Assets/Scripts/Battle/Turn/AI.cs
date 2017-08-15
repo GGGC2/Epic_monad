@@ -36,32 +36,39 @@ namespace Battle.Turn{
 
 		// 1턴 내에 이동 후 공격 불가하거나 그럴 만한 가치가 없을 때 가장 가치있는 적을 향해 움직인다
 		// 가치에는 거리도 적용되므로 너무 멀면 그쪽으로 가진 않는다
-		public static Tile GetBestApproachWorthTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int maxWorthMoveAP){
+		public static Tile GetBestApproachWorthTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			Vector2 casterPos = caster.GetPosition ();
+			int minAPUse = caster.MinAPUseForStandbyForAI ();
 			Tile bestTile = caster.GetTileUnderUnit ();
 			float maxReward = 0;
 
 			List<Unit> enemies = UnitManager.Instance.GetEnemyUnitsToThisAIUnit (caster);
 
+			Dictionary<Unit, float> enemiesWithReward = new Dictionary<Unit, float> ();
+			foreach (Unit enemy in enemies) {
+				float enemyReward = enemy.CalculatePredictReward (caster, skill);
+				enemiesWithReward [enemy] = enemyReward;
+			}
+
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
 				int requireAP = pair.Value.requireActivityPoint;
 
-				if (requireAP > maxWorthMoveAP)
+				if (requireAP < minAPUse)
 					continue;
 
-				float reward = 0;
 				foreach (var enemy in enemies) {
+					float approachReward = 0;
 					// FIXME : 원래는 칸 거리가 아니라 필요 AP를 계산해야 하는데 임시로 이걸 넣어둔 거임
 					int distance = Utility.GetDistance(tile.GetTilePos(), enemy.GetPosition());
-					float enemyReward = enemy.CalculatePredictReward (caster, skill);
+					float enemyReward = enemiesWithReward [enemy];
 
 					// 거리의 영향을 좀더 줄여야 함
-					reward = enemyReward / distance;
-					Debug.Log ("Reward"+reward);
+					approachReward = (enemyReward / (distance+5) ) / requireAP;
+					Debug.Log (tile.GetTilePos().x+" : "+tile.GetTilePos().y+" approach reward "+approachReward);
 
-					if (reward > maxReward) {
-						maxReward = reward;
+					if (approachReward > maxReward) {
+						maxReward = approachReward;
 						bestTile = tile;
 					}
 				}
@@ -80,14 +87,14 @@ namespace Battle.Turn{
 				Tile tile = pair.Value.tile;
 				int requireAP = pair.Value.requireActivityPoint;
 
-				if (currAP - requireAP - moveRestrainFactor <= 0)
+				if (currAP - requireAP - moveRestrainFactor < skillRequireAP)
 					continue;
 
 				float reward = 0;
 				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 				if (bestCastingOnThisTile != null) {
 					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					reward = singleCastingReward * (currAP - requireAP - moveRestrainFactor) / skillRequireAP;
+					reward = singleCastingReward * (int)((currAP - requireAP - moveRestrainFactor) / skillRequireAP);
 
 					if (reward > maxReward) {
 						maxReward = reward;
@@ -180,8 +187,7 @@ namespace Battle.Turn{
 				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
 			}
 			else {
-				// FIXME : 아래 마지막 패러미터 50은 졸려서 임시로 넣어둔 것입니다... 대기 가능한 최소 소모 AP를 넣어야 됩니다....
-				destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath, 50);
+				destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
 				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
 			}
 		}
@@ -239,7 +245,7 @@ namespace Battle.Turn{
 		}
 		public static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
 			yield return battleManager.BeforeActCommonAct ();
-			if (unit.IsStandbyPossible () && unit.GetCurrentActivityPoint() < unit.GetStandardAP ()) {
+			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
 			}
 			else {
@@ -248,7 +254,6 @@ namespace Battle.Turn{
 		}
 
 		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
-			unit.SetDirection (finalDirection);
 			CameraFocusToUnit(unit);
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
@@ -446,12 +451,13 @@ namespace Battle.Turn{
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = BattleData.SelectedSkill;
+				int spareableAP = 24 + unit.GetActualRequireSkillAP (skill) * 2;
 
 				Vector2 currPos = unit.GetPosition ();
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculatePath(unit);
-				AI.PaintMovableTiles(movableTilesWithPath);
+				yield return AI.PaintMovableTiles(movableTilesWithPath);
 				
-				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint() - 24);
+				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);
 
 				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;

@@ -204,20 +204,33 @@ public class Unit : MonoBehaviour{
 	public bool HasEnoughAPToUseSkill(ActiveSkill skill){
 		return activityPoint >= GetActualRequireSkillAP (skill);
 	}
-	public bool IsStandbyPossibleWithThisAP(int AP){
-		bool isPossible = false;
+	public int MinAPUseForStandbyForAI(){
+		return activityPoint - (GetStandardAP () - 1);
+	}
+	public int MinAPUseForStandbyForPC(){
+		int myAP = activityPoint;
+		int maxOtherUnitAP = -1;
 		foreach (var anyUnit in BattleData.unitManager.GetAllUnits()){
-			if ((anyUnit != this) &&
-				(anyUnit.GetCurrentActivityPoint() > AP))
-			{
-				isPossible = true;
-				return isPossible;
+			int unitAP = anyUnit.GetCurrentActivityPoint ();
+			if (anyUnit != this && unitAP > maxOtherUnitAP) {
+				maxOtherUnitAP = anyUnit.GetCurrentActivityPoint ();
 			}
 		}
-		return isPossible;
+		int minAPUse;
+		if (maxOtherUnitAP == -1) { // 현 페이즈 행동가능 유닛이 본인밖에 없을 경우
+			minAPUse = myAP - (GetStandardAP () - 1);
+		}
+		else if (maxOtherUnitAP == myAP) {
+			minAPUse = 1;
+		}
+		else {
+			minAPUse = myAP - maxOtherUnitAP;
+		}
+		Debug.Log (name + "의 대기를 위한 최소 소모 AP " + minAPUse);
+		return minAPUse;
 	}
 	public bool IsStandbyPossible(){
-		bool isPossible = IsStandbyPossibleWithThisAP (GetCurrentActivityPoint ());
+		bool isPossible = (MinAPUseForStandbyForPC () <= 0);
 		return isPossible;
 	}
 	public bool IsMovePossibleState(){
@@ -260,6 +273,7 @@ public class Unit : MonoBehaviour{
         destTile.SetUnitOnTile(this);
         notMovedTurnCount = 0;
 
+		ChainList.RemoveChainOfThisUnit (this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
         foreach (var statusEffect in GetStatusEffectList()) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
@@ -801,8 +815,9 @@ public class Unit : MonoBehaviour{
 	// FIXME : AI가 공격 외의 기술을 갖게 되는 시점이 오면 reward 함수를 확장해야 한다
 	public float CalculateRewardByCastingToThisUnit(Casting casting){
 		CastingApply castingApply = new CastingApply (casting, this);
-		//FIXME : AI가 연계란 개념을 이용하게 하고 싶으면 아래에서 chainCombo에 1 넣어둔 걸 바꿔야 한다
-		DamageCalculator.CalculateAttackDamage(castingApply, 1);
+		List<Chain> allTriggeredChains = ChainList.GetAllChainTriggered (casting);
+		int chainCombo = allTriggeredChains.Count;
+		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
 		int damage = CalculateDamageByCasting(castingApply, true);	
 		int remainHP = GetCurrentHealth () + GetRemainShield();
 		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage)
@@ -892,15 +907,6 @@ public class Unit : MonoBehaviour{
             }
         }
     }
-
-	public void GetKnockedBack(Tile destTile)
-	{
-		Tile currentTile = GetTileUnderUnit();
-		currentTile.SetUnitOnTile(null);
-		transform.position = destTile.gameObject.transform.position + new Vector3(0, 0, -5f);
-		SetPosition(destTile.GetTilePos());
-		destTile.SetUnitOnTile(this);
-	}
 
 	public void UpdateSpriteByDirection()
 	{
