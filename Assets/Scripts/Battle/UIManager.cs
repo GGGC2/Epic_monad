@@ -87,6 +87,7 @@ public class UIManager : MonoBehaviour
 	}
 
 	public void UpdateApBarUI(List<Unit> allUnits) {
+		Debug.Log ("UpdateApBarUI");
 		apBarUI.gameObject.SetActive(true);
 		apBarUI.UpdateAPDisplay(allUnits);
 	}
@@ -222,21 +223,19 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.gameObject.SetActive(false);
 	}
 
-	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint)
-	{
+	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint){
 		destCheckUI.SetActive(true);
 		string newAPText = "소모 AP : " + totalUseActivityPoint + "\n" +
 			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - totalUseActivityPoint);
 		destCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public IEnumerator MovePhaseUI(int currentPhase)
-	{
+	public IEnumerator MovePhaseUI(int currentPhase){
 		Image img1 = phaseUI.GetComponent<Image>();
 		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
 
 		phaseUI.transform.localPosition = new Vector3(-1280,0,0);
-		phaseUI.transform.Find("Text").GetComponent<Text>().text = "Phase " + currentPhase;
+		phaseUI.transform.Find("Text").GetComponent<Text>().text = currentPhase + " 페 이 즈";
 		img1.DOFade(1, 0.5f);
 		img2.DOFade(1, 0.5f);
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(0,0,0), "islocal", true, "time", 1));

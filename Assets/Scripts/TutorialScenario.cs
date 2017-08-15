@@ -13,7 +13,7 @@ public class TutorialScenario{
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
-	enum Mission{None, MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
+	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
 	Mission mission;
 	public bool IsEndMission { get { return mission == Mission.End; } }
 	Direction missionDirection;
@@ -37,29 +37,27 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				TM.DepreselectAllTiles ();
 				TM.PreselectTiles (clickableTiles);
-				TM.LockPreselect ();
+				TM.SetPreselectLock (true);
 				TM.SetHighlightTiles (clickableTiles, true);
 				missionTile.LeftClick.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				missionTile.LeftClick.RemoveListener (ToNextStep);
-				TM.SetHighlightTiles(TM.GetTilesInGlobalRange(), false);
-				TM.UnlockPreselect ();
+				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
+				TM.SetPreselectLock (false);
 				TM.DepreselectAllTiles ();
 			};
-		}
-		else if (mission == Mission.SelectDirection) {
+		} else if (mission == Mission.SelectDirection) {
 			missionDirection = parser.ConsumeEnum<Direction> ();
 			SetMissionCondition = () => {
-				selectDirectionUI.EnableOnlyThisDirection(missionDirection);
-				selectDirectionUI.AddListenerToDirection(missionDirection, ToNextStep);
+				selectDirectionUI.EnableOnlyThisDirection (missionDirection);
+				selectDirectionUI.AddListenerToDirection (missionDirection, ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				selectDirectionUI.RemoveListenerToDirection(missionDirection, ToNextStep);
-				selectDirectionUI.EnableAllDirection();
+				selectDirectionUI.RemoveListenerToDirection (missionDirection, ToNextStep);
+				selectDirectionUI.EnableAllDirection ();
 			};
-		}
-		else if (mission == Mission.SelectSkill) {
+		} else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
 				skillPanel.TurnOnOnlyOneSkill (missionSkillIndex);
@@ -70,8 +68,7 @@ public class TutorialScenario{
 				skillPanel.RemoveListenerToSkillButton (missionSkillIndex, ToNextStep);
 				skillPanel.UnlockSkillsOnOff ();
 			};
-		}
-		else if (mission == Mission.Apply) {
+		} else if (mission == Mission.Apply) {
 			SetMissionCondition = () => {
 				UIManager.Instance.EnableSkillCheckWaitButton (true, false);
 				UIManager.Instance.LockApplyOrWaitOnOff ();
@@ -81,8 +78,7 @@ public class TutorialScenario{
 				UIManager.Instance.RemoveListenerToApplyButton (ToNextStep);
 				UIManager.Instance.UnlockApplyOrWaitOnOff ();
 			};
-		}
-		else if (mission == Mission.Wait) {
+		} else if (mission == Mission.Wait) {
 			SetMissionCondition = () => {
 				UIManager.Instance.EnableSkillCheckWaitButton (false, true);
 				UIManager.Instance.LockApplyOrWaitOnOff ();
@@ -92,8 +88,7 @@ public class TutorialScenario{
 				UIManager.Instance.RemoveListenerToWaitButton (ToNextStep);
 				UIManager.Instance.UnlockApplyOrWaitOnOff ();
 			};
-		}
-		else if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
+		} else if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
 			ActionCommand command;
 			if (mission == Mission.MoveCommand)
 				command = ActionCommand.Move;
@@ -104,13 +99,13 @@ public class TutorialScenario{
 			else
 				command = ActionCommand.Rest;
 			SetMissionCondition = () => {
-				commandPanel.TurnOnOnlyThisButton(command);
-				commandPanel.LockCommandsOnOff();
-				commandPanel.AddListenerToButton(command, ToNextStep);
+				commandPanel.TurnOnOnlyThisButton (command);
+				commandPanel.LockCommandsOnOff ();
+				commandPanel.AddListenerToButton (command, ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				commandPanel.RemoveListenerToButton (command, ToNextStep);
-				commandPanel.UnlockCommandsOnOff();
+				commandPanel.UnlockCommandsOnOff ();
 			};
 		}
 	}

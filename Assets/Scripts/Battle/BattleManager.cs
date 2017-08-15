@@ -520,7 +520,6 @@ public class BattleManager : MonoBehaviour{
 		BattleTriggerManager.CountBattleCondition();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
-
 		yield return StartCoroutine(BattleData.unitManager.StartPhase(BattleData.currentPhase));
         yield return StartCoroutine(BattleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());

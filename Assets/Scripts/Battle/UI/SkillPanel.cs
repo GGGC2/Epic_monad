@@ -95,7 +95,7 @@ namespace BattleUI
 		}
 
 		public void Update(){
-			if(BattleData.currentState == CurrentState.SelectSkill){
+			if(BattleData.currentState == CurrentState.SelectSkill && Setting.shortcutEnable){
 				if (Input.GetKeyDown (KeyCode.A) && skillButtons [0].interactable && skillButtons [0].gameObject.activeSelf)
 					skillButtons [0].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.S) && skillButtons[1].interactable && skillButtons[1].gameObject.activeSelf)

@@ -16,8 +16,7 @@ public class HitInfo{
 	public readonly ActiveSkill skill;
     public readonly int finalDamage;
 
-	public HitInfo(Unit caster, ActiveSkill skill, int finalDamage)
-	{
+	public HitInfo(Unit caster, ActiveSkill skill, int finalDamage){
 		this.caster = caster;
 		this.skill = skill;
         this.finalDamage = finalDamage;
