@@ -36,9 +36,7 @@ public class UnitManager : MonoBehaviour {
 		if (instance != null && instance != this) {
 			Destroy (this.gameObject);
 			return;
-		} else {
-			instance = this;
-		}
+		}else {instance = this;}
 	}
 
 	int standardActivityPoint;
@@ -180,100 +178,64 @@ public class UnitManager : MonoBehaviour {
 		});
 	}
 
+	void GeneratePC (string Name){
+		if (Name != "Empty") {
+			
+		}
+	}
+
 	public void GenerateUnits(){
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 		int GeneratedPC = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
-
-		if (readyManager != null){
-			foreach (var unitInfo in unitInfoList){
-				if (unitInfo.name == "unselected") {
-					string PCName = readyManager.selected[GeneratedPC].unitName;
-					unitInfo.name = UnitInfo.ConvertToKoreanName(PCName);
-					
-					if (unitInfo.name != "Empty") {
-						unitInfo.nameInCode = PCName;
-						unitInfo.baseHealth = UnitInfo.GetStat(PCName, Stat.MaxHealth);
-						unitInfo.basePower = UnitInfo.GetStat(PCName, Stat.Power);
-						unitInfo.baseDefense = UnitInfo.GetStat(PCName, Stat.Defense);
-						unitInfo.baseResistance = UnitInfo.GetStat(PCName, Stat.Resistance);
-						unitInfo.baseAgility = UnitInfo.GetStat(PCName, Stat.Agility);
-						unitInfo.unitClass = UnitInfo.GetUnitClass(PCName);
-
-						if(SceneData.stageNumber >= Setting.elementOpenStage)
-							unitInfo.element = UnitInfo.GetElement(PCName);
-						if(SceneData.stageNumber >= Setting.celestialOpenStage)
-							unitInfo.celestial = UnitInfo.GetCelestial(PCName);
-
-						GeneratedPC += 1;
-					}
-				}
-			}
-
-			Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
-			Debug.Log("GeneratedPC : " + GeneratedPC);
-			BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
-			if(countPC != null)
-				countPC.targetCount = GeneratedPC;
-			unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
-
-			foreach (var unitInfo in unitInfoList){
-				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-
-				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
-
-				Vector2 initPosition = unit.GetInitPosition();
-				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-				respawnPos -= new Vector3(0, 0, 0.05f);
-				unit.transform.position = respawnPos;
-
-				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-				tileUnderUnit.SetUnitOnTile(unit);
-
-				units.Add(unit);
-			}
-
-			List<string> controllableUnitNameList = new List<string>();
-			readyManager.selected.ToList().ForEach(panel => {
-				if (panel.unitName != "Empty")
-					controllableUnitNameList.Add(panel.unitName);
-			});
+		List<string> controllableUnitNameList = new List<string>();
+		foreach (var unitInfo in unitInfoList){
+			string PCName = "";
+			if (unitInfo.name == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
+			else if (unitInfo.name.Substring(0,2) == "PC") {PCName = unitInfo.name.Substring(2, unitInfo.name.Length-2);}
 			
-			units.ForEach(unit => {
-				if (controllableUnitNameList.Contains(unit.GetNameInCode())){
-					Destroy(unit.GetComponent<AIData>());
+			if(PCName != ""){
+				unitInfo.name = UnitInfo.ConvertToKoreanName (PCName);
+				controllableUnitNameList.Add(PCName);
+					
+				if (unitInfo.name != "Empty") {
+					unitInfo.SetPCData(PCName);
+					GeneratedPC += 1;
 				}
-			});
-
-			Destroy(readyManager.gameObject);
-		}
-		else {
-			foreach (var unitInfo in unitInfoList){
-				Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-
-				unit.ApplyUnitInfo(unitInfo);
-				unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
-
-				Vector2 initPosition = unit.GetInitPosition();
-				Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-				respawnPos -= new Vector3(0, 0, 0.05f);
-				unit.transform.position = respawnPos;
-
-				Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-				tileUnderUnit.SetUnitOnTile(unit);
-
-				units.Add(unit);
 			}
-
-			units.ForEach(unit => {
-				if (unit.GetSide() == Side.Ally)
-				{
-					Destroy(unit.GetComponent<AIData>());
-				}
-			});
 		}
+
+		Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
+		Debug.Log("GeneratedPC : " + GeneratedPC);
+		
+		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
+		if(countPC != null) {countPC.targetCount = GeneratedPC;}
+
+		unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
+
+		foreach (var unitInfo in unitInfoList){
+			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+			unit.ApplyUnitInfo(unitInfo);
+			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
+
+			Vector2 initPosition = unit.GetInitPosition();
+			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+			respawnPos -= new Vector3(0, 0, 0.05f);
+			unit.transform.position = respawnPos;
+
+			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+			tileUnderUnit.SetUnitOnTile(unit);
+			units.Add(unit);
+		}
+			
+		units.ForEach(unit => {
+			if (controllableUnitNameList.Contains(unit.GetNameInCode())){
+				Destroy(unit.GetComponent<AIData>());
+			}
+		});
+
+		if(readyManager != null) {Destroy(readyManager.gameObject);}
 		// Debug.Log("Generate units complete");
 	}
 

@@ -66,8 +66,8 @@ public class UnitInfo {
 		return Convert.ToInt32(acc*level*(level-1)+coef*level+basepoint);
 	}
 
-	public static UnitClass GetUnitClass(string PCName){
-		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[6];
+	public static UnitClass GetUnitClass(string Name){
+		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[6];
 		if(className == "melee")
 			return UnitClass.Melee;
 		else if(className == "magic")
@@ -76,8 +76,8 @@ public class UnitInfo {
 			return UnitClass.None;
 	}
 
-	public static Element GetElement(string PCName){
-		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[7];
+	public static Element GetElement(string Name){
+		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[7];
 		if (element == "fire")
 			return Element.Fire;
 		else if (element == "water")
@@ -90,8 +90,8 @@ public class UnitInfo {
 			return Element.None;
 	}
 
-	public static Celestial GetCelestial(string PCName){
-		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, PCName)[8];
+	public static Celestial GetCelestial(string Name){
+		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[8];
 		if (celestial == "sun")
 			return Celestial.Sun;
 		else if (celestial == "moon")
@@ -132,5 +132,20 @@ public class UnitInfo {
 			Debug.LogError(codeName + " has NO KoreanName");
 			return "";
 		}
+	}
+
+	public void SetPCData(string PCName){
+		nameInCode = PCName;
+		baseHealth = UnitInfo.GetStat (PCName, Stat.MaxHealth);
+		basePower = UnitInfo.GetStat (PCName, Stat.Power);
+		baseDefense = UnitInfo.GetStat (PCName, Stat.Defense);
+		baseResistance = UnitInfo.GetStat (PCName, Stat.Resistance);
+		baseAgility = UnitInfo.GetStat (PCName, Stat.Agility);
+		unitClass = UnitInfo.GetUnitClass (PCName);
+
+		if (SceneData.stageNumber >= Setting.elementOpenStage)
+			element = UnitInfo.GetElement (PCName);
+		if (SceneData.stageNumber >= Setting.celestialOpenStage)
+			celestial = UnitInfo.GetCelestial (PCName);
 	}
 }

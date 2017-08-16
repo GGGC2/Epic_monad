@@ -991,6 +991,20 @@ public class Unit : MonoBehaviour{
         actualStats.Add(Stat.Agility, new ActualStat(baseStats[Stat.Agility], Stat.Agility));
         actualStats.Add(Stat.Level, new ActualStat(GameData.PartyData.level, Stat.Level));
     }
+
+	/*public void ApplyInfoSkillPos(UnitInfo unitInfo, List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
+                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
+		ApplyUnitInfo(unitInfo);
+		ApplySkillList(activeSkills, statusEffectInfoList, tileStatusEffectInfoList, passiveSkills);
+
+		Vector2 initPosition = GetInitPosition();
+		Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+		respawnPos -= new Vector3(0, 0, 0.05f);
+		transform.position = respawnPos;
+
+		Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+		tileUnderUnit.SetUnitOnTile(this);
+	}*/
     public void ApplyUnitInfo(UnitInfo unitInfo) {
         this.index = unitInfo.index;
 		this.name = unitInfo.name;

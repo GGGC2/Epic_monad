@@ -82,7 +82,7 @@ public class SceneLoader : MonoBehaviour{
         if (!SceneData.isTestMode && !SceneData.isStageMode) {
             GameDataManager.Save();
         }
-        if (SceneData.isTestMode || SceneData.stageNumber == 1 || SceneManager.GetActiveScene().name == "BattleReady")
+		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady")
             SceneManager.LoadScene("Battle");
         else
             SceneManager.LoadScene("BattleReady");
