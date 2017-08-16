@@ -88,8 +88,10 @@ public class UIManager : MonoBehaviour
 
 	public void UpdateApBarUI(List<Unit> allUnits) {
 		Debug.Log ("UpdateApBarUI");
-		apBarUI.gameObject.SetActive(true);
-		apBarUI.UpdateAPDisplay(allUnits);
+		if (BattleData.readiedUnits.Count != 0) {
+			apBarUI.gameObject.SetActive(true);
+			apBarUI.UpdateAPDisplay(allUnits);	
+		}
 	}
 
 	public void ActivateCommandUIAndSetName(Unit selectedUnit)
