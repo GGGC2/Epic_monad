@@ -49,6 +49,7 @@ public class SceneLoader : MonoBehaviour{
 		Time.timeScale = 1.0f;
 	}
 
+	//true면 FO, false면 FI.
 	public IEnumerator Fade(bool isBlack){
 		Time.timeScale = 0;
 		fadeoutScreenObject.SetActive(true);
@@ -58,6 +59,7 @@ public class SceneLoader : MonoBehaviour{
 		if(isBlack)
 			tween = img.DOColor(Color.black, 1f).SetUpdate(true);
 		else{
+			yield return new WaitForSeconds (Setting.fadeInWaitingTime);
 			img.color = Color.black;
 			tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
 		}
@@ -65,8 +67,9 @@ public class SceneLoader : MonoBehaviour{
 		while(tween.IsPlaying())
 			yield return null;
 
-		if(!isBlack)
-			fadeoutScreenObject.SetActive(false);
+		if (!isBlack) {
+			fadeoutScreenObject.SetActive (false);
+		}
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(){
