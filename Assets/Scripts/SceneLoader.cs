@@ -11,28 +11,28 @@ public class SceneLoader : MonoBehaviour{
 	public GameObject fadeoutScreenObject;
 
 	public void GoToTitle(){
-		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
+		FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
 	public void LoadNextBattleScene(){
-		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
+		FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName){
-		if (FindObjectOfType<DialogueManager>() != null)
-			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
+		FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
 	}
 
-	public void LoadNextWorldMapScene(string storyName)
-	{
+	public void LoadNextWorldMapScene(string storyName){
+		FindAndOffAdvUI ();
+		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
+	}
+
+	void FindAndOffAdvUI(){
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
-		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
 	public bool IsScreenActive(){
@@ -44,7 +44,7 @@ public class SceneLoader : MonoBehaviour{
 	}
 
 	IEnumerator Start(){
-		yield return Fade(false);
+		yield return StartCoroutine(Fade(false));
 	}
 
 	//true면 FO, false면 FI.
@@ -76,7 +76,7 @@ public class SceneLoader : MonoBehaviour{
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(){
-		yield return Fade(true);
+		yield return StartCoroutine(Fade(true));
 
         SceneData.isDialogue = false;
         if (!SceneData.isTestMode && !SceneData.isStageMode) {
@@ -94,8 +94,7 @@ public class SceneLoader : MonoBehaviour{
 		if (nextScriptFileName == "Title"){
 			Time.timeScale = 1.0f;
 			SceneManager.LoadScene("Title");
-		}
-		else{
+		}else{
 			SceneData.dialogueName = nextScriptFileName;
             SceneData.isDialogue = true;
             if (!SceneData.isTestMode && !SceneData.isStageMode)
@@ -106,7 +105,7 @@ public class SceneLoader : MonoBehaviour{
 	}
 
 	IEnumerator FadeoutAndLoadWorldmapScene(string nextStoryName){
-		yield return Fade(true);
+		yield return StartCoroutine(Fade(true));
 
 		// need use save data
 		WorldMapManager.currentStory = nextStoryName;
