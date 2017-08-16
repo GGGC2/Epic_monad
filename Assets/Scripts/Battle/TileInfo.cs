@@ -10,7 +10,7 @@ public class TileInfo {
 	int tileHeight; // 추후 높이 시스템 구현되면 사용.
 	Element tileElement;
 	int tileTypeIndex;
-	bool isEmptyTile;
+	bool isEmptyTile = false;
 	string displayName;
 
 	public Vector2 GetTilePosition() { return tilePosition; }
@@ -27,13 +27,9 @@ public class TileInfo {
 			return;
 		}
 
-		this.isEmptyTile = false;
-
 		this.tilePosition = tilePosition;
 
-		char tileElementChar = tileInfoString[0];
-
-		this.tileElement = ReadTileElementChar (tileElementChar);
+		this.tileElement = ReadTileElementChar (tileInfoString[0]);
 
 		string tileTypeIndexSubstring = tileInfoString.Substring(1,2);
 		int number;
@@ -55,6 +51,7 @@ public class TileInfo {
 		this.tileAPAtStandardHeight = TileLibrary [tileIdentifier].baseAPCost;
 		this.displayName = TileLibrary [tileIdentifier].displayName;
 	}
+
 	public static Element ReadTileElementChar(char tileElementChar){
 		if (tileElementChar == 'F')
 			return Element.Fire;
@@ -73,6 +70,7 @@ public class TileInfo {
 	}
 
 	public static Dictionary<string, TileTypeData> TileLibrary = null;
+
 	public class TileTypeData{
 		public string identifier;
 		public string displayName;

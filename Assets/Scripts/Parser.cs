@@ -76,18 +76,16 @@ public class Parser : MonoBehaviour{
 	}
 
 	public static List<AIInfo> GetParsedAIInfo(){
-		List<AIInfo> aiInfoList = new List<AIInfo>();
-		TextAsset csvFile = null;
-		if (FindObjectOfType<BattleManager>() != null)
-			csvFile = FindObjectOfType<BattleManager>().GetAIData() as TextAsset;
-		else
-			Debug.LogError("No BattleManager");
+		BattleManager BM = FindObjectOfType<BattleManager> ();
+		Debug.Assert (BM != null);
 
+		List<AIInfo> aiInfoList = new List<AIInfo>();
+
+		TextAsset csvFile = FindObjectOfType<BattleManager>().GetAIData() as TextAsset;
 		string csvText = csvFile.text;
 		string[] unparsedAIInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 1; i < unparsedAIInfoStrings.Length; i++)
-		{
+		for (int i = 1; i < unparsedAIInfoStrings.Length; i++){
 			try
 			{
 				AIInfo aiInfo = new AIInfo(unparsedAIInfoStrings[i]);

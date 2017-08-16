@@ -52,9 +52,11 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if (!startTurnManager){
-			StartCoroutine(InstantiateTurnManager());
+		if (!startTurnManager) {
+			StartCoroutine (InstantiateTurnManager ());
 			startTurnManager = true;
+		} else {
+			Debug.Log ("TurnManager Already Started.");
 		}
 	}
 
@@ -69,33 +71,34 @@ public class BattleManager : MonoBehaviour{
 	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
 
 	public IEnumerator InstantiateTurnManager(){
-        if(BattleData.uiManager.startFinished){
-			while (true){
-				yield return StartCoroutine(StartPhaseOnGameManager());
+		if (BattleData.uiManager.startFinished) {
+			while (true) {
+				yield return StartCoroutine (StartPhaseOnGameManager ());
 
-				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
+				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
 				while (BattleData.readiedUnits.Count != 0) {
-					BattleData.selectedUnit = BattleData.readiedUnits[0];
-					BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+					BattleData.selectedUnit = BattleData.readiedUnits [0];
+					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
 
-					if (BattleData.selectedUnit.IsAI){
-						yield return AI.UnitTurn(BattleData.selectedUnit);
-					}
-					else
-						yield return StartCoroutine(ActionAtTurn(BattleData.selectedUnit));
+					if (BattleData.selectedUnit.IsAI) {
+						yield return AI.UnitTurn (BattleData.selectedUnit);
+					} else
+						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 
 					BattleData.selectedUnit = null;
 
-					BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
+					BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 					yield return null;
 				}
 
 				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
-				yield return StartCoroutine(ObjectUnitBehaviour.AllObjectUnitsBehave ());
+				yield return StartCoroutine (ObjectUnitBehaviour.AllObjectUnitsBehave ());
 
-				yield return StartCoroutine(EndPhaseOnGameManager());
+				yield return StartCoroutine (EndPhaseOnGameManager ());
 			}
+		} else {
+			Debug.Log ("uiManager is not started.");
 		}
 	}
 

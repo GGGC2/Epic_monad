@@ -22,7 +22,7 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(unitName != "unselected"){
-			nameText.text = ToKorean(unitName);
+			nameText.text = UnitInfo.ConvertToKoreanName(unitName);
 			Object[] sprites = Resources.LoadAll("UnitImage/" + unitName);
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);
@@ -58,35 +58,12 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			SetNameAndSprite("unselected");
 	}
 
-	/*public void ChangeIllust()
-	{
-		characterIllust.sprite = Resources.Load<Sprite>("StandingImage/"+unitName+"_standing");
-	}*/
-
-	public void SetNameAndSprite(string name)
-	{
+	public void SetNameAndSprite(string name){
 		unitName = name;
 
 		if(name == "unselected")
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_placeholder");
 		else
 			gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("UnitImage/portrait_" + unitName);		
-	}
-
-	string ToKorean(string unitName)
-	{
-		//FIXME : 이 부분 UnitInfo.cs의 ConvertToKoreanName(string codeName)와 (dafault 케이스만 빼면)겹쳐서 하나로 합쳐야 할 듯..
-		//아니면 하드코딩하지 말고 csv로 빼거나
-		switch (unitName)
-		{
-			case "noel":		return "노엘";
-			case "grenev":		return "그레네브";
-			case "sepia":		return "세피아";
-			case "arcadia":		return "아르카디아";
-			case "darkenir":	return "달케니르";
-			case "yeong":		return "영";
-			case "bianca":		return "비앙카";
-			default:			return "--";
-		}
 	}
 }

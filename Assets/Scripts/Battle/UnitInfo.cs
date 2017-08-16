@@ -22,8 +22,7 @@ public class UnitInfo {
 	public Celestial celestial;
 	public bool isObject;
 
-	public UnitInfo (string data)
-	{
+	public UnitInfo (string data){
 		StringParser commaParser = new StringParser(data, ',');
 		this.index = commaParser.ConsumeInt(); 
 		this.name = commaParser.Consume();
@@ -109,20 +108,24 @@ public class UnitInfo {
 	}
 
 	public static string ConvertToKoreanName(string codeName){
-		if(codeName == "noel")
+		if (codeName == "noel")
 			return "노엘";
-		else if(codeName == "sepia")
+		else if (codeName == "sepia")
 			return "세피아";
-		else if(codeName == "arcadia")
+		else if (codeName == "arcadia")
 			return "아르카디아";
-		else if(codeName == "grenev")
+		else if (codeName == "grenev")
 			return "그레네브";
-		else if(codeName == "darkenir")
+		else if (codeName == "darkenir")
 			return "달케니르";
-		else if(codeName == "yeong")
+		else if (codeName == "yeong")
 			return "영";
-		else if(codeName == "bianca")
+		else if (codeName == "bianca")
 			return "비앙카";
+		else if (codeName == "karldrich")
+			return "칼드리치";
+		else if (codeName == "lucius")
+			return "루키어스";
 		else if(codeName == "unselected")
 			return "Empty";
 		else{

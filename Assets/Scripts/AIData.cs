@@ -38,8 +38,7 @@ public class AIData : MonoBehaviour {
 			SetActive();
 	}
 
-	public void SetAIInfo(AIInfo info)
-	{
+	public void SetAIInfo(AIInfo info){
 		activeTriggers = info.activeTriggers;
 		activePhase = info.activePhase;
 		trigger3Area = info.trigger3Area;

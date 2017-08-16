@@ -12,16 +12,12 @@ public class AIInfo {
 	public List<List<Tile>> trigger3Area = new List<List<Tile>>();
 	public List<List<Tile>> trigger4Area = new List<List<Tile>>();
 
-	public AIInfo (string data)
-	{
+	public AIInfo (string data){
 		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
 		UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
 		StringParser commaParser = new StringParser(data, ',');
 
 		this.index = commaParser.ConsumeInt();
-
-		commaParser.Consume();
-		commaParser.Consume();
 
 		string unParsedActiveTriggers = commaParser.Consume();
 		string[] origin = unParsedActiveTriggers.Split('.');
@@ -32,8 +28,7 @@ public class AIInfo {
 		int numOfTrigger3Area = commaParser.ConsumeInt();
 		int numOfTrigger4Area = commaParser.ConsumeInt();
 		
-		for (int i = 0; i < numOfTrigger3Area; i++)
-		{
+		for (int i = 0; i < numOfTrigger3Area; i++){
 			List<Tile> triggerArea = new List<Tile>();
 
 			RangeForm rangeForm = commaParser.ConsumeEnum<RangeForm>();
@@ -52,8 +47,7 @@ public class AIInfo {
 			trigger3Area.Add(triggerArea);
 		}
 
-		for (int i = 0; i < numOfTrigger4Area; i++)
-		{
+		for (int i = 0; i < numOfTrigger4Area; i++){
 			List<Tile> triggerArea = new List<Tile>();
 
 			RangeForm rangeForm = commaParser.ConsumeEnum<RangeForm>();

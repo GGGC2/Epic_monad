@@ -172,6 +172,9 @@ public class UnitManager : MonoBehaviour {
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;
 			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
+			if(targetUnit == null){
+				Debug.Log("Unit Number " + index + " is null");
+			}
 			targetUnit.gameObject.GetComponent<AIData>().SetAIInfo(aiInfo);
 			targetUnit.SetAsAI();
 		});

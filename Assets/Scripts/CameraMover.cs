@@ -14,8 +14,7 @@ public class CameraMover : MonoBehaviour {
 	float speed = 4f;
 	Vector3 fixedPosition = Vector3.zero;
 
-	public void SetFixedPosition(Vector3 position)
-	{
+	public void SetFixedPosition(Vector3 position){
 		fixedPosition = new Vector3(position.x, position.y, transform.position.z);
 	}
 
@@ -35,6 +34,7 @@ public class CameraMover : MonoBehaviour {
 	
     void Start() {
 		FindObjectOfType<CameraMover>().CalculateBoundary();
+		SetFixedPosition (transform.position);
     }
     public void CalculateBoundary() {
 
@@ -48,8 +48,7 @@ public class CameraMover : MonoBehaviour {
     }
 	void Update () {
 		// return to fixedPosition.
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
+		if (Input.GetKeyDown(KeyCode.Space)){
 			MoveCameraToPosition(fixedPosition);
 			return;
 		}
@@ -90,8 +89,7 @@ public class CameraMover : MonoBehaviour {
 		Camera.main.transform.position += direction * speed * Time.deltaTime;
 	}
 
-	void MoveCameraToPosition(Vector3 position)
-	{
+	void MoveCameraToPosition(Vector3 position){
 		Camera.main.transform.position = position;
 	}
 }
