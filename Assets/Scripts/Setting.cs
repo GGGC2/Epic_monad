@@ -15,5 +15,5 @@ public class Setting{
 	//변수 통제
 	public static int retreatHpPercent = 10;
 	public static float retreatHpFloat = 0.1f;
-	public static float fadeInWaitingTime = 0.5f;
+	public static float fadeInWaitingTime = 0.3f;
 }

@@ -45,21 +45,22 @@ public class SceneLoader : MonoBehaviour{
 
 	IEnumerator Start(){
 		yield return Fade(false);
-		fadeoutScreenObject.SetActive(false);
-		Time.timeScale = 1.0f;
 	}
 
 	//true면 FO, false면 FI.
 	public IEnumerator Fade(bool isBlack){
-		Time.timeScale = 0;
 		fadeoutScreenObject.SetActive(true);
+
+		if(!isBlack)
+			yield return new WaitForSeconds (Setting.fadeInWaitingTime);
+		
+		Time.timeScale = 0;
 		var img = fadeoutScreenObject.GetComponent<Image>();
 		Tweener tween;
 
 		if(isBlack)
 			tween = img.DOColor(Color.black, 1f).SetUpdate(true);
 		else{
-			yield return new WaitForSeconds (Setting.fadeInWaitingTime);
 			img.color = Color.black;
 			tween = img.DOColor(new Color(0,0,0,0),1f).SetUpdate(true);
 		}
@@ -70,6 +71,8 @@ public class SceneLoader : MonoBehaviour{
 		if (!isBlack) {
 			fadeoutScreenObject.SetActive (false);
 		}
+
+		Time.timeScale = 1.0f;
 	}
 
 	IEnumerator FadeoutAndLoadBattleScene(){

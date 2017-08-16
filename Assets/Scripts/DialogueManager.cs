@@ -142,6 +142,11 @@ public class DialogueManager : MonoBehaviour{
 		}else if(Command == DialogueData.CommandType.Glos) {SetGlossaryLevel(data);}
 		else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
+
+		if (dialogueDataList [line + 1].IsEffect()) {
+			line += 1;
+			yield return StartCoroutine(HandleCommand ());
+		}
 	}
 
 	void SetGlossaryLevel(DialogueData data){
@@ -220,12 +225,9 @@ public class DialogueManager : MonoBehaviour{
 		dialogueDataList = Parser.GetParsedData<DialogueData>(dialogueData, Parser.ParsingDataType.DialogueData);
 
 		InactiveSkipQuestionUI();
-		
-		line = 0;
+		adventureUI.SetActive(false);
+
 		endLine = dialogueDataList.Count;
-		
-        adventureUI.SetActive(false);
-		
 		StartCoroutine(PrintLinesFrom(0));
 	}
 
@@ -253,7 +255,7 @@ public class DialogueManager : MonoBehaviour{
 				SetActiveAdventureUI(true);
 				yield break;
 			}else if (dialogueDataList[line].IsEffect()){
-				/*yield return*/StartCoroutine(HandleCommand());
+				yield return StartCoroutine(HandleCommand());
 				line++;
 			}else{
 				HandleDialogue();
