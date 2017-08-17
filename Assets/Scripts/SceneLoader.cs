@@ -41,11 +41,12 @@ public class SceneLoader : MonoBehaviour{
 	
 	void Awake(){
 		Application.backgroundLoadingPriority = ThreadPriority.Low;
+		//Debug.Log("dialogueName : " + SceneData.dialogueName);
+		if(SceneData.dialogueName == null) {SceneData.dialogueName = FindObjectOfType<DialogueManager>().dialogueData.name;}
+		//Debug.Log("dialogueName : " + SceneData.dialogueName);
 	}
 
-	IEnumerator Start(){
-		yield return StartCoroutine(Fade(false));
-	}
+	IEnumerator Start() {yield return StartCoroutine(Fade(false));}
 
 	//true면 FO, false면 FI.
 	public IEnumerator Fade(bool isBlack){

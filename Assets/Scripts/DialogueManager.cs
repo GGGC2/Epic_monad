@@ -217,11 +217,6 @@ public class DialogueManager : MonoBehaviour{
     }
 
 	void Initialize(){
-        if (SceneData.dialogueName != null){
-            TextAsset nextScriptFile = Resources.Load<TextAsset>("Data/" + SceneData.dialogueName);
-            dialogueData = nextScriptFile;
-        }
-
 		dialogueDataList = Parser.GetParsedData<DialogueData>();
 
 		InactiveSkipQuestionUI();
