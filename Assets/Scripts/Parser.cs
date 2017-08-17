@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,31 +26,33 @@ public class Parser : MonoBehaviour{
 		return null;
 	}
 
-	public enum ParsingDataType{Glossary, DialogueData, TutorialScenario, UnitStatusEffect};
-
-	public static List<T> GetParsedData<T>(TextAsset textAsset, ParsingDataType DataType){
+	public static List<T> GetParsedData<T>(){
 		List<T> DataList = new List<T>();
+		TextAsset textAsset = GetDataAddress<T>();
 		string[] rowDataList = textAsset.text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 		for(int i = 1; i < rowDataList.Length; i++){
-			T data = CreateParsedObject<T>(DataType, rowDataList[i]);
+			T data = CreateParsedObject<T>(rowDataList[i]);
 			DataList.Add(data);
 		}
 		return DataList;
 	}
 
-	public static T CreateParsedObject<T>(ParsingDataType DataType, string rowData){
-		if(DataType == ParsingDataType.Glossary){
+	public static T CreateParsedObject<T>(string rowData){
+		if(typeof(T) == typeof(GlossaryData)){
 			object data = new GlossaryData(rowData);
-			return (T)data;
-		}else if(DataType == ParsingDataType.DialogueData){
+			return (T)data;			
+		}else if(typeof(T) == typeof(DialogueData)){
 			object data = new DialogueData(rowData);
 			return (T)data;
-		}else if(DataType == ParsingDataType.TutorialScenario){
+		}else if(typeof(T) == typeof(TutorialScenario)){
 			object data = new TutorialScenario(rowData);
 			return (T)data;
-		}else if(DataType == ParsingDataType.UnitStatusEffect){
+		}else if(typeof(T) == typeof(UnitStatusEffectInfo)){
 			object data = new UnitStatusEffectInfo(rowData);
+			return (T)data;
+		}else if(typeof(T) == typeof(ActiveSkill)){
+			object data = new ActiveSkill(rowData);
 			return (T)data;
 		}
 		else{
@@ -58,6 +61,19 @@ public class Parser : MonoBehaviour{
 			object garbage = null;
 			return (T)garbage;
 		}
+	}
+
+	static TextAsset GetDataAddress<T>(){
+		string address = "";
+		if(typeof(T) == typeof(GlossaryData)) {address = "Data/Glossary";}
+		else if(typeof(T) == typeof(DialogueData)) {address = "Data/" + SceneData.dialogueName;}
+		else if(typeof(T) == typeof(TutorialScenario)) {address = "Tutorial/" + SceneManager.GetActiveScene().name + SceneData.stageNumber.ToString();}
+		else if(typeof(T) == typeof(UnitStatusEffectInfo)) {address = "Data/UnitStatusEffectData";}
+		else if(typeof(T) == typeof(ActiveSkill)) {address = "Data/ActiveSkillData";}
+
+		if(address == "") {Debug.LogError("Invalid Input : " + typeof(T));}		
+		
+		return Resources.Load<TextAsset>(address);
 	}
 
 	public static List<BattleTrigger> GetParsedBattleTriggerData(){
@@ -103,21 +119,15 @@ public class Parser : MonoBehaviour{
 		return aiInfoList;
 	}
 
-	public static List<UnitInfo> GetParsedUnitInfo()
-	{
+	public static List<UnitInfo> GetParsedUnitInfo(){
 		List<UnitInfo> unitInfoList = new List<UnitInfo>();
-
-		TextAsset csvFile = null;
-		if (FindObjectOfType<BattleManager>() != null)
-			csvFile = FindObjectOfType<BattleManager>().GetUnitData() as TextAsset;
-		else
-			Debug.LogError("No BattleManager");
-			//csvFile = Resources.Load("Data/testStageUnitData") as TextAsset;
-		string csvText = csvFile.text;
+		BattleManager BM = FindObjectOfType<BattleManager>();
+		Debug.Assert(BM != null);
+		
+		string csvText = BM.GetUnitData().text;
 		string[] unparsedUnitInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-		for (int i = 1; i < unparsedUnitInfoStrings.Length; i++)
-		{
+		for (int i = 1; i < unparsedUnitInfoStrings.Length; i++){
 			try
 			{
 				UnitInfo unitInfo = new UnitInfo(unparsedUnitInfoStrings[i]);
@@ -136,20 +146,6 @@ public class Parser : MonoBehaviour{
 	}
 
 	private static List<Skill> skillInfosCache;
-
-	public static List<ActiveSkill> GetActiveSkills(){
-		List<ActiveSkill> ActiveSkills = new List<ActiveSkill>();
-
-		string csvText = Resources.Load<TextAsset>("Data/ActiveSkillData").text;
-		string[] rowDataList = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for(int i = 1; i < rowDataList.Length; i++){
-			ActiveSkill skill = new ActiveSkill(rowDataList[i]);
-			ActiveSkills.Add(skill);
-		}
-
-		return ActiveSkills;
-	}
 
 	public static List<Skill> GetSkills(){
 		List<Skill> Skills = new List<Skill>();
@@ -193,7 +189,7 @@ public class Parser : MonoBehaviour{
 		if (skillByName == null){
 			skillByName = new Dictionary<string, Skill>();
 
-			List<ActiveSkill> ActiveSkillList = GetActiveSkills();
+			List<ActiveSkill> ActiveSkillList = GetParsedData<ActiveSkill>();
 			foreach (ActiveSkill skill in ActiveSkillList)
 				skillByName.SmartAdd(skill.korName, skill);
 			List<PassiveSkill> PassiveSkillList = GetPassiveSkills();
@@ -212,7 +208,7 @@ public class Parser : MonoBehaviour{
 		if (skillByUnit == null){
 			skillByUnit = new Dictionary<string, List<Skill>>();
 
-			List<ActiveSkill> ActiveSkillList = GetActiveSkills();
+			List<ActiveSkill> ActiveSkillList = GetParsedData<ActiveSkill>();
 			foreach (ActiveSkill skill in ActiveSkillList){
 				if (!skillByUnit.ContainsKey(skill.owner))
 					skillByUnit.SmartAdd(skill.owner, new List<Skill>());

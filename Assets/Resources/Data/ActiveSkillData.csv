@@ -1,6 +1,7 @@
 ﻿owner,requireLevel,name,column,requireAP,cooldown,statType,powerFactor,skillType,firstRangeForm,firstMinReach,firstMaxReach,firstWidth,secondRangeForm,secondMinReach,secondMaxReach,secondWidth,skillApplyType,effectName,effectVisualType,effectMoveType,soundEffectName,skillDataText,Value1Type,Value1Coef,Value1Base,Value2Type,Value2Coef,Value2Base
 manastone,1,가만히,1,9999,0,Power,0,Point,Cross,1,1,0,Diamond,0,0,0,DamageHealth,-,Individual,NonMove,-,--,None,0,0,None,0,0
 soldier01,1,근접공격,1,35,0,Power,1,Point,Cross,1,2,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,Slash,--,None,0,0,None,0,0
+chaser,1,근접공격,1,35,0,Power,1,Point,Cross,1,2,0,Diamond,0,0,0,DamageHealth,Melee,Individual,NonMove,Slash,--,None,0,0,None,0,0
 mage01,1,열기 폭발,1,30,0,Power,0.9,Point,Diamond,0,3,0,Diamond,0,0,0,DamageHealth,RedBlast,Area,NonMove,Fire,--,None,0,0,None,0,0
 archer01,1,화살 발사,1,30,0,Power,0.9,Point,Diamond,0,5,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,0,None,0,0
 asterArcher01,1,화살 발사,1,40,0,Power,0.9,Point,Diamond,0,4,0,Diamond,0,0,0,DamageHealth,Shot,Individual,NonMove,Bow,--,None,0,0,None,0,0

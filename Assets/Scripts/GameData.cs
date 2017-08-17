@@ -44,7 +44,7 @@ namespace GameData{
 		public static List<GlossaryData> GlossaryDataList = new List<GlossaryData>();
 		public static void SetGlossaryDataList(){
 			if(GlossaryDataList.Count == 0){
-				GlossaryDataList = Parser.GetParsedData<GlossaryData>(Resources.Load<TextAsset>("Data/Glossary"), Parser.ParsingDataType.Glossary);
+				GlossaryDataList = Parser.GetParsedData<GlossaryData>();
 			}
 		}
 

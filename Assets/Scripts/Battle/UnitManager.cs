@@ -178,12 +178,6 @@ public class UnitManager : MonoBehaviour {
 		});
 	}
 
-	void GeneratePC (string Name){
-		if (Name != "Empty") {
-			
-		}
-	}
-
 	public void GenerateUnits(){
 		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
 		int GeneratedPC = 0;
@@ -193,7 +187,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
 			if (unitInfo.name == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
-			else if (unitInfo.name.Substring(0,2) == "PC") {PCName = unitInfo.name.Substring(2, unitInfo.name.Length-2);}
+			else if (unitInfo.name.Length >= 2 && unitInfo.name.Substring(0,2) == "PC") {PCName = unitInfo.name.Substring(2, unitInfo.name.Length-2);}
 			
 			if(PCName != ""){
 				unitInfo.name = UnitInfo.ConvertToKoreanName (PCName);
@@ -344,7 +338,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	void LoadActiveSkills(){
-		activeSkillList = Parser.GetActiveSkills();
+		activeSkillList = Parser.GetParsedData<ActiveSkill>();
 	}
 
 	void LoadPassiveSkills(){
@@ -352,8 +346,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
     void LoadUnitStatusEffects(){
-		TextAsset text = Resources.Load<TextAsset>("Data/UnitStatusEffectData");
-        statusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>(text, Parser.ParsingDataType.UnitStatusEffect);
+        statusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>();
     }
 
     void LoadTileStatusEffects(){

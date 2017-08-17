@@ -222,7 +222,7 @@ public class DialogueManager : MonoBehaviour{
             dialogueData = nextScriptFile;
         }
 
-		dialogueDataList = Parser.GetParsedData<DialogueData>(dialogueData, Parser.ParsingDataType.DialogueData);
+		dialogueDataList = Parser.GetParsedData<DialogueData>();
 
 		InactiveSkipQuestionUI();
 		adventureUI.SetActive(false);

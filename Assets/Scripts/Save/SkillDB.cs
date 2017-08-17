@@ -14,7 +14,7 @@ public class SkillDB
 
 		level1Skills = new Dictionary<string, List<string>>();
 
-		List<ActiveSkill> AllActiveSkills = Parser.GetActiveSkills();
+		List<ActiveSkill> AllActiveSkills = Parser.GetParsedData<ActiveSkill>();
 
 		foreach (ActiveSkill skill in AllActiveSkills){
 			if (skill.requireLevel == 1)

@@ -26,7 +26,7 @@ public class TutorialManager : MonoBehaviour {
 			}
 			EndTutorial ();
 		}else{
-			scenarioList = Parser.GetParsedData<TutorialScenario>(searchData, Parser.ParsingDataType.TutorialScenario);
+			scenarioList = Parser.GetParsedData<TutorialScenario>();
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			BattleData.onTutorial = true;
 			BattleData.rightClickLock = true;

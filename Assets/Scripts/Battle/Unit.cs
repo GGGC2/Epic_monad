@@ -782,8 +782,7 @@ public class Unit : MonoBehaviour{
 		return activityPoint + GetRegenerationAmount(); // 페이즈당 행동력 회복량 = 민첩성 * 보정치(버프/디버프)
 	}
 
-    public int GetActualRequireSkillAP(ActiveSkill skill)
-    {
+    public int GetActualRequireSkillAP(ActiveSkill skill){
         int requireSkillAP = skill.GetRequireAP();
 
 		// 기술 자체에 붙은 행동력 소모 증감효과 적용
