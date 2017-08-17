@@ -522,6 +522,8 @@ public class BattleManager : MonoBehaviour{
 		BattleData.unitManager.StartPhase(BattleData.currentPhase);
         yield return StartCoroutine(BattleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());
+
+		yield return new WaitForSeconds(0.5f);
 	}
 
 	//이하는 StageManager의 Load기능 통합
