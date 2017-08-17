@@ -190,12 +190,6 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public void AddListenerToApplyButton(UnityEngine.Events.UnityAction action){
-		ApplyButton.GetComponent<Button>().onClick.AddListener (action);
-	}
-	public void RemoveListenerToApplyButton(UnityEngine.Events.UnityAction action){
-		ApplyButton.GetComponent<Button>().onClick.RemoveListener (action);
-	}
 	public void AddListenerToWaitButton(UnityEngine.Events.UnityAction action){
 		WaitButton.GetComponent<Button>().onClick.AddListener (action);
 	}

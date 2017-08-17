@@ -72,10 +72,10 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				UIManager.Instance.EnableSkillCheckWaitButton (true, false);
 				UIManager.Instance.LockApplyOrWaitOnOff ();
-				UIManager.Instance.AddListenerToApplyButton (ToNextStep);
+				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				UIManager.Instance.RemoveListenerToApplyButton (ToNextStep);
+				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
 				UIManager.Instance.UnlockApplyOrWaitOnOff ();
 			};
 		} else if (mission == Mission.Wait) {
@@ -98,15 +98,31 @@ public class TutorialScenario{
 				command = ActionCommand.Standby;
 			else
 				command = ActionCommand.Rest;
-			SetMissionCondition = () => {
-				commandPanel.TurnOnOnlyThisButton (command);
-				commandPanel.LockCommandsOnOff ();
-				commandPanel.AddListenerToButton (command, ToNextStep);
-			};
-			ResetMissionCondition = () => {
-				commandPanel.RemoveListenerToButton (command, ToNextStep);
-				commandPanel.UnlockCommandsOnOff ();
-			};
+
+			// 이동 버튼이나 기술 버튼 누르는 미션은 버튼 누른 시점에 다음 단계로 넘어감
+			if (command == ActionCommand.Move || command == ActionCommand.Skill) {
+				SetMissionCondition = () => {
+					commandPanel.TurnOnOnlyThisButton (command);
+					commandPanel.LockCommandsOnOff ();
+					commandPanel.AddListenerToButton (command, ToNextStep);
+				};
+				ResetMissionCondition = () => {
+					commandPanel.RemoveListenerToButton (command, ToNextStep);
+					commandPanel.UnlockCommandsOnOff ();
+				};
+			}
+			// 대기 버튼이나 휴식 버튼 누르는 미션은 다음으로 PC 행동턴이 돌아와 커맨드를 누를 수 있는 시점에 다음 단계로 넘어감
+			else {
+				SetMissionCondition = () => {
+					commandPanel.TurnOnOnlyThisButton (command);
+					commandPanel.LockCommandsOnOff ();
+					BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+				};
+				ResetMissionCondition = () => {
+					BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
+					commandPanel.UnlockCommandsOnOff ();
+				};
+			}
 		}
 	}
 }
