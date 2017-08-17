@@ -49,7 +49,7 @@ public class ResultPanel : MonoBehaviour{
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
 			if(trigger.acquired){
-				TriggerIndex.text += trigger.korName + " " + trigger.reward + MultiplierText(trigger);
+				TriggerIndex.text += trigger.korName + " " + MultiplierText(trigger);
 				TriggerIndex.text += "\n";
 				yield return new WaitForSeconds(0.1f);
 				if (!trigger.repeatable || trigger.count == 1)
