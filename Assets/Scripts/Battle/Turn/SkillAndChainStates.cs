@@ -157,7 +157,7 @@ namespace Battle.Turn {
             }
         }
 
-        public static IEnumerator SelectSkillApplyPoint ( Direction originalDirection) {
+        public static IEnumerator SelectSkillApplyPoint (Direction originalDirection) {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = BattleData.selectedUnit;
 
@@ -177,6 +177,29 @@ namespace Battle.Turn {
 				BattleData.tileManager.PreselectTiles (activeRange);
                 BattleData.uiManager.EnableCancelButtonUI();
                 BattleData.isWaitingUserInput = true;
+
+				/*
+				SkillLocation previewLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
+				Casting previewCasting = new Casting (selectedUnit, selectedSkill, previewLocation);
+
+				Unit caster = previewCasting.Caster;
+				ActiveSkill skill = previewCasting.Skill;
+				BattleManager.MoveCameraToTile(previewCasting.Location.TargetTile);
+
+				//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들이며 보라색으로(임시) 칠한다
+				List<Tile> secondRange = previewCasting.SecondRange;
+				BattleData.tileManager.PaintTiles(secondRange, TileColor.Purple);
+				//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
+				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
+				List<Tile> realEffectRange = previewCasting.RealEffectRange;
+
+				//데미지 미리보기
+				Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DisplayPreviewDamage(previewCasting);
+
+				// 데미지 미리보기 해제.
+				HidePreviewDamage(allCalculatedTotalDamages);
+				BattleData.tileManager.DepaintTiles(secondRange, TileColor.Purple);
+				*/
 
                 var update = UpdatePointSkillMouseDirection(originalDirection);
                 BattleData.battleManager.StartCoroutine(update);
@@ -211,6 +234,7 @@ namespace Battle.Turn {
         }
 
 		public static IEnumerator CheckApplyOrChain (Casting casting, Direction originalDirection) {
+			/*
             while (BattleData.currentState == CurrentState.CheckApplyOrChain) {
 				Unit caster = casting.Caster;
 				ActiveSkill skill = casting.Skill;
@@ -275,6 +299,20 @@ namespace Battle.Turn {
                 }
             }
             yield return null;
+            */
+
+			Unit caster = casting.Caster;
+			ActiveSkill skill = casting.Skill;
+			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
+
+			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+			caster.UseActivityPoint (casting.RequireAP);
+			if (skill.GetCooldown() > 0)
+				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+			yield return ApplyAllTriggeredChains(casting);
+			BattleManager.MoveCameraToUnit(caster);
+			BattleData.currentState = CurrentState.FocusToUnit;
+
         }
 
 		private static Dictionary<Unit, DamageCalculator.DamageInfo> DisplayPreviewDamage(Casting casting){
