@@ -7,7 +7,7 @@
 6,메이드,soldier01,Enemy,14,4,LeftUp,162,61,20,37,43,Melee,None,None,false
 7,메이드,soldier01,Enemy,14,10,LeftUp,162,61,20,37,43,Melee,None,None,false
 8,제어장치,controller,Enemy,15,7,LeftUp,249,0,3,71,1,Magic,None,None,true
-9,unselected,unselected,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
-10,unselected,unselected,Ally,2,7,RightDown,0,0,0,0,0,None,None,None,false
-11,unselected,unselected,Ally,2,8,RightDown,0,0,0,0,0,None,None,None,false
-12,unselected,unselected,Ally,1,7,RightDown,0,0,0,0,0,None,None,None,false
+9,PCgrenev,grenev,Ally,2,6,RightDown,0,0,0,0,0,None,None,None,false
+10,PCarcadia,arcadia,Ally,2,7,RightDown,0,0,0,0,0,None,None,None,false
+11,PCnoel,noel,Ally,2,8,RightDown,0,0,0,0,0,None,None,None,false
+12,PCdarkenir,darkenir,Ally,1,7,RightDown,0,0,0,0,0,None,None,None,false
