@@ -114,8 +114,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
 
-			if (!battleManager.EnemyUnitSelected())
+			if (!battleManager.EnemyUnitSelected()){
                 FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
+			}
 		}
         if(!battleManager.TileSelected())
 		    FindObjectOfType<UIManager>().SetTileViewer(this);

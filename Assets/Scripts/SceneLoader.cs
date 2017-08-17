@@ -41,9 +41,8 @@ public class SceneLoader : MonoBehaviour{
 	
 	void Awake(){
 		Application.backgroundLoadingPriority = ThreadPriority.Low;
-		//Debug.Log("dialogueName : " + SceneData.dialogueName);
-		if(SceneData.dialogueName == null) {SceneData.dialogueName = FindObjectOfType<DialogueManager>().dialogueData.name;}
-		//Debug.Log("dialogueName : " + SceneData.dialogueName);
+		DialogueManager DM = FindObjectOfType<DialogueManager>();
+		if(DM != null && SceneData.dialogueName == null) {SceneData.dialogueName = DM.dialogueData.name;}
 	}
 
 	IEnumerator Start() {yield return StartCoroutine(Fade(false));}
