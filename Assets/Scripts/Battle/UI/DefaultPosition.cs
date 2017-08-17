@@ -1,7 +1,6 @@
 using UnityEngine;
 
-namespace BattleUI
-{
+namespace BattleUI{
 	public class DefaultPosition : MonoBehaviour{
 		Vector3 savedPosition = Vector3.zero;
 
