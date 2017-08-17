@@ -109,20 +109,23 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
 		OnMouseOver ();
 
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		BattleManager BM = FindObjectOfType<BattleManager>();
+		UIManager UM = FindObjectOfType<UIManager>();
+
 		if (IsUnitOnTile()){
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
 
-			if (!battleManager.EnemyUnitSelected()){
-                FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
+			if (!BM.EnemyUnitSelected()){
+                UM.UpdateUnitViewer(unitOnTile);
+				UM.apBarUI.FindAndHighlightPortrait(unitOnTile);
 			}
 		}
-        if(!battleManager.TileSelected())
-		    FindObjectOfType<UIManager>().SetTileViewer(this);
+        if(!BM.TileSelected())
+		    UM.SetTileViewer(this);
 
 		if (isPreSeleted)
-			battleManager.OnMouseEnterHandlerFromTile(position);
+			BM.OnMouseEnterHandlerFromTile(position);
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
@@ -133,14 +136,18 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
-        if (!battleManager.TileSelected())
-            FindObjectOfType<UIManager>().DisableTileViewerUI();
-        if (!battleManager.EnemyUnitSelected())
-		    FindObjectOfType<UIManager>().DisableUnitViewer();
+		BattleManager BM = FindObjectOfType<BattleManager>();
+		UIManager UM = FindObjectOfType<UIManager>();
+
+        if (!BM.TileSelected())
+            UM.DisableTileViewerUI();
+        if (!BM.EnemyUnitSelected()){
+			UM.DisableUnitViewer();
+			UM.apBarUI.ResetAllPortraitColor();
+		}
 
 		if (isPreSeleted){
-			battleManager.OnMouseExitHandlerFromTile(position);
+			BM.OnMouseExitHandlerFromTile(position);
 		}
 	}
 

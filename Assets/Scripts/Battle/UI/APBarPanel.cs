@@ -196,6 +196,7 @@ namespace BattleUI{
 		private void SetProfile(GameObject profileGO, UnitWrapper unitWrapper, int standardActivityPoint){
 			Unit unit = unitWrapper.GetUnit();
 			profileGO.GetComponent<Image>().sprite = FindUnitProfileImage(unit);
+			profileGO.GetComponent<OrderPortraitSlot>().unit = unitWrapper.GetUnit();
 
 			GameObject apTextGO = profileGO.transform.Find("apText").gameObject;
 			apTextGO.GetComponent<CustomUIText>().enabled = true;
@@ -207,10 +208,23 @@ namespace BattleUI{
 			}
 			apTextGO.GetComponent<CustomUIText>().text = activityPoint.ToString();
 
-			if (unitWrapper.IsPreviewUnit())
-			{
+			if (unitWrapper.IsPreviewUnit()){
 				GameObject arrow = profileGO.transform.Find("arrow").gameObject;
 				arrow.GetComponent<Image>().enabled = true;
+			}
+		}
+
+		public void FindAndHighlightPortrait(Unit unit){
+			foreach(GameObject profileGO in otherProfiles){
+				if(profileGO.GetComponent<OrderPortraitSlot>().unit == unit){
+					profileGO.GetComponent<Image>().color = Color.blue;
+				}
+			}
+		}
+
+		public void ResetAllPortraitColor(){
+			foreach(GameObject profileGO in otherProfiles){
+				profileGO.GetComponent<Image>().color = Color.white;
 			}
 		}
 

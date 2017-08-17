@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
 
 	public bool startFinished = false;
 
-	APBarPanel apBarUI;
+	public APBarPanel apBarUI;
 	GameObject commandUI;
 	public CommandPanel commandPanel;
 	GameObject skillUI;
@@ -210,8 +210,7 @@ public class UIManager : MonoBehaviour
 	public void UnlockApplyOrWaitOnOff(){
 		applyOrWaitOnOffLockOn = false;
 	}
-	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible)
-	{
+	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible){
 		if (applyOrWaitOnOffLockOn)
 			return;
 		skillCheckUI.gameObject.SetActive(true);
@@ -247,8 +246,7 @@ public class UIManager : MonoBehaviour
 		yield return null;
 	}
 
-	public void DisableDestCheckUI()
-	{
+	public void DisableDestCheckUI(){
 		destCheckUI.SetActive(false);
 	}
 
