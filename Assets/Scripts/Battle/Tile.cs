@@ -109,6 +109,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
 		OnMouseOver ();
 
+		if (isPreSeleted)
+			TileManager.Instance.preSelectedMouseOverTile = this;
+
 		BattleManager BM = FindObjectOfType<BattleManager>();
 		UIManager UM = FindObjectOfType<UIManager>();
 

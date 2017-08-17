@@ -14,6 +14,7 @@ public class TileManager : MonoBehaviour {
 
 	Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
 	bool preselectLockOn=false;
+	public Tile preSelectedMouseOverTile;
 
 	float tileImageHeight = 0.5f*100/100;
 	float tileImageWidth = 0.5f*200/100;
@@ -75,14 +76,17 @@ public class TileManager : MonoBehaviour {
 	public static Tile GetRouteEndForPC(List<Tile> tiles) {
 		foreach (var tile in tiles) {
 			// 타일 단차에 의한 부분(미구현)
-			// 즉시 null을 return한다.
+			// 즉시 막혀서 더는 진행하지 못하는 마지막 타일을 return한다.
 
 			// 첫 유닛을 만난 경우
 			// 이번 타일을 return하고 종료한다.
 			if (tile.IsUnitOnTile())
 				return tile;
 		}
-		return tiles.Last ();
+		if (tiles.Count == 0) // 맵의 한쪽 끝에서 빈 방향으로 쏘거나 낮은 타일에서 바로 옆 높은 타일 쪽으로 쏘면 이렇게 된다
+			return null;
+		else
+			return tiles.Last ();
 	}
 
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
