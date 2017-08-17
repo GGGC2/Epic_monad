@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using Enums;
 using LitJson;
 using System;
@@ -37,6 +38,7 @@ public class BattleManager : MonoBehaviour{
 	public IEnumerator Start(){
         SoundManager.Instance.PlayBGM("Script_Tense");
 
+		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
 		ChainList.InitiateChainList ();
 
@@ -268,6 +270,8 @@ public class BattleManager : MonoBehaviour{
         // 액션마다 갱신사항 종료
     }
 
+	public UnityEvent readyCommandEvent;
+
 	public IEnumerator PrepareUnitActionAndGetCommand(){
 		while (BattleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = BattleData.battleManager;
@@ -278,6 +282,9 @@ public class BattleManager : MonoBehaviour{
 			//AI 턴에선 쓸모없는 부분
 			BattleData.uiManager.ActivateCommandUIAndSetName(unit);
 			OnOffCommandButtons ();
+
+			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
+			readyCommandEvent.Invoke ();
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved)
