@@ -238,18 +238,14 @@ public static class SkillLogicFactory
         return skillLogic;
 	}
 
-	public static ListPassiveSkillLogic Get(List<PassiveSkill> passiveSkills)
-	{
-		List<BasePassiveSkillLogic> passiveSkillLogic = passiveSkills.Select(skill => Get(skill))
-			.ToList();
+	public static ListPassiveSkillLogic Get(List<PassiveSkill> passiveSkills){
+		List<BasePassiveSkillLogic> passiveSkillLogic = passiveSkills.Select(skill => Get(skill)).ToList();
 		return new ListPassiveSkillLogic(passiveSkillLogic);
 	}
 
-	public static BasePassiveSkillLogic Get(PassiveSkill passiveSkill)
-	{
+	public static BasePassiveSkillLogic Get(PassiveSkill passiveSkill){
 		BasePassiveSkillLogic passiveSkillLogic = null;
-		switch (passiveSkill.GetName())
-		{
+		switch (passiveSkill.GetName()){
             // 그레네브
             case "타고난 저격수":
             passiveSkillLogic = new Grenev_0_1_SkillLogic();

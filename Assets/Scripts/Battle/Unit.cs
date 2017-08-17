@@ -715,16 +715,12 @@ public class Unit : MonoBehaviour{
         yield return null;
     }
 
-	public IEnumerator ApplyHealOverPhase()
-	{
+	public IEnumerator ApplyHealOverPhase(){
 		float totalAmount = 0.0f;
 
-		if (this.HasStatusEffect(StatusEffectType.HealOverPhase))
-		{
-			foreach (var statusEffect in statusEffectList)
-			{
-				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase))
-				{
+		if (this.HasStatusEffect(StatusEffectType.HealOverPhase)){
+			foreach (var statusEffect in statusEffectList){
+				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase)){
                     BattleManager.MoveCameraToUnit(this);
                     totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
 				}
@@ -732,7 +728,6 @@ public class Unit : MonoBehaviour{
 		}
         if(totalAmount != 0)
 		    yield return RecoverHealth(totalAmount);
-        else yield return null;
 	}
 
 	public IEnumerator RecoverHealth(float amount)
@@ -863,8 +858,8 @@ public class Unit : MonoBehaviour{
 		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
-	public IEnumerator ApplyTriggerOnPhaseStart(int phase){
-		yield return SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
+	public void ApplyTriggerOnPhaseStart(int phase){
+		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (var statusEffect in statusEffectList) {
             Skill originSkill = statusEffect.GetOriginSkill();
             if (originSkill.GetType() == typeof(ActiveSkill)) {

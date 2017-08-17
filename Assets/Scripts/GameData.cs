@@ -10,8 +10,9 @@ namespace GameData{
 
 		public static void SetReqExp(){ reqExp = (int)(Mathf.Pow((0.117f*GetLevel())+0.883f, 3)*100); }
 
-		public static void CheckLevelZero(){
-			if(GetLevel() == 0){ SetDefault(); }
+		public static void CheckLevelData(){
+			if(GetLevel() == 0) {level = 1;}
+			if(reqExp == 0) {SetReqExp();}
 		}
 
 		public static void SetDefault(){

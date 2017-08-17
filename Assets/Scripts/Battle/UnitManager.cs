@@ -296,12 +296,9 @@ public class UnitManager : MonoBehaviour {
 	public IEnumerator ApplyEachDOT() {
         List<Unit> unitList = new List<Unit>();
         units.ForEach(x => unitList.Add(x));
-        foreach (var unit in unitList)
-		{
-			if (unit != null)
+        foreach (var unit in unitList){
+			if (unit != null && unit.HasStatusEffect(StatusEffectType.DamageOverPhase))
 				yield return StartCoroutine(unit.ApplyDamageOverPhase());
-			else
-				yield return null;
 		}
 	}
 
@@ -309,16 +306,15 @@ public class UnitManager : MonoBehaviour {
         List<Unit> unitList = new List<Unit>();
         units.ForEach(x => unitList.Add(x));
         foreach (var unit in unitList) {
-            if(unit != null)
+            if(unit != null && unit.HasStatusEffect(StatusEffectType.HealOverPhase))
                 yield return unit.ApplyHealOverPhase();
-            else yield return null;
         }
     }
 
-	public IEnumerator StartPhase(int phase){
+	public void StartPhase(int phase){
 		foreach (var unit in units){
 			unit.UpdateStartPosition();
-			yield return StartCoroutine(unit.ApplyTriggerOnPhaseStart(phase));
+			unit.ApplyTriggerOnPhaseStart(phase);
 			if (phase == 1) {unit.ApplyTriggerOnStart ();}
 		}
 	}
@@ -354,7 +350,7 @@ public class UnitManager : MonoBehaviour {
     }
 
 	void Start() {
-		GameData.PartyData.CheckLevelZero();
+		GameData.PartyData.CheckLevelData();
 		LoadActiveSkills();
 		LoadPassiveSkills();
         LoadUnitStatusEffects();

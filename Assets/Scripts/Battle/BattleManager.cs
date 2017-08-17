@@ -21,16 +21,14 @@ public class BattleManager : MonoBehaviour{
 		if (instance != null && instance != this) {
 			Destroy (this.gameObject);
 			return;
-		} else {
-			instance = this;
-		}
+		}else {instance = this;}
 
 		BattleData.Initialize (FindObjectOfType<TileManager> (), FindObjectOfType<UnitManager> (), FindObjectOfType<UIManager> (), this);
 
         if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
 
-		PartyData.CheckLevelZero();
+		PartyData.CheckLevelData();
 		Load();
 		TileManager.SetInstance ();
 		SkillLocation.tileManager = BattleData.tileManager;
@@ -52,12 +50,10 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if (!startTurnManager) {
+		if(!startTurnManager){
 			StartCoroutine (InstantiateTurnManager ());
 			startTurnManager = true;
-		} else {
-			Debug.Log ("TurnManager Already Started.");
-		}
+		}else {Debug.Log ("TurnManager Already Started.");}
 	}
 
 	public int GetCurrentPhase(){
@@ -523,11 +519,9 @@ public class BattleManager : MonoBehaviour{
 		BattleTriggerManager.CountBattleCondition();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
-		yield return StartCoroutine(BattleData.unitManager.StartPhase(BattleData.currentPhase));
+		BattleData.unitManager.StartPhase(BattleData.currentPhase);
         yield return StartCoroutine(BattleData.unitManager.ApplyEachHeal());
 		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());
-
-		yield return new WaitForSeconds(0.5f);
 	}
 
 	//이하는 StageManager의 Load기능 통합
