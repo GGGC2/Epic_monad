@@ -8,7 +8,7 @@ public enum CurrentState
 {
 	None, FocusToUnit, SelectMovingPoint, CheckDestination,
 	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection, CheckApplyOrChain,
-	ApplySkill, ChainAndStandby, RestAndRecover, Standby
+	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 
 public enum ActionCommand
@@ -162,6 +162,7 @@ public static class BattleData{
 		public EventTrigger tileSelectedByUser = new EventTrigger();
 		public EventTrigger tileLongSelectedByUser = new EventTrigger();
 		public EventTrigger directionSelectedByUser = new EventTrigger();
+		public EventTrigger directionLongSelectedByUser = new EventTrigger();
 		public EventTrigger skillSelected = new EventTrigger();
 		public EventTrigger skillApplyCommandChanged = new EventTrigger();
 		public EventTrigger<ActionCommand> actionCommand = new EventTrigger<ActionCommand>();
