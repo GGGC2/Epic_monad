@@ -428,12 +428,6 @@ public class BattleManager : MonoBehaviour{
 
 	public void CallbackDirection(String directionString)
 	{
-		if (!BattleData.isWaitingUserInput)
-		{
-			Debug.LogError("is NOT waiting user input!");
-			return;
-		}
-
 		if (directionString == "LeftUp")
 			BattleData.move.selectedDirection = Direction.LeftUp;
 		else if (directionString == "LeftDown")
@@ -444,6 +438,20 @@ public class BattleManager : MonoBehaviour{
 			BattleData.move.selectedDirection = Direction.RightDown;
 		
 		BattleData.triggers.directionSelectedByUser.Trigger();
+		BattleData.uiManager.DisableSelectDirectionUI();
+	}
+	public void CallbackDirectionLong(String directionString)
+	{
+		if (directionString == "LeftUp")
+			BattleData.move.selectedDirection = Direction.LeftUp;
+		else if (directionString == "LeftDown")
+			BattleData.move.selectedDirection = Direction.LeftDown;
+		else if (directionString == "RightUp")
+			BattleData.move.selectedDirection = Direction.RightUp;
+		else if (directionString == "RightDown")
+			BattleData.move.selectedDirection = Direction.RightDown;
+
+		BattleData.triggers.directionLongSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
 

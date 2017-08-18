@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class ArrowButton : MonoBehaviour
+public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
 	public enum DirectionTypeIndex{UpLeft, UpRight, DownLeft, DownRight};
 	public DirectionTypeIndex DirectionType;
@@ -13,8 +15,24 @@ public class ArrowButton : MonoBehaviour
 			return GetComponent<Button> ();
 		}
 	}
-	public void CheckAndHighlightImage()
-	{
+
+	void Awake(){
+		InitializeEvents ();
+	}
+
+	void InitializeEvents(){
+		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		UnityEngine.Events.UnityAction UserSelectDirection= () => {
+			battleManager.CallbackDirection(DirectionType.ToString());
+		};
+		UnityEngine.Events.UnityAction UserLongSelectDirection= () => {
+			battleManager.CallbackDirectionLong(DirectionType.ToString());
+		};
+		LeftClickEnd.AddListener (UserSelectDirection);
+		LongLeftClickEnd.AddListener (UserLongSelectDirection);
+	}
+
+	public void CheckAndHighlightImage(){
 		Vector3 mousePositionScreen = Input.mousePosition;
 		Vector3 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePositionScreen);
 		Vector3 unitPosition = BattleData.selectedUnit.realPosition;
@@ -34,6 +52,30 @@ public class ArrowButton : MonoBehaviour
 		else if(DirectionType == DirectionTypeIndex.DownRight && mousePositionWorld.x > unitPosition.x && mousePositionWorld.y < unitPosition.y)
 		{
 			GetComponent<Button>().Select();
+		}
+	}
+
+	public float durationThreshold = 1.0f;
+	bool clickStarted = false;
+	float timeClickStarted;
+	public UnityEvent LeftClickEnd;
+	public UnityEvent LongLeftClickEnd;
+	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
+		if (pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = true;
+			timeClickStarted = Time.time;
+		}
+	}
+	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
+		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = false;
+			LeftClickEnd.Invoke ();
+		}
+	}
+	void Update(){
+		if (clickStarted && Time.time - timeClickStarted > durationThreshold) {
+			clickStarted = false;
+			LongLeftClickEnd.Invoke ();
 		}
 	}
 }

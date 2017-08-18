@@ -141,7 +141,8 @@ namespace Battle.Turn {
                     BattleData.triggers.rightClicked,
                     BattleData.triggers.cancelClicked,
                     BattleData.triggers.tileSelectedByUser,
-                    BattleData.triggers.directionSelectedByUser
+					BattleData.triggers.directionSelectedByUser,
+					BattleData.triggers.directionLongSelectedByUser
                 ));
                 BattleData.battleManager.StopCoroutine(updateRedArea);
                 BattleData.isWaitingUserInput = false;
@@ -162,19 +163,23 @@ namespace Battle.Turn {
 				//2. 현재 선택된 타겟 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 타겟 타일로 한다.
                 else{
                     BattleManager battleManager = BattleData.battleManager;
-                    BattleData.currentState = CurrentState.CheckApplyOrChain;
 					var targetTile = BattleData.SelectedUnitTile;
 					SkillLocation skillLocation = new SkillLocation (selectedUnit.GetTileUnderUnit (), targetTile, selectedUnit.GetDirection ());
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
-					yield return battleManager.StartCoroutine(ApplyCasting(new Casting(selectedUnit, selectedSkill, skillLocation)));
+					Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
+
+					if (BattleData.triggers.directionSelectedByUser.Triggered) {
+						BattleData.currentState = CurrentState.ApplySkill;
+						yield return battleManager.StartCoroutine (ApplyCasting (casting));
+					}
+					else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
+						BattleData.currentState = CurrentState.WaitChain;
+						yield return battleManager.StartCoroutine (WaitChain (casting));
+					}
                 }
-					
 
                 if (BattleData.currentState != CurrentState.SelectSkillApplyDirection) {
-					//이제 취소 버튼 UI 없으니 이 줄은 필요없지 않나
-                    //BattleData.uiManager.DisableCancelButtonUI();
-                    
 					yield break;
                 }
             }
@@ -283,15 +288,15 @@ namespace Battle.Turn {
 
                 BattleManager battleManager = BattleData.battleManager;
 				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
+				Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
 					BattleData.currentState = CurrentState.ApplySkill;
-					yield return battleManager.StartCoroutine (ApplyCasting (new Casting (selectedUnit, selectedSkill, skillLocation)));
+					yield return battleManager.StartCoroutine (ApplyCasting (casting));
 				}
 				else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
-					BattleData.currentState = CurrentState.ChainAndStandby;
-					Debug.Log ("Long selected");
-					yield return battleManager.StartCoroutine (WaitChain (new Casting (selectedUnit, selectedSkill, skillLocation)));
+					BattleData.currentState = CurrentState.WaitChain;
+					yield return battleManager.StartCoroutine (WaitChain (casting));
 				}
             }
         }

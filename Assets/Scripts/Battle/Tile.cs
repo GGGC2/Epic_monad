@@ -169,12 +169,15 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
 		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = false;
 			LeftClickEnd.Invoke ();
 		}
 	}
 	void Update(){
-		if (clickStarted && Time.time - timeClickStarted > durationThreshold)
+		if (clickStarted && Time.time - timeClickStarted > durationThreshold) {
+			clickStarted = false;
 			LongLeftClickEnd.Invoke ();
+		}
 	}
 
 	void Awake (){
