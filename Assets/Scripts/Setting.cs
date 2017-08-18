@@ -10,7 +10,7 @@ public class Setting{
 	public static int chainOpenStage = 4;
 	public static int celestialOpenStage = 4;
 	public static int retreatOpenStage = 4;
-	public static int readySceneOpenStage = 6;
+	public static int readySceneOpenStage = 5;
 	public static bool shortcutEnable = true;
 
 	//변수 통제
