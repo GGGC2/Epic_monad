@@ -427,8 +427,7 @@ public class BattleManager : MonoBehaviour{
 		BattleData.triggers.rightClicked.Trigger();
 	}
 
-	public void CallbackDirection(Direction direction)
-	{
+	public void CallbackDirection(Direction direction){
 		BattleData.move.selectedDirection = direction;
 		
 		BattleData.triggers.directionSelectedByUser.Trigger();

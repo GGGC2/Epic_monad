@@ -9,25 +9,25 @@ Index	Mission	Etc
 16	SkillCommand		
 17	SelectSkill	1	
 18	SelectDirection	LeftDown	
-19	Standby		
-20	MoveCommand		
-21	SelectTile	4	4
-22	SkillCommand		
-24	SelectSkill	2	
-26	SelectDirection	RightDown	
-28	SkillCommand		
-29	SelectSkill	2	
-30	SelectDirection	RightDown	
-33	Standby		
-35	MoveCommand		
-36	SelectTile	8	6
-37	SkillCommand		
-38	SelectSkill	1	
-39	SelectDirection	LeftDown	
-41	Rest		
-44	MoveCommand		
-45	SelectTile	6	5
-46	SkillCommand		
-47	SelectSkill	1	
-48	SelectDirection	RightDown	
-49	End		
+20	Standby		
+21	MoveCommand		
+22	SelectTile	4	4
+23	SkillCommand		
+25	SelectSkill	2	
+27	SelectDirection	RightDown	
+29	SkillCommand		
+30	SelectSkill	2	
+31	SelectDirection	RightDown	
+32	Standby		
+33	MoveCommand		
+34	SelectTile	8	6
+35	SkillCommand		
+36	SelectSkill	1	
+37	SelectDirection	LeftDown	
+38	Standby
+40	MoveCommand		
+41	SelectTile	6	5
+42	SkillCommand		
+43	SelectSkill	1	
+44	SelectDirection	RightDown	
+45	End		

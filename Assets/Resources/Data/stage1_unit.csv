@@ -1,7 +1,7 @@
 Index,Name,NameInCode,Side,InitPosotionX,InitPositionY,InitDirection,BaseHealth,BasePower,BaseDefense,BaseResistance,BaseAgility,UnitClass,Element,Celestial,IsObject
-1,제국군 병사,soldier01,Enemy,10,5,LeftUp,168,60,0,0,47,Melee,None,None,false
+1,제국군 병사,soldier01,Enemy,10,5,LeftUp,187,60,0,0,47,Melee,None,None,false
 2,제국군 마법사,mage01,Enemy,10,4,LeftUp,100,60,0,0,40,Magic,None,None,false
-3,제국군 병사,soldier01,Enemy,10,3,LeftUp,168,60,0,0,47,Melee,None,None,false
-4,제국군 병사,soldier01,Enemy,6,4,LeftUp,168,60,0,0,47,Melee,None,None,false
+3,제국군 병사,soldier01,Enemy,10,3,LeftUp,184,60,0,0,47,Melee,None,None,false
+4,제국군 병사,soldier01,Enemy,6,4,LeftUp,187,60,0,0,47,Melee,None,None,false
 5,루키어스,lucius,Ally,2,4,RightDown,445,82,100,51,53,Melee,None,None,false
 6,레이나,reina,Ally,2,3,RightDown,366,88,51,83,50,Magic,None,None,false

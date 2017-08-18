@@ -55,6 +55,10 @@ namespace Battle.Turn{
 				);
 				
 				battleManager.StopCoroutine(update);
+				TileManager.Instance.DepaintAllTiles(TileColor.Red);
+				foreach(Tile tile in TileManager.Instance.GetTilesInGlobalRange()){
+					tile.CostAP.text = "";
+				}
 
 				BattleData.isWaitingUserInput = false;
 

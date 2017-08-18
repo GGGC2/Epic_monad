@@ -51,7 +51,7 @@ public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	public UnityEvent LongLeftClickEnd;
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
-		if (pointerData.button == PointerEventData.InputButton.Left) {
+		if (GetComponent<Button>().interactable && pointerData.button == PointerEventData.InputButton.Left) {
 			clickStarted = true;
 			timeClickStarted = Time.time;
 		}
