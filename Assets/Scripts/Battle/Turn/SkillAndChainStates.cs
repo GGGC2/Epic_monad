@@ -69,55 +69,47 @@ namespace Battle.Turn {
             }
         }
 
-        private static IEnumerator UpdateRangeSkillMouseDirection(Direction originalDirection) {
+        private static IEnumerator UpdateRangeSkillMouseDirection() {
             Unit selectedUnit = BattleData.selectedUnit;
 			Tile targetTile = selectedUnit.GetTileUnderUnit ();
 			Vector2 unitPos = selectedUnit.GetPosition ();
             ActiveSkill selectedSkill = BattleData.SelectedSkill;
-			var selectedTiles = selectedSkill.GetTilesInFirstRange (unitPos, originalDirection);
-			BattleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
 
-			SkillLocation originalLocation = new SkillLocation (unitPos, targetTile, originalDirection);
-			selectedSkill.SetRealTargetTileForSkillLocation (originalLocation);
-			Casting originalCasting = new Casting (selectedUnit, selectedSkill, originalLocation);
-			Unit caster = originalCasting.Caster;
-			ActiveSkill skill = originalCasting.Skill;
-
-			List<Tile> secondRange = originalCasting.SecondRange;
-			BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
-			List<Tile> realEffectRange = originalCasting.RealEffectRange;
-			DisplayPreviewDamage(originalCasting);
+			Direction? beforeDirection = null;
+			Direction newDirection = selectedUnit.GetDirection ();
 
 			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
 
-            while (true) {
-                Direction newDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
-                Direction beforeDirection = BattleData.selectedUnit.GetDirection();
-				var selectedTilesByBeforeDirection = selectedSkill.GetTilesInFirstRange (unitPos, beforeDirection);
-				var selectedTilesByNewDirection = selectedSkill.GetTilesInFirstRange (unitPos, newDirection);
-
+			while (true) {
 				if (beforeDirection != newDirection) {
+					
 					beforeDirection = newDirection;
 
-					BattleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
+					BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 					BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 					HidePreviewDamage();
 
 					BattleData.selectedUnit.SetDirection(newDirection);
+
+					var selectedTilesByNewDirection = selectedSkill.GetTilesInFirstRange (unitPos, newDirection);
 					BattleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
 
-					SkillLocation newLocation = new SkillLocation (unitPos, targetTile, newDirection);
-					selectedSkill.SetRealTargetTileForSkillLocation (newLocation);
-					Casting newCasting = new Casting (selectedUnit, selectedSkill, newLocation);
-					secondRange = newCasting.SecondRange;
+					SkillLocation location = new SkillLocation (unitPos, targetTile, newDirection);
+					selectedSkill.SetRealTargetTileForSkillLocation (location);
+					Casting casting = new Casting (selectedUnit, selectedSkill, location);
+					List<Tile> secondRange = casting.SecondRange;
 					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
-					realEffectRange = newCasting.RealEffectRange;
 
+					List<Tile> realEffectRange = casting.RealEffectRange;
 					if (selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (selectedUnit, realEffectRange)) {
-						DisplayPreviewDamage (newCasting);
+						DisplayPreviewDamage (casting);
 					}
-                }
-                yield return null;
+
+				}
+
+				yield return null;
+
+				newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, selectedUnit.GetDirection ());
             }
         }
 
@@ -129,7 +121,7 @@ namespace Battle.Turn {
             while (true) {
                 BattleData.isWaitingUserInput = true;
                 //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향 돌리고 데미지 프리뷰와 2차범위 표시도 업데이트
-                var updateRedArea = UpdateRangeSkillMouseDirection(originalDirection);
+				var updateRedArea = UpdateRangeSkillMouseDirection();
                 BattleData.battleManager.StartCoroutine(updateRedArea);
                 
 				BattleData.uiManager.EnableSelectDirectionUI();
