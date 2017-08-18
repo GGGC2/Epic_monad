@@ -2,10 +2,10 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
-
 using BattleUI.APBarPanels;
 using Enums;
 using Util;
+using GameData;
 
 namespace BattleUI{
 	public class APBarPanel : MonoBehaviour{
@@ -158,14 +158,11 @@ namespace BattleUI{
 			}
 		}
 
-		private void SetSeperateBar(int standardActivityPoint, List<UnitWrapper> otherUnits)
-		{
+		private void SetSeperateBar(int standardActivityPoint, List<UnitWrapper> otherUnits){
 			int nextTurnUnitIndex = -1;
-			for (int i=0; i < otherUnits.Count; i+=1)
-			{
+			for (int i=0; i < otherUnits.Count; i+=1){
 				UnitWrapper unit = otherUnits[i];
-				if (GetActivityPoint(unit) < standardActivityPoint)
-				{
+				if (GetActivityPoint(unit) < standardActivityPoint){
 					nextTurnUnitIndex = i;
 					break;
 				}
@@ -317,11 +314,9 @@ namespace BattleUI{
 			return result;
 		}
 
-		private int GetActivityPoint(UnitWrapper wrapper)
-		{
+		private int GetActivityPoint(UnitWrapper wrapper){
 			int activityPoint = wrapper.GetUnit().GetCurrentActivityPoint();
-			if (wrapper.IsPreviewUnit() && BattleData.previewAPAction != null)
-			{
+			if (wrapper.IsPreviewUnit() && BattleData.previewAPAction != null){
 				activityPoint -= BattleData.previewAPAction.requiredAP;
 			}
 			return activityPoint;
