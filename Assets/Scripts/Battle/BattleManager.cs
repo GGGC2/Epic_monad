@@ -485,10 +485,8 @@ public class BattleManager : MonoBehaviour{
         return BattleData.tileSelected;
     }
 
-	public void OnMouseEnterHandlerFromTile(Vector2 position)
-	{
-		if (BattleData.isWaitingUserInput)
-		{
+	public void OnMouseEnterHandlerFromTile(Vector2 position){
+		if (BattleData.isWaitingUserInput){
 			BattleData.preSelectedTilePosition = position;
 		}
 	}

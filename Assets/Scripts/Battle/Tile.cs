@@ -3,9 +3,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-
 using Enums;
 using Battle.Skills;
 
@@ -24,8 +24,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public bool isMouseOver;
 	public List<Color> colors;
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
-
 	bool isPreSeleted = false;
+	public TextMesh CostAP;
 
 	public void SetPreSelected(bool input) {isPreSeleted = input;}
 
@@ -127,12 +127,14 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         if(!BM.TileSelected())
 		    UM.SetTileViewer(this);
 
-		if (isPreSeleted)
+		if (isPreSeleted){
 			BM.OnMouseEnterHandlerFromTile(position);
+		}
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
 		clickStarted = false;
+		CostAP.text = "";
 
 		OnMouseExit ();
 
@@ -234,8 +236,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void RenewColor(){
 		sprite.color = mixColors (colors);
 	}
-	Color mixColors(List<Color> colors)
-	{
+	Color mixColors(List<Color> colors){
 		Color color;
 		if (colors.Count == 0)
 			color = Color.white;
@@ -265,12 +266,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	// override object.Equals
-	public override bool Equals (object obj)
-	{		
-		if (obj == null || GetType() != obj.GetType())
-		{
-			return false;
-		}
+	public override bool Equals (object obj){		
+		if (obj == null || GetType() != obj.GetType()) {return false;}
 		
 		Tile tileObj = (Tile)obj;
 		if (this.GetTilePos() == tileObj.GetTilePos()) 

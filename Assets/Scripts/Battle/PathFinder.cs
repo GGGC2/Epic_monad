@@ -5,8 +5,7 @@ using Enums;
 
 public static class PathFinder {
 	
-	class TileTuple
-	{
+	class TileTuple{
 		public Vector2 tilePosition;
 		public TileWithPath tileWithPath; 
 		
@@ -46,13 +45,11 @@ public static class PathFinder {
 		}
 	}*/
 	
-	public static Dictionary<Vector2, TileWithPath> CalculateMovablePaths(Unit unit)
-	{
+	public static Dictionary<Vector2, TileWithPath> CalculateMovablePaths(Unit unit){
 		return CalculatePathsFromThisTile (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint ());
 	}
 
-	public static Dictionary<Vector2, TileWithPath> CalculatePathsFromThisTile(Unit unit, Tile tile, int maxAPUse)
-	{
+	public static Dictionary<Vector2, TileWithPath> CalculatePathsFromThisTile(Unit unit, Tile tile, int maxAPUse){
 		Dictionary<Vector2, Tile> tiles = TileManager.Instance.GetAllTiles();
 		Vector2 startPos = tile.GetTilePos ();
 
@@ -65,8 +62,7 @@ public static class PathFinder {
 		tileQueue.Enqueue(new TileTuple(startPos, startPoint));
 
 		//// while loop
-		while (tileQueue.Count > 0)
-		{
+		while (tileQueue.Count > 0){
 			// Queue에 있는 모든 원소에 대해
 			TileTuple newTileTuple = tileQueue.Dequeue();
 			Vector2 newPosition = newTileTuple.tilePosition;
