@@ -20,7 +20,7 @@ public static class StatusEffector
             bool ignoreStatusEffect = false;
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target, targetTiles) == false) {
                 ignoreStatusEffect = true;
-                Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
+                Debug.Log(statusEffect.GetOriginSkillName() + "의 " + statusEffect.GetDisplayName() + " 효과는 적용되지 않음");
             }
             if(ignoreStatusEffect == false)
                 newStatusEffects.Add(statusEffect);
