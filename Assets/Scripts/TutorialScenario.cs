@@ -13,7 +13,7 @@ public class TutorialScenario{
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
-	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, End}
+	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, End}
 	Mission mission;
 	public bool IsEndMission { get { return mission == Mission.End; } }
 	Direction missionDirection;
@@ -56,6 +56,13 @@ public class TutorialScenario{
 			ResetMissionCondition = () => {
 				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
 				selectDirectionUI.EnableAllDirection ();
+			};
+		}  else if (mission == Mission.SelectAnyDirection) {
+			SetMissionCondition = () => {
+				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
 			};
 		} else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
