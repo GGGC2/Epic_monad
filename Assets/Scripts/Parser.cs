@@ -102,13 +102,10 @@ public class Parser : MonoBehaviour{
 		string[] unparsedAIInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 		for (int i = 1; i < unparsedAIInfoStrings.Length; i++){
-			try
-			{
+			try{
 				AIInfo aiInfo = new AIInfo(unparsedAIInfoStrings[i]);
 				aiInfoList.Add(aiInfo);
-			}
-			catch (Exception e)
-			{
+			}catch (Exception e){
 				Debug.LogError("Parsing failed in \n" +
 						" line is : " + i + "\n" +
 						" data is : " + unparsedAIInfoStrings[i]);

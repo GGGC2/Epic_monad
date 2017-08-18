@@ -380,6 +380,7 @@ public class BattleManager : MonoBehaviour{
 
 	public static IEnumerator Standby()
 	{
+		BattleData.alreadyMoved = false;
 		yield return new WaitForSeconds(0.1f);
 	}
 
@@ -426,30 +427,16 @@ public class BattleManager : MonoBehaviour{
 		BattleData.triggers.rightClicked.Trigger();
 	}
 
-	public void CallbackDirection(String directionString)
+	public void CallbackDirection(Direction direction)
 	{
-		if (directionString == "LeftUp")
-			BattleData.move.selectedDirection = Direction.LeftUp;
-		else if (directionString == "LeftDown")
-			BattleData.move.selectedDirection = Direction.LeftDown;
-		else if (directionString == "RightUp")
-			BattleData.move.selectedDirection = Direction.RightUp;
-		else if (directionString == "RightDown")
-			BattleData.move.selectedDirection = Direction.RightDown;
+		BattleData.move.selectedDirection = direction;
 		
 		BattleData.triggers.directionSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
-	public void CallbackDirectionLong(String directionString)
+	public void CallbackDirectionLong(Direction direction)
 	{
-		if (directionString == "LeftUp")
-			BattleData.move.selectedDirection = Direction.LeftUp;
-		else if (directionString == "LeftDown")
-			BattleData.move.selectedDirection = Direction.LeftDown;
-		else if (directionString == "RightUp")
-			BattleData.move.selectedDirection = Direction.RightUp;
-		else if (directionString == "RightDown")
-			BattleData.move.selectedDirection = Direction.RightDown;
+		BattleData.move.selectedDirection = direction;
 
 		BattleData.triggers.directionLongSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();

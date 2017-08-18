@@ -89,8 +89,7 @@ public class TileManager : MonoBehaviour {
 			return tiles.Last ();
 	}
 
-	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir)
-	{
+	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
 		if (form == RangeForm.Global)
 			return GetTilesInGlobalRange ();
 		else
