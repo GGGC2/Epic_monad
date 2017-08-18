@@ -156,7 +156,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		}
 	}
 		
-	public float durationThreshold = 1.0f;
+	float durationThreshold = 1.0f;
 	bool clickStarted = false;
 	float timeClickStarted;
 	public UnityEvent LeftClickEnd;
@@ -218,23 +218,17 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		Color color = TileColorToColor(tileColor);
 		PaintTile(color);
 	}
-	public void PaintTile(TileColor tileColor, Direction projectileDirection){
-		Color color = TileColorToColor(tileColor);
-		PaintTile(color);
-	}
 	void PaintTile(Color color) {
 		colors.Add(color);
 		RenewColor ();
 	}
-
-	void DepaintTile(Color color){
-		colors.Remove(color);
-		RenewColor ();
-	}
-
 	public void DepaintTile(TileColor tileColor){
 		Color color = TileColorToColor(tileColor);
 		DepaintTile(color);
+	}
+	void DepaintTile(Color color){
+		colors.Remove(color);
+		RenewColor ();
 	}
 
 	void RenewColor(){

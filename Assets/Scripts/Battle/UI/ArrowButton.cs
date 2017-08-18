@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using Enums;
 
 public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
-	public enum DirectionTypeIndex{UpLeft, UpRight, DownLeft, DownRight};
-	public DirectionTypeIndex DirectionType;
+	public Direction direction;
 	public Image realImage;
 	public Button button {
 		get {
@@ -23,10 +23,10 @@ public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	void InitializeEvents(){
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		UnityEngine.Events.UnityAction UserSelectDirection= () => {
-			battleManager.CallbackDirection(DirectionType.ToString());
+			battleManager.CallbackDirection(direction);
 		};
 		UnityEngine.Events.UnityAction UserLongSelectDirection= () => {
-			battleManager.CallbackDirectionLong(DirectionType.ToString());
+			battleManager.CallbackDirectionLong(direction);
 		};
 		LeftClickEnd.AddListener (UserSelectDirection);
 		LongLeftClickEnd.AddListener (UserLongSelectDirection);
@@ -35,20 +35,16 @@ public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	public void CheckAndHighlightImage(){
 		Vector3 mousePositionScreen = Input.mousePosition;
 		Vector3 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePositionScreen);
-		Vector3 unitPosition = BattleData.selectedUnit.realPosition;
+		Unit unit = BattleData.selectedUnit;
 
-		if (DirectionType == DirectionTypeIndex.UpLeft && mousePositionWorld.x < unitPosition.x && mousePositionWorld.y > unitPosition.y) {
-			button.Select ();
-		} else if (DirectionType == DirectionTypeIndex.UpRight && mousePositionWorld.x > unitPosition.x && mousePositionWorld.y > unitPosition.y) {
-			button.Select ();
-		} else if (DirectionType == DirectionTypeIndex.DownLeft && mousePositionWorld.x < unitPosition.x && mousePositionWorld.y < unitPosition.y) {
-			button.Select ();
-		} else if (DirectionType == DirectionTypeIndex.DownRight && mousePositionWorld.x > unitPosition.x && mousePositionWorld.y < unitPosition.y) {
+		Direction selectedDirection = Utility.GetMouseDirectionByUnit (unit, unit.GetDirection ());
+
+		if (direction == selectedDirection) {
 			button.Select ();
 		}
 	}
 
-	public float durationThreshold = 1.0f;
+	float durationThreshold = 1.0f;
 	bool clickStarted = false;
 	float timeClickStarted;
 	public UnityEvent LeftClickEnd;

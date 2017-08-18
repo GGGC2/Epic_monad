@@ -667,7 +667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cad89bed79864418b0a604555d0460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionType: 1
+  direction: 2
   realImage: {fileID: 114198264236948888}
   durationThreshold: 1
   LeftClickEnd:
@@ -882,7 +882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cad89bed79864418b0a604555d0460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionType: 0
+  direction: 0
   realImage: {fileID: 114873067126569986}
   durationThreshold: 1
   LeftClickEnd:
@@ -1599,7 +1599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cad89bed79864418b0a604555d0460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionType: 2
+  direction: 1
   realImage: {fileID: 114670168556260852}
   durationThreshold: 1
   LeftClickEnd:
@@ -1766,7 +1766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cad89bed79864418b0a604555d0460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirectionType: 3
+  direction: 3
   realImage: {fileID: 114098042077188218}
   durationThreshold: 1
   LeftClickEnd:

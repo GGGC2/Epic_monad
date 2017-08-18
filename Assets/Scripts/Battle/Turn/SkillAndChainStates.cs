@@ -75,19 +75,18 @@ namespace Battle.Turn {
 			Vector2 unitPos = selectedUnit.GetPosition ();
             ActiveSkill selectedSkill = BattleData.SelectedSkill;
 			var selectedTiles = selectedSkill.GetTilesInFirstRange (unitPos, originalDirection);
-
-
 			BattleData.tileManager.PaintTiles(selectedTiles, TileColor.Red);
+
 			SkillLocation originalLocation = new SkillLocation (unitPos, targetTile, originalDirection);
 			selectedSkill.SetRealTargetTileForSkillLocation (originalLocation);
 			Casting originalCasting = new Casting (selectedUnit, selectedSkill, originalLocation);
 			Unit caster = originalCasting.Caster;
 			ActiveSkill skill = originalCasting.Skill;
+
 			List<Tile> secondRange = originalCasting.SecondRange;
-			BattleData.tileManager.PaintTiles(secondRange, TileColor.Purple);
+			BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 			List<Tile> realEffectRange = originalCasting.RealEffectRange;
 			DisplayPreviewDamage(originalCasting);
-
 
 			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
 
@@ -100,11 +99,8 @@ namespace Battle.Turn {
 				if (beforeDirection != newDirection) {
 					beforeDirection = newDirection;
 
-					// 1차범위 표시 해제
 					BattleData.tileManager.DepaintTiles(selectedTilesByBeforeDirection, TileColor.Red);
-					// 2차범위 표시 해제
-					BattleData.tileManager.DepaintAllTiles (TileColor.Purple);
-					// 데미지 미리보기 해제.
+					BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 					HidePreviewDamage();
 
 					BattleData.selectedUnit.SetDirection(newDirection);
@@ -113,12 +109,13 @@ namespace Battle.Turn {
 					SkillLocation newLocation = new SkillLocation (unitPos, targetTile, newDirection);
 					selectedSkill.SetRealTargetTileForSkillLocation (newLocation);
 					Casting newCasting = new Casting (selectedUnit, selectedSkill, newLocation);
-					//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들이며 보라색으로(임시) 칠한다
 					secondRange = newCasting.SecondRange;
-					BattleData.tileManager.PaintTiles(secondRange, TileColor.Purple);
+					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 					realEffectRange = newCasting.RealEffectRange;
-					//데미지 미리보기
-					DisplayPreviewDamage(newCasting);
+
+					if (selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (selectedUnit, realEffectRange)) {
+						DisplayPreviewDamage (newCasting);
+					}
                 }
                 yield return null;
             }
@@ -140,15 +137,15 @@ namespace Battle.Turn {
                 yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
                     BattleData.triggers.rightClicked,
                     BattleData.triggers.cancelClicked,
-                    BattleData.triggers.tileSelectedByUser,
 					BattleData.triggers.directionSelectedByUser,
 					BattleData.triggers.directionLongSelectedByUser
                 ));
+
                 BattleData.battleManager.StopCoroutine(updateRedArea);
                 BattleData.isWaitingUserInput = false;
 
 				BattleData.tileManager.DepaintAllTiles(TileColor.Red);	
-				BattleData.tileManager.DepaintAllTiles(TileColor.Purple);
+				BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 				HidePreviewDamage();
 
 				//취소선택시->1. 4방향 화살표 제거 2. 유닛이 원래 방향을 바라보게 되돌림 3. currentState는 스킬을 고르는 단계로 돌려놓는다
@@ -159,23 +156,31 @@ namespace Battle.Turn {
                     BattleData.currentState = CurrentState.SelectSkill;
                     yield break;
                 }
-				//범위 내 타일이나 방향(사분면 중 하나)을 선택했을시->1. currentState는 즉시시전/연계대기를 선택하는 단계로 한다
-				//2. 현재 선택된 타겟 타일에 즉시시전/연계대기를 할지 선택하게 한다. 단, 투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 타겟 타일로 한다.
-                else{
-                    BattleManager battleManager = BattleData.battleManager;
+
+				else{
+					BattleManager battleManager = BattleData.battleManager;
 					var targetTile = BattleData.SelectedUnitTile;
 					SkillLocation skillLocation = new SkillLocation (selectedUnit.GetTileUnderUnit (), targetTile, selectedUnit.GetDirection ());
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
 					Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
-
+					
+					if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+						continue;
+					
 					if (BattleData.triggers.directionSelectedByUser.Triggered) {
 						BattleData.currentState = CurrentState.ApplySkill;
 						yield return battleManager.StartCoroutine (ApplyCasting (casting));
 					}
 					else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
-						BattleData.currentState = CurrentState.WaitChain;
-						yield return battleManager.StartCoroutine (WaitChain (casting));
+						if (CheckWaitChainPossible (casting)) {
+							BattleData.currentState = CurrentState.WaitChain;
+							yield return battleManager.StartCoroutine (WaitChain (casting));
+						} 
+						else {
+							BattleData.currentState = CurrentState.ApplySkill;
+							yield return battleManager.StartCoroutine (ApplyCasting (casting));
+						}
 					}
                 }
 
@@ -204,11 +209,13 @@ namespace Battle.Turn {
 				}
 
 				Tile newTargetTile = TileManager.Instance.preSelectedMouseOverTile;
+				if (newTargetTile != null && !newTargetTile.isMouseOver)
+					newTargetTile = null;
 
 				if (previousTargetTile != newTargetTile) {
-					// 2차범위 표시 해제
-					BattleData.tileManager.DepaintAllTiles (TileColor.Purple);
-					// 데미지 미리보기 해제.
+					previousTargetTile = newTargetTile;
+
+					BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 					HidePreviewDamage ();
 
 					Tile targetTile = newTargetTile;
@@ -218,16 +225,11 @@ namespace Battle.Turn {
 
 						Unit caster = newCasting.Caster;
 						ActiveSkill skill = newCasting.Skill;
-						//BattleManager.MoveCameraToTile(newCasting.Location.TargetTile);
 
-						//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들이며 보라색으로(임시) 칠한다
 						List<Tile> secondRange = newCasting.SecondRange;
-						BattleData.tileManager.PaintTiles (secondRange, TileColor.Purple);
-						//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
-						//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
+						BattleData.tileManager.PaintTiles (secondRange, TileColor.Blue);
 						List<Tile> realEffectRange = newCasting.RealEffectRange;
 
-						//데미지 미리보기
 						DisplayPreviewDamage (newCasting);
 					}
 
@@ -271,7 +273,7 @@ namespace Battle.Turn {
                 BattleData.uiManager.DisableCancelButtonUI();
 
 				BattleData.tileManager.DepaintAllTiles(TileColor.Red);	
-				BattleData.tileManager.DepaintAllTiles(TileColor.Purple);
+				BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 				HidePreviewDamage();
 
                 if (BattleData.triggers.rightClicked.Triggered ||
@@ -290,13 +292,22 @@ namespace Battle.Turn {
 				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
 				Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 
+				if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+					continue;
+
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
 					BattleData.currentState = CurrentState.ApplySkill;
 					yield return battleManager.StartCoroutine (ApplyCasting (casting));
 				}
 				else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
-					BattleData.currentState = CurrentState.WaitChain;
-					yield return battleManager.StartCoroutine (WaitChain (casting));
+					if (CheckWaitChainPossible (casting)) {
+						BattleData.currentState = CurrentState.WaitChain;
+						yield return battleManager.StartCoroutine (WaitChain (casting));
+					} 
+					else {
+						BattleData.currentState = CurrentState.ApplySkill;
+						yield return battleManager.StartCoroutine (ApplyCasting (casting));
+					}
 				}
             }
         }
@@ -329,6 +340,7 @@ namespace Battle.Turn {
 			if (skill.GetCooldown() > 0)
 				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
 			yield return ApplyAllTriggeredChains(casting);
+
 			BattleManager.MoveCameraToUnit(caster);
 			BattleData.currentState = CurrentState.FocusToUnit;
         }
@@ -351,9 +363,7 @@ namespace Battle.Turn {
 
 			BattleManager.MoveCameraToUnit(caster);
 			BattleData.currentState = CurrentState.Standby;
-			BattleData.alreadyMoved = false;
-			BattleManager battleManager = BattleData.battleManager;
-			yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
+			yield return BattleData.battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
 		}
 
 		//연계'대기' 가능한 상태인가?
