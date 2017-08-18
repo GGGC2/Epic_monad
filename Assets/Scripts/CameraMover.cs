@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enums;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class CameraMover : MonoBehaviour {
 
@@ -35,6 +36,9 @@ public class CameraMover : MonoBehaviour {
     void Start() {
 		FindObjectOfType<CameraMover>().CalculateBoundary();
 		SetFixedPosition (transform.position);
+
+		if (GameData.SceneData.stageNumber < Setting.mouseCameraMoveEnableStage)
+			mouseMoveActive = false;
     }
     public void CalculateBoundary() {
 

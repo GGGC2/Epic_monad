@@ -73,7 +73,8 @@ namespace BattleUI{
             int level = PartyData.level;
             apText.text = level + 60 + (Agility / 2) + "(+" + Agility + ")";
 
-            SetClassImage(UnitInfo.GetUnitClass(unitName));
+            if (SceneData.stageNumber >= Setting.classOpenStage)
+                SetClassImage(UnitInfo.GetUnitClass(unitName));
             if (SceneData.stageNumber >= Setting.elementOpenStage)
                 SetElementImage(UnitInfo.GetElement(unitName));
             if (SceneData.stageNumber >= Setting.celestialOpenStage)
