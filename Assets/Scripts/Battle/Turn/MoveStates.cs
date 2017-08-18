@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using Enums;
 
 namespace Battle.Turn{
 	public class MoveStates{
-		private static IEnumerator UpdatePreviewAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			while (true){
+				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
 				if (BattleData.preSelectedTilePosition.HasValue == false ||
 					movableTilesWithPath.ContainsKey(BattleData.preSelectedTilePosition.Value) == false)
 				{
@@ -17,7 +17,11 @@ namespace Battle.Turn{
 					var preSelectedTile = BattleData.preSelectedTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					TileManager.Instance.preSelectedMouseOverTile.CostAP.text = requiredAP.ToString();
+					Tile tileUnderMouse = MonoBehaviour.FindObjectOfType<TileManager>().preSelectedMouseOverTile;
+					tileUnderMouse.CostAP.text = requiredAP.ToString();
+					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
+						tile.PaintTile(TileColor.Red);
+					}
 				}
 				BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 				yield return null;
@@ -28,8 +32,7 @@ namespace Battle.Turn{
 			while (BattleData.currentState == CurrentState.SelectMovingPoint){
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
 				List<Tile> movableTiles = new List<Tile>();
-				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
-				{
+				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath){
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
 				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
@@ -39,7 +42,7 @@ namespace Battle.Turn{
 				BattleData.isWaitingUserInput = true;
 
 				BattleManager battleManager = BattleData.battleManager;
-				var update = UpdatePreviewAP(movableTilesWithPath);
+				var update = UpdatePreviewPathAndAP(movableTilesWithPath);
 				battleManager.StartCoroutine(update);
 
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(

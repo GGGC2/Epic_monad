@@ -236,8 +236,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void RenewColor(){
 		sprite.color = mixColors (colors);
 	}
-	Color mixColors(List<Color> colors)
-	{
+	Color mixColors(List<Color> colors){
 		Color color;
 		if (colors.Count == 0)
 			color = Color.white;

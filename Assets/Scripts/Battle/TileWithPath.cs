@@ -10,16 +10,14 @@ public class TileWithPath {
 	public List<Tile> path; // '이전'까지의 경로
 	public int requireActivityPoint; // '도착지점'까지 소모되는 ap
 	
-	public TileWithPath(Tile startTile)
-	{
+	public TileWithPath(Tile startTile){
 		this.tile = startTile;
 		this.path = new List<Tile>();
 		this.requireActivityPoint = 0;
 	}
 	
-	public TileWithPath(Tile destTile, TileWithPath prevTileWithPath)
-	{
-		this.tile = destTile; 
+	public TileWithPath(Tile destTile, TileWithPath prevTileWithPath){
+		this.tile = destTile;
 		this.path = new List<Tile>();
 		List<Tile> prevPath = prevTileWithPath.path;
 		Tile lastPrevTile = prevTileWithPath.tile;
