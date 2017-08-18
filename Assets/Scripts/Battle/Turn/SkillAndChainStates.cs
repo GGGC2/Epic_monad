@@ -167,12 +167,13 @@ namespace Battle.Turn {
 					SkillLocation skillLocation = new SkillLocation (selectedUnit.GetTileUnderUnit (), targetTile, selectedUnit.GetDirection ());
 					//투사체 스킬이면 선택된 영역(경로) 중 맨 끝점을 시전 타일로 한다.
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
-					yield return battleManager.StartCoroutine(CheckApplyOrChain(new Casting(selectedUnit, selectedSkill, skillLocation), originalDirection));
+					yield return battleManager.StartCoroutine(ApplyCasting(new Casting(selectedUnit, selectedSkill, skillLocation)));
                 }
 					
+
                 if (BattleData.currentState != CurrentState.SelectSkillApplyDirection) {
 					//이제 취소 버튼 UI 없으니 이 줄은 필요없지 않나
-                    BattleData.uiManager.DisableCancelButtonUI();
+                    //BattleData.uiManager.DisableCancelButtonUI();
                     
 					yield break;
                 }
@@ -255,7 +256,8 @@ namespace Battle.Turn {
                 var update = UpdatePointSkillMouseDirection(originalDirection);
                 BattleData.battleManager.StartCoroutine(update);
                 yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    BattleData.triggers.tileSelectedByUser,
+					BattleData.triggers.tileSelectedByUser,
+					BattleData.triggers.tileLongSelectedByUser,
                     BattleData.triggers.rightClicked,
                     BattleData.triggers.cancelClicked
                 ));
@@ -280,93 +282,20 @@ namespace Battle.Turn {
                 BattleData.uiManager.DisableSkillUI();
 
                 BattleManager battleManager = BattleData.battleManager;
-                BattleData.currentState = CurrentState.CheckApplyOrChain;
 				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
-				yield return battleManager.StartCoroutine(CheckApplyOrChain(new Casting(selectedUnit, selectedSkill, skillLocation), originalDirection));
-            }
-        }
 
-		public static IEnumerator CheckApplyOrChain (Casting casting, Direction originalDirection) {
-			/*
-            while (BattleData.currentState == CurrentState.CheckApplyOrChain) {
-				Unit caster = casting.Caster;
-				ActiveSkill skill = casting.Skill;
-                BattleManager.MoveCameraToTile(casting.Location.TargetTile);
-
-				//secondRange는 2차 범위(타겟 타일을 가지고 계산한 스킬 효과 범위) 내 타일들이며 빨갛게 칠한다
-				List<Tile> secondRange = casting.SecondRange;
-                BattleData.tileManager.PaintTiles(secondRange, TileColor.Red);
-				//realEffectRange는 실제로 효과나 데미지가 가해지는 영역으로, 일반적인 경우는 secondRange와 동일
-				//투사체 스킬은 타겟 타일에 유닛이 없으면 아무 효과도 데미지도 없이 이펙트만 나오게 한다. 연계 발동은 안 되고 연계 대기는 된다
-				List<Tile> realEffectRange = casting.RealEffectRange;
-
-                //데미지 미리보기
-				Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages = DisplayPreviewDamage(casting);
-
-				bool isApplyPossible = skill.SkillLogic.CheckApplyPossibleToTargetTiles(caster, secondRange);
-                bool isChainPossible = CheckChainPossible(casting);
-                BattleData.uiManager.EnableSkillCheckWaitButton(isApplyPossible, isApplyPossible && isChainPossible);
-                BattleData.uiManager.SetSkillCheckAP(casting);
-
-                BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-                yield return BattleData.battleManager.StartCoroutine(EventTrigger.WaitOr(
-                    BattleData.triggers.cancelClicked,
-                    BattleData.triggers.rightClicked,
-                    BattleData.triggers.skillApplyCommandChanged
-                ));
-
-				// 데미지 미리보기 해제.
-				HidePreviewDamage(allCalculatedTotalDamages);
-                BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
-
-                if (BattleData.triggers.rightClicked.Triggered ||
-					BattleData.triggers.cancelClicked.Triggered) {
-                    BattleManager.MoveCameraToUnit(caster);
-                    BattleData.uiManager.DisableSkillCheckUI();
-                    caster.SetDirection(originalDirection);
-                    if (skill.GetSkillType() != SkillType.Point)
-                        BattleData.currentState = CurrentState.SelectSkillApplyDirection;
-                    else
-                        BattleData.currentState = CurrentState.SelectSkillApplyPoint;
-                    yield break;
-                }
-
-                BattleManager battleManager = BattleData.battleManager;
-                if (BattleData.skillApplyCommand == SkillApplyCommand.Apply) {
-                    BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-					caster.UseActivityPoint (casting.RequireAP);
-					if (skill.GetCooldown() > 0)
-						caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
-					yield return ApplyAllTriggeredChains(casting);
-					BattleManager.MoveCameraToUnit(caster);
-					BattleData.currentState = CurrentState.FocusToUnit;
-                }
-				else if (BattleData.skillApplyCommand == SkillApplyCommand.Chain) {
-                    BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+				if (BattleData.triggers.tileSelectedByUser.Triggered) {
+					BattleData.currentState = CurrentState.ApplySkill;
+					yield return battleManager.StartCoroutine (ApplyCasting (new Casting (selectedUnit, selectedSkill, skillLocation)));
+				}
+				else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 					BattleData.currentState = CurrentState.ChainAndStandby;
-					caster.UseActivityPoint (casting.RequireAP);
-					yield return battleManager.StartCoroutine(StandbyChain(casting));
-                } else {
-                    Debug.LogError("Invalid State");
-                    yield return null;
-                }
+					Debug.Log ("Long selected");
+					yield return battleManager.StartCoroutine (WaitChain (new Casting (selectedUnit, selectedSkill, skillLocation)));
+				}
             }
-            yield return null;
-            */
-
-			Unit caster = casting.Caster;
-			ActiveSkill skill = casting.Skill;
-			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
-
-			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown() > 0)
-				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
-			yield return ApplyAllTriggeredChains(casting);
-			BattleManager.MoveCameraToUnit(caster);
-			BattleData.currentState = CurrentState.FocusToUnit;
-
         }
+
 
 		static Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages;
 
@@ -385,8 +314,45 @@ namespace Battle.Turn {
 			}
 		}
 
+		public static IEnumerator ApplyCasting (Casting casting) {
+			Unit caster = casting.Caster;
+			ActiveSkill skill = casting.Skill;
+			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
+
+			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+			caster.UseActivityPoint (casting.RequireAP);
+			if (skill.GetCooldown() > 0)
+				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+			yield return ApplyAllTriggeredChains(casting);
+			BattleManager.MoveCameraToUnit(caster);
+			BattleData.currentState = CurrentState.FocusToUnit;
+        }
+
+		public static IEnumerator WaitChain (Casting casting) {
+			Unit caster = casting.Caster;
+			ActiveSkill skill = casting.Skill;
+			SkillLocation location = casting.Location;
+
+			caster.SetDirection(location.Direction);
+
+			caster.UseActivityPoint (casting.RequireAP);
+			if (skill.GetCooldown() > 0)
+				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+
+			// 체인 목록에 추가.
+			ChainList.AddChains(casting);
+			BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
+			yield return new WaitForSeconds(0.5f);
+
+			BattleManager.MoveCameraToUnit(caster);
+			BattleData.currentState = CurrentState.Standby;
+			BattleData.alreadyMoved = false;
+			BattleManager battleManager = BattleData.battleManager;
+			yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
+		}
+
 		//연계'대기' 가능한 상태인가?
-		private static bool CheckChainPossible (Casting casting) {
+		private static bool CheckWaitChainPossible (Casting casting) {
 			if (GameData.SceneData.stageNumber < Setting.chainOpenStage)
 				return false;
 
@@ -450,29 +416,6 @@ namespace Battle.Turn {
 				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
 				caster.DisableChainText ();
 			}
-        }
-
-		private static IEnumerator StandbyChain (Casting casting) {
-			Unit caster = casting.Caster;
-			ActiveSkill skill = casting.Skill;
-			SkillLocation location = casting.Location;
-
-			caster.SetDirection(location.Direction);
-
-            // 스킬 쿨다운 기록
-            if (skill.GetCooldown() > 0)
-                caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
-
-            // 체인 목록에 추가.
-			ChainList.AddChains(casting);
-            BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
-            yield return new WaitForSeconds(0.5f);
-
-            BattleManager.MoveCameraToUnit(caster);
-            BattleData.currentState = CurrentState.Standby;
-            BattleData.alreadyMoved = false;
-            BattleManager battleManager = BattleData.battleManager;
-            yield return battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
         }
     }
 }

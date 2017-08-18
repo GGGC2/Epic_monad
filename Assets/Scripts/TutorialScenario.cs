@@ -39,10 +39,10 @@ public class TutorialScenario{
 				TM.PreselectTiles (clickableTiles);
 				TM.SetPreselectLock (true);
 				TM.SetHighlightTiles (clickableTiles, true);
-				missionTile.LeftClick.AddListener (ToNextStep);
+				missionTile.LeftClickEnd.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				missionTile.LeftClick.RemoveListener (ToNextStep);
+				missionTile.LeftClickEnd.RemoveListener (ToNextStep);
 				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
 				TM.SetPreselectLock (false);
 				TM.DepreselectAllTiles ();
