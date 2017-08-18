@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using Enums;
 using Battle.Skills;
 
-public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
+public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler {
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;
@@ -109,23 +109,31 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
 		OnMouseOver ();
 
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		if (isPreSeleted)
+			TileManager.Instance.preSelectedMouseOverTile = this;
+
+		BattleManager BM = FindObjectOfType<BattleManager>();
+		UIManager UM = FindObjectOfType<UIManager>();
+
 		if (IsUnitOnTile()){
 			ChainList.ShowChainOfThisUnit(unitOnTile);
 			ChainList.ShowUnitsTargetingThisTile (this);
 
-			if (!battleManager.EnemyUnitSelected()){
-                FindObjectOfType<UIManager>().UpdateUnitViewer(unitOnTile);
+			if (!BM.EnemyUnitSelected()){
+                UM.UpdateUnitViewer(unitOnTile);
+				UM.apBarUI.FindAndHighlightPortrait(unitOnTile);
 			}
 		}
-        if(!battleManager.TileSelected())
-		    FindObjectOfType<UIManager>().SetTileViewer(this);
+        if(!BM.TileSelected())
+		    UM.SetTileViewer(this);
 
 		if (isPreSeleted)
-			battleManager.OnMouseEnterHandlerFromTile(position);
+			BM.OnMouseEnterHandlerFromTile(position);
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
+		clickStarted = false;
+
 		OnMouseExit ();
 
 		if (IsUnitOnTile()){
@@ -133,21 +141,43 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
-        if (!battleManager.TileSelected())
-            FindObjectOfType<UIManager>().DisableTileViewerUI();
-        if (!battleManager.EnemyUnitSelected())
-		    FindObjectOfType<UIManager>().DisableUnitViewer();
+		BattleManager BM = FindObjectOfType<BattleManager>();
+		UIManager UM = FindObjectOfType<UIManager>();
+
+        if (!BM.TileSelected())
+            UM.DisableTileViewerUI();
+        if (!BM.EnemyUnitSelected()){
+			UM.DisableUnitViewer();
+			UM.apBarUI.ResetAllPortraitColor();
+		}
 
 		if (isPreSeleted){
-			battleManager.OnMouseExitHandlerFromTile(position);
+			BM.OnMouseExitHandlerFromTile(position);
 		}
 	}
-
-	public UnityEvent LeftClick;
+		
+	public float durationThreshold = 1.0f;
+	bool clickStarted = false;
+	float timeClickStarted;
+	public UnityEvent LeftClickEnd;
+	public UnityEvent LongLeftClickEnd;
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
-		if (pointerData.button == PointerEventData.InputButton.Left)
-			LeftClick.Invoke ();
+		if (pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = true;
+			timeClickStarted = Time.time;
+		}
+	}
+	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
+		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = false;
+			LeftClickEnd.Invoke ();
+		}
+	}
+	void Update(){
+		if (clickStarted && Time.time - timeClickStarted > durationThreshold) {
+			clickStarted = false;
+			LongLeftClickEnd.Invoke ();
+		}
 	}
 
 	void Awake (){
@@ -158,11 +188,16 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void InitializeEvents(){
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		UnityEngine.Events.UnityAction OnClick = () => {
+		UnityEngine.Events.UnityAction UserSelectTile= () => {
 			if (isPreSeleted)
 				battleManager.OnMouseDownHandlerFromTile (position);
 		};
-		LeftClick.AddListener (OnClick);
+		UnityEngine.Events.UnityAction UserLongSelectTile= () => {
+			if (isPreSeleted)
+				battleManager.OnLongMouseDownHandlerFromTile (position);
+		};
+		LeftClickEnd.AddListener (UserSelectTile);
+		LongLeftClickEnd.AddListener (UserLongSelectTile);
 	}
 
 

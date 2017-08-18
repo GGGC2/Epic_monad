@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
 
 	public bool startFinished = false;
 
-	APBarPanel apBarUI;
+	public APBarPanel apBarUI;
 	GameObject commandUI;
 	public CommandPanel commandPanel;
 	GameObject skillUI;
@@ -190,12 +190,6 @@ public class UIManager : MonoBehaviour
 		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
 	}
 
-	public void AddListenerToApplyButton(UnityEngine.Events.UnityAction action){
-		ApplyButton.GetComponent<Button>().onClick.AddListener (action);
-	}
-	public void RemoveListenerToApplyButton(UnityEngine.Events.UnityAction action){
-		ApplyButton.GetComponent<Button>().onClick.RemoveListener (action);
-	}
 	public void AddListenerToWaitButton(UnityEngine.Events.UnityAction action){
 		WaitButton.GetComponent<Button>().onClick.AddListener (action);
 	}
@@ -210,8 +204,7 @@ public class UIManager : MonoBehaviour
 	public void UnlockApplyOrWaitOnOff(){
 		applyOrWaitOnOffLockOn = false;
 	}
-	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible)
-	{
+	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible){
 		if (applyOrWaitOnOffLockOn)
 			return;
 		skillCheckUI.gameObject.SetActive(true);
@@ -247,8 +240,7 @@ public class UIManager : MonoBehaviour
 		yield return null;
 	}
 
-	public void DisableDestCheckUI()
-	{
+	public void DisableDestCheckUI(){
 		destCheckUI.SetActive(false);
 	}
 

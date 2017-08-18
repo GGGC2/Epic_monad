@@ -45,8 +45,8 @@ namespace BattleUI
 			arrowButtons [direction].button.onClick.RemoveListener (action);
 		}
 
-		public void CallbackDirection(string directionString){
+		/*public void CallbackDirection(string directionString){
 			battleManager.CallbackDirection(directionString);
-		}
+		}*/
 	}
 }

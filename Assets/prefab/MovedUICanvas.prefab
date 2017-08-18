@@ -669,6 +669,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionType: 1
   realImage: {fileID: 114198264236948888}
+  durationThreshold: 1
+  LeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  LongLeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114198264236948888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -873,6 +884,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionType: 0
   realImage: {fileID: 114873067126569986}
+  durationThreshold: 1
+  LeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  LongLeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114320733591681472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1052,18 +1074,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114098042077188218}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114988701094603628}
-        m_MethodName: CallbackDirection
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RightDown
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114412271662413534
@@ -1105,18 +1116,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114873067126569986}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114988701094603628}
-        m_MethodName: CallbackDirection
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: LeftUp
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114434133034342810
@@ -1601,6 +1601,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionType: 2
   realImage: {fileID: 114670168556260852}
+  durationThreshold: 1
+  LeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  LongLeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114873067126569986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1741,18 +1752,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114198264236948888}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114988701094603628}
-        m_MethodName: CallbackDirection
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RightUp
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114910670930502858
@@ -1768,6 +1768,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionType: 3
   realImage: {fileID: 114098042077188218}
+  durationThreshold: 1
+  LeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  LongLeftClickEnd:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114965459402121652
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1807,18 +1818,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114670168556260852}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114988701094603628}
-        m_MethodName: CallbackDirection
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: LeftDown
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114970685599878036

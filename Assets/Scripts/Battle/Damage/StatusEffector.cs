@@ -7,10 +7,8 @@ using Battle.Skills;
 
 namespace Battle.Damage
 {
-public static class StatusEffector
-{
-	public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Unit target, List<Tile> targetTiles)
-	{
+public static class StatusEffector{
+	public static void AttachStatusEffect(Unit caster, ActiveSkill appliedSkill, Unit target, List<Tile> targetTiles){
         List<UnitStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetUnitStatusEffectList();
 		List<UnitStatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, appliedSkill))
@@ -20,16 +18,14 @@ public static class StatusEffector
             bool ignoreStatusEffect = false;
             if (SkillLogicFactory.Get(appliedSkill).TriggerStatusEffectApplied(statusEffect, caster, target, targetTiles) == false) {
                 ignoreStatusEffect = true;
-                Debug.Log(statusEffect.GetDisplayName() + " ignored by "+statusEffect.GetOriginSkillName());
+                Debug.Log(statusEffect.GetOriginSkillName() + "의 " + statusEffect.GetDisplayName() + " 효과는 적용되지 않음");
             }
-            if(ignoreStatusEffect == false)
-                newStatusEffects.Add(statusEffect);
+            if(ignoreStatusEffect == false) {newStatusEffects.Add(statusEffect);}
         }
         AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
-	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target)
-	{
+	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target){
 		List<UnitStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetUnitStatusEffectList();
 		List<UnitStatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, appliedSkill))
@@ -41,14 +37,12 @@ public static class StatusEffector
                 ignoreStatusEffect = true;
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
             }
-            if (ignoreStatusEffect == false)
-                newStatusEffects.Add(statusEffect);
+            if (ignoreStatusEffect == false) {newStatusEffects.Add(statusEffect);}
         }
         AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
-	private static bool IsValidAtZero(StatusEffectType seType)
-	{
+	private static bool IsValidAtZero(StatusEffectType seType){
 		if (seType == StatusEffectType.Silence || 
 			seType == StatusEffectType.Bind || 
 			seType == StatusEffectType.Confused || 

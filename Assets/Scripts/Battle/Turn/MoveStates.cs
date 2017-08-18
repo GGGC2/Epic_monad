@@ -82,6 +82,7 @@ namespace Battle.Turn{
 		}
 
 		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance){
+			/*
 			while (BattleData.currentState == CurrentState.CheckDestination){
 				// 목표지점만 푸른색으로 표시
 				// List<GameObject> destTileList = new List<GameObject>();
@@ -131,9 +132,32 @@ namespace Battle.Turn{
 				BattleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
 				BattleData.currentState = CurrentState.MoveToTile;
 				BattleData.uiManager.DisableDestCheckUI();
-				yield return battleManager.StartCoroutine(MoveToTile(destTile, BattleData.move.selectedDirection, totalUseActivityPoint));
+				yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, BattleData.move.selectedDirection, totalUseActivityPoint));
 			}
 			yield return null;
+			*/
+			// 이동했을때 볼 방향 설정
+			Direction finalDirection;
+			Vector2 destPos = destTile.GetTilePos ();
+			Debug.Log ("destPath count : " + destPath.Count);
+			if (destPath.Count > 0) {
+				Vector2 prevLastPos = destPath [destPath.Count - 1].GetTilePos ();
+				Vector2 delta = destPos - prevLastPos;
+				if (delta == new Vector2 (1, 0))
+					finalDirection = Direction.RightDown;
+				else if (delta == new Vector2 (-1, 0))
+					finalDirection = Direction.LeftUp;
+				else if (delta == new Vector2 (0, 1))
+					finalDirection = Direction.RightUp;
+				else // delta == new Vector2 (0, -1)
+				finalDirection = Direction.LeftDown;
+			}
+			else { // 제자리 이동(나중엔 막아놔야 함)이면 방향은 그대로
+				finalDirection = BattleData.selectedUnit.GetDirection ();
+			}
+
+			BattleData.currentState = CurrentState.MoveToTile;
+			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint));
 		}
 
 		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost){

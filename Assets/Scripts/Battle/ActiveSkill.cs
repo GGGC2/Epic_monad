@@ -127,21 +127,26 @@ public class ActiveSkill : Skill{
 	}
 	public List<Tile> GetTilesInSecondRange(SkillLocation skillLocation)
 	{
-		List<Tile> secondRange = BattleData.tileManager.GetTilesInRange (secondRangeForm,
-			                           skillLocation.TargetPos,
-			                           secondMinReach,
-			                           secondMaxReach,
-			                           secondWidth,
-			                           skillLocation.Direction);
-		if (skillType == SkillType.Auto)
-		{
-			secondRange.Remove(skillLocation.TargetTile);
+		List<Tile> secondRange;
+		if (skillLocation.TargetTile != null) {
+			secondRange = BattleData.tileManager.GetTilesInRange (secondRangeForm,
+				skillLocation.TargetPos,
+				secondMinReach,
+				secondMaxReach,
+				secondWidth,
+				skillLocation.Direction);
+			if (skillType == SkillType.Auto) {
+				secondRange.Remove (skillLocation.TargetTile);
+			}
+		}
+		else{
+			secondRange=new List<Tile>();
 		}
 		return secondRange;
 	}
 	public List<Tile> GetTilesInRealEffectRange(SkillLocation skillLocation){
-		if (skillType == SkillType.Route && !skillLocation.TargetTile.IsUnitOnTile ())
-			return new List<Tile>();
+		if (skillType == SkillType.Route && (skillLocation.TargetTile == null || !skillLocation.TargetTile.IsUnitOnTile ()))
+			return new List<Tile> ();
 		else
 			return GetTilesInSecondRange (skillLocation);
 	}
@@ -517,6 +522,10 @@ public class ActiveSkill : Skill{
 			SoundManager.Instance.PlaySE (soundEffectName);
 	}
 	public IEnumerator ApplyVisualEffect(Unit unit, List<Tile> secondRange) {
+		if (secondRange.Count == 0) {
+			yield break;
+		}
+
 		if (visualEffectName == "-") {
 			Debug.Log("There is no visual effect for " + korName);
 			yield break;
