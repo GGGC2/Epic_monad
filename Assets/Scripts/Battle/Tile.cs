@@ -132,6 +132,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
+		clickStarted = false;
+
 		OnMouseExit ();
 
 		if (IsUnitOnTile()){
@@ -155,21 +157,24 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 		
 	public float durationThreshold = 1.0f;
-	public float timeClickStarted;
+	bool clickStarted = false;
+	float timeClickStarted;
 	public UnityEvent LeftClickEnd;
 	public UnityEvent LongLeftClickEnd;
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
 		if (pointerData.button == PointerEventData.InputButton.Left) {
+			clickStarted = true;
 			timeClickStarted = Time.time;
 		}
 	}
 	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
-		if (pointerData.button == PointerEventData.InputButton.Left) {
-			if (Time.time - timeClickStarted > durationThreshold)
-				LongLeftClickEnd.Invoke ();
-			else
-				LeftClickEnd.Invoke ();
+		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left) {
+			LeftClickEnd.Invoke ();
 		}
+	}
+	void Update(){
+		if (clickStarted && Time.time - timeClickStarted > durationThreshold)
+			LongLeftClickEnd.Invoke ();
 	}
 
 	void Awake (){
