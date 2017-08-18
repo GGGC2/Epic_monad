@@ -21,8 +21,7 @@ public class TutorialManager : MonoBehaviour {
 
 		if(searchData == null || SceneData.isTestMode || SceneData.isStageMode){
 			if(usedSceneName == "Battle"){
-				cm.mouseMoveActive = true;
-				cm.keyboardMoveActive = true;
+				cm.SetMovable(true);
 			}
 			EndTutorial ();
 		}else{

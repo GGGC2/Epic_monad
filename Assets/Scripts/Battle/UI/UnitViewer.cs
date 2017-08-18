@@ -37,28 +37,21 @@ namespace BattleUI{
         public Image NextApBar;
         public GameObject ApBarArrow;
 
+        //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
         public void UpdateUnitViewer(Unit unit) {
             unitImage.sprite = unit.GetDefaultSprite();
             nameText.text = unit.GetName();
             SetClassImage(unit.GetUnitClass());
             SetElementImage(unit.GetElement());
-            CheckElementBuff(unit);
             SetCelestialImage(unit.GetCelestial());
+            CheckElementBuff(unit);
             UpdateHp(unit);
             UpdateAp(unit);
             UpdatePower(unit);
             UpdateDefense(unit);
 			UpdateResistance(unit);
 			UpdateSpeed (unit);
-
             UpdateEffect(unit);
-        }
-
-        public void RefreshStatusEffectIconList() {
-            foreach(var statusEffectIcon in statusEffectIcons) {
-                Destroy(statusEffectIcon.gameObject);
-            }
-            statusEffectIcons = new List<StatusEffectIcon>();
         }
 
         public void UpdateUnitViewer(string unitName) {
@@ -73,12 +66,16 @@ namespace BattleUI{
             int level = PartyData.level;
             apText.text = level + 60 + (Agility / 2) + "(+" + Agility + ")";
 
-            if (SceneData.stageNumber >= Setting.classOpenStage)
-                SetClassImage(UnitInfo.GetUnitClass(unitName));
-            if (SceneData.stageNumber >= Setting.elementOpenStage)
-                SetElementImage(UnitInfo.GetElement(unitName));
-            if (SceneData.stageNumber >= Setting.celestialOpenStage)
-                SetCelestialImage(UnitInfo.GetCelestial(unitName));
+            SetClassImage(UnitInfo.GetUnitClass(unitName));
+            SetElementImage(UnitInfo.GetElement(unitName));
+            SetCelestialImage(UnitInfo.GetCelestial(unitName));
+        }
+
+        public void RefreshStatusEffectIconList() {
+            foreach(var statusEffectIcon in statusEffectIcons) {
+                Destroy(statusEffectIcon.gameObject);
+            }
+            statusEffectIcons = new List<StatusEffectIcon>();
         }
 
         public void Clear() {
@@ -179,6 +176,11 @@ namespace BattleUI{
 		}
 
         void SetClassImage(UnitClass unitClass) {
+            if(SceneData.stageNumber < Setting.classOpenStage){
+                classImage.sprite = Resources.Load<Sprite>("transparent");
+                return;
+            }
+
             if (unitClass == UnitClass.Melee)
                 classImage.sprite = Resources.Load<Sprite>("Icon/Stat/meleeClass");
             else if (unitClass == UnitClass.Magic)
@@ -188,6 +190,11 @@ namespace BattleUI{
         }
 
         void SetElementImage(Element element) {
+            if(SceneData.stageNumber < Setting.elementOpenStage){
+                elementImage.sprite = Resources.Load<Sprite>("transparent");
+                return;
+            }
+
             if (element == Element.Fire)
                 elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
             else if (element == Element.Water)
@@ -201,6 +208,11 @@ namespace BattleUI{
         }
 
         void SetCelestialImage(Celestial celestial) {
+            if(SceneData.stageNumber < Setting.celestialOpenStage){
+                celestialImage.sprite = Resources.Load<Sprite>("transparent");
+                return;
+            }
+
             if (celestial == Celestial.Sun)
                 celestialImage.sprite = Resources.Load("Icon/Celestial/sun", typeof(Sprite)) as Sprite;
             else if (celestial == Celestial.Moon)

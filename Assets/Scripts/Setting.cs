@@ -13,7 +13,7 @@ public class Setting{
 	public static int retreatOpenStage = 4;
 	public static int readySceneOpenStage = 5;
 	public static bool shortcutEnable = true;
-	public static int mouseCameraMoveEnableStage = 2;
+	public static int mouseCameraMoveOpenStage = 2;
 
 	//변수 통제
 	public static int retreatHpPercent = 10;

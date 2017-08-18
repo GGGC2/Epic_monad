@@ -13,7 +13,7 @@ public class ConditionPanel : MonoBehaviour{
 	public void Initialize(List<BattleTrigger> triggers){
 
 		cm = FindObjectOfType<CameraMover>();
-		cm.mouseMoveActive = false;
+		cm.SetMovable(false);
 
 		Win.text = "";
 		Lose.text = "";
@@ -27,7 +27,7 @@ public class ConditionPanel : MonoBehaviour{
 	}
 
 	public void OnClicked(){
-		cm.mouseMoveActive = true;
+		cm.SetMovable(true);
 		gameObject.SetActive(false);
 		tutorial.gameObject.SetActive(true);
 	}

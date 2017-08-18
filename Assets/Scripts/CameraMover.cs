@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using Enums;
-using System.Linq;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;
+using Enums;
+using GameData;
 
 public class CameraMover : MonoBehaviour {
 
-	public bool mouseMoveActive;
-	public bool keyboardMoveActive;
+	public bool Movable;
     Dictionary<Direction, float> boundary = new Dictionary<Direction, float>();
     const float MARGIN = 1;
 
@@ -36,9 +36,6 @@ public class CameraMover : MonoBehaviour {
     void Start() {
 		FindObjectOfType<CameraMover>().CalculateBoundary();
 		SetFixedPosition (transform.position);
-
-		if (GameData.SceneData.stageNumber < Setting.mouseCameraMoveEnableStage)
-			mouseMoveActive = false;
     }
     public void CalculateBoundary() {
 
@@ -58,8 +55,7 @@ public class CameraMover : MonoBehaviour {
 		}
 
 		// move by mouse.
-		if (mouseMoveActive)
-		{
+		if (Movable){
 			Vector3 mousePosition = Input.mousePosition;
 
 			if (mousePosition.x < Screen.width*0.01f && !isAtBoundary(Direction.Left))
@@ -74,8 +70,7 @@ public class CameraMover : MonoBehaviour {
 		}
 
 		// move by keyboard.
-		if (keyboardMoveActive)
-		{
+		if (Movable){
 			if (Input.GetKey(KeyCode.LeftArrow) && !isAtBoundary(Direction.Left))
 				MoveCameraToDirection(Vector3.left);
 			else if (Input.GetKey(KeyCode.RightArrow) && !isAtBoundary(Direction.Right))
@@ -88,12 +83,16 @@ public class CameraMover : MonoBehaviour {
 		}
 	}
 
-	void MoveCameraToDirection(Vector3 direction)
-	{
+	void MoveCameraToDirection(Vector3 direction){
 		Camera.main.transform.position += direction * speed * Time.deltaTime;
 	}
 
 	void MoveCameraToPosition(Vector3 position){
 		Camera.main.transform.position = position;
+	}
+
+	public void SetMovable(bool able){
+		if(SceneData.stageNumber < Setting.mouseCameraMoveOpenStage) {Movable = false;}
+		else {Movable = able;}
 	}
 }
