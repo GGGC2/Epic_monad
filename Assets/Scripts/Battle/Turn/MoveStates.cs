@@ -8,7 +8,9 @@ namespace Battle.Turn{
 	public class MoveStates{
 		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			while (true){
+				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
 				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
+				viewer.OffPreviewAp();
 				if (BattleData.preSelectedTilePosition.HasValue == false ||
 					movableTilesWithPath.ContainsKey(BattleData.preSelectedTilePosition.Value) == false)
 				{
@@ -19,6 +21,7 @@ namespace Battle.Turn{
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = MonoBehaviour.FindObjectOfType<TileManager>().preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString();
+					viewer.PreviewAp(BattleData.selectedUnit, requiredAP);
 					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
 						tile.PaintTile(TileColor.Red);
 					}

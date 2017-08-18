@@ -35,6 +35,7 @@ namespace BattleUI{
         public Image HpBar;
         public Image CurrentApBar;
         public Image NextApBar;
+        public Image AfterApBar;
         public GameObject ApBarArrow;
 
         //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
@@ -123,8 +124,17 @@ namespace BattleUI{
         void UpdateAp(Unit unit) {
             apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Agility) + ")";
             CurrentApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
+            AfterApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
             NextApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility));
             ApBarArrow.GetComponent<RectTransform>().localPosition = new Vector3(unit.GetApRatio(PartyData.level+60)*175, -14, 0);
+        }
+
+        public void PreviewAp(Unit unit, int costAP){
+            AfterApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint() - costAP);
+        }
+
+        public void OffPreviewAp(){
+            AfterApBar.fillAmount = CurrentApBar.fillAmount;
         }
 
         void UpdatePower(Unit unit) {
