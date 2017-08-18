@@ -13,7 +13,7 @@ public class TutorialScenario{
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
-	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, Apply, Wait, End}
+	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectSkill, End}
 	Mission mission;
 	public bool IsEndMission { get { return mission == Mission.End; } }
 	Direction missionDirection;
@@ -39,10 +39,10 @@ public class TutorialScenario{
 				TM.PreselectTiles (clickableTiles);
 				TM.SetPreselectLock (true);
 				TM.SetHighlightTiles (clickableTiles, true);
-				missionTile.LeftClickEnd.AddListener (ToNextStep);
+				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				missionTile.LeftClickEnd.RemoveListener (ToNextStep);
+				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
 				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
 				TM.SetPreselectLock (false);
 				TM.DepreselectAllTiles ();
@@ -51,10 +51,10 @@ public class TutorialScenario{
 			missionDirection = parser.ConsumeEnum<Direction> ();
 			SetMissionCondition = () => {
 				selectDirectionUI.EnableOnlyThisDirection (missionDirection);
-				selectDirectionUI.AddListenerToDirection (missionDirection, ToNextStep);
+				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				selectDirectionUI.RemoveListenerToDirection (missionDirection, ToNextStep);
+				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
 				selectDirectionUI.EnableAllDirection ();
 			};
 		} else if (mission == Mission.SelectSkill) {
@@ -67,26 +67,6 @@ public class TutorialScenario{
 			ResetMissionCondition = () => {
 				skillPanel.RemoveListenerToSkillButton (missionSkillIndex, ToNextStep);
 				skillPanel.UnlockSkillsOnOff ();
-			};
-		} else if (mission == Mission.Apply) {
-			SetMissionCondition = () => {
-				UIManager.Instance.EnableSkillCheckWaitButton (true, false);
-				UIManager.Instance.LockApplyOrWaitOnOff ();
-				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
-			};
-			ResetMissionCondition = () => {
-				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
-				UIManager.Instance.UnlockApplyOrWaitOnOff ();
-			};
-		} else if (mission == Mission.Wait) {
-			SetMissionCondition = () => {
-				UIManager.Instance.EnableSkillCheckWaitButton (false, true);
-				UIManager.Instance.LockApplyOrWaitOnOff ();
-				UIManager.Instance.AddListenerToWaitButton (ToNextStep);
-			};
-			ResetMissionCondition = () => {
-				UIManager.Instance.RemoveListenerToWaitButton (ToNextStep);
-				UIManager.Instance.UnlockApplyOrWaitOnOff ();
 			};
 		} else if (mission == Mission.MoveCommand || mission == Mission.SkillCommand || mission == Mission.Standby || mission == Mission.Rest) {
 			ActionCommand command;
