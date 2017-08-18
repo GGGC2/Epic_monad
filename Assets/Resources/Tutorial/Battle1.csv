@@ -29,5 +29,5 @@ Index	Mission	Etc
 45	SelectTile	6	5
 46	SkillCommand		
 47	SelectSkill	1	
-48	SelectDirection	RightDown	
+48	SelectAnyDirection		
 49	End		
