@@ -512,6 +512,12 @@ public class BattleManager : MonoBehaviour{
 			BattleData.move.selectedTilePosition = position;
 		}
 	}
+	public void OnLongMouseDownHandlerFromTile(Vector2 position){
+		if (BattleData.isWaitingUserInput){
+			BattleData.triggers.tileLongSelectedByUser.Trigger();
+			BattleData.move.selectedTilePosition = position;
+		}
+	}
 
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");

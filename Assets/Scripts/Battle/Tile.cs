@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using Enums;
 using Battle.Skills;
 
-public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler {
+public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler {
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;
@@ -153,11 +153,23 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			BM.OnMouseExitHandlerFromTile(position);
 		}
 	}
-
-	public UnityEvent LeftClick;
+		
+	public float durationThreshold = 1.0f;
+	public float timeClickStarted;
+	public UnityEvent LeftClickEnd;
+	public UnityEvent LongLeftClickEnd;
 	void IPointerDownHandler.OnPointerDown(PointerEventData pointerData){
-		if (pointerData.button == PointerEventData.InputButton.Left)
-			LeftClick.Invoke ();
+		if (pointerData.button == PointerEventData.InputButton.Left) {
+			timeClickStarted = Time.time;
+		}
+	}
+	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
+		if (pointerData.button == PointerEventData.InputButton.Left) {
+			if (Time.time - timeClickStarted > durationThreshold)
+				LongLeftClickEnd.Invoke ();
+			else
+				LeftClickEnd.Invoke ();
+		}
 	}
 
 	void Awake (){
@@ -168,11 +180,16 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	void InitializeEvents(){
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
-		UnityEngine.Events.UnityAction OnClick = () => {
+		UnityEngine.Events.UnityAction UserSelectTile= () => {
 			if (isPreSeleted)
 				battleManager.OnMouseDownHandlerFromTile (position);
 		};
-		LeftClick.AddListener (OnClick);
+		UnityEngine.Events.UnityAction UserLongSelectTile= () => {
+			if (isPreSeleted)
+				battleManager.OnLongMouseDownHandlerFromTile (position);
+		};
+		LeftClickEnd.AddListener (UserSelectTile);
+		LongLeftClickEnd.AddListener (UserLongSelectTile);
 	}
 
 
