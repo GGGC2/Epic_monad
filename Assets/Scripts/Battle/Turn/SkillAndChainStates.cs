@@ -50,6 +50,7 @@ namespace Battle.Turn {
                 }
 
                 ActiveSkill selectedSkill = BattleData.SelectedSkill;
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.selectedUnit, selectedSkill.GetRequireAP());
                 SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
                 if (skillTypeOfSelectedSkill == SkillType.Auto ||
                     skillTypeOfSelectedSkill == SkillType.Self ||
@@ -64,6 +65,7 @@ namespace Battle.Turn {
 
                 BattleData.previewAPAction = null;
                 BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 
                 yield return null;
             }

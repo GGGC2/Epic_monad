@@ -3,8 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
-namespace BattleUI
-{
+namespace BattleUI{
 	public class SkillPanel : MonoBehaviour{
 		private BattleManager battleManager;
 		public SkillUIManager skillPanel;
@@ -115,6 +114,15 @@ namespace BattleUI
 			
 			ActiveSkill preSelectedSkill = BattleData.PreSelectedSkill;
 			skillPanel.UpdateSkillInfoUI(preSelectedSkill, BattleData.selectedUnit.name);
+			GameObject.Find("SelectedUnitViewerPanel").GetComponent<UnitViewer>().PreviewAp(BattleData.selectedUnit, preSelectedSkill.GetRequireAP());
+		}
+
+		public void CallbackPointerExitSkillIndex(int index){
+            index += page * 5;
+			battleManager.CallbackPointerExitSkillIndex(index);
+			OnEnable();
+			skillPanel.HideSecondRange();
+			GameObject.Find("SelectedUnitViewerPanel").GetComponent<UnitViewer>().OffPreviewAp();
 		}
 
 		void OnEnable(){
@@ -138,13 +146,6 @@ namespace BattleUI
 
 		public string GetSkillBasePower(Unit unit, ActiveSkill skill){
 			return ((int)(skill.GetPowerFactor(Enums.Stat.Power)*(float)unit.GetStat(Enums.Stat.Power))).ToString();
-		}
-
-		public void CallbackPointerExitSkillIndex(int index){
-            index += page * 5;
-			battleManager.CallbackPointerExitSkillIndex(index);
-			OnEnable();
-			skillPanel.HideSecondRange();
 		}
 
 		public void CallbackSkillUICancel()
