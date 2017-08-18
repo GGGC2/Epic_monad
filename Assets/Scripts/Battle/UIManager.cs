@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
 	GameObject WaitButton;
 	GameObject destCheckUI;
 	GameObject unitViewerUI;
-	GameObject selectedUnitViewerUI;
+	public GameObject selectedUnitViewerUI;
 	GameObject tileViewerUI;
 	SelectDirectionUI selectDirectionUI;
 	GameObject cancelButtonUI;
