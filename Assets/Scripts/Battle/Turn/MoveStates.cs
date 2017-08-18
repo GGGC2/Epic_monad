@@ -17,6 +17,7 @@ namespace Battle.Turn{
 					var preSelectedTile = BattleData.preSelectedTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
+					TileManager.Instance.preSelectedMouseOverTile.CostAP.text = requiredAP.ToString();
 				}
 				BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 				yield return null;

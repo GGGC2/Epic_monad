@@ -11,7 +11,6 @@ public class CameraMover : MonoBehaviour {
     Dictionary<Direction, float> boundary = new Dictionary<Direction, float>();
     const float MARGIN = 1;
 
-
 	float speed = 4f;
 	Vector3 fixedPosition = Vector3.zero;
 

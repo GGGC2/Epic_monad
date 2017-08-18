@@ -208,6 +208,7 @@ public class TileManager : MonoBehaviour {
 
 		// FIXME : 높이 보정치 추가할 것.
 		Tile tile = Instantiate(tilePrefab, new Vector3(tileImageWidth * (j+i) * 0.5f, tileImageHeight * (j-i+tileHeight) * 0.5f, (j-i) * 0.1f), Quaternion.identity).GetComponent<Tile>();
+		tile.name = "Tile(" + i + "," + j + ")";
 		tile.SetTilePos(i, j);
 		tile.SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight, displayName);
 		tiles.Add(new Vector2(i, j), tile);
