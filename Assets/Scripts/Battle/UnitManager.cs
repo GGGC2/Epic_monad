@@ -173,7 +173,11 @@ public class UnitManager : MonoBehaviour {
 			if(targetUnit == null){
 				Debug.Log("Unit Number " + index + " is null");
 			}
-			targetUnit.gameObject.GetComponent<AIData>().SetAIInfo(aiInfo);
+			AIData _AIData = targetUnit.gameObject.GetComponent<AIData>();
+			_AIData.SetAIInfo(aiInfo);
+			Battle.Turn.AI _AI = targetUnit.gameObject.AddComponent<Battle.Turn.AI>();
+			_AI.Initialize(targetUnit, _AIData);
+			targetUnit.SetAI(_AI);
 			targetUnit.SetAsAI();
 		});
 	}

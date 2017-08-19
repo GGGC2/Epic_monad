@@ -133,65 +133,59 @@ namespace Battle.Turn{
 		}
 	}
 
-	public class AI{
+	public class AI : MonoBehaviour{
 		private static BattleManager battleManager;
 		public static void SetBattleManager(BattleManager battleManagerInstance){
 			battleManager = battleManagerInstance;
 		}
 
-		enum State{ Die, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, EndTurn }
+		Unit unit;
+		AIData _AIData;
+		public void Initialize(Unit unit, AIData _AIData){
+			this.unit = unit;
+			this._AIData = _AIData;
+		}
 
-		static State state;
-		static Unit curUnit;
+		enum State{ Dead, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, EndTurn }
 
-		public static IEnumerator UnitTurn(Unit unit){
-			curUnit = unit;
+		State state;
 
+		public IEnumerator UnitTurn(){
 			battleManager.StartUnitTurn (unit);
 
 			yield return CheckUnitIsActiveAndDecideActionAndAct();
 
-			if(state != State.Die)
+			if(state != State.Dead)
 				battleManager.EndUnitTurn();
 		}
 
-		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
-			Unit unit = curUnit;
+		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
+			if (!_AIData.IsActive()) {CheckActiveTrigger();}
 
-			AIData unitAIData = unit.GetComponent<AIData>();
-
-			if (!unitAIData.IsActive()) {CheckActiveTrigger(unit);}
-
-			if (!unitAIData.IsActive ()) {
+			if (!_AIData.IsActive ()) {
 				yield return battleManager.BeforeActCommonAct ();
 				Debug.Log (unit.GetName () + " skips turn because of being deactivated");
-				yield return SkipDeactivatedUnitTurn(unit);
+				yield return SkipDeactivatedUnitTurn();
 				yield break;
 			}
 			if (unit.GetNameInCode () == "kashasty_Escape") {
 				yield return AIKashasty.DecideActionAndAct (unit);
 				yield break;
 			}
-			yield return DecideActionAndAct ();
-		}
 
-		private static IEnumerator DecideActionAndAct(){
 			state = State.MoveToBestCasting;
-
-			Unit unit = curUnit;
-
-			//이동->기술->대기/휴식의 순서로 이동이나 기술사용은 안 할 수도 있다
-			if(unit.IsMovePossibleState())
-				yield return DecideMoveAndMove ();
-			if (unit.IsSkillUsePossibleState ())
-				yield return DecideSkillTargetAndUseSkill ();
-			if (state != State.Die)
-				yield return DecideRestOrStandbyAndDoThat ();
+			yield return FSM ();
 		}
 
-		private static IEnumerator DecideMoveAndMove(){
-			Unit unit = curUnit;
+		IEnumerator FSM(){
+			while (true) {
+				if (state == State.Dead || state == State.EndTurn)
+					yield break;
+				yield return StartCoroutine (state.ToString ());
+			}
+		}
 
+		IEnumerator MoveToBestCasting(){
 			yield return battleManager.BeforeActCommonAct ();
 
 			Tile currentTile = unit.GetTileUnderUnit ();
@@ -209,10 +203,13 @@ namespace Battle.Turn{
 			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPath, 0);
 			if (destTile != null) {
 				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+				state = State.CastingLoop;
 			}
 			else {
+				//state = State.Approach;
 				destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
 				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+				state = State.StandbyOrRest;
 			}
 		}
 		public static IEnumerator PaintMovableTiles(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
@@ -247,14 +244,12 @@ namespace Battle.Turn{
 				yield return Move (unit, destTile, finalDirection, totalUseAP);
 			}else {TileManager.Instance.DepaintAllTiles(TileColor.Blue);}
 		}
-		private static IEnumerator DecideSkillTargetAndUseSkill(){
-			Unit unit = curUnit;
-
+		IEnumerator CastingLoop(){
 			while(true){
 				yield return battleManager.BeforeActCommonAct ();
 				
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
-					state = State.Die;
+					state = State.Dead;
 					Debug.Log ("Current AI unit died");
 					yield break;
 				}
@@ -263,19 +258,23 @@ namespace Battle.Turn{
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 				ActiveSkill skill = BattleData.SelectedSkill;
 
-				if (!unit.HasEnoughAPToUseSkill(skill)) {yield break;}
+				if (!unit.HasEnoughAPToUseSkill(skill)) {
+					state = State.StandbyOrRest;
+					yield break;
+				}
 
 				Tile currTile = unit.GetTileUnderUnit ();
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
-				if (casting == null) {yield break;}
+				if (casting == null) {
+					state = State.MoveToBestCasting;
+					yield break;
+				}
 				
 				yield return UseSkill(casting);
 			}
 		}
-		public static IEnumerator DecideRestOrStandbyAndDoThat(){
-			Unit unit = curUnit;
-
+		public IEnumerator StandbyOrRest(){
 			yield return battleManager.BeforeActCommonAct ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
@@ -283,6 +282,7 @@ namespace Battle.Turn{
 			else {
 				yield return TakeRest (unit);
 			}
+			state = State.EndTurn;
 		}
 
 		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
@@ -300,36 +300,35 @@ namespace Battle.Turn{
 		public static IEnumerator TakeRest(Unit unit){
 			yield return BattleData.battleManager.StartCoroutine(RestAndRecover.Run());
 		}
-		private static IEnumerator SkipDeactivatedUnitTurn(Unit unit){
+		IEnumerator SkipDeactivatedUnitTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 			yield return new WaitForSeconds (0.05f);
 		}
 
-		private static void CameraFocusToUnit(Unit unit){
+		static void CameraFocusToUnit(Unit unit){
 			BattleManager.MoveCameraToUnit (unit);
 		}
 
-		private static void CheckActiveTrigger(Unit unit){
+		void CheckActiveTrigger(){
 			bool satisfyActiveCondition = false;
-			AIData unitAIData = unit.GetComponent<AIData> ();
 			// 전투 시작시 활성화
-			if (unitAIData.activeTriggers.Contains(1))
+			if (_AIData.activeTriggers.Contains(1))
 			{
 				satisfyActiveCondition = true;
 			}
 			// 일정 페이즈부터 활성화
-			else if (unitAIData.activeTriggers.Contains(2))
+			else if (_AIData.activeTriggers.Contains(2))
 			{
-				if (BattleData.currentPhase >= unitAIData.activePhase) {
+				if (BattleData.currentPhase >= _AIData.activePhase) {
 					Debug.Log (unit.GetName () + " is activated because enough phase passed");
 					satisfyActiveCondition = true;
 				}
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
-			else if (unitAIData.activeTriggers.Contains(3))
+			else if (_AIData.activeTriggers.Contains(3))
 			{
 				// 자신을 기준으로 한 상대좌표
-				List<List<Tile>> aroundTiles = unitAIData.trigger3Area;
+				List<List<Tile>> aroundTiles = _AIData.trigger3Area;
 				List<Unit> aroundUnits = new List<Unit>();
 
 				aroundTiles.ForEach(eachArea => {
@@ -350,10 +349,10 @@ namespace Battle.Turn{
 				}
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
-			else if (unitAIData.activeTriggers.Contains(4))
+			else if (_AIData.activeTriggers.Contains(4))
 			{
 				// 절대좌표
-				List<List<Tile>> aroundTiles = unitAIData.trigger4Area;
+				List<List<Tile>> aroundTiles = _AIData.trigger4Area;
 				List<Unit> aroundUnits = new List<Unit>();
 
 				aroundTiles.ForEach(eachArea => {
@@ -377,13 +376,13 @@ namespace Battle.Turn{
 				}
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
-			else if (unitAIData.activeTriggers.Contains(5))
+			else if (_AIData.activeTriggers.Contains(5))
 			{
 				// 뭔가 기술의 영향을 받으면
 				// SkillAndChainState.ApplySkill에서 체크
 			}
 			if(satisfyActiveCondition)
-				unitAIData.SetActive();
+				_AIData.SetActive();
 		}
 	}
 
@@ -405,7 +404,7 @@ namespace Battle.Turn{
 			else {
 				yield return FreeState (unit);
 			}
-			yield return AI.DecideRestOrStandbyAndDoThat ();
+			yield return unit.GetAI().StandbyOrRest ();
 		}
 		private static IEnumerator OnlyAttack(Unit unit){
 			while (true) {

@@ -43,6 +43,7 @@ public class Unit : MonoBehaviour{
 	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(=!isAI && !isObject로 아래에 get 함수로 있음)의 return 값을 받아야 한다
 	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않으며 기술이 있을 경우 매 페이즈 모든 유닛의 턴이 끝난 후에 1회 행동한다
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
+	Battle.Turn.AI _AI;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -179,6 +180,8 @@ public class Unit : MonoBehaviour{
 	public bool IsAlly(Unit unit) { return side == unit.GetSide (); }
 	public bool IsSeenAsEnemyToThisAIUnit(Unit unit) { return Battle.Turn.AIUtil.IsSecondUnitEnemyToFirstUnit (unit, this); } //은신 상태에선 적으로 인식되지 않음
 	public void SetAsAI() { isAI = true; }
+	public void SetAI(Battle.Turn.AI _AI) { this._AI = _AI; }
+	public Battle.Turn.AI GetAI() { return _AI; }
 	public bool IsAI { get { return isAI; } }
 	public bool IsPC { get { return (!isAI) && (!isObject); } }
 	public bool IsObject { get { return isObject; } }
