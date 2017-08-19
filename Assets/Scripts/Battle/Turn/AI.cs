@@ -40,44 +40,46 @@ namespace Battle.Turn{
 			Tile unitTile = unit.GetTileUnderUnit ();
 			Vector2 unitPos = unit.GetPosition ();
 			int minAPUse = unit.MinAPUseForStandbyForAI ();
-			Tile bestTile = unit.GetTileUnderUnit ();
-			float maxReward = 0;
-
-			List<Unit> enemies = UnitManager.Instance.GetEnemyUnitsToThisAIUnit (unit);
-
-			Dictionary<Unit, float> enemiesWithReward = new Dictionary<Unit, float> ();
-			foreach (Unit enemy in enemies) {
-				float enemyReward = enemy.CalculatePredictReward (unit, skill);
-				enemiesWithReward [enemy] = enemyReward;
-			}
 
 			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTile (unit, unitTile, int.MaxValue);
+			TileWithPath bestFinalTileWithPath = new TileWithPath (unit.GetTileUnderUnit ());
+			float maxFinalReward = 0;
+			Unit caster = unit;
 
-			foreach (var pair in movableTilesWithPath) {
-				Tile tile = pair.Value.tile;
+			foreach (var pair in allPaths) {
+				TileWithPath tileWithPath = pair.Value;
+				Tile tile = tileWithPath.tile;
 				int requireAP = pair.Value.requireActivityPoint;
 
-				if (requireAP < minAPUse)
-					continue;
+				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+				if (bestCastingOnThisTile != null) {
+					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
+					float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
 
-				foreach (var enemy in enemies) {
-					float approachReward = 0;
-					int APdistance = PathFinder.GetAPDistanceFromTileToUnit (unit, tile, enemy, allPaths);
-					Debug.Log (enemy.name+"까지의 AP거리 : "+APdistance);
-					if (APdistance == -1) // 길이 막힌 경우
-						continue;
-					
-					float enemyReward = enemiesWithReward [enemy];
-					// 거리의 영향을 좀더 줄여야 함
-					approachReward = (enemyReward / (float)Math.Sqrt(APdistance + minAPUse) ) / requireAP;
-					Debug.Log (tile.GetTilePos().x+" : "+tile.GetTilePos().y+" approach reward "+approachReward);
-
-					if (approachReward > maxReward) {
-						maxReward = approachReward;
-						bestTile = tile;
+					if (singleCastingReward > maxFinalReward) {
+						maxFinalReward = singleCastingReward;
+						bestFinalTileWithPath = tileWithPath;
 					}
 				}
 			}
+
+			Tile bestTile = unit.GetTileUnderUnit ();
+
+			if (maxFinalReward == 0)
+				return bestTile;
+
+			List<Tile> path = bestFinalTileWithPath.path;
+
+			foreach (Tile tile in path) {
+				Vector2 tilePos = tile.GetTilePos ();
+				if (!movableTilesWithPath.ContainsKey (tilePos))
+					break;
+				if (movableTilesWithPath [tilePos].requireActivityPoint >= minAPUse) {
+					bestTile = tile;
+					break;
+				}
+			}
+
 			return bestTile;
 		}
 

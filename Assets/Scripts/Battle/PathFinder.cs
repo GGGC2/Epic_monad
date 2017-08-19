@@ -16,17 +16,20 @@ public static class PathFinder {
 		}
 	}
 
-	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit, Dictionary<Vector2, TileWithPath> allPaths){
+	/* 지금은 안 쓰이고 다시 쓰려면 전에 이 함수가 정상작동하는지 확인할 것
+	public static int GetAPDistanceFromTileToUnit(Tile startTile, Unit destUnit, Dictionary<Vector2, TileWithPath> allPaths){
 		Vector2 startPos = startTile.GetTilePos ();
 		Vector2 destPos = destUnit.GetPosition ();
 		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
 
 		int baseRequireAP = allPaths [startPos].requireActivityPoint;
+		Debug.Log ("base "+baseRequireAP);
 		int APDistance = -1;
 
 		foreach (Vector2 surroundingPos in surroundingArea) {
 			if (allPaths.ContainsKey (surroundingPos)) {
 				int requireAP = allPaths [surroundingPos].requireActivityPoint - baseRequireAP;
+				Debug.Log (requireAP);
 				requireAP = Mathf.Abs (requireAP);
 				if (requireAP < APDistance || APDistance == -1) {
 					APDistance = requireAP;
@@ -34,7 +37,7 @@ public static class PathFinder {
 			}
 		}
 		return APDistance;
-	}
+	}*/
 
 	/*
 	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit){
