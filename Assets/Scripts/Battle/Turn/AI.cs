@@ -134,6 +134,10 @@ namespace Battle.Turn{
 			battleManager = battleManagerInstance;
 		}
 
+		enum State{ Live, Die, TurnEnd }
+
+		static State state;
+
 		public static IEnumerator UnitTurn(Unit unit){
 			CameraFocusToUnit(unit);
 
@@ -141,7 +145,8 @@ namespace Battle.Turn{
 
 			yield return CheckUnitIsActiveAndDecideActionAndAct(unit);
 
-			battleManager.EndUnitTurn();
+			if(state == State.Live)
+				battleManager.EndUnitTurn();
 		}
 
 		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(Unit unit){
@@ -163,12 +168,15 @@ namespace Battle.Turn{
 		}
 
 		private static IEnumerator DecideActionAndAct(Unit unit){
+			state = State.Live;
+
 			//이동->기술->대기/휴식의 순서로 이동이나 기술사용은 안 할 수도 있다
 			if(unit.IsMovePossibleState())
 				yield return DecideMoveAndMove (unit);
 			if (unit.IsSkillUsePossibleState ())
 				yield return DecideSkillTargetAndUseSkill (unit);
-			yield return DecideRestOrStandbyAndDoThat (unit);
+			if (state == State.Live)
+				yield return DecideRestOrStandbyAndDoThat (unit);
 		}
 
 		private static IEnumerator DecideMoveAndMove(Unit unit){
@@ -231,7 +239,11 @@ namespace Battle.Turn{
 			while(true){
 				yield return battleManager.BeforeActCommonAct ();
 				
-				if (unit == null) {break;}
+				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
+					state = State.Die;
+					Debug.Log ("Current AI unit died");
+					yield break;
+				}
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;

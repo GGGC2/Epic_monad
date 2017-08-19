@@ -133,10 +133,8 @@ public class BattleManager : MonoBehaviour{
 	}
 	public void EndUnitTurn(){
 		BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
-
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		if (BattleData.selectedUnit != null)
-			BattleData.selectedUnit.SetInactive();
+		BattleData.selectedUnit.SetInactive();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
 		foreach(Unit caster in BattleData.unitManager.GetAllUnits())
@@ -211,7 +209,7 @@ public class BattleManager : MonoBehaviour{
         }
     }
 
-	static bool IsSelectedUnitRetreatOrDie()
+	public static bool IsSelectedUnitRetreatOrDie()
 	{
 		if (BattleData.retreatUnits.Contains(BattleData.selectedUnit))
 			return true;
@@ -330,9 +328,9 @@ public class BattleManager : MonoBehaviour{
 	}
 	public IEnumerator BeforeActCommonAct(){
 		yield return StartCoroutine(UpdateRetreatAndDeadUnits(this));
+		yield return AtActionEnd();
 		if (IsSelectedUnitRetreatOrDie())
 			yield break;
-		yield return AtActionEnd();
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
 	}
