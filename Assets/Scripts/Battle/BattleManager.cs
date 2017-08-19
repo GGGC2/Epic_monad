@@ -13,7 +13,7 @@ using System.Linq;
 using GameData;
 
 public class BattleManager : MonoBehaviour{
-	bool startTurnManager = false;
+	bool TurnManagerStarted = false;
 	public TutorialManager tutorialManager;
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
@@ -52,9 +52,9 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if(!startTurnManager){
+		if(!TurnManagerStarted){
 			StartCoroutine (InstantiateTurnManager ());
-			startTurnManager = true;
+			TurnManagerStarted = true;
 		}else {Debug.Log ("TurnManager Already Started.");}
 	}
 
@@ -79,20 +79,20 @@ public class BattleManager : MonoBehaviour{
 					BattleData.selectedUnit = BattleData.readiedUnits [0];
 					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
 
-					if (BattleData.selectedUnit.IsAI)
-						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
-					else
+					if (BattleData.selectedUnit.IsAI) {yield return BattleData.selectedUnit.GetAI().UnitTurn ();}
+					else{
+						Debug.Log(BattleData.selectedUnit.name + "is NOT AI.");
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
+					}
 
 					BattleData.selectedUnit = null;
-
 					BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 					yield return null;
 				}
 
 				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
 				yield return StartCoroutine (ObjectUnitBehaviour.AllObjectUnitsBehave ());
-
+				
 				yield return StartCoroutine (EndPhaseOnGameManager ());
 			}
 		} else {
