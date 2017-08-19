@@ -66,8 +66,8 @@ namespace Battle.Turn{
 					Debug.Log (enemy.name+"까지의 AP거리 : "+APdistance);
 					if (APdistance == -1) // 길이 막힌 경우
 						continue;
+					
 					float enemyReward = enemiesWithReward [enemy];
-
 					// 거리의 영향을 좀더 줄여야 함
 					approachReward = (enemyReward / (float)Math.Sqrt(APdistance + minAPUse) ) / requireAP;
 					Debug.Log (tile.GetTilePos().x+" : "+tile.GetTilePos().y+" approach reward "+approachReward);
@@ -137,22 +137,25 @@ namespace Battle.Turn{
 			battleManager = battleManagerInstance;
 		}
 
-		enum State{ Live, Die, TurnEnd }
+		enum State{ Die, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, EndTurn }
 
 		static State state;
+		static Unit curUnit;
 
 		public static IEnumerator UnitTurn(Unit unit){
-			CameraFocusToUnit(unit);
+			curUnit = unit;
 
 			battleManager.StartUnitTurn (unit);
 
-			yield return CheckUnitIsActiveAndDecideActionAndAct(unit);
+			yield return CheckUnitIsActiveAndDecideActionAndAct();
 
-			if(state == State.Live)
+			if(state != State.Die)
 				battleManager.EndUnitTurn();
 		}
 
-		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(Unit unit){
+		private static IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
+			Unit unit = curUnit;
+
 			AIData unitAIData = unit.GetComponent<AIData>();
 
 			if (!unitAIData.IsActive()) {CheckActiveTrigger(unit);}
@@ -167,22 +170,26 @@ namespace Battle.Turn{
 				yield return AIKashasty.DecideActionAndAct (unit);
 				yield break;
 			}
-			yield return DecideActionAndAct (unit);
+			yield return DecideActionAndAct ();
 		}
 
-		private static IEnumerator DecideActionAndAct(Unit unit){
-			state = State.Live;
+		private static IEnumerator DecideActionAndAct(){
+			state = State.MoveToBestCasting;
+
+			Unit unit = curUnit;
 
 			//이동->기술->대기/휴식의 순서로 이동이나 기술사용은 안 할 수도 있다
 			if(unit.IsMovePossibleState())
-				yield return DecideMoveAndMove (unit);
+				yield return DecideMoveAndMove ();
 			if (unit.IsSkillUsePossibleState ())
-				yield return DecideSkillTargetAndUseSkill (unit);
-			if (state == State.Live)
-				yield return DecideRestOrStandbyAndDoThat (unit);
+				yield return DecideSkillTargetAndUseSkill ();
+			if (state != State.Die)
+				yield return DecideRestOrStandbyAndDoThat ();
 		}
 
-		private static IEnumerator DecideMoveAndMove(Unit unit){
+		private static IEnumerator DecideMoveAndMove(){
+			Unit unit = curUnit;
+
 			yield return battleManager.BeforeActCommonAct ();
 
 			Tile currentTile = unit.GetTileUnderUnit ();
@@ -238,7 +245,9 @@ namespace Battle.Turn{
 				yield return Move (unit, destTile, finalDirection, totalUseAP);
 			}else {TileManager.Instance.DepaintAllTiles(TileColor.Blue);}
 		}
-		private static IEnumerator DecideSkillTargetAndUseSkill(Unit unit){
+		private static IEnumerator DecideSkillTargetAndUseSkill(){
+			Unit unit = curUnit;
+
 			while(true){
 				yield return battleManager.BeforeActCommonAct ();
 				
@@ -262,7 +271,9 @@ namespace Battle.Turn{
 				yield return UseSkill(casting);
 			}
 		}
-		public static IEnumerator DecideRestOrStandbyAndDoThat(Unit unit){
+		public static IEnumerator DecideRestOrStandbyAndDoThat(){
+			Unit unit = curUnit;
+
 			yield return battleManager.BeforeActCommonAct ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
@@ -392,7 +403,7 @@ namespace Battle.Turn{
 			else {
 				yield return FreeState (unit);
 			}
-			yield return AI.DecideRestOrStandbyAndDoThat (unit);
+			yield return AI.DecideRestOrStandbyAndDoThat ();
 		}
 		private static IEnumerator OnlyAttack(Unit unit){
 			while (true) {
@@ -478,20 +489,21 @@ namespace Battle.Turn{
 				
 				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);
 
-				if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
+				if (destTile == null || TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;
 
 				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
 
 				while (true) {
-					yield return battleManager.BeforeActCommonAct ();
 					if (!unit.HasEnoughAPToUseSkill (skill))
 						yield break;
+					yield return battleManager.BeforeActCommonAct ();
 					Tile currTile = unit.GetTileUnderUnit ();
 					Casting casting = skill.GetBestAttack (unit, currTile);
 					yield return AI.UseSkill (casting);
-					if (TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
+					if (TastyTileAttackDirectionOnThatPosition (currTile.GetTilePos (), skill) == null) {
 						break;
+					}
 				}
 			}
 		}
