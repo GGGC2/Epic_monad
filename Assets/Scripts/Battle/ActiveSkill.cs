@@ -8,8 +8,7 @@ using Battle.Skills;
 using Battle.Damage;
 using UnityEngine;
 
-public class ActiveSkill : Skill{
-	
+public class ActiveSkill : Skill{	
 	int requireAP;
 	int cooldown;
 	
@@ -48,7 +47,7 @@ public class ActiveSkill : Skill{
 	}
 
 	public ActiveSkill(string skillData){
-		StringParser commaParser = new StringParser(skillData, ',');
+		StringParser commaParser = new StringParser(skillData, '\t');
 		
 		GetCommonSkillData(commaParser);
 		requireAP = commaParser.ConsumeInt();
