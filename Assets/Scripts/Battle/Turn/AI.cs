@@ -146,7 +146,7 @@ namespace Battle.Turn{
 			this._AIData = _AIData;
 		}
 
-		enum State{ Dead, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, EndTurn }
+		enum State{ Dead, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest }
 
 		State state;
 
@@ -160,20 +160,20 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
-			if (!_AIData.IsActive()) {CheckActiveTrigger();}
-
-			if (!_AIData.IsActive ()) {
-				yield return battleManager.BeforeActCommonAct ();
-				Debug.Log (unit.GetName () + " skips turn because of being deactivated");
-				yield return SkipDeactivatedUnitTurn();
-				yield break;
-			}
 			if (unit.GetNameInCode () == "kashasty_Escape") {
 				yield return AIKashasty.DecideActionAndAct (unit);
 				yield break;
 			}
 
-			state = State.MoveToBestCasting;
+			if (!_AIData.IsActive()) {CheckActiveTrigger();}
+
+			if (!_AIData.IsActive ()) {
+				yield return battleManager.BeforeActCommonAct ();
+				state = State.SkipTurn;
+			}
+			else {
+				state = State.MoveToBestCasting;
+			}
 			yield return FSM ();
 		}
 
@@ -186,9 +186,12 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator MoveToBestCasting(){
-			yield return battleManager.BeforeActCommonAct ();
+			if (!unit.IsMovePossibleState()) {
+				state = State.CastingLoop;
+				yield break;
+			}
 
-			Tile currentTile = unit.GetTileUnderUnit ();
+			yield return battleManager.BeforeActCommonAct ();
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
@@ -206,12 +209,12 @@ namespace Battle.Turn{
 				state = State.CastingLoop;
 			}
 			else {
-				//state = State.Approach;
-				destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
-				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
-				state = State.StandbyOrRest;
+				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
+				state = State.Approach;
+				yield break;
 			}
 		}
+
 		public static IEnumerator PaintMovableTiles(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			List<Tile> movableTiles = new List<Tile>();
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
@@ -219,6 +222,7 @@ namespace Battle.Turn{
 			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
 			yield return null;
 		}
+
 		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			Vector2 destPos = destTile.GetTilePos ();
 			List<Tile> path = movableTilesWithPath [destPos].path;
@@ -232,15 +236,44 @@ namespace Battle.Turn{
 				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
 			}
 		}
+
+		IEnumerator Approach(){
+			if (!unit.IsMovePossibleState()) {
+				state = State.CastingLoop;
+				yield break;
+			}
+
+			yield return battleManager.BeforeActCommonAct ();
+
+			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
+			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
+			int selectedSkillIndex = 1;
+			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			ActiveSkill selectedSkill = BattleData.SelectedSkill;
+
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+
+			yield return PaintMovableTiles(movableTilesWithPath);
+
+			Tile destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+			state = State.StandbyOrRest;
+		}
+
 		IEnumerator CastingLoop(){
 			while(true){
-				yield return battleManager.BeforeActCommonAct ();
-				
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
 					state = State.Dead;
 					Debug.Log ("Current AI unit died");
 					yield break;
 				}
+
+				if (!unit.IsSkillUsePossibleState()) {
+					state = State.StandbyOrRest;
+					yield break;
+				}
+
+				yield return battleManager.BeforeActCommonAct ();
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
@@ -288,9 +321,10 @@ namespace Battle.Turn{
 		public static IEnumerator TakeRest(Unit unit){
 			yield return BattleData.battleManager.StartCoroutine(RestAndRecover.Run());
 		}
-		IEnumerator SkipDeactivatedUnitTurn(){
+		IEnumerator SkipTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 			yield return new WaitForSeconds (0.05f);
+			state = State.EndTurn;
 		}
 
 		static void CameraFocusToUnit(Unit unit){
@@ -488,11 +522,11 @@ namespace Battle.Turn{
 						yield break;
 					yield return battleManager.BeforeActCommonAct ();
 					Tile currTile = unit.GetTileUnderUnit ();
-					Casting casting = skill.GetBestAttack (unit, currTile);
-					yield return AI.UseSkill (casting);
 					if (TastyTileAttackDirectionOnThatPosition (currTile.GetTilePos (), skill) == null) {
 						break;
 					}
+					Casting casting = skill.GetBestAttack (unit, currTile);
+					yield return AI.UseSkill (casting);
 				}
 			}
 		}
