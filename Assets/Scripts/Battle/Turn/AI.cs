@@ -221,28 +221,16 @@ namespace Battle.Turn{
 		}
 		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			Vector2 destPos = destTile.GetTilePos ();
-			TileWithPath pathToDestTile = movableTilesWithPath[destPos];
+			List<Tile> path = movableTilesWithPath [destPos].path;
 
-			//Count가 0이면 방향전환도 이동도 안 함
-			if (pathToDestTile.path.Count > 0) {
-				Tile prevLastTile = pathToDestTile.path.Last ();
-				Vector2 prevLastTilePosition = prevLastTile.GetTilePos ();
+			if (path.Count > 0) {
 				int totalUseAP = movableTilesWithPath [destPos].requireActivityPoint;
-
-				// 이동했을때 볼 방향 설정
-				Direction finalDirection;
-				Vector2 delta = destPos - prevLastTilePosition;
-				if (delta == new Vector2 (1, 0))
-					finalDirection = Direction.RightDown;
-				else if (delta == new Vector2 (-1, 0))
-					finalDirection = Direction.LeftUp;
-				else if (delta == new Vector2 (0, 1))
-					finalDirection = Direction.RightUp;
-				else // delta == new Vector2 (0, -1)
-					finalDirection = Direction.LeftDown;
-
+				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, path, unit.GetDirection ());
 				yield return Move (unit, destTile, finalDirection, totalUseAP);
-			}else {TileManager.Instance.DepaintAllTiles(TileColor.Blue);}
+			}
+			else { //Count가 0이면 방향전환도 이동도 안 함
+				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
+			}
 		}
 		IEnumerator CastingLoop(){
 			while(true){

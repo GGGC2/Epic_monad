@@ -257,6 +257,32 @@ public class Utility : MonoBehaviour {
 		return range;
 	}
 
+	public static Direction GetFinalDirectionOfPath(Tile destTile, List<Tile> path, Direction originalDirection){
+		Direction finalDirection;
+
+		int steps = path.Count;
+
+		if (steps > 0) {
+			Tile prevLastTile = path [steps - 1];
+			Vector2 prevLastTilePosition = prevLastTile.GetTilePos ();
+			Vector2 destPos = destTile.GetTilePos ();
+
+			Vector2 delta = destPos - prevLastTilePosition;
+			if (delta == new Vector2 (1, 0))
+				finalDirection = Direction.RightDown;
+			else if (delta == new Vector2 (-1, 0))
+				finalDirection = Direction.LeftUp;
+			else if (delta == new Vector2 (0, 1))
+				finalDirection = Direction.RightUp;
+			else // delta == new Vector2 (0, -1)
+				finalDirection = Direction.LeftDown;
+		}
+		else {
+			finalDirection = originalDirection;
+		}
+		return finalDirection;
+	}
+
 	public  static Vector2 ToVector2(Direction dir)
 	{
 		if(dir == Direction.LeftUp)

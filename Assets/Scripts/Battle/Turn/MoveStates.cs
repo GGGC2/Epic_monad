@@ -93,79 +93,8 @@ namespace Battle.Turn{
 		}
 
 		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance){
-			/*
-			while (BattleData.currentState == CurrentState.CheckDestination){
-				// 목표지점만 푸른색으로 표시
-				// List<GameObject> destTileList = new List<GameObject>();
-				// destTileList.Add(destTile);
-				List<Tile> destTileList = destPath;
-				destTileList.Add(destTile);
-				BattleData.tileManager.PaintTiles(destTileList, TileColor.Blue);
-				// UI를 띄우고
-				BattleData.uiManager.EnableSelectDirectionUI();
-				BattleData.uiManager.SetDestCheckUIAP(BattleData.selectedUnit, totalUseActivityPoint);
-
-				// 카메라를 옮기고
-				BattleManager.MoveCameraToTile(destTile);
-				BattleData.uiManager.SetMovedUICanvasOnTileAsCenter(destTile);
-				
-				// 클릭 대기
-				BattleData.uiManager.EnableCancelButtonUI();
-				BattleData.isWaitingUserInput = true;
-
-				BattleManager battleManager = BattleData.battleManager;
-				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(
-					BattleData.triggers.rightClicked,
-					BattleData.triggers.cancelClicked,
-					BattleData.triggers.directionSelectedByUser)
-				);
-
-				BattleData.isWaitingUserInput = false;
-				BattleData.uiManager.DisableCancelButtonUI();
-
-				// 클릭 중 취소하면 돌아감
-				// moveCount 되돌리기
-				// 카메라 유닛 위치로 원상복구
-				// 이동가능 위치 다시 표시해주고
-				// UI 숨기고
-				if (BattleData.triggers.rightClicked.Triggered || BattleData.triggers.cancelClicked.Triggered){
-					BattleData.move.moveCount -= distance;
-					BattleManager.MoveCameraToUnit(BattleData.selectedUnit);
-					BattleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
-					BattleData.uiManager.DisableSelectDirectionUI();
-					BattleData.uiManager.DisableDestCheckUI();
-					BattleData.currentState = CurrentState.SelectMovingPoint;
-					BattleData.isWaitingUserInput = false;
-					yield break;
-				}
-
-				// 방향을 클릭하면 그 자리로 이동. MoveToTile 호출
-				BattleData.tileManager.DepaintTiles(destTileList, TileColor.Blue);
-				BattleData.currentState = CurrentState.MoveToTile;
-				BattleData.uiManager.DisableDestCheckUI();
-				yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, BattleData.move.selectedDirection, totalUseActivityPoint));
-			}
-			yield return null;
-			*/
 			// 이동했을때 볼 방향 설정
-			Direction finalDirection;
-			Vector2 destPos = destTile.GetTilePos ();
-			Debug.Log ("destPath count : " + destPath.Count);
-			if (destPath.Count > 0) {
-				Vector2 prevLastPos = destPath [destPath.Count - 1].GetTilePos ();
-				Vector2 delta = destPos - prevLastPos;
-				if (delta == new Vector2 (1, 0))
-					finalDirection = Direction.RightDown;
-				else if (delta == new Vector2 (-1, 0))
-					finalDirection = Direction.LeftUp;
-				else if (delta == new Vector2 (0, 1))
-					finalDirection = Direction.RightUp;
-				else // delta == new Vector2 (0, -1)
-				finalDirection = Direction.LeftDown;
-			}
-			else { // 제자리 이동(나중엔 막아놔야 함)이면 방향은 그대로
-				finalDirection = BattleData.selectedUnit.GetDirection ();
-			}
+			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 
 			BattleData.currentState = CurrentState.MoveToTile;
 			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint));
