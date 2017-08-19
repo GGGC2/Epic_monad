@@ -36,19 +36,22 @@ namespace Battle.Turn{
 
 		// 1턴 내에 이동 후 공격 불가하거나 그럴 만한 가치가 없을 때 가장 가치있는 적을 향해 움직인다
 		// 가치에는 거리도 적용되므로 너무 멀면 그쪽으로 가진 않는다
-		public static Tile GetBestApproachWorthTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			Vector2 casterPos = caster.GetPosition ();
-			int minAPUse = caster.MinAPUseForStandbyForAI ();
-			Tile bestTile = caster.GetTileUnderUnit ();
+		public static Tile GetBestApproachWorthTile(Unit unit, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			Tile unitTile = unit.GetTileUnderUnit ();
+			Vector2 unitPos = unit.GetPosition ();
+			int minAPUse = unit.MinAPUseForStandbyForAI ();
+			Tile bestTile = unit.GetTileUnderUnit ();
 			float maxReward = 0;
 
-			List<Unit> enemies = UnitManager.Instance.GetEnemyUnitsToThisAIUnit (caster);
+			List<Unit> enemies = UnitManager.Instance.GetEnemyUnitsToThisAIUnit (unit);
 
 			Dictionary<Unit, float> enemiesWithReward = new Dictionary<Unit, float> ();
 			foreach (Unit enemy in enemies) {
-				float enemyReward = enemy.CalculatePredictReward (caster, skill);
+				float enemyReward = enemy.CalculatePredictReward (unit, skill);
 				enemiesWithReward [enemy] = enemyReward;
 			}
+
+			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTile (unit, unitTile, int.MaxValue);
 
 			foreach (var pair in movableTilesWithPath) {
 				Tile tile = pair.Value.tile;
@@ -59,7 +62,7 @@ namespace Battle.Turn{
 
 				foreach (var enemy in enemies) {
 					float approachReward = 0;
-					int APdistance = PathFinder.GetAPDistanceFromTileToUnit (caster, tile, enemy);
+					int APdistance = PathFinder.GetAPDistanceFromTileToUnit (unit, tile, enemy, allPaths);
 					Debug.Log (enemy.name+"까지의 AP거리 : "+APdistance);
 					if (APdistance == -1) // 길이 막힌 경우
 						continue;

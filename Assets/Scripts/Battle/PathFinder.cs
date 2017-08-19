@@ -16,6 +16,27 @@ public static class PathFinder {
 		}
 	}
 
+	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit, Dictionary<Vector2, TileWithPath> allPaths){
+		Vector2 startPos = startTile.GetTilePos ();
+		Vector2 destPos = destUnit.GetPosition ();
+		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
+
+		int baseRequireAP = allPaths [startPos].requireActivityPoint;
+		int APDistance = -1;
+
+		foreach (Vector2 surroundingPos in surroundingArea) {
+			if (allPaths.ContainsKey (surroundingPos)) {
+				int requireAP = allPaths [surroundingPos].requireActivityPoint - baseRequireAP;
+				requireAP = Mathf.Abs (requireAP);
+				if (requireAP < APDistance || APDistance == -1) {
+					APDistance = requireAP;
+				}
+			}
+		}
+		return APDistance;
+	}
+
+	/*
 	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit){
 		Vector2 startPos = startTile.GetTilePos ();
 		Vector2 destPos = destUnit.GetPosition ();
@@ -31,7 +52,7 @@ public static class PathFinder {
 			}
 		}
 		return APDistance;
-	}
+	}*/
 
 	/* destTile에 유닛이 있으면 도달불가능으로 나와서 -1이 반환되는 치명적 문제가 있어서 보류 
 	public static int GetRequireAPFromTileToTile(Unit unit, Tile startTile, Tile destTile){
