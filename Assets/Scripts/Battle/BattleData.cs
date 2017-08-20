@@ -4,25 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Enums;
 
-public enum CurrentState
-{
+public enum CurrentState{
 	None, FocusToUnit, SelectMovingPoint, CheckDestination,
 	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection, CheckApplyOrChain,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 
-public enum ActionCommand
-{
-	Waiting, Move, Skill, Rest, Standby, Cancel
-}
+public enum ActionCommand {Waiting, Move, Skill, Rest, Standby, Cancel}
+public enum SkillApplyCommand {Waiting, Apply, Chain}
 
-public enum SkillApplyCommand
-{
-	Waiting, Apply, Chain
-}
-
-public interface IEventTrigger
-{
+public interface IEventTrigger{
 	void Begin();
 	void End();
 	void Revert();
@@ -193,7 +184,15 @@ public static class BattleData{
 	public class MoveSnapshot {
 		public Tile tile;
 		public int ap;
+		public int movedTileCount;
 		public Direction direction;
+
+		public MoveSnapshot(Tile bTile, int bAp, int bTileCount, Direction bDirection){
+			tile = bTile;
+			ap = bAp;
+			movedTileCount = bTileCount;
+			direction = bDirection;
+		}
 	}
 
 	public static Move move = new Move();
@@ -236,7 +235,7 @@ public static class BattleData{
 
 		move = new Move();
 		alreadyMoved = false;
-		moveSnapshot=new MoveSnapshot();
+		//moveSnapshot=new MoveSnapshot();
 
 		selectedUnit = null;
 		readiedUnits = new List<Unit>();

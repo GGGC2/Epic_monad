@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enums;
 
-public class TileWithPath {
-	int apGap = 2; // 이동 계차.
-	
+public class TileWithPath {	
 	public Tile tile; // 도착지점 
 	public List<Tile> path; // '이전'까지의 경로
 	public int requireActivityPoint; // '도착지점'까지 소모되는 ap
@@ -26,7 +24,6 @@ public class TileWithPath {
 		this.path.Add(lastPrevTile);
 
 		// USING ONLY TEST.
-		// int apGap = EditInfo.ApGap;
 
 		// 상승이동일 경우 기본값 * 3. 아닐 경우 기본값 * 1
 		int climbValue = 1;
@@ -37,6 +34,6 @@ public class TileWithPath {
 			climbValue = 3;
 
 		this.requireActivityPoint = prevTileWithPath.requireActivityPoint 
-									+ (tile.GetRequireAPAtTile() * climbValue + prevPath.Count * apGap);
+									+ (tile.GetRequireAPAtTile() * climbValue + (prevPath.Count+BattleData.selectedUnit.GetMovedTileCount()) * Setting.moveCostAcc);
 	}
 }

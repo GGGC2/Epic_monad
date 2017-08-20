@@ -97,39 +97,21 @@ namespace Battle.Turn{
 			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 
 			BattleData.currentState = CurrentState.MoveToTile;
-			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint));
+			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
 		}
 
-		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost){
-			CaptureMoveSnapshot();
-            
+		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
+			BattleData.moveSnapshot = new BattleData.MoveSnapshot(BattleData.selectedUnit.GetTileUnderUnit(), unit.GetCurrentActivityPoint(), unit.GetMovedTileCount(), unit.GetDirection());
+			
 			unit.ApplyMove(destTile, finalDirection, totalAPCost);
+			unit.AddMovedTileCount(tileCount);
 
 			BattleData.previewAPAction = null;
 			BattleData.currentState = CurrentState.FocusToUnit;
 			BattleData.alreadyMoved = true;
 
 			yield return null;
-		}
-
-		private static void CaptureMoveSnapshot()
-		{
-			BattleData.MoveSnapshot snapshot = new BattleData.MoveSnapshot();
-			snapshot.tile = BattleData.SelectedUnitTile;
-			snapshot.ap = BattleData.selectedUnit.GetCurrentActivityPoint();
-			snapshot.direction = BattleData.selectedUnit.GetDirection();
-			BattleData.moveSnapshot = snapshot;
-		}
-
-		public static void RestoreMoveSnapshot()
-		{
-			Debug.Log("Restore move snapshot");
-			var snapshot = BattleData.moveSnapshot;
-			Unit unit = BattleData.selectedUnit;
-			Tile beforeTile = BattleData.SelectedUnitTile;
-			Tile nextTile = snapshot.tile;
-			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);
 		}
 	}
 }

@@ -317,6 +317,7 @@ public class UnitManager : MonoBehaviour {
 
 	public void StartPhase(int phase){
 		foreach (var unit in units){
+			unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
 			if (phase == 1) {unit.ApplyTriggerOnStart ();}

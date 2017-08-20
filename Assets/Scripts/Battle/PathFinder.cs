@@ -126,13 +126,12 @@ public static class PathFinder {
 		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath);
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
 		// 필요 행동력(이동) 증감 효과 적용
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange))
-		{
+		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)){
 			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
 			float speed = unit.GetSpeed ();
             requireAP = (int)(requireAP * (100f / speed));
         }
-		if (requireAP > maxAPUse) return;
+		if (requireAP > maxAPUse) {return;}
 		
 		// else, 
 		//	 if, 새로운 타일이거나, 기존보다 ap가 더 적게 드는 경로일 경우 업데이트하고 해당 타일을 queue에 넣음.

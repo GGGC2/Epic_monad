@@ -291,7 +291,8 @@ public class BattleManager : MonoBehaviour{
 				yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
 
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
-				Battle.Turn.MoveStates.RestoreMoveSnapshot();
+				Debug.Log("Apply MoveSnapShot");
+				BattleData.selectedUnit.ApplySnapshot();
 				BattleData.alreadyMoved = false;
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
@@ -376,8 +377,7 @@ public class BattleManager : MonoBehaviour{
 		BattleData.triggers.cancelClicked.Trigger();
 	}
 
-	public static IEnumerator Standby()
-	{
+	public static IEnumerator Standby(){
 		BattleData.alreadyMoved = false;
 		yield return new WaitForSeconds(0.1f);
 	}

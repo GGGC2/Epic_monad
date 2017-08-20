@@ -43,6 +43,7 @@ public class Unit : MonoBehaviour{
 	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(=!isAI && !isObject로 아래에 get 함수로 있음)의 return 값을 받아야 한다
 	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않으며 기술이 있을 경우 매 페이즈 모든 유닛의 턴이 끝난 후에 1회 행동한다
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
+	int movedTileCount;
 	Battle.Turn.AI _AI;
 
 	// 스킬리스트
@@ -133,6 +134,12 @@ public class Unit : MonoBehaviour{
 	public bool IsAlreadyBehavedObject(){ return isAlreadyBehavedObject; }
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
+	public void AddMovedTileCount(int count) {
+		Debug.Log("Add " + count + " in " + name + "'s movedTileCount");
+		movedTileCount += count;
+	}
+	public void ResetMovedTileCount() {movedTileCount = 0;}
+	public int GetMovedTileCount() {return movedTileCount;}
 	public Vector2 GetInitPosition() { return initPosition; }
 	public List<ActiveSkill> GetSkillList() { return activeSkillList; }
 	public List<ActiveSkill> GetLearnedSkillList(){
@@ -254,13 +261,15 @@ public class Unit : MonoBehaviour{
 		}
 		return isPossible;
 	}
-	public void ApplySnapshot(Tile before, Tile after, Direction direction, int snapshotAp){
-		before.SetUnitOnTile(null);
-		transform.position = after.transform.position + new Vector3(0, 0, -0.05f);
-		SetPosition(after.GetTilePos());
-		SetDirection(direction);
-		after.SetUnitOnTile(this);
-		this.activityPoint = snapshotAp;
+	public void ApplySnapshot(){
+		BattleData.MoveSnapshot snapshot = BattleData.moveSnapshot;
+		GetTileUnderUnit().SetUnitOnTile(null);
+		transform.position = snapshot.tile.transform.position + new Vector3(0, 0, -0.05f);
+		SetPosition(snapshot.tile.GetTilePos());
+		SetDirection(snapshot.direction);
+		snapshot.tile.SetUnitOnTile(this);
+		activityPoint = snapshot.ap;
+		movedTileCount = snapshot.movedTileCount;
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {
@@ -464,8 +473,7 @@ public class Unit : MonoBehaviour{
             this.value = value;
         }
     }
-	public float CalculateActualAmount(float data, StatusEffectType statusEffectType)
-	{
+	public float CalculateActualAmount(float data, StatusEffectType statusEffectType){
         List<StatChange> appliedChangeList = new List<StatChange>();
 
         // 효과로 인한 변동값 계산
