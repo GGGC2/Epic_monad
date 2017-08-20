@@ -51,6 +51,7 @@ grenev	29	FALSE	은신	은신	TRUE	FALSE	FALSE	FALSE	4	1	FALSE	TRUE	None	None	No
 grenev	29	FALSE	전쟁광	전쟁광	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	2	MaxHealthChange	O	0	-15	TRUE	TRUE	PowerChange	O	0	15	TRUE	TRUE							
 grenev	43	FALSE	인내심	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	PowerChange	O	0	20	TRUE	TRUE													
 json	0	FALSE	표식	표식	FALSE	TRUE	TRUE	FALSE	9999	4	TRUE	TRUE	None	None	None	1	Etc	O	0	10	TRUE	NONE													
+karldrich	1	FALSE	행동하는 혁명가	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	10	FALSE	FALSE													
 kashasty	36	FALSE	레비테이트 블릿	부유	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
 kashasty	36	FALSE	시들지 않는 의지	속도 증가	TRUE	TRUE	TRUE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	LostHpPercent	-0.25	0	FALSE	FALSE													
 kashasty	43	FALSE	에테르 굴절막	에테르 굴절막	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													

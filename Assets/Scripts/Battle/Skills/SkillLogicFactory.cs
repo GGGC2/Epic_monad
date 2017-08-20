@@ -196,6 +196,11 @@ public static class SkillLogicFactory
             skillLogic = new Kashasty_1_l_SkillLogic();
             break;
 
+            //칼드리치
+            case "죽창 찌르기":
+            skillLogic = new Karldrich_1_l_SkillLogic();
+            break;
+
 			// Not used
 			/*case "조화진동":
             skillLogic = new HarmonySkillLogic();
@@ -512,6 +517,14 @@ public static class SkillLogicFactory
 			case "장미의 사수":
 			passiveSkillLogic = new Kashasty_2_r_SkillLogic();
 			break;
+
+            //칼드리치
+            case "모두에게 평등한 죽창":
+            passiveSkillLogic = new Karldrich_0_1_SkillLogic();
+            break;
+            case "행동하는 혁명가":
+            passiveSkillLogic = new Karldrich_1_r_SkillLogic();
+            break;
 
             // 큐리
             case "정제":
