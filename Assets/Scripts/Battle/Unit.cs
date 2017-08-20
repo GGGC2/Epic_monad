@@ -856,7 +856,7 @@ public class Unit : MonoBehaviour{
 	}
 	public void UseActivityPoint(int amount){
 		activityPoint -= amount;
-		Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
+		//Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
 		unitManager.UpdateUnitOrder();
 		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}

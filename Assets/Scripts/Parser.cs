@@ -54,6 +54,9 @@ public class Parser : MonoBehaviour{
 		}else if(typeof(T) == typeof(ActiveSkill)){
 			object data = new ActiveSkill(rowData);
 			return (T)data;
+		}else if(typeof(T) == typeof(BattleTrigger)){
+			object data = new BattleTrigger(rowData);
+			return (T)data;
 		}
 		else{
 			Debug.LogError("Invalid Input");
@@ -70,25 +73,11 @@ public class Parser : MonoBehaviour{
 		else if(typeof(T) == typeof(TutorialScenario)) {address = "Tutorial/" + SceneManager.GetActiveScene().name + SceneData.stageNumber.ToString();}
 		else if(typeof(T) == typeof(UnitStatusEffectInfo)) {address = "Data/UnitStatusEffectData";}
 		else if(typeof(T) == typeof(ActiveSkill)) {address = "Data/ActiveSkillData";}
+		else if(typeof(T) == typeof(BattleTrigger)) {return FindObjectOfType<BattleManager>().GetBattleConditionData();}
 
 		if(address == "") {Debug.LogError("Invalid Input : " + typeof(T));}		
 		
 		return Resources.Load<TextAsset>(address);
-	}
-
-	public static List<BattleTrigger> GetParsedBattleTriggerData(){
-		List<BattleTrigger> battleEndTriggers = new List<BattleTrigger>();
-
-		TextAsset csvFile = FindObjectOfType<BattleManager>().GetBattleConditionData() as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedBattleEndConditionDataStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedBattleEndConditionDataStrings.Length; i++){
-			BattleTrigger battleTrigger = new BattleTrigger(unparsedBattleEndConditionDataStrings[i]);
-			battleEndTriggers.Add(battleTrigger);
-		}
-
-		return battleEndTriggers;
 	}
 
 	public static List<AIInfo> GetParsedAIInfo(){

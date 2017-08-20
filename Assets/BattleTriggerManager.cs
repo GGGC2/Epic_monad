@@ -23,9 +23,10 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
+		Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
 		if(trigger.count == trigger.targetCount && !trigger.acquired){
 			trigger.acquired = true;
-			Debug.Log("TriggerName : " + trigger.korName);
+			Debug.Log("Trigger acquired : " + trigger.korName);
 			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
 				BattleData.rewardPoint += trigger.reward;
 			else if(trigger.resultType == BattleTrigger.ResultType.Win)
@@ -50,7 +51,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.Checker = this;
 		resultPanel.gameObject.SetActive(false);
 
-		battleTriggers = Parser.GetParsedBattleTriggerData();
+		battleTriggers = Parser.GetParsedData<BattleTrigger>();
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 		
 		if(FindObjectOfType<ConditionPanel>() != null)

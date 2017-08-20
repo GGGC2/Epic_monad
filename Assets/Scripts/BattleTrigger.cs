@@ -22,13 +22,11 @@ public class BattleTrigger{
 	public string nextSceneIndex;
 	public string korName;
 
-	public BattleTrigger(string data)
-	{
+	public BattleTrigger(string data){
 		StringParser commaParser = new StringParser(data, ',');
 
 		resultType = commaParser.ConsumeEnum<ResultType>();
-		if(resultType == ResultType.End)
-			nextSceneIndex = commaParser.Consume();
+		if(resultType == ResultType.End) {nextSceneIndex = commaParser.Consume();}
 		else{
 			korName = commaParser.Consume();
 			unitType = commaParser.ConsumeEnum<UnitType>();
