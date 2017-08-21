@@ -81,7 +81,7 @@ public class BattleManager : MonoBehaviour{
 
 					if (BattleData.selectedUnit.IsAI) {yield return BattleData.selectedUnit.GetAI().UnitTurn ();}
 					else{
-						Debug.Log(BattleData.selectedUnit.name + "is NOT AI.");
+						Debug.Log(BattleData.selectedUnit.name + " is NOT AI.");
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 					}
 
