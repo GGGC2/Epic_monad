@@ -11,15 +11,14 @@ namespace Battle.Turn{
 				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
 				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
 				viewer.OffPreviewAp();
-				if (BattleData.preSelectedTilePosition.HasValue == false ||
-					movableTilesWithPath.ContainsKey(BattleData.preSelectedTilePosition.Value) == false)
-				{
+				if (BattleData.preSelectedTilePosition.HasValue == false){
 					BattleData.previewAPAction = null;
-				}else{
+				}
+				else{
 					var preSelectedTile = BattleData.preSelectedTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					Tile tileUnderMouse = MonoBehaviour.FindObjectOfType<TileManager>().preSelectedMouseOverTile;
+					Tile tileUnderMouse = TileManager.Instance.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString();
 					viewer.PreviewAp(BattleData.selectedUnit, requiredAP);
 					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
@@ -54,6 +53,7 @@ namespace Battle.Turn{
 				);
 				
 				battleManager.StopCoroutine(update);
+				BattleData.preSelectedTilePosition = null;
 				TileManager.Instance.DepaintAllTiles(TileColor.Red);
 				foreach(Tile tile in TileManager.Instance.GetTilesInGlobalRange()){
 					tile.CostAP.text = "";
