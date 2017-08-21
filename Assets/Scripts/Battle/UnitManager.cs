@@ -175,6 +175,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			AIData _AIData = targetUnit.gameObject.GetComponent<AIData>();
 			_AIData.SetAIInfo(aiInfo);
+			_AIData.SetGoalArea(targetUnit);
 			Battle.Turn.AI _AI = targetUnit.gameObject.AddComponent<Battle.Turn.AI>();
 			_AI.Initialize(targetUnit, _AIData);
 			targetUnit.SetAI(_AI);
@@ -353,7 +354,7 @@ public class UnitManager : MonoBehaviour {
         LoadUnitStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
-        if (!GameData.SceneData.isTestMode) {
+		if (!GameData.SceneData.isTestMode) {
             ApplyAIInfo();
         }
         GetEnemyUnits();

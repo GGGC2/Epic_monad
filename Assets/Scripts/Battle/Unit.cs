@@ -115,7 +115,6 @@ public class Unit : MonoBehaviour{
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
 	public void AddMovedTileCount(int count) {
-		Debug.Log("Add " + count + " in " + myInfo.nameKor + "'s movedTileCount");
 		movedTileCount += count;
 	}
 	public void ResetMovedTileCount() {movedTileCount = 0;}

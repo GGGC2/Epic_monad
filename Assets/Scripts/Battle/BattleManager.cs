@@ -81,8 +81,7 @@ public class BattleManager : MonoBehaviour{
 
 					if (BattleData.selectedUnit.IsAI){
 						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
-					}else{
-						Debug.Log(BattleData.selectedUnit.name + " is NOT AI.");
+					} else{
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 					}
 
@@ -253,7 +252,6 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator AtActionEnd(){
-		Debug.Log ("AtActionEnd");
 		yield return StartCoroutine(UpdateRetreatAndDeadUnits());
 
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
