@@ -119,7 +119,7 @@ public static class PathFinder {
 		if (nearbyTile.IsUnitOnTile()) return;
 
 		Tile currentTile = tiles[tilePosition];
-		int deltaHeight = Mathf.Abs(currentTile.GetTileHeight() - nearbyTile.GetTileHeight());
+		int deltaHeight = Mathf.Abs(currentTile.GetHeight() - nearbyTile.GetHeight());
 		if (deltaHeight >= 2) return;
 
 		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];

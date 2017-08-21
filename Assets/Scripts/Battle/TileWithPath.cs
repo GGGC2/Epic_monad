@@ -23,17 +23,12 @@ public class TileWithPath {
 			this.path.Add(prevTile);
 		this.path.Add(lastPrevTile);
 
-		// USING ONLY TEST.
+		this.requireActivityPoint = prevTileWithPath.requireActivityPoint + NewTileMoveCost(tile, lastPrevTile, prevPath.Count);
+	}
 
-		// 상승이동일 경우 기본값 * 3. 아닐 경우 기본값 * 1
-		int climbValue = 1;
-
-		int heightOfDestTile = destTile.GetTileHeight();
-		int heightOfLastPrevTile = lastPrevTile.GetTileHeight();
-		if (heightOfDestTile > heightOfLastPrevTile)
-			climbValue = 3;
-
-		this.requireActivityPoint = prevTileWithPath.requireActivityPoint 
-									+ (tile.GetRequireAPAtTile() * climbValue + (prevPath.Count+BattleData.selectedUnit.GetMovedTileCount()) * Setting.moveCostAcc);
+	public static int NewTileMoveCost(Tile dest, Tile prev, int prevCount){
+		int climbMultiplier = 1;
+		if(dest.GetHeight() > prev.GetHeight()) {climbMultiplier = 3;}
+		return dest.GetBaseMoveCost()*climbMultiplier + (prevCount+BattleData.selectedUnit.GetMovedTileCount())*Setting.moveCostAcc;
 	}
 }

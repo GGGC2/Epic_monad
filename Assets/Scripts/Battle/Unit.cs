@@ -178,7 +178,7 @@ public class Unit : MonoBehaviour{
 	public void SetCelestial(Celestial celestial) { this.celestial = celestial; }
 	public Celestial GetCelestial() { return celestial; }
     public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
-	public int GetHeight() { return GetTileUnderUnit().GetTileHeight(); }
+	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
 	public string GetNameInCode() { return nameInCode; }
 	public int GetIndex() { return index; }
 	public string GetName() { return name; }
@@ -297,10 +297,11 @@ public class Unit : MonoBehaviour{
         }
     }
 
-	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
+	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 		UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
+		AddMovedTileCount(tileCount);
 
         foreach (var statusEffect in GetStatusEffectList()) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||

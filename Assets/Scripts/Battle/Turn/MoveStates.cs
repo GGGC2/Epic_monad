@@ -87,12 +87,12 @@ namespace Battle.Turn{
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
 				BattleData.uiManager.DisableCancelButtonUI();
-				yield return battleManager.StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint, distance));
+				yield return battleManager.StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint));
 			}
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance){
+		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint){
 			// 이동했을때 볼 방향 설정
 			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 
@@ -102,10 +102,8 @@ namespace Battle.Turn{
 
 		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
-			BattleData.moveSnapshot = new BattleData.MoveSnapshot(BattleData.selectedUnit.GetTileUnderUnit(), unit.GetCurrentActivityPoint(), unit.GetMovedTileCount(), unit.GetDirection());
-			
-			unit.ApplyMove(destTile, finalDirection, totalAPCost);
-			unit.AddMovedTileCount(tileCount);
+			BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
+			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
 
 			BattleData.previewAPAction = null;
 			BattleData.currentState = CurrentState.FocusToUnit;

@@ -168,7 +168,7 @@ namespace Battle.Turn{
 			if (!_AIData.IsActive()) {CheckActiveTrigger();}
 
 			if (!_AIData.IsActive ()) {
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 				state = State.SkipTurn;
 			}
 			else {
@@ -191,7 +191,7 @@ namespace Battle.Turn{
 				yield break;
 			}
 
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
@@ -243,7 +243,7 @@ namespace Battle.Turn{
 				yield break;
 			}
 
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
@@ -273,7 +273,7 @@ namespace Battle.Turn{
 					yield break;
 				}
 
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
@@ -296,7 +296,7 @@ namespace Battle.Turn{
 			}
 		}
 		public IEnumerator StandbyOrRest(){
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
 			}
@@ -430,7 +430,7 @@ namespace Battle.Turn{
 		}
 		private static IEnumerator OnlyAttack(Unit unit){
 			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
@@ -464,7 +464,7 @@ namespace Battle.Turn{
 			}
 		}
 		private static IEnumerator OnlyMove(Unit unit){
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 
 			int step = 0;
 			int currentAP = unit.GetCurrentActivityPoint ();
@@ -480,13 +480,10 @@ namespace Battle.Turn{
 				if (nextTile == null || nextTile.IsUnitOnTile()) {
 					break;
 				}
+				requireAP += TileWithPath.NewTileMoveCost(nextTile, tile, step);
+				step++;
 				pos = nextPos;
 				tile = nextTile;
-				step++;
-				//FIXME : 아래 AP 소모량 구하는 줄은 임시로 넣은 거고 나중에 고쳐야 됨 ㅋㅋ
-				requireAP += 3 + 2 * (step - 1);
-				Debug.Log (step);
-				Debug.Log (requireAP);
 			}
 
 			int totalUseAP = requireAP;
@@ -499,7 +496,7 @@ namespace Battle.Turn{
 		}
 		private static IEnumerator TasteTastyTile(Unit unit){
 			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
@@ -520,7 +517,7 @@ namespace Battle.Turn{
 				while (true) {
 					if (!unit.HasEnoughAPToUseSkill (skill))
 						yield break;
-					yield return battleManager.BeforeActCommonAct ();
+					yield return battleManager.ToDoBeforeAction ();
 					Tile currTile = unit.GetTileUnderUnit ();
 					if (TastyTileAttackDirectionOnThatPosition (currTile.GetTilePos (), skill) == null) {
 						break;
@@ -532,7 +529,7 @@ namespace Battle.Turn{
 		}
 		private static IEnumerator BreakAndEscape(Unit unit){
 			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 
 				int currentAP = unit.GetCurrentActivityPoint ();
 				Vector2 currPos = unit.GetPosition ();
