@@ -471,7 +471,7 @@ namespace Battle.Turn{
 				if (nextTile == null || nextTile.IsUnitOnTile()) {
 					break;
 				}
-				requireAP += TileWithPath.NewTileMoveCost(nextTile, tile, step);
+				requireAP += TileWithPath.NewTileMoveCost(nextTile, tile, step, unit);
 				step++;
 				pos = nextPos;
 				tile = nextTile;

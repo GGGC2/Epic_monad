@@ -15,59 +15,6 @@ public static class PathFinder {
 			this.tileWithPath = tileWithPath;
 		}
 	}
-
-	/* 지금은 안 쓰이고 다시 쓰려면 전에 이 함수가 정상작동하는지 확인할 것
-	public static int GetAPDistanceFromTileToUnit(Tile startTile, Unit destUnit, Dictionary<Vector2, TileWithPath> allPaths){
-		Vector2 startPos = startTile.GetTilePos ();
-		Vector2 destPos = destUnit.GetPosition ();
-		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
-
-		int baseRequireAP = allPaths [startPos].requireActivityPoint;
-		Debug.Log ("base "+baseRequireAP);
-		int APDistance = -1;
-
-		foreach (Vector2 surroundingPos in surroundingArea) {
-			if (allPaths.ContainsKey (surroundingPos)) {
-				int requireAP = allPaths [surroundingPos].requireActivityPoint - baseRequireAP;
-				Debug.Log (requireAP);
-				requireAP = Mathf.Abs (requireAP);
-				if (requireAP < APDistance || APDistance == -1) {
-					APDistance = requireAP;
-				}
-			}
-		}
-		return APDistance;
-	}*/
-
-	/*
-	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit){
-		Vector2 startPos = startTile.GetTilePos ();
-		Vector2 destPos = destUnit.GetPosition ();
-		Dictionary<Vector2, TileWithPath> allPaths = CalculatePathsFromThisTile (unit, startTile, int.MaxValue);
-		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
-		int APDistance = -1;
-		foreach (Vector2 surroundingPos in surroundingArea) {
-			if (allPaths.ContainsKey (surroundingPos)) {
-				int requireAP = allPaths [surroundingPos].requireActivityPoint;
-				if (requireAP > APDistance) {
-					APDistance = requireAP;
-				}
-			}
-		}
-		return APDistance;
-	}*/
-
-	/* destTile에 유닛이 있으면 도달불가능으로 나와서 -1이 반환되는 치명적 문제가 있어서 보류 
-	public static int GetRequireAPFromTileToTile(Unit unit, Tile startTile, Tile destTile){
-		Dictionary<Vector2, TileWithPath> allPaths = CalculatePathsFromThisTile (unit, startTile, int.MaxValue);
-		Vector2 destPos = destTile.GetTilePos ();
-		if (allPaths.ContainsKey (destPos)) {
-			return allPaths [destPos].requireActivityPoint;
-		}
-		else {
-			return -1;
-		}
-	}*/
 	
 	public static Dictionary<Vector2, TileWithPath> CalculateMovablePaths(Unit unit){
 		return CalculatePathsFromThisTile (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint ());
@@ -97,14 +44,7 @@ public static class PathFinder {
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.left, maxAPUse);
 			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right, maxAPUse);
 		}
-		//// queue가 비었으면 loop를 탈출.		
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)) {
-			float speed = unit.GetSpeed ();
-			foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
-				tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount(tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
-				tileWithPath.requireActivityPoint = (int)(tileWithPath.requireActivityPoint * (100f / speed));
-			}
-		}
+		//// queue가 비었으면 loop를 탈출.
 		return tilesWithPath;
 	}
 	
@@ -123,17 +63,12 @@ public static class PathFinder {
 		if (deltaHeight >= 2) return;
 
 		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];
-		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath);
+		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath, unit);
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
-		// 필요 행동력(이동) 증감 효과 적용
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)){
-			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
-			float speed = unit.GetSpeed ();
-            requireAP = (int)(requireAP * (100f / speed));
-        }
-		if (requireAP > maxAPUse) {return;}
-		
-		// else, 
+		if (requireAP > maxAPUse) {
+			return;
+		}
+
 		//	 if, 새로운 타일이거나, 기존보다 ap가 더 적게 드는 경로일 경우 업데이트하고 해당 타일을 queue에 넣음.
 		if (!tilesWithPath.ContainsKey(nearbyTilePosition))
 		{
