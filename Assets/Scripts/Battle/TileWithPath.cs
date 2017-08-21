@@ -42,4 +42,8 @@ public class TileWithPath {
 		}
 		return requireAP;
 	}
+
+	public void AddDestroyUnitCost(int destroyCost){
+		requireActivityPoint += destroyCost;
+	}
 }
