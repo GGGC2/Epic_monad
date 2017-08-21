@@ -9,7 +9,9 @@ namespace Battle.Turn
 		
 		public static IEnumerator AllObjectUnitsBehave(){
 			List<Unit> objectUnits = BattleData.GetObjectUnitsList();
-			foreach (var unit in objectUnits) {unit.SetNotAlreadyBehavedObject ();}
+			foreach (var unit in objectUnits) {
+				unit.SetNotAlreadyBehavedObject ();
+			}
 
 			while (true) {
 				//오브젝트 때문에 오브젝트가 죽을 수도 있으니 하나 행동 끝날 때마다 매번 오브젝트유닛 목록을 다시 받아온다
@@ -17,11 +19,12 @@ namespace Battle.Turn
 				Unit selectedObjectUnit = GetNotAlreadyBehavedObjectUnit (objectUnits);
 				BattleData.selectedUnit = selectedObjectUnit;
 
-				if(selectedObjectUnit == null) {break;}
-				else if(selectedObjectUnit.GetComponent<AI>() != null){
+				if (selectedObjectUnit == null) {
+					break;
+				} else if (selectedObjectUnit.GetComponent<AI> () != null) {
 					yield return BattleData.battleManager.ToDoBeforeAction ();
-					yield return AnObjectUnitBehave(selectedObjectUnit);
-					yield return BattleData.battleManager.AtActionEnd();
+					yield return AnObjectUnitBehave (selectedObjectUnit);
+					yield return BattleData.battleManager.AtActionEnd ();
 				}
 				
 				selectedObjectUnit.SetAlreadyBehavedObject ();
@@ -42,13 +45,13 @@ namespace Battle.Turn
 		private static IEnumerator AnObjectUnitBehave(Unit objectUnit){
 			//Debug.Log ("An object behaves");
 			BattleData.selectedUnit = objectUnit;
-			if (objectUnit.GetNameInCode() == "controller")
-				yield return ControllerAttack(objectUnit);
+			if (objectUnit.GetNameInCode () == "controller") {
+				yield return ControllerAttack (objectUnit);
+			}
 			yield return null;
 		}
 
-		static IEnumerator ControllerAttack(Unit objectUnit)
-		{
+		static IEnumerator ControllerAttack(Unit objectUnit){
 			SoundManager.Instance.PlaySE ("ControllerGrawl");
 
 			BattleManager.MoveCameraToUnit(objectUnit);
@@ -58,11 +61,10 @@ namespace Battle.Turn
 
 			UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
 			List<Unit> targets = unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
-			foreach (var target in targets)
-			{
-				BattleManager.MoveCameraToUnit(target);
-				float damageAmount = target.GetMaxHealth() * 0.15f;
-				yield return target.ApplyDamageByNonCasting(damageAmount, objectUnit, -target.GetStat(Stat.Defense), -target.GetStat(Stat.Resistance), true, false, false);
+			foreach (var target in targets) {
+				BattleManager.MoveCameraToUnit (target);
+				float damageAmount = target.GetMaxHealth () * 0.15f;
+				yield return target.ApplyDamageByNonCasting (damageAmount, objectUnit, -target.GetStat (Stat.Defense), -target.GetStat (Stat.Resistance), true, false, false);
 			}
 
 			MonoBehaviour.Destroy(effect);

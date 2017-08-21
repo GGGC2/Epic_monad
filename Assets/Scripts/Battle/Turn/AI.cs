@@ -165,13 +165,14 @@ namespace Battle.Turn{
 				yield break;
 			}
 
-			if (!_AIData.IsActive()) {CheckActiveTrigger();}
+			if (!_AIData.IsActive()) {
+				CheckActiveTrigger();
+			}
 
 			if (!_AIData.IsActive ()) {
 				yield return battleManager.ToDoBeforeAction ();
 				state = State.SkipTurn;
-			}
-			else {
+			} else {
 				state = State.MoveToBestCasting;
 			}
 			yield return FSM ();
@@ -207,8 +208,7 @@ namespace Battle.Turn{
 			if (destTile != null) {
 				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
 				state = State.CastingLoop;
-			}
-			else {
+			} else {
 				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
 				state = State.Approach;
 				yield break;
@@ -299,8 +299,7 @@ namespace Battle.Turn{
 			yield return battleManager.ToDoBeforeAction ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
-			}
-			else {
+			} else {
 				yield return TakeRest (unit);
 			}
 			state = State.EndTurn;
@@ -333,21 +332,18 @@ namespace Battle.Turn{
 		void CheckActiveTrigger(){
 			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
-			if (_AIData.activeTriggers.Contains(1))
-			{
+			if (_AIData.activeTriggers.Contains(1)){
 				satisfyActiveCondition = true;
 			}
 			// 일정 페이즈부터 활성화
-			else if (_AIData.activeTriggers.Contains(2))
-			{
+			else if (_AIData.activeTriggers.Contains(2)){
 				if (BattleData.currentPhase >= _AIData.activePhase) {
 					Debug.Log (unit.GetName () + " is activated because enough phase passed");
 					satisfyActiveCondition = true;
 				}
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
-			else if (_AIData.activeTriggers.Contains(3))
-			{
+			else if (_AIData.activeTriggers.Contains(3)){
 				// 자신을 기준으로 한 상대좌표
 				List<List<Tile>> aroundTiles = _AIData.trigger3Area;
 				List<Unit> aroundUnits = new List<Unit>();
@@ -370,8 +366,7 @@ namespace Battle.Turn{
 				}
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
-			else if (_AIData.activeTriggers.Contains(4))
-			{
+			else if (_AIData.activeTriggers.Contains(4)){
 				// 절대좌표
 				List<List<Tile>> aroundTiles = _AIData.trigger4Area;
 				List<Unit> aroundUnits = new List<Unit>();
@@ -397,13 +392,14 @@ namespace Battle.Turn{
 				}
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
-			else if (_AIData.activeTriggers.Contains(5))
-			{
+			else if (_AIData.activeTriggers.Contains(5)){
 				// 뭔가 기술의 영향을 받으면
-				// SkillAndChainState.ApplySkill에서 체크
+				// SkillAndChainState.ApplySkill에서 체크하므로 여기선 할 일 없음
 			}
-			if(satisfyActiveCondition)
-				_AIData.SetActive();
+
+			if (satisfyActiveCondition) {
+				_AIData.SetActive ();
+			}
 		}
 	}
 
@@ -413,16 +409,13 @@ namespace Battle.Turn{
 			battleManager = BattleData.battleManager;
 			bool movable = unit.IsMovePossibleState ();
 			bool skillusable = unit.IsSkillUsePossibleState ();
-			if(!movable && !skillusable) {
+			if (!movable && !skillusable) {
 				//do nothing
-			}
-			else if(!movable && skillusable) {
+			} else if (!movable && skillusable) {
 				yield return OnlyAttack (unit);
-			}
-			else if(movable && !skillusable){
+			} else if (movable && !skillusable) {
 				yield return OnlyMove (unit);
-			}
-			else{
+			} else {
 				yield return FreeState (unit);
 			}
 			yield return unit.GetAI().StandbyOrRest ();
@@ -540,8 +533,7 @@ namespace Battle.Turn{
 				if (barrierTile == null) {
 					yield return OnlyMove (unit);
 					break;
-				}
-				else {
+				} else {
 					if (!unit.HasEnoughAPToUseSkill (skill))
 						break;
 					yield return AI.UseSkill (new Casting(unit,  skill, new SkillLocation(currPos, barrierTile, Direction.RightDown)));
