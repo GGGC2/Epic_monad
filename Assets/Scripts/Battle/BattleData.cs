@@ -187,11 +187,11 @@ public static class BattleData{
 		public int movedTileCount;
 		public Direction direction;
 
-		public MoveSnapshot(Tile bTile, int bAp, int bTileCount, Direction bDirection){
-			tile = bTile;
-			ap = bAp;
-			movedTileCount = bTileCount;
-			direction = bDirection;
+		public MoveSnapshot(Unit unit){
+			tile = unit.GetTileUnderUnit();
+			ap = unit.GetCurrentActivityPoint();
+			movedTileCount = unit.GetMovedTileCount();
+			direction = unit.GetDirection();
 		}
 	}
 

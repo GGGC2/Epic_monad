@@ -60,11 +60,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
 	public int GetTileAPAtStandardHeight()	{	return APAtStandardHeight;	}
 
-	public int GetTileHeight()	{	return height;	}
+	public int GetHeight()	{	return height;	}
 
 	public Element GetTileElement()	{	return element;	}
 
-	public int GetRequireAPAtTile()	{	return APAtStandardHeight;	}
+	public int GetBaseMoveCost()	{	return APAtStandardHeight;	}
 
 	public bool IsUnitOnTile ()	{	return !(unitOnTile == null);	}
 

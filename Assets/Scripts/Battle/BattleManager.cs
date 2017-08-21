@@ -275,7 +275,7 @@ public class BattleManager : MonoBehaviour{
 			BattleManager battleManager = BattleData.battleManager;
 			Unit unit = BattleData.selectedUnit;
 
-			yield return BeforeActCommonAct ();
+			yield return ToDoBeforeAction ();
 
 			//AI 턴에선 쓸모없는 부분
 			BattleData.uiManager.ActivateCommandUIAndSetName(unit);
@@ -327,55 +327,46 @@ public class BattleManager : MonoBehaviour{
 		OnOffMoveButton();
 		OnOffSkillButton();
 	}
-	public IEnumerator BeforeActCommonAct(){
+	public IEnumerator ToDoBeforeAction(){
 		yield return StartCoroutine(UpdateRetreatAndDeadUnits(this));
 		yield return AtActionEnd();
-		if (IsSelectedUnitRetreatOrDie())
-			yield break;
+		if (IsSelectedUnitRetreatOrDie()) {yield break;}
+
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
 	}
 
-	public void CallbackMoveCommand()
-	{
+	public void CallbackMoveCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
-	public void CallbackSkillCommand()
-	{
+	public void CallbackSkillCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
-	public void CallbackRestCommand()
-	{
+	public void CallbackRestCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Rest);
 	}
 
-	public void CallbackStandbyCommand()
-	{
+	public void CallbackStandbyCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 
-	public void CallbackOnPointerEnterRestCommand()
-	{
+	public void CallbackOnPointerEnterRestCommand(){
 		BattleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP());
 		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 	}
 
-	public void CallbackOnPointerExitRestCommand()
-	{
+	public void CallbackOnPointerExitRestCommand(){
 		BattleData.previewAPAction = null;
 		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 	}
 
-	public void CallbackCancel()
-	{
-		BattleData.triggers.cancelClicked.Trigger();
-	}
+	public void CallbackCancel() {BattleData.triggers.cancelClicked.Trigger();}
 
 	public static IEnumerator Standby(){
 		BattleData.alreadyMoved = false;
