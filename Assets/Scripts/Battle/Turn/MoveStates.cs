@@ -7,6 +7,7 @@ using Enums;
 namespace Battle.Turn{
 	public class MoveStates{
 		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			BattleData.preSelectedTilePosition = null;
 			while (true){
 				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
 				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
@@ -53,7 +54,6 @@ namespace Battle.Turn{
 				);
 				
 				battleManager.StopCoroutine(update);
-				BattleData.preSelectedTilePosition = null;
 				TileManager.Instance.DepaintAllTiles(TileColor.Red);
 				foreach(Tile tile in TileManager.Instance.GetTilesInGlobalRange()){
 					tile.CostAP.text = "";
@@ -106,7 +106,7 @@ namespace Battle.Turn{
 			BattleData.currentState = CurrentState.FocusToUnit;
 			BattleData.alreadyMoved = true;
 
-			yield return null;
+			yield return BattleData.battleManager.AtActionEnd();
 		}
 	}
 }

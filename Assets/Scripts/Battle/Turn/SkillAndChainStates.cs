@@ -334,6 +334,7 @@ namespace Battle.Turn {
 
 			BattleManager.MoveCameraToUnit(caster);
 			BattleData.currentState = CurrentState.FocusToUnit;
+			yield return BattleData.battleManager.AtActionEnd();
         }
 
 		public static IEnumerator WaitChain (Casting casting) {

@@ -220,12 +220,12 @@ public class BattleManager : MonoBehaviour{
 		return false;
 	}
 
-	public static IEnumerator UpdateRetreatAndDeadUnits(BattleManager battleManager)
+	public IEnumerator UpdateRetreatAndDeadUnits()
 	{
 		BattleData.retreatUnits = BattleData.unitManager.GetRetreatUnits();
 		BattleData.deadUnits = BattleData.unitManager.GetDeadUnits();
-		yield return battleManager.StartCoroutine(DestroyRetreatUnits());
-		yield return battleManager.StartCoroutine(DestroyDeadUnits());
+		yield return StartCoroutine(DestroyRetreatUnits());
+		yield return StartCoroutine(DestroyDeadUnits());
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
@@ -251,12 +251,14 @@ public class BattleManager : MonoBehaviour{
 				-10);	
 	}
 
-	public static IEnumerator AtActionEnd(){
-		BattleManager battleManager = BattleData.battleManager;
+	public IEnumerator AtActionEnd(){
+		Debug.Log ("AtActionEnd");
+		yield return StartCoroutine(UpdateRetreatAndDeadUnits());
+
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
 		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-		yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
+		yield return StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
@@ -293,6 +295,7 @@ public class BattleManager : MonoBehaviour{
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
 				BattleData.selectedUnit.ApplySnapshot();
+				yield return BattleData.battleManager.AtActionEnd();
 				BattleData.alreadyMoved = false;
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
@@ -328,12 +331,9 @@ public class BattleManager : MonoBehaviour{
 		OnOffSkillButton();
 	}
 	public IEnumerator ToDoBeforeAction(){
-		yield return StartCoroutine(UpdateRetreatAndDeadUnits(this));
-		yield return AtActionEnd();
-		if (IsSelectedUnitRetreatOrDie()) {yield break;}
-
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
+		yield return null;
 	}
 
 	public void CallbackMoveCommand(){
