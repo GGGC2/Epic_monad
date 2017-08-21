@@ -13,7 +13,7 @@ using System.Linq;
 using GameData;
 
 public class BattleManager : MonoBehaviour{
-	bool startTurnManager = false;
+	bool TurnManagerStarted = false;
 	public TutorialManager tutorialManager;
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
@@ -52,9 +52,9 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if(!startTurnManager){
+		if(!TurnManagerStarted){
 			StartCoroutine (InstantiateTurnManager ());
-			startTurnManager = true;
+			TurnManagerStarted = true;
 		}else {Debug.Log ("TurnManager Already Started.");}
 	}
 
@@ -79,20 +79,20 @@ public class BattleManager : MonoBehaviour{
 					BattleData.selectedUnit = BattleData.readiedUnits [0];
 					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
 
-					if (BattleData.selectedUnit.IsAI) {
-						yield return AI.UnitTurn (BattleData.selectedUnit);
-					} else
+					if (BattleData.selectedUnit.IsAI){
+						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
+					} else{
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
+					}
 
 					BattleData.selectedUnit = null;
-
 					BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 					yield return null;
 				}
 
 				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
 				yield return StartCoroutine (ObjectUnitBehaviour.AllObjectUnitsBehave ());
-
+				
 				yield return StartCoroutine (EndPhaseOnGameManager ());
 			}
 		} else {
@@ -106,7 +106,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
-		EndUnitTurn ();
+		if (BattleData.currentState != CurrentState.Dead) {
+			EndUnitTurn ();
+		}
 	}
 
 	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
@@ -118,7 +120,7 @@ public class BattleManager : MonoBehaviour{
 	public void StartUnitTurn(Unit unit){
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
-		Debug.Log(unit.GetName() + "'s turn");
+		Debug.Log(unit.GetNameKor() + "'s turn");
 
 		BattleData.selectedUnit = unit;
 		BattleData.move = new BattleData.Move();
@@ -133,10 +135,8 @@ public class BattleManager : MonoBehaviour{
 	}
 	public void EndUnitTurn(){
 		BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
-
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		if (BattleData.selectedUnit != null)
-			BattleData.selectedUnit.SetInactive();
+		BattleData.selectedUnit.SetInactive();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
 		foreach(Unit caster in BattleData.unitManager.GetAllUnits())
@@ -174,7 +174,7 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit deadUnit in BattleData.deadUnits){
-			Debug.Log(deadUnit.GetName() + " is dead");
+			Debug.Log(deadUnit.GetNameKor() + " is dead");
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return DestroyDeadOrRetreatUnit (deadUnit, BattleTrigger.ActionType.Kill);
@@ -186,7 +186,7 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit retreatUnit in BattleData.retreatUnits){
-			Debug.Log(retreatUnit.GetName() + " retreats");
+			Debug.Log(retreatUnit.GetNameKor() + " retreats");
 			yield return DestroyDeadOrRetreatUnit (retreatUnit, BattleTrigger.ActionType.Retreat);
 		}
 	}
@@ -211,7 +211,7 @@ public class BattleManager : MonoBehaviour{
         }
     }
 
-	static bool IsSelectedUnitRetreatOrDie()
+	public static bool IsSelectedUnitRetreatOrDie()
 	{
 		if (BattleData.retreatUnits.Contains(BattleData.selectedUnit))
 			return true;
@@ -222,12 +222,12 @@ public class BattleManager : MonoBehaviour{
 		return false;
 	}
 
-	public static IEnumerator UpdateRetreatAndDeadUnits(BattleManager battleManager)
+	public IEnumerator UpdateRetreatAndDeadUnits()
 	{
 		BattleData.retreatUnits = BattleData.unitManager.GetRetreatUnits();
 		BattleData.deadUnits = BattleData.unitManager.GetDeadUnits();
-		yield return battleManager.StartCoroutine(DestroyRetreatUnits());
-		yield return battleManager.StartCoroutine(DestroyDeadUnits());
+		yield return StartCoroutine(DestroyRetreatUnits());
+		yield return StartCoroutine(DestroyDeadUnits());
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
@@ -253,12 +253,15 @@ public class BattleManager : MonoBehaviour{
 				-10);	
 	}
 
-	public static IEnumerator AtActionEnd(){
-		BattleManager battleManager = BattleData.battleManager;
+	public IEnumerator AtActionEnd(){
+		yield return StartCoroutine(UpdateRetreatAndDeadUnits());
+
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
 		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-		yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
+		if (!IsSelectedUnitRetreatOrDie ()) {
+			yield return StartCoroutine (BattleData.unitManager.TriggerStatusEffectsAtActionEnd ());
+		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
@@ -267,7 +270,6 @@ public class BattleManager : MonoBehaviour{
 		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 			Checker.InitializeResultPanel();
         FindObjectOfType<CameraMover>().CalculateBoundary();
-        // 액션마다 갱신사항 종료
     }
 
 	public UnityEvent readyCommandEvent;
@@ -277,7 +279,13 @@ public class BattleManager : MonoBehaviour{
 			BattleManager battleManager = BattleData.battleManager;
 			Unit unit = BattleData.selectedUnit;
 
-			yield return BeforeActCommonAct ();
+			if (BattleManager.IsSelectedUnitRetreatOrDie()) {
+				BattleData.currentState = CurrentState.Dead;
+				Debug.Log ("Current PC unit died");
+				yield break;
+			}
+
+			yield return ToDoBeforeAction ();
 
 			//AI 턴에선 쓸모없는 부분
 			BattleData.uiManager.ActivateCommandUIAndSetName(unit);
@@ -293,7 +301,9 @@ public class BattleManager : MonoBehaviour{
 				yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
 
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
-				Battle.Turn.MoveStates.RestoreMoveSnapshot();
+				Debug.Log("Apply MoveSnapShot");
+				BattleData.selectedUnit.ApplySnapshot();
+				yield return BattleData.battleManager.AtActionEnd();
 				BattleData.alreadyMoved = false;
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
@@ -328,58 +338,45 @@ public class BattleManager : MonoBehaviour{
 		OnOffMoveButton();
 		OnOffSkillButton();
 	}
-	public IEnumerator BeforeActCommonAct(){
-		yield return StartCoroutine(UpdateRetreatAndDeadUnits(this));
-		if (IsSelectedUnitRetreatOrDie())
-			yield break;
-		yield return AtActionEnd();
+	public IEnumerator ToDoBeforeAction(){
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
+		yield return null;
 	}
 
-	public void CallbackMoveCommand()
-	{
+	public void CallbackMoveCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
-	public void CallbackSkillCommand()
-	{
+	public void CallbackSkillCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
-	public void CallbackRestCommand()
-	{
+	public void CallbackRestCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Rest);
 	}
 
-	public void CallbackStandbyCommand()
-	{
+	public void CallbackStandbyCommand(){
 		BattleData.uiManager.DisableCommandUI();
 		BattleData.triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 
-	public void CallbackOnPointerEnterRestCommand()
-	{
+	public void CallbackOnPointerEnterRestCommand(){
 		BattleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP());
 		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 	}
 
-	public void CallbackOnPointerExitRestCommand()
-	{
+	public void CallbackOnPointerExitRestCommand(){
 		BattleData.previewAPAction = null;
 		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
 	}
 
-	public void CallbackCancel()
-	{
-		BattleData.triggers.cancelClicked.Trigger();
-	}
+	public void CallbackCancel() {BattleData.triggers.cancelClicked.Trigger();}
 
-	public static IEnumerator Standby()
-	{
+	public static IEnumerator Standby(){
 		BattleData.alreadyMoved = false;
 		yield return new WaitForSeconds(0.1f);
 	}
@@ -408,20 +405,6 @@ public class BattleManager : MonoBehaviour{
 		BattleData.triggers.cancelClicked.Trigger();
 	}
 
-	public void CallbackApplyCommand()
-	{
-		BattleData.uiManager.DisableSkillCheckUI();
-		BattleData.triggers.skillApplyCommandChanged.Trigger();
-		BattleData.skillApplyCommand = SkillApplyCommand.Apply;
-	}
-
-	public void CallbackChainCommand()
-	{
-		BattleData.uiManager.DisableSkillCheckUI();
-		BattleData.triggers.skillApplyCommandChanged.Trigger();
-		BattleData.skillApplyCommand = SkillApplyCommand.Chain;
-	}
-
 	public void CallbackRightClick()
 	{
 		BattleData.triggers.rightClicked.Trigger();
@@ -429,14 +412,12 @@ public class BattleManager : MonoBehaviour{
 
 	public void CallbackDirection(Direction direction){
 		BattleData.move.selectedDirection = direction;
-		
 		BattleData.triggers.directionSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
 	public void CallbackDirectionLong(Direction direction)
 	{
 		BattleData.move.selectedDirection = direction;
-
 		BattleData.triggers.directionLongSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}

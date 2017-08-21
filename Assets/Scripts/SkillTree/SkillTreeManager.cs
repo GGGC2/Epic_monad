@@ -65,7 +65,7 @@ public class SkillTreeManager : MonoBehaviour
 	void Start(){
 		partyUnitNames = PartyDB.GetPartyUnits();
 
-		unitInfos = Parser.GetParsedUnitInfo();
+		unitInfos = Parser.GetParsedData<UnitInfo>();
 		skills = Parser.GetSkills();
 		foreach (Skill skill in skills){
 			string skillName = skill.korName;
@@ -134,7 +134,7 @@ public class SkillTreeManager : MonoBehaviour
 		for (int i=0; i<partyUnitNames.Count; i++)
 		{
 			Text text = nameButtons[i].transform.Find("text").GetComponent<Text>();
-			text.text = GetUnitInfo(i).name;
+			text.text = GetUnitInfo(i).nameKor;
 			nameButtons[i].GetComponent<Image>().enabled = true;
 		}
 	}
@@ -151,7 +151,7 @@ public class SkillTreeManager : MonoBehaviour
 		column3Text.GetComponent<Text>().text = skillColumnInfo.column3Name;
 
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		string unitNameInCode = unitInfo.nameInCode;
+		string unitNameInCode = unitInfo.nameEng;
 
 		List<Skill> unitSkills = new List<Skill>();
 		foreach (Skill skillInfo in skills)
@@ -244,7 +244,7 @@ public class SkillTreeManager : MonoBehaviour
 		Debug.Log("Skill clicked " + skillName);
 
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		string unitNameInCode = unitInfo.nameInCode;
+		string unitNameInCode = unitInfo.nameEng;
 		bool haveSkillPoint = GetAvailableSkillPoint(unitNameInCode) > 0;
 		bool isLearned = SkillDB.IsLearned(unitNameInCode, skillName);
 		bool isEnhanceable = SkillDB.GetEnhanceLevel(unitNameInCode, skillName) < maxEnhanceLevel && haveSkillPoint;
@@ -269,15 +269,15 @@ public class SkillTreeManager : MonoBehaviour
 	private void UpdateDetail(int selectedIndex)
 	{
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		this.description.name.GetComponent<Text>().text = unitInfo.name;
+		this.description.name.GetComponent<Text>().text = unitInfo.nameKor;
 		this.description.level.GetComponent<Text>().text = PartyDB.GetPartyLevel().ToString();
-		this.description.skillPoint.GetComponent<Text>().text = GetAvailableSkillPoint(unitInfo.nameInCode).ToString();
+		this.description.skillPoint.GetComponent<Text>().text = GetAvailableSkillPoint(unitInfo.nameEng).ToString();
 	}
 
 	private void UpdateUnitImage(int selectedIndex)
 	{
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		string resourceName = "StandingImage/" + unitInfo.nameInCode + "_standing";
+		string resourceName = "StandingImage/" + unitInfo.nameEng + "_standing";
 		Sprite standingSprite = Resources.Load(resourceName, typeof(Sprite)) as Sprite;
 
 		if (standingSprite == null)
@@ -301,7 +301,7 @@ public class SkillTreeManager : MonoBehaviour
 	{
 		foreach (UnitInfo unitInfo in unitInfos)
 		{
-			if (unitInfo.nameInCode == partyUnitNames[index])
+			if (unitInfo.nameEng == partyUnitNames[index])
 			{
 				return unitInfo;
 			}

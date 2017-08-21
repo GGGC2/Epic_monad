@@ -41,7 +41,7 @@ namespace BattleUI{
         //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
         public void UpdateUnitViewer(Unit unit) {
             unitImage.sprite = unit.GetDefaultSprite();
-            nameText.text = unit.GetName();
+            nameText.text = unit.GetNameKor();
             SetClassImage(unit.GetUnitClass());
             SetElementImage(unit.GetElement());
             SetCelestialImage(unit.GetCelestial());
@@ -111,13 +111,14 @@ namespace BattleUI{
         void CheckElementBuff(Unit unit) {
             elementBuffIcon.SetActive(false);
 
-            if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement() && unit.GetElement() != Element.None)
+            if (unit.GetElement() == tileManager.GetTile(unit.GetPosition()).GetTileElement() && unit.GetElement() != Element.None){
                 elementBuffIcon.SetActive(true);
+            }
         }
 
         void UpdateHp(Unit unit){
             hpText.text = unit.GetCurrentHealth() + " / " + unit.GetStat(Stat.MaxHealth);
-            HpBar.color = HealthViewer.SideToHealthColor(unit.side);
+            HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
             HpBar.fillAmount = unit.GetHpRatio();
         }
 

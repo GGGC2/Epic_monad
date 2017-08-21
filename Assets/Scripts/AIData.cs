@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Enums;
 
@@ -22,6 +23,9 @@ public class AIData : MonoBehaviour {
 	public List<List<Tile>> trigger3Area = new List<List<Tile>>();
 	public List<List<Tile>> trigger4Area = new List<List<Tile>>();
 
+	// 도주 목표점들
+	public List<Vector2> goalArea = new List<Vector2> ();
+
 	public bool IsActive()
 	{
 		return isActive;
@@ -43,5 +47,15 @@ public class AIData : MonoBehaviour {
 		activePhase = info.activePhase;
 		trigger3Area = info.trigger3Area;
 		trigger4Area = info.trigger4Area;
+	}
+
+	public void SetGoalArea(Unit AIunit){
+		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
+		foreach (BattleTrigger trigger in Checker.battleTriggers) {
+			if (trigger.actionType == BattleTrigger.ActionType.Reach && Checker.CheckUnitType (trigger, AIunit)) {
+				Debug.Log ("added goal area");
+				goalArea = trigger.targetTiles;
+			}
+		}
 	}
 }
