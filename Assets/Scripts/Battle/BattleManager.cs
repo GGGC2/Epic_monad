@@ -106,7 +106,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
-		EndUnitTurn ();
+		if (BattleData.currentState != CurrentState.Dead) {
+			EndUnitTurn ();
+		}
 	}
 
 	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
@@ -257,7 +259,9 @@ public class BattleManager : MonoBehaviour{
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
 		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-		yield return StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
+		if (!IsSelectedUnitRetreatOrDie ()) {
+			yield return StartCoroutine (BattleData.unitManager.TriggerStatusEffectsAtActionEnd ());
+		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
@@ -266,7 +270,6 @@ public class BattleManager : MonoBehaviour{
 		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 			Checker.InitializeResultPanel();
         FindObjectOfType<CameraMover>().CalculateBoundary();
-        // 액션마다 갱신사항 종료
     }
 
 	public UnityEvent readyCommandEvent;
@@ -275,6 +278,12 @@ public class BattleManager : MonoBehaviour{
 		while (BattleData.currentState == CurrentState.FocusToUnit){
 			BattleManager battleManager = BattleData.battleManager;
 			Unit unit = BattleData.selectedUnit;
+
+			if (BattleManager.IsSelectedUnitRetreatOrDie()) {
+				BattleData.currentState = CurrentState.Dead;
+				Debug.Log ("Current PC unit died");
+				yield break;
+			}
 
 			yield return ToDoBeforeAction ();
 

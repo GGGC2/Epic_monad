@@ -24,20 +24,20 @@ public class BattleTriggerManager : MonoBehaviour {
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
 		Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
-		if(trigger.count == trigger.targetCount && !trigger.acquired){
+		if (trigger.count == trigger.targetCount && !trigger.acquired) {
 			trigger.acquired = true;
-			Debug.Log("Trigger acquired : " + trigger.korName);
-			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
+			Debug.Log ("Trigger acquired : " + trigger.korName);
+			if (trigger.resultType == BattleTrigger.ResultType.Bonus)
 				BattleData.rewardPoint += trigger.reward;
-			else if(trigger.resultType == BattleTrigger.ResultType.Win)
+			else if (trigger.resultType == BattleTrigger.ResultType.Win)
 				BattleData.rewardPoint += trigger.reward;
-			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
-				Debug.Log("Mission FAIL : "+trigger.korName);
-				sceneLoader.LoadNextDialogueScene("Title");
+			else if (trigger.resultType == BattleTrigger.ResultType.Lose) {
+				Debug.Log ("Mission FAIL : " + trigger.korName);
+				sceneLoader.LoadNextDialogueScene ("Title");
 			}
-		}
-		else if(trigger.repeatable)
+		} else if (trigger.repeatable) {
 			BattleData.rewardPoint += trigger.reward;
+		}
 	}
 
 	public void InitializeResultPanel(){
