@@ -19,8 +19,9 @@ namespace Battle.Turn
 
 				if(selectedObjectUnit == null) {break;}
 				else if(selectedObjectUnit.GetComponent<AI>() != null){
-					yield return AnObjectUnitBehave(selectedObjectUnit);
 					yield return BattleData.battleManager.ToDoBeforeAction ();
+					yield return AnObjectUnitBehave(selectedObjectUnit);
+					yield return BattleData.battleManager.AtActionEnd();
 				}
 				
 				selectedObjectUnit.SetAlreadyBehavedObject ();

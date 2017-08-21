@@ -105,7 +105,7 @@ public class BattleTriggerManager : MonoBehaviour {
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsAI == false && unit.side == Side.Ally)
+		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsPC == true && unit.side == Side.Ally)
 			return true;
 		else
 			return false;

@@ -238,7 +238,6 @@ namespace Battle.Turn {
             Unit selectedUnit = BattleData.selectedUnit;
 
             if (BattleData.currentState == CurrentState.SelectSkill) {
-                BattleData.uiManager.DisableCancelButtonUI();
                 yield break;
             }
 
@@ -251,7 +250,6 @@ namespace Battle.Turn {
 
                 BattleData.tileManager.PaintTiles(activeRange, TileColor.Red);
 				BattleData.tileManager.PreselectTiles (activeRange);
-                BattleData.uiManager.EnableCancelButtonUI();
                 BattleData.isWaitingUserInput = true;
 
                 var update = UpdatePointSkillMouseDirection(originalDirection);
@@ -264,7 +262,6 @@ namespace Battle.Turn {
                 ));
                 BattleData.battleManager.StopCoroutine(update);
                 BattleData.isWaitingUserInput = false;
-                BattleData.uiManager.DisableCancelButtonUI();
 
 				BattleData.tileManager.DepaintAllTiles(TileColor.Red);	
 				BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
@@ -337,6 +334,7 @@ namespace Battle.Turn {
 
 			BattleManager.MoveCameraToUnit(caster);
 			BattleData.currentState = CurrentState.FocusToUnit;
+			yield return BattleData.battleManager.AtActionEnd();
         }
 
 		public static IEnumerator WaitChain (Casting casting) {
