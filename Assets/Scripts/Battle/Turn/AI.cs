@@ -414,22 +414,22 @@ namespace Battle.Turn{
 			battleManager = BattleData.battleManager;
 			bool movable = unit.IsMovePossibleState ();
 			bool skillusable = unit.IsSkillUsePossibleState ();
-			if (!movable && !skillusable) {
+			if(!movable && !skillusable) {
 				//do nothing
 			}
-			else if (!movable && skillusable) {
+			else if(!movable && skillusable) {
 				yield return OnlyAttack (unit);
 			}
-			else if (movable && !skillusable) {
+			else if(movable && !skillusable){
 				yield return OnlyMove (unit);
 			}
-			else {
+			else{
 				yield return FreeState (unit);
 			}
 			yield return unit.GetAI().StandbyOrRest ();
 		}
 		private static IEnumerator OnlyAttack(Unit unit){
-			while (true) {
+			while(true) {
 				yield return battleManager.ToDoBeforeAction ();
 
 				int selectedSkillIndex = 1;
@@ -437,8 +437,7 @@ namespace Battle.Turn{
 				ActiveSkill skill = BattleData.SelectedSkill;
 
 				Vector2 currPos = unit.GetPosition ();
-				if (!unit.HasEnoughAPToUseSkill (skill))
-					break;
+				if(!unit.HasEnoughAPToUseSkill(skill)) {break;}
 
 				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
 				Vector2 casterPos = currPos;

@@ -166,7 +166,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void ApplyAIInfo (){
-		List<AIInfo> aiInfoList = Parser.GetParsedAIInfo();
+		List<AIInfo> aiInfoList = Parser.GetParsedData<AIInfo>();
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;
 			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
@@ -183,7 +183,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void GenerateUnits(){
-		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
+		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int GeneratedPC = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
@@ -338,14 +338,6 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units) {unit.ApplyTriggerOnPhaseEnd();}
 	}
 
-	void LoadActiveSkills(){
-		activeSkillList = Parser.GetParsedData<ActiveSkill>();
-	}
-
-	void LoadPassiveSkills(){
-		passiveSkillList = Parser.GetPassiveSkills();
-	}
-
     void LoadUnitStatusEffects(){
         statusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>();
     }
@@ -356,8 +348,8 @@ public class UnitManager : MonoBehaviour {
 
 	void Start() {
 		GameData.PartyData.CheckLevelData();
-		LoadActiveSkills();
-		LoadPassiveSkills();
+		activeSkillList = Parser.GetParsedData<ActiveSkill>();
+		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
         LoadUnitStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();

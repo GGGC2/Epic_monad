@@ -21,26 +21,32 @@ public class UnitInfo {
 	public Element element;
 	public Celestial celestial;
 	public bool isObject;
+	public Dictionary<Stat, int> StatChanges;
 
 	public UnitInfo (string data){
-		StringParser commaParser = new StringParser(data, ',');
-		this.index = commaParser.ConsumeInt(); 
-		this.name = commaParser.Consume();
-		this.nameInCode = commaParser.Consume();
-		this.side = commaParser.ConsumeEnum<Side>();
+		StringParser commaParser = new StringParser(data, '\t');
+		index = commaParser.ConsumeInt(); 
+		name = commaParser.Consume();
+		nameInCode = commaParser.Consume();
+		side = commaParser.ConsumeEnum<Side>();
 		int x = commaParser.ConsumeInt();
 		int y = commaParser.ConsumeInt();
-		this.initPosition = new Vector2(x, y);
-		this.initDirection = commaParser.ConsumeEnum<Direction>();
-		this.baseHealth = commaParser.ConsumeInt();
-		this.basePower = commaParser.ConsumeInt();
-		this.baseDefense = commaParser.ConsumeInt();
-		this.baseResistance = commaParser.ConsumeInt();
-		this.baseAgility = commaParser.ConsumeInt();
-		this.unitClass = commaParser.ConsumeEnum<UnitClass>();
-		this.element = commaParser.ConsumeEnum<Element>();
-		this.celestial = commaParser.ConsumeEnum<Celestial>();
-		this.isObject = commaParser.ConsumeBool();
+		initPosition = new Vector2(x, y);
+		initDirection = commaParser.ConsumeEnum<Direction>();
+		baseHealth = commaParser.ConsumeInt();
+		basePower = commaParser.ConsumeInt();
+		baseDefense = commaParser.ConsumeInt();
+		baseResistance = commaParser.ConsumeInt();
+		baseAgility = commaParser.ConsumeInt();
+		unitClass = commaParser.ConsumeEnum<UnitClass>();
+		element = commaParser.ConsumeEnum<Element>();
+		celestial = commaParser.ConsumeEnum<Celestial>();
+		isObject = commaParser.ConsumeBool();
+		StatChanges = new Dictionary<Stat, int>();
+		int StatChangeCount = commaParser.ConsumeInt();
+		for(int i = 0; i < StatChangeCount; i++){
+			StatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());
+		}
 	}
 
 	public static int GetStat(string unitName, Stat type){

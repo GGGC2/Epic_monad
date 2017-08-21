@@ -54,8 +54,17 @@ public class Parser : MonoBehaviour{
 		}else if(typeof(T) == typeof(ActiveSkill)){
 			object data = new ActiveSkill(rowData);
 			return (T)data;
+		}else if(typeof(T) == typeof(PassiveSkill)){
+			object data = new PassiveSkill(rowData);
+			return (T)data;
 		}else if(typeof(T) == typeof(BattleTrigger)){
 			object data = new BattleTrigger(rowData);
+			return (T)data;
+		}else if(typeof(T) == typeof(AIInfo)){
+			object data = new AIInfo(rowData);
+			return (T)data;
+		}else if(typeof(T) == typeof(UnitInfo)){
+			object data = new UnitInfo(rowData);
 			return (T)data;
 		}
 		else{
@@ -67,68 +76,21 @@ public class Parser : MonoBehaviour{
 	}
 
 	static TextAsset GetDataAddress<T>(){
+		BattleManager BM = FindObjectOfType<BattleManager>();
 		string address = "";
 		if(typeof(T) == typeof(GlossaryData)) {address = "Data/Glossary";}
 		else if(typeof(T) == typeof(DialogueData)) {address = "Data/" + SceneData.dialogueName;}
 		else if(typeof(T) == typeof(TutorialScenario)) {address = "Tutorial/" + SceneManager.GetActiveScene().name + SceneData.stageNumber.ToString();}
 		else if(typeof(T) == typeof(UnitStatusEffectInfo)) {address = "Data/UnitStatusEffectData";}
 		else if(typeof(T) == typeof(ActiveSkill)) {address = "Data/ActiveSkillData";}
-		else if(typeof(T) == typeof(BattleTrigger)) {return FindObjectOfType<BattleManager>().GetBattleConditionData();}
+		else if(typeof(T) == typeof(PassiveSkill)) {address = "Data/PassiveSkillData";}
+		else if(typeof(T) == typeof(BattleTrigger)) {return BM.GetBattleConditionData();}
+		else if(typeof(T) == typeof(AIInfo)) {return BM.GetAIData();}
+		else if(typeof(T) == typeof(UnitInfo)) {return BM.GetUnitData();}
 
 		if(address == "") {Debug.LogError("Invalid Input : " + typeof(T));}		
 		
 		return Resources.Load<TextAsset>(address);
-	}
-
-	public static List<AIInfo> GetParsedAIInfo(){
-		BattleManager BM = FindObjectOfType<BattleManager> ();
-		Debug.Assert (BM != null);
-
-		List<AIInfo> aiInfoList = new List<AIInfo>();
-
-		TextAsset csvFile = FindObjectOfType<BattleManager>().GetAIData() as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedAIInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedAIInfoStrings.Length; i++){
-			try{
-				AIInfo aiInfo = new AIInfo(unparsedAIInfoStrings[i]);
-				aiInfoList.Add(aiInfo);
-			}catch (Exception e){
-				Debug.LogError("Parsing failed in \n" +
-						" line is : " + i + "\n" +
-						" data is : " + unparsedAIInfoStrings[i]);
-				throw e;
-			}
-		}
-
-		return aiInfoList;
-	}
-
-	public static List<UnitInfo> GetParsedUnitInfo(){
-		List<UnitInfo> unitInfoList = new List<UnitInfo>();
-		BattleManager BM = FindObjectOfType<BattleManager>();
-		Debug.Assert(BM != null);
-		
-		string csvText = BM.GetUnitData().text;
-		string[] unparsedUnitInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for (int i = 1; i < unparsedUnitInfoStrings.Length; i++){
-			try
-			{
-				UnitInfo unitInfo = new UnitInfo(unparsedUnitInfoStrings[i]);
-				unitInfoList.Add(unitInfo);
-			}
-			catch (Exception e)
-			{
-				Debug.LogError("Parsing failed in \n" +
-						" line is : " + i + "\n" +
-						" data is : " + unparsedUnitInfoStrings[i]);
-				throw e;
-			}
-		}
-
-		return unitInfoList;
 	}
 
 	private static List<Skill> skillInfosCache;
@@ -143,7 +105,7 @@ public class Parser : MonoBehaviour{
 			Skills.Add(skill);
 		}
 
-		//if(SceneData.stageNumber >= Setting.passiveOpenStage){
+		if(SceneData.stageNumber >= Setting.passiveOpenStage){
 			Debug.Log("passiveOpen : " + SceneData.stageNumber + "Stage");
 			string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
 			string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -151,23 +113,9 @@ public class Parser : MonoBehaviour{
 				Skill skill = new PassiveSkill(passiveRowDataList[i]);
 				Skills.Add(skill);
 			}
-		//}
-
-		return Skills;
-	}
-	
-	public static List<PassiveSkill> GetPassiveSkills(){
-		List<PassiveSkill> PassiveSkills = new List<PassiveSkill>();
-
-		string csvText = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
-		string[] rowDataList = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-		for(int i = 1; i < rowDataList.Length; i++){
-			PassiveSkill skill = new PassiveSkill(rowDataList[i]);
-			PassiveSkills.Add(skill);
 		}
 
-		return PassiveSkills;
+		return Skills;
 	}
 
 	private static Dictionary<string, Skill> skillByName;
@@ -178,7 +126,7 @@ public class Parser : MonoBehaviour{
 			List<ActiveSkill> ActiveSkillList = GetParsedData<ActiveSkill>();
 			foreach (ActiveSkill skill in ActiveSkillList)
 				skillByName.SmartAdd(skill.korName, skill);
-			List<PassiveSkill> PassiveSkillList = GetPassiveSkills();
+			List<PassiveSkill> PassiveSkillList = GetParsedData<PassiveSkill>();
 			foreach(PassiveSkill skill in PassiveSkillList)
 				skillByName.SmartAdd(skill.korName, skill);
 		}
@@ -200,7 +148,7 @@ public class Parser : MonoBehaviour{
 					skillByUnit.SmartAdd(skill.owner, new List<Skill>());
 				skillByUnit[skill.owner].Add(skill);
 			}
-			List<PassiveSkill> PassiveSkillList = GetPassiveSkills();
+			List<PassiveSkill> PassiveSkillList = GetParsedData<PassiveSkill>();
 			foreach(PassiveSkill skill in PassiveSkillList){
 				if (!skillByUnit.ContainsKey(skill.owner))
 					skillByUnit.SmartAdd(skill.owner, new List<Skill>());
@@ -258,8 +206,7 @@ public class Parser : MonoBehaviour{
 		return tileInfoList;
 	}
 
-	public static List<StoryInfo> GetParsedStoryInfo()
-	{
+	public static List<StoryInfo> GetParsedStoryInfo(){
 		List<StoryInfo> stories = new List<StoryInfo>();
 		TextAsset csvFile;
 

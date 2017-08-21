@@ -1082,8 +1082,7 @@ public class Unit : MonoBehaviour{
 		healthViewer.SetInitHealth(GetMaxHealth(), side);
 	}
 
-	void LoadSprite()
-	{
+	void LoadSprite(){
 		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + nameInCode);
 
 		if (sprites.Length == 0)

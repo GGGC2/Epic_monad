@@ -65,7 +65,7 @@ public class SkillTreeManager : MonoBehaviour
 	void Start(){
 		partyUnitNames = PartyDB.GetPartyUnits();
 
-		unitInfos = Parser.GetParsedUnitInfo();
+		unitInfos = Parser.GetParsedData<UnitInfo>();
 		skills = Parser.GetSkills();
 		foreach (Skill skill in skills){
 			string skillName = skill.korName;
