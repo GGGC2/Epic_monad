@@ -36,7 +36,7 @@ public class TileManager : MonoBehaviour {
 		if (tiles.ContainsKey(key)){
 			return tiles[key];
 		}else{
-			Debug.Log("there is NO tile at position " + position.x + ", " + position.y);
+			//Debug.Log("there is NO tile at position " + position.x + ", " + position.y);
 			return null;
 		}
 	}

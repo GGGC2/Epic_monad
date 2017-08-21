@@ -334,7 +334,6 @@ namespace Battle.Turn {
 
 			BattleManager.MoveCameraToUnit(caster);
 			BattleData.currentState = CurrentState.FocusToUnit;
-			yield return BattleData.battleManager.AtActionEnd();
         }
 
 		public static IEnumerator WaitChain (Casting casting) {
@@ -423,6 +422,8 @@ namespace Battle.Turn {
 				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
 				caster.DisableChainText ();
 			}
+
+			yield return BattleData.battleManager.AtActionEnd();
         }
     }
 }

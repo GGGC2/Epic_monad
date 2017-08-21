@@ -791,22 +791,10 @@ public class Unit : MonoBehaviour{
 
 	// FIXME : AI가 공격 외의 기술을 갖게 되는 시점이 오면 reward 함수를 확장해야 한다
 	public float CalculateRewardByCastingToThisUnit(Casting casting){
-		CastingApply castingApply = new CastingApply (casting, this);
-		List<Chain> allTriggeredChains = ChainList.GetAllChainTriggered (casting);
-		int chainCombo = allTriggeredChains.Count;
-		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
-		int damage = CalculateDamageByCasting(castingApply, true);	
-		int remainHP = GetCurrentHealth () + GetRemainShield();
-		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage)
-			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
-		damage = Math.Min (damage, remainHP);
-
-		float killNeedCount;
-		//원턴킬 가능시 보너스로 1이 아니라 작은 값으로 설정
-		if (damage == remainHP)
-			killNeedCount = 0.3f;
-		else
-			killNeedCount = remainHP / damage;
+		float killNeedCount = CalculateFloatKillNeedCount(casting);
+		if (killNeedCount <= 1) {
+			killNeedCount = 0.4f;
+		}
 
 		float sideFactor = 0;
 		Unit caster = casting.Caster;
@@ -817,7 +805,7 @@ public class Unit : MonoBehaviour{
 
 		float PCFactor = 1;
 		if (IsPC)
-			PCFactor = 3;
+			PCFactor = 2;
 
 		float reward = 0;
 		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
@@ -825,7 +813,29 @@ public class Unit : MonoBehaviour{
 		return reward;
 	}
 
-	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다
+	public float CalculateFloatKillNeedCount(Casting casting){
+		CastingApply castingApply = new CastingApply (casting, this);
+		List<Chain> allTriggeredChains = ChainList.GetAllChainTriggered (casting);
+		int chainCombo = allTriggeredChains.Count;
+		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
+		int damage = CalculateDamageByCasting(castingApply, true);	
+
+		int remainHP = GetCurrentHealth () + GetRemainShield();
+		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage) {
+			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
+		}
+		
+		damage = Math.Min (damage, remainHP);
+
+		float killNeedCount = remainHP / damage;
+		return killNeedCount;
+	}
+
+	public int CalculateIntKillNeedCount(Casting casting){
+		return (int)CalculateFloatKillNeedCount (casting);
+	}
+
+	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다(지금은 안 쓰는데 나중에 쓸지도)
 	public float CalculatePredictReward(Unit caster, ActiveSkill skill){
 		// 접근했을 때 실제로 서로가 위치한 타일도 모르고 어느 방향으로 기술 시전할지도 모르므로 가짜로 넣어둠
 		SkillLocation pseudoLocation = new SkillLocation(caster.GetTileUnderUnit(), this.GetTileUnderUnit(), Direction.LeftDown);

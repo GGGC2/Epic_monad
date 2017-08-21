@@ -15,12 +15,15 @@ public static class PathFinder {
 			this.tileWithPath = tileWithPath;
 		}
 	}
-	
+
+	public static Dictionary<Vector2, TileWithPath> CalculateMovablePathsForAI(Unit unit, ActiveSkill skill){
+		return CalculatePathsFromThisTileForAI (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint (), skill);
+	}
 	public static Dictionary<Vector2, TileWithPath> CalculateMovablePaths(Unit unit){
 		return CalculatePathsFromThisTile (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint ());
 	}
 
-	// AI용 경로탐색으로 걸림돌이 있으면 부수고 가는 경우까지 고려
+	// AI용 경로탐색이다. 걸림돌이 있으면 부수고 가는 경우까지 고려한다.
 	public static Dictionary<Vector2, TileWithPath> CalculatePathsFromThisTileForAI(Unit unit, Tile tile, int maxAPUse, ActiveSkill skill){
 		Dictionary<Vector2, Tile> tiles = TileManager.Instance.GetAllTiles();
 		Vector2 startPos = tile.GetTilePos ();
@@ -38,23 +41,28 @@ public static class PathFinder {
 			Vector2 newPosition = newTileTuple.tilePosition;
 			TileWithPath newTileWithPath = newTileTuple.tileWithPath;
 			foreach (Direction direction in EnumUtil.directions) {
-				SearchNearbyTile (tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Utility.ToVector2(direction), maxAPUse);
+				SearchNearbyTileForAI (tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Utility.ToVector2(direction), maxAPUse, skill);
 			}
 		}
+
+		Debug.Log ("AI pathfinding ended");
+
 		return tilesWithPath;
 	}
 
+	// AI용이다. 장애물이 있는 타일은 갈 수 없다고 치는 게 아니라 그냥 장애물을 부수는 데 필요한 AP를 추가한다.
 	static void SearchNearbyTileForAI(Dictionary<Vector2, Tile> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
-		Queue<TileTuple> tileQueue, Unit unit, Vector2 tilePosition, Vector2 nearbyTilePosition, int maxAPUse){
+		Queue<TileTuple> tileQueue, Unit unit, Vector2 currentTilePosition, Vector2 nearbyTilePosition, int maxAPUse, ActiveSkill skill){
+
 		if (!tiles.ContainsKey(nearbyTilePosition)) return;
 
+		Tile currentTile = tiles[currentTilePosition];
 		Tile nearbyTile = tiles[nearbyTilePosition];
 
-		Tile currentTile = tiles[tilePosition];
 		int deltaHeight = Mathf.Abs(currentTile.GetHeight() - nearbyTile.GetHeight());
 		if (deltaHeight >= 2) return;
 
-		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];
+		TileWithPath prevTileWithPath = tilesWithPath[currentTilePosition];
 		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath, unit);
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
 
@@ -62,8 +70,25 @@ public static class PathFinder {
 			Unit obstacle = nearbyTile.GetUnitOnTile ();
 
 			// 중립 유닛도 포함해야 하는데...
+			// 한칸 바로 앞을 공격할 수 없는 AI가 나오면 수정해야 함
 			if (obstacle.IsSeenAsEnemyToThisAIUnit (unit)) {
-				// FIXME : 구현중
+				SkillLocation location;
+				if (skill.GetSkillType () != SkillType.Point) {
+					location = new SkillLocation (currentTile, currentTile, Utility.VectorToDirection (nearbyTilePosition - currentTilePosition));
+				} else {
+					location = new SkillLocation (currentTile, nearbyTile, Utility.GetDirectionToTarget (currentTilePosition, nearbyTilePosition));
+				}
+				Casting casting = new Casting (unit, skill, location);
+				int destroyNeedCount = obstacle.CalculateIntKillNeedCount (casting);
+				if (destroyNeedCount > 100) {
+					Debug.Log ("Destroy need count is over 100");
+					return;
+				}
+				int destroyCost = destroyNeedCount * unit.GetActualRequireSkillAP (skill);
+				requireAP += destroyCost;
+				nearbyTileWithPath.AddDestroyUnitCost (destroyCost);
+			} else {
+				return;
 			}
 		}
 

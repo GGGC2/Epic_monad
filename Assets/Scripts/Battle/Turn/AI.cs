@@ -41,7 +41,7 @@ namespace Battle.Turn{
 			Vector2 unitPos = unit.GetPosition ();
 			int minAPUse = unit.MinAPUseForStandbyForAI ();
 
-			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTile (unit, unitTile, int.MaxValue);
+			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTileForAI (unit, unitTile, int.MaxValue, skill);
 			TileWithPath bestFinalTileWithPath = new TileWithPath (unit.GetTileUnderUnit ());
 			float maxFinalReward = 0;
 			Unit caster = unit;
@@ -160,10 +160,11 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
+			/*
 			if (unit.GetNameInCode () == "kashasty_Escape") {
 				yield return AIKashasty.DecideActionAndAct (unit);
 				yield break;
-			}
+			}*/
 
 			if (!_AIData.IsActive()) {
 				CheckActiveTrigger();
@@ -200,18 +201,45 @@ namespace Battle.Turn{
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathForPainting = PathFinder.CalculateMovablePaths(unit);
 
-			yield return PaintMovableTiles(movableTilesWithPath);
+			yield return PaintMovableTiles(movableTilesWithPathForPainting);
 
-			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPath, 0);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI(unit, selectedSkill);
+
+			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPathWithDestroying, 0);
+
 			if (destTile != null) {
-				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+				yield return MoveWithDestroyRoutine (unit, selectedSkill, movableTilesWithPathWithDestroying, destTile);
 				state = State.CastingLoop;
 			} else {
 				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
 				state = State.Approach;
 				yield break;
+			}
+		}
+
+		public static int obstacleDestroyCost = 0;
+
+		public static IEnumerator DestroyObstacle(Unit unit, ActiveSkill skill, Tile obstacleTile){
+			obstacleDestroyCost = 0;
+
+			Tile currTile = unit.GetTileUnderUnit ();
+			Vector2 currPos = currTile.GetTilePos ();
+			Vector2 obstaclePos = obstacleTile.GetTilePos ();
+
+			SkillLocation location;
+			if (skill.GetSkillType () != SkillType.Point) {
+				location = new SkillLocation (currTile, currTile, Utility.VectorToDirection (obstaclePos - currPos));
+			} else {
+				location = new SkillLocation (currTile, obstacleTile, Utility.GetDirectionToTarget (currPos, obstaclePos));
+			}
+			Casting casting = new Casting (unit, skill, location);
+
+			while (obstacleTile.IsUnitOnTile ()) {
+				yield return battleManager.ToDoBeforeAction ();
+				yield return UseSkill (casting);
+				obstacleDestroyCost += unit.GetActualRequireSkillAP (skill);
 			}
 		}
 
@@ -223,14 +251,44 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		public static IEnumerator MoveWithDestroyRoutine(Unit unit, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
+			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
+			List<Tile> destPath = destTileWithPath.path;
+			int destRequireAP = destTileWithPath.requireActivityPoint;
+			destPath.Remove (unit.GetTileUnderUnit ());
+
+			Tile prevTile = unit.GetTileUnderUnit ();
+			List<Tile> prevPath = new List<Tile> ();
+			int prevRequireAP = 0;
+			foreach (Tile tile in destPath) {
+				if (tile.IsUnitOnTile ()) {
+					TileWithPath intermediateTileWithPath = movableTilesWithPathWithDestroying [prevTile.GetTilePos ()];
+
+					List<Tile> realPath = intermediateTileWithPath.path.Except (prevPath).ToList ();
+					int realRequireAP = intermediateTileWithPath.requireActivityPoint - prevRequireAP;
+
+					yield return MoveToTheTileAndChangeDirection (unit, prevTile, realPath, realRequireAP);
+
+					prevPath = intermediateTileWithPath.path;
+					prevRequireAP = intermediateTileWithPath.requireActivityPoint;
+
+					yield return DestroyObstacle (unit, skill, tile);
+					prevRequireAP += obstacleDestroyCost;
+				}
+				prevTile = tile;
+			}
+
+			List<Tile> remainPath = destPath.Except (prevPath).ToList ();
+			int remainRequireAP = destRequireAP - prevRequireAP;
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, remainPath, remainRequireAP);
+		}
+
+		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, List<Tile> path, int requireAP){
 			Vector2 destPos = destTile.GetTilePos ();
-			List<Tile> path = movableTilesWithPath [destPos].path;
 
 			if (path.Count > 0) {
-				int totalUseAP = movableTilesWithPath [destPos].requireActivityPoint;
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, path, unit.GetDirection ());
-				yield return Move (unit, destTile, finalDirection, totalUseAP, path.Count+1);
+				yield return Move (unit, destTile, finalDirection, requireAP, path.Count+1);
 			}
 			else { //Count가 0이면 방향전환도 이동도 안 함
 				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
@@ -249,14 +307,17 @@ namespace Battle.Turn{
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			int selectedSkillIndex = 1;
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-			ActiveSkill selectedSkill = BattleData.SelectedSkill;
+			ActiveSkill skill = BattleData.SelectedSkill;
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathForPainting = PathFinder.CalculateMovablePaths(unit);
+			yield return PaintMovableTiles(movableTilesWithPathForPainting);
 
-			yield return PaintMovableTiles(movableTilesWithPath);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
 
-			Tile destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
-			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+			Tile destTile = AIUtil.GetBestApproachWorthTile(unit, skill, movableTilesWithPathWithDestroying);
+			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
+
+			yield return MoveWithDestroyRoutine (unit, skill, movableTilesWithPathWithDestroying, destTile);
 			state = State.StandbyOrRest;
 		}
 
@@ -503,7 +564,9 @@ namespace Battle.Turn{
 				if (destTile == null || TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
 					yield break;
 
-				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+				List<Tile> path = movableTilesWithPath [destTile.GetTilePos ()].path;
+				int moveAP = movableTilesWithPath [destTile.GetTilePos ()].requireActivityPoint;
+				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, path, moveAP);
 
 				while (true) {
 					if (!unit.HasEnoughAPToUseSkill (skill))

@@ -623,7 +623,6 @@ public class ActiveSkill : Skill{
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
-		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();
 	}
 

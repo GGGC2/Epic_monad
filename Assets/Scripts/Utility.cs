@@ -30,19 +30,15 @@ public class Utility : MonoBehaviour {
 		return mouseDirectionByUnit;
 	}
 
-	public static float GetDegreeToTarget(Unit unit, Vector2 targetPosition)
-	{
-		Vector2 unitPosition = unit.GetPosition();
-		float deltaDegree = Mathf.Atan2(targetPosition.y - unitPosition.y, targetPosition.x - unitPosition.x) * Mathf.Rad2Deg;
-		
+	public static float GetDegreeToTarget(Vector2 startPosition, Vector2 targetPosition){
+		float deltaDegree = Mathf.Atan2(targetPosition.y - startPosition.y, targetPosition.x - startPosition.x) * Mathf.Rad2Deg;
 		return deltaDegree;
 	}
 	
 	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles)
 	{
 		Vector2 averagePos = new Vector2(0, 0);
-		foreach (var tile in selectedTiles)
-		{
+		foreach (var tile in selectedTiles){
 			averagePos += tile.GetTilePos();
 		}
 		averagePos = averagePos / (float)selectedTiles.Count;
@@ -50,10 +46,12 @@ public class Utility : MonoBehaviour {
 		return GetDirectionToTarget(unit, averagePos);
 	}
 	
-	public static Direction GetDirectionToTarget(Unit unit, Vector2 targetPosition)
-	{
-		float deltaDegree = GetDegreeToTarget(unit, targetPosition);
-		
+	public static Direction GetDirectionToTarget(Unit unit, Vector2 targetPosition){
+		return GetDirectionToTarget (unit.GetPosition (), targetPosition);
+	}
+	public static Direction GetDirectionToTarget(Vector2 startPosition, Vector2 targetPosition){
+		float deltaDegree = GetDegreeToTarget(startPosition, targetPosition);
+
 		if ((-45 < deltaDegree) && (deltaDegree <= 45)) return Direction.RightDown;
 		else if ((45 < deltaDegree) && (deltaDegree <= 135)) return Direction.RightUp;
 		else if ((-135 < deltaDegree) && (deltaDegree <= -45)) return Direction.LeftDown;
@@ -70,7 +68,7 @@ public class Utility : MonoBehaviour {
 	{
 		if (unit == target) return 180;
 		
-		float deltaDegreeAtLook = GetDegreeToTarget(unit, target.GetPosition());
+		float deltaDegreeAtLook = GetDegreeToTarget(unit.GetPosition(), target.GetPosition());
 		
 		float targetDegree;
 		if (target.GetDirection() == Direction.RightDown) targetDegree = 0;
@@ -80,15 +78,10 @@ public class Utility : MonoBehaviour {
 		
 		float deltaDegreeAtAttack = Mathf.Abs(targetDegree - deltaDegreeAtLook);
 		
-		// if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) Debug.LogWarning("Back attack to " + target.GetName() + " Degree : " + deltaDegreeAtAttack);
-		// else if ((deltaDegreeAtAttack < 135) || (deltaDegreeAtAttack > 225)) Debug.LogWarning("Side attack to " + target.GetName() + " Degree : " + deltaDegreeAtAttack);
-		// else Debug.LogWarning("Front attack to " + target.GetName() + " Degree : " + deltaDegreeAtAttack);
-		
 		return deltaDegreeAtAttack;
 	}
 	
-	public static float GetDirectionBonus(Unit unit, Unit target)
-	{
+	public static float GetDirectionBonus(Unit unit, Unit target){
 		if (target == null) return 1.0f;
 
 		if (target.IsObject) return 1.0f; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
@@ -99,29 +92,32 @@ public class Utility : MonoBehaviour {
 		else return 1.0f;
 	}
 	
-	public static float GetCelestialBonus(Unit attacker, Unit defender)
-	{
+	public static float GetCelestialBonus(Unit attacker, Unit defender){
 		Celestial attackerCelestial = attacker.GetCelestial();
 		Celestial defenderCelestial = defender.GetCelestial();
 		
 		// Earth > Sun > Moon > Earth
-		if (attackerCelestial == Celestial.Sun)
-		{
-			if (defenderCelestial == Celestial.Moon) return 1.2f;
-			else if (defenderCelestial == Celestial.Earth) return 0.8f;
-			else return 1.0f; 
-		}
-		else if (attackerCelestial == Celestial.Moon)
-		{
-			if (defenderCelestial == Celestial.Earth) return 1.2f;
-			else if (defenderCelestial == Celestial.Sun) return 0.8f;
-			else return 1.0f; 
-		}
-		else if (attackerCelestial == Celestial.Earth)
-		{
-			if (defenderCelestial == Celestial.Sun) return 1.2f;
-			else if (defenderCelestial == Celestial.Moon) return 0.8f;
-			else return 1.0f; 
+		if (attackerCelestial == Celestial.Sun) {
+			if (defenderCelestial == Celestial.Moon)
+				return 1.2f;
+			else if (defenderCelestial == Celestial.Earth)
+				return 0.8f;
+			else
+				return 1.0f; 
+		} else if (attackerCelestial == Celestial.Moon) {
+			if (defenderCelestial == Celestial.Earth)
+				return 1.2f;
+			else if (defenderCelestial == Celestial.Sun)
+				return 0.8f;
+			else
+				return 1.0f; 
+		} else if (attackerCelestial == Celestial.Earth) {
+			if (defenderCelestial == Celestial.Sun)
+				return 1.2f;
+			else if (defenderCelestial == Celestial.Moon)
+				return 0.8f;
+			else
+				return 1.0f; 
 		}
 		
 		else return 1;
@@ -268,14 +264,7 @@ public class Utility : MonoBehaviour {
 			Vector2 destPos = destTile.GetTilePos ();
 
 			Vector2 delta = destPos - prevLastTilePosition;
-			if (delta == new Vector2 (1, 0))
-				finalDirection = Direction.RightDown;
-			else if (delta == new Vector2 (-1, 0))
-				finalDirection = Direction.LeftUp;
-			else if (delta == new Vector2 (0, 1))
-				finalDirection = Direction.RightUp;
-			else // delta == new Vector2 (0, -1)
-				finalDirection = Direction.LeftDown;
+			finalDirection = VectorToDirection(delta);
 		}
 		else {
 			finalDirection = originalDirection;
@@ -283,43 +272,35 @@ public class Utility : MonoBehaviour {
 		return finalDirection;
 	}
 
+	public static Direction VectorToDirection(Vector2 vector){
+		if (vector == new Vector2 (1, 0))
+			return Direction.RightDown;
+		else if (vector == new Vector2 (-1, 0))
+			return Direction.LeftUp;
+		else if (vector == new Vector2 (0, 1))
+			return Direction.RightUp;
+		else // vector == new Vector2 (0, -1)
+			return Direction.LeftDown;
+	}
+
 	public  static Vector2 ToVector2(Direction dir)
 	{
 		if(dir == Direction.LeftUp)
-		{
 			return Vector2.left;
-		}
-
 		else if(dir == Direction.LeftDown)
-		{
 			return Vector2.down;
-		}
-
 		else if(dir == Direction.RightUp)
-		{
 			return Vector2.up;
-		}
-
 		else if(dir == Direction.RightDown)
-		{
 			return Vector2.right;
-		}
 
 		else if(dir == Direction.Left)
-		{
 			return Vector2.left+Vector2.down;
-		}
-
 		else if(dir == Direction.Right)
-		{
 			return Vector2.right+Vector2.up;
-		}
-
 		else if(dir == Direction.Up)
-		{
 			return Vector2.left+Vector2.up;
-		}
-
-		else return Vector2.right+Vector2.down;
+		else
+			return Vector2.right+Vector2.down;
 	}
 }
