@@ -79,8 +79,9 @@ public class BattleManager : MonoBehaviour{
 					BattleData.selectedUnit = BattleData.readiedUnits [0];
 					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
 
-					if (BattleData.selectedUnit.IsAI) {yield return BattleData.selectedUnit.GetAI().UnitTurn ();}
-					else{
+					if (BattleData.selectedUnit.IsAI){
+						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
+					}else{
 						Debug.Log(BattleData.selectedUnit.name + " is NOT AI.");
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 					}
@@ -118,7 +119,7 @@ public class BattleManager : MonoBehaviour{
 	public void StartUnitTurn(Unit unit){
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
-		Debug.Log(unit.GetName() + "'s turn");
+		Debug.Log(unit.GetNameKor() + "'s turn");
 
 		BattleData.selectedUnit = unit;
 		BattleData.move = new BattleData.Move();
@@ -172,7 +173,7 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit deadUnit in BattleData.deadUnits){
-			Debug.Log(deadUnit.GetName() + " is dead");
+			Debug.Log(deadUnit.GetNameKor() + " is dead");
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
 			yield return DestroyDeadOrRetreatUnit (deadUnit, BattleTrigger.ActionType.Kill);
@@ -184,7 +185,7 @@ public class BattleManager : MonoBehaviour{
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit retreatUnit in BattleData.retreatUnits){
-			Debug.Log(retreatUnit.GetName() + " retreats");
+			Debug.Log(retreatUnit.GetNameKor() + " retreats");
 			yield return DestroyDeadOrRetreatUnit (retreatUnit, BattleTrigger.ActionType.Retreat);
 		}
 	}

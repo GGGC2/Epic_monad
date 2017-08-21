@@ -13,7 +13,7 @@ public class DeadUnitInfo{
 	public readonly Side unitSide;
 
 	public DeadUnitInfo(Unit unit){
-		unitName = unit.GetName();
+		unitName = unit.GetNameKor();
 		unitSide = unit.GetSide();
 	}
 }
@@ -23,7 +23,7 @@ public class RetreatUnitInfo{
 	public readonly Side unitSide;
 
 	public RetreatUnitInfo(Unit unit){
-		unitName = unit.GetName();
+		unitName = unit.GetNameKor();
 		unitSide = unit.GetSide();
 	}
 }
@@ -190,14 +190,14 @@ public class UnitManager : MonoBehaviour {
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.name == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
-			else if (unitInfo.name.Length >= 2 && unitInfo.name.Substring(0,2) == "PC") {PCName = unitInfo.name.Substring(2, unitInfo.name.Length-2);}
+			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
+			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
 			
 			if(PCName != ""){
-				unitInfo.name = UnitInfo.ConvertToKoreanName (PCName);
+				unitInfo.nameKor = UnitInfo.ConvertToKoreanName (PCName);
 				controllableUnitNameList.Add(PCName);
 					
-				if (unitInfo.name != "Empty") {
+				if (unitInfo.nameKor != "Empty") {
 					unitInfo.SetPCData(PCName);
 					GeneratedPC += 1;
 				}
@@ -210,11 +210,11 @@ public class UnitManager : MonoBehaviour {
 		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
 		if(countPC != null) {countPC.targetCount = GeneratedPC;}
 
-		unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
+		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
 		foreach (var unitInfo in unitInfoList){
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-			unit.ApplyUnitInfo(unitInfo);
+			unit.myInfo = unitInfo;
 			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
 
 			Vector2 initPosition = unit.GetInitPosition();

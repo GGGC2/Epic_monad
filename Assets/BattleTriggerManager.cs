@@ -101,11 +101,11 @@ public class BattleTriggerManager : MonoBehaviour {
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
 		if(trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any(x => x == unit.name))
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.side == Side.Ally)
+		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.GetSide() == Side.Ally)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
+		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.GetSide() == Side.Enemy)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsPC == true && unit.side == Side.Ally)
+		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
 			return true;
 		else
 			return false;
