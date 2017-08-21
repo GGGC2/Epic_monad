@@ -83,7 +83,7 @@ public class UIManager : MonoBehaviour
 	public void ActivateCommandUIAndSetName(Unit selectedUnit)
 	{
 		commandUI.SetActive(true);
-		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetName();
+		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetNameKor();
 	}
 
 	public void DisableCommandUI()
@@ -200,10 +200,10 @@ public class UIManager : MonoBehaviour
         unitViewerUI.SetActive(false);
 	}
 
-	public void SetSelectedUnitViewerUI(Unit selectedUnit)
-	{
-		if (selectedUnit == null)
+	public void SetSelectedUnitViewerUI(Unit selectedUnit){
+		if (selectedUnit == null){
 			return;
+		}
 		selectedUnitViewerUI.SetActive(true);
 		selectedUnitViewerUI.GetComponent<UnitViewer>().UpdateUnitViewer(selectedUnit);
 	}

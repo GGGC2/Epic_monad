@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Enums;
-using Battle.Skills;
 using Battle;
+using Battle.Skills;
 using GameData;
-
 using Save;
 
 public class HitInfo{
@@ -35,16 +34,11 @@ public class Unit : MonoBehaviour{
 	GameObject chainAttackerIcon;
 	List<HitInfo> latelyHitInfos;
 
-	int index; // 유닛의 고유 인덱스
-	new string name; // 한글이름
-	string nameInCode; // 영어이름
-
-	public Side side; // 진영. 적/아군
 	bool isAI = false; // AI 유닛인지 여부인데, 지형지물은 AI로 분류되지 않으므로 PC인지 확인하려면 !IsAI가 아니라 IsPC(=!isAI && !isObject로 아래에 get 함수로 있음)의 return 값을 받아야 한다
-	bool isObject; // '지형지물' 여부. 지형지물은 방향에 의한 추가피해를 받지 않으며 기술이 있을 경우 매 페이즈 모든 유닛의 턴이 끝난 후에 1회 행동한다
 	bool isAlreadyBehavedObject; //지형지물(오브젝트)일 때만 의미있는 값. 그 페이즈에 이미 행동했는가
 	int movedTileCount;
 	Battle.Turn.AI _AI;
+	public UnitInfo myInfo;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -54,11 +48,6 @@ public class Unit : MonoBehaviour{
 
     // 효과 리스트
     List<UnitStatusEffect> statusEffectList = new List<UnitStatusEffect>();
-
-	// 유닛 배치할때만 사용
-	Vector2 initPosition;
-    
-    Dictionary<Stat, int> baseStats;
 
     class ActualStat {
         public int value;
@@ -71,17 +60,7 @@ public class Unit : MonoBehaviour{
             this.appliedStatusEffects = new List<UnitStatusEffect>();
         }
     }
-    ActualStat actualHealth;
-    ActualStat actualPower;
-    ActualStat actualDefense;
-    ActualStat actualResistance;
-    ActualStat actualAgility;
     Dictionary<Stat, ActualStat> actualStats;
-
-	// type.
-	UnitClass unitClass;
-	Element element;
-	Celestial celestial;
 
 	// Variable values.
 	Vector2 position;
@@ -118,8 +97,9 @@ public class Unit : MonoBehaviour{
         return 0;
     }
     public int GetBaseStat(Stat stat) {
-        if (baseStats.ContainsKey(stat))
-            return baseStats[stat];
+        if (myInfo.baseStats.ContainsKey(stat)){
+            return myInfo.baseStats[stat];
+		}
         return 0;
     }
 	public float GetSpeed(){
@@ -135,12 +115,12 @@ public class Unit : MonoBehaviour{
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
 	public void AddMovedTileCount(int count) {
-		Debug.Log("Add " + count + " in " + name + "'s movedTileCount");
+		Debug.Log("Add " + count + " in " + myInfo.nameKor + "'s movedTileCount");
 		movedTileCount += count;
 	}
 	public void ResetMovedTileCount() {movedTileCount = 0;}
 	public int GetMovedTileCount() {return movedTileCount;}
-	public Vector2 GetInitPosition() { return initPosition; }
+	public Vector2 GetInitPosition() { return myInfo.initPosition; }
 	public List<ActiveSkill> GetSkillList() { return activeSkillList; }
 	public List<ActiveSkill> GetLearnedSkillList(){
 		var learnedSkills =
@@ -170,29 +150,25 @@ public class Unit : MonoBehaviour{
 			Debug.LogError("Invalid Input");
 			return 0;
 	}
-	public int GetCurrentActivityPoint() { return activityPoint; }
-	public void SetUnitClass(UnitClass unitClass) { this.unitClass = unitClass; }
-	public UnitClass GetUnitClass() { return unitClass; }
-	public void SetElement(Element element) { this.element = element; }
-	public Element GetElement() { return element; }
-	public void SetCelestial(Celestial celestial) { this.celestial = celestial; }
-	public Celestial GetCelestial() { return celestial; }
+	public int GetCurrentActivityPoint() {return activityPoint;}
+	public UnitClass GetUnitClass() {return myInfo.unitClass;}
+	public Element GetElement() {return myInfo.element;}
+	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
-	public string GetNameInCode() { return nameInCode; }
-	public int GetIndex() { return index; }
-	public string GetName() { return name; }
-	public void SetName(string name) { this.name = name; }
-	public Side GetSide() { return side; }
-	public bool IsAlly(Unit unit) { return side == unit.GetSide (); }
+	public string GetNameInCode() { return myInfo.nameEng; }
+	public int GetIndex() {return myInfo.index;}
+	public string GetNameKor() { return myInfo.nameKor; }
+	public Side GetSide() { return myInfo.side; }
+	public bool IsAlly(Unit unit) { return myInfo.side == unit.GetSide (); }
 	public bool IsSeenAsEnemyToThisAIUnit(Unit unit) { return Battle.Turn.AIUtil.IsSecondUnitEnemyToFirstUnit (unit, this); } //은신 상태에선 적으로 인식되지 않음
 	public void SetAsAI() { isAI = true; }
 	public void SetAI(Battle.Turn.AI _AI) { this._AI = _AI; }
 	public Battle.Turn.AI GetAI() { return _AI; }
 	public bool IsAI { get { return isAI; } }
-	public bool IsPC { get { return (!isAI) && (!isObject); } }
-	public bool IsObject { get { return isObject; } }
-    public Vector2 GetPosition() { return position; }
+	public bool IsPC { get { return (!isAI) && (!myInfo.isObject); } }
+	public bool IsObject { get { return myInfo.isObject; } }
+    public Vector2 GetPosition() {return position;}
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {
 		get { return transform.position; }
@@ -321,7 +297,7 @@ public class Unit : MonoBehaviour{
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
             if (statusEffectType != StatusEffectType.Etc)
-                actualStat.value = (int)CalculateActualAmount(baseStats[statType], statusEffectType);
+                actualStat.value = (int)CalculateActualAmount(myInfo.baseStats[statType], statusEffectType);
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -338,7 +314,7 @@ public class Unit : MonoBehaviour{
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
             
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
-            statsToUpdate[i].value = (int)CalculateActualAmount(baseStats[statsToUpdate[i].stat], statusEffectType);
+            statsToUpdate[i].value = (int)CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType);
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -423,7 +399,7 @@ public class Unit : MonoBehaviour{
             toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectRemoved(statusEffect, this);
         }
         if (toBeRemoved) {
-            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + this.nameInCode);
+            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             updateStats(statusEffect, false, true);
             UpdateSpriteByStealth();
@@ -504,7 +480,7 @@ public class Unit : MonoBehaviour{
 				appliedChangeList.Add (new StatChange (true, relativePowerBonus));
 
 				// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-				if (element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire) {
+				if (myInfo.element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire) {
 					appliedChangeList.Add (new StatChange (true, 1.2f));
 				}
 			}
@@ -521,13 +497,13 @@ public class Unit : MonoBehaviour{
 				}
 
 				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
-				if (element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
+				if (myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
 					appliedChangeList.Add (new StatChange (false, 30));
 				}
 			}
 
 			if (statusEffectType == StatusEffectType.SpeedChange) {
-				if (element == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
+				if (myInfo.element == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
 					appliedChangeList.Add (new StatChange (false, 15));
 				}
 			}
@@ -645,7 +621,7 @@ public class Unit : MonoBehaviour{
 			if (currentHealth < 0)
 				currentHealth = 0;
 
-			Debug.Log(damageAfterShieldApply + " damage applied to " + GetName());
+			Debug.Log(damageAfterShieldApply + " damage applied to " + GetNameKor());
 
 			DisplayDamageText(damageAfterShieldApply);
 
@@ -679,7 +655,7 @@ public class Unit : MonoBehaviour{
 				activityPoint -= damage;
 			else
 				activityPoint = 0;
-			Debug.Log(GetName() + " loses " + damage + "AP.");
+			Debug.Log(GetNameKor() + " loses " + damage + "AP.");
 		}
 	}
 
@@ -778,7 +754,7 @@ public class Unit : MonoBehaviour{
 	}
 
 	public void RegenerateActionPoint(){
-		if (!isObject) {
+		if (!myInfo.isObject) {
 			activityPoint = GetRegeneratedActionPoint ();
 			Debug.Log (name + " recover " + GetStat(Stat.Agility) + "AP. Current AP : " + activityPoint);
 		}
@@ -990,12 +966,11 @@ public class Unit : MonoBehaviour{
 		float partyLevel = (float)GameData.PartyData.level;
         
         actualStats = new Dictionary<Stat, ActualStat>();
-        actualStats.Add(Stat.MaxHealth, new ActualStat(baseStats[Stat.MaxHealth], Stat.MaxHealth));
-        actualStats.Add(Stat.Power, new ActualStat(baseStats[Stat.Power], Stat.Power));
-        actualStats.Add(Stat.Defense, new ActualStat(baseStats[Stat.Defense], Stat.Defense));
-        actualStats.Add(Stat.Resistance, new ActualStat(baseStats[Stat.Resistance], Stat.Resistance));
-        actualStats.Add(Stat.Agility, new ActualStat(baseStats[Stat.Agility], Stat.Agility));
-        actualStats.Add(Stat.Level, new ActualStat(GameData.PartyData.level, Stat.Level));
+        actualStats.Add(Stat.MaxHealth, new ActualStat(myInfo.baseStats[Stat.MaxHealth], Stat.MaxHealth));
+        actualStats.Add(Stat.Power, new ActualStat(myInfo.baseStats[Stat.Power], Stat.Power));
+        actualStats.Add(Stat.Defense, new ActualStat(myInfo.baseStats[Stat.Defense], Stat.Defense));
+        actualStats.Add(Stat.Resistance, new ActualStat(myInfo.baseStats[Stat.Resistance], Stat.Resistance));
+        actualStats.Add(Stat.Agility, new ActualStat(myInfo.baseStats[Stat.Agility], Stat.Agility));
     }
 
 	/*public void ApplyInfoSkillPos(UnitInfo unitInfo, List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
@@ -1011,7 +986,8 @@ public class Unit : MonoBehaviour{
 		Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 		tileUnderUnit.SetUnitOnTile(this);
 	}*/
-    public void ApplyUnitInfo(UnitInfo unitInfo) {
+
+    /*public void ApplyUnitInfo(UnitInfo unitInfo) {
         this.index = unitInfo.index;
 		this.name = unitInfo.name;
         this.nameInCode = unitInfo.nameInCode;
@@ -1029,13 +1005,14 @@ public class Unit : MonoBehaviour{
         this.element = unitInfo.element;
         this.celestial = unitInfo.celestial;
         this.isObject = unitInfo.isObject;
-    }
+		myInfo = unitInfo;
+    }*/
     public void ApplySkillList(List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
                                List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
         int partyLevel = GameData.PartyData.level;
 
         foreach (var activeSkill in activeSkills) {
-            if (activeSkill.owner == nameInCode && activeSkill.requireLevel <= partyLevel){
+            if (activeSkill.owner == myInfo.nameEng && activeSkill.requireLevel <= partyLevel){
                 // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
                 activeSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
                 activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
@@ -1045,7 +1022,7 @@ public class Unit : MonoBehaviour{
 
 		foreach (var passiveSkill in passiveSkills) {
             //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-            if (passiveSkill.owner == nameInCode && passiveSkill.requireLevel <= partyLevel){
+            if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
                 passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
                 passiveSkillList.Add(passiveSkill);
             }
@@ -1061,41 +1038,42 @@ public class Unit : MonoBehaviour{
     }
     UnitManager unitManager;
 	void Initialize(){
-		gameObject.name = nameInCode;
-
-		position = initPosition;
+		gameObject.name = myInfo.nameEng;
+		position = myInfo.initPosition;
 		startPositionOfPhase = position;
+		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
 		activityPoint = (int)(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
+		//Info에 넣어뒀던 변동사항 적용
+		foreach(KeyValuePair<Stat, int> change in myInfo.InitStatChanges){
+			if(change.Key == Stat.CurrentHealth){
+				currentHealth = GetMaxHealth() * (100-change.Value) / 100;
+			}else if(change.Key == Stat.CurrentAP){
+				activityPoint += change.Value;
+			}
+		}
 		
 		// 기본민첩성이 0인 유닛은 시작시 행동력이 0
-		if (baseStats[Stat.Agility] == 0)
+		if (myInfo.baseStats[Stat.Agility] == 0){
 			activityPoint = 0;
+		}
 		
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<UnitStatusEffect>();
 		latelyHitInfos = new List<HitInfo>();
 
-		healthViewer.SetInitHealth(GetMaxHealth(), side);
+		healthViewer.SetInitHealth(GetMaxHealth(), myInfo.side);
 	}
 
 	void LoadSprite(){
-		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + nameInCode);
+		UnityEngine.Object[] sprites = Resources.LoadAll("UnitImage/" + myInfo.nameEng);
 
-		if (sprites.Length == 0)
-		{
-			//Debug.LogError("Cannot find sprite for " + nameInCode);
-			if (side == Side.Ally)
-			{
-				sprites = Resources.LoadAll("UnitImage/notFound");
-			}
-			else
-			{
-				sprites = Resources.LoadAll("UnitImage/notFound_enemy");
-			}
+		if (sprites.Length == 0){
+			if (myInfo.side == Side.Ally) {sprites = Resources.LoadAll("UnitImage/notFound");}
+			else {sprites = Resources.LoadAll("UnitImage/notFound_enemy");}
 		}
 		spriteLeftUp = sprites[1] as Sprite;
 		spriteLeftDown = sprites[3] as Sprite;
@@ -1132,14 +1110,14 @@ public class Unit : MonoBehaviour{
 			RegenerateActionPoint();
 
 		if (Input.GetKeyDown(KeyCode.L)){
-			String log = name + "\n";
+			String log = myInfo.nameKor + "\n";
 			foreach (var skill in activeSkillList)
 			{
 				log += skill.GetName() + "\n";
 			}
 			Debug.LogError(log);
 
-			string passiveLog = name + "\n";
+			string passiveLog = myInfo.nameKor + "\n";
 			foreach (var passiveSkill in passiveSkillList)
 			{
 				passiveLog += passiveSkill.GetName() + "\n";

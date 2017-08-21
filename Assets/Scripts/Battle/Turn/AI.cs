@@ -338,7 +338,7 @@ namespace Battle.Turn{
 			// 일정 페이즈부터 활성화
 			else if (_AIData.activeTriggers.Contains(2)){
 				if (BattleData.currentPhase >= _AIData.activePhase) {
-					Debug.Log (unit.GetName () + " is activated because enough phase passed");
+					Debug.Log (unit.GetNameKor () + " is activated because enough phase passed");
 					satisfyActiveCondition = true;
 				}
 			}
@@ -361,7 +361,7 @@ namespace Battle.Turn{
 				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => AIUtil.IsSecondUnitEnemyToFirstUnit(unit, anyUnit));
 
 				if (isThereAnotherSideUnit){
-					Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
+					Debug.Log (unit.GetNameKor () + " is activated because its enemy came to nearby");
 					satisfyActiveCondition = true;
 				}
 			}
@@ -387,7 +387,7 @@ namespace Battle.Turn{
 
 				if (isThereAnotherSideUnit)
 				{
-					Debug.Log (unit.GetName () + " is activated because its enemy came to absolute position range");
+					Debug.Log (unit.GetNameKor () + " is activated because its enemy came to absolute position range");
 					satisfyActiveCondition = true;
 				}
 			}

@@ -33,10 +33,12 @@ public class TileManager : MonoBehaviour {
 
 	public Tile GetTile(Vector2 position){
 		Vector2 key = position;
-		if (tiles.ContainsKey(key))
+		if (tiles.ContainsKey(key)){
 			return tiles[key];
-		else
+		}else{
+			Debug.Log("there is NO tile at position " + position.x + ", " + position.y);
 			return null;
+		}
 	}
 
 	public Vector3 GetTilePos(Vector2 position){
