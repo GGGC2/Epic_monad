@@ -56,8 +56,8 @@ namespace Battle.Turn{
 					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 					float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
 
-					if (singleCastingReward > maxFinalReward) {
-						maxFinalReward = singleCastingReward;
+					if (reward > maxFinalReward) {
+						maxFinalReward = reward;
 						bestFinalTileWithPath = tileWithPath;
 					}
 				}
