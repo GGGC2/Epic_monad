@@ -9,7 +9,6 @@ using GameData;
 public class StandardPointPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler{
 	public GameObject Panel;
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
-		Debug.Log("OnPointerEnter");
 		Panel.SetActive(true);
 		Panel.transform.Find("Text").GetComponent<Text>().text = "턴 기준값 : " + (PartyData.level+60) + "(레벨 " + PartyData.level + ")";
 	}

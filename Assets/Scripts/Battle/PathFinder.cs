@@ -56,10 +56,11 @@ public static class PathFinder {
 
 		if (!tiles.ContainsKey(nearbyTilePosition)) return;
 
-		Tile currentTile = tiles[currentTilePosition];
+		Vector2 currPos = currentTilePosition;
+		Tile currTile = tiles[currentTilePosition];
 		Tile nearbyTile = tiles[nearbyTilePosition];
 
-		int deltaHeight = Mathf.Abs(currentTile.GetHeight() - nearbyTile.GetHeight());
+		int deltaHeight = Mathf.Abs(currTile.GetHeight() - nearbyTile.GetHeight());
 		if (deltaHeight >= 2) return;
 
 		TileWithPath prevTileWithPath = tilesWithPath[currentTilePosition];
@@ -69,21 +70,23 @@ public static class PathFinder {
 		if (nearbyTile.IsUnitOnTile ()) {
 			Unit obstacle = nearbyTile.GetUnitOnTile ();
 
-			// 중립 유닛도 포함해야 하는데...
 			// 한칸 바로 앞을 공격할 수 없는 AI가 나오면 수정해야 함
-			if (obstacle.IsSeenAsEnemyToThisAIUnit (unit)) {
+			if (obstacle.IsSeenAsEnemyToThisAIUnit (unit) || obstacle.GetSide() == Side.Neutral) {
+				Tile obstacleTile = nearbyTile;
+				Vector2 obstaclePos = obstacleTile.GetTilePos ();
+
 				SkillLocation location;
 				if (skill.GetSkillType () != SkillType.Point) {
-					location = new SkillLocation (currentTile, currentTile, Utility.VectorToDirection (nearbyTilePosition - currentTilePosition));
+					if (skill.GetSkillType () == SkillType.Route) {
+						location = new SkillLocation (currTile, obstacleTile, Utility.VectorToDirection (obstaclePos - currPos));
+					} else {
+						location = new SkillLocation (currTile, currTile, Utility.VectorToDirection (obstaclePos - currPos));
+					}
 				} else {
-					location = new SkillLocation (currentTile, nearbyTile, Utility.GetDirectionToTarget (currentTilePosition, nearbyTilePosition));
+					location = new SkillLocation (currTile, obstacleTile, Utility.GetDirectionToTarget (currPos, obstaclePos));
 				}
 				Casting casting = new Casting (unit, skill, location);
 				int destroyNeedCount = obstacle.CalculateIntKillNeedCount (casting);
-				if (destroyNeedCount > 100) {
-					Debug.Log ("Destroy need count is over 100");
-					return;
-				}
 				int destroyCost = destroyNeedCount * unit.GetActualRequireSkillAP (skill);
 				requireAP += destroyCost;
 				nearbyTileWithPath.AddDestroyUnitCost (destroyCost);
