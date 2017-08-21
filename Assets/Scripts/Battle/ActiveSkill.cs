@@ -366,8 +366,10 @@ public class ActiveSkill : Skill{
 									ignored = true;
 							}
 						}
-						if(!ignored)
-							StatusEffector.AttachStatusEffect(caster, this, target, realEffectRange);
+
+						if (!ignored) {
+							StatusEffector.AttachStatusEffect (caster, this, target, realEffectRange);
+						}
 					}
 				}
 				caster.ActiveFalseAllBonusText();
@@ -416,15 +418,18 @@ public class ActiveSkill : Skill{
 
 		// 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
 		List<UnitStatusEffect> statusEffectsToRemove =  caster.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
-		foreach(var statusEffect in statusEffectsToRemove)
-			caster.RemoveStatusEffect(statusEffect);
+		foreach (var statusEffect in statusEffectsToRemove) {
+			caster.RemoveStatusEffect (statusEffect);
+		}
 
 		if (totalEvasionChance > randomNumber) {
-			BattleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+			BattleData.uiManager.AppendNotImplementedLog ("EVASION SUCCESS");
 			// (타겟이) 회피 성공했을 경우 추가 효과
-			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent(caster, target);
+			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent (caster, target);
 			return true;
-		} else return false;
+		} else {
+			return false;
+		}
 	}
 
 	private static IEnumerator ApplyDamage(CastingApply castingApply, int chainCombo, bool isLastTarget) {

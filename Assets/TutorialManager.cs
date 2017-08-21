@@ -24,7 +24,7 @@ public class TutorialManager : MonoBehaviour {
 				cm.SetMovable(true);
 			}
 			EndTutorial ();
-		}else{
+		} else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>();
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			BattleData.onTutorial = true;
