@@ -78,11 +78,17 @@ namespace Battle.Turn{
 					TileWithPath tileWithPath = pair.Value;
 					Vector2 tilePos = tileWithPath.tile.GetTilePos ();
 					if (goalArea.Contains (tilePos)) {
+						Debug.Log (tilePos.x + " : " + tilePos.y);
 						allGoalPaths [pair.Key] = pair.Value;
 					}
 				}
 
 				bestFinalTileWithPath = GetMinRequireAPTileWithPath (allGoalPaths);
+
+				if(unit.GetCurrentActivityPoint() > bestFinalTileWithPath.requireActivityPoint){
+					bestTile=bestFinalTileWithPath.tile;
+					return bestTile;
+				}
 			}
 
 			List<Tile> path = bestFinalTileWithPath.path;
@@ -90,10 +96,6 @@ namespace Battle.Turn{
 			foreach (Tile tile in path) {
 				Vector2 tilePos = tile.GetTilePos ();
 				if (!movableTilesWithPath.ContainsKey (tilePos)) {
-					break;
-				}
-				if (goalArea.Contains (tilePos)) {
-					bestTile = tile;
 					break;
 				}
 				if (movableTilesWithPath [tilePos].requireActivityPoint >= minAPUse) {
