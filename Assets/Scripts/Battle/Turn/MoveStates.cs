@@ -41,7 +41,6 @@ namespace Battle.Turn{
 				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
 				BattleData.tileManager.PreselectTiles (movableTiles);
 
-				BattleData.uiManager.EnableCancelButtonUI();
 				BattleData.isWaitingUserInput = true;
 
 				BattleManager battleManager = BattleData.battleManager;
@@ -64,7 +63,6 @@ namespace Battle.Turn{
 
 				if (BattleData.triggers.rightClicked.Triggered || BattleData.triggers.cancelClicked.Triggered){
 					BattleData.unitManager.UpdateUnitOrder();
-					BattleData.uiManager.DisableCancelButtonUI();
 					BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 					BattleData.tileManager.DepreselectAllTiles ();
 
@@ -86,7 +84,6 @@ namespace Battle.Turn{
 				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
-				BattleData.uiManager.DisableCancelButtonUI();
 				yield return battleManager.StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint, distance));
 			}
 			yield return null;

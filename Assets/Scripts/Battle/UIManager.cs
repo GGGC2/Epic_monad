@@ -21,15 +21,10 @@ public class UIManager : MonoBehaviour
 	public CommandPanel commandPanel;
 	GameObject skillUI;
 	public SkillPanel skillPanel;
-	SkillCheckPanel skillCheckUI;
-    GameObject ApplyButton;
-	GameObject WaitButton;
-	GameObject destCheckUI;
 	GameObject unitViewerUI;
 	public GameObject selectedUnitViewerUI;
 	GameObject tileViewerUI;
 	SelectDirectionUI selectDirectionUI;
-	GameObject cancelButtonUI;
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
 	GameObject phaseUI;
@@ -46,17 +41,12 @@ public class UIManager : MonoBehaviour
 		commandPanel.Initialize ();
 		skillUI = GameObject.Find("SkillPanel");
 		skillPanel = skillUI.GetComponent<SkillPanel> ();
-		skillCheckUI = FindObjectOfType<SkillCheckPanel>();
-        ApplyButton = GameObject.Find("ApplyButton");
-		WaitButton = GameObject.Find("WaitButton");
-		destCheckUI = GameObject.Find("DestCheckPanel");
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
         statusEffectDisplayPanel = GameObject.Find("StatusEffectDisplayPanel");
         selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI = GameObject.Find("TileViewerPanel");
 		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
 		selectDirectionUI.Initialize ();
-		cancelButtonUI = GameObject.Find("CancelButtonPanel");
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovingUICanvas");
 		phaseUI = GameObject.Find("PhasePanel");
@@ -70,14 +60,11 @@ public class UIManager : MonoBehaviour
 	void Start(){
 		commandUI.SetActive(false);
 		skillUI.SetActive(false);
-		skillCheckUI.gameObject.SetActive(false);
-		destCheckUI.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
-		cancelButtonUI.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
@@ -181,49 +168,6 @@ public class UIManager : MonoBehaviour
 		skillUI.SetActive(false);
 	}
 
-	public void SetSkillCheckAP(Casting casting)
-	{
-		skillCheckUI.gameObject.SetActive(true);
-		int requireAP = casting.RequireAP;
-		string newAPText = "소모 AP : " + requireAP + "\n" +
-			"잔여 AP : " + (casting.Caster.GetCurrentActivityPoint() - requireAP);
-		skillCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
-	}
-
-	public void AddListenerToWaitButton(UnityEngine.Events.UnityAction action){
-		WaitButton.GetComponent<Button>().onClick.AddListener (action);
-	}
-	public void RemoveListenerToWaitButton(UnityEngine.Events.UnityAction action){
-		WaitButton.GetComponent<Button>().onClick.RemoveListener (action);
-	}
-
-	bool applyOrWaitOnOffLockOn=false;
-	public void LockApplyOrWaitOnOff(){
-		applyOrWaitOnOffLockOn = true;
-	}
-	public void UnlockApplyOrWaitOnOff(){
-		applyOrWaitOnOffLockOn = false;
-	}
-	public void EnableSkillCheckWaitButton(bool isApplyPossible, bool isWaitPossible){
-		if (applyOrWaitOnOffLockOn)
-			return;
-		skillCheckUI.gameObject.SetActive(true);
-        ApplyButton.GetComponent<Button>().interactable = isApplyPossible;
-		WaitButton.SetActive (isWaitPossible);
-	}
-
-	public void DisableSkillCheckUI()
-	{
-		skillCheckUI.gameObject.SetActive(false);
-	}
-
-	public void SetDestCheckUIAP(Unit selectedUnit, int totalUseActivityPoint){
-		destCheckUI.SetActive(true);
-		string newAPText = "소모 AP : " + totalUseActivityPoint + "\n" +
-			"잔여 AP : " + (selectedUnit.GetCurrentActivityPoint() - totalUseActivityPoint);
-		destCheckUI.transform.Find("APText").GetComponent<Text>().text = newAPText;
-	}
-
 	public IEnumerator MovePhaseUI(int currentPhase){
 		Image img1 = phaseUI.GetComponent<Image>();
 		Image img2 = phaseUI.transform.Find("AdditionalPanel").gameObject.GetComponent<Image>();
@@ -238,10 +182,6 @@ public class UIManager : MonoBehaviour
 		img2.DOFade(0, 0.5f);
 		iTween.MoveTo(phaseUI, iTween.Hash("position", new Vector3(1280,0,0), "islocal", true, "time", 1));
 		yield return null;
-	}
-
-	public void DisableDestCheckUI(){
-		destCheckUI.SetActive(false);
 	}
 
 	public void UpdateUnitViewer(Unit unitOnTile){
@@ -317,16 +257,6 @@ public class UIManager : MonoBehaviour
 	public void DisableSelectDirectionUI()
 	{
 		selectDirectionUI.gameObject.SetActive(false);
-	}
-
-	public void EnableCancelButtonUI()
-	{
-		cancelButtonUI.SetActive(true);
-	}
-
-	public void DisableCancelButtonUI()
-	{
-		cancelButtonUI.SetActive(false);
 	}
 
 	public void HideSkillNamePanelUI()

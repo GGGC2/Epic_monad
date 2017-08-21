@@ -406,20 +406,6 @@ public class BattleManager : MonoBehaviour{
 		BattleData.triggers.cancelClicked.Trigger();
 	}
 
-	public void CallbackApplyCommand()
-	{
-		BattleData.uiManager.DisableSkillCheckUI();
-		BattleData.triggers.skillApplyCommandChanged.Trigger();
-		BattleData.skillApplyCommand = SkillApplyCommand.Apply;
-	}
-
-	public void CallbackChainCommand()
-	{
-		BattleData.uiManager.DisableSkillCheckUI();
-		BattleData.triggers.skillApplyCommandChanged.Trigger();
-		BattleData.skillApplyCommand = SkillApplyCommand.Chain;
-	}
-
 	public void CallbackRightClick()
 	{
 		BattleData.triggers.rightClicked.Trigger();
@@ -427,14 +413,12 @@ public class BattleManager : MonoBehaviour{
 
 	public void CallbackDirection(Direction direction){
 		BattleData.move.selectedDirection = direction;
-		
 		BattleData.triggers.directionSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
 	public void CallbackDirectionLong(Direction direction)
 	{
 		BattleData.move.selectedDirection = direction;
-
 		BattleData.triggers.directionLongSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
