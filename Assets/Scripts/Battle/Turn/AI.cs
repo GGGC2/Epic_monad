@@ -85,7 +85,7 @@ namespace Battle.Turn{
 
 				bestFinalTileWithPath = GetMinRequireAPTileWithPath (allGoalPaths);
 
-				if(unit.GetCurrentActivityPoint() > bestFinalTileWithPath.requireActivityPoint){
+				if(unit.GetCurrentActivityPoint() >= bestFinalTileWithPath.requireActivityPoint){
 					bestTile=bestFinalTileWithPath.tile;
 					return bestTile;
 				}
