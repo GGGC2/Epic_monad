@@ -127,6 +127,12 @@ public class Unit : MonoBehaviour{
 			speed = CalculateActualAmount(100, StatusEffectType.SpeedChange);
 		return speed;
 	}
+    public float GetEvasionChance() {
+        float evasionChance = 0;
+        if (HasStatusEffect(StatusEffectType.EvasionChange))
+            evasionChance = CalculateActualAmount(0, StatusEffectType.EvasionChange);
+        return evasionChance;
+    }
     public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
     public void SetActive() { activeArrowIcon.SetActive(true); }
 	public void SetInactive() { activeArrowIcon.SetActive(false); }
@@ -289,6 +295,7 @@ public class Unit : MonoBehaviour{
     }
 
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost){
+        Tile beforeTile = GetTileUnderUnit();
 		UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
@@ -299,6 +306,7 @@ public class Unit : MonoBehaviour{
                 RemoveStatusEffect(statusEffect);
             }
         }
+        SkillLogicFactory.Get(passiveSkillList).TriggerAfterMove(this, beforeTile, destTile);
     }
 
     private void updateCurrentHealthRelativeToMaxHealth() {

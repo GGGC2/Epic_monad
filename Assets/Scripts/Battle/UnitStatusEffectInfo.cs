@@ -36,6 +36,7 @@ public class UnitStatusEffectInfo {
 		bool isOnce = commaParser.ConsumeBool();
 		int defaultPhase = commaParser.ConsumeInt();
 		int maxStack = commaParser.ConsumeInt();
+        bool amountToBeUpdated = commaParser.ConsumeBool();
         bool amountNotEffectedByStack = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
 
@@ -74,8 +75,8 @@ public class UnitStatusEffectInfo {
 
 		this.statusEffect = new UnitStatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
                                              isBuff, isInfinite, 
-											 isStackable, isOnce,
-											 defaultPhase, maxStack, amountNotEffectedByStack, isRemovable, 
+											 isStackable, isOnce, defaultPhase, maxStack, 
+                                             amountToBeUpdated, amountNotEffectedByStack, isRemovable, 
 											 explanation, effectName, effectVisualType, effectMoveType,
 											 actualElements);
 	}

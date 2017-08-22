@@ -20,6 +20,9 @@ namespace BattleUI {
         }
         public void SetText(StatusEffect statusEffect) {
             displayName.text = statusEffect.GetDisplayName();
+            int stack = statusEffect.GetRemainStack();
+            if(stack >= 2)
+                displayName.text += "(" + statusEffect.GetRemainStack() + "중첩)";
             if (statusEffect.GetType() == typeof(UnitStatusEffect)) {
                 if (((UnitStatusEffect)statusEffect).GetIsBuff()) displayName.color = Color.green;
                 else displayName.color = Color.red;

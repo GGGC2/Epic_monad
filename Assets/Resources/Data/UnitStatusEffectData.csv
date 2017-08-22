@@ -1,94 +1,97 @@
-﻿owner	requireLevel	toBeReplaced	originSkillName	displayName	isBuff	isInfinite	isStackable	isOnce	defaultPhase	maxStack	amountNotEffectedByStack	isRemovable	effectName	effectVisualType	effectMoveType	numberOfActualElement	statusEffectType_01	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_02	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_03	amountVar	amountCoef	amountBase	isPercent	isMultiply	explanation
-arcadia	1	FALSE	생명의 요람	생명의 요람	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	3	HealOverPhase	O	0.1	0	FALSE	FALSE	DefenseChange	Level	1.2	87	FALSE	FALSE	ResistanceChange	Level	1.2	87	FALSE	FALSE	페이즈를 시작할 때마다 체력을 <color=green>10%</color> 회복하며 방어력과 저항력이 <color=green>AMOUNT1</color>높아집니다.
-arcadia	8	FALSE	뿌리 내리기	뿌리 내리기	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.9	59	FALSE	FALSE	ResistanceChange	Level	0.9	59	FALSE	FALSE							
-arcadia	8	FALSE	갈고리 씨앗	지속 피해	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	0.5	0	FALSE	FALSE													
-arcadia	15	FALSE	광합성	안식	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	TakenHealChange	O	0	50	TRUE	TRUE													
-bianca	1	FALSE	잘근잘근 덫	속박	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Bind	X	X	X	FALSE	NONE													
-bianca	1	FALSE	잘근잘근 덫	지속 피해	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	0.25	0	FALSE	FALSE													
-bianca	1	FALSE	떠밀기	떠밀기 과부하	FALSE	FALSE	TRUE	FALSE	1	3	TRUE	FALSE	None	None	None	1	Etc	O	0	5	FALSE	FALSE													
-curi	0	FALSE	정제	정제	TRUE	TRUE	TRUE	FALSE	9999	5	FALSE	TRUE	None	None	None	1	Etc	O	5	0	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
-curi	1	FALSE	호기심	공격력 증가	TRUE	FALSE	FALSE	FALSE	5	1	FALSE	FALSE	None	None	None	1	PowerChange	O	0	15	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
-curi	8	FALSE	신속 반응	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	20	FALSE	FALSE													속도가 <color=red>AMOUNT0</color> 증가합니다.
-curi	8	TRUE	수상한 덩어리	가연성 부착물	FALSE	TRUE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	Etc	Power	0.3	0	FALSE	NONE													불 속성 타일로 갈 시 반경1 영역에 <color=red>AMOUNT0</color>의 피해를 주고 사라집니다.
-curi	15	FALSE	수상한 덩어리	화속성 약점	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	FireWeakness	O	0	20	TRUE	TRUE													불 속성 유닛에게 받는 피해가 <color=red>AMOUNT0</color> 증가합니다.
-curi	8	FALSE	알칼리 폭탄	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													아무 것도 할 수 없습니다.
-curi	22	FALSE	산성 혼합물	산성 혼합물	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	3	DefenseChange	Level	-1.4	-106	FALSE	FALSE	ResistanceChange	Level	-1.4	-106	FALSE	FALSE	DamageOverPhase	Power	0.3	0	FALSE	NONE	방어력과 저항력이 <color=red>AMOUNT0</color> 증가하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 지속 피해를 받습니다.
-curi	29	FALSE	재결정	공격력 증가	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	PowerChange	O	0	25	TRUE	TRUE													공격력이 <color=green>AMOUNT0</color> 증가합니다.
-curi	29	FALSE	도금	기절	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													아무 것도 할 수 없습니다.
-curi	29	FALSE	도금	물리 면역	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	MeleeImmune	X	X	X	FALSE	NONE													물리 공격에 면역이 됩니다.
-curi	36	FALSE	유독성 촉매	강타	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	TRUE	None	None	None	1	Smite	Power	0.7	0	FALSE	FALSE													다음 공격 시 <color=red>AMOUNT0</color>의 추가 피해를 줍니다.
-curi	43	FALSE	에테르 폭탄	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
-curi	43	FALSE	제한 구역	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	PowerChange	Stack	4	0	TRUE	TRUE													공격력이 <color=green>AMOUNT0</color> 증가합니다.
-curi	50	FALSE	초강산 혼합물	초강산 혼합물	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	3	DefenseChange	Level	-1.7	-132	FALSE	FALSE	ResistanceChange	Level	-1.7	-132	FALSE	FALSE	DamageOverPhase	O	0.08	0	FALSE	NONE	방어력과 저항력이 <color=red>AMOUNT0</color> 증가하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 지속 피해를 받습니다.
-eren	0	FALSE	흡수	흡수	TRUE	FALSE	TRUE	FALSE	3	99	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-eren	1	FALSE	광휘	강타	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	Smite	O	0.1	0.6	FALSE	FALSE													
-eren	29	FALSE	배척받는 자	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	PowerChange	Stack	2	0	TRUE	TRUE													
-eren	29	FALSE	영겁의 지식	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	PowerChange	Stack	7	0	TRUE	TRUE													
-eren	43	FALSE	압도적인 공포	압도적인 공포	FALSE	TRUE	TRUE	FALSE	9999	99	FALSE	TRUE	None	None	None	2	DefenseChange	Level	-0.3	-27	FALSE	FALSE	ResistanceChange	Level	-0.3	-27	FALSE	FALSE							
-eren	43	FALSE	천상의 전령	속도 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	SpeedChange	Stack	7	0	FALSE	FALSE													
-eugene	1	TRUE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	1	Aura	O	0	2	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
-eugene	29	TRUE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	1	Aura	O	0	3	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
-eugene	36	FALSE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Aura	O	0	3	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
-eugene	1	TRUE	순백의 방패	저항력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	ResistanceChange	Level	0.5	40	FALSE	FALSE													저항력이 <color=green>AMOUNT0</color> 증가합니다.
-eugene	36	FALSE	순백의 방패	저항력 상승	TRUE	TRUE	TRUE	FALSE	9999	2	FALSE	FALSE	None	None	None	1	ResistanceChange	Level	0.5	40	FALSE	FALSE													저항력이 <color=green>AMOUNT0</color> 증가합니다.
-eugene	8	TRUE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	HealOverPhase	Power	0.7	0	FALSE	NONE													페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복합니다.
-eugene	29	TRUE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	2	HealOverPhase	Power	0.7	0	FALSE	NONE	Etc	O	0	1.2	TRUE	TRUE							페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 됩니다.
-eugene	43	FALSE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	3	HealOverPhase	Power	0.7	0	FALSE	NONE	Etc	O	0	1.2	TRUE	TRUE	Etc	O	0	0	FALSE	NONE	페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 되고 약화 효과가 하나 제거됩니다.
-eugene	15	FALSE	거울 방패	마법 반사	TRUE	FALSE	FALSE	TRUE	9999	1	FALSE	TRUE	None	None	None	1	MagicReflect	O	0	100	TRUE	TRUE													다음 번 마법 피해를 <color=red>AMOUNT0</color>만큼 반사합니다.
-eugene	15	TRUE	여행자의 발걸음	속도 상승	TRUE	TRUE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	SpeedChange	O	0	20	TRUE	TRUE													속도가 <color=red>AMOUNT0</color> 증가합니다.
-eugene	43	FALSE	길잡이	길잡이	TRUE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Etc	O	0	2	FALSE	NONE													반경AMOUNT0 영역에서 턴을 시작한 동료의 속도를 증가시킵니다.
-eugene	43	FALSE	길잡이	속도 상승	TRUE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	SpeedChange	O	0	20	TRUE	TRUE													속도가 <color=red>AMOUNT0</color> 증가합니다.
-eugene	22	TRUE	얼음의 가호	마법 반사	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	2	MagicReflect	O	0	35	TRUE	TRUE	Etc	O	0	6	TRUE	TRUE							마법 피해의 <color=red>AMOUNT0</color>를 반사하고 반사할 때마다 <color=green>최대 체력의 AMOUNT1</color를 회복합니다.
-eugene	50	FALSE	겨울의 가호	마법 반사	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	3	MagicReflect	O	0	60	TRUE	TRUE	Etc	O	0	10	TRUE	TRUE	Etc	O	0	1	FALSE	NONE	마법 피해의 <color=red>AMOUNT0</color>를 반사하고 반사할 때마다 <color=green>최대 체력의 AMOUNT1</color를 회복하며 새로 받는 약화의 지속이 AMOUNT2페이즈씩 줄어듭니다.
-eugene	36	FALSE	야영 전문가	야영 전문가	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	Aura	O	0	2	FALSE	NONE													반경AMOUNT0 영역에서 휴식하는 동료의 약화가 하나 사라집니다.
-eugene	36	FALSE	야영 전문가	야영 전문가_aura	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	Etc	O	0	1	FALSE	NONE													휴식 시 약화가 하나 사라집니다.
-grenev	0	FALSE	타고난 저격수	타고난 저격수	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	RequireMoveAPChange	O	0	30	TRUE	TRUE													이동할 때 행동력 소모가 <color=red>AMOUNT0</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.
-grenev	1	FALSE	살의	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	25	FALSE	FALSE													
-grenev	8	FALSE	장전	공격력 상승	TRUE	FALSE	FALSE	FALSE	4	1	FALSE	TRUE	None	None	None	1	PowerChange	O	0	25	TRUE	TRUE													
-grenev	8	FALSE	살육의 희열	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	PowerChange	O	0	5	TRUE	TRUE													
-grenev	15	FALSE	암살표식	암살표식	FALSE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	None	None	None	1	Etc	O	0	50	TRUE	TRUE													
-grenev	29	FALSE	은신	은신	TRUE	FALSE	FALSE	FALSE	4	1	FALSE	TRUE	None	None	None	1	Stealth	O	0	0	FALSE	NONE													
-grenev	29	FALSE	전쟁광	전쟁광	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	2	MaxHealthChange	O	0	-15	TRUE	TRUE	PowerChange	O	0	15	TRUE	TRUE							
-grenev	43	FALSE	인내심	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	PowerChange	O	0	20	TRUE	TRUE													
-json	0	FALSE	표식	표식	FALSE	TRUE	TRUE	FALSE	9999	4	TRUE	TRUE	None	None	None	1	Etc	O	0	10	TRUE	NONE													
-karldrich	1	FALSE	행동하는 혁명가	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	10	FALSE	FALSE													
-kashasty	36	FALSE	레비테이트 블릿	부유	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-kashasty	36	FALSE	시들지 않는 의지	속도 증가	TRUE	TRUE	TRUE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	LostHpPercent	-0.25	0	FALSE	FALSE													
-kashasty	43	FALSE	에테르 굴절막	에테르 굴절막	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-lenien	0	FALSE	감전	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													
-lenien	8	FALSE	하전 파동	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													
-lenien	15	FALSE	피뢰침	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													
-lenien	15	FALSE	정전기 유도	정전기	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-lenien	29	FALSE	자기 부상	자기 부상	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-lenien	36	FALSE	에테르 전위	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													
-lenien	43	FALSE	축전	전하막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-lenien	43	FALSE	입자 가속	공격력 증가	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	None	None	None	1	PowerChange	Stack	10	0	TRUE	TRUE													
-luvericha	8	FALSE	위기상황	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	10	0	FALSE	FALSE													
-luvericha	15	FALSE	수호의 오오라	수호의 오오라_aura	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	Aura	O	0	2	FALSE	NONE													
-luvericha	15	FALSE	수호의 오오라	수호의 오오라	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.3	24	FALSE	FALSE	ResistanceChange	Level	0.3	24	FALSE	FALSE							
-luvericha	22	FALSE	에튀드 : 햇빛	지속 회복	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	1	HealOverPhase	Power	1.4	0	FALSE	NONE													
-luvericha	29	FALSE	소녀의 기도	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	2	Shield	Power	1.5	0	FALSE	FALSE	Etc	X	X	X	FALSE	NONE							
-luvericha	43	FALSE	헌신	헌신	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	HealChange	LostHpPercent	0.5	0	TRUE	TRUE													
-luvericha	50	FALSE	4분 33초	침묵	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													
-luvericha	50	FALSE	환상곡	환상곡	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	2	HealOverPhase	Power	0.9	0	FALSE	FALSE	TakenHealChange	0	0	15	TRUE	TRUE							
-noel	1	FALSE	파마의 섬광	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
-noel	1	FALSE	신의 가호	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Shield	Power	1.5	0	FALSE	FALSE													받는 피해를 상쇄합니다.
-reina	8	FALSE	상처 태우기	내상	FALSE	FALSE	FALSE	FALSE	2	99	FALSE	TRUE	None	None	None	1	TakenHealChange	Stack	-10	0	TRUE	TRUE													
-reina	15	FALSE	잉걸불	지속 피해	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	1.3	0	FALSE	NONE													
-reina	29	FALSE	에테르 과부하	에테르 과부하	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
-reina	43	FALSE	열상 낙인	화속성 약점	FALSE	FALSE	FALSE	FALSE	2	99	FALSE	TRUE	None	None	None	1	FireWeakness	Stack	10	0	TRUE	TRUE													
-sepia	1	FALSE	신뢰의 끈	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.6	48	FALSE	FALSE													방어력이 <color=green>AMOUNT0</color>높아집니다.
-sepia	1	FALSE	반달베기	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	Shield	Power	0.2	0	FALSE	FALSE													받는 피해를 상쇄합니다.
-triana	8	FALSE	들불	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	15	FALSE	FALSE													
-triana	8	FALSE	나무 껍질	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.5	41	FALSE	FALSE													
-yeong	0	FALSE	방랑자	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
-yeong	1	FALSE	어려운 목표물	도발	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	TRUE	None	None	None	1	Taunt	X	X	X	FALSE	NONE													
-yeong	1	FALSE	동체 시력	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	10	TRUE	FALSE													
-yeong	8	FALSE	간파	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
-yeong	8	FALSE	기척 감지	회피	TRUE	TRUE	TRUE	TRUE	9999	99	FALSE	TRUE	None	None	None	1	EvasionChange	Stack	5	0	TRUE	FALSE													
-yeong	15	FALSE	질풍노도	질풍노도	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	TRUE	None	None	None	2	DefenseChange	Level	0.1	8	FALSE	FALSE	ResistanceChange	Level	0.1	8	FALSE	FALSE							
-yeong	15	FALSE	위험 돌파	회피	TRUE	FALSE	TRUE	TRUE	1	1	FALSE	TRUE	None	None	None	1	EvasionChange	LostHpPercent	0.2	0	TRUE	FALSE													
-yeong	29	FALSE	초감각	회피	TRUE	FALSE	FALSE	TRUE	9999	1	FALSE	TRUE	None	None	None	2	EvasionChange	O	0	100	TRUE	FALSE	Etc	X	X	X	FALSE	NONE							
-yeong	36	FALSE	무아지경	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	TRUE	None	None	None	1	PowerChange	O	0	3	TRUE	TRUE													
-yeong	36	FALSE	끝없는 단련	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
-yeong	43	FALSE	명경지수	회피	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	10	TRUE	FALSE													
+﻿owner	requireLevel	toBeReplaced	originSkillName	displayName	isBuff	isInfinite	isStackable	isOnce	defaultPhase	maxStack	amountToBeUpdated	amountNotEffectedByStack	isRemovable	effectName	effectVisualType	effectMoveType	numberOfActualElement	statusEffectType_01	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_02	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_03	amountVar	amountCoef	amountBase	isPercent	isMultiply	explanation
+arcadia	1	FALSE	생명의 요람	생명의 요람	TRUE	FALSE	FALSE	FALSE	3	1	TRUE	FALSE	TRUE	None	None	None	3	HealOverPhase	O	0.1	0	FALSE	FALSE	DefenseChange	Level	1.2	87	FALSE	FALSE	ResistanceChange	Level	1.2	87	FALSE	FALSE	페이즈를 시작할 때마다 체력을 <color=green>10%</color> 회복하며 방어력과 저항력이 <color=green>AMOUNT1</color>높아집니다.
+arcadia	8	FALSE	뿌리 내리기	뿌리 내리기	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.9	59	FALSE	FALSE	ResistanceChange	Level	0.9	59	FALSE	FALSE							
+arcadia	8	FALSE	갈고리 씨앗	지속 피해	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	0.5	0	FALSE	FALSE													
+arcadia	15	FALSE	광합성	안식	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	FALSE	None	None	None	1	TakenHealChange	O	0	50	TRUE	TRUE													
+bianca	1	FALSE	잘근잘근 덫	속박	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	TRUE	None	None	None	1	Bind	X	X	X	FALSE	NONE													
+bianca	1	FALSE	잘근잘근 덫	지속 피해	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	0.25	0	FALSE	FALSE													
+bianca	1	FALSE	떠밀기	떠밀기 과부하	FALSE	FALSE	TRUE	FALSE	1	3	FALSE	TRUE	FALSE	None	None	None	1	Etc	O	0	5	FALSE	FALSE													
+curi	0	FALSE	정제	정제	TRUE	TRUE	TRUE	FALSE	9999	5	TRUE	FALSE	TRUE	None	None	None	1	PowerChange	O	0	5	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
+curi	1	FALSE	호기심	공격력 증가	TRUE	FALSE	FALSE	FALSE	5	1	FALSE	FALSE	FALSE	None	None	None	1	PowerChange	O	0	15	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
+curi	8	FALSE	신속 반응	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	20	FALSE	FALSE													속도가 <color=red>AMOUNT0</color> 증가합니다.
+curi	8	TRUE	수상한 덩어리	가연성 부착물	FALSE	TRUE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	Power	0.3	0	FALSE	NONE													불 속성 타일로 갈 시 반경1 영역에 <color=red>AMOUNT0</color>의 피해를 주고 사라집니다.
+curi	15	FALSE	수상한 덩어리	화속성 약점	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	FireWeakness	O	0	20	TRUE	TRUE													불 속성 유닛에게 받는 피해가 <color=red>AMOUNT0</color> 증가합니다.
+curi	8	FALSE	알칼리 폭탄	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													아무 것도 할 수 없습니다.
+curi	22	FALSE	산성 혼합물	산성 혼합물	FALSE	FALSE	FALSE	FALSE	3	1	TRUE	FALSE	TRUE	None	None	None	3	DefenseChange	Level	-1.4	-106	FALSE	FALSE	ResistanceChange	Level	-1.4	-106	FALSE	FALSE	DamageOverPhase	Power	0.3	0	FALSE	NONE	방어력과 저항력이 <color=red>AMOUNT0</color> 증가하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 지속 피해를 받습니다.
+curi	29	FALSE	재결정	공격력 증가	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	PowerChange	O	0	25	TRUE	TRUE													공격력이 <color=green>AMOUNT0</color> 증가합니다.
+curi	29	FALSE	도금	기절	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													아무 것도 할 수 없습니다.
+curi	29	FALSE	도금	물리 면역	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	MeleeImmune	X	X	X	FALSE	NONE													물리 공격에 면역이 됩니다.
+curi	36	FALSE	유독성 촉매	강타	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	FALSE	TRUE	None	None	None	1	Smite	Power	0.7	0	FALSE	FALSE													다음 공격 시 <color=red>AMOUNT0</color>의 추가 피해를 줍니다.
+curi	43	FALSE	에테르 폭탄	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
+curi	43	FALSE	제한 구역	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	4	0	TRUE	TRUE													공격력이 <color=green>AMOUNT0</color> 증가합니다.
+curi	50	FALSE	초강산 혼합물	초강산 혼합물	FALSE	FALSE	FALSE	FALSE	3	1	TRUE	FALSE	TRUE	None	None	None	3	DefenseChange	Level	-1.7	-132	FALSE	FALSE	ResistanceChange	Level	-1.7	-132	FALSE	FALSE	DamageOverPhase	O	0.08	0	FALSE	NONE	방어력과 저항력이 <color=red>AMOUNT0</color> 증가하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 지속 피해를 받습니다.
+eren	0	FALSE	흡수	흡수	TRUE	FALSE	TRUE	FALSE	3	99	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+eren	1	FALSE	광휘	강타	TRUE	FALSE	FALSE	TRUE	1	1	TRUE	FALSE	TRUE	None	None	None	1	Smite	O	0.1	0.6	FALSE	FALSE													
+eren	29	FALSE	배척받는 자	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	2	0	TRUE	TRUE													
+eren	29	FALSE	영겁의 지식	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	7	0	TRUE	TRUE													
+eren	43	FALSE	압도적인 공포	압도적인 공포	FALSE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	TRUE	None	None	None	2	DefenseChange	Level	-0.3	-27	FALSE	FALSE	ResistanceChange	Level	-0.3	-27	FALSE	FALSE							
+eren	43	FALSE	천상의 전령	속도 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	SpeedChange	Stack	7	0	FALSE	FALSE													
+eugene	1	TRUE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	Aura	O	0	2	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
+eugene	29	TRUE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	Aura	O	0	3	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
+eugene	36	FALSE	순백의 방패	순백의 방패	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Aura	O	0	3	FALSE	NONE													반경AMOUNT0 영역 내의 유닛들의 저항력을 상승시킵니다.
+eugene	1	TRUE	순백의 방패	저항력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	1	ResistanceChange	Level	0.5	40	FALSE	FALSE													저항력이 <color=green>AMOUNT0</color> 증가합니다.
+eugene	36	FALSE	순백의 방패	저항력 상승	TRUE	TRUE	TRUE	FALSE	9999	2	TRUE	FALSE	FALSE	None	None	None	1	ResistanceChange	Level	0.5	40	FALSE	FALSE													저항력이 <color=green>AMOUNT0</color> 증가합니다.
+eugene	8	TRUE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	HealOverPhase	Power	0.7	0	FALSE	NONE													페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복합니다.
+eugene	29	TRUE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	2	HealOverPhase	Power	0.7	0	FALSE	NONE	Etc	O	0	1.2	TRUE	TRUE							페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 됩니다.
+eugene	43	FALSE	청명수의 축복	지속 회복	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	3	HealOverPhase	Power	0.7	0	FALSE	NONE	Etc	O	0	1.2	TRUE	TRUE	Etc	O	0	0	FALSE	NONE	페이즈가 시작될 때마다 체력을 <color=green>AMOUNT0</color> 회복하며 물 타일에 있을 경우 회복량이 <color=green>AMOUNT1</color>배가 되고 약화 효과가 하나 제거됩니다.
+eugene	15	FALSE	거울 방패	마법 반사	TRUE	FALSE	FALSE	TRUE	9999	1	FALSE	FALSE	TRUE	None	None	None	1	MagicReflect	O	0	100	TRUE	TRUE													다음 번 마법 피해를 <color=red>AMOUNT0</color>만큼 반사합니다.
+eugene	15	TRUE	여행자의 발걸음	속도 상승	TRUE	TRUE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	SpeedChange	O	0	20	TRUE	TRUE													속도가 <color=red>AMOUNT0</color> 증가합니다.
+eugene	43	FALSE	길잡이	길잡이	TRUE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	O	0	2	FALSE	NONE													반경AMOUNT0 영역에서 턴을 시작한 동료의 속도를 증가시킵니다.
+eugene	43	FALSE	길잡이	속도 상승	TRUE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	SpeedChange	O	0	20	TRUE	TRUE													속도가 <color=red>AMOUNT0</color> 증가합니다.
+eugene	22	TRUE	얼음의 가호	마법 반사	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	2	MagicReflect	O	0	35	TRUE	TRUE	Etc	O	0	6	TRUE	TRUE							마법 피해의 <color=red>AMOUNT0</color>를 반사하고 반사할 때마다 <color=green>최대 체력의 AMOUNT1</color를 회복합니다.
+eugene	50	FALSE	겨울의 가호	마법 반사	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	3	MagicReflect	O	0	60	TRUE	TRUE	Etc	O	0	10	TRUE	TRUE	Etc	O	0	1	FALSE	NONE	마법 피해의 <color=red>AMOUNT0</color>를 반사하고 반사할 때마다 <color=green>최대 체력의 AMOUNT1</color를 회복하며 새로 받는 약화의 지속이 AMOUNT2페이즈씩 줄어듭니다.
+eugene	36	FALSE	야영 전문가	야영 전문가	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	Aura	O	0	2	FALSE	NONE													반경AMOUNT0 영역에서 휴식하는 동료의 약화가 하나 사라집니다.
+eugene	36	FALSE	야영 전문가	야영 전문가_aura	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	Etc	O	0	1	FALSE	NONE													휴식 시 약화가 하나 사라집니다.
+grenev	0	FALSE	타고난 저격수	타고난 저격수	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	RequireMoveAPChange	O	0	30	TRUE	TRUE													이동할 때 행동력 소모가 <color=red>AMOUNT0</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.
+grenev	1	FALSE	살의	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	25	FALSE	FALSE													
+grenev	8	FALSE	장전	공격력 상승	TRUE	FALSE	FALSE	FALSE	4	1	FALSE	FALSE	TRUE	None	None	None	1	PowerChange	O	0	25	TRUE	TRUE													
+grenev	8	FALSE	살육의 희열	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	FALSE	FALSE	FALSE	None	None	None	1	PowerChange	O	0	5	TRUE	TRUE													
+grenev	15	FALSE	암살표식	암살표식	FALSE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	O	0	50	TRUE	TRUE													
+grenev	29	FALSE	은신	은신	TRUE	FALSE	FALSE	FALSE	4	1	FALSE	FALSE	TRUE	None	None	None	1	Stealth	O	0	0	FALSE	NONE													
+grenev	29	FALSE	전쟁광	전쟁광	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	2	MaxHealthChange	O	0	-15	TRUE	TRUE	PowerChange	O	0	15	TRUE	TRUE							
+grenev	43	FALSE	인내심	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	PowerChange	O	0	20	TRUE	TRUE													
+json	0	FALSE	표식	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	100	TRUE	FALSE													
+json	0	TRUE	표식	표식	FALSE	TRUE	TRUE	FALSE	9999	4	FALSE	TRUE	TRUE	None	None	None	1	Etc	X	X	X	TRUE	NONE													
+json	8	FALSE	표식	표식	FALSE	TRUE	TRUE	FALSE	9999	4	FALSE	FALSE	TRUE	None	None	None	2	DamageOverPhase	Power	0.1	0	FALSE	FALSE	TakenHealChange	O	0	-10	TRUE	TRUE							
+json	8	FALSE	바람 가르기	공격 시 행동력 소모 감소	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	FALSE	TRUE	None	None	None	1	RequireSkillAPChange	O	-10	0	TRUE	TRUE													AMOUNT0
+karldrich	1	FALSE	행동하는 혁명가	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	10	FALSE	FALSE													
+kashasty	36	FALSE	레비테이트 블릿	부유	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+kashasty	36	FALSE	시들지 않는 의지	속도 증가	TRUE	TRUE	TRUE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	1	SpeedChange	LostHpPercent	-0.25	0	FALSE	FALSE													
+kashasty	43	FALSE	에테르 굴절막	에테르 굴절막	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+lenien	0	FALSE	감전	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	TRUE	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													
+lenien	8	FALSE	하전 파동	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													
+lenien	15	FALSE	피뢰침	기절	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Faint	X	X	X	FALSE	NONE													
+lenien	15	FALSE	정전기 유도	정전기	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+lenien	29	FALSE	자기 부상	자기 부상	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+lenien	36	FALSE	에테르 전위	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	TRUE	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													
+lenien	43	FALSE	축전	전하막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+lenien	43	FALSE	입자 가속	공격력 증가	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	10	0	TRUE	TRUE													
+luvericha	8	FALSE	위기상황	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	10	0	FALSE	FALSE													
+luvericha	15	FALSE	수호의 오오라	수호의 오오라_aura	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	Aura	O	0	2	FALSE	NONE													
+luvericha	15	FALSE	수호의 오오라	수호의 오오라	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.3	24	FALSE	FALSE	ResistanceChange	Level	0.3	24	FALSE	FALSE							
+luvericha	22	FALSE	에튀드 : 햇빛	지속 회복	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	HealOverPhase	Power	1.4	0	FALSE	NONE													
+luvericha	29	FALSE	소녀의 기도	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	2	Shield	Power	1.5	0	FALSE	FALSE	Etc	X	X	X	FALSE	NONE							
+luvericha	43	FALSE	헌신	헌신	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	1	HealChange	LostHpPercent	0.5	0	TRUE	TRUE													
+luvericha	50	FALSE	4분 33초	침묵	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													
+luvericha	50	FALSE	환상곡	환상곡	TRUE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	2	HealOverPhase	Power	0.9	0	FALSE	FALSE	TakenHealChange	0	0	15	TRUE	TRUE							
+noel	1	FALSE	파마의 섬광	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
+noel	1	FALSE	신의 가호	보호막	TRUE	FALSE	FALSE	FALSE	2	1	TRUE	FALSE	TRUE	None	None	None	1	Shield	Power	1.5	0	FALSE	FALSE													받는 피해를 상쇄합니다.
+reina	8	FALSE	상처 태우기	내상	FALSE	FALSE	FALSE	FALSE	2	99	TRUE	FALSE	TRUE	None	None	None	1	TakenHealChange	Stack	-10	0	TRUE	TRUE													
+reina	15	FALSE	잉걸불	지속 피해	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	1.3	0	FALSE	NONE													
+reina	29	FALSE	에테르 과부하	에테르 과부하	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	FALSE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+reina	43	FALSE	열상 낙인	화속성 약점	FALSE	FALSE	FALSE	FALSE	2	99	TRUE	FALSE	TRUE	None	None	None	1	FireWeakness	Stack	10	0	TRUE	TRUE													
+sepia	1	FALSE	신뢰의 끈	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.6	48	FALSE	FALSE													방어력이 <color=green>AMOUNT0</color>높아집니다.
+sepia	1	FALSE	반달베기	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Shield	Power	0.2	0	FALSE	FALSE													받는 피해를 상쇄합니다.
+triana	8	FALSE	들불	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	15	FALSE	FALSE													
+triana	8	FALSE	나무 껍질	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.5	41	FALSE	FALSE													
+yeong	0	FALSE	방랑자	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
+yeong	1	FALSE	어려운 목표물	도발	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	Taunt	X	X	X	FALSE	NONE													
+yeong	1	FALSE	동체 시력	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	10	TRUE	FALSE													
+yeong	8	FALSE	간파	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
+yeong	8	FALSE	기척 감지	회피	TRUE	TRUE	TRUE	TRUE	9999	99	TRUE	FALSE	TRUE	None	None	None	1	EvasionChange	Stack	5	0	TRUE	FALSE													
+yeong	15	FALSE	질풍노도	질풍노도	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	TRUE	None	None	None	2	DefenseChange	Level	0.1	8	FALSE	FALSE	ResistanceChange	Level	0.1	8	FALSE	FALSE							
+yeong	15	FALSE	위험 돌파	회피	TRUE	FALSE	TRUE	TRUE	1	1	TRUE	FALSE	TRUE	None	None	None	1	EvasionChange	LostHpPercent	0.2	0	TRUE	FALSE													
+yeong	29	FALSE	초감각	회피	TRUE	FALSE	FALSE	TRUE	9999	1	TRUE	FALSE	TRUE	None	None	None	2	EvasionChange	O	0	100	TRUE	FALSE	Etc	X	X	X	FALSE	NONE							
+yeong	36	FALSE	무아지경	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	TRUE	None	None	None	1	PowerChange	O	0	3	TRUE	TRUE													
+yeong	36	FALSE	끝없는 단련	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
+yeong	43	FALSE	명경지수	회피	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	10	TRUE	FALSE													

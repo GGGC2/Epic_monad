@@ -504,6 +504,12 @@ public static class SkillLogicFactory
             case "표식":
             passiveSkillLogic = new Json_0_1_SkillLogic();
             break;
+            case "바람 가르기":
+            passiveSkillLogic = new Json_2_l_SkillLogic();
+            break;
+            case "비틀린 칼날":
+            passiveSkillLogic = new Json_2_m_SkillLogic();
+            break;
 
 			// 트리아나
 			case "나무 껍질":

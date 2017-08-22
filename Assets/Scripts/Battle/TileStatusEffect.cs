@@ -13,11 +13,11 @@ public class TileStatusEffect : StatusEffect {
     }
     public new class FixedElement : StatusEffect.FixedElement {
         public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
-                  bool isInfinite, bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
+                  bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
+                  int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) 
                   : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, 
-                    amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType, actualEffects){
+                    amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType, actualEffects){
         }
     }
     public new class FlexibleElement : StatusEffect.FlexibleElement {

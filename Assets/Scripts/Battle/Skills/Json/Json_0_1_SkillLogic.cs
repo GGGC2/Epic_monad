@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Battle.Damage;
 using Enums;
 using UnityEngine;
@@ -9,18 +10,23 @@ namespace Battle.Skills {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
 
-            UnitStatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "표식");
+            UnitStatusEffect.FixedElement evasionFixedElem = passiveSkill.GetUnitStatusEffectList().Find(se => se.display.displayName == "회피");
+            UnitStatusEffect evasion = new UnitStatusEffect(evasionFixedElem, caster, caster, passiveSkill);
+            List<UnitStatusEffect> evasionStatusEffects = new List<UnitStatusEffect>();
+            evasionStatusEffects.Add(evasion);
+
+            UnitStatusEffect.FixedElement markFixedElem = passiveSkill.GetUnitStatusEffectList().Find(se => se.display.displayName == "표식");
+            UnitStatusEffect mark = new UnitStatusEffect(markFixedElem, caster, target, passiveSkill);
+            List<UnitStatusEffect> markStatusEffects = new List<UnitStatusEffect>();
+            markStatusEffects.Add(mark);
+
+            UnitStatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetDisplayName() == "표식");
             if(alreadyAppliedStatusEffect != null && alreadyAppliedStatusEffect.GetRemainStack() >= 4) {
-                float lifeStealPercent = alreadyAppliedStatusEffect.GetAmountOfType(StatusEffectType.Etc);
-                HitInfo hitInfo = target.GetLatelyHitInfos().Find(hi => hi.caster == caster);
-                float recoverAmount = hitInfo.finalDamage * lifeStealPercent / 100f;
-
-                BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
-                yield return battleManager.StartCoroutine(caster.RecoverHealth(recoverAmount));
-
+                StatusEffector.AttachStatusEffect(caster, evasionStatusEffects, caster);
                 target.RemoveStatusEffect(alreadyAppliedStatusEffect);
             }
-            else StatusEffector.AttachStatusEffect(caster, passiveSkill, target);
+            else StatusEffector.AttachStatusEffect(caster, markStatusEffects, target);
+            yield return null;
         }
     }
 }

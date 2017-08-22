@@ -15,13 +15,13 @@ public class UnitStatusEffect : StatusEffect {
     public new class FixedElement : StatusEffect.FixedElement {
         public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite, bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
+                  int defaultPhase, int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
-                  : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack,
+                  : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, amountToBeUpdated,
                     amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType, actualEffects) {
             display = new DisplayElement(toBeReplaced, originSkillName, displayName,
                     isBuff, isInfinite, isStackable, isOnce,
-                    defaultPhase, maxStack, amountNotEffectedByStack, isRemovable,
+                    defaultPhase, maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable,
                     explanation, effectName, effectVisualType, effectMoveType);
         }
         public new class DisplayElement : StatusEffect.FixedElement.DisplayElement {
@@ -29,10 +29,10 @@ public class UnitStatusEffect : StatusEffect {
 
             public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite, bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
+                  int defaultPhase, int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) 
                   : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase,
-                    maxStack, amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType){
+                    maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType){
                 this.isBuff = isBuff;
             }
         }

@@ -1,6 +1,6 @@
-﻿owner,requireLevel,toBeReplaced,originSkillName,displayName,isInfinite,isStackable,isOnce,defaultPhase,maxStack,amountNotEffectedByStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountVar,amountCoef,amountBase,isPercent,isMultiply,statusEffectType_02,amountVar,amountCoef,amountBase,isPercent,isMultiply,statusEffectType_03,amountVar,amountCoef,amountBase,isPercent,isMultiply,explanation
-curi,50,false,초강산 혼합물,강산 지대,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,None,None,None,1,Etc,O,0,0,FALSE,FALSE,,,,,,,,,,,,,
-eugene,22,true,백은의 장막,백은의 장막,FALSE,FALSE,FALSE,2,1,FALSE,FALSE,None,None,None,2,ResistanceChange,Level,1.4,106,FALSE,FALSE,Etc,X,X,X,NONE,NONE,,,,,,,
-eugene,50,false,백은의 오로라,백은의 오로라,FALSE,FALSE,FALSE,2,1,FALSE,FALSE,None,None,None,2,ResistanceChange,Level,1.7,132,FALSE,FALSE,Etc,X,X,X,NONE,NONE,,,,,,,
-bianca,1,false,잘근잘근 덫,잘근잘근 덫(활성화 대기),FALSE,FALSE,TRUE,1,1,FALSE,FALSE,None,None,None,1,Etc,O,0,1,FALSE,FALSE,,,,,,,,,,,,,
-bianca,1,false,잘근잘근 덫,잘근잘근 덫,TRUE,FALSE,TRUE,9999,1,FALSE,FALSE,None,None,None,1,Trap,O,0,1,FALSE,FALSE,,,,,,,,,,,,,
+﻿owner,requireLevel,toBeReplaced,originSkillName,displayName,isInfinite,isStackable,isOnce,defaultPhase,maxStack,amountToBeUpdated,amountNotEffectedByStack,isRemovable,effectName,effectVisualType,effectMoveType,numberOfActualElement,statusEffectType_01,amountVar,amountCoef,amountBase,isPercent,isMultiply,statusEffectType_02,amountVar,amountCoef,amountBase,isPercent,isMultiply,statusEffectType_03,amountVar,amountCoef,amountBase,isPercent,isMultiply,explanation
+curi,50,false,초강산 혼합물,강산 지대,TRUE,FALSE,FALSE,9999,1,FALSE,FALSE,FALSE,None,None,None,1,Etc,O,0,0,FALSE,FALSE,,,,,,,,,,,,,
+eugene,22,true,백은의 장막,백은의 장막,FALSE,FALSE,FALSE,2,1,TRUE,FALSE,FALSE,None,None,None,2,ResistanceChange,Level,1.4,106,FALSE,FALSE,Etc,X,X,X,NONE,NONE,,,,,,,
+eugene,50,false,백은의 오로라,백은의 오로라,FALSE,FALSE,FALSE,2,1,TRUE,FALSE,FALSE,None,None,None,2,ResistanceChange,Level,1.7,132,FALSE,FALSE,Etc,X,X,X,NONE,NONE,,,,,,,
+bianca,1,false,잘근잘근 덫,잘근잘근 덫(활성화 대기),FALSE,FALSE,TRUE,1,1,FALSE,FALSE,FALSE,None,None,None,1,Etc,O,0,1,FALSE,FALSE,,,,,,,,,,,,,
+bianca,1,false,잘근잘근 덫,잘근잘근 덫,TRUE,FALSE,TRUE,9999,1,FALSE,FALSE,FALSE,None,None,None,1,Trap,O,0,1,FALSE,FALSE,,,,,,,,,,,,,

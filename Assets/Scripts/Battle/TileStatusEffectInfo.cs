@@ -35,6 +35,7 @@ public class TileStatusEffectInfo {
         bool isOnce = commaParser.ConsumeBool();
         int defaultPhase = commaParser.ConsumeInt();
         int maxStack = commaParser.ConsumeInt();
+        bool amountToBeUpdated = commaParser.ConsumeBool();
         bool amountNotEffectedByStack = commaParser.ConsumeBool();
         bool isRemovable = commaParser.ConsumeBool();
 
@@ -72,8 +73,8 @@ public class TileStatusEffectInfo {
         }
         string explanation = commaParser.Consume();
         this.statusEffect = new TileStatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
-                                             isInfinite, isStackable, isOnce,
-                                             defaultPhase, maxStack, amountNotEffectedByStack, isRemovable, explanation,
+                                             isInfinite, isStackable, isOnce, defaultPhase, 
+                                             maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation,
                                              effectName, effectVisualType, effectMoveType,
                                              actualElements);
     }

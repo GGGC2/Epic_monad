@@ -92,17 +92,6 @@ namespace Battle.Skills
                 yield return skillLogic.ActionInDamageRoutine(castingApply);
             }
         }
-
-        public override int GetEvasionChance()
-	    {
-		    int totalEvasionChance = 0;
-		    foreach (var skillLogic in passiveSkillLogics)
-		    {
-			    totalEvasionChance += skillLogic.GetEvasionChance();
-		    }
-
-		    return totalEvasionChance;
-	    }
         public override float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
             foreach (var skillLogic in passiveSkillLogics) {
                 baseAmount = skillLogic.ApplyAdditionalRecoverHealthDuringRest(caster, baseAmount);
@@ -145,6 +134,12 @@ namespace Battle.Skills
         public override void TriggerAfterDamaged(Unit target, int damage, Unit caster) {
             foreach (var skillLogic in passiveSkillLogics) {
                 skillLogic.TriggerAfterDamaged(target, damage, caster);
+            }
+        }
+
+        public override void TriggerAfterMove(Unit caster, Tile beforeTile, Tile afterTile) {
+            foreach (var skillLogic in passiveSkillLogics) {
+                skillLogic.TriggerAfterMove(caster, beforeTile, afterTile);
             }
         }
 

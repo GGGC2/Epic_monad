@@ -1,20 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Battle.Damage;
-
+﻿
 namespace Battle.Skills {
     class Json_1_r_SkillLogic : BaseSkillLogic {
-        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+        public override void ApplyAdditionalDamage(CastingApply castingApply) {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
-            PassiveSkill mark = caster.GetLearnedPassiveSkillList().Find(skill => skill.GetName() == "표식");
-            List<UnitStatusEffect.FixedElement> fixedStatusEffects = mark.GetUnitStatusEffectList();
-            List<UnitStatusEffect> statusEffects = fixedStatusEffects
-                .Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, mark))
-                .ToList();
-            StatusEffector.AttachStatusEffect(caster, statusEffects, target);
-            yield return null;
+            DamageCalculator.AttackDamage damage = castingApply.GetDamage();
+            UnitStatusEffect mark = target.GetStatusEffectList().Find(se => se.GetDisplayName() == "표식");
+            if (mark == null) {
+                damage.relativeDamageBonus *= 0;
+            }
         }
     }
 }

@@ -59,10 +59,6 @@ public class BasePassiveSkillLogic
     public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
         yield return null;
     }
-    public virtual int GetEvasionChance()
-	{
-		return 0;
-	}
     public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect�� i��° actualElement �� seVar ���� ����.
         return 0;
     }
@@ -87,6 +83,8 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerAfterDamaged(Unit target, int damage, Unit caster) 
     {        
+    }
+    public virtual void TriggerAfterMove(Unit caster, Tile beforeTile, Tile afterTile) {
     }
 
     public virtual bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target) {

@@ -23,6 +23,7 @@ public class StatusEffect {
             public readonly bool isOnce; // 다음 1회의 행동에만 적용되는 경우 true (예: 강타)
             public readonly int defaultPhase; // 일반적인 경우 상태이상이 지속되는 페이즈
             public readonly int maxStack; // 최대 가능한 스택 수
+            public readonly bool amountToBeUpdated;
             public readonly bool amountNotEffectedByStack;
             public readonly bool isRemovable; // 다른 기술에 의해 해제 가능할 경우 true
             public readonly string explanation;
@@ -33,8 +34,8 @@ public class StatusEffect {
             public readonly EffectMoveType effectMoveType;
 
             public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
-                  bool isInfinite, bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
+                  bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
+                  int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
                 this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
@@ -44,6 +45,7 @@ public class StatusEffect {
                 this.isOnce = isOnce;
                 this.defaultPhase = defaultPhase;
                 this.maxStack = maxStack;
+                this.amountToBeUpdated = amountToBeUpdated;
                 this.amountNotEffectedByStack = amountNotEffectedByStack;
                 this.isRemovable = isRemovable;
                 this.explanation = explanation;
@@ -78,12 +80,12 @@ public class StatusEffect {
         }
 
         public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
-                  bool isInfinite, bool isStackable, bool isOnce,
-                  int defaultPhase, int maxStack, bool amountNotEffectedByStack, bool isRemovable,
+                  bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
+                  int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
             display = new DisplayElement(toBeReplaced, originSkillName, displayName,
-                    isInfinite, isStackable, isOnce,
-                    defaultPhase, maxStack, amountNotEffectedByStack, isRemovable,
+                    isInfinite, isStackable, isOnce, defaultPhase, 
+                    maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable,
                     explanation, effectName, effectVisualType, effectMoveType);
 
             actuals = actualEffects;
@@ -145,6 +147,7 @@ public class StatusEffect {
     public bool GetIsInfinite() { return fixedElem.display.isInfinite; }
     public bool GetIsStackable() { return fixedElem.display.isStackable; }
     public bool GetIsOnce() { return fixedElem.display.isOnce; }
+    public bool GetAmountToBeUpdated() { return fixedElem.display.amountToBeUpdated; }
     public bool GetAmountNotEffectedByStack() { return fixedElem.display.amountNotEffectedByStack; }
     public bool GetIsRemovable() { return fixedElem.display.isRemovable; }
     public string GetEffectName() { return fixedElem.display.effectName; }
@@ -205,7 +208,10 @@ public class StatusEffect {
         }
         return indices;
     }
-    public float GetAmount(int index) { return flexibleElem.actuals[index].amount; }
+    public float GetAmount(int index) {
+        if (!GetAmountNotEffectedByStack()) return flexibleElem.actuals[index].amount * GetRemainStack();
+        return flexibleElem.actuals[index].amount; 
+    }
     public float GetAmountOfType(StatusEffectType statusEffectType) {
         float amount = 0;
         List<int> indices = FindIndexOfType(statusEffectType);
@@ -259,23 +265,22 @@ public class StatusEffect {
     }
     public void CalculateAmount(int i, float statusEffectVar) {
         flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
-        if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();
     }
     public void CalculateAmount(int i, bool isUpdate) {
         Unit caster = GetCaster();
         StatusEffectVar seVarEnum = fixedElem.actuals[i].seVar;
         float statusEffectVar = 0;
-        if (seVarEnum == StatusEffectVar.Level)
-            statusEffectVar = GameData.PartyData.level;
-        else if (seVarEnum == StatusEffectVar.LostHpPercent)
-            statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
-        else if (seVarEnum == StatusEffectVar.Power) {
-            if(isUpdate == true)    return;
-            statusEffectVar = caster.GetStat(Stat.Power);
-        } else
-            statusEffectVar = GetStatusEffectVar(i);
-        flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
-        if(!GetAmountNotEffectedByStack())  flexibleElem.actuals[i].amount *= GetRemainStack();
+        if (GetAmountToBeUpdated() || !isUpdate) {
+            if (seVarEnum == StatusEffectVar.Level)
+                statusEffectVar = GameData.PartyData.level;
+            else if (seVarEnum == StatusEffectVar.LostHpPercent)
+                statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
+            else if (seVarEnum == StatusEffectVar.Power)
+                statusEffectVar = caster.GetStat(Stat.Power);
+            else
+                statusEffectVar = GetStatusEffectVar(i);
+            flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);
+        }
     }
 
     protected virtual float GetStatusEffectVar(int i) {

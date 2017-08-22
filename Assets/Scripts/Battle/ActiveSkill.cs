@@ -396,7 +396,8 @@ public class ActiveSkill : Skill{
 			List<UnitStatusEffect> statusEffectsToRemove = caster.GetStatusEffectList ().FindAll (x => (x.GetIsOnce () &&
 				(x.IsOfType (StatusEffectType.PowerChange) ||
 					x.IsOfType (StatusEffectType.DamageChange) ||
-					x.IsOfType (StatusEffectType.Smite))));
+					x.IsOfType (StatusEffectType.Smite) ||
+                    x.IsOfType (StatusEffectType.RequireSkillAPChange))));
 			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
@@ -409,15 +410,13 @@ public class ActiveSkill : Skill{
 	private static bool CheckEvasion(Unit caster, Unit target) {
 		List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
 		ListPassiveSkillLogic passiveSkillLogicsOfTarget = SkillLogicFactory.Get (passiveSkillsOfTarget);
-		int totalEvasionChance = 0;
-		totalEvasionChance = passiveSkillLogicsOfTarget.GetEvasionChance();
-
-		int randomNumber = UnityEngine.Random.Range(0, 100);
+		float totalEvasionChance = target.GetEvasionChance();
+		int randomNumber = UnityEngine.Random.Range(0, 1);
 
 		// 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
-		List<UnitStatusEffect> statusEffectsToRemove =  caster.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
+		List<UnitStatusEffect> statusEffectsToRemove =  target.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
 		foreach(var statusEffect in statusEffectsToRemove)
-			caster.RemoveStatusEffect(statusEffect);
+			target.RemoveStatusEffect(statusEffect);
 
 		if (totalEvasionChance > randomNumber) {
 			BattleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
