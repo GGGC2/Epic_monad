@@ -7,19 +7,19 @@ using Enums;
 namespace Battle.Turn{
 	public class MoveStates{
 		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+			BattleData.preSelectedTilePosition = null;
 			while (true){
 				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
 				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
 				viewer.OffPreviewAp();
-				if (BattleData.preSelectedTilePosition.HasValue == false ||
-					movableTilesWithPath.ContainsKey(BattleData.preSelectedTilePosition.Value) == false)
-				{
+				if (BattleData.preSelectedTilePosition.HasValue == false){
 					BattleData.previewAPAction = null;
-				}else{
+				}
+				else{
 					var preSelectedTile = BattleData.preSelectedTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					Tile tileUnderMouse = MonoBehaviour.FindObjectOfType<TileManager>().preSelectedMouseOverTile;
+					Tile tileUnderMouse = TileManager.Instance.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString();
 					viewer.PreviewAp(BattleData.selectedUnit, requiredAP);
 					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
@@ -41,7 +41,6 @@ namespace Battle.Turn{
 				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
 				BattleData.tileManager.PreselectTiles (movableTiles);
 
-				BattleData.uiManager.EnableCancelButtonUI();
 				BattleData.isWaitingUserInput = true;
 
 				BattleManager battleManager = BattleData.battleManager;
@@ -64,7 +63,6 @@ namespace Battle.Turn{
 
 				if (BattleData.triggers.rightClicked.Triggered || BattleData.triggers.cancelClicked.Triggered){
 					BattleData.unitManager.UpdateUnitOrder();
-					BattleData.uiManager.DisableCancelButtonUI();
 					BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 					BattleData.tileManager.DepreselectAllTiles ();
 
@@ -86,50 +84,29 @@ namespace Battle.Turn{
 				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
-				BattleData.uiManager.DisableCancelButtonUI();
-				yield return battleManager.StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint, distance));
+				yield return battleManager.StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint));
 			}
 			yield return null;
 		}
 
-		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint, int distance){
+		private static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint){
 			// 이동했을때 볼 방향 설정
 			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 
 			BattleData.currentState = CurrentState.MoveToTile;
-			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint));
+			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
 		}
 
-		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost){
-			CaptureMoveSnapshot();
-            
+		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
-			unit.ApplyMove(destTile, finalDirection, totalAPCost);
+			BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
+			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
 
 			BattleData.previewAPAction = null;
 			BattleData.currentState = CurrentState.FocusToUnit;
 			BattleData.alreadyMoved = true;
 
-			yield return null;
-		}
-
-		private static void CaptureMoveSnapshot()
-		{
-			BattleData.MoveSnapshot snapshot = new BattleData.MoveSnapshot();
-			snapshot.tile = BattleData.SelectedUnitTile;
-			snapshot.ap = BattleData.selectedUnit.GetCurrentActivityPoint();
-			snapshot.direction = BattleData.selectedUnit.GetDirection();
-			BattleData.moveSnapshot = snapshot;
-		}
-
-		public static void RestoreMoveSnapshot()
-		{
-			Debug.Log("Restore move snapshot");
-			var snapshot = BattleData.moveSnapshot;
-			Unit unit = BattleData.selectedUnit;
-			Tile beforeTile = BattleData.SelectedUnitTile;
-			Tile nextTile = snapshot.tile;
-			unit.ApplySnapshot(beforeTile, nextTile, snapshot.direction, snapshot.ap);
+			yield return BattleData.battleManager.AtActionEnd();
 		}
 	}
 }

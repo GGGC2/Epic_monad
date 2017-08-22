@@ -16,62 +16,104 @@ public static class PathFinder {
 		}
 	}
 
-	/* 지금은 안 쓰이고 다시 쓰려면 전에 이 함수가 정상작동하는지 확인할 것
-	public static int GetAPDistanceFromTileToUnit(Tile startTile, Unit destUnit, Dictionary<Vector2, TileWithPath> allPaths){
-		Vector2 startPos = startTile.GetTilePos ();
-		Vector2 destPos = destUnit.GetPosition ();
-		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
-
-		int baseRequireAP = allPaths [startPos].requireActivityPoint;
-		Debug.Log ("base "+baseRequireAP);
-		int APDistance = -1;
-
-		foreach (Vector2 surroundingPos in surroundingArea) {
-			if (allPaths.ContainsKey (surroundingPos)) {
-				int requireAP = allPaths [surroundingPos].requireActivityPoint - baseRequireAP;
-				Debug.Log (requireAP);
-				requireAP = Mathf.Abs (requireAP);
-				if (requireAP < APDistance || APDistance == -1) {
-					APDistance = requireAP;
-				}
-			}
-		}
-		return APDistance;
-	}*/
-
-	/*
-	public static int GetAPDistanceFromTileToUnit(Unit unit, Tile startTile, Unit destUnit){
-		Vector2 startPos = startTile.GetTilePos ();
-		Vector2 destPos = destUnit.GetPosition ();
-		Dictionary<Vector2, TileWithPath> allPaths = CalculatePathsFromThisTile (unit, startTile, int.MaxValue);
-		List<Vector2> surroundingArea = Utility.GetDiamondRange (destPos, 1, 2);
-		int APDistance = -1;
-		foreach (Vector2 surroundingPos in surroundingArea) {
-			if (allPaths.ContainsKey (surroundingPos)) {
-				int requireAP = allPaths [surroundingPos].requireActivityPoint;
-				if (requireAP > APDistance) {
-					APDistance = requireAP;
-				}
-			}
-		}
-		return APDistance;
-	}*/
-
-	/* destTile에 유닛이 있으면 도달불가능으로 나와서 -1이 반환되는 치명적 문제가 있어서 보류 
-	public static int GetRequireAPFromTileToTile(Unit unit, Tile startTile, Tile destTile){
-		Dictionary<Vector2, TileWithPath> allPaths = CalculatePathsFromThisTile (unit, startTile, int.MaxValue);
-		Vector2 destPos = destTile.GetTilePos ();
-		if (allPaths.ContainsKey (destPos)) {
-			return allPaths [destPos].requireActivityPoint;
-		}
-		else {
-			return -1;
-		}
-	}*/
-	
+	public static Dictionary<Vector2, TileWithPath> CalculateMovablePathsForAI(Unit unit, ActiveSkill skill){
+		return CalculatePathsFromThisTileForAI (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint (), skill);
+	}
 	public static Dictionary<Vector2, TileWithPath> CalculateMovablePaths(Unit unit){
 		return CalculatePathsFromThisTile (unit, unit.GetTileUnderUnit (), unit.GetCurrentActivityPoint ());
 	}
+
+	// AI용 경로탐색이다. 걸림돌이 있으면 부수고 가는 경우까지 고려한다.
+	public static Dictionary<Vector2, TileWithPath> CalculatePathsFromThisTileForAI(Unit unit, Tile tile, int maxAPUse, ActiveSkill skill){
+		Dictionary<Vector2, Tile> tiles = TileManager.Instance.GetAllTiles();
+		Vector2 startPos = tile.GetTilePos ();
+
+		Queue<TileTuple> tileQueue = new Queue<TileTuple>();
+
+		Dictionary<Vector2, TileWithPath> tilesWithPath = new Dictionary<Vector2, TileWithPath>();
+		TileWithPath startPoint = new TileWithPath(tiles[startPos]);
+		tilesWithPath.Add(startPos, startPoint);
+
+		tileQueue.Enqueue(new TileTuple(startPos, startPoint));
+
+		while (tileQueue.Count > 0){
+			TileTuple newTileTuple = tileQueue.Dequeue();
+			Vector2 newPosition = newTileTuple.tilePosition;
+			TileWithPath newTileWithPath = newTileTuple.tileWithPath;
+			foreach (Direction direction in EnumUtil.directions) {
+				SearchNearbyTileForAI (tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Utility.ToVector2(direction), maxAPUse, skill);
+			}
+		}
+
+		Debug.Log ("AI pathfinding ended");
+
+		return tilesWithPath;
+	}
+
+	// AI용이다. 장애물이 있는 타일은 갈 수 없다고 치는 게 아니라 그냥 장애물을 부수는 데 필요한 AP를 추가한다.
+	static void SearchNearbyTileForAI(Dictionary<Vector2, Tile> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
+		Queue<TileTuple> tileQueue, Unit unit, Vector2 currentTilePosition, Vector2 nearbyTilePosition, int maxAPUse, ActiveSkill skill){
+
+		if (!tiles.ContainsKey(nearbyTilePosition)) return;
+
+		Vector2 currPos = currentTilePosition;
+		Tile currTile = tiles[currentTilePosition];
+		Tile nearbyTile = tiles[nearbyTilePosition];
+
+		int deltaHeight = Mathf.Abs(currTile.GetHeight() - nearbyTile.GetHeight());
+		if (deltaHeight >= 2) return;
+
+		TileWithPath prevTileWithPath = tilesWithPath[currentTilePosition];
+		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath, unit);
+		int requireAP = nearbyTileWithPath.requireActivityPoint;
+
+		if (nearbyTile.IsUnitOnTile ()) {
+			Unit obstacle = nearbyTile.GetUnitOnTile ();
+
+			// 한칸 바로 앞을 공격할 수 없는 AI가 나오면 수정해야 함
+			if (obstacle.IsSeenAsEnemyToThisAIUnit (unit) || obstacle.GetSide() == Side.Neutral) {
+				Tile obstacleTile = nearbyTile;
+				Vector2 obstaclePos = obstacleTile.GetTilePos ();
+
+				SkillLocation location;
+				if (skill.GetSkillType () != SkillType.Point) {
+					if (skill.GetSkillType () == SkillType.Route) {
+						location = new SkillLocation (currTile, obstacleTile, Utility.VectorToDirection (obstaclePos - currPos));
+					} else {
+						location = new SkillLocation (currTile, currTile, Utility.VectorToDirection (obstaclePos - currPos));
+					}
+				} else {
+					location = new SkillLocation (currTile, obstacleTile, Utility.GetDirectionToTarget (currPos, obstaclePos));
+				}
+				Casting casting = new Casting (unit, skill, location);
+				int destroyNeedCount = obstacle.CalculateIntKillNeedCount (casting);
+				int destroyCost = destroyNeedCount * unit.GetActualRequireSkillAP (skill);
+				requireAP += destroyCost;
+				nearbyTileWithPath.AddDestroyUnitCost (destroyCost);
+			} else {
+				return;
+			}
+		}
+
+		if (requireAP > maxAPUse) {
+			return;
+		}
+
+		if (!tilesWithPath.ContainsKey(nearbyTilePosition)){
+			tilesWithPath.Add(nearbyTilePosition, nearbyTileWithPath);
+			tileQueue.Enqueue(new TileTuple(nearbyTilePosition, nearbyTileWithPath));
+			return;
+		}
+
+		TileWithPath existingNearbyTileWithPath = tilesWithPath[nearbyTilePosition];
+		if (existingNearbyTileWithPath.requireActivityPoint > nearbyTileWithPath.requireActivityPoint){
+			tilesWithPath.Remove(nearbyTilePosition);
+			tilesWithPath.Add(nearbyTilePosition, nearbyTileWithPath);
+			tileQueue.Enqueue(new TileTuple(nearbyTilePosition, nearbyTileWithPath));
+			return;
+		}
+	}
+
 
 	public static Dictionary<Vector2, TileWithPath> CalculatePathsFromThisTile(Unit unit, Tile tile, int maxAPUse){
 		Dictionary<Vector2, Tile> tiles = TileManager.Instance.GetAllTiles();
@@ -92,25 +134,16 @@ public static class PathFinder {
 			Vector2 newPosition = newTileTuple.tilePosition;
 			TileWithPath newTileWithPath = newTileTuple.tileWithPath;
 			// 전후좌우에 있는 타일을 탐색.
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.up, maxAPUse);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.down, maxAPUse);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.left, maxAPUse);
-			SearchNearbyTile(tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Vector2.right, maxAPUse);
-		}
-		//// queue가 비었으면 loop를 탈출.		
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange)) {
-			float speed = unit.GetSpeed ();
-			foreach (TileWithPath tileWithPath in tilesWithPath.Values) {
-				tileWithPath.requireActivityPoint = (int)(unit.CalculateActualAmount(tileWithPath.requireActivityPoint, StatusEffectType.RequireMoveAPChange));
-				tileWithPath.requireActivityPoint = (int)(tileWithPath.requireActivityPoint * (100f / speed));
+			foreach (Direction direction in EnumUtil.directions) {
+				SearchNearbyTile (tiles, tilesWithPath, tileQueue, unit, newPosition, newPosition + Utility.ToVector2(direction), maxAPUse);
 			}
 		}
+		//// queue가 비었으면 loop를 탈출.
 		return tilesWithPath;
 	}
 	
 	static void SearchNearbyTile(Dictionary<Vector2, Tile> tiles, Dictionary<Vector2, TileWithPath> tilesWithPath,
-		Queue<TileTuple> tileQueue, Unit unit, Vector2 tilePosition, Vector2 nearbyTilePosition, int maxAPUse)
-	{
+		Queue<TileTuple> tileQueue, Unit unit, Vector2 tilePosition, Vector2 nearbyTilePosition, int maxAPUse){
 		// if, 타일이 존재하지 않거나, 타일 위에 다른 유닛이 있거나, 다음타일과의 단차가 2 이상이거나,
 		// 타일까지 드는 ap가 remain ap보다 큰 경우 고려하지 않음.
 		if (!tiles.ContainsKey(nearbyTilePosition)) return;
@@ -119,33 +152,25 @@ public static class PathFinder {
 		if (nearbyTile.IsUnitOnTile()) return;
 
 		Tile currentTile = tiles[tilePosition];
-		int deltaHeight = Mathf.Abs(currentTile.GetTileHeight() - nearbyTile.GetTileHeight());
+		int deltaHeight = Mathf.Abs(currentTile.GetHeight() - nearbyTile.GetHeight());
 		if (deltaHeight >= 2) return;
 
 		TileWithPath prevTileWithPath = tilesWithPath[tilePosition];
-		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath);
+		TileWithPath nearbyTileWithPath = new TileWithPath(nearbyTile, prevTileWithPath, unit);
 		int requireAP = nearbyTileWithPath.requireActivityPoint;
-		// 필요 행동력(이동) 증감 효과 적용
-		if (unit.HasStatusEffect(StatusEffectType.RequireMoveAPChange) || unit.HasStatusEffect(StatusEffectType.SpeedChange))
-		{
-			requireAP = (int)(unit.CalculateActualAmount(requireAP, StatusEffectType.RequireMoveAPChange));
-			float speed = unit.GetSpeed ();
-            requireAP = (int)(requireAP * (100f / speed));
-        }
-		if (requireAP > maxAPUse) return;
-		
-		// else, 
+		if (requireAP > maxAPUse) {
+			return;
+		}
+
 		//	 if, 새로운 타일이거나, 기존보다 ap가 더 적게 드는 경로일 경우 업데이트하고 해당 타일을 queue에 넣음.
-		if (!tilesWithPath.ContainsKey(nearbyTilePosition))
-		{
+		if (!tilesWithPath.ContainsKey(nearbyTilePosition)){
 			tilesWithPath.Add(nearbyTilePosition, nearbyTileWithPath);
 			tileQueue.Enqueue(new TileTuple(nearbyTilePosition, nearbyTileWithPath));
 			return;
 		}
 		
 		TileWithPath existingNearbyTileWithPath = tilesWithPath[nearbyTilePosition];
-		if (existingNearbyTileWithPath.requireActivityPoint > nearbyTileWithPath.requireActivityPoint)
-		{
+		if (existingNearbyTileWithPath.requireActivityPoint > nearbyTileWithPath.requireActivityPoint){
 			tilesWithPath.Remove(nearbyTilePosition);
 			tilesWithPath.Add(nearbyTilePosition, nearbyTileWithPath);
 			tileQueue.Enqueue(new TileTuple(nearbyTilePosition, nearbyTileWithPath));

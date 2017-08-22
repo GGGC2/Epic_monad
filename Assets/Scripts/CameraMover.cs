@@ -91,7 +91,11 @@ public class CameraMover : MonoBehaviour {
 	}
 
 	public void SetMovable(bool able){
-		if(SceneData.stageNumber < Setting.mouseCameraMoveOpenStage) {Movable = false;}
-		else {Movable = able;}
+		if(SceneData.stageNumber < Setting.mouseCameraMoveOpenStage) {
+			Movable = false;
+		}
+		else {
+			Movable = able;
+		}
 	}
 }

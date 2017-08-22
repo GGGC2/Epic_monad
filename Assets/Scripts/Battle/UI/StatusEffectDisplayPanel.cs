@@ -28,7 +28,7 @@ namespace BattleUI {
                 else displayName.color = Color.red;
             }
             
-            originSkillAndCaster.text = statusEffect.GetOriginSkillName() + "(" + statusEffect.GetCaster().GetName() + ")";
+            originSkillAndCaster.text = statusEffect.GetOriginSkillName() + "(" + statusEffect.GetCaster().GetNameKor() + ")";
             explanation.text = statusEffect.GetExplanation();
             remainPhase.text = "";
             if (!statusEffect.GetIsInfinite())  remainPhase.text += "남은 페이즈(" + statusEffect.GetRemainPhase() + ")";

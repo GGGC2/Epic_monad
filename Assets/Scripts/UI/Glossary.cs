@@ -18,7 +18,7 @@ public class Glossary : MonoBehaviour{
 		}else{
 			GlossaryData searchResult = GlobalData.GlossaryDataList.Find(data => data.Type == currentType && data.index == number);
 			if(searchResult != null && searchResult.level > 0)
-				InformationText.text = searchResult.text;
+				InformationText.text = searchResult.text[searchResult.level];
 		}
 	}
 
@@ -46,13 +46,14 @@ public class GlossaryData{
 	public int index;
 	public int level;
 	public string name;
-	public string text;
+	public Dictionary<int, string> text = new Dictionary<int, string>();
 	public GlossaryData(string textRowData){
 		StringParser parser = new StringParser(textRowData, '\t');
 		Type = parser.ConsumeEnum<GlossaryType>();
 		index = parser.ConsumeInt();
 		level = 0;
 		name = parser.Consume();
-		text = parser.Consume();
+		text.Add(1, parser.Consume());
+		text.Add(2, parser.Consume());
 	}
 }

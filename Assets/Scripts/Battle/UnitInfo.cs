@@ -5,42 +5,52 @@ using System;
 using Enums;
 using GameData;
 
-public class UnitInfo {
+public class UnitInfo{
 	public int index;
-	public string name;
-	public string nameInCode;
+	public string nameKor;
+	public string nameEng;
 	public Side side;
 	public Vector2 initPosition;
 	public Direction initDirection;
-	public int baseHealth;
-	public int basePower;
-	public int baseDefense;
-	public int baseResistance;
-	public int baseAgility;
 	public UnitClass unitClass;
 	public Element element;
 	public Celestial celestial;
 	public bool isObject;
+	public Dictionary<Stat, int> baseStats = new Dictionary<Stat, int>();
+	public Dictionary<Stat, int> InitStatChanges = new Dictionary<Stat, int>();
 
 	public UnitInfo (string data){
-		StringParser commaParser = new StringParser(data, ',');
-		this.index = commaParser.ConsumeInt(); 
-		this.name = commaParser.Consume();
-		this.nameInCode = commaParser.Consume();
-		this.side = commaParser.ConsumeEnum<Side>();
+		StringParser commaParser = new StringParser(data, '\t');
+		index = commaParser.ConsumeInt(); 
+		nameKor = commaParser.Consume();
+		nameEng = commaParser.Consume();
+		side = commaParser.ConsumeEnum<Side>();
 		int x = commaParser.ConsumeInt();
 		int y = commaParser.ConsumeInt();
-		this.initPosition = new Vector2(x, y);
-		this.initDirection = commaParser.ConsumeEnum<Direction>();
-		this.baseHealth = commaParser.ConsumeInt();
-		this.basePower = commaParser.ConsumeInt();
-		this.baseDefense = commaParser.ConsumeInt();
-		this.baseResistance = commaParser.ConsumeInt();
-		this.baseAgility = commaParser.ConsumeInt();
-		this.unitClass = commaParser.ConsumeEnum<UnitClass>();
-		this.element = commaParser.ConsumeEnum<Element>();
-		this.celestial = commaParser.ConsumeEnum<Celestial>();
-		this.isObject = commaParser.ConsumeBool();
+		initPosition = new Vector2(x, y);
+		initDirection = commaParser.ConsumeEnum<Direction>();
+		baseStats.Add(Stat.MaxHealth, commaParser.ConsumeInt());
+		baseStats.Add(Stat.Power, commaParser.ConsumeInt());
+		baseStats.Add(Stat.Defense, commaParser.ConsumeInt());
+		baseStats.Add(Stat.Resistance, commaParser.ConsumeInt());
+		baseStats.Add(Stat.Agility, commaParser.ConsumeInt());
+		unitClass = commaParser.ConsumeEnum<UnitClass>();
+		if(SceneData.stageNumber < Setting.classOpenStage){
+			unitClass = UnitClass.None;
+		}
+		element = commaParser.ConsumeEnum<Element>();
+		if(SceneData.stageNumber < Setting.elementOpenStage){
+			element = Element.None;
+		}
+		celestial = commaParser.ConsumeEnum<Celestial>();
+		if(SceneData.stageNumber < Setting.elementOpenStage){
+			celestial = Celestial.None;
+		}
+		isObject = commaParser.ConsumeBool();
+		int StatChangeCount = commaParser.ConsumeInt();
+		for(int i = 0; i < StatChangeCount; i++){
+			InitStatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());
+		}
 	}
 
 	public static int GetStat(string unitName, Stat type){
@@ -135,12 +145,13 @@ public class UnitInfo {
 	}
 
 	public void SetPCData(string PCName){
-		nameInCode = PCName;
-		baseHealth = UnitInfo.GetStat (PCName, Stat.MaxHealth);
-		basePower = UnitInfo.GetStat (PCName, Stat.Power);
-		baseDefense = UnitInfo.GetStat (PCName, Stat.Defense);
-		baseResistance = UnitInfo.GetStat (PCName, Stat.Resistance);
-		baseAgility = UnitInfo.GetStat (PCName, Stat.Agility);
+		nameEng = PCName;
+		baseStats.Clear();
+		baseStats.Add(Stat.MaxHealth, GetStat(PCName, Stat.MaxHealth));
+		baseStats.Add(Stat.Power, GetStat(PCName, Stat.Power));
+		baseStats.Add(Stat.Defense, GetStat(PCName, Stat.Defense));
+		baseStats.Add(Stat.Resistance, GetStat(PCName, Stat.Resistance));
+		baseStats.Add(Stat.Agility, GetStat(PCName, Stat.Agility));
 		unitClass = UnitInfo.GetUnitClass (PCName);
 
 		if (SceneData.stageNumber >= Setting.elementOpenStage)

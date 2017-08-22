@@ -23,20 +23,21 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		trigger.count += 1;
-		if(trigger.count == trigger.targetCount && !trigger.acquired){
+		Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
+		if (trigger.count == trigger.targetCount && !trigger.acquired) {
 			trigger.acquired = true;
-			Debug.Log("TriggerName : " + trigger.korName);
-			if(trigger.resultType == BattleTrigger.ResultType.Bonus)
+			Debug.Log ("Trigger acquired : " + trigger.korName);
+			if (trigger.resultType == BattleTrigger.ResultType.Bonus)
 				BattleData.rewardPoint += trigger.reward;
-			else if(trigger.resultType == BattleTrigger.ResultType.Win)
+			else if (trigger.resultType == BattleTrigger.ResultType.Win)
 				BattleData.rewardPoint += trigger.reward;
-			else if(trigger.resultType == BattleTrigger.ResultType.Lose){
-				Debug.Log("Mission FAIL : "+trigger.korName);
-				sceneLoader.LoadNextDialogueScene("Title");
+			else if (trigger.resultType == BattleTrigger.ResultType.Lose) {
+				Debug.Log ("Mission FAIL : " + trigger.korName);
+				sceneLoader.LoadNextDialogueScene ("Title");
 			}
-		}
-		else if(trigger.repeatable)
+		} else if (trigger.repeatable) {
 			BattleData.rewardPoint += trigger.reward;
+		}
 	}
 
 	public void InitializeResultPanel(){
@@ -50,7 +51,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.Checker = this;
 		resultPanel.gameObject.SetActive(false);
 
-		battleTriggers = Parser.GetParsedBattleTriggerData();
+		battleTriggers = Parser.GetParsedData<BattleTrigger>();
 		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 		
 		if(FindObjectOfType<ConditionPanel>() != null)
@@ -98,13 +99,13 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
-		if(trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any(x => x == unit.name))
+		if (trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameInCode())))
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.side == Side.Ally)
+		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.GetSide() == Side.Ally)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.side == Side.Enemy)
+		else if(trigger.unitType == BattleTrigger.UnitType.Enemy && unit.GetSide() == Side.Enemy)
 			return true;
-		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsAI == false)
+		else if(trigger.unitType == BattleTrigger.UnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
 			return true;
 		else
 			return false;

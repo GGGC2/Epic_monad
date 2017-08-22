@@ -31,7 +31,7 @@ namespace BattleUI {
             }
             tileImage.sprite = tile.gameObject.GetComponent<SpriteRenderer>().sprite;
             nameText.text = tile.GetTileName();
-            int requiredAP = tile.GetRequireAPAtTile();
+            int requiredAP = tile.GetBaseMoveCost();
             int unclimbableAP = 200;
             if (requiredAP < unclimbableAP) {
                 apText.text = "소모 행동력 " + requiredAP;

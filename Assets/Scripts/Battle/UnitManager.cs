@@ -13,7 +13,7 @@ public class DeadUnitInfo{
 	public readonly Side unitSide;
 
 	public DeadUnitInfo(Unit unit){
-		unitName = unit.GetName();
+		unitName = unit.GetNameKor();
 		unitSide = unit.GetSide();
 	}
 }
@@ -23,7 +23,7 @@ public class RetreatUnitInfo{
 	public readonly Side unitSide;
 
 	public RetreatUnitInfo(Unit unit){
-		unitName = unit.GetName();
+		unitName = unit.GetNameKor();
 		unitSide = unit.GetSide();
 	}
 }
@@ -166,7 +166,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void ApplyAIInfo (){
-		List<AIInfo> aiInfoList = Parser.GetParsedAIInfo();
+		List<AIInfo> aiInfoList = Parser.GetParsedData<AIInfo>();
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;
 			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
@@ -175,6 +175,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			AIData _AIData = targetUnit.gameObject.GetComponent<AIData>();
 			_AIData.SetAIInfo(aiInfo);
+			_AIData.SetGoalArea(targetUnit);
 			Battle.Turn.AI _AI = targetUnit.gameObject.AddComponent<Battle.Turn.AI>();
 			_AI.Initialize(targetUnit, _AIData);
 			targetUnit.SetAI(_AI);
@@ -183,21 +184,21 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void GenerateUnits(){
-		List<UnitInfo> unitInfoList = Parser.GetParsedUnitInfo();
+		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int GeneratedPC = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.name == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
-			else if (unitInfo.name.Length >= 2 && unitInfo.name.Substring(0,2) == "PC") {PCName = unitInfo.name.Substring(2, unitInfo.name.Length-2);}
+			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
+			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
 			
 			if(PCName != ""){
-				unitInfo.name = UnitInfo.ConvertToKoreanName (PCName);
+				unitInfo.nameKor = UnitInfo.ConvertToKoreanName (PCName);
 				controllableUnitNameList.Add(PCName);
 					
-				if (unitInfo.name != "Empty") {
+				if (unitInfo.nameKor != "Empty") {
 					unitInfo.SetPCData(PCName);
 					GeneratedPC += 1;
 				}
@@ -210,11 +211,11 @@ public class UnitManager : MonoBehaviour {
 		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
 		if(countPC != null) {countPC.targetCount = GeneratedPC;}
 
-		unitInfoList = unitInfoList.FindAll(info => info.name != "Empty");
+		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
 		foreach (var unitInfo in unitInfoList){
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-			unit.ApplyUnitInfo(unitInfo);
+			unit.myInfo = unitInfo;
 			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
 
 			Vector2 initPosition = unit.GetInitPosition();
@@ -317,6 +318,7 @@ public class UnitManager : MonoBehaviour {
 
 	public void StartPhase(int phase){
 		foreach (var unit in units){
+			unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
 			if (phase == 1) {unit.ApplyTriggerOnStart ();}
@@ -337,14 +339,6 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unit in units) {unit.ApplyTriggerOnPhaseEnd();}
 	}
 
-	void LoadActiveSkills(){
-		activeSkillList = Parser.GetParsedData<ActiveSkill>();
-	}
-
-	void LoadPassiveSkills(){
-		passiveSkillList = Parser.GetPassiveSkills();
-	}
-
     void LoadUnitStatusEffects(){
         statusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>();
     }
@@ -355,12 +349,12 @@ public class UnitManager : MonoBehaviour {
 
 	void Start() {
 		GameData.PartyData.CheckLevelData();
-		LoadActiveSkills();
-		LoadPassiveSkills();
+		activeSkillList = Parser.GetParsedData<ActiveSkill>();
+		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
         LoadUnitStatusEffects();
         LoadTileStatusEffects();
 		GenerateUnits();
-        if (!GameData.SceneData.isTestMode) {
+		if (!GameData.SceneData.isTestMode) {
             ApplyAIInfo();
         }
         GetEnemyUnits();

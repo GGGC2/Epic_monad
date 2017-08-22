@@ -36,44 +36,68 @@ namespace Battle.Turn{
 
 		// 1턴 내에 이동 후 공격 불가하거나 그럴 만한 가치가 없을 때 가장 가치있는 적을 향해 움직인다
 		// 가치에는 거리도 적용되므로 너무 멀면 그쪽으로 가진 않는다
-		public static Tile GetBestApproachWorthTile(Unit unit, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		public static Tile GetBestApproachWorthTile(Unit unit, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Vector2> goalArea){
 			Tile unitTile = unit.GetTileUnderUnit ();
 			Vector2 unitPos = unit.GetPosition ();
 			int minAPUse = unit.MinAPUseForStandbyForAI ();
 
-			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTile (unit, unitTile, int.MaxValue);
+			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTileForAI (unit, unitTile, int.MaxValue, skill);
 			TileWithPath bestFinalTileWithPath = new TileWithPath (unit.GetTileUnderUnit ());
-			float maxFinalReward = 0;
-			Unit caster = unit;
+			Tile bestTile = unit.GetTileUnderUnit ();
 
-			foreach (var pair in allPaths) {
-				TileWithPath tileWithPath = pair.Value;
-				Tile tile = tileWithPath.tile;
-				int requireAP = pair.Value.requireActivityPoint;
+			if (goalArea.Count == 0) {
+				float maxFinalReward = 0;
+				Unit caster = unit;
 
-				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
-				if (bestCastingOnThisTile != null) {
-					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
+				foreach (var pair in allPaths) {
+					TileWithPath tileWithPath = pair.Value;
+					Tile tile = tileWithPath.tile;
+					int requireAP = pair.Value.requireActivityPoint;
 
-					if (singleCastingReward > maxFinalReward) {
-						maxFinalReward = singleCastingReward;
-						bestFinalTileWithPath = tileWithPath;
+					Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+
+					if (bestCastingOnThisTile != null) {
+						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
+						float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
+
+						if (reward > maxFinalReward) {
+							maxFinalReward = reward;
+							bestFinalTileWithPath = tileWithPath;
+						}
 					}
+				}
+					
+				if (maxFinalReward == 0) {
+					return bestTile;
+				}
+
+			} else {
+				Debug.Log ("For goal");
+				Dictionary<Vector2, TileWithPath> allGoalPaths = new Dictionary<Vector2, TileWithPath> ();
+				foreach (var pair in allPaths) {
+					TileWithPath tileWithPath = pair.Value;
+					Vector2 tilePos = tileWithPath.tile.GetTilePos ();
+					if (goalArea.Contains (tilePos)) {
+						allGoalPaths [pair.Key] = pair.Value;
+					}
+				}
+
+				bestFinalTileWithPath = GetMinRequireAPTileWithPath (allGoalPaths);
+
+				if(unit.GetCurrentActivityPoint() >= bestFinalTileWithPath.requireActivityPoint){
+					bestTile=bestFinalTileWithPath.tile;
+					return bestTile;
 				}
 			}
 
-			Tile bestTile = unit.GetTileUnderUnit ();
-
-			if (maxFinalReward == 0)
-				return bestTile;
-
 			List<Tile> path = bestFinalTileWithPath.path;
+			path.Add (bestFinalTileWithPath.tile);
 
 			foreach (Tile tile in path) {
 				Vector2 tilePos = tile.GetTilePos ();
-				if (!movableTilesWithPath.ContainsKey (tilePos))
+				if (!movableTilesWithPath.ContainsKey (tilePos)) {
 					break;
+				}
 				if (movableTilesWithPath [tilePos].requireActivityPoint >= minAPUse) {
 					bestTile = tile;
 					break;
@@ -84,7 +108,7 @@ namespace Battle.Turn{
 		}
 
 		// 1턴 내에 이동 후 공격하는 모든 경우 중 가장 가치있는 경우를 찾아서 이동 목적지 return
-		public static Tile GetBestMovableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor){
+		public static Tile GetBestMovableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor, int minWorthReward){
 			Tile bestTile = caster.GetTileUnderUnit ();
 			int currAP = caster.GetCurrentActivityPoint ();
 			int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -111,23 +135,26 @@ namespace Battle.Turn{
 					}
 				}
 			}
-			if (maxReward == 0)
+
+			if (maxReward <= minWorthReward) {
 				return null;
-			else
+			} else {
 				return bestTile;
+			}
 		}
-		private static Tile GetMinRequireAPTile(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+
+		static TileWithPath GetMinRequireAPTileWithPath(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 			if (movableTilesWithPath.Count > 0){
-				Tile nearestTile=null;
+				TileWithPath nearestTileWithPath=null;
 				int minRequireAP = Int32.MaxValue;
 				foreach (var pair in movableTilesWithPath) {
 					int requireAP = pair.Value.requireActivityPoint;
 					if (requireAP < minRequireAP) {
 						minRequireAP = requireAP;
-						nearestTile = pair.Value.tile;
+						nearestTileWithPath = pair.Value;
 					}
 				}
-				return nearestTile;
+				return nearestTileWithPath;
 			}
 			return null;
 		}
@@ -155,23 +182,20 @@ namespace Battle.Turn{
 
 			yield return CheckUnitIsActiveAndDecideActionAndAct();
 
-			if(state != State.Dead)
-				battleManager.EndUnitTurn();
+			if (state != State.Dead) {
+				battleManager.EndUnitTurn ();
+			}
 		}
 
 		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
-			if (unit.GetNameInCode () == "kashasty_Escape") {
-				yield return AIKashasty.DecideActionAndAct (unit);
-				yield break;
+			if (!_AIData.IsActive()) {
+				CheckActiveTrigger();
 			}
-
-			if (!_AIData.IsActive()) {CheckActiveTrigger();}
 
 			if (!_AIData.IsActive ()) {
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 				state = State.SkipTurn;
-			}
-			else {
+			} else {
 				state = State.MoveToBestCasting;
 			}
 			yield return FSM ();
@@ -179,8 +203,10 @@ namespace Battle.Turn{
 
 		IEnumerator FSM(){
 			while (true) {
-				if (state == State.Dead || state == State.EndTurn)
+				if (state == State.Dead || state == State.EndTurn) {
 					yield break;
+				}
+				Debug.Log(state.ToString ());
 				yield return StartCoroutine (state.ToString ());
 			}
 		}
@@ -191,7 +217,7 @@ namespace Battle.Turn{
 				yield break;
 			}
 
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
@@ -199,16 +225,22 @@ namespace Battle.Turn{
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+			yield return PaintMovableTiles ();
 
-			yield return PaintMovableTiles(movableTilesWithPath);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI(unit, selectedSkill);
 
-			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPath, 0);
-			if (destTile != null) {
-				yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
-				state = State.CastingLoop;
+			int minRewardWorthAttack = 0;
+
+			if (unit.GetNameInCode () == "kashasty_Escape") {
+				minRewardWorthAttack = 400;
 			}
-			else {
+
+			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPathWithDestroying, 0, minRewardWorthAttack);
+
+			if (destTile != null) {
+				yield return MoveWithDestroyRoutine (selectedSkill, movableTilesWithPathWithDestroying, destTile);
+				state = State.CastingLoop;
+			} else {
 				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
 				state = State.Approach;
 				yield break;
@@ -223,18 +255,96 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		public IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
+			Tile startTile = unit.GetTileUnderUnit ();
+
+			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
+			List<Tile> destPath = destTileWithPath.path;
+			int destRequireAP = destTileWithPath.requireActivityPoint;
+
+			List<Tile> mustCheckEmptinessTiles = new List<Tile> ();
+			foreach (Tile tile in destPath) {
+				if (tile != startTile) {
+					mustCheckEmptinessTiles.Add (tile);
+				}
+			}
+			if (destTile != startTile) {
+				mustCheckEmptinessTiles.Add (destTile);
+			}
+
+			Tile prevTile = unit.GetTileUnderUnit ();
+			List<Tile> prevPath = new List<Tile> ();
+			int prevRequireAP = 0;
+
+			foreach (Tile tile in mustCheckEmptinessTiles) {
+				if (tile.IsUnitOnTile ()) {
+					TileWithPath intermediateTileWithPath = movableTilesWithPathWithDestroying [prevTile.GetTilePos ()];
+
+					List<Tile> realPath = intermediateTileWithPath.path.Except (prevPath).ToList ();
+					int realRequireAP = intermediateTileWithPath.requireActivityPoint - prevRequireAP;
+
+					yield return MoveToTheTileAndChangeDirection (unit, prevTile, realPath, realRequireAP);
+
+					prevPath = intermediateTileWithPath.path;
+					prevRequireAP = intermediateTileWithPath.requireActivityPoint;
+
+					yield return DestroyObstacle (skill, tile);
+					prevRequireAP += obstacleDestroyCost;
+					yield return PaintMovableTiles ();
+				}
+				prevTile = tile;
+			}
+
+			List<Tile> remainPath = destPath.Except (prevPath).ToList ();
+			int remainRequireAP = destRequireAP - prevRequireAP;
+			yield return MoveToTheTileAndChangeDirection (unit, destTile, remainPath, remainRequireAP);
+		}
+
+		int obstacleDestroyCost = 0;
+
+		IEnumerator DestroyObstacle(ActiveSkill skill, Tile obstacleTile){
+			Debug.Log ("Destory obstacle period");
+
+			obstacleDestroyCost = 0;
+
+			Tile currTile = unit.GetTileUnderUnit ();
+			Vector2 currPos = currTile.GetTilePos ();
+			Vector2 obstaclePos = obstacleTile.GetTilePos ();
+
+			SkillLocation location;
+			if (skill.GetSkillType () != SkillType.Point) {
+				if (skill.GetSkillType () == SkillType.Route) {
+					location = new SkillLocation (currTile, obstacleTile, Utility.VectorToDirection (obstaclePos - currPos));
+				} else {
+					location = new SkillLocation (currTile, currTile, Utility.VectorToDirection (obstaclePos - currPos));
+				}
+			} else {
+				location = new SkillLocation (currTile, obstacleTile, Utility.GetDirectionToTarget (currPos, obstaclePos));
+			}
+			Casting casting = new Casting (unit, skill, location);
+
+			while (obstacleTile.IsUnitOnTile ()) {
+				Debug.Log ("destroying obstacle on the tile "+obstaclePos.x+" : "+obstaclePos.y);
+				yield return battleManager.ToDoBeforeAction ();
+				yield return UseSkill (casting);
+				obstacleDestroyCost += unit.GetActualRequireSkillAP (skill);
+			}
+		}
+
+		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, List<Tile> path, int requireAP){
 			Vector2 destPos = destTile.GetTilePos ();
-			List<Tile> path = movableTilesWithPath [destPos].path;
 
 			if (path.Count > 0) {
-				int totalUseAP = movableTilesWithPath [destPos].requireActivityPoint;
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, path, unit.GetDirection ());
-				yield return Move (unit, destTile, finalDirection, totalUseAP);
+				yield return Move (unit, destTile, finalDirection, requireAP, path.Count + 1);
+			} else {
+				TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			}
-			else { //Count가 0이면 방향전환도 이동도 안 함
-				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
-			}
+		}
+
+		IEnumerator PaintMovableTiles(){
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathForPainting = PathFinder.CalculateMovablePaths(unit);
+			yield return PaintMovableTiles(movableTilesWithPathForPainting);
 		}
 
 		IEnumerator Approach(){
@@ -243,24 +353,28 @@ namespace Battle.Turn{
 				yield break;
 			}
 
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			int selectedSkillIndex = 1;
 			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-			ActiveSkill selectedSkill = BattleData.SelectedSkill;
+			ActiveSkill skill = BattleData.SelectedSkill;
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+			yield return PaintMovableTiles ();
 
-			yield return PaintMovableTiles(movableTilesWithPath);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
 
-			Tile destTile = AIUtil.GetBestApproachWorthTile(unit, selectedSkill, movableTilesWithPath);
-			yield return MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
+			Tile destTile = AIUtil.GetBestApproachWorthTile (unit, skill, movableTilesWithPathWithDestroying, _AIData.goalArea);
+			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
+
+			yield return MoveWithDestroyRoutine (skill, movableTilesWithPathWithDestroying, destTile);
 			state = State.StandbyOrRest;
 		}
 
 		IEnumerator CastingLoop(){
+			bool flag = false;
+
 			while(true){
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
 					state = State.Dead;
@@ -273,7 +387,7 @@ namespace Battle.Turn{
 					yield break;
 				}
 
-				yield return battleManager.BeforeActCommonAct ();
+				yield return battleManager.ToDoBeforeAction ();
 
 				int selectedSkillIndex = 1;
 				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
@@ -288,29 +402,33 @@ namespace Battle.Turn{
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
 				if (casting == null) {
-					state = State.MoveToBestCasting;
-					yield break;
+					if (flag) {
+						state = State.MoveToBestCasting;
+						yield break;
+					} else {
+						state = State.StandbyOrRest;
+						yield break;
+					}
 				}
-				
+
+				flag = true;
 				yield return UseSkill(casting);
 			}
 		}
 		public IEnumerator StandbyOrRest(){
-			yield return battleManager.BeforeActCommonAct ();
+			yield return battleManager.ToDoBeforeAction ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby (unit);
-			}
-			else {
+			} else {
 				yield return TakeRest (unit);
 			}
 			state = State.EndTurn;
 		}
 
-		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost){
-			CameraFocusToUnit(unit);
+		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
-			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost));
+			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount));
 		}
 		public static IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
@@ -334,21 +452,18 @@ namespace Battle.Turn{
 		void CheckActiveTrigger(){
 			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
-			if (_AIData.activeTriggers.Contains(1))
-			{
+			if (_AIData.activeTriggers.Contains(1)){
 				satisfyActiveCondition = true;
 			}
 			// 일정 페이즈부터 활성화
-			else if (_AIData.activeTriggers.Contains(2))
-			{
+			else if (_AIData.activeTriggers.Contains(2)){
 				if (BattleData.currentPhase >= _AIData.activePhase) {
-					Debug.Log (unit.GetName () + " is activated because enough phase passed");
+					Debug.Log (unit.GetNameKor () + " is activated because enough phase passed");
 					satisfyActiveCondition = true;
 				}
 			}
 			// 자신 주위 일정 영역에 접근하면 활성화
-			else if (_AIData.activeTriggers.Contains(3))
-			{
+			else if (_AIData.activeTriggers.Contains(3)){
 				// 자신을 기준으로 한 상대좌표
 				List<List<Tile>> aroundTiles = _AIData.trigger3Area;
 				List<Unit> aroundUnits = new List<Unit>();
@@ -366,13 +481,12 @@ namespace Battle.Turn{
 				bool isThereAnotherSideUnit = aroundUnits.Any(anyUnit => AIUtil.IsSecondUnitEnemyToFirstUnit(unit, anyUnit));
 
 				if (isThereAnotherSideUnit){
-					Debug.Log (unit.GetName () + " is activated because its enemy came to nearby");
+					Debug.Log (unit.GetNameKor () + " is activated because its enemy came to nearby");
 					satisfyActiveCondition = true;
 				}
 			}
 			// 맵 상의 특정 영역에 접근하면 활성화
-			else if (_AIData.activeTriggers.Contains(4))
-			{
+			else if (_AIData.activeTriggers.Contains(4)){
 				// 절대좌표
 				List<List<Tile>> aroundTiles = _AIData.trigger4Area;
 				List<Unit> aroundUnits = new List<Unit>();
@@ -393,201 +507,19 @@ namespace Battle.Turn{
 
 				if (isThereAnotherSideUnit)
 				{
-					Debug.Log (unit.GetName () + " is activated because its enemy came to absolute position range");
+					Debug.Log (unit.GetNameKor () + " is activated because its enemy came to absolute position range");
 					satisfyActiveCondition = true;
 				}
 			}
 			// 자신을 대상으로 기술이 시전되면 활성화
-			else if (_AIData.activeTriggers.Contains(5))
-			{
+			else if (_AIData.activeTriggers.Contains(5)){
 				// 뭔가 기술의 영향을 받으면
-				// SkillAndChainState.ApplySkill에서 체크
-			}
-			if(satisfyActiveCondition)
-				_AIData.SetActive();
-		}
-	}
-
-	public class AIKashasty{
-		private static BattleManager battleManager;
-		public static IEnumerator DecideActionAndAct(Unit unit){
-			battleManager = BattleData.battleManager;
-			bool movable = unit.IsMovePossibleState ();
-			bool skillusable = unit.IsSkillUsePossibleState ();
-			if (!movable && !skillusable) {
-				//do nothing
-			}
-			else if (!movable && skillusable) {
-				yield return OnlyAttack (unit);
-			}
-			else if (movable && !skillusable) {
-				yield return OnlyMove (unit);
-			}
-			else {
-				yield return FreeState (unit);
-			}
-			yield return unit.GetAI().StandbyOrRest ();
-		}
-		private static IEnumerator OnlyAttack(Unit unit){
-			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
-
-				int selectedSkillIndex = 1;
-				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = BattleData.SelectedSkill;
-
-				Vector2 currPos = unit.GetPosition ();
-				if (!unit.HasEnoughAPToUseSkill (skill))
-					break;
-
-				//상하좌우에 쏠 수 있는 애가 있으면 쏜다. 우선순위는 그레네브=비앙카=달케니르 > 다른 모든 유닛(지형지물 포함)
-				Vector2 casterPos = currPos;
-				Tile casterTile = BattleData.tileManager.GetTile (casterPos);
-				Direction? attackDirection;
-				Tile targetTile;
-
-				attackDirection = TastyTileAttackDirectionOnThatPosition (casterPos, skill);
-				if (attackDirection != null) {
-					targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
-					yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
-					continue;
-				}
-
-				attackDirection = DecentTileAttackDirectionOnThatPosition (casterPos, skill);
-				if (attackDirection != null) {
-					targetTile = skill.GetRealTargetTileForAI (casterPos, (Direction)attackDirection);
-					yield return AI.UseSkill (new Casting (unit, skill, new SkillLocation (casterTile, targetTile, (Direction)attackDirection)));
-					continue;
-				}
-
-				break;
-			}
-		}
-		private static IEnumerator OnlyMove(Unit unit){
-			yield return battleManager.BeforeActCommonAct ();
-
-			int step = 0;
-			int currentAP = unit.GetCurrentActivityPoint ();
-			int requireAP = 0;
-			Vector2 pos = unit.GetPosition ();
-			Tile tile = unit.GetTileUnderUnit ();
-			List<Tile> movableTiles = new List<Tile> ();
-
-			while (currentAP - requireAP >= unit.GetStandardAP ()) {
-				movableTiles.Add (tile);
-				Vector2 nextPos = pos + Utility.ToVector2 (Direction.RightDown);
-				Tile nextTile = BattleData.tileManager.GetTile (nextPos);
-				if (nextTile == null || nextTile.IsUnitOnTile()) {
-					break;
-				}
-				pos = nextPos;
-				tile = nextTile;
-				step++;
-				//FIXME : 아래 AP 소모량 구하는 줄은 임시로 넣은 거고 나중에 고쳐야 됨 ㅋㅋ
-				requireAP += 3 + 2 * (step - 1);
-				Debug.Log (step);
-				Debug.Log (requireAP);
+				// SkillAndChainState.ApplySkill에서 체크하므로 여기선 할 일 없음
 			}
 
-			int totalUseAP = requireAP;
-			Tile destTile = tile;
-			yield return AI.Move (unit, destTile, Direction.RightDown, totalUseAP);
-		}
-		private static IEnumerator FreeState(Unit unit){
-			yield return TasteTastyTile (unit);
-			yield return BreakAndEscape (unit);
-		}
-		private static IEnumerator TasteTastyTile(Unit unit){
-			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
-
-				int selectedSkillIndex = 1;
-				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = BattleData.SelectedSkill;
-				int spareableAP = 24 + unit.GetActualRequireSkillAP (skill) * 2;
-
-				Vector2 currPos = unit.GetPosition ();
-				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
-				yield return AI.PaintMovableTiles(movableTilesWithPath);
-				
-				Tile destTile = AIUtil.GetBestMovableTile (unit, skill, movableTilesWithPath, unit.GetCurrentActivityPoint () - spareableAP);
-
-				if (destTile == null || TastyTileAttackDirectionOnThatPosition(destTile.GetTilePos(), skill) == null)
-					yield break;
-
-				yield return AI.MoveToTheTileAndChangeDirection (unit, destTile, movableTilesWithPath);
-
-				while (true) {
-					if (!unit.HasEnoughAPToUseSkill (skill))
-						yield break;
-					yield return battleManager.BeforeActCommonAct ();
-					Tile currTile = unit.GetTileUnderUnit ();
-					if (TastyTileAttackDirectionOnThatPosition (currTile.GetTilePos (), skill) == null) {
-						break;
-					}
-					Casting casting = skill.GetBestAttack (unit, currTile);
-					yield return AI.UseSkill (casting);
-				}
+			if (satisfyActiveCondition) {
+				_AIData.SetActive ();
 			}
-		}
-		private static IEnumerator BreakAndEscape(Unit unit){
-			while (true) {
-				yield return battleManager.BeforeActCommonAct ();
-
-				int currentAP = unit.GetCurrentActivityPoint ();
-				Vector2 currPos = unit.GetPosition ();
-				int selectedSkillIndex = 1;
-				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
-				ActiveSkill skill = BattleData.SelectedSkill;
-
-				Tile barrierTile = skill.GetRealTargetTileForAI (currPos, Direction.RightDown);
-
-				if (barrierTile == null) {
-					yield return OnlyMove (unit);
-					break;
-				}
-				else {
-					if (!unit.HasEnoughAPToUseSkill (skill))
-						break;
-					yield return AI.UseSkill (new Casting(unit,  skill, new SkillLocation(currPos, barrierTile, Direction.RightDown)));
-				}
-			}
-		}
-		private static Direction? TastyTileAttackDirectionOnThatPosition(Vector2 casterPos, ActiveSkill skill){
-			Tile casterTile = BattleData.tileManager.GetTile (casterPos);
-			Direction? attackDirection = null;
-
-			foreach(Direction direction in EnumUtil.directions){
-				Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsTastyTile (targetTile)) {
-					attackDirection = direction;
-					break;
-				}
-			}
-			return attackDirection;
-		}
-		private static Direction? DecentTileAttackDirectionOnThatPosition(Vector2 casterPos, ActiveSkill skill){
-			Tile casterTile = BattleData.tileManager.GetTile (casterPos);
-			Direction? attackDirection = null;
-
-			foreach(Direction direction in EnumUtil.directions){
-				Tile targetTile = skill.GetRealTargetTileForAI (casterPos, direction);
-				if (IsDecentTile (targetTile)) {
-					attackDirection = direction;
-					break;
-				}
-			}
-			return attackDirection;
-		}
-		private static bool IsUnitOnThatTileTastyPC(Tile tile){
-			string unitCodeName = tile.GetUnitOnTile ().GetNameInCode ();
-			return unitCodeName == "grenev" || unitCodeName == "darkenir" || unitCodeName == "bianca";
-		}
-		private static bool IsTastyTile(Tile tile){
-			return tile != null && tile.IsUnitOnTile () && IsUnitOnThatTileTastyPC (tile);
-		}
-		private static bool IsDecentTile(Tile tile){
-			return tile != null && tile.IsUnitOnTile ();
 		}
 	}
 }

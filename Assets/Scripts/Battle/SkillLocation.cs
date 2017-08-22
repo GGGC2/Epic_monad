@@ -15,11 +15,6 @@ public class SkillLocation {
 		this.targetTile = targetTile;
 		this.direction = direction;
 	}
-	public SkillLocation(Unit unit, Tile targetTile, Direction direction){
-		this.casterTile = unit.GetTileUnderUnit ();
-		this.targetTile = targetTile;
-		this.direction = direction;
-	}
 	public Tile CasterTile{
 		get { return casterTile; }
 	}

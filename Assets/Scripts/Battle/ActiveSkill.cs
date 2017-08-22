@@ -366,8 +366,10 @@ public class ActiveSkill : Skill{
 									ignored = true;
 							}
 						}
-						if(!ignored)
-							StatusEffector.AttachStatusEffect(caster, this, target, realEffectRange);
+
+						if (!ignored) {
+							StatusEffector.AttachStatusEffect (caster, this, target, realEffectRange);
+						}
 					}
 				}
 				caster.ActiveFalseAllBonusText();
@@ -419,11 +421,13 @@ public class ActiveSkill : Skill{
 			target.RemoveStatusEffect(statusEffect);
 
 		if (totalEvasionChance > randomNumber) {
-			BattleData.uiManager.AppendNotImplementedLog("EVASION SUCCESS");
+			BattleData.uiManager.AppendNotImplementedLog ("EVASION SUCCESS");
 			// (타겟이) 회피 성공했을 경우 추가 효과
-			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent(caster, target);
+			passiveSkillLogicsOfTarget.TriggerOnEvasionEvent (caster, target);
 			return true;
-		} else return false;
+		} else {
+			return false;
+		}
 	}
 
 	private static IEnumerator ApplyDamage(CastingApply castingApply, int chainCombo, bool isLastTarget) {
@@ -617,7 +621,6 @@ public class ActiveSkill : Skill{
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
-		BattleManager.MoveCameraToUnit (caster);
 		HideSkillNamePanelUI ();
 	}
 
