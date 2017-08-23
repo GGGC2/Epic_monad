@@ -11,14 +11,19 @@ public class Glossary : MonoBehaviour{
 	public Text InformationText;
 	
 	public List<Text> ButtonTextList;
-	void OnEnable() {UpdateButtonName();}
+
+	void OnEnable() {
+		UpdateButtonName();
+	}
+
 	public void SetText(int number){
-		if(number == 0){
+		if (number == 0) {
 			InformationText.text = "";	
-		}else{
-			GlossaryData searchResult = GlobalData.GlossaryDataList.Find(data => data.Type == currentType && data.index == number);
-			if(searchResult != null && searchResult.level > 0)
-				InformationText.text = searchResult.text[searchResult.level];
+		} else {
+			GlossaryData searchResult = GlobalData.GlossaryDataList.Find (data => data.Type == currentType && data.index == number);
+			if (searchResult != null && searchResult.level > 0) {
+				InformationText.text = searchResult.text [searchResult.level];
+			}
 		}
 	}
 
@@ -30,18 +35,18 @@ public class Glossary : MonoBehaviour{
 		for(int i = 0; i < 9; i++){
 			GlossaryData searchResult = GlobalData.GlossaryDataList.Find(data => data.Type == currentType && data.index == i+1);
 
-			if(searchResult != null && searchResult.level > 0){
+			if (searchResult != null && searchResult.level > 0) {
 				//Debug.Log("FOUND");
-				ButtonTextList[i].text = searchResult.name;
+				ButtonTextList [i].text = searchResult.name;
+			} else {
+				ButtonTextList [i].text = "";
 			}
-			else
-				ButtonTextList[i].text = "";				
 		}
 	}
 }
 
 public class GlossaryData{
-	public enum GlossaryType {Group = 1, Person = 2, Etc = 3}
+	public enum GlossaryType { Group = 1, Person = 2, Etc = 3 }
 	public GlossaryType Type;
 	public int index;
 	public int level;
