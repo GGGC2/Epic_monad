@@ -20,14 +20,8 @@ Index	Mission	Etc
 31	SelectDirection	RightDown	
 32	Standby		
 33	MoveCommand		
-34	SelectTile	8	6
+34	SelectTile	7	5
 35	SkillCommand		
 36	SelectSkill	1	
-37	SelectDirection	LeftDown	
-38	Standby
-40	MoveCommand		
-41	SelectTile	6	5
-42	SkillCommand		
-43	SelectSkill	1	
-44	SelectAnyDirection
-45	End		
+37	SelectAnyDirection		
+38	End		
