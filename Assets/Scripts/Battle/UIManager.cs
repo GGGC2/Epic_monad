@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
 	GameObject phaseUI;
+	GameObject detailInfoUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
 
@@ -50,6 +51,7 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovingUICanvas");
 		phaseUI = GameObject.Find("PhasePanel");
+		detailInfoUI = GameObject.Find("DetailInfoPanel");
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 
 		TutorialScenario.commandPanel = commandPanel;
@@ -65,6 +67,7 @@ public class UIManager : MonoBehaviour
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
+		detailInfoUI.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
@@ -290,6 +293,10 @@ public class UIManager : MonoBehaviour
 		movedUICanvas.transform.position = newPosition;
 	}
 
+	public void SetActiveDetailInfoUI(Unit unit)
+	{
+		detailInfoUI.SetActive(true);
+	}
 
 	public void AppendNotImplementedLog(String text)
 	{

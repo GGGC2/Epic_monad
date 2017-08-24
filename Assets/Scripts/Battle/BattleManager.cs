@@ -296,15 +296,27 @@ public class BattleManager : MonoBehaviour{
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved)
-				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, BattleData.triggers.rightClicked));
+				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, 
+																			  BattleData.triggers.rightClicked,
+																			  BattleData.triggers.tileLongSelectedByUser));
 			else
-				yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
+				// yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
+				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand,
+																			  BattleData.triggers.tileLongSelectedByUser));
 
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
 				BattleData.selectedUnit.ApplySnapshot();
 				yield return BattleData.battleManager.AtActionEnd();
 				BattleData.alreadyMoved = false;
+			}
+			// 길게 눌러서 유닛 상세정보창을 열 수 있다
+			else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
+				Debug.Log("LongClicked trigger");
+				Tile triggeredTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
+				if (triggeredTile.IsUnitOnTile()) {
+					BattleData.uiManager.SetActiveDetailInfoUI(triggeredTile.GetUnitOnTile());
+				}
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
 				BattleData.currentState = CurrentState.SelectMovingPoint;

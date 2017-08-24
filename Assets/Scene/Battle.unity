@@ -1022,6 +1022,77 @@ Prefab:
       propertyPath: m_Name
       value: bgDecoration
       objectReference: {fileID: 0}
+    - target: {fileID: 114903487092362386, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114897034548446052, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114235183993336122, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114449276165887350, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114950097719908476, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114230804099061672, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114632998824546736, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114439803051938734, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114864886067797062, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114963199422541488, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114675122552008456, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
+    - target: {fileID: 114615263125908952, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9725a2ad32a2d467486bcc180f798169,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
