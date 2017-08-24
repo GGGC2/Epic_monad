@@ -45,7 +45,7 @@ namespace Battle.Turn
 		private static IEnumerator AnObjectUnitBehave(Unit objectUnit){
 			//Debug.Log ("An object behaves");
 			BattleData.selectedUnit = objectUnit;
-			if (objectUnit.GetNameInCode () == "controller") {
+			if (objectUnit.GetNameEng () == "controller") {
 				yield return ControllerAttack (objectUnit);
 			}
 			yield return null;

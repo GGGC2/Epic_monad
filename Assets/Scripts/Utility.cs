@@ -5,7 +5,6 @@ using System;
 using Enums;
 
 public class Utility : MonoBehaviour {
-
 	public static Direction GetMouseDirectionByUnit(Unit unit, Direction originalDirection){
 		Direction mouseDirectionByUnit;
 		Vector2 unitPosition = unit.realPosition;
@@ -35,8 +34,7 @@ public class Utility : MonoBehaviour {
 		return deltaDegree;
 	}
 	
-	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles)
-	{
+	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles){
 		Vector2 averagePos = new Vector2(0, 0);
 		foreach (var tile in selectedTiles){
 			averagePos += tile.GetTilePos();
@@ -57,15 +55,13 @@ public class Utility : MonoBehaviour {
 		else if ((-135 < deltaDegree) && (deltaDegree <= -45)) return Direction.LeftDown;
 		else if ((deltaDegree <= -135) || (135 < deltaDegree)) return Direction.LeftUp;
 
-		else 
-		{
+		else {
 			Debug.LogWarning("Result degree : " + deltaDegree);
 			return Direction.RightUp;	
 		}
 	}
 	
-	public static float GetDegreeAtAttack(Unit unit, Unit target)
-	{
+	public static float GetDegreeAtAttack(Unit unit, Unit target){
 		if (unit == target) return 180;
 		
 		float deltaDegreeAtLook = GetDegreeToTarget(unit.GetPosition(), target.GetPosition());
@@ -123,8 +119,7 @@ public class Utility : MonoBehaviour {
 		else return 1;
 	}
 
-    public static float GetHeightBonus(Unit attacker, Unit defender)
-    {
+    public static float GetHeightBonus(Unit attacker, Unit defender){
 		// 상대가 낮으면 20% 추가, 상대가 높으면 20% 감소
         int attackerHeight = attacker.GetHeight();
 		int defenderHeight = defender.GetHeight();
@@ -136,8 +131,7 @@ public class Utility : MonoBehaviour {
 		else return 1;
     }
 
-	public static int GetDistance(Vector2 position1, Vector2 position2)
-	{
+	public static int GetDistance(Vector2 position1, Vector2 position2){
 		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
 	}
 
@@ -161,8 +155,7 @@ public class Utility : MonoBehaviour {
 		else
 			return GetDiamondRange(mid, minReach, maxReach); // default return value
 	}
-	public static List<Vector2> GetDiamondRange(Vector2 mid, int minReach, int maxReach)
-	{
+	public static List<Vector2> GetDiamondRange(Vector2 mid, int minReach, int maxReach){
 		List<Vector2> range = new List<Vector2>();
 		int midX = (int)mid.x;
 		int midY = (int)mid.y;
@@ -175,8 +168,7 @@ public class Utility : MonoBehaviour {
 		}
 		return range;
 	}
-	public static List<Vector2> GetSquareRange(Vector2 mid, int minReach, int maxReach)
-	{
+	public static List<Vector2> GetSquareRange(Vector2 mid, int minReach, int maxReach){
 		List<Vector2> range = new List<Vector2>();
 		int midX = (int)mid.x;
 		int midY = (int)mid.y;
@@ -190,13 +182,11 @@ public class Utility : MonoBehaviour {
 		}
 		return range;
 	}
-	public static List<Vector2> GetStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
+	public static List<Vector2> GetStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir){
 		List<Vector2> range = GetFrontRange(mid, minReach, maxReach, 1, dir);
 		return range;
 	}
-	public static List<Vector2> GetCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
+	public static List<Vector2> GetCrossRange(Vector2 mid, int minReach, int maxReach){
 		List<Vector2> range = new List<Vector2>();
 		if (minReach == 0)
 			range.Add(mid);
@@ -205,8 +195,7 @@ public class Utility : MonoBehaviour {
 			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}
-	public static List<Vector2> GetDiagonalCrossRange(Vector2 mid, int minReach, int maxReach)
-	{
+	public static List<Vector2> GetDiagonalCrossRange(Vector2 mid, int minReach, int maxReach){
 		List<Vector2> range = new List<Vector2>();
 		if (minReach == 0)
 			range.Add(mid);
@@ -215,15 +204,13 @@ public class Utility : MonoBehaviour {
 			range.AddRange (GetStraightRange (mid, newMinReach, maxReach, direction));
 		return range;
 	}
-	public static List<Vector2> GetAllDirectionRange(Vector2 mid, int minReach, int maxReach)
-	{
+	public static List<Vector2> GetAllDirectionRange(Vector2 mid, int minReach, int maxReach){
 		List<Vector2> range = new List<Vector2>();
 		range.AddRange (GetCrossRange (mid, minReach, maxReach));
 		range.AddRange (GetDiagonalCrossRange (mid, minReach, maxReach));
 		return range;
 	}
-	public static List<Vector2> GetFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir)
-	{
+	public static List<Vector2> GetFrontRange(Vector2 mid, int minReach, int maxReach, int width, Direction dir){
 		List<Vector2> range = new List<Vector2>();
 		Vector2 frontVector = ToVector2 (dir);
 		Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
@@ -236,8 +223,7 @@ public class Utility : MonoBehaviour {
 		}
 		return range;
 	}
-	public static List<Vector2> GetSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir)
-	{
+	public static List<Vector2> GetSectorRange(Vector2 mid, int minReach, int maxReach, Direction dir){
 		List<Vector2> range = new List<Vector2>();
 		Vector2 frontVector = ToVector2 (dir);
 		Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
@@ -283,8 +269,7 @@ public class Utility : MonoBehaviour {
 			return Direction.LeftDown;
 	}
 
-	public  static Vector2 ToVector2(Direction dir)
-	{
+	public static Vector2 ToVector2(Direction dir){
 		if(dir == Direction.LeftUp)
 			return Vector2.left;
 		else if(dir == Direction.LeftDown)
@@ -302,5 +287,9 @@ public class Utility : MonoBehaviour {
 			return Vector2.left+Vector2.up;
 		else
 			return Vector2.right+Vector2.down;
+	}
+
+	public static Sprite IllustOf(string name){
+		return Resources.Load<Sprite>("StandingImage/" + name + "_standing");
 	}
 }

@@ -161,7 +161,7 @@ public class Unit : MonoBehaviour{
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
-	public string GetNameInCode() { return myInfo.nameEng; }
+	public string GetNameEng() { return myInfo.nameEng; }
 	public int GetIndex() {return myInfo.index;}
 	public string GetNameKor() { return myInfo.nameKor; }
 	public Side GetSide() { return myInfo.side; }

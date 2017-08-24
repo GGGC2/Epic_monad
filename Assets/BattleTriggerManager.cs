@@ -99,7 +99,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
-		if (trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameInCode())))
+		if (trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameEng())))
 			return true;
 		else if(trigger.unitType == BattleTrigger.UnitType.Ally && unit.GetSide() == Side.Ally)
 			return true;

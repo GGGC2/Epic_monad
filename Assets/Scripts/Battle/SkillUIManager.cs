@@ -69,7 +69,7 @@ public class SkillUIManager : MonoBehaviour {
             return ((int)(GameData.PartyData.level * coef + baseValue)).ToString();
         }
         else if(SceneManager.GetActiveScene().name == "Battle") {
-            Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameInCode() == unitName);
+            Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameEng() == unitName);
             return (Math.Round(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
         else return ((int)((float)UnitInfo.GetStat(unitName, statType)*coef + baseValue)).ToString();

@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
 	GameObject skillNamePanelUI;
 	GameObject movedUICanvas;
 	GameObject phaseUI;
-	GameObject detailInfoUI;
+	DetailInfoPanel detailInfoUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
 
@@ -52,7 +52,7 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI = GameObject.Find("SkillNamePanel");
 		movedUICanvas = GameObject.Find("MovingUICanvas");
 		phaseUI = GameObject.Find("PhasePanel");
-		detailInfoUI = GameObject.Find("DetailInfoPanel");
+		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 
 		TutorialScenario.commandPanel = commandPanel;
@@ -68,7 +68,7 @@ public class UIManager : MonoBehaviour
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
-		detailInfoUI.SetActive(false);
+		detailInfoUI.gameObject.SetActive(false);
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
@@ -298,20 +298,20 @@ public class UIManager : MonoBehaviour
 	public UnityEvent deactivateDetailInfoEvent = new UnityEvent ();
 	public void ActivateDetailInfoUI(Unit unit){
 		activateDetailInfoEvent.Invoke ();
-		detailInfoUI.SetActive(true);
+		detailInfoUI.gameObject.SetActive(true);
+		detailInfoUI.unit = unit;
+		detailInfoUI.Initialize();
 	}
 	public void DeactivateDetailInfoUI(){
 		deactivateDetailInfoEvent.Invoke ();
-		detailInfoUI.SetActive (false);
+		detailInfoUI.gameObject.SetActive (false);
 	}
 	public bool isDetailInfoUIActive(){
-		return detailInfoUI.activeSelf;
+		return detailInfoUI.gameObject.activeSelf;
 	}
 
-	public void AppendNotImplementedLog(String text)
-	{
-		if (notImplementedDebugPanel == null)
-		{
+	public void AppendNotImplementedLog(String text){
+		if (notImplementedDebugPanel == null){
 			Debug.LogError("Cannot find not implemented debug panel\n" + text);
 			return;
 		}
