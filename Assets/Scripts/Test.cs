@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 using GameData;
+using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour {
     GameObject panel;
@@ -20,6 +21,9 @@ public class Test : MonoBehaviour {
     }
 
     void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SceneManager.LoadScene("Title");
+
         if (Input.GetKeyDown(KeyCode.Return) && panel.activeSelf) {
             string partyLevel = levelInputField.text;
             if(partyLevel == "") PartyData.level = 1;
@@ -42,6 +46,14 @@ public class Test : MonoBehaviour {
     public void OnStageButtonClicked() {
         SceneData.isStageMode = true;
         panel.SetActive(true);
+    }
+
+    public void OnEachStageButtonClicked(int stageNumber){
+        PartyData.level = stageNumber;
+        SceneData.stageNumber = stageNumber;
+
+        SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
+        sceneLoader.LoadNextBattleScene();
     }
 
 }

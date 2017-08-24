@@ -5,6 +5,7 @@ using DG.Tweening;
 using Save;
 using WorldMap;
 using GameData;
+using UnityEngine.SceneManagement;
 
 public class TitleForNexon : MonoBehaviour
 {
@@ -40,6 +41,12 @@ public class TitleForNexon : MonoBehaviour
             sceneLoader.LoadNextBattleScene();
         //ShowWorldMap();
     }
+
+	public void SelectStage() {
+		GameDataManager.Reset();
+
+		SceneManager.LoadScene("StageSelect");
+	}
 
     private void ShowWorldMap(){
 		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
