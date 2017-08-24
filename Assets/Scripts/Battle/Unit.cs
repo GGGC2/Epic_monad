@@ -82,6 +82,8 @@ public class Unit : MonoBehaviour{
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
+	public SpriteRenderer bindIcon;
+
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
 	public Sprite GetDefaultSprite(){ return spriteLeftDown; }
@@ -1140,6 +1142,14 @@ public class Unit : MonoBehaviour{
 				passiveLog += passiveSkill.GetName() + "\n";
 			}
 			Debug.LogError(passiveLog);
+		}
+
+		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
+		else if (bindIcon.enabled == false && HasStatusEffect(StatusEffectType.Bind)){
+			bindIcon.enabled = true;
+		}
+		else if (bindIcon.enabled == true && !HasStatusEffect(StatusEffectType.Bind)){
+			bindIcon.enabled = false;
 		}
 	}
 }
