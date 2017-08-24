@@ -195,6 +195,8 @@ namespace Battle.Turn{
 			if (!_AIData.IsActive ()) {
 				yield return battleManager.ToDoBeforeAction ();
 				state = State.SkipTurn;
+			} else if (unit.GetNameInCode ().Equals ("triana")) {
+				state = State.StandbyOrRest;
 			} else {
 				state = State.MoveToBestCasting;
 			}
