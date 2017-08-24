@@ -8,25 +8,12 @@ using GameData;
 
 // This component is used in two UI : SelectedUnitViewer and UnitViewer.
 namespace BattleUI{
-    public class UnitViewer : MonoBehaviour{
-
+    public class UnitViewer : UnitInfoUI{
         TileManager tileManager;
-
         Image unitImage;
-        Text nameText;
-        Image classImage;
-        Image elementImage;
+        
         GameObject elementBuffIcon;
-        Image celestialImage;
 
-        Text hpText;
-
-        Text apText;
-
-        Text powerText;
-        Text defenseText;
-		Text resistanceText;
-		Text speedText;
         // FIXME : 버프/디버프 표시 임시로 텍스트로.
         public GameObject statusEffectIconPrefab;
         Vector3 statusEffectIconBarPosition;
@@ -40,19 +27,13 @@ namespace BattleUI{
 
         //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
         public void UpdateUnitViewer(Unit unit) {
+            base.unit = unit;
             unitImage.sprite = unit.GetDefaultSprite();
-            nameText.text = unit.GetNameKor();
-            SetClassImage(unit.GetUnitClass());
-            SetElementImage(unit.GetElement());
-            SetCelestialImage(unit.GetCelestial());
             CheckElementBuff(unit);
             UpdateHp(unit);
             UpdateAp(unit);
-            UpdatePower(unit);
-            UpdateDefense(unit);
-			UpdateResistance(unit);
-			UpdateSpeed (unit);
             UpdateEffect(unit);
+            SetCommonUnitInfoUI();
         }
 
         public void UpdateUnitViewer(string unitName) {
@@ -61,7 +42,7 @@ namespace BattleUI{
             hpText.text = hpString + "/" + hpString;
             powerText.text = UnitInfo.GetStat(unitName, Stat.Power).ToString();
             defenseText.text = UnitInfo.GetStat(unitName, Stat.Defense).ToString();
-            resistanceText.text = UnitInfo.GetStat(unitName, Stat.Resistance).ToString();
+            resistText.text = UnitInfo.GetStat(unitName, Stat.Resistance).ToString();
 
             int Agility = UnitInfo.GetStat(unitName, Stat.Agility);
             int level = PartyData.level;
@@ -85,9 +66,9 @@ namespace BattleUI{
             hpText.text = "--/--";
             powerText.text = "";
             defenseText.text = "";
-            resistanceText.text = "";
+            resistText.text = "";
             apText.text = "--(+--)";
-            nameText.text = "--";
+            unitName.text = "--";
             classImage.sprite = transparentSprite;
             elementImage.sprite = transparentSprite;
             celestialImage.sprite = transparentSprite;
@@ -116,14 +97,15 @@ namespace BattleUI{
             }
         }
 
-        void UpdateHp(Unit unit){
-            hpText.text = unit.GetCurrentHealth() + " / " + unit.GetStat(Stat.MaxHealth);
-            HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
-            HpBar.fillAmount = unit.GetHpRatio();
+        public void UpdateHp(Unit unit){
+            if(HpBar != null){
+                HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
+                HpBar.fillAmount = unit.GetHpRatio();
+            }
         }
 
         void UpdateAp(Unit unit) {
-            apText.text = unit.GetCurrentActivityPoint() + " (+" + unit.GetStat(Stat.Agility) + ")";
+            //TODO : Bar가 없는 경우 예외 처리
             CurrentApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
             AfterApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
             NextApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility));
@@ -137,108 +119,11 @@ namespace BattleUI{
         public void OffPreviewAp(){
             AfterApBar.fillAmount = CurrentApBar.fillAmount;
         }
-
-        void UpdatePower(Unit unit) {
-            int actualPower = unit.GetStat(Stat.Power);
-            int originPower = unit.GetBaseStat(Stat.Power);
-
-            powerText.color = Color.white;
-            powerText.text = actualPower.ToString();
-            if (actualPower > originPower)
-                powerText.color = Color.green;
-            else if (actualPower < originPower)
-                powerText.color = Color.red;
-        }
-
-        void UpdateDefense(Unit unit) {
-            int actualDefense = unit.GetStat(Stat.Defense);
-            int originDefense = unit.GetBaseStat(Stat.Defense);
-
-            defenseText.color = Color.white;
-            defenseText.text = actualDefense.ToString();
-            if (actualDefense > originDefense)
-                defenseText.color = Color.green;
-            else if (actualDefense < originDefense)
-                defenseText.color = Color.red;
-        }
-
-        void UpdateResistance(Unit unit) {
-            int actualResistance = unit.GetStat(Stat.Resistance);
-            int originResistance = unit.GetBaseStat(Stat.Resistance);
-
-            resistanceText.color = Color.white;
-            resistanceText.text = actualResistance.ToString();
-            if (actualResistance > originResistance)
-                resistanceText.color = Color.green;
-            else if (actualResistance < originResistance)
-                resistanceText.color = Color.red;
-        }
-
-		void UpdateSpeed(Unit unit) {
-			int actualSpeed = (int)unit.GetSpeed ();
-			int originSpeed = 100;
-
-			speedText.color = Color.white;
-			speedText.text = actualSpeed.ToString ();
-			if (actualSpeed > originSpeed)
-				speedText.color = Color.green;
-			else if (actualSpeed < originSpeed)
-				speedText.color = Color.red;
-		}
-
-        void SetClassImage(UnitClass unitClass) {
-            if(SceneData.stageNumber < Setting.classOpenStage){
-                classImage.sprite = Resources.Load<Sprite>("transparent");
-                return;
-            }
-
-            if (unitClass == UnitClass.Melee)
-                classImage.sprite = Resources.Load<Sprite>("Icon/Stat/meleeClass");
-            else if (unitClass == UnitClass.Magic)
-                classImage.sprite = Resources.Load<Sprite>("Icon/Stat/magicClass");
-            else
-                classImage.sprite = Resources.Load<Sprite>("Icon/Empty");
-        }
-
-        void SetElementImage(Element element) {
-            if(SceneData.stageNumber < Setting.elementOpenStage){
-                elementImage.sprite = Resources.Load<Sprite>("transparent");
-                return;
-            }
-
-            if (element == Element.Fire)
-                elementImage.sprite = Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
-            else if (element == Element.Water)
-                elementImage.sprite = Resources.Load("Icon/Element/water", typeof(Sprite)) as Sprite;
-            else if (element == Element.Plant)
-                elementImage.sprite = Resources.Load("Icon/Element/plant", typeof(Sprite)) as Sprite;
-            else if (element == Element.Metal)
-                elementImage.sprite = Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
-            else
-                elementImage.sprite = Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
-        }
-
-        void SetCelestialImage(Celestial celestial) {
-            if(SceneData.stageNumber < Setting.celestialOpenStage){
-                celestialImage.sprite = Resources.Load<Sprite>("transparent");
-                return;
-            }
-
-            if (celestial == Celestial.Sun)
-                celestialImage.sprite = Resources.Load("Icon/Celestial/sun", typeof(Sprite)) as Sprite;
-            else if (celestial == Celestial.Moon)
-                celestialImage.sprite = Resources.Load("Icon/Celestial/moon", typeof(Sprite)) as Sprite;
-            else if (celestial == Celestial.Earth)
-                celestialImage.sprite = Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
-            else
-                celestialImage.sprite = Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
-        }
-
         void Awake() {
             tileManager = FindObjectOfType<TileManager>();
 
             unitImage = transform.Find("UnitImage").GetComponent<Image>();
-            nameText = transform.Find("NameText").GetComponent<Text>();
+            unitName = transform.Find("NameText").GetComponent<Text>();
             classImage = transform.Find("ClassImage").GetComponent<Image>();
 
             elementImage = transform.Find("ElementImage").GetComponent<Image>();
@@ -251,7 +136,7 @@ namespace BattleUI{
 
             powerText = transform.Find("Power").Find("PowerText").GetComponent<Text>();
             defenseText = transform.Find("Defense").Find("DefenseText").GetComponent<Text>();
-            resistanceText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
+            resistText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
 
             //효과 표시 내용은 BattleReady씬에서 켜면 에러가 생기기 때문에 씬 이름으로 조건 확인하고 실행
             if(SceneManager.GetActiveScene().name == "Battle"){

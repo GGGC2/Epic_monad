@@ -90,22 +90,22 @@ public class DialogueManager : MonoBehaviour{
 		if(HandleSceneChange(data))
 			yield break;
 		else if(Command == DialogueData.CommandType.App){
+			Sprite loadedSprite = Utility.IllustOf(data.GetNameInCode());
 			if (subType == "left"){
-				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) {
 					leftUnit = dialogueDataList[line].GetNameInCode();               
 					leftPortrait.sprite = loadedSprite;
 					isLeftUnitOld = false;
 				}
 			}else if (subType == "right"){
-				Sprite loadedSprite = Resources.Load("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing", typeof(Sprite)) as Sprite;
 				if (loadedSprite != null) {      
 					rightUnit = dialogueDataList[line].GetNameInCode();         
 					rightPortrait.sprite = loadedSprite;
 					isLeftUnitOld = true;
 				}
-			}else
+			}else{
 				Debug.LogError("Undefined effectSubType : " + subType);
+			}
 		}else if (Command == DialogueData.CommandType.Disapp){
 			string commandSubType = subType;
 			if (commandSubType == "left" || commandSubType == leftUnit){
@@ -267,18 +267,18 @@ public class DialogueManager : MonoBehaviour{
 	}
 
 	void HandleDialogue(){
-		if ((dialogueDataList[line].GetNameInCode() != leftUnit) &&
-			(dialogueDataList[line].GetNameInCode() != rightUnit) &&
-			(Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing") != null))
+		DialogueData data = dialogueDataList[line];
+		Sprite illust = Utility.IllustOf(data.GetNameInCode());
+		if (data.GetNameInCode() != leftUnit &&
+			data.GetNameInCode() != rightUnit && illust != null)
 		{
-			Sprite sprite = Resources.Load<Sprite>("StandingImage/" + dialogueDataList[line].GetNameInCode() + "_standing");
 			if (isLeftUnitOld){
 				leftUnit = dialogueDataList[line].GetNameInCode();
-				leftPortrait.sprite = sprite;
+				leftPortrait.sprite = illust;
 				isLeftUnitOld = false;
 			}else{
 				rightUnit = dialogueDataList[line].GetNameInCode();
-				rightPortrait.sprite = sprite;
+				rightPortrait.sprite = illust;
 				isLeftUnitOld = true;
 			}
 		}

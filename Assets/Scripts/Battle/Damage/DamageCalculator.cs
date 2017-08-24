@@ -205,7 +205,7 @@ namespace Battle
 
 			// 시전자 효과에 의한 추가데미지
 			attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
-			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, "buff from " + caster.GetNameInCode());
+			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, "buff from " + caster.GetNameEng());
 
 			// '지형지물'은 방향 보너스를 받지 않음
 			if (target.IsObject) attackDamage.directionBonus = 1.0f;

@@ -274,22 +274,14 @@ public class SkillTreeManager : MonoBehaviour
 		this.description.skillPoint.GetComponent<Text>().text = GetAvailableSkillPoint(unitInfo.nameEng).ToString();
 	}
 
-	private void UpdateUnitImage(int selectedIndex)
-	{
+	private void UpdateUnitImage(int selectedIndex){
 		UnitInfo unitInfo = GetUnitInfo(selectedIndex);
-		string resourceName = "StandingImage/" + unitInfo.nameEng + "_standing";
-		Sprite standingSprite = Resources.Load(resourceName, typeof(Sprite)) as Sprite;
-
-		if (standingSprite == null)
-		{
-			Debug.LogError("Cannot find standing sprite " + resourceName);
-		}
-
-		standing.GetComponent<Image>().sprite = standingSprite;
+		Sprite illust = Utility.IllustOf(unitInfo.nameEng);
+		Debug.Assert(illust != null);
+		standing.GetComponent<Image>().sprite = illust;
 	}
 
-	public void OnNameButtonClicked(int index)
-	{
+	public void OnNameButtonClicked(int index){
 		selectedIndex = index;
 		UpdateNameButtons();
 		UpdateSkills(selectedIndex);
