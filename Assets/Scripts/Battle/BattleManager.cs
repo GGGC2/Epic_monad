@@ -294,6 +294,9 @@ public class BattleManager : MonoBehaviour{
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
 
+			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
+			BattleData.isWaitingUserInput = true;
+
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, 
@@ -304,6 +307,9 @@ public class BattleManager : MonoBehaviour{
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand,
 																			  BattleData.triggers.tileLongSelectedByUser));
 
+			BattleData.tileManager.DepreselectAllTiles ();
+			BattleData.isWaitingUserInput = false;
+
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
 				BattleData.selectedUnit.ApplySnapshot();
@@ -313,7 +319,7 @@ public class BattleManager : MonoBehaviour{
 			// 길게 눌러서 유닛 상세정보창을 열 수 있다
 			else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 				Debug.Log("LongClicked trigger");
-				Tile triggeredTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
+				Tile triggeredTile = BattleData.SelectedTile;
 				if (triggeredTile.IsUnitOnTile()) {
 					BattleData.uiManager.SetActiveDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
