@@ -8,6 +8,16 @@ using UnityEngine.SceneManagement;
 
 public class DetailInfoPanel : UnitInfoUI{
 	public Image illust;
+    List<SkillInfoButton> skillButtons = new List<SkillInfoButton>();
+
+    void OnEnable(){
+        //0번이 고유 특성 자리
+        if(skillButtons.Count == 0){
+            for(int i = 0; i <= 10; i++){
+                skillButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
+            }
+        }
+    }
 
 	public void Initialize(){
 		Sprite sprite = Utility.IllustOf(unit.GetNameEng());
@@ -18,6 +28,17 @@ public class DetailInfoPanel : UnitInfoUI{
 		}
 
 		SetCommonUnitInfoUI();
+
+        for(int i = 0; i <= 10; i++){
+            skillButtons[i].gameObject.SetActive(true);
+            if(i < unit.passiveSkillList.Count){
+                skillButtons[i].Initialize(unit.passiveSkillList[i]);
+            }else if(i < unit.passiveSkillList.Count + unit.activeSkillList.Count){
+                skillButtons[i].Initialize(unit.activeSkillList[i - unit.passiveSkillList.Count]);
+            }else{
+                skillButtons[i].gameObject.SetActive(false);
+            }
+        }
 	}
 }
 

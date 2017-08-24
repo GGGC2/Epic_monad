@@ -292,4 +292,23 @@ public class Utility : MonoBehaviour {
 	public static Sprite IllustOf(string name){
 		return Resources.Load<Sprite>("StandingImage/" + name + "_standing");
 	}
+
+	public static Sprite SkillIconOf(string owner, int level, int column){
+		string address = "";
+		if(column == 0){
+			address = "Passive";
+		}else if(column == 1){
+			address = "Left";
+		}else if(column == 2){
+			address = "Mid";
+		}else if(column == 3){
+			address = "Right";
+		}
+
+		if(level != 0){
+			address += (level+6) / 7;
+		}
+		
+		return Resources.Load<Sprite>("Icon/Skill/" + owner + "/" + address);
+	}
 }

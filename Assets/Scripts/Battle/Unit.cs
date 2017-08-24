@@ -42,7 +42,7 @@ public class Unit : MonoBehaviour{
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
-	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
+	public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 	// 사용한 스킬 정보 저장(쿨타임 산정용)
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 

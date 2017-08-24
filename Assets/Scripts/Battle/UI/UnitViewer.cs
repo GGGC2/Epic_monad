@@ -30,8 +30,8 @@ namespace BattleUI{
             base.unit = unit;
             unitImage.sprite = unit.GetDefaultSprite();
             CheckElementBuff(unit);
-            UpdateHp(unit);
-            UpdateAp(unit);
+            UpdateHpBar(unit);
+            UpdateApBar(unit);
             UpdateEffect(unit);
             SetCommonUnitInfoUI();
         }
@@ -97,15 +97,12 @@ namespace BattleUI{
             }
         }
 
-        public void UpdateHp(Unit unit){
-            if(HpBar != null){
-                HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
-                HpBar.fillAmount = unit.GetHpRatio();
-            }
+        public void UpdateHpBar(Unit unit){
+            HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
+            HpBar.fillAmount = unit.GetHpRatio();
         }
 
-        void UpdateAp(Unit unit) {
-            //TODO : Bar가 없는 경우 예외 처리
+        void UpdateApBar(Unit unit) {
             CurrentApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
             AfterApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint());
             NextApBar.fillAmount = unit.GetApRatio(unit.GetCurrentActivityPoint()+unit.GetStat(Stat.Agility));
