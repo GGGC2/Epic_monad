@@ -12,7 +12,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	ResultPanel resultPanel;
 
 	public List<BattleTrigger> battleTriggers = new List<BattleTrigger>();
-	List<Vector2> targetTiles = new List<Vector2>();
+	public List<Vector2> targetTiles = new List<Vector2>();
 	List<string> reachedTargetUnitNames = new List<string>();
 
 	public string nextScriptName;
