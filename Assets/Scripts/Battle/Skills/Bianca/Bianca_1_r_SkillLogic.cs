@@ -40,7 +40,7 @@ namespace Battle.Skills {
             if(backTile != null && !backTile.IsUnitOnTile())
                 target.ForceMove(backTile);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 }
