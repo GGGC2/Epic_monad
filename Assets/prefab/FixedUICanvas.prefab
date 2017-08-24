@@ -438,8 +438,9 @@ GameObject:
   - component: {fileID: 222767745435335346}
   - component: {fileID: 114118345052480146}
   - component: {fileID: 114527921803466868}
+  - component: {fileID: 114964642905814696}
   m_Layer: 0
-  m_Name: SkillPrevButton (1)
+  m_Name: SkillPrevButton2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -491,8 +492,9 @@ GameObject:
   - component: {fileID: 222955134479749650}
   - component: {fileID: 114278579487697818}
   - component: {fileID: 114844328865171842}
+  - component: {fileID: 114575727314322022}
   m_Layer: 0
-  m_Name: SkillPrevButton (4)
+  m_Name: SkillPrevButton5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +668,7 @@ GameObject:
   - component: {fileID: 222187185170983138}
   - component: {fileID: 114980726445199312}
   m_Layer: 0
-  m_Name: SkillImage (8)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -787,7 +789,7 @@ GameObject:
   - component: {fileID: 222728260028582902}
   - component: {fileID: 114256303388958610}
   m_Layer: 0
-  m_Name: SkillImage (6)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -939,8 +941,9 @@ GameObject:
   - component: {fileID: 222439299575922402}
   - component: {fileID: 114212124862976856}
   - component: {fileID: 114546561125998408}
+  - component: {fileID: 114971826029011664}
   m_Layer: 0
-  m_Name: SkillPrevButton (3)
+  m_Name: SkillPrevButton4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1077,7 +1080,7 @@ GameObject:
   - component: {fileID: 222849707816605530}
   - component: {fileID: 114444822608275454}
   m_Layer: 0
-  m_Name: SkillText (5)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1284,8 +1287,9 @@ GameObject:
   - component: {fileID: 222018590658141036}
   - component: {fileID: 114064497666961132}
   - component: {fileID: 114271376786433366}
+  - component: {fileID: 114961060331005278}
   m_Layer: 0
-  m_Name: SkillPrevButton (9)
+  m_Name: SkillPrevButton10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1386,7 +1390,7 @@ GameObject:
   - component: {fileID: 222264324468810934}
   - component: {fileID: 114251627985286510}
   m_Layer: 0
-  m_Name: SkillImage (3)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1454,7 +1458,7 @@ GameObject:
   - component: {fileID: 222708981756291254}
   - component: {fileID: 114605535725046104}
   m_Layer: 0
-  m_Name: SkillText (8)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1505,7 +1509,7 @@ GameObject:
   - component: {fileID: 222316114423523784}
   - component: {fileID: 114918994021116008}
   m_Layer: 0
-  m_Name: SkillText (2)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1539,8 +1543,9 @@ GameObject:
   - component: {fileID: 222316988708588378}
   - component: {fileID: 114143464456730758}
   - component: {fileID: 114592787945056010}
+  - component: {fileID: 114480193162713526}
   m_Layer: 0
-  m_Name: UniqueSkillPrevButton
+  m_Name: SkillPrevButton0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1608,7 +1613,7 @@ GameObject:
   - component: {fileID: 222510027536365424}
   - component: {fileID: 114351646365128784}
   m_Layer: 0
-  m_Name: SkillImage (2)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1642,7 +1647,7 @@ GameObject:
   - component: {fileID: 222825425886151604}
   - component: {fileID: 114686904628041264}
   m_Layer: 0
-  m_Name: SkillText (6)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1900,7 +1905,7 @@ GameObject:
   - component: {fileID: 222035715884219668}
   - component: {fileID: 114726533953374240}
   m_Layer: 0
-  m_Name: SkillText (9)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2020,7 +2025,7 @@ GameObject:
   - component: {fileID: 222843292014254078}
   - component: {fileID: 114106610986340434}
   m_Layer: 0
-  m_Name: SkillImage (7)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2107,8 +2112,9 @@ GameObject:
   - component: {fileID: 222559869145315708}
   - component: {fileID: 114911083248638266}
   - component: {fileID: 114527486737228230}
+  - component: {fileID: 114097127092639740}
   m_Layer: 0
-  m_Name: SkillPrevButton
+  m_Name: SkillPrevButton1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2445,8 +2451,9 @@ GameObject:
   - component: {fileID: 222624423603177140}
   - component: {fileID: 114457119774328156}
   - component: {fileID: 114735074427737700}
+  - component: {fileID: 114184160766647020}
   m_Layer: 0
-  m_Name: SkillPrevButton (5)
+  m_Name: SkillPrevButton6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2652,7 +2659,7 @@ GameObject:
   - component: {fileID: 222024876402290638}
   - component: {fileID: 114531199619039054}
   m_Layer: 0
-  m_Name: 2ndRangePrevText
+  m_Name: 1stRangePrevText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2976,7 +2983,7 @@ GameObject:
   - component: {fileID: 222030781545438764}
   - component: {fileID: 114378350978908998}
   m_Layer: 0
-  m_Name: SkillImage (4)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3027,7 +3034,7 @@ GameObject:
   - component: {fileID: 222116382319006580}
   - component: {fileID: 114893418956424330}
   m_Layer: 0
-  m_Name: SkillImage (9)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3061,7 +3068,7 @@ GameObject:
   - component: {fileID: 222745852648179746}
   - component: {fileID: 114961957598511200}
   m_Layer: 0
-  m_Name: SkillText (3)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3564,8 +3571,9 @@ GameObject:
   - component: {fileID: 222257187149886556}
   - component: {fileID: 114107609753091262}
   - component: {fileID: 114234653237582916}
+  - component: {fileID: 114210284666376100}
   m_Layer: 0
-  m_Name: SkillPrevButton (7)
+  m_Name: SkillPrevButton8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3616,7 +3624,7 @@ GameObject:
   - component: {fileID: 222458899103287940}
   - component: {fileID: 114932632155813030}
   m_Layer: 0
-  m_Name: SkillText (1)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3752,7 +3760,7 @@ GameObject:
   - component: {fileID: 222641762194894238}
   - component: {fileID: 114370250171399722}
   m_Layer: 0
-  m_Name: 2ndRangePrevImage
+  m_Name: 1stRangePrevImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4096,8 +4104,9 @@ GameObject:
   - component: {fileID: 222357782100385382}
   - component: {fileID: 114719366364338834}
   - component: {fileID: 114041991146155130}
+  - component: {fileID: 114339290298640774}
   m_Layer: 0
-  m_Name: SkillPrevButton (6)
+  m_Name: SkillPrevButton7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4458,7 +4467,7 @@ GameObject:
   - component: {fileID: 222893400308595604}
   - component: {fileID: 114869837197096718}
   m_Layer: 0
-  m_Name: SkillText (4)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4493,7 +4502,7 @@ GameObject:
   - component: {fileID: 222228541997327412}
   - component: {fileID: 114925186519377194}
   m_Layer: 0
-  m_Name: SkillImage (1)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4969,8 +4978,9 @@ GameObject:
   - component: {fileID: 222637070240177674}
   - component: {fileID: 114032433424579672}
   - component: {fileID: 114846587639911354}
+  - component: {fileID: 114868573442317518}
   m_Layer: 0
-  m_Name: SkillPrevButton (2)
+  m_Name: SkillPrevButton3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5125,7 +5135,7 @@ GameObject:
   - component: {fileID: 222628795698410522}
   - component: {fileID: 114616116712185988}
   m_Layer: 0
-  m_Name: UniqueSkillText
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5226,7 +5236,7 @@ GameObject:
   - component: {fileID: 222278446600113452}
   - component: {fileID: 114912570567974968}
   m_Layer: 0
-  m_Name: UniqueSkillImage
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5892,7 +5902,7 @@ GameObject:
   - component: {fileID: 222651974196029470}
   - component: {fileID: 114098924881622076}
   m_Layer: 0
-  m_Name: SkillText (7)
+  m_Name: SkillText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5944,8 +5954,9 @@ GameObject:
   - component: {fileID: 222168702871693482}
   - component: {fileID: 114875588106121208}
   - component: {fileID: 114449684910990162}
+  - component: {fileID: 114241093652995400}
   m_Layer: 0
-  m_Name: SkillPrevButton (8)
+  m_Name: SkillPrevButton9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6067,7 +6078,7 @@ GameObject:
   - component: {fileID: 222417152898025470}
   - component: {fileID: 114739768817496506}
   m_Layer: 0
-  m_Name: SkillImage (5)
+  m_Name: SkillImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7477,6 +7488,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 745e6da4def774882acb29302e13b437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114097127092639740
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1351590391266206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114098770473234080
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8671,6 +8700,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114184160766647020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1393013945635034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114186238039440180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9014,6 +9061,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114210284666376100
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1583080060085134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114212124862976856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9410,6 +9475,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114241093652995400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1951113320384532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114242718696811220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10350,6 +10433,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114339290298640774
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1662334615915792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114344209296244200
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11950,6 +12051,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060a92fa39ff4f689e506e38fb88be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114480193162713526
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1237350345515016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114481713173165580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13431,6 +13550,24 @@ MonoBehaviour:
         m_CallState: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114575727314322022
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1086910476957752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114582747173826332
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14087,6 +14224,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976e27e25fa47b0498b386286ccb8b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit: {fileID: 0}
+  unitName: {fileID: 0}
+  hpText: {fileID: 0}
+  apText: {fileID: 0}
+  powerText: {fileID: 0}
+  defenseText: {fileID: 0}
+  resistText: {fileID: 0}
+  speedText: {fileID: 0}
+  classImage: {fileID: 0}
+  elementImage: {fileID: 0}
+  celestialImage: {fileID: 0}
   statusEffectIconPrefab: {fileID: 1038705503954990, guid: 4f341fc3f0ab12b49bb2ac0062d1aaf6,
     type: 2}
   HpBar: {fileID: 114333037079676726}
@@ -14733,6 +14881,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 976e27e25fa47b0498b386286ccb8b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit: {fileID: 0}
+  unitName: {fileID: 0}
+  hpText: {fileID: 0}
+  apText: {fileID: 0}
+  powerText: {fileID: 0}
+  defenseText: {fileID: 0}
+  resistText: {fileID: 0}
+  speedText: {fileID: 0}
+  classImage: {fileID: 0}
+  elementImage: {fileID: 0}
+  celestialImage: {fileID: 0}
   statusEffectIconPrefab: {fileID: 1038705503954990, guid: 4f341fc3f0ab12b49bb2ac0062d1aaf6,
     type: 2}
   HpBar: {fileID: 114776649602390418}
@@ -14996,14 +15155,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ApText: {fileID: 114941799232219384}
-  CooldownText: {fileID: 114160116914206990}
-  RangeText: {fileID: 114587920860037284}
-  NameText: {fileID: 0}
-  ExplainText: {fileID: 114547622553255424}
+  viewerNameText: {fileID: 0}
+  costText: {fileID: 0}
+  cooldownText: {fileID: 0}
+  rangeType: {fileID: 0}
+  rangeText: {fileID: 0}
+  explainText: {fileID: 0}
   CellPrefab: {fileID: 1902491441318568, guid: 33631a8a0e1406246bbbcc2e673edf16, type: 2}
   cells: []
-  RangeType: {fileID: 114883346016187548}
 --- !u!114 &114708852424489044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16956,6 +17115,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114868573442317518
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1806897601578144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114869837197096718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17418,6 +17595,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0b9203fb6cc4086b2c318e45735157, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit: {fileID: 0}
+  unitName: {fileID: 114885051145250302}
+  hpText: {fileID: 114557450514838640}
+  apText: {fileID: 114674364156148580}
+  powerText: {fileID: 114925491583794554}
+  defenseText: {fileID: 114601266580712598}
+  resistText: {fileID: 114459670085980384}
+  speedText: {fileID: 114250952463390962}
+  classImage: {fileID: 114125276223349968}
+  elementImage: {fileID: 114328741552837292}
+  celestialImage: {fileID: 114344209296244200}
+  illust: {fileID: 114683038093290754}
 --- !u!114 &114905877536393894
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18244,6 +18433,24 @@ MonoBehaviour:
         m_CallState: 1
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114961060331005278
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1195566690503274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114961957598511200
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18277,6 +18484,24 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\uADF8\uB9BC\uC790 \uC0BC\uACA9"
+--- !u!114 &114964642905814696
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1079189619242362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114967211856230018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18288,6 +18513,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060a92fa39ff4f689e506e38fb88be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114971826029011664
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1144957588357882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewerNameText: {fileID: 114314060862530616}
+  costText: {fileID: 114911479604039390}
+  cooldownText: {fileID: 114595383820211362}
+  rangeType: {fileID: 114370250171399722}
+  rangeText: {fileID: 114531199619039054}
+  explainText: {fileID: 114077760576955526}
+  myNameText: {fileID: 0}
 --- !u!114 &114974346508234106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20948,7 +21191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 443.74, y: -50}
+  m_AnchoredPosition: {x: 443.74002, y: -50}
   m_SizeDelta: {x: 50, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224050574568029092
@@ -21118,7 +21361,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -21213,7 +21456,7 @@ RectTransform:
   - {fileID: 224221571516619756}
   - {fileID: 224049948642960098}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -21525,7 +21768,7 @@ RectTransform:
   - {fileID: 224689753785293910}
   - {fileID: 224682302386578710}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -21622,7 +21865,7 @@ RectTransform:
   - {fileID: 224546100331841096}
   - {fileID: 224438155334990138}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22671,7 +22914,7 @@ RectTransform:
   - {fileID: 224511861856128090}
   - {fileID: 224693924667308032}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22775,7 +23018,7 @@ RectTransform:
   - {fileID: 224991544489166808}
   - {fileID: 224227065095747518}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -22890,7 +23133,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 503.56, y: -50}
+  m_AnchoredPosition: {x: 503.56003, y: -50}
   m_SizeDelta: {x: 50, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224314905495115264
@@ -23234,7 +23477,7 @@ RectTransform:
   - {fileID: 224142920194970468}
   - {fileID: 224547052307874816}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24061,7 +24304,7 @@ RectTransform:
   - {fileID: 224986369625043370}
   - {fileID: 224020122878012516}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 11
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24171,7 +24414,7 @@ RectTransform:
   - {fileID: 224157344881304370}
   - {fileID: 224323065243635232}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24704,7 +24947,7 @@ RectTransform:
   - {fileID: 224871327953317142}
   - {fileID: 224711740560673132}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24942,6 +25185,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 224494364480136350}
   - {fileID: 224112842901493220}
   - {fileID: 224295424306861660}
   - {fileID: 224288647688272944}
@@ -24953,7 +25197,6 @@ RectTransform:
   - {fileID: 224371446967984514}
   - {fileID: 224074745178440906}
   - {fileID: 224068324584139984}
-  - {fileID: 224494364480136350}
   m_Father: {fileID: 224919810856829198}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -25405,7 +25648,7 @@ RectTransform:
   - {fileID: 224043096670749478}
   - {fileID: 224622840163606876}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -27001,7 +27244,7 @@ RectTransform:
   - {fileID: 224988471336635766}
   - {fileID: 224464714976685472}
   m_Father: {fileID: 224627498289363020}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

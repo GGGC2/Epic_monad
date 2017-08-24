@@ -25,7 +25,7 @@ public class DetailInfoPanel : UnitInfoUI{
 			illust.sprite = sprite;
 		}else{
 			illust.sprite = Resources.Load<Sprite>("transparent");
-		}
+        }
 
 		SetCommonUnitInfoUI();
 
