@@ -136,7 +136,11 @@ public class UnitInfo{
 			return "칼드리치";
 		else if (codeName == "lucius")
 			return "루키어스";
-		else if(codeName == "unselected")
+        else if (codeName == "json")
+            return "제이선";
+        else if (codeName == "triana")
+            return "트리아나";
+        else if(codeName == "unselected")
 			return "Empty";
 		else{
 			Debug.LogError(codeName + " has NO KoreanName");
