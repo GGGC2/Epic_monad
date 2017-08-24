@@ -520,6 +520,7 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
 		BattleTriggerManager.CountBattleCondition();
+		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
 		BattleData.unitManager.StartPhase(BattleData.currentPhase);
@@ -527,6 +528,14 @@ public class BattleManager : MonoBehaviour{
 		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);
+	}
+
+	// 승/패 조건과 관련된 타일을 하이라이트 처리
+	void HighlightBattleTriggerTiles(){
+		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().battleTriggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
+		tileTriggers.ForEach(trigger => {
+			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
+			});
 	}
 
 	//이하는 StageManager의 Load기능 통합
