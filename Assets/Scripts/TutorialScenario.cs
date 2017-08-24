@@ -13,7 +13,7 @@ public class TutorialScenario{
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
-	enum Mission{MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, End}
+	enum Mission{ MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, OpenDetailInfo, CloseDetailInfo, End }
 	Mission mission;
 	public bool IsEndMission { get { return mission == Mission.End; } }
 	Direction missionDirection;
@@ -30,7 +30,7 @@ public class TutorialScenario{
 
 		if (mission == Mission.SelectTile) {
 			Vector2 missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
-			TileManager TM = TileManager.Instance;
+			TileManager TM = BattleData.tileManager;
 			Tile missionTile = TM.GetTile (missionTilePos);
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
@@ -39,10 +39,10 @@ public class TutorialScenario{
 				TM.PreselectTiles (clickableTiles);
 				TM.SetPreselectLock (true);
 				TM.SetHighlightTiles (clickableTiles, true);
-				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
 				TM.SetPreselectLock (false);
 				TM.DepreselectAllTiles ();
@@ -51,18 +51,18 @@ public class TutorialScenario{
 			missionDirection = parser.ConsumeEnum<Direction> ();
 			SetMissionCondition = () => {
 				selectDirectionUI.EnableOnlyThisDirection (missionDirection);
-				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 				selectDirectionUI.EnableAllDirection ();
 			};
-		}  else if (mission == Mission.SelectAnyDirection) {
+		} else if (mission == Mission.SelectAnyDirection) {
 			SetMissionCondition = () => {
-				BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
+				BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 			};
 		} else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
@@ -103,13 +103,28 @@ public class TutorialScenario{
 				SetMissionCondition = () => {
 					commandPanel.TurnOnOnlyThisButton (command);
 					commandPanel.LockCommandsOnOff ();
-					BattleManager.Instance.readyCommandEvent.AddListener(ToNextStep);
+					BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 				};
 				ResetMissionCondition = () => {
-					BattleManager.Instance.readyCommandEvent.RemoveListener(ToNextStep);
+					BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 					commandPanel.UnlockCommandsOnOff ();
 				};
 			}
+		} else if (mission == Mission.OpenDetailInfo) {
+			SetMissionCondition = () => {
+				BattleData.uiManager.activateDetailInfoEvent.AddListener (ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				BattleData.uiManager.activateDetailInfoEvent.RemoveListener (ToNextStep);
+			};
+		} else if (mission == Mission.CloseDetailInfo) {
+			SetMissionCondition = () => {
+				BattleData.uiManager.deactivateDetailInfoEvent.AddListener (ToNextStep);
+			};
+			ResetMissionCondition = () => {
+				BattleData.uiManager.deactivateDetailInfoEvent.RemoveListener (ToNextStep);
+			};
 		}
+
 	}
 }

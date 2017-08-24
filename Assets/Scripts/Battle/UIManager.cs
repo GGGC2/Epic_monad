@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -293,9 +294,18 @@ public class UIManager : MonoBehaviour
 		movedUICanvas.transform.position = newPosition;
 	}
 
-	public void SetActiveDetailInfoUI(Unit unit)
-	{
+	public UnityEvent activateDetailInfoEvent = new UnityEvent ();
+	public UnityEvent deactivateDetailInfoEvent = new UnityEvent ();
+	public void ActivateDetailInfoUI(Unit unit){
+		activateDetailInfoEvent.Invoke ();
 		detailInfoUI.SetActive(true);
+	}
+	public void DeactivateDetailInfoUI(){
+		deactivateDetailInfoEvent.Invoke ();
+		detailInfoUI.SetActive (false);
+	}
+	public bool isDetailInfoUIActive(){
+		return detailInfoUI.activeSelf;
 	}
 
 	public void AppendNotImplementedLog(String text)

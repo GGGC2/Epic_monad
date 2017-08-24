@@ -321,7 +321,7 @@ public class BattleManager : MonoBehaviour{
 				Debug.Log("LongClicked trigger");
 				Tile triggeredTile = BattleData.SelectedTile;
 				if (triggeredTile.IsUnitOnTile()) {
-					BattleData.uiManager.SetActiveDetailInfoUI(triggeredTile.GetUnitOnTile());
+					BattleData.uiManager.ActivateDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
@@ -426,6 +426,7 @@ public class BattleManager : MonoBehaviour{
 	public void CallbackRightClick()
 	{
 		BattleData.triggers.rightClicked.Trigger();
+		BattleData.uiManager.DeactivateDetailInfoUI ();
 	}
 
 	public void CallbackDirection(Direction direction){
@@ -442,12 +443,10 @@ public class BattleManager : MonoBehaviour{
 
 	void Update(){
 		if (Input.GetMouseButtonDown(1)){
-            if (BattleData.enemyUnitSelected || BattleData.tileSelected) {
-                BattleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
-                BattleData.tileSelected = false;
-			} else{
-				if(!BattleData.rightClickLock)
-	                CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
+			BattleData.enemyUnitSelected = false;
+			BattleData.tileSelected = false;
+			if(!BattleData.rightClickLock){
+				CallbackRightClick();
 			}
 		}
 
