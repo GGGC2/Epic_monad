@@ -51,8 +51,10 @@ class Trap {
             if(originSkill.GetType() == typeof(ActiveSkill))
                 StatusEffector.AttachStatusEffect(caster, (ActiveSkill)originSkill, unit, GetTilesInRange(trap, tile));
         }
-        if (unitsInRange.Count > 0)
-            tile.RemoveStatusEffect(trap);
+		if (unitsInRange.Count > 0) {
+			tile.RemoveStatusEffect (trap);
+		}
+		SoundManager.Instance.PlaySE ("OperateTrap");
     }
     public static void Update(TileStatusEffect trap, Tile tile) {
         Unit caster = trap.GetCaster();
