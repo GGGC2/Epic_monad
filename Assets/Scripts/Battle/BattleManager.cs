@@ -294,6 +294,9 @@ public class BattleManager : MonoBehaviour{
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
 
+			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
+			BattleData.isWaitingUserInput = true;
+
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved)
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, 
@@ -304,6 +307,9 @@ public class BattleManager : MonoBehaviour{
 				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand,
 																			  BattleData.triggers.tileLongSelectedByUser));
 
+			BattleData.tileManager.DepreselectAllTiles ();
+			BattleData.isWaitingUserInput = false;
+
 			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
 				BattleData.selectedUnit.ApplySnapshot();
@@ -313,9 +319,9 @@ public class BattleManager : MonoBehaviour{
 			// 길게 눌러서 유닛 상세정보창을 열 수 있다
 			else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 				Debug.Log("LongClicked trigger");
-				Tile triggeredTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
+				Tile triggeredTile = BattleData.SelectedTile;
 				if (triggeredTile.IsUnitOnTile()) {
-					BattleData.uiManager.SetActiveDetailInfoUI(triggeredTile.GetUnitOnTile());
+					BattleData.uiManager.ActivateDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
 			}
 			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
@@ -420,6 +426,7 @@ public class BattleManager : MonoBehaviour{
 	public void CallbackRightClick()
 	{
 		BattleData.triggers.rightClicked.Trigger();
+		BattleData.uiManager.DeactivateDetailInfoUI ();
 	}
 
 	public void CallbackDirection(Direction direction){
@@ -436,12 +443,10 @@ public class BattleManager : MonoBehaviour{
 
 	void Update(){
 		if (Input.GetMouseButtonDown(1)){
-            if (BattleData.enemyUnitSelected || BattleData.tileSelected) {
-                BattleData.enemyUnitSelected = false; // 유닛 고정이 되어있을 경우, 고정 해제가 우선으로 된다.
-                BattleData.tileSelected = false;
-			} else{
-				if(!BattleData.rightClickLock)
-	                CallbackRightClick(); // 우클릭 취소를 받기 위한 핸들러.
+			BattleData.enemyUnitSelected = false;
+			BattleData.tileSelected = false;
+			if(!BattleData.rightClickLock){
+				CallbackRightClick();
 			}
 		}
 
@@ -515,6 +520,7 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
 		BattleTriggerManager.CountBattleCondition();
+		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
 		BattleData.unitManager.StartPhase(BattleData.currentPhase);
@@ -522,6 +528,14 @@ public class BattleManager : MonoBehaviour{
 		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());
 
 		yield return new WaitForSeconds(0.5f);
+	}
+
+	// 승/패 조건과 관련된 타일을 하이라이트 처리
+	void HighlightBattleTriggerTiles(){
+		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().battleTriggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
+		tileTriggers.ForEach(trigger => {
+			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
+			});
 	}
 
 	//이하는 StageManager의 Load기능 통합

@@ -195,7 +195,7 @@ namespace Battle.Turn{
 			if (!_AIData.IsActive ()) {
 				yield return battleManager.ToDoBeforeAction ();
 				state = State.SkipTurn;
-			} else if (unit.GetNameInCode ().Equals ("triana")) {
+			} else if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
 			} else {
 				state = State.MoveToBestCasting;
@@ -233,7 +233,7 @@ namespace Battle.Turn{
 
 			int minRewardWorthAttack = 0;
 
-			if (unit.GetNameInCode () == "kashasty_Escape") {
+			if (unit.GetNameEng () == "kashasty_Escape") {
 				minRewardWorthAttack = 400;
 			}
 

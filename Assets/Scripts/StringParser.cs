@@ -48,15 +48,11 @@ public class StringParser{
 		}
 	}
 
-	public int ConsumeInt()
-	{
+	public int ConsumeInt(){
 		string strValue = Consume();
-		try
-		{
+		try{
 			return Int32.Parse(strValue);
-		}
-		catch (FormatException e)
-		{
+		}catch{
 			Debug.LogError("Cannot parse integer value " + strValue);
 			return -1;
 		}

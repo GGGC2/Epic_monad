@@ -26,6 +26,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
 	bool isPreSeleted = false;
 	public TextMesh CostAP;
+	public SpriteRenderer trapImage;
 
 	public void SetPreSelected(bool input) {isPreSeleted = input;}
 
@@ -179,6 +180,21 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		if (clickStarted && Time.time - timeClickStarted > durationThreshold) {
 			clickStarted = false;
 			LongLeftClickEnd.Invoke ();
+		}
+
+		if (trapImage.enabled == true && statusEffectList.Count == 0){
+			trapImage.enabled = false;
+		}
+		else if (statusEffectList.Count == 0) return;
+		else {
+			if (statusEffectList.Any(se => se.GetDisplayName() == "잘근잘근 덫(활성화 대기)")){
+				trapImage.enabled = true;
+				trapImage.color = new Color(1,1,1,0.5f);
+			}
+			else if (statusEffectList.Any(se => se.GetDisplayName() == "잘근잘근 덫")){
+				trapImage.enabled = true;
+				trapImage.color = Color.white;
+			}
 		}
 	}
 

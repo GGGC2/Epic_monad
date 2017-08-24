@@ -42,7 +42,7 @@ public class Unit : MonoBehaviour{
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
-	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
+	public List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 	// 사용한 스킬 정보 저장(쿨타임 산정용)
 	Dictionary<string, int> usedSkillDict = new Dictionary<string, int>();
 
@@ -81,6 +81,8 @@ public class Unit : MonoBehaviour{
 	Sprite spriteLeftDown;
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
+
+	public SpriteRenderer bindIcon;
 
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
@@ -161,7 +163,7 @@ public class Unit : MonoBehaviour{
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
-	public string GetNameInCode() { return myInfo.nameEng; }
+	public string GetNameEng() { return myInfo.nameEng; }
 	public int GetIndex() {return myInfo.index;}
 	public string GetNameKor() { return myInfo.nameKor; }
 	public Side GetSide() { return myInfo.side; }
@@ -1140,6 +1142,14 @@ public class Unit : MonoBehaviour{
 				passiveLog += passiveSkill.GetName() + "\n";
 			}
 			Debug.LogError(passiveLog);
+		}
+
+		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
+		else if (bindIcon.enabled == false && HasStatusEffect(StatusEffectType.Bind)){
+			bindIcon.enabled = true;
+		}
+		else if (bindIcon.enabled == true && !HasStatusEffect(StatusEffectType.Bind)){
+			bindIcon.enabled = false;
 		}
 	}
 }

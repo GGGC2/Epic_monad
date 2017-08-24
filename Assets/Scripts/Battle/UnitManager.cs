@@ -229,7 +229,7 @@ public class UnitManager : MonoBehaviour {
 		}
 			
 		units.ForEach(unit => {
-			if (controllableUnitNameList.Contains(unit.GetNameInCode())){
+			if (controllableUnitNameList.Contains(unit.GetNameEng())){
 				Destroy(unit.GetComponent<AIData>());
 			}
 		});

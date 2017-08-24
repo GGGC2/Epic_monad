@@ -18,6 +18,7 @@ public class Skill{
 	public Stat secondTextValueType;
 	public float secondTextValueCoef;
     public float secondTextValueBase;
+    public Sprite icon;
 
     //기술,특성의 공통되는 부분을 받아온다
     public void GetCommonSkillData(StringParser parser){
@@ -25,5 +26,6 @@ public class Skill{
 		requireLevel = parser.ConsumeInt();
 		korName = parser.Consume();
 		column = parser.ConsumeInt();
+        icon = Utility.SkillIconOf(owner, requireLevel, column);
     }
 }

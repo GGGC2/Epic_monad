@@ -1,12 +1,12 @@
-﻿owner	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
+owner	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
 manastone	1	가만히	1	9999	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
-soldier01	1	근접공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	--	None	0	0	None	0	0
-chaser	1	근접공격	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	--	None	0	0	None	0	0
-mage01	1	열기 폭발	1	30	0	Power	0.9	Point	Diamond	0	3	0	Diamond	0	0	0	DamageHealth	RedBlast	Area	NonMove	Fire	--	None	0	0	None	0	0
-archer01	1	화살 발사	1	30	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	--	None	0	0	None	0	0
-asterArcher01	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	--	None	0	0	None	0	0
+soldier01	1	근접공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
+chaser	1	근접공격	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
+mage01	1	열기 폭발	1	30	0	Power	0.9	Point	Diamond	0	3	0	Diamond	0	0	0	DamageHealth	RedBlast	Area	NonMove	Fire	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
+archer01	1	화살 발사	1	30	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
+asterArcher01	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
 controller	1	침입자 제거	1	1	0	Power	1.5	Point	Diamond	0	0	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	ControllerGrawl	--	None	0	0	None	0	0
-kashasty_Escape	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	-	None	0	0	None	0	0
+kashasty_Escape	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
 asterAgent	1	섹션스킬	1	50	0	Power	1	Auto	Sector	1	1	0	Sector	1	3	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
 monster	1	몬스터의근접공격	1	50	0	Power	1	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
 orchid	1	약공격	1	55	0	Power	1	Auto	Diamond	0	0	0	Diamond	1	2	0	DamageHealth	-	Area	NonMove	-	--	None	0	0	None	0	0
@@ -74,7 +74,7 @@ eugene	50	겨울의 가호	1	84	4	Power	0	Point	Diamond	0	2	0	Square	0	2	0	Buff	
 eugene	50	백은의 오로라	2	9	5	Power	0	Auto	Diamond	0	4	0	Diamond	0	4	0	Buff	-	Individual	NonMove	-	?	None	0	0	None	0	0
 json	1	그림자 일격	1	26	0	Power	0.9	Point	AllDirection	0	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 <color=#b2ff66ff>피해</color>를 줍니다.	Power	0.9	0	None	0	0
 json	1	단검 투척	3	24	0	Power	1.1	Point	Cross	1	4	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	<color=red>1.1x공격력</color>(<color=red>VALUE1</color>)의 <color=#b2ff66ff>피해</color>를 주고 표식(중첩 가능)을 추가로 부여합니다.	Power	1.1	0	None	0	0
-karldrich	1	죽창 찌르기	1	24	0	Power	0.6	Auto	Straight	1	4	0	Straight	1	4	0	DamageHealth	-	Individual	NonMove	-	<color=red>0.6x공격력</color>(<color=red>VALUE1</color>)의 <color=#b2ff66ff>피해</color>를 줍니다.	Power	0.6	0	None	0	0
+karldrich	1	죽창 찌르기	1	24	0	Power	0.6	Auto	Straight	1	4	0	Straight	1	4	0	DamageHealth	-	Individual	NonMove	Slash	<color=red>0.6x공격력</color>(<color=red>VALUE1</color>)의 <color=#b2ff66ff>피해</color>를 줍니다.	Power	0.6	0	None	0	0
 sepia	1	반달베기	3	27	0	Power	0.5	Auto	Front	1	2	3	Front	1	2	3	DamageHealth	MeleeArea	Area	NonMove	Slash	범위 내에 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 <color=#ff9999ff>2페이즈</color> 동안 맞힌 대상 1명당 <color=red>0.2x공격력</color>(<color=red>VALUE2</color>)의 <color=#b2ff66ff>보호막</color>을 얻습니다.	Power	0.5	0	Power	0.2	0
 darkenir	1	에테르 미사일	2	27	0	Power	1.3	Route	Straight	1	7	0	Straight	0	1	0	DamageHealth	EtherShot	Area	Move	EtherMissile	투사체를 쏘아 <color=red>1.3x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.3	0	None	0	0
 noel	1	파마의 섬광	1	40	0	Power	0.9	Auto	Sector	1	4	0	Sector	1	4	0	DamageHealth	-	Individual	NonMove	PamaLight	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 대상으로부터 2타일 이내에 <color=#b2ff66ff>보호막</color>을 가진 동료가 있을 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>침묵</color>시킵니다.	Power	0.9	0	None	0	0
@@ -82,8 +82,8 @@ noel	1	신의 가호	3	24	0	Power	0	Point	Diamond	0	4	0	Diamond	0	0	0	Buff	Light
 arcadia	1	생명의 요람	2	35	6	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	Life	<color=#ff9999ff>3페이즈</color> 동안 <color=green>최대 체력의 10%</color>(<color=green>VALUE1</color>)의 <color=green>지속 회복</color>을 얻고 자신의 방어력과 저항력을 <color=green>87+레벨당 1.2</color>(<color=green>VALUE2</color>) 높입니다.	MaxHealth	0.1	0	Level	1.2	87
 arcadia	1	계절풍	3	28	0	Power	0.9	Route	Straight	1	6	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	SeasonWind	대상을 자신 앞으로 당겨온 후 <color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 arcadia	8	갈고리 씨앗	3	20	0	Power	0	Auto	Sector	1	3	0	Sector	1	3	0	Debuff	-	Individual	NonMove	SeasonWind	<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 <color=red>지속 피해</color>를 줍니다.	Power	0.5	0	None	0	0
-bianca	1	잘근잘근 덫	1	27	0	Power	0	Point	Diamond	0	2	0	Diamond	0	0	0	Debuff	-	Individual	NonMove	-	?	None	0	0	None	0	0
-bianca	1	떠밀기	3	5	0	Power	0	Auto	Straight	1	1	0	Straight	1	1	0	DamageHealth	-	Individual	NonMove	-	?	None	0	0	None	0	0
+bianca	1	잘근잘근 덫	1	27	0	Power	0	Point	Diamond	0	2	0	Diamond	0	0	0	Debuff	-	Individual	NonMove	SetTrap	1페이즈의 속박과 3페이즈의 지속 피해를 주는 덫을 설치합니다. 영향 범위는 3x3 사각형이며 설치 후 다음 페이즈에 활성화됩니다. 활성화된 후 유닛이 해당 자리에서 턴을 시작하거나 그 자리로 이동할 경우에 덫이 작동합니다.	None	0	0	None	0	0
+bianca	1	떠밀기	3	5	0	Power	0	Auto	Straight	1	1	0	Straight	1	1	0	DamageHealth	-	Individual	NonMove	Push	대상에게 아무 피해도 주지 않고 한 칸 뒤로 밉니다.	None	0	0	None	0	0
 grenev	1	저격	1	29	0	Power	0.8	Point	Diamond	0	11	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Gun	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.8	0	None	0	0
 grenev	1	단검술	2	35	0	Power	1.5	Route	Straight	1	2	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Smite	후면 공격만 가능하며 방어력과 보호막을 무시하고 <color=red>1.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.5	0	None	0	0
 grenev	8	장전	1	30	0	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	Reload	<color=#ff9999ff>4페이즈</color>간 자신의 공격력이 <color=red>25%</color>(<color=red>VALUE1</color>) 높아집니다.	Power	0.25	0	None	0	0
