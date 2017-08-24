@@ -24,7 +24,7 @@ namespace Battle.Skills {
             Tile frontTile = GetFrontTile(caster, target);
             target.ForceMove(frontTile);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 }
