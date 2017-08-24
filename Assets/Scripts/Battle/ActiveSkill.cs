@@ -413,7 +413,7 @@ public class ActiveSkill : Skill{
 		List<PassiveSkill> passiveSkillsOfTarget = target.GetLearnedPassiveSkillList();
 		ListPassiveSkillLogic passiveSkillLogicsOfTarget = SkillLogicFactory.Get (passiveSkillsOfTarget);
 		float totalEvasionChance = target.GetEvasionChance();
-		int randomNumber = UnityEngine.Random.Range(0, 1);
+		float randomNumber = UnityEngine.Random.Range(0, 1.0f);
 
 		// 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
 		List<UnitStatusEffect> statusEffectsToRemove =  target.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
