@@ -211,11 +211,11 @@ public static class BattleData{
 	// 중요 - BattleData 클래스 내 모든 변수는 static이라서 Initialize 함수 내에서 초기화를 해야 하므로
 	// 변수 하나 추가할 때마다 반드시 여기에 초기화하는 코드도 추가할 것
 	// 또 전투 시작할 때 반드시 Initialize() 함수를 불러야 한다(현재는 BattleManager 인스턴스의 Awake()시 호출함)
-	public static void Initialize(TileManager tileManagerInstance, UnitManager unitManagerInstance, UIManager uiManagerInstance, BattleManager battleManagerInstance){
-		tileManager = tileManagerInstance;
-		unitManager = unitManagerInstance;
-		uiManager = uiManagerInstance;
-		battleManager = battleManagerInstance;
+	public static void Initialize(){
+		tileManager = GameObject.FindObjectOfType<TileManager>();
+		unitManager = GameObject.FindObjectOfType<UnitManager>();
+		uiManager = GameObject.FindObjectOfType<UIManager>();
+		battleManager = GameObject.FindObjectOfType<BattleManager>();
 
 		onTutorial = false;
 		rightClickLock = false;

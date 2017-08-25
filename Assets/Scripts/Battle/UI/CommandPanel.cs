@@ -15,11 +15,9 @@ namespace BattleUI{
 
 		void Update(){
 			if(BattleData.currentState == CurrentState.FocusToUnit && Setting.shortcutEnable){
-				if (buttons [ActionCommand.Move].interactable && Input.GetKeyDown (KeyCode.Q)){
-					buttons [ActionCommand.Move].onClick.Invoke ();
-				}else if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.W)){
+				if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.Q)){
 					buttons [ActionCommand.Skill].onClick.Invoke ();
-				}else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.E)){
+				}else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.W)){
 					buttons [ActionCommand.Standby].onClick.Invoke ();
 				}
 			}
@@ -28,7 +26,6 @@ namespace BattleUI{
 		public void Initialize(){
 			commandsOnOffLockOn = false;
 			buttons = new Dictionary<ActionCommand, Button> ();
-			buttons[ActionCommand.Move]=GameObject.Find ("MoveButton").GetComponent<Button> ();
 			buttons[ActionCommand.Skill]=GameObject.Find("SkillButton").GetComponent<Button>();
 			buttons[ActionCommand.Standby]=GameObject.Find("StandbyButton").GetComponent<Button>();
 		}
@@ -39,7 +36,7 @@ namespace BattleUI{
 
 			buttons [command].interactable = turnOn;
 			if(command == ActionCommand.Standby){
-				buttons[command].image.sprite = Resources.Load<Sprite>("Rest");
+				buttons[command].image.sprite = Resources.Load<Sprite>("CommandUI/Rest");
 			}
 		}
 		public void TurnOnOnlyThisButton(ActionCommand command){
