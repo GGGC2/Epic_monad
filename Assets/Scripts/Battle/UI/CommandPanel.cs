@@ -36,13 +36,17 @@ namespace BattleUI{
 		public void OnOffButton(ActionCommand command, bool turnOn){
 			if (commandsOnOffLockOn)
 				return;
+
 			buttons [command].interactable = turnOn;
+			if(command == ActionCommand.Standby){
+				buttons[command].image.sprite = Resources.Load<Sprite>("Rest");
+			}
 		}
 		public void TurnOnOnlyThisButton(ActionCommand command){
-			foreach (var pair in buttons) {
-				if (pair.Key == command) {
+			foreach(var pair in buttons){
+				if(pair.Key == command){
 					OnOffButton (pair.Key, true);
-				} else {
+				}else{
 					OnOffButton (pair.Key, false);
 				}
 			}

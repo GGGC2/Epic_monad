@@ -143,12 +143,7 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	private void OnOffStandbyButton(){
-		bool isPossible = BattleData.selectedUnit.IsStandbyPossible ();
-		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, isPossible);
-	}
-	private void OnOffSkillButton()
-	{
+	private void OnOffSkillButton(){
 		bool isPossible = BattleData.selectedUnit.IsSkillUsePossibleState ();
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
 	}
@@ -156,7 +151,9 @@ public class BattleManager : MonoBehaviour{
 		bool isPossible = BattleData.selectedUnit.IsMovePossibleState();
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Move, isPossible);
 	}
-    
+    private void SetStandbyButton(){
+		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, true);
+	}
 
 	public static IEnumerator FadeOutEffect(Unit unit)
 	{
@@ -352,9 +349,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}
 	private void OnOffCommandButtons(){
-		OnOffStandbyButton();
 		OnOffMoveButton();
 		OnOffSkillButton();
+		SetStandbyButton();
 	}
 	public IEnumerator ToDoBeforeAction(){
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
