@@ -40,7 +40,7 @@ public class SkillUIManager : SkillInfoUI{
 				cells.Add (cell);
 				cell.SetSize (new Vector2 (9, 9));
 				Vector2 pos = new Vector2 (x, y);
-				cell.SetPosition (pos, new Vector2(-65, -145));
+				cell.SetPosition (pos, new Vector2(-85, -145));
 				cell.SetColor (rangeColors [pos]);
 				if (x == (rowNum - 1) / 2 && x == y)
 					cell.SetAsDotCell ();
