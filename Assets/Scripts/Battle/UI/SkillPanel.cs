@@ -41,10 +41,6 @@ namespace BattleUI{
             if (maxPage == 0) nextButton.interactable = false;
             else nextButton.interactable = true;
         }
-		public void CallbackSkillIndex(int index){
-            index += page * 5;
-			battleManager.CallbackSkillIndex(index);
-		}
 
 		public void OnOffSkillButton(int skillIndex, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
 			if (skillsOnOffLockOn)
@@ -108,7 +104,7 @@ namespace BattleUI{
 			}
 		}
 
-		public void CallbackPointerEnterSkillIndex(int index){
+		/*public void CallbackPointerEnterSkillIndex(int index){
             index += page * 5;
 			battleManager.CallbackPointerEnterSkillIndex(index);
 			
@@ -123,7 +119,7 @@ namespace BattleUI{
 			OnEnable();
 			skillPanel.HideSecondRange();
 			GameObject.Find("SelectedUnitViewerPanel").GetComponent<UnitViewer>().OffPreviewAp();
-		}
+		}*/
 
 		void OnEnable(){
 			skillApText.text = "";

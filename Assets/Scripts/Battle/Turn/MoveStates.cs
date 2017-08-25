@@ -31,6 +31,12 @@ namespace Battle.Turn{
 			}
 		}
 
+		public static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint){
+		// 이동했을때 볼 방향 설정
+			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
+			BattleData.currentState = CurrentState.MoveToTile;
+			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
+		}
 		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
 			BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);

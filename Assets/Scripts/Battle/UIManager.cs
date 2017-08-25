@@ -18,8 +18,6 @@ public class UIManager : MonoBehaviour
 	public bool startFinished = false;
 
 	public APBarPanel apBarUI;
-	GameObject commandUI;
-	public CommandPanel commandPanel;
 	GameObject skillUI;
 	public SkillPanel skillPanel;
 	GameObject unitViewerUI;
@@ -38,9 +36,6 @@ public class UIManager : MonoBehaviour
 	void Awake(){
 		instance = this;
 		apBarUI = FindObjectOfType<APBarPanel>();
-		commandUI = GameObject.Find("CommandPanel");
-		commandPanel = commandUI.GetComponent<CommandPanel> ();
-		commandPanel.Initialize ();
 		skillUI = GameObject.Find("SkillPanel");
 		skillPanel = skillUI.GetComponent<SkillPanel> ();
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
@@ -55,13 +50,13 @@ public class UIManager : MonoBehaviour
 		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 
-		TutorialScenario.commandPanel = commandPanel;
+		//TutorialScenario.commandPanel = commandPanel;
 		TutorialScenario.skillPanel = skillPanel;
 		TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
 
 	void Start(){
-		commandUI.SetActive(false);
+		//commandUI.SetActive(false);
 		skillUI.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
@@ -80,17 +75,6 @@ public class UIManager : MonoBehaviour
 			apBarUI.gameObject.SetActive(true);
 			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
 		}
-	}
-
-	public void ActivateCommandUIAndSetName(Unit selectedUnit)
-	{
-		commandUI.SetActive(true);
-		commandUI.transform.Find("NameText").GetComponent<Text>().text = selectedUnit.GetNameKor();
-	}
-
-	public void DisableCommandUI()
-	{
-		commandUI.SetActive(false);
 	}
 
 	private void EnableSkillUI()

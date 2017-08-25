@@ -223,8 +223,7 @@ namespace Battle.Turn{
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
-			int selectedSkillIndex = 1;
-			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
 			yield return PaintMovableTiles ();
@@ -359,8 +358,7 @@ namespace Battle.Turn{
 
 			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
-			int selectedSkillIndex = 1;
-			BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
 			ActiveSkill skill = BattleData.SelectedSkill;
 
 			yield return PaintMovableTiles ();
@@ -391,8 +389,7 @@ namespace Battle.Turn{
 
 				yield return battleManager.ToDoBeforeAction ();
 
-				int selectedSkillIndex = 1;
-				BattleData.indexOfSelectedSkillByUser = selectedSkillIndex;
+				BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
 				ActiveSkill skill = BattleData.SelectedSkill;
 
 				if (!unit.HasEnoughAPToUseSkill(skill)) {

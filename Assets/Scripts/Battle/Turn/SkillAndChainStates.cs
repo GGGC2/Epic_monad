@@ -11,7 +11,7 @@ namespace Battle.Turn {
     public class SkillAndChainStates {
         private static IEnumerator UpdatePreviewAP( ) {
             while (true) {
-                if (BattleData.indexOfPreSelectedSkillByUser != 0) {
+                if (BattleData.PreSelectedSkill != null) {
                     ActiveSkill preSelectedSkill = BattleData.PreSelectedSkill;
                     int requireAP = preSelectedSkill.GetRequireAP();
                     BattleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
@@ -28,7 +28,7 @@ namespace Battle.Turn {
                 BattleData.uiManager.SetSkillUI(BattleData.selectedUnit);
 
                 BattleData.isWaitingUserInput = true;
-                BattleData.indexOfSelectedSkillByUser = 0;
+                BattleData.selectedSkill = null;
 
                 var update = UpdatePreviewAP();
                 battleManager.StartCoroutine(update);
@@ -40,7 +40,7 @@ namespace Battle.Turn {
 
                 BattleData.battleManager.StopCoroutine(update);
 
-                BattleData.indexOfPreSelectedSkillByUser = 0;
+                BattleData.preSelectedSkill = null;
                 BattleData.isWaitingUserInput = false;
                 BattleData.uiManager.DisableSkillUI();
 
@@ -349,7 +349,7 @@ namespace Battle.Turn {
 
 			// 체인 목록에 추가.
 			ChainList.AddChains(casting);
-			BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
+			BattleData.selectedSkill = null;
 			yield return new WaitForSeconds(0.5f);
 
 			BattleManager.MoveCameraToUnit(caster);

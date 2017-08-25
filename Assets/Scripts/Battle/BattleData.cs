@@ -166,8 +166,8 @@ public static class BattleData{
 	public static CurrentState currentState = CurrentState.None;
 
 	public static Vector2? preSelectedTilePosition;
-	public static int indexOfPreSelectedSkillByUser = 0;
-	public static int indexOfSelectedSkillByUser = 0;
+	public static ActiveSkill preSelectedSkill;
+	public static ActiveSkill selectedSkill;
 	public static int rewardPoint;
 	public static bool isWaitingUserInput = false;
 	public static bool enemyUnitSelected = false;
@@ -224,8 +224,6 @@ public static class BattleData{
 		currentState = CurrentState.None;
 
 		preSelectedTilePosition=null;
-		indexOfPreSelectedSkillByUser = 0;
-		indexOfSelectedSkillByUser = 0;
 		rewardPoint = 0;
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;
@@ -247,20 +245,12 @@ public static class BattleData{
 		previewAPAction = null;
 	}
 
-	public static ActiveSkill SelectedSkill
-	{
-		get {
-			if(selectedUnit.GetSkillList().Count<indexOfSelectedSkillByUser)
-				return null;
-			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
-		}
+	public static ActiveSkill SelectedSkill{
+		get {return selectedSkill;}
 	}
 
-	public static ActiveSkill PreSelectedSkill
-	{
-		get {
-			return selectedUnit.GetSkillList()[indexOfPreSelectedSkillByUser - 1];
-		}
+	public static ActiveSkill PreSelectedSkill{
+		get {return preSelectedSkill;}
 	}
 
 	public static Tile SelectedTile

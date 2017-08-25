@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Enums;
 using LitJson;
-using System;
 using Battle.Turn;
 using Battle.Skills;
-using System.Linq;
 using GameData;
 
 public class BattleManager : MonoBehaviour{
@@ -18,6 +18,7 @@ public class BattleManager : MonoBehaviour{
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
 	BattleData.Triggers triggers;
+	List<ActionButton> actionButtons = new List<ActionButton>();
 
 	void Awake (){
 		if (instance != null && instance != this) {
@@ -27,6 +28,10 @@ public class BattleManager : MonoBehaviour{
 
 		BattleData.Initialize ();
 		triggers = BattleData.triggers;
+		
+		for(int i = 0; i < 8; i++){
+			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
+		}
 
         if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
@@ -145,13 +150,13 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	private void OnOffSkillButton(){
+	/*private void OnOffSkillButton(){
 		bool isPossible = BattleData.selectedUnit.IsSkillUsePossibleState ();
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
 	}
     private void SetStandbyButton(){
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, true);
-	}
+	}*/
 
 	public static IEnumerator FadeOutEffect(Unit unit)
 	{
@@ -281,8 +286,8 @@ public class BattleManager : MonoBehaviour{
 			yield return ToDoBeforeAction ();
 
 			//AI 턴에선 쓸모없는 부분
-			BattleData.uiManager.ActivateCommandUIAndSetName(unit);
-			OnOffCommandButtons ();
+			//BattleData.uiManager.ActivateCommandUIAndSetName(unit);
+			//OnOffCommandButtons ();
 
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
@@ -305,13 +310,27 @@ public class BattleManager : MonoBehaviour{
 				update = UpdatePreviewPathAndAP(movableTilesWithPath);
 				StartCoroutine(update);
 			}//이동 가능한 범위 표시 끝
+			for(int i = 0; i < 8; i++){
+				actionButtons[i].icon.sprite = Resources.Load<Sprite>("transparent");
+				actionButtons[i].skill = null;
+				if(i < unit.activeSkillList.Count){
+					actionButtons[i].Initialize(unit.activeSkillList[i]);
+				}else if(i == unit.activeSkillList.Count){
+					if(unit.IsStandbyPossible()){
+						actionButtons[i].icon.sprite = Resources.Load<Sprite>("CommandUI/Standby");
+					}else{
+						actionButtons[i].icon.sprite = Resources.Load<Sprite>("CommandUI/Rest");
+					}
+				}
+			}
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved){
-				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.rightClicked,
-																   triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
+				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.rightClicked, triggers.skillSelected,
+																triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
 			}else{
-				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
+				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.skillSelected,
+																triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
 			}
 
 			if(update != null){
@@ -345,11 +364,27 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Red);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
-				yield return StartCoroutine(CheckDestination(destTile, destPath, totalUseActivityPoint));
-			}else if (triggers.actionCommand.Data == ActionCommand.Skill){
-				BattleData.currentState = CurrentState.SelectSkill;
-				yield return StartCoroutine(SkillAndChainStates.SelectSkillState());
-			}else if (triggers.actionCommand.Data == ActionCommand.Standby){
+				yield return StartCoroutine(MoveStates.CheckDestination(destTile, destPath, totalUseActivityPoint));
+			}else if(triggers.skillSelected.Triggered){
+				ActiveSkill selectedSkill = BattleData.SelectedSkill;
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.selectedUnit, selectedSkill.GetRequireAP());
+                SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
+                if (skillTypeOfSelectedSkill == SkillType.Auto ||
+                    skillTypeOfSelectedSkill == SkillType.Self ||
+                    skillTypeOfSelectedSkill == SkillType.Route) {
+                    BattleData.currentState = CurrentState.SelectSkillApplyDirection;
+                    yield return StartCoroutine(SkillAndChainStates.SelectSkillApplyDirection(BattleData.selectedUnit.GetDirection()));
+                }
+                else{
+                    BattleData.currentState = CurrentState.SelectSkillApplyPoint;
+                    yield return StartCoroutine(SkillAndChainStates.SelectSkillApplyPoint(BattleData.selectedUnit.GetDirection()));
+                }
+
+                BattleData.previewAPAction = null;
+                BattleData.uiManager.UpdateApBarUI();
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
+			}
+			else if (triggers.actionCommand.Data == ActionCommand.Standby){
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
 					yield return StartCoroutine(Standby());
@@ -362,33 +397,10 @@ public class BattleManager : MonoBehaviour{
 		yield return null;
 	}
 
-	private IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint){
-		// 이동했을때 볼 방향 설정
-		Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
-		BattleData.currentState = CurrentState.MoveToTile;
-		yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
-	}
-
-	public IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
-		Unit unit = BattleData.selectedUnit;
-		BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
-		unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
-
-		BattleData.previewAPAction = null;
-		BattleData.currentState = CurrentState.FocusToUnit;
-		BattleData.alreadyMoved = true;
-
-		yield return StartCoroutine(AtActionEnd());
-	}
-
 	public void MoveCameraToUnitAndDisplayUnitInfoViewer(Unit unit){
 		MoveCameraToUnit(unit);
 		BattleData.uiManager.SetMovedUICanvasOnUnitAsCenter(unit);
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
-	}
-	private void OnOffCommandButtons(){
-		OnOffSkillButton();
-		SetStandbyButton();
 	}
 	public IEnumerator ToDoBeforeAction(){
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
@@ -397,22 +409,22 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CallbackMoveCommand(){
-		BattleData.uiManager.DisableCommandUI();
+		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
 	public void CallbackSkillCommand(){
-		BattleData.uiManager.DisableCommandUI();
+		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
 	public void CallbackRestCommand(){
-		BattleData.uiManager.DisableCommandUI();
+		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Rest);
 	}
 
 	public void CallbackStandbyCommand(){
-		BattleData.uiManager.DisableCommandUI();
+		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 
@@ -433,21 +445,17 @@ public class BattleManager : MonoBehaviour{
 		yield return new WaitForSeconds(0.1f);
 	}
 
-	public void CallbackSkillIndex(int index){
-		BattleData.indexOfSelectedSkillByUser = index;
+	public void CallbackSkillSelect(ActiveSkill skill){
+		BattleData.selectedSkill = skill;
 		triggers.skillSelected.Trigger();
-		Debug.Log(index + "th skill is selected");
 	}
 
-	public void CallbackPointerEnterSkillIndex(int index){
-		BattleData.indexOfPreSelectedSkillByUser = index;
+	public void CallbackPointerEnterSkillIndex(ActiveSkill skill){
+		BattleData.preSelectedSkill = skill;
 	}
 
-	public void CallbackPointerExitSkillIndex(int index){
-		if (index == BattleData.indexOfPreSelectedSkillByUser)
-		{
-			BattleData.indexOfPreSelectedSkillByUser = 0;
-		}
+	public void CallbackPointerExitSkillIndex(){
+		BattleData.preSelectedSkill = null;
 	}
 
 	public void CallbackSkillUICancel(){

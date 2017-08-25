@@ -5,8 +5,7 @@ using Save;
 namespace SkillTree
 {
 
-enum SkillButtonState
-{
+enum SkillButtonState{
 	NotExist,
 	LearnedMaxEnhanced,
 	LearnedEnhanceable,
@@ -14,8 +13,7 @@ enum SkillButtonState
 	NotLearnable
 }
 
-class SkillButton : MonoBehaviour
-{
+class SkillButton : MonoBehaviour{
 	SkillButtonState state = SkillButtonState.NotExist;
 	GameObject text;
 	GameObject icon;
@@ -23,8 +21,7 @@ class SkillButton : MonoBehaviour
 	Skill skill;
 	GameObject level;
 
-	public void Awake()
-	{
+	public void Awake(){
 		text = transform.Find("Text").gameObject;
 		icon = transform.Find("Icon").gameObject;
 		level = transform.Find("Level").gameObject;

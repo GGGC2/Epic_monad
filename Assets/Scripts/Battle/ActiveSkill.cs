@@ -403,7 +403,7 @@ public class ActiveSkill : Skill{
 			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
-		BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
+		BattleData.selectedSkill = null;
 
 		yield return new WaitForSeconds(0.5f);
 		BattleData.alreadyMoved = false;
