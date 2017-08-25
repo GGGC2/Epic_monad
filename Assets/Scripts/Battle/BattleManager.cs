@@ -48,7 +48,7 @@ public class BattleManager : MonoBehaviour{
 		yield return null;
 		BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
 		BattleData.selectedUnit = BattleData.readiedUnits[0];
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void StartTurnManager(){
@@ -77,7 +77,7 @@ public class BattleManager : MonoBehaviour{
 
 				while (BattleData.readiedUnits.Count != 0) {
 					BattleData.selectedUnit = BattleData.readiedUnits [0];
-					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
+					BattleData.uiManager.UpdateApBarUI();
 
 					if (BattleData.selectedUnit.IsAI){
 						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
@@ -112,7 +112,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 		if (unit == null)
 			return;
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
@@ -278,7 +278,7 @@ public class BattleManager : MonoBehaviour{
 
 			if (BattleManager.IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Dead;
-				Debug.Log ("Current PC unit died");
+				Debug.Log ("Current PC Died.");
 				yield break;
 			}
 
@@ -381,12 +381,12 @@ public class BattleManager : MonoBehaviour{
 
 	public void CallbackOnPointerEnterRestCommand(){
 		BattleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP());
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void CallbackOnPointerExitRestCommand(){
 		BattleData.previewAPAction = null;
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void CallbackCancel() {BattleData.triggers.cancelClicked.Trigger();}

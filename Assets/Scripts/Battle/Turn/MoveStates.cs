@@ -26,7 +26,7 @@ namespace Battle.Turn{
 						tile.PaintTile(TileColor.Red);
 					}
 				}
-				BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+				BattleData.uiManager.UpdateApBarUI();
 				yield return null;
 			}
 		}

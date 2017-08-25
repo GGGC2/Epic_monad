@@ -17,7 +17,7 @@ namespace Battle.Turn {
                     BattleData.previewAPAction = new APAction(APAction.Action.Skill, requireAP);
                 }else 
                     BattleData.previewAPAction = null;
-                BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+                BattleData.uiManager.UpdateApBarUI();
                 yield return null;
             }
         }
@@ -64,7 +64,7 @@ namespace Battle.Turn {
                 }
 
                 BattleData.previewAPAction = null;
-                BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+                BattleData.uiManager.UpdateApBarUI();
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 
                 yield return null;

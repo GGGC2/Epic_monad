@@ -21,7 +21,7 @@ namespace BattleUI{
 					buttons [ActionCommand.Skill].onClick.Invoke ();
 				}else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.E)){
 					buttons [ActionCommand.Standby].onClick.Invoke ();
-				}				
+				}
 			}
 		}
 

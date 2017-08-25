@@ -73,14 +73,12 @@ public class UIManager : MonoBehaviour
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
-		//FindObjectOfType<BattleManager>().Initialize();
-		//StartCoroutine(FindObjectOfType<BattleManager>().InstantiateTurnManager());
 	}
 
-	public void UpdateApBarUI(List<Unit> allUnits) {
+	public void UpdateApBarUI() {
 		if (BattleData.readiedUnits.Count != 0) {
 			apBarUI.gameObject.SetActive(true);
-			apBarUI.UpdateAPDisplay(allUnits);	
+			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
 		}
 	}
 

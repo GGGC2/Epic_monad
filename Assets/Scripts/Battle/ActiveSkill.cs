@@ -342,7 +342,7 @@ public class ActiveSkill : Skill{
 							float amount = castingApply.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
 								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(castingApply, false));
-								BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+								BattleData.uiManager.UpdateApBarUI();
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
 								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
 								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(castingApply));
