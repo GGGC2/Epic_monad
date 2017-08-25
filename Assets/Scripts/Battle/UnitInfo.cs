@@ -144,6 +144,8 @@ public class UnitInfo{
             return "제이선";
         else if (codeName == "triana")
             return "트리아나";
+		else if(codeName == "reina")
+			return "레이나";
         else if(codeName == "unselected")
 			return "Empty";
 		else{

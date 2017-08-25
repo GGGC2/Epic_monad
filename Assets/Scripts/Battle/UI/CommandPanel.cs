@@ -15,14 +15,13 @@ namespace BattleUI{
 
 		void Update(){
 			if(BattleData.currentState == CurrentState.FocusToUnit && Setting.shortcutEnable){
-				if (buttons [ActionCommand.Move].interactable && Input.GetKeyDown (KeyCode.Q))
+				if (buttons [ActionCommand.Move].interactable && Input.GetKeyDown (KeyCode.Q)){
 					buttons [ActionCommand.Move].onClick.Invoke ();
-				else if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.W))
+				}else if (buttons [ActionCommand.Skill].interactable && Input.GetKeyDown (KeyCode.W)){
 					buttons [ActionCommand.Skill].onClick.Invoke ();
-				else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.E))
+				}else if (buttons [ActionCommand.Standby].interactable && Input.GetKeyDown (KeyCode.E)){
 					buttons [ActionCommand.Standby].onClick.Invoke ();
-				else if (buttons [ActionCommand.Rest].interactable && Input.GetKeyDown (KeyCode.R))
-					buttons [ActionCommand.Rest].onClick.Invoke ();
+				}				
 			}
 		}
 
@@ -32,7 +31,6 @@ namespace BattleUI{
 			buttons[ActionCommand.Move]=GameObject.Find ("MoveButton").GetComponent<Button> ();
 			buttons[ActionCommand.Skill]=GameObject.Find("SkillButton").GetComponent<Button>();
 			buttons[ActionCommand.Standby]=GameObject.Find("StandbyButton").GetComponent<Button>();
-			buttons[ActionCommand.Rest]=GameObject.Find("RestButton").GetComponent<Button>();
 		}
 
 		public void OnOffButton(ActionCommand command, bool turnOn){
