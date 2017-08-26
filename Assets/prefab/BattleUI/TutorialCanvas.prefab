@@ -147,6 +147,8 @@ MonoBehaviour:
   image: {fileID: 114132197754554888}
   NextButton: {fileID: 114458234700927558}
   index: 0
+  markPrefab: {fileID: 114936831978869564, guid: 724b892fb1774de45bcf1a082c9e6b9c,
+    type: 2}
 --- !u!114 &114908084237152912
 MonoBehaviour:
   m_ObjectHideFlags: 1

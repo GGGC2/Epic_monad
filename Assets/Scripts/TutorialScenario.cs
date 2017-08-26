@@ -8,12 +8,13 @@ using BattleUI;
 
 public class TutorialScenario{
 	public static TutorialManager tutorialManager;
-	public static CommandPanel commandPanel;
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
 	enum Mission{ MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, OpenDetailInfo, CloseDetailInfo, End }
 	Mission mission;
+	//public bool isMarker;
+	public Vector3 mouseMarkPos;
 	public bool IsEndMission { get { return mission == Mission.End; } }
 	Direction missionDirection;
 	public Action SetMissionCondition = () => {};
@@ -107,5 +108,9 @@ public class TutorialScenario{
 			};
 		}
 
+		//isMarker = parser.ConsumeBool();
+		if(parser.ConsumeBool()){
+			mouseMarkPos = new Vector3(parser.ConsumeFloat(), parser.ConsumeFloat(), 0);
+		}
 	}
 }

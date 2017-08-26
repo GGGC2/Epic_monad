@@ -12,6 +12,7 @@ public class TutorialManager : MonoBehaviour {
 	CameraMover cm;
 	string usedSceneName;
 	List<TutorialScenario> scenarioList;
+	public MouseMark markPrefab;
 
 	public void OnEnable(){
 		TutorialScenario.tutorialManager = this;
@@ -56,6 +57,9 @@ public class TutorialManager : MonoBehaviour {
 			if (currentScenario.IsEndMission) {EndTutorial ();}
 			currentScenario.SetMissionCondition ();
 			SetControl(true);
+			if(currentScenario.mouseMarkPos != Vector3.zero){
+				MouseMark mark = Instantiate(markPrefab, currentScenario.mouseMarkPos, Quaternion.identity, GameObject.Find("FixedUICanvas").transform);
+			}
 		}
 		else {SetControl(false);}
 	}
