@@ -6,13 +6,13 @@ using UnityEngine.UI;
 using System;
 
 public class SkillIcon : MonoBehaviour, IPointerEnterHandler{
-	public SkillUIManager InfoPanel;
+	public SkillViewer InfoPanel;
 	public Text InfoText;
 	public Skill skill;
 	public int column;
 	public int level;
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(GetComponent<Image>().sprite != Resources.Load<Sprite>("Icon/Empty"))
-			InfoPanel.UpdateSkillInfoUI(skill, FindObjectOfType<ReadyManager>().currentUnitName);
+			InfoPanel.UpdateSkillViewer(skill);
 	}
 }

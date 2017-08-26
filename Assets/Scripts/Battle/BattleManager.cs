@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Enums;
 using LitJson;
-using System;
 using Battle.Turn;
 using Battle.Skills;
-using System.Linq;
 using GameData;
 
 public class BattleManager : MonoBehaviour{
@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour{
 	public TutorialManager tutorialManager;
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
+	BattleData.Triggers triggers;
 
 	void Awake (){
 		if (instance != null && instance != this) {
@@ -24,7 +25,8 @@ public class BattleManager : MonoBehaviour{
 			return;
 		}else {instance = this;}
 
-		BattleData.Initialize (FindObjectOfType<TileManager> (), FindObjectOfType<UnitManager> (), FindObjectOfType<UIManager> (), this);
+		BattleData.Initialize ();
+		triggers = BattleData.triggers;
 
         if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
@@ -48,7 +50,7 @@ public class BattleManager : MonoBehaviour{
 		yield return null;
 		BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
 		BattleData.selectedUnit = BattleData.readiedUnits[0];
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void StartTurnManager(){
@@ -73,15 +75,18 @@ public class BattleManager : MonoBehaviour{
 			while (true) {
 				yield return StartCoroutine (StartPhaseOnGameManager ());
 
+				if(BattleData.currentPhase == 1){
+					tutorialManager.gameObject.SetActive(true);
+				}
 				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
 				while (BattleData.readiedUnits.Count != 0) {
 					BattleData.selectedUnit = BattleData.readiedUnits [0];
-					BattleData.uiManager.UpdateApBarUI (BattleData.unitManager.GetAllUnits ());
+					BattleData.uiManager.UpdateApBarUI();
 
 					if (BattleData.selectedUnit.IsAI){
 						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
-					} else{
+					}else{
 						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 					}
 
@@ -112,7 +117,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void UpdateAPBarAndMoveCameraToSelectedUnit(Unit unit){
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 		if (unit == null)
 			return;
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
@@ -143,20 +148,13 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	private void OnOffStandbyButton(){
-		bool isPossible = BattleData.selectedUnit.IsStandbyPossible ();
-		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, isPossible);
-	}
-	private void OnOffSkillButton()
-	{
+	/*private void OnOffSkillButton(){
 		bool isPossible = BattleData.selectedUnit.IsSkillUsePossibleState ();
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
 	}
-	private void OnOffMoveButton(){
-		bool isPossible = BattleData.selectedUnit.IsMovePossibleState();
-		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Move, isPossible);
-	}
-    
+    private void SetStandbyButton(){
+		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, true);
+	}*/
 
 	public static IEnumerator FadeOutEffect(Unit unit)
 	{
@@ -169,8 +167,7 @@ public class BattleManager : MonoBehaviour{
 		}
 	}
 
-	public static IEnumerator DestroyDeadUnits()
-	{
+	public static IEnumerator DestroyDeadUnits(){
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit deadUnit in BattleData.deadUnits){
@@ -276,85 +273,119 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator PrepareUnitActionAndGetCommand(){
 		while (BattleData.currentState == CurrentState.FocusToUnit){
-			BattleManager battleManager = BattleData.battleManager;
 			Unit unit = BattleData.selectedUnit;
 
-			if (BattleManager.IsSelectedUnitRetreatOrDie()) {
+			if (IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Dead;
-				Debug.Log ("Current PC unit died");
+				Debug.Log ("Current PC Died.");
 				yield break;
 			}
 
 			yield return ToDoBeforeAction ();
 
-			//AI 턴에선 쓸모없는 부분
-			BattleData.uiManager.ActivateCommandUIAndSetName(unit);
-			OnOffCommandButtons ();
-
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
 
-			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
+			//BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
 			BattleData.isWaitingUserInput = true;
 
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = new Dictionary<Vector2, TileWithPath>();
+			List<Tile> movableTiles = new List<Tile>();
+			IEnumerator update = null;
+			//이동 가능한 범위 표시
+			if(BattleData.selectedUnit.IsMovePossibleState()){
+				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
+				movableTilesWithPath.Remove (unit.GetPosition ());
+				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath){
+					movableTiles.Add(movableTileWithPath.Value.tile);
+				}
+				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
+				update = UpdatePreviewPathAndAP(movableTilesWithPath);
+				StartCoroutine(update);
+			}//이동 가능한 범위 표시 끝
+
+			//기술 Viewer 끄고(디폴트) 아이콘 불러오기
+			UIManager.Instance.skillViewer.gameObject.SetActive(false);
+			UIManager.Instance.SetActionButtons();
+
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
-			if (BattleData.alreadyMoved)
-				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand, 
-																			  BattleData.triggers.rightClicked,
-																			  BattleData.triggers.tileLongSelectedByUser));
-			else
-				// yield return battleManager.StartCoroutine(BattleData.triggers.actionCommand.Wait());
-				yield return battleManager.StartCoroutine(EventTrigger.WaitOr(BattleData.triggers.actionCommand,
-																			  BattleData.triggers.tileLongSelectedByUser));
+			if (BattleData.alreadyMoved){
+				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.rightClicked, triggers.skillSelected,
+																triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
+			}else{
+				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.skillSelected,
+																triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
+			}
 
-			BattleData.tileManager.DepreselectAllTiles ();
-			BattleData.isWaitingUserInput = false;
+			if(update != null){
+				StopCoroutine(update);
+			}
 
-			if (BattleData.alreadyMoved && BattleData.triggers.rightClicked.Triggered){
+			if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
 				BattleData.selectedUnit.ApplySnapshot();
-				yield return BattleData.battleManager.AtActionEnd();
+				yield return StartCoroutine(AtActionEnd());
 				BattleData.alreadyMoved = false;
 			}
 			// 길게 눌러서 유닛 상세정보창을 열 수 있다
-			else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
+			else if (triggers.tileLongSelectedByUser.Triggered) {
 				Debug.Log("LongClicked trigger");
 				Tile triggeredTile = BattleData.SelectedTile;
 				if (triggeredTile.IsUnitOnTile()) {
 					BattleData.uiManager.ActivateDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
+			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
+				Tile destTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
+				List<Tile> destPath = movableTilesWithPath[BattleData.move.selectedTilePosition].path;
+				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
+				Vector2 distanceVector = BattleData.move.selectedTilePosition - currentTilePos;
+				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
+				int totalUseActivityPoint = movableTilesWithPath[BattleData.move.selectedTilePosition].requireActivityPoint;
+
+				BattleData.move.moveCount += distance;
+
+				BattleData.tileManager.DepaintTiles (movableTiles, TileColor.Blue);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepreselectAllTiles ();
+				BattleData.currentState = CurrentState.CheckDestination;
+				yield return StartCoroutine(MoveStates.CheckDestination(destTile, destPath, totalUseActivityPoint));
+			}else if(triggers.skillSelected.Triggered){
+				ActiveSkill selectedSkill = BattleData.SelectedSkill;
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.selectedUnit, selectedSkill.GetRequireAP());
+                SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
+                if (skillTypeOfSelectedSkill == SkillType.Auto ||
+                    skillTypeOfSelectedSkill == SkillType.Self ||
+                    skillTypeOfSelectedSkill == SkillType.Route) {
+                    BattleData.currentState = CurrentState.SelectSkillApplyDirection;
+                    yield return StartCoroutine(SkillAndChainStates.SelectSkillApplyDirection(BattleData.selectedUnit.GetDirection()));
+                }
+                else{
+                    BattleData.currentState = CurrentState.SelectSkillApplyPoint;
+                    yield return StartCoroutine(SkillAndChainStates.SelectSkillApplyPoint(BattleData.selectedUnit.GetDirection()));
+                }
+
+                BattleData.previewAPAction = null;
+                BattleData.uiManager.UpdateApBarUI();
+				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 			}
-			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Move){
-				BattleData.currentState = CurrentState.SelectMovingPoint;
-				yield return battleManager.StartCoroutine(MoveStates.SelectMovingPointState());
-			}
-			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Skill){
-				BattleData.currentState = CurrentState.SelectSkill;
-				yield return battleManager.StartCoroutine(SkillAndChainStates.SelectSkillState());
-			}
-			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Rest){
-				BattleData.currentState = CurrentState.RestAndRecover;
-				yield return battleManager.StartCoroutine(RestAndRecover.Run());
-				yield return null;
-			}
-			else if (BattleData.triggers.actionCommand.Data == ActionCommand.Standby){
-				BattleData.currentState = CurrentState.Standby;
-				yield return battleManager.StartCoroutine(Standby());
-				yield return null;
+			else if (triggers.actionCommand.Data == ActionCommand.Standby){
+				if(BattleData.selectedUnit.IsStandbyPossible()){
+					BattleData.currentState = CurrentState.Standby;
+					yield return StartCoroutine(Standby());
+				}else{
+					BattleData.currentState = CurrentState.RestAndRecover;
+					yield return StartCoroutine(RestAndRecover.Run());
+				}
+				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			}
 		}
-		yield return null;
+		UIManager.Instance.HideActionButtons();
 	}
 
 	public void MoveCameraToUnitAndDisplayUnitInfoViewer(Unit unit){
 		MoveCameraToUnit(unit);
 		BattleData.uiManager.SetMovedUICanvasOnUnitAsCenter(unit);
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
-	}
-	private void OnOffCommandButtons(){
-		OnOffStandbyButton();
-		OnOffMoveButton();
-		OnOffSkillButton();
 	}
 	public IEnumerator ToDoBeforeAction(){
 		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
@@ -363,81 +394,73 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CallbackMoveCommand(){
-		BattleData.uiManager.DisableCommandUI();
-		BattleData.triggers.actionCommand.Trigger(ActionCommand.Move);
+		//BattleData.uiManager.DisableCommandUI();
+		triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
 	public void CallbackSkillCommand(){
-		BattleData.uiManager.DisableCommandUI();
-		BattleData.triggers.actionCommand.Trigger(ActionCommand.Skill);
+		//BattleData.uiManager.DisableCommandUI();
+		triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
 	public void CallbackRestCommand(){
-		BattleData.uiManager.DisableCommandUI();
-		BattleData.triggers.actionCommand.Trigger(ActionCommand.Rest);
+		//BattleData.uiManager.DisableCommandUI();
+		triggers.actionCommand.Trigger(ActionCommand.Rest);
 	}
 
 	public void CallbackStandbyCommand(){
-		BattleData.uiManager.DisableCommandUI();
-		BattleData.triggers.actionCommand.Trigger(ActionCommand.Standby);
+		//BattleData.uiManager.DisableCommandUI();
+		triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 
 	public void CallbackOnPointerEnterRestCommand(){
 		BattleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP());
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void CallbackOnPointerExitRestCommand(){
 		BattleData.previewAPAction = null;
-		BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+		BattleData.uiManager.UpdateApBarUI();
 	}
 
-	public void CallbackCancel() {BattleData.triggers.cancelClicked.Trigger();}
+	public void CallbackCancel() {triggers.cancelClicked.Trigger();}
 
 	public static IEnumerator Standby(){
 		BattleData.alreadyMoved = false;
 		yield return new WaitForSeconds(0.1f);
 	}
 
-	public void CallbackSkillIndex(int index){
-		BattleData.indexOfSelectedSkillByUser = index;
-		BattleData.triggers.skillSelected.Trigger();
-		Debug.Log(index + "th skill is selected");
+	public void CallbackSkillSelect(ActiveSkill skill){
+		BattleData.selectedSkill = skill;
+		triggers.skillSelected.Trigger();
 	}
 
-	public void CallbackPointerEnterSkillIndex(int index)
-	{
-		BattleData.indexOfPreSelectedSkillByUser = index;
+	public void CallbackPointerEnterSkillIndex(ActiveSkill skill){
+		BattleData.preSelectedSkill = skill;
 	}
 
-	public void CallbackPointerExitSkillIndex(int index)
-	{
-		if (index == BattleData.indexOfPreSelectedSkillByUser)
-		{
-			BattleData.indexOfPreSelectedSkillByUser = 0;
-		}
+	public void CallbackPointerExitSkillIndex(){
+		BattleData.preSelectedSkill = null;
 	}
 
-	public void CallbackSkillUICancel()
-	{
-		BattleData.triggers.cancelClicked.Trigger();
+	public void CallbackSkillUICancel(){
+		triggers.cancelClicked.Trigger();
 	}
 
-	public void CallbackRightClick()
-	{
-		BattleData.triggers.rightClicked.Trigger();
+	public void CallbackRightClick(){
+		triggers.rightClicked.Trigger();
 		BattleData.uiManager.DeactivateDetailInfoUI ();
 	}
 
 	public void CallbackDirection(Direction direction){
 		BattleData.move.selectedDirection = direction;
-		BattleData.triggers.directionSelectedByUser.Trigger();
+		triggers.directionSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
 	public void CallbackDirectionLong(Direction direction)
 	{
 		BattleData.move.selectedDirection = direction;
-		BattleData.triggers.directionLongSelectedByUser.Trigger();
+		triggers.directionLongSelectedByUser.Trigger();
 		BattleData.uiManager.DisableSelectDirectionUI();
 	}
 
@@ -450,8 +473,7 @@ public class BattleManager : MonoBehaviour{
 			}
 		}
 
-		if (BattleData.currentState != CurrentState.FocusToUnit)
-		{
+		if (BattleData.currentState != CurrentState.FocusToUnit){
             BattleData.tileSelected = false;
 			BattleData.enemyUnitSelected = false; // 행동을 선택하면 홀드가 자동으로 풀림.
 		}
@@ -498,13 +520,13 @@ public class BattleManager : MonoBehaviour{
 
 	public void OnMouseDownHandlerFromTile(Vector2 position){
 		if (BattleData.isWaitingUserInput){
-			BattleData.triggers.tileSelectedByUser.Trigger();
+			triggers.tileSelectedByUser.Trigger();
 			BattleData.move.selectedTilePosition = position;
 		}
 	}
 	public void OnLongMouseDownHandlerFromTile(Vector2 position){
 		if (BattleData.isWaitingUserInput){
-			BattleData.triggers.tileLongSelectedByUser.Trigger();
+			triggers.tileLongSelectedByUser.Trigger();
 			BattleData.move.selectedTilePosition = position;
 		}
 	}
@@ -615,5 +637,31 @@ public class BattleManager : MonoBehaviour{
             TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
             bgmData = nextBgmFile;
         }
+	}
+
+	private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+		BattleData.preSelectedTilePosition = null;
+		while (true) {
+			BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
+			BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+			viewer.OffPreviewAp ();
+			if (BattleData.preSelectedTilePosition.HasValue == false) {
+				BattleData.previewAPAction = null;
+			} else {
+				var preSelectedTile = BattleData.preSelectedTilePosition.Value;
+				if (movableTilesWithPath.ContainsKey (preSelectedTile)) {
+					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
+					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
+					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
+					tileUnderMouse.CostAP.text = requiredAP.ToString ();
+					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
+					foreach (Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path) {
+						tile.PaintTile (TileColor.Red);
+					}
+				}
+			}
+			BattleData.uiManager.UpdateApBarUI ();
+			yield return null;
+		}
 	}
 }

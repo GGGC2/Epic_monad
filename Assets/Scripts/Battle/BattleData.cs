@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using Enums;
 
 public enum CurrentState{
-	None, Dead, FocusToUnit, SelectMovingPoint, CheckDestination,
-	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection, CheckApplyOrChain,
+	None, Dead, FocusToUnit, CheckDestination,
+	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 
@@ -166,8 +166,8 @@ public static class BattleData{
 	public static CurrentState currentState = CurrentState.None;
 
 	public static Vector2? preSelectedTilePosition;
-	public static int indexOfPreSelectedSkillByUser = 0;
-	public static int indexOfSelectedSkillByUser = 0;
+	public static ActiveSkill preSelectedSkill;
+	public static ActiveSkill selectedSkill;
 	public static int rewardPoint;
 	public static bool isWaitingUserInput = false;
 	public static bool enemyUnitSelected = false;
@@ -211,11 +211,11 @@ public static class BattleData{
 	// 중요 - BattleData 클래스 내 모든 변수는 static이라서 Initialize 함수 내에서 초기화를 해야 하므로
 	// 변수 하나 추가할 때마다 반드시 여기에 초기화하는 코드도 추가할 것
 	// 또 전투 시작할 때 반드시 Initialize() 함수를 불러야 한다(현재는 BattleManager 인스턴스의 Awake()시 호출함)
-	public static void Initialize(TileManager tileManagerInstance, UnitManager unitManagerInstance, UIManager uiManagerInstance, BattleManager battleManagerInstance){
-		tileManager = tileManagerInstance;
-		unitManager = unitManagerInstance;
-		uiManager = uiManagerInstance;
-		battleManager = battleManagerInstance;
+	public static void Initialize(){
+		tileManager = GameObject.FindObjectOfType<TileManager>();
+		unitManager = GameObject.FindObjectOfType<UnitManager>();
+		uiManager = GameObject.FindObjectOfType<UIManager>();
+		battleManager = GameObject.FindObjectOfType<BattleManager>();
 
 		onTutorial = false;
 		rightClickLock = false;
@@ -224,8 +224,6 @@ public static class BattleData{
 		currentState = CurrentState.None;
 
 		preSelectedTilePosition=null;
-		indexOfPreSelectedSkillByUser = 0;
-		indexOfSelectedSkillByUser = 0;
 		rewardPoint = 0;
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;
@@ -247,20 +245,12 @@ public static class BattleData{
 		previewAPAction = null;
 	}
 
-	public static ActiveSkill SelectedSkill
-	{
-		get {
-			if(selectedUnit.GetSkillList().Count<indexOfSelectedSkillByUser)
-				return null;
-			return selectedUnit.GetSkillList()[indexOfSelectedSkillByUser - 1];
-		}
+	public static ActiveSkill SelectedSkill{
+		get {return selectedSkill;}
 	}
 
-	public static ActiveSkill PreSelectedSkill
-	{
-		get {
-			return selectedUnit.GetSkillList()[indexOfPreSelectedSkillByUser - 1];
-		}
+	public static ActiveSkill PreSelectedSkill{
+		get {return preSelectedSkill;}
 	}
 
 	public static Tile SelectedTile

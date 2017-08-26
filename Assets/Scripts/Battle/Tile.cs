@@ -171,7 +171,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		}
 	}
 	void IPointerUpHandler.OnPointerUp(PointerEventData pointerData){
-		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left) {
+		if (clickStarted && pointerData.button == PointerEventData.InputButton.Left){
 			clickStarted = false;
 			LeftClickEnd.Invoke ();
 		}
@@ -207,8 +207,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	void InitializeEvents(){
 		BattleManager battleManager = FindObjectOfType<BattleManager>();
 		UnityEngine.Events.UnityAction UserSelectTile= () => {
+			Debug.Log("Tile(" + position.x + "," + position.y + ") PreSelected : " + isPreSeleted);
 			if (isPreSeleted)
-				battleManager.OnMouseDownHandlerFromTile (position);
+				battleManager.OnMouseDownHandlerFromTile(position);
 		};
 		UnityEngine.Events.UnityAction UserLongSelectTile= () => {
 			if (isPreSeleted)

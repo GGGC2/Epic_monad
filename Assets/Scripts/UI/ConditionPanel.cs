@@ -29,6 +29,6 @@ public class ConditionPanel : MonoBehaviour{
 	public void OnClicked(){
 		cm.SetMovable(true);
 		gameObject.SetActive(false);
-		tutorial.gameObject.SetActive(true);
+		//tutorial.gameObject.SetActive(true);
 	}
 }

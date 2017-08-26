@@ -21,35 +21,39 @@ public class UnitInfo{
 
 	public UnitInfo (string data){
 		StringParser commaParser = new StringParser(data, '\t');
-		index = commaParser.ConsumeInt(); 
-		nameKor = commaParser.Consume();
-		nameEng = commaParser.Consume();
-		side = commaParser.ConsumeEnum<Side>();
-		int x = commaParser.ConsumeInt();
-		int y = commaParser.ConsumeInt();
-		initPosition = new Vector2(x, y);
-		initDirection = commaParser.ConsumeEnum<Direction>();
-		baseStats.Add(Stat.MaxHealth, commaParser.ConsumeInt());
-		baseStats.Add(Stat.Power, commaParser.ConsumeInt());
-		baseStats.Add(Stat.Defense, commaParser.ConsumeInt());
-		baseStats.Add(Stat.Resistance, commaParser.ConsumeInt());
-		baseStats.Add(Stat.Agility, commaParser.ConsumeInt());
-		unitClass = commaParser.ConsumeEnum<UnitClass>();
-		if(SceneData.stageNumber < Setting.classOpenStage){
-			unitClass = UnitClass.None;
-		}
-		element = commaParser.ConsumeEnum<Element>();
-		if(SceneData.stageNumber < Setting.elementOpenStage){
-			element = Element.None;
-		}
-		celestial = commaParser.ConsumeEnum<Celestial>();
-		if(SceneData.stageNumber < Setting.elementOpenStage){
-			celestial = Celestial.None;
-		}
-		isObject = commaParser.ConsumeBool();
-		int StatChangeCount = commaParser.ConsumeInt();
-		for(int i = 0; i < StatChangeCount; i++){
-			InitStatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());
+		try{
+			index = commaParser.ConsumeInt(); 
+			nameKor = commaParser.Consume();
+			nameEng = commaParser.Consume();
+			side = commaParser.ConsumeEnum<Side>();
+			int x = commaParser.ConsumeInt();
+			int y = commaParser.ConsumeInt();
+			initPosition = new Vector2(x, y);
+			initDirection = commaParser.ConsumeEnum<Direction>();
+			baseStats.Add(Stat.MaxHealth, commaParser.ConsumeInt());
+			baseStats.Add(Stat.Power, commaParser.ConsumeInt());
+			baseStats.Add(Stat.Defense, commaParser.ConsumeInt());
+			baseStats.Add(Stat.Resistance, commaParser.ConsumeInt());
+			baseStats.Add(Stat.Agility, commaParser.ConsumeInt());
+			unitClass = commaParser.ConsumeEnum<UnitClass>();
+			if(SceneData.stageNumber < Setting.classOpenStage){
+				unitClass = UnitClass.None;
+			}
+			element = commaParser.ConsumeEnum<Element>();
+			if(SceneData.stageNumber < Setting.elementOpenStage){
+				element = Element.None;
+			}
+			celestial = commaParser.ConsumeEnum<Celestial>();
+			if(SceneData.stageNumber < Setting.elementOpenStage){
+				celestial = Celestial.None;
+			}
+			isObject = commaParser.ConsumeBool();
+			int StatChangeCount = commaParser.ConsumeInt();
+			for(int i = 0; i < StatChangeCount; i++){
+				InitStatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());
+			}
+		}catch{
+			Debug.LogError("Cannot make UnitInfo instance : (data)" + data);
 		}
 	}
 
@@ -136,7 +140,13 @@ public class UnitInfo{
 			return "칼드리치";
 		else if (codeName == "lucius")
 			return "루키어스";
-		else if(codeName == "unselected")
+        else if (codeName == "json")
+            return "제이선";
+        else if (codeName == "triana")
+            return "트리아나";
+		else if(codeName == "reina")
+			return "레이나";
+        else if(codeName == "unselected")
 			return "Empty";
 		else{
 			Debug.LogError(codeName + " has NO KoreanName");

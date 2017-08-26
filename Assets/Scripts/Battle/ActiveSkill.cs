@@ -342,7 +342,7 @@ public class ActiveSkill : Skill{
 							float amount = castingApply.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
 								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(castingApply, false));
-								BattleData.uiManager.UpdateApBarUI(BattleData.unitManager.GetAllUnits());
+								BattleData.uiManager.UpdateApBarUI();
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
 								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
 								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(castingApply));
@@ -403,7 +403,7 @@ public class ActiveSkill : Skill{
 			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
-		BattleData.indexOfSelectedSkillByUser = 0; // return to init value.
+		BattleData.selectedSkill = null;
 
 		yield return new WaitForSeconds(0.5f);
 		BattleData.alreadyMoved = false;

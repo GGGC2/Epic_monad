@@ -110,7 +110,7 @@ public class UnitManager : MonoBehaviour {
 		if(SceneData.stageNumber < Setting.retreatOpenStage)
 			return retreatUnits;
 
-		foreach (var unit in units){
+		foreach (var unit in GetAllUnits()){
 			// 오브젝트는 이탈하지 않는다
 			if (unit.IsObject) continue;
 
