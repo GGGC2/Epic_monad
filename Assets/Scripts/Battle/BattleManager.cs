@@ -295,12 +295,11 @@ public class BattleManager : MonoBehaviour{
 			//이동 가능한 범위 표시
 			if(BattleData.selectedUnit.IsMovePossibleState()){
 				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
+				movableTilesWithPath.Remove (unit.GetPosition ());
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath){
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
 				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
-				BattleData.tileManager.PreselectTiles (movableTiles);
-				BattleData.isWaitingUserInput = true;
 				update = UpdatePreviewPathAndAP(movableTilesWithPath);
 				StartCoroutine(update);
 			}//이동 가능한 범위 표시 끝
@@ -335,7 +334,7 @@ public class BattleManager : MonoBehaviour{
 				if (triggeredTile.IsUnitOnTile()) {
 					BattleData.uiManager.ActivateDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
-			}else if(triggers.tileSelectedByUser.Triggered){
+			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
 				Tile destTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
 				List<Tile> destPath = movableTilesWithPath[BattleData.move.selectedTilePosition].path;
 				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
@@ -345,8 +344,8 @@ public class BattleManager : MonoBehaviour{
 
 				BattleData.move.moveCount += distance;
 
-				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
-				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Red);
+				BattleData.tileManager.DepaintTiles (movableTiles, TileColor.Blue);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
 				yield return StartCoroutine(MoveStates.CheckDestination(destTile, destPath, totalUseActivityPoint));
@@ -642,28 +641,27 @@ public class BattleManager : MonoBehaviour{
 
 	private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 		BattleData.preSelectedTilePosition = null;
-		while (true){
-			BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
-			MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
-			viewer.OffPreviewAp();
-			if (BattleData.preSelectedTilePosition.HasValue == false){
+		while (true) {
+			BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
+			BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+			viewer.OffPreviewAp ();
+			if (BattleData.preSelectedTilePosition.HasValue == false) {
 				BattleData.previewAPAction = null;
-			}
-			else{
+			} else {
 				var preSelectedTile = BattleData.preSelectedTilePosition.Value;
-				if(movableTilesWithPath.ContainsKey(preSelectedTile)){
-					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
-					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					Tile tileUnderMouse = TileManager.Instance.preSelectedMouseOverTile;
-					tileUnderMouse.CostAP.text = requiredAP.ToString();
-					viewer.PreviewAp(BattleData.selectedUnit, requiredAP);
-					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
-						tile.PaintTile(TileColor.Red);
+				if (movableTilesWithPath.ContainsKey (preSelectedTile)) {
+					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
+					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
+					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
+					tileUnderMouse.CostAP.text = requiredAP.ToString ();
+					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
+					foreach (Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path) {
+						tile.PaintTile (TileColor.Red);
 					}
 				}
 			}
-			BattleData.uiManager.UpdateApBarUI();
-		yield return null;
+			BattleData.uiManager.UpdateApBarUI ();
+			yield return null;
 		}
 	}
 }
