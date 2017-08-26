@@ -7,8 +7,8 @@ using DG.Tweening;
 using GameData;
 
 public class SceneLoader : MonoBehaviour{
-	// public string nextSceneName;
 	public GameObject fadeoutScreenObject;
+	public GameObject loadingScreen;
 
 	public void GoToTitle(){
 		FindAndOffAdvUI ();
@@ -82,8 +82,10 @@ public class SceneLoader : MonoBehaviour{
         if (!SceneData.isTestMode && !SceneData.isStageMode) {
             GameDataManager.Save();
         }
-		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady")
+		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady"){
+			Instantiate(loadingScreen);
             SceneManager.LoadScene("Battle");
+		}
         else
             SceneManager.LoadScene("BattleReady");
     }
