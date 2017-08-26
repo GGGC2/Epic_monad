@@ -19,6 +19,11 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
+		OnClick();
+	}
+
+	//굳이 OnPointerDown을 거쳐서 오는 건 public으로 선언해서 UIManager에서도 부를 수 있기 위함
+	public void OnClick(){
 		if(skill != null){
 			BattleManager.Instance.CallbackSkillSelect(skill);
 			return;
