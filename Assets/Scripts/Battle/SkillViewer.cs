@@ -98,6 +98,7 @@ public class SkillInfoUI : MonoBehaviour{
 	}
 
 	public void SetNameText(){
+		Debug.Assert(skill != null);
 		viewerNameText.text = skill.korName;
 	}
 

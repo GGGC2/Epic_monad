@@ -15173,7 +15173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 0}
+  viewerNameText: {fileID: 114875379266632750}
   costText: {fileID: 114941799232219384}
   cooldownText: {fileID: 114160116914206990}
   rangeType: {fileID: 114883346016187548}
