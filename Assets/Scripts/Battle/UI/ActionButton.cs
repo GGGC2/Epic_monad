@@ -10,6 +10,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	public Image icon;
 	public SkillViewer viewer;
 	public bool clickable;
+	public bool onOffLock = false;
 	public UnityEvent clicked = new UnityEvent();
 
 	void Awake(){
@@ -22,6 +23,8 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
 	public void Activate(bool isActive){
+		if (UIManager.Instance.ActionButtonOnOffLock)
+			return;
 		clickable = isActive;
 		if(isActive){
 			icon.color = Color.white;

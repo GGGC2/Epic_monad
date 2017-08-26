@@ -29,12 +29,15 @@ public class TutorialScenario{
 
 		BattleManager BM = BattleData.battleManager;
 		TileManager TM = BattleData.tileManager;
+
 		if (mission == Mission.SelectTile) {
 			Vector2 missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
 			Tile missionTile = TM.GetTile (missionTilePos);
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
 			SetMissionCondition = () => {
+				UIManager.Instance.TurnOffAllActions();
+				UIManager.Instance.ActionButtonOnOffLock = true;
 				TM.DepreselectAllTiles ();
 				TM.PreselectTiles (clickableTiles);
 				TM.SetPreselectLock (true);
@@ -46,6 +49,7 @@ public class TutorialScenario{
 				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
 				TM.SetPreselectLock (false);
 				TM.DepreselectAllTiles ();
+				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.SelectDirection) {
 			missionDirection = parser.ConsumeEnum<Direction> ();
@@ -68,24 +72,24 @@ public class TutorialScenario{
 			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOnOnlyOneSkill (missionSkillIndex);
+				UIManager.Instance.ActionButtonOnOffLock = true;
 				UIManager.Instance.ControlListenerOfActionButton(missionSkillIndex, true, ToNextStep);
 				TM.DepaintAllTiles(TileColor.Blue);
 				TM.DepreselectAllTiles();
-				//skillPanel.LockSkillsOnOff ();
 			};
 			ResetMissionCondition = () => {
 				UIManager.Instance.ControlListenerOfActionButton(missionSkillIndex, false, ToNextStep);
-				//skillPanel.RemoveListenerToSkillButton (missionSkillIndex, ToNextStep);
+				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.Standby){
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOnOnlyOneSkill(BattleData.selectedUnit.activeSkillList.Count);
-				//commandPanel.LockCommandsOnOff ();
+				UIManager.Instance.ActionButtonOnOffLock = true;
 				BM.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				BM.readyCommandEvent.RemoveListener (ToNextStep);
-				//commandPanel.UnlockCommandsOnOff ();
+				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.OpenDetailInfo) {
 			SetMissionCondition = () => {

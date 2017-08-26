@@ -102,6 +102,13 @@ public class UIManager : MonoBehaviour{
 			actionButtons[i].Activate(i == skillIndex);
 		}
 	}
+	public void TurnOffAllActions(){
+		for (int i = 0; i < 8; i++) {
+			actionButtons [i].Activate (false);
+		}
+	}
+
+	public bool ActionButtonOnOffLock = false;
 
 	public void ControlListenerOfActionButton(int i, bool onOff, UnityAction action){
 		if(onOff){
