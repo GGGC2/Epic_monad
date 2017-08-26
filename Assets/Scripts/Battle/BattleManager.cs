@@ -75,6 +75,9 @@ public class BattleManager : MonoBehaviour{
 			while (true) {
 				yield return StartCoroutine (StartPhaseOnGameManager ());
 
+				if(BattleData.currentPhase == 1){
+					tutorialManager.gameObject.SetActive(true);
+				}
 				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
 				while (BattleData.readiedUnits.Count != 0) {

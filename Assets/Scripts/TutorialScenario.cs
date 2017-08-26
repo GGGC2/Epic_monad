@@ -35,6 +35,7 @@ public class TutorialScenario{
 			List<Tile> clickableTiles = new List<Tile> ();
 			clickableTiles.Add (missionTile);
 			SetMissionCondition = () => {
+				Debug.Log("Mission : SelectTile");
 				TM.DepreselectAllTiles ();
 				TM.PreselectTiles (clickableTiles);
 				TM.SetPreselectLock (true);
