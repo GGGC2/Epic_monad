@@ -10,12 +10,10 @@ public class DetailInfoPanel : UnitInfoUI{
 	public Image illust;
     List<SkillInfoButton> skillButtons = new List<SkillInfoButton>();
 
-    void OnEnable(){
+    void Awake(){
         //0번이 고유 특성 자리
-        if(skillButtons.Count == 0){
-            for(int i = 0; i <= 10; i++){
-                skillButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
-            }
+        for(int i = 0; i <= 10; i++){
+            skillButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
         }
     }
 
@@ -29,6 +27,7 @@ public class DetailInfoPanel : UnitInfoUI{
 
 		SetCommonUnitInfoUI();
 
+        Debug.Log("Passive : " + unit.passiveSkillList.Count + ", Active : " + unit.activeSkillList.Count);
         for(int i = 0; i <= 10; i++){
             skillButtons[i].gameObject.SetActive(true);
             if(i < unit.passiveSkillList.Count){

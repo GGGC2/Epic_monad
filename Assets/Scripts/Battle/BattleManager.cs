@@ -25,6 +25,7 @@ public class BattleManager : MonoBehaviour{
 			return;
 		}else {instance = this;}
 
+		FindObjectOfType<TileManager>().GenerateTiles(Parser.GetParsedTileInfo());
 		BattleData.Initialize ();
 		triggers = BattleData.triggers;
 
@@ -286,7 +287,7 @@ public class BattleManager : MonoBehaviour{
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
 
-			//BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
+			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
 			BattleData.isWaitingUserInput = true;
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = new Dictionary<Vector2, TileWithPath>();
@@ -486,8 +487,7 @@ public class BattleManager : MonoBehaviour{
                 BattleData.tileSelected = true;
         }
 
-		if (Input.GetKeyDown(KeyCode.CapsLock))
-		{
+		if (Input.GetKeyDown(KeyCode.CapsLock)){
 			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 			Checker.InitializeResultPanel ();
 		}
@@ -557,7 +557,7 @@ public class BattleManager : MonoBehaviour{
 		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().battleTriggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
-			});
+		});
 	}
 
 	//이하는 StageManager의 Load기능 통합

@@ -206,7 +206,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void InitializeEvents(){
-		BattleManager battleManager = FindObjectOfType<BattleManager>();
+		//BattleManager battleManager = FindObjectOfType<BattleManager>();
+		BattleManager battleManager = BattleManager.Instance;
 		UnityEngine.Events.UnityAction UserSelectTile= () => {
 			Debug.Log("Tile(" + position.x + "," + position.y + ") PreSelected : " + isPreSeleted);
 			if (isPreSeleted)

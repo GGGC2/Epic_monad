@@ -1,10 +1,13 @@
 fileFormatVersion: 2
 guid: 57f3d8c6c102e4d929ac0ff67682787b
-timeCreated: 1462260159
+timeCreated: 1503767323
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - fadeoutScreenObject: {instanceID: 0}
+  - loadingScreen: {fileID: 1999487056562538, guid: bb465a23f5d51384894b782dfea6b298,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

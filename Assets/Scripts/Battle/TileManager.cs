@@ -215,8 +215,4 @@ public class TileManager : MonoBehaviour {
 		tile.SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight, displayName);
 		tiles.Add(new Vector2(i, j), tile);
 	}
-
-	void Awake () {
-		GenerateTiles(Parser.GetParsedTileInfo());
-	}
 }

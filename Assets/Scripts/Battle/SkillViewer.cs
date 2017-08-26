@@ -55,7 +55,7 @@ public class SkillViewer : SkillInfoUI{
 
 public class SkillInfoUI : MonoBehaviour{
 	public Skill skill;
-	public Text nameText;
+	public Text viewerNameText;
 	public Text costText;
 	public Text cooldownText;
 	public Image rangeType;
@@ -66,7 +66,6 @@ public class SkillInfoUI : MonoBehaviour{
 		if(skill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)skill;
 
-			SetNameText();
 			costText.text = "필요 행동력 " + activeSkill.GetRequireAP();
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
@@ -93,12 +92,14 @@ public class SkillInfoUI : MonoBehaviour{
 			rangeText.text = "";
 		}
 
+		SetNameText();
 		explainText.text = skill.skillDataText.Replace("VALUE1", GetSkillValueText(skill.firstTextValueType, skill.firstTextValueCoef, skill.firstTextValueBase)).
 											   Replace("VALUE2", GetSkillValueText(skill.secondTextValueType, skill.secondTextValueCoef, skill.secondTextValueBase));
 	}
 
 	public void SetNameText(){
-		nameText.text = skill.korName;
+		Debug.Assert(skill != null);
+		viewerNameText.text = skill.korName;
 	}
 
 	string GetFirstRangeText(ActiveSkill skill){
