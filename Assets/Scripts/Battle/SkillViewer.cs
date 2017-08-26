@@ -98,7 +98,6 @@ public class SkillInfoUI : MonoBehaviour{
 	}
 
 	public void SetNameText(){
-		Debug.Log(skill.korName);
 		nameText.text = skill.korName;
 	}
 

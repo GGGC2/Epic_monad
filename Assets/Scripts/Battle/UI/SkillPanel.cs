@@ -58,12 +58,6 @@ namespace BattleUI{
 			}
 		}*/
 
-		public void TurnOnOnlyOneSkill(int skillIndex){
-			/*for (int i = SkillPanel.onePageButtonsNum * page + 1; i <= SkillPanel.onePageButtonsNum * (page + 1); i++) {
-				OnOffSkillButton (i, i == skillIndex);
-			}*/
-		}
-
 		bool skillsOnOffLockOn = false;
 		public void LockSkillsOnOff(){
 			skillsOnOffLockOn = true;

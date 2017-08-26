@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler{
 	public ActiveSkill skill;
 	public Image icon;
 	public SkillViewer viewer;
+	public bool clickable;
+	public UnityEvent clicked = new UnityEvent();
 
 	void Awake(){
 		icon = GetComponent<Image>();
@@ -18,6 +21,15 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		icon.sprite = skill.icon;
 	}
 
+	public void Activate(bool isActive){
+		clickable = isActive;
+		if(isActive){
+			icon.color = Color.white;
+		}else{
+			icon.color = Color.gray;
+		}
+	}
+
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
 		OnClick();
 	}
@@ -26,11 +38,10 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	public void OnClick(){
 		if(skill != null){
 			BattleManager.Instance.CallbackSkillSelect(skill);
-			return;
-		}
-		if(icon.sprite != Resources.Load<Sprite>("transparent")){
+		}else if(icon.sprite != Resources.Load<Sprite>("transparent")){
 			BattleManager.Instance.CallbackStandbyCommand();
-		}
+		}		
+		clicked.Invoke();
 	}
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){

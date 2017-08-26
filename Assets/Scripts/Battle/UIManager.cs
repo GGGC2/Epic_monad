@@ -97,6 +97,20 @@ public class UIManager : MonoBehaviour{
 		}
 	}
 
+	public void TurnOnOnlyOneSkill(int skillIndex){
+		for (int i = 0; i < 8; i++){
+			actionButtons[i].Activate(i == skillIndex);
+		}
+	}
+
+	public void ControlListenerOfActionButton(int i, bool onOff, UnityAction action){
+		if(onOff){
+			actionButtons[i].clicked.AddListener(action);
+		}else{
+			actionButtons[i].clicked.RemoveListener(action);
+		}
+	}
+
 	private void EnableSkillUI(){
 		skillViewer.gameObject.SetActive(true);
 		foreach (Transform transform in skillViewer.transform){
