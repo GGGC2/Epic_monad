@@ -684,11 +684,6 @@ Prefab:
       propertyPath: tutorialManager
       value: 
       objectReference: {fileID: 1436865757}
-    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
-        type: 2}
-      propertyPath: skillViewer
-      value: 
-      objectReference: {fileID: 2142935223}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0
@@ -1025,9 +1020,3 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e0c9a42fcd625498bb26545b7d1b6c46, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &2142935223 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114798465576907426, guid: 4b39f95afa3dd460e9610c859bd55188,
-    type: 2}
-  m_PrefabInternal: {fileID: 274748254}
-  m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}

@@ -84,8 +84,9 @@ public class UIManager : MonoBehaviour{
 				actionButtons[6].OnClick();
 			}if(Input.GetKeyDown(KeyCode.Alpha8)){
 				actionButtons[7].OnClick();
+			}if(Input.GetKeyDown(KeyCode.Q)){
+				actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick();
 			}
-			
 		}
 	}
 

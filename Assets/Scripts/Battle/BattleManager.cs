@@ -381,6 +381,7 @@ public class BattleManager : MonoBehaviour{
 					BattleData.currentState = CurrentState.RestAndRecover;
 					yield return StartCoroutine(RestAndRecover.Run());
 				}
+				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			}
 		}
 		UIManager.Instance.HideActionButtons();
