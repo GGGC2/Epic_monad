@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using Enums;
 
 public enum CurrentState{
-	None, Dead, FocusToUnit, SelectMovingPoint, CheckDestination,
-	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection, CheckApplyOrChain,
+	None, Dead, FocusToUnit, CheckDestination,
+	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 

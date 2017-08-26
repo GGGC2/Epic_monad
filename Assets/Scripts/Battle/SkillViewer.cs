@@ -6,16 +6,13 @@ using UnityEngine.UI;
 using Enums;
 using UnityEngine.SceneManagement;
 
-public class SkillUIManager : SkillInfoUI{
+public class SkillViewer : SkillInfoUI{
 	public GameObject CellPrefab;
 	public List<Cell> cells = new List<Cell> ();
 
-	public void UpdateSkillInfoUI(Skill skill, string unitName){
+	public void UpdateSkillViewer(Skill skill){
 		base.skill = skill;
 		SetCommonSkillInfoUI();
-		if(SceneManager.GetActiveScene().name == "BattleReady"){
-			SetNameText();
-		}
 
 		if(skill is ActiveSkill){
 			//ActiveSkill activeSkill = (ActiveSkill)skill;
@@ -58,7 +55,7 @@ public class SkillUIManager : SkillInfoUI{
 
 public class SkillInfoUI : MonoBehaviour{
 	public Skill skill;
-	public Text viewerNameText;
+	public Text nameText;
 	public Text costText;
 	public Text cooldownText;
 	public Image rangeType;
@@ -69,6 +66,7 @@ public class SkillInfoUI : MonoBehaviour{
 		if(skill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)skill;
 
+			SetNameText();
 			costText.text = "필요 행동력 " + activeSkill.GetRequireAP();
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
@@ -101,7 +99,7 @@ public class SkillInfoUI : MonoBehaviour{
 
 	public void SetNameText(){
 		Debug.Log(skill.korName);
-		viewerNameText.text = skill.korName;
+		nameText.text = skill.korName;
 	}
 
 	string GetFirstRangeText(ActiveSkill skill){

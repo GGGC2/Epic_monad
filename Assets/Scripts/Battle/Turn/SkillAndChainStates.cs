@@ -147,7 +147,7 @@ namespace Battle.Turn {
                     BattleData.triggers.cancelClicked.Triggered) {
                     BattleData.uiManager.DisableSelectDirectionUI();
                     selectedUnit.SetDirection(originalDirection);
-                    BattleData.currentState = CurrentState.SelectSkill;
+                    BattleData.currentState = CurrentState.FocusToUnit;
                     yield break;
                 }
 

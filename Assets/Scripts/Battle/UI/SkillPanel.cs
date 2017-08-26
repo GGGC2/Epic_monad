@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace BattleUI{
 	public class SkillPanel : MonoBehaviour{
 		private BattleManager battleManager;
-		public SkillUIManager skillPanel;
+		public SkillViewer skillPanel;
 		Text skillApText;
 		Text skillDataText;
 		public Text rangeText;
@@ -17,9 +17,6 @@ namespace BattleUI{
 		public const int onePageButtonsNum = 5;
         Unit selectedUnit;
 		public Sprite transparent;
-		public List<Button> skillButtons;
-        public Button prevButton;
-        public Button nextButton;
 
 		public void Awake(){
 			battleManager = FindObjectOfType<BattleManager>();
@@ -37,12 +34,9 @@ namespace BattleUI{
         public void triggerEnabled(Unit selectedUnit) {
             this.selectedUnit = selectedUnit;
             page = 0;
-            prevButton.interactable = false;
-            if (maxPage == 0) nextButton.interactable = false;
-            else nextButton.interactable = true;
         }
 
-		public void OnOffSkillButton(int skillIndex, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
+		/*public void OnOffSkillButton(int skillIndex, bool turnOn){//첫번째 스킬의 index가 1이다(0이 아니라)
 			if (skillsOnOffLockOn)
 				return;
 
@@ -62,12 +56,12 @@ namespace BattleUI{
 				skillButton.interactable = false;
 				skillButton.GetComponentInChildren<Text> ().color = disabledColor;
 			}
-		}
+		}*/
 
 		public void TurnOnOnlyOneSkill(int skillIndex){
-			for (int i = SkillPanel.onePageButtonsNum * page + 1; i <= SkillPanel.onePageButtonsNum * (page + 1); i++) {
+			/*for (int i = SkillPanel.onePageButtonsNum * page + 1; i <= SkillPanel.onePageButtonsNum * (page + 1); i++) {
 				OnOffSkillButton (i, i == skillIndex);
-			}
+			}*/
 		}
 
 		bool skillsOnOffLockOn = false;
@@ -79,10 +73,10 @@ namespace BattleUI{
 		}
 
 		public void AddListenerToSkillButton(int skillIndex, UnityEngine.Events.UnityAction action){
-			skillButtons [IndexInCurrentPage (skillIndex)].onClick.AddListener (action);
+			//skillButtons [IndexInCurrentPage (skillIndex)].onClick.AddListener (action);
 		}
 		public void RemoveListenerToSkillButton(int skillIndex, UnityEngine.Events.UnityAction action){
-			skillButtons [IndexInCurrentPage (skillIndex)].onClick.RemoveListener (action);
+			//skillButtons [IndexInCurrentPage (skillIndex)].onClick.RemoveListener (action);
 		}
 
 		int IndexInCurrentPage(int skillIndex){ // value : 0~4
@@ -90,7 +84,7 @@ namespace BattleUI{
 		}
 
 		public void Update(){
-			if(BattleData.currentState == CurrentState.SelectSkill && Setting.shortcutEnable){
+			/*if(BattleData.currentState == CurrentState.SelectSkill && Setting.shortcutEnable){
 				if (Input.GetKeyDown (KeyCode.A) && skillButtons [0].interactable && skillButtons [0].gameObject.activeSelf)
 					skillButtons [0].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.S) && skillButtons[1].interactable && skillButtons[1].gameObject.activeSelf)
@@ -101,7 +95,7 @@ namespace BattleUI{
 					skillButtons [3].onClick.Invoke ();
 				else if(Input.GetKeyDown(KeyCode.G) && skillButtons[4].interactable && skillButtons[4].gameObject.activeSelf)
 					skillButtons [4].onClick.Invoke ();
-			}
+			}*/
 		}
 
 		/*public void CallbackPointerEnterSkillIndex(int index){
@@ -148,26 +142,5 @@ namespace BattleUI{
 		{
 			battleManager.CallbackSkillUICancel();
 		}
-
-        public void CallbackNextPage() {
-            page += 1;
-            if (page > 0) {
-                prevButton.interactable = true;
-            }
-            if (page >= maxPage) {
-                nextButton.interactable = false;
-            }
-            MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);
-        }
-        public void CallbackPrevPage() {
-            page -= 1;
-            if (page <= 0) {
-                prevButton.interactable = false;
-            }
-            if (page < maxPage) {
-                nextButton.interactable = true;
-            }
-            MonoBehaviour.FindObjectOfType<UIManager>().UpdateSkillInfo(selectedUnit);
-        }
 	}
 }

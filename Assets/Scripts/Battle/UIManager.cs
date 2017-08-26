@@ -8,8 +8,7 @@ using DG.Tweening;
 
 using BattleUI;
 
-public class UIManager : MonoBehaviour
-{
+public class UIManager : MonoBehaviour{
 	private static UIManager instance;
 	public static UIManager Instance{
 		get { return instance; }
@@ -18,8 +17,7 @@ public class UIManager : MonoBehaviour
 	public bool startFinished = false;
 
 	public APBarPanel apBarUI;
-	GameObject skillUI;
-	public SkillPanel skillPanel;
+	public SkillViewer skillViewer;
 	GameObject unitViewerUI;
 	public GameObject selectedUnitViewerUI;
 	GameObject tileViewerUI;
@@ -32,12 +30,15 @@ public class UIManager : MonoBehaviour
     Vector3 originalStatusEffectDisplayPanelPosition;
 
 	GameObject notImplementedDebugPanel;
+	List<ActionButton> actionButtons = new List<ActionButton>();
 
 	void Awake(){
 		instance = this;
 		apBarUI = FindObjectOfType<APBarPanel>();
-		skillUI = GameObject.Find("SkillPanel");
-		skillPanel = skillUI.GetComponent<SkillPanel> ();
+		skillViewer = FindObjectOfType<SkillViewer>();
+		for(int i = 0; i < 8; i++){
+			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
+		}
 		unitViewerUI = GameObject.Find("UnitViewerPanel");
         statusEffectDisplayPanel = GameObject.Find("StatusEffectDisplayPanel");
         selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
@@ -49,22 +50,17 @@ public class UIManager : MonoBehaviour
 		phaseUI = GameObject.Find("PhasePanel");
 		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
-
-		//TutorialScenario.commandPanel = commandPanel;
-		TutorialScenario.skillPanel = skillPanel;
 		TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
 
 	void Start(){
-		//commandUI.SetActive(false);
-		skillUI.SetActive(false);
+		skillViewer.gameObject.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
 		detailInfoUI.gameObject.SetActive(false);
-		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
@@ -77,27 +73,24 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
-	private void EnableSkillUI()
-	{
-		skillUI.SetActive(true);
-		foreach (Transform transform in skillUI.transform)
-		{
+	private void EnableSkillUI(){
+		skillViewer.gameObject.SetActive(true);
+		foreach (Transform transform in skillViewer.transform){
 			transform.gameObject.SetActive(true);
 		}
 	}
     public void SetSkillUI(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        skillPanel.SetMaxPage((skillList.Count - 1) / SkillPanel.onePageButtonsNum);
-        skillPanel.triggerEnabled(selectedUnit);
+        //skillPanel.SetMaxPage((skillList.Count - 1) / SkillPanel.onePageButtonsNum);
+        //skillPanel.triggerEnabled(selectedUnit);
         EnableSkillUI();
         
         UpdateSkillInfo(selectedUnit);
     }
     public void UpdateSkillInfo(Unit selectedUnit) {
         List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        for (int i = 0; i < SkillPanel.onePageButtonsNum; i++)
-		{
-			int skillIndex = i + SkillPanel.onePageButtonsNum * skillPanel.GetPage();
+        for (int i = 0; i < SkillPanel.onePageButtonsNum; i++){
+			/*int skillIndex = i + SkillPanel.onePageButtonsNum * skillPanel.GetPage();
 			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
 			if (skillIndex >= skillList.Count)
 			{
@@ -130,14 +123,14 @@ public class UIManager : MonoBehaviour
 				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "재사용까지 " + remainCooldown + "페이즈";
 			}
 			else
-				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";
+				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";*/
 		}
         TurnOnOnlyUsableSkills(selectedUnit);
 	}
 
 	public void TurnOnOnlyUsableSkills(Unit selectedUnit){
 		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-		int page = skillPanel.GetPage();
+		/*int page = skillPanel.GetPage();
 
 		for (int skillIndex = SkillPanel.onePageButtonsNum * page + 1; skillIndex <= SkillPanel.onePageButtonsNum * (page + 1); skillIndex++) {
 			if (skillIndex > skillList.Count
@@ -146,12 +139,11 @@ public class UIManager : MonoBehaviour
 				skillPanel.OnOffSkillButton (skillIndex, false);
 			else
 				skillPanel.OnOffSkillButton (skillIndex, true);
-		}
+		}*/
 	}
 
-	public void DisableSkillUI()
-	{
-		skillUI.SetActive(false);
+	public void DisableSkillUI(){
+		skillViewer.gameObject.SetActive(false);
 	}
 
 	public IEnumerator MovePhaseUI(int currentPhase){
@@ -250,8 +242,7 @@ public class UIManager : MonoBehaviour
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Hide();
 	}
 
-	public void SetSkillNamePanelUI(string skillName)
-	{
+	public void SetSkillNamePanelUI(string skillName){
 		skillNamePanelUI.GetComponent<SkillNamePanel>().Set(skillName);
 	}
 
@@ -300,5 +291,27 @@ public class UIManager : MonoBehaviour
 
 		var debugPanel = notImplementedDebugPanel.GetComponent<NotImplementedDebugPanel>();
 		debugPanel.Append(text);
+	}
+
+	public void SetActionButtons(){
+		skillViewer.gameObject.SetActive(false);
+		Unit unit = BattleData.selectedUnit;
+		for(int i = 0; i < 8; i++){
+			actionButtons[i].icon.sprite = Resources.Load<Sprite>("transparent");
+			actionButtons[i].skill = null;
+			if(i < unit.activeSkillList.Count){
+				actionButtons[i].Initialize(unit.activeSkillList[i]);
+			}else if(i == unit.activeSkillList.Count){
+				if(unit.IsStandbyPossible()){
+					actionButtons[i].icon.sprite = Resources.Load<Sprite>("Icon/Standby");
+				}else{
+					actionButtons[i].icon.sprite = Resources.Load<Sprite>("Icon/Rest");
+				}
+			}
+		}
+	}
+
+	public void HideActionButtons(){
+		actionButtons.ForEach(button => button.icon.sprite = Resources.Load<Sprite>("transparent"));
 	}
 }

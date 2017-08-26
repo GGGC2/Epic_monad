@@ -18,7 +18,6 @@ public class BattleManager : MonoBehaviour{
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
 	BattleData.Triggers triggers;
-	List<ActionButton> actionButtons = new List<ActionButton>();
 
 	void Awake (){
 		if (instance != null && instance != this) {
@@ -28,10 +27,6 @@ public class BattleManager : MonoBehaviour{
 
 		BattleData.Initialize ();
 		triggers = BattleData.triggers;
-		
-		for(int i = 0; i < 8; i++){
-			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
-		}
 
         if (!SceneData.isTestMode && !SceneData.isStageMode)
             GameDataManager.Load();
@@ -310,19 +305,10 @@ public class BattleManager : MonoBehaviour{
 				update = UpdatePreviewPathAndAP(movableTilesWithPath);
 				StartCoroutine(update);
 			}//이동 가능한 범위 표시 끝
-			for(int i = 0; i < 8; i++){
-				actionButtons[i].icon.sprite = Resources.Load<Sprite>("transparent");
-				actionButtons[i].skill = null;
-				if(i < unit.activeSkillList.Count){
-					actionButtons[i].Initialize(unit.activeSkillList[i]);
-				}else if(i == unit.activeSkillList.Count){
-					if(unit.IsStandbyPossible()){
-						actionButtons[i].icon.sprite = Resources.Load<Sprite>("CommandUI/Standby");
-					}else{
-						actionButtons[i].icon.sprite = Resources.Load<Sprite>("CommandUI/Rest");
-					}
-				}
-			}
+
+			//기술 Viewer 끄고(디폴트) 아이콘 불러오기
+			UIManager.Instance.skillViewer.gameObject.SetActive(false);
+			UIManager.Instance.SetActionButtons();
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved){
@@ -394,7 +380,7 @@ public class BattleManager : MonoBehaviour{
 				}
 			}
 		}
-		yield return null;
+		UIManager.Instance.HideActionButtons();
 	}
 
 	public void MoveCameraToUnitAndDisplayUnitInfoViewer(Unit unit){
