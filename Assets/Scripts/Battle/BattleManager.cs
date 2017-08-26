@@ -286,7 +286,7 @@ public class BattleManager : MonoBehaviour{
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
 
-			//BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
+			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
 			BattleData.isWaitingUserInput = true;
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = new Dictionary<Vector2, TileWithPath>();

@@ -225,9 +225,70 @@ Prefab:
       propertyPath: m_AnchoredPosition.x
       value: 503.56003
       objectReference: {fileID: 0}
+    - target: {fileID: 114480193162713526, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114097127092639740, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114184160766647020, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114210284666376100, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114961060331005278, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114575727314322022, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114971826029011664, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114339290298640774, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114964642905814696, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114868573442317518, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
+    - target: {fileID: 114241093652995400, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: viewerNameText
+      value: 
+      objectReference: {fileID: 274748255}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &274748255 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114314060862530616, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 274748254}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &313327478
 GameObject:
   m_ObjectHideFlags: 0
