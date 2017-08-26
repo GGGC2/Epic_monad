@@ -26,12 +26,14 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		if(isActive){
 			icon.color = Color.white;
 		}else{
-			icon.color = Color.gray;
+			icon.color = new Color (0.3f, 0.3f, 0.3f);
 		}
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
-		OnClick();
+		if (clickable) {
+			OnClick ();
+		}
 	}
 
 	//굳이 OnPointerDown을 거쳐서 오는 건 public으로 선언해서 UIManager에서도 부를 수 있기 위함

@@ -334,17 +334,20 @@ public class UIManager : MonoBehaviour{
 	public void SetActionButtons(){
 		skillViewer.gameObject.SetActive(false);
 		Unit unit = BattleData.selectedUnit;
-		for(int i = 0; i < 8; i++){
-			actionButtons[i].icon.sprite = Resources.Load<Sprite>("transparent");
-			actionButtons[i].skill = null;
-			if(i < unit.activeSkillList.Count){
-				actionButtons[i].Initialize(unit.activeSkillList[i]);
-			}else if(i == unit.activeSkillList.Count){
-				if(unit.IsStandbyPossible()){
-					actionButtons[i].icon.sprite = Resources.Load<Sprite>("Icon/Standby");
-				}else{
-					actionButtons[i].icon.sprite = Resources.Load<Sprite>("Icon/Rest");
+		bool isSkillUsable = unit.IsSkillUsePossibleState (); // 침묵/기절/타일효과상 기술사용 불가 반영
+		for (int i = 0; i < 8; i++) {
+			actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
+			actionButtons [i].skill = null;
+			if (i < unit.activeSkillList.Count) {
+				actionButtons [i].Initialize (unit.activeSkillList [i]);
+				actionButtons [i].Activate (isSkillUsable && unit.GetCurrentActivityPoint () >= unit.GetActualRequireSkillAP (unit.activeSkillList [i]));
+			} else if (i == unit.activeSkillList.Count) {
+				if (unit.IsStandbyPossible ()) {
+					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Standby");
+				} else {
+					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Rest");
 				}
+				actionButtons [i].Activate (true);
 			}
 		}
 	}
