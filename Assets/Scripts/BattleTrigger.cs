@@ -21,7 +21,8 @@ public class BattleTrigger{
 	public List<Vector2> targetTiles = new List<Vector2>();
 	public string nextSceneIndex;
 	public string korName;
-	//승리, 패배 조건이 전부 만족시켜야 하는가? 하나만 만족시켜도 되는가?
+	
+	//승리&패배 조건이 전부 만족시켜야 하는지/하나만 만족시켜도 되는지에 대한 정보
 	public bool winTriggerAll;
 	public bool loseTriggerAll;
 

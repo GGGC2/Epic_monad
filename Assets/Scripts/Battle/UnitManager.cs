@@ -185,13 +185,14 @@ public class UnitManager : MonoBehaviour {
 
 	public void GenerateUnits(){
 		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
-		int GeneratedPC = 0;
+		int generatedPC = 0;
+		int enemyCount = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
+			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [generatedPC].unitName;}
 			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
 			
 			if(PCName != ""){
@@ -200,16 +201,20 @@ public class UnitManager : MonoBehaviour {
 					
 				if (unitInfo.nameKor != "Empty") {
 					unitInfo.SetPCData(PCName);
-					GeneratedPC += 1;
+					generatedPC += 1;
 				}
+			}
+
+			if(unitInfo.side == Side.Enemy){
+				enemyCount += 1;
 			}
 		}
 
-		Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
-		Debug.Log("GeneratedPC : " + GeneratedPC);
+		//Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().triggers.Count);
 		
-		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
-		if(countPC != null) {countPC.targetCount = GeneratedPC;}
+		List<BattleTrigger> AllPCTrigger = FindObjectOfType<BattleTriggerManager> ().triggers.FindAll (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
+		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().triggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
+		if(countPC != null) {countPC.targetCount = generatedPC;}
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
@@ -235,7 +240,6 @@ public class UnitManager : MonoBehaviour {
 		});
 
 		if(readyManager != null) {Destroy(readyManager.gameObject);}
-		// Debug.Log("Generate units complete");
 	}
 
 	public IEnumerator DeleteDeadUnit(Unit deadUnit){

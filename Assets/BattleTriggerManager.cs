@@ -11,7 +11,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	public SceneLoader sceneLoader;
 	ResultPanel resultPanel;
 
-	public List<BattleTrigger> battleTriggers = new List<BattleTrigger>();
+	public List<BattleTrigger> triggers = new List<BattleTrigger>();
 	public List<Vector2> targetTiles = new List<Vector2>();
 	List<string> reachedTargetUnitNames = new List<string>();
 
@@ -51,11 +51,11 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.Checker = this;
 		resultPanel.gameObject.SetActive(false);
 
-		battleTriggers = Parser.GetParsedData<BattleTrigger>();
-		nextScriptName = battleTriggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
+		triggers = Parser.GetParsedData<BattleTrigger>();
+		nextScriptName = triggers.Find(x => x.resultType == BattleTrigger.ResultType.End).nextSceneIndex;
 		
 		if(FindObjectOfType<ConditionPanel>() != null)
-			FindObjectOfType<ConditionPanel>().Initialize(battleTriggers);
+			FindObjectOfType<ConditionPanel>().Initialize(triggers);
 	}
 	void Start () {
 		unitManager = BattleData.unitManager;
@@ -65,7 +65,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	public static IEnumerator CountBattleTrigger(Unit unit, BattleTrigger.ActionType actionType){
 		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.battleTriggers){
+		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
 			else if(actionType == BattleTrigger.ActionType.Kill && unit.IsObject)
@@ -80,7 +80,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public static void CountBattleTrigger(){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.battleTriggers){
+		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
 			else if(trigger.actionType == BattleTrigger.ActionType.Phase)
@@ -90,7 +90,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public static void CountBattleTrigger(Unit unit, Tile destination){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.battleTriggers){
+		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
 			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit))

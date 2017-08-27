@@ -265,7 +265,7 @@ public class BattleManager : MonoBehaviour{
 
 		//승리 조건이 충족되었으면 결과창 출력하기
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		if(Checker.battleTriggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+		if(Checker.triggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
 			Checker.InitializeResultPanel();
         FindObjectOfType<CameraMover>().CalculateBoundary();
     }
@@ -554,7 +554,7 @@ public class BattleManager : MonoBehaviour{
 
 	// 승/패 조건과 관련된 타일을 하이라이트 처리
 	void HighlightBattleTriggerTiles(){
-		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().battleTriggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
+		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().triggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
 		});
