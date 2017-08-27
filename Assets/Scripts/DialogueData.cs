@@ -9,7 +9,7 @@ public enum DataType
 
 public class DialogueData{
 	public enum CommandType {App = 0, Disapp = 1, BGM = 2, BG = 3, SE = 4, Script = 5, Battle = 6, Map = 7, Glos = 8,
-	//이하는 SubType이 필요없는 것들. 순서 중요하므로 바꿀 거면 신중할 것
+	//이하는 SubType이 필요없는 것들. 할당된 int의 범위로 불러오는 경우가 있기 때문에, SubType이 있는 것이 항상 없는 것보다 먼저 와야 한다.
 	Adv = 9, Title = 10, FO = 11, FI = 12, Else};
 	public CommandType Command;
 
