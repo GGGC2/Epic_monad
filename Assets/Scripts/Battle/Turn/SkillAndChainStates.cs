@@ -310,6 +310,7 @@ namespace Battle.Turn {
 			//데미지 미리보기
 			allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(casting);
 			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
+				kv.Key.healthViewer.gameObject.SetActive(true);
 				if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
 				else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
 			}
@@ -318,6 +319,7 @@ namespace Battle.Turn {
 			// 데미지 미리보기 해제.
 			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
 				kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
+				kv.Key.CheckAndHideObjectHealth();
 			}
 		}
 
