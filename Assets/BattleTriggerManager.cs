@@ -62,8 +62,8 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public static IEnumerator CountBattleCondition(Unit unit, BattleTrigger.ActionType actionType){
-		Debug.Log("Count BattleCondition : " + unit.name + "'s " + actionType);
+	public static IEnumerator CountBattleTrigger(Unit unit, BattleTrigger.ActionType actionType){
+		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
@@ -78,7 +78,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		return null;
 	}
 
-	public static void CountBattleCondition(){
+	public static void CountBattleTrigger(){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
@@ -88,7 +88,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public static void CountBattleCondition(Unit unit, Tile destination){
+	public static void CountBattleTrigger(Unit unit, Tile destination){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.battleTriggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)

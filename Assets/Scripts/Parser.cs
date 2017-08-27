@@ -84,7 +84,7 @@ public class Parser : MonoBehaviour{
 		else if(typeof(T) == typeof(UnitStatusEffectInfo)) {address = "Data/UnitStatusEffectData";}
 		else if(typeof(T) == typeof(ActiveSkill)) {address = "Data/ActiveSkillData";}
 		else if(typeof(T) == typeof(PassiveSkill)) {address = "Data/PassiveSkillData";}
-		else if(typeof(T) == typeof(BattleTrigger)) {return BM.GetBattleConditionData();}
+		else if(typeof(T) == typeof(BattleTrigger)) {return BM.GetBattleTriggerData();}
 		else if(typeof(T) == typeof(AIInfo)) {return BM.GetAIData();}
 		else if(typeof(T) == typeof(UnitInfo)) {return BM.GetUnitData();}
 

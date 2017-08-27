@@ -161,7 +161,7 @@ public class Unit : MonoBehaviour{
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
 	public Element GetElement() {return myInfo.element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
-    public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
+    public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
 	public string GetNameEng() { return myInfo.nameEng; }
 	public int GetIndex() {return myInfo.index;}
@@ -270,7 +270,7 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CountBattleCondition(this, destTile);
+        BattleTriggerManager.CountBattleTrigger(this, destTile);
         updateStats();
     }
 

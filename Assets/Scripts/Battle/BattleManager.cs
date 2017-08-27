@@ -196,8 +196,8 @@ public class BattleManager : MonoBehaviour{
 		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
         yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
 		BattleData.unitManager.DeleteRetreatUnit(unit);
-		yield return BattleTriggerManager.CountBattleCondition(unit, deadOrRetreat);
-		yield return BattleTriggerManager.CountBattleCondition(unit, BattleTrigger.ActionType.Neutralize);
+		yield return BattleTriggerManager.CountBattleTrigger(unit, deadOrRetreat);
+		yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
 		Destroy(unit.gameObject);
 	}
 
@@ -541,7 +541,7 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
-		BattleTriggerManager.CountBattleCondition();
+		BattleTriggerManager.CountBattleTrigger();
 		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
@@ -592,7 +592,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public TextAsset battleConditionData;
-	public TextAsset GetBattleConditionData()
+	public TextAsset GetBattleTriggerData()
 	{
 		if (loaded == false)
 		{
@@ -632,8 +632,8 @@ public class BattleManager : MonoBehaviour{
             unitData = nextUnitFile;
             TextAsset nextAIDataFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_AI");
             aiData = nextAIDataFile;
-            TextAsset nextBattleConditionFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleCondition");
-            battleConditionData = nextBattleConditionFile;
+            TextAsset nextBattleTriggerFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_battleTrigger");
+            battleConditionData = nextBattleTriggerFile;
             TextAsset nextBgmFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_bgm");
             bgmData = nextBgmFile;
         }
