@@ -448,7 +448,7 @@ namespace Battle.Turn{
 			BattleManager.MoveCameraToUnit (unit);
 		}
 
-		void CheckActiveTrigger(){
+		public void CheckActiveTrigger(){
 			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
 			if (_AIData.activeTriggers.Contains(1)){

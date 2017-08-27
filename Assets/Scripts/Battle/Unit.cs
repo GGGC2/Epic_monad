@@ -1122,6 +1122,11 @@ public class Unit : MonoBehaviour{
 		celestialBonusTextObject.SetActive(false);
 		directionBonusTextObject.SetActive(false);
 		heightBonusTextObject.SetActive(false);
+
+		Battle.Turn.AI ai = GetComponent<Battle.Turn.AI>();
+		if(ai != null){
+			ai.CheckActiveTrigger();
+		}
 	}
 
 	void Update(){

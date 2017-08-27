@@ -156,8 +156,7 @@ namespace Battle
 			attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
 			//Debug.Log("resultAmount : " + attackDamage.resultDamage);
 		}
-		public static void CalculateAttackDamage(CastingApply castingApply, int chainCombo)
-		{
+		public static void CalculateAttackDamage(CastingApply castingApply, int chainCombo){
 			Unit caster = castingApply.GetCaster();
 			Unit target = castingApply.GetTarget();
 			AttackDamage attackDamage = castingApply.GetDamage();
