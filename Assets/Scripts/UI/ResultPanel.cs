@@ -46,7 +46,7 @@ public class ResultPanel : MonoBehaviour{
 	}
 
 	public IEnumerator IClicked(){
-		foreach(BattleTrigger trigger in Checker.battleTriggers){
+		foreach(BattleTrigger trigger in Checker.triggers){
 			//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
 			if(trigger.acquired){
 				TriggerIndex.text += trigger.korName + " " + MultiplierText(trigger);

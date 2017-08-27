@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using Enums;
+using GameData;
 
 public class Utility : MonoBehaviour {
 	public static Direction GetMouseDirectionByUnit(Unit unit, Direction originalDirection){
@@ -78,9 +79,12 @@ public class Utility : MonoBehaviour {
 	}
 	
 	public static float GetDirectionBonus(Unit unit, Unit target){
-		if (target == null) return 1.0f;
-
-		if (target.IsObject) return 1.0f; // '지형지물'일 경우는 방향 보너스가 적용되지 않음
+		if (SceneData.stageNumber < Setting.directionOpenStage){
+			return 1.0f;
+		}
+		
+		//대상이 없으면 패널을 출력하지 말아야 함 / '지형지물'일 경우는 방향 보너스가 적용되지 않음
+		if (target == null || target.IsObject) return 1.0f;
 		
 		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
 		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;
@@ -91,7 +95,9 @@ public class Utility : MonoBehaviour {
 	public static float GetCelestialBonus(Unit attacker, Unit defender){
 		Celestial attackerCelestial = attacker.GetCelestial();
 		Celestial defenderCelestial = defender.GetCelestial();
-		
+		if(SceneData.stageNumber < Setting.celestialOpenStage){
+			return 1.0f;
+		}
 		// Earth > Sun > Moon > Earth
 		if (attackerCelestial == Celestial.Sun) {
 			if (defenderCelestial == Celestial.Moon)
@@ -115,11 +121,14 @@ public class Utility : MonoBehaviour {
 			else
 				return 1.0f; 
 		}
-		
 		else return 1;
 	}
 
     public static float GetHeightBonus(Unit attacker, Unit defender){
+		if(SceneData.stageNumber < Setting.heightOpenStage){
+			return 1;
+		}
+
 		// 상대가 낮으면 20% 추가, 상대가 높으면 20% 감소
         int attackerHeight = attacker.GetHeight();
 		int defenderHeight = defender.GetHeight();

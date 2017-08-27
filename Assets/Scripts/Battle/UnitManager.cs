@@ -185,13 +185,14 @@ public class UnitManager : MonoBehaviour {
 
 	public void GenerateUnits(){
 		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
-		int GeneratedPC = 0;
+		int generatedPC = 0;
+		int enemyCount = 0;
 
 		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [GeneratedPC].unitName;}
+			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [generatedPC].unitName;}
 			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
 			
 			if(PCName != ""){
@@ -200,16 +201,22 @@ public class UnitManager : MonoBehaviour {
 					
 				if (unitInfo.nameKor != "Empty") {
 					unitInfo.SetPCData(PCName);
-					GeneratedPC += 1;
+					generatedPC += 1;
 				}
+			}
+
+			if(unitInfo.side == Side.Enemy){
+				enemyCount += 1;
 			}
 		}
 
-		Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().battleTriggers.Count);
-		Debug.Log("GeneratedPC : " + GeneratedPC);
-		
-		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().battleTriggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
-		if(countPC != null) {countPC.targetCount = GeneratedPC;}
+		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
+		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
+		Debug.Log("Triggers Count : " + allTriggers);
+		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == BattleTrigger.UnitType.PC && trig.targetCount == 0);
+		triggersOfAllPC.ForEach(trig => trig.targetCount = generatedPC);
+		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == BattleTrigger.UnitType.Enemy && trig.targetCount == 0);
+		triggersOfAllEnemy.ForEach(trig => trig.targetCount = enemyCount);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
@@ -235,7 +242,6 @@ public class UnitManager : MonoBehaviour {
 		});
 
 		if(readyManager != null) {Destroy(readyManager.gameObject);}
-		// Debug.Log("Generate units complete");
 	}
 
 	public IEnumerator DeleteDeadUnit(Unit deadUnit){

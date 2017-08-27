@@ -181,8 +181,7 @@ public class DialogueManager : MonoBehaviour{
         int objectIndex = 0;
 
         for (int i = line; i < endLine; i++) {
-            if (dialogueDataList[i].IsAdventureObject())
-            {
+            if (dialogueDataList[i].IsAdventureObject()){
                 objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
                 objects[objectIndex].transform.Find("ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
                 objects[objectIndex].transform.Find("New").gameObject.SetActive(true);
@@ -191,8 +190,10 @@ public class DialogueManager : MonoBehaviour{
             }
         }
 
-		for (int i = objectIndex; i < objects.Length; i++)
-		{
+		//마지막 오브젝트(끝내기)는 New 표시를 없앤다
+		objects[objectIndex-1].transform.Find("New").gameObject.SetActive(false);
+		
+		for (int i = objectIndex; i < objects.Length; i++){
 			objects[i].SetActive(false);
 		}
     }

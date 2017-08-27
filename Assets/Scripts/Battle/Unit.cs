@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour{
 	GameObject celestialBonusTextObject;
 	GameObject directionBonusTextObject;
 	GameObject heightBonusTextObject;
-	HealthViewer healthViewer;
+	public HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 	List<HitInfo> latelyHitInfos;
 
@@ -72,7 +72,7 @@ public class Unit : MonoBehaviour{
     bool hasUsedSkillThisTurn;
 
 	Direction direction;
-	public int currentHealth;
+	int currentHealth;
 	int activityPoint;
 
 	GameObject chargeEffect;
@@ -161,7 +161,7 @@ public class Unit : MonoBehaviour{
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
 	public Element GetElement() {return myInfo.element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
-    public Tile GetTileUnderUnit() { return FindObjectOfType<TileManager>().GetTile(position); }
+    public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
 	public string GetNameEng() { return myInfo.nameEng; }
 	public int GetIndex() {return myInfo.index;}
@@ -270,7 +270,7 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CountBattleCondition(this, destTile);
+        BattleTriggerManager.CountBattleTrigger(this, destTile);
         updateStats();
     }
 
@@ -329,7 +329,9 @@ public class Unit : MonoBehaviour{
     }
     
     public void UpdateHealthViewer() {
+		healthViewer.gameObject.SetActive(true);
         healthViewer.UpdateCurrentHealth(currentHealth, GetRemainShield(), GetMaxHealth());
+		CheckAndHideObjectHealth();
     }
 	public void AddSkillCooldown(int phase)
 	{
@@ -992,40 +994,6 @@ public class Unit : MonoBehaviour{
         actualStats.Add(Stat.Agility, new ActualStat(myInfo.baseStats[Stat.Agility], Stat.Agility));
     }
 
-	/*public void ApplyInfoSkillPos(UnitInfo unitInfo, List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
-		ApplyUnitInfo(unitInfo);
-		ApplySkillList(activeSkills, statusEffectInfoList, tileStatusEffectInfoList, passiveSkills);
-
-		Vector2 initPosition = GetInitPosition();
-		Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-		respawnPos -= new Vector3(0, 0, 0.05f);
-		transform.position = respawnPos;
-
-		Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-		tileUnderUnit.SetUnitOnTile(this);
-	}*/
-
-    /*public void ApplyUnitInfo(UnitInfo unitInfo) {
-        this.index = unitInfo.index;
-		this.name = unitInfo.name;
-        this.nameInCode = unitInfo.nameInCode;
-        this.side = unitInfo.side;
-        this.initPosition = unitInfo.initPosition;
-        this.direction = unitInfo.initDirection;
-        this.baseStats = new Dictionary<Stat, int>();
-        baseStats.Add(Stat.MaxHealth, unitInfo.baseHealth);
-        baseStats.Add(Stat.Power, unitInfo.basePower);
-        baseStats.Add(Stat.Defense, unitInfo.baseDefense);
-        baseStats.Add(Stat.Resistance, unitInfo.baseResistance);
-        baseStats.Add(Stat.Agility, unitInfo.baseAgility);
-        baseStats.Add(Stat.Level, GameData.PartyData.level);
-        this.unitClass = unitInfo.unitClass;
-        this.element = unitInfo.element;
-        this.celestial = unitInfo.celestial;
-        this.isObject = unitInfo.isObject;
-		myInfo = unitInfo;
-    }*/
     public void ApplySkillList(List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
                                List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
         int partyLevel = GameData.PartyData.level;
@@ -1122,6 +1090,11 @@ public class Unit : MonoBehaviour{
 		celestialBonusTextObject.SetActive(false);
 		directionBonusTextObject.SetActive(false);
 		heightBonusTextObject.SetActive(false);
+
+		if(isAI){
+			GetComponent<Battle.Turn.AI>().CheckActiveTrigger();
+		}
+		CheckAndHideObjectHealth();
 	}
 
 	void Update(){
@@ -1150,6 +1123,12 @@ public class Unit : MonoBehaviour{
 		}
 		else if (bindIcon.enabled == true && !HasStatusEffect(StatusEffectType.Bind)){
 			bindIcon.enabled = false;
+		}
+	}
+
+	public void CheckAndHideObjectHealth(){
+		if(IsObject){
+			healthViewer.gameObject.SetActive(false);
 		}
 	}
 }

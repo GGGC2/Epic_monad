@@ -226,8 +226,6 @@ namespace Battle.Turn{
 			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
 			ActiveSkill selectedSkill = BattleData.SelectedSkill;
 
-			yield return PaintMovableTiles ();
-
 			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI(unit, selectedSkill);
 
 			int minRewardWorthAttack = 0;
@@ -246,14 +244,6 @@ namespace Battle.Turn{
 				state = State.Approach;
 				yield break;
 			}
-		}
-
-		public static IEnumerator PaintMovableTiles(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			List<Tile> movableTiles = new List<Tile>();
-			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath)
-				movableTiles.Add (movableTileWithPath.Value.tile);
-			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
-			yield return null;
 		}
 
 		public IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
@@ -284,21 +274,20 @@ namespace Battle.Turn{
 					List<Tile> realPath = intermediateTileWithPath.path.Except (prevPath).ToList ();
 					int realRequireAP = intermediateTileWithPath.requireActivityPoint - prevRequireAP;
 
-					yield return MoveToTheTileAndChangeDirection (unit, prevTile, realPath, realRequireAP);
+					yield return MoveToTheTileAndChangeDirection (prevTile, realPath, realRequireAP);
 
 					prevPath = intermediateTileWithPath.path;
 					prevRequireAP = intermediateTileWithPath.requireActivityPoint;
 
 					yield return DestroyObstacle (skill, tile);
 					prevRequireAP += obstacleDestroyCost;
-					yield return PaintMovableTiles ();
 				}
 				prevTile = tile;
 			}
 
 			List<Tile> remainPath = destPath.Except (prevPath).ToList ();
 			int remainRequireAP = destRequireAP - prevRequireAP;
-			yield return MoveToTheTileAndChangeDirection (unit, destTile, remainPath, remainRequireAP);
+			yield return MoveToTheTileAndChangeDirection (destTile, remainPath, remainRequireAP);
 		}
 
 		int obstacleDestroyCost = 0;
@@ -332,20 +321,23 @@ namespace Battle.Turn{
 			}
 		}
 
-		public static IEnumerator MoveToTheTileAndChangeDirection(Unit unit, Tile destTile, List<Tile> path, int requireAP){
+		IEnumerator MoveToTheTileAndChangeDirection(Tile destTile, List<Tile> path, int requireAP){
 			Vector2 destPos = destTile.GetTilePos ();
 
 			if (path.Count > 0) {
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, path, unit.GetDirection ());
-				yield return Move (unit, destTile, finalDirection, requireAP, path.Count + 1);
-			} else {
-				TileManager.Instance.DepaintAllTiles (TileColor.Blue);
+				yield return Move (destTile, finalDirection, requireAP, path.Count + 1);
 			}
 		}
 
 		IEnumerator PaintMovableTiles(){
-			Dictionary<Vector2, TileWithPath> movableTilesWithPathForPainting = PathFinder.CalculateMovablePaths(unit);
-			yield return PaintMovableTiles(movableTilesWithPathForPainting);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+			List<Tile> movableTiles = new List<Tile>();
+			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath) {
+				movableTiles.Add (movableTileWithPath.Value.tile);
+			}
+			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			yield return null;
 		}
 
 		IEnumerator Approach(){
@@ -360,8 +352,6 @@ namespace Battle.Turn{
 			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
 			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
 			ActiveSkill skill = BattleData.SelectedSkill;
-
-			yield return PaintMovableTiles ();
 
 			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
 
@@ -424,7 +414,8 @@ namespace Battle.Turn{
 			state = State.EndTurn;
 		}
 
-		public static IEnumerator Move(Unit unit, Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
+		public IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
+			yield return PaintMovableTiles ();
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount));
@@ -448,7 +439,7 @@ namespace Battle.Turn{
 			BattleManager.MoveCameraToUnit (unit);
 		}
 
-		void CheckActiveTrigger(){
+		public void CheckActiveTrigger(){
 			bool satisfyActiveCondition = false;
 			// 전투 시작시 활성화
 			if (_AIData.activeTriggers.Contains(1)){

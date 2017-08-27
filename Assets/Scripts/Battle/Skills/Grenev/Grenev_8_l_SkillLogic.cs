@@ -6,7 +6,7 @@ using Enums;
 namespace Battle.Skills {
     class Grenev_8_l_SkillLogic : BaseSkillLogic {
         private bool isHealthRatioSmallEnough(Unit target) {
-            return (float)target.currentHealth / (float)target.GetMaxHealth() <= 0.35f;
+            return (float)target.GetCurrentHealth() / (float)target.GetMaxHealth() <= 0.35f;
         }
         public override bool MayDisPlayDamageCoroutine(CastingApply castingApply) {
             if (isHealthRatioSmallEnough(castingApply.GetTarget())) {
@@ -20,7 +20,7 @@ namespace Battle.Skills {
             if (isHealthRatioSmallEnough(target)) {
                 BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
                 yield return battleManager.StartCoroutine(target.
-					ApplyDamageByNonCasting(target.currentHealth, caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
+					ApplyDamageByNonCasting(target.GetCurrentHealth(), caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
             }
             else yield return null;
         }

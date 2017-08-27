@@ -3,16 +3,16 @@ Index	Mission	Etc
 5	SelectSkill	0	true	570	70
 8	SelectDirection	RightDown	false
 9	SelectTile	6	5	false
-10	SelectSkill	0	false
+10	SelectSkill	0	true	570	70
 11	SelectDirection	LeftDown	false
-13	Standby	true	630	70
+13	Standby	true	625	70
 14	SelectTile	4	4	false
-15	SelectSkill	1	false
+15	SelectSkill	1	true	625	70
 18	SelectDirection	RightDown	false
-20	SelectSkill	1	false
+20	SelectSkill	1	true	625	70
 21	SelectDirection	RightDown	false
-22	Standby	false
-23	Standby	false
-24	SelectSkill	0	false
+22	Standby	true	680	70
+23	Standby	true	625	70
+24	SelectSkill	0	true	570	70
 26	SelectAnyDirection	false
 27	End	false
