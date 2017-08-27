@@ -26,6 +26,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();
 	bool isPreSeleted = false;
 	public TextMesh CostAP;
+	public SpriteRenderer tileColorSprite;
 	public SpriteRenderer trapImage;
 
 	public void SetPreSelected(bool input) {isPreSeleted = input;}
@@ -252,7 +253,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void RenewColor(){
-		sprite.color = mixColors (colors);
+		if (colors.Count == 0) tileColorSprite.enabled = false;
+		else {
+			tileColorSprite.enabled = true;
+			tileColorSprite.color = mixColors (colors);
+		} 
 	}
 	Color mixColors(List<Color> colors){
 		Color color;
