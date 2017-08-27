@@ -43,8 +43,7 @@ public class TileManager : MonoBehaviour {
 
 	public Vector3 GetTilePos(Vector2 position){
 		Tile tile = GetTile(position);
-		if(tile == null)
-			Debug.Log("NO GetTile(" + position.x + "," + position.y + ")");
+		Debug.Assert(tile != null, "NO GetTile(" + position.x + "," + position.y + ")");
 		return tile.transform.position;
 	}
 
