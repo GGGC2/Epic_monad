@@ -23,21 +23,18 @@ namespace Battle
 			public float resultDamage = 0;
 		}
 
-		public class DamageInfo
-		{
+		public class DamageInfo{
 			public List<Unit> casters;
 			public float damage;
 
-			public DamageInfo(Unit caster, float damage)
-			{
+			public DamageInfo(Unit caster, float damage){
 				this.casters = new List<Unit>();
 				casters.Add(caster);
 				this.damage = damage;
 			}
 		}
 
-		public static Dictionary<Unit, DamageInfo> CalculateAllPreviewTotalDamages(Casting casting)
-		{
+		public static Dictionary<Unit, DamageInfo> CalculateAllPreviewTotalDamages(Casting casting){
 			Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
 
 			List<Chain> allChainTriggered = ChainList.GetAllChainTriggered (casting);
@@ -51,8 +48,7 @@ namespace Battle
 			return damageList;
 		}
 
-		private static Dictionary<Unit, DamageInfo> MergeDamageList(Dictionary<Unit, DamageInfo> leftDamgeList, Dictionary<Unit, DamageInfo> rightDamageList)
-		{
+		private static Dictionary<Unit, DamageInfo> MergeDamageList(Dictionary<Unit, DamageInfo> leftDamgeList, Dictionary<Unit, DamageInfo> rightDamageList){
 			var merged = new Dictionary<Unit, DamageInfo>();
 			foreach (var damage in leftDamgeList)
 			{
@@ -76,8 +72,7 @@ namespace Battle
 			return merged;
 		}
 
-		private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachChain(Chain chain, int chainCombo)
-		{
+		private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachChain(Chain chain, int chainCombo){
 			var damageList = new Dictionary<Unit, DamageInfo>();
 			ActiveSkill appliedSkill = chain.Skill;
 			Unit caster = chain.Caster;			
@@ -317,6 +312,9 @@ namespace Battle
 		}
 
 		public static float ApplyDefenseAndResistance(float damage, UnitClass damageType, float defense, float resistance) {
+			if(SceneData.stageNumber < Setting.classOpenStage){
+				return damage;
+			}
 			if (damageType == UnitClass.Melee) {
 				// 실제 피해 = 원래 피해 x 200/(200+방어력)
 				// 방어력이 -180 이하일 시 -180으로 적용
