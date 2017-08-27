@@ -210,11 +210,13 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 
-		//Debug.Log("Triggers Count : " + FindObjectOfType<BattleTriggerManager>().triggers.Count);
-		
-		List<BattleTrigger> AllPCTrigger = FindObjectOfType<BattleTriggerManager> ().triggers.FindAll (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
-		BattleTrigger countPC = FindObjectOfType<BattleTriggerManager> ().triggers.Find (trigger => trigger.unitType == BattleTrigger.UnitType.PC && trigger.targetCount == 0);
-		if(countPC != null) {countPC.targetCount = generatedPC;}
+		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
+		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
+		Debug.Log("Triggers Count : " + allTriggers);
+		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == BattleTrigger.UnitType.PC && trig.targetCount == 0);
+		triggersOfAllPC.ForEach(trig => trig.targetCount = generatedPC);
+		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == BattleTrigger.UnitType.Enemy && trig.targetCount == 0);
+		triggersOfAllEnemy.ForEach(trig => trig.targetCount = enemyCount);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
