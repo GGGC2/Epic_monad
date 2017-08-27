@@ -21,12 +21,19 @@ public class BattleTrigger{
 	public List<Vector2> targetTiles = new List<Vector2>();
 	public string nextSceneIndex;
 	public string korName;
+	//승리, 패배 조건이 전부 만족시켜야 하는가? 하나만 만족시켜도 되는가?
+	public bool winTriggerAll;
+	public bool loseTriggerAll;
 
 	public BattleTrigger(string data){
-		StringParser commaParser = new StringParser(data, ',');
+		StringParser commaParser = new StringParser(data, '\t');
 
 		resultType = commaParser.ConsumeEnum<ResultType>();
-		if(resultType == ResultType.End) {nextSceneIndex = commaParser.Consume();}
+		if(resultType == ResultType.End) {
+			nextSceneIndex = commaParser.Consume();
+			winTriggerAll = commaParser.ConsumeBool();
+			loseTriggerAll = commaParser.ConsumeBool();
+		}
 		else{
 			korName = commaParser.Consume();
 			unitType = commaParser.ConsumeEnum<UnitType>();
