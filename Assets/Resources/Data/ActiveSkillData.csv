@@ -1,10 +1,14 @@
 owner	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
 manastone	1	가만히	1	9999	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
-soldier01	1	근접공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
-chaser	1	근접공격	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
-mage01	1	열기 폭발	1	30	0	Power	0.9	Point	Diamond	0	3	0	Diamond	0	0	0	DamageHealth	RedBlast	Area	NonMove	Fire	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
-archer01	1	화살 발사	1	30	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
-asterArcher01	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
+soldier01	1	근접공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
+chaser	1	근접공격	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.0	0	None	0	0
+mage01	1	열기 폭발	1	30	0	Power	0.9	Point	Diamond	0	3	0	Diamond	0	0	0	DamageHealth	RedBlast	Area	NonMove	Fire	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+archer01	1	화살 발사	1	30	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+asterArcher01	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+asterArcher02	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+elvenSoldier01	1	근접공격	1	30	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
+elvenArcher01	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+elvenPriest01	1	하급 치유	1	30	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	-	<color=red>0.8x공격력</color>(color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
 controller	1	침입자 제거	1	1	0	Power	1.5	Point	Diamond	0	0	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	ControllerGrawl	--	None	0	0	None	0	0
 kashasty_Escape	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	None	0	0	None	0	0
 asterAgent	1	섹션스킬	1	50	0	Power	1	Auto	Sector	1	1	0	Sector	1	3	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
