@@ -188,8 +188,8 @@ public class ActiveSkill : Skill{
 		float maxReward = 0;
 
 		if (skillType == SkillType.Point) {
-			Dictionary<Tile, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfPointSkill (caster, casterTile);
-			foreach(var pair in attackableEnemyTiles){
+			Dictionary<Tile, List<Tile>> attackableTiles = GetAttackableTilesOfPointSkill (caster, casterTile);
+			foreach(var pair in attackableTiles){
 				targetTile = pair.Key;
 				direction = Utility.GetDirectionToTarget (caster, targetTile.GetTilePos ());
 				SkillLocation location = new SkillLocation (casterTile, targetTile, direction);
@@ -203,8 +203,8 @@ public class ActiveSkill : Skill{
 			}
 		}
 		else{
-			Dictionary<Direction, List<Tile>> attackableEnemyTiles = GetAttackableEnemyTilesOfDirectionSkill (caster, casterTile);
-			foreach(var pair in attackableEnemyTiles){
+			Dictionary<Direction, List<Tile>> attackableTiles = GetAttackableTilesOfDirectionSkill (caster, casterTile);
+			foreach(var pair in attackableTiles){
 				if (skillType == SkillType.Route)
 					targetTile = GetRealTargetTileForAI (casterTile.GetTilePos (), direction, targetTile);
 				direction = pair.Key;
@@ -234,7 +234,7 @@ public class ActiveSkill : Skill{
 		return totalReward;
 	}
 
-	private Dictionary<Direction, List<Tile>> GetAttackableEnemyTilesOfDirectionSkill(Unit caster, Tile casterTile){
+	private Dictionary<Direction, List<Tile>> GetAttackableTilesOfDirectionSkill(Unit caster, Tile casterTile){
 		Dictionary<Direction, List<Tile>> attackAbleTilesGroups = new Dictionary<Direction, List<Tile>> ();
 
 		//투사체 스킬이면 4방향 직선경로상에서 유닛이 가로막은 지점들을 targetTiles로 함.
@@ -274,6 +274,7 @@ public class ActiveSkill : Skill{
 			attackAbleTilesGroups [direction] = GetTilesInSecondRange (skillLocation);
 		}
 
+		/*
 		Dictionary<Direction, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Direction, List<Tile>> ();
 		foreach (var pair in attackAbleTilesGroups) {
 			Direction direction = pair.Key;
@@ -281,10 +282,10 @@ public class ActiveSkill : Skill{
 			List<Tile> enemyTilesGroup = Battle.Turn.AIUtil.FindEnemyTilesInTheseTiles (tilesGroup, caster);
 			if(enemyTilesGroup.Count != 0)
 				attackAbleEnemyTilesGroups [direction] = enemyTilesGroup;
-		}
-		return attackAbleEnemyTilesGroups;
+		}*/
+		return attackAbleTilesGroups;
 	}
-	private Dictionary<Tile, List<Tile>> GetAttackableEnemyTilesOfPointSkill(Unit caster, Tile casterTile){
+	private Dictionary<Tile, List<Tile>> GetAttackableTilesOfPointSkill(Unit caster, Tile casterTile){
 		Dictionary<Tile, List<Tile>> attackAbleTilesGroups = new Dictionary<Tile, List<Tile>> ();
 		Vector2 casterPos = casterTile.GetTilePos ();
 		List<Tile> targetTiles = GetTilesInFirstRange (casterPos, caster.GetDirection ());
@@ -293,6 +294,7 @@ public class ActiveSkill : Skill{
 			attackAbleTilesGroups [targetTile] = GetTilesInSecondRange (skillLocation);
 		}
 
+		/*
 		Dictionary<Tile, List<Tile>> attackAbleEnemyTilesGroups = new Dictionary<Tile, List<Tile>> ();
 		foreach (var pair in attackAbleTilesGroups) {
 			Tile targetTile = pair.Key;
@@ -300,8 +302,8 @@ public class ActiveSkill : Skill{
 			List<Tile> enemyTilesGroup = Battle.Turn.AIUtil.FindEnemyTilesInTheseTiles (tilesGroup, caster);
 			if(enemyTilesGroup.Count != 0)
 				attackAbleEnemyTilesGroups [targetTile] = enemyTilesGroup;
-		}
-		return attackAbleEnemyTilesGroups;
+		}*/
+		return attackAbleTilesGroups;
 	}
 
 	public IEnumerator Apply(Casting casting, int chainCombo) {
