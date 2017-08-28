@@ -26,6 +26,7 @@ public class TutorialManager : MonoBehaviour {
 	List<AIScenario> AIscenarioList;
 	int AIscenarioIndex = 0;
 	public MouseMark markPrefab;
+	MouseMark mark;
 
 	public void OnEnable(){
 		TutorialScenario.tutorialManager = this;
@@ -62,7 +63,12 @@ public class TutorialManager : MonoBehaviour {
 
 	public void ToNextStep(){
 		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
-		if (previousScenario != null) {previousScenario.ResetMissionCondition ();}
+		if (previousScenario != null) {
+			previousScenario.ResetMissionCondition ();
+			if(previousScenario.mouseMarkPos != Vector3.zero){
+				Destroy (mark.gameObject);
+			}
+		}
 
 		index++;
 		Debug.Log("Tutorial Step "+index);
@@ -73,7 +79,7 @@ public class TutorialManager : MonoBehaviour {
 			currentScenario.SetMissionCondition ();
 			SetControl(true);
 			if(currentScenario.mouseMarkPos != Vector3.zero){
-				MouseMark mark = Instantiate(markPrefab, currentScenario.mouseMarkPos, Quaternion.identity, GameObject.Find("FixedUICanvas").transform);
+				mark = Instantiate(markPrefab, currentScenario.mouseMarkPos, Quaternion.identity, GameObject.Find("FixedUICanvas").transform);
 			}
 		}
 		else {SetControl(false);}
