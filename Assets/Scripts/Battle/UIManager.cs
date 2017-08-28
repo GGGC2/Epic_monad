@@ -67,27 +67,27 @@ public class UIManager : MonoBehaviour{
 	}
 
 	void Update(){
-		if(BattleData.currentState == CurrentState.FocusToUnit){
+		//if(BattleData.currentState == CurrentState.FocusToUnit ){
 			if(Input.GetKeyDown(KeyCode.Alpha1)){
-				actionButtons[0].OnClick();
+				StartCoroutine(actionButtons[0].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha2)){
-				actionButtons[1].OnClick();
+				StartCoroutine(actionButtons[1].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha3)){
-				actionButtons[2].OnClick();
+				StartCoroutine(actionButtons[2].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha4)){
-				actionButtons[3].OnClick();
+				StartCoroutine(actionButtons[3].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha5)){
-				actionButtons[4].OnClick();
+				StartCoroutine(actionButtons[4].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha6)){
-				actionButtons[5].OnClick();
+				StartCoroutine(actionButtons[5].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha7)){
-				actionButtons[6].OnClick();
+				StartCoroutine(actionButtons[6].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Alpha8)){
-				actionButtons[7].OnClick();
+				StartCoroutine(actionButtons[7].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Q)){
-				actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick();
+				StartCoroutine(actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick());
 			}
-		}
+		//}
 	}
 
 	public void UpdateApBarUI() {
