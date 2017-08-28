@@ -649,6 +649,7 @@ public class BattleManager : MonoBehaviour{
 			} else {
 				var preSelectedTile = BattleData.preSelectedTilePosition.Value;
 				if (movableTilesWithPath.ContainsKey (preSelectedTile)){
+					movableTilesWithPath[preSelectedTile].tile.transform.position += new Vector3(0, 0, -0.5f);
 					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
