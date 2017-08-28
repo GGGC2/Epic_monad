@@ -24,7 +24,7 @@ namespace Battle.Turn{
 			else
 				enemySide = Side.Ally;
 			return enemySide;
-		}
+		}/*
 		public static List<Tile> FindEnemyTilesInTheseTiles(List<Tile> tiles, Unit mainUnit){
 			List<Tile> tilesHaveEnemy = (from tile in tiles
 				where tile.GetUnitOnTile() != null
@@ -32,7 +32,7 @@ namespace Battle.Turn{
 				where IsSecondUnitEnemyToFirstUnit(mainUnit, unit)
 				select tile).ToList();
 			return tilesHaveEnemy;
-		}
+		}*/
 
 		// 1턴 내에 이동 후 공격 불가하거나 그럴 만한 가치가 없을 때 가장 가치있는 적을 향해 움직인다
 		// 가치에는 거리도 적용되므로 너무 멀면 그쪽으로 가진 않는다
