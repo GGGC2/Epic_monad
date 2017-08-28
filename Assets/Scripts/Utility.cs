@@ -7,6 +7,7 @@ using GameData;
 
 public class Utility : MonoBehaviour {
 	public static Direction GetMouseDirectionByUnit(Unit unit, Direction originalDirection){
+		Debug.Assert(unit != null);
 		Direction mouseDirectionByUnit;
 		Vector2 unitPosition = unit.realPosition;
 		
@@ -319,5 +320,11 @@ public class Utility : MonoBehaviour {
 		}
 		
 		return Resources.Load<Sprite>("Icon/Skill/" + owner + "/" + address);
+	}
+
+	public static IEnumerator WaitForFewFrames(int frameCount){
+		for(int i = 0; i < frameCount; i++){
+			yield return null;
+		}
 	}
 }
