@@ -6,12 +6,25 @@ using UnityEngine.SceneManagement;
 using GameData;
 
 public class TutorialManager : MonoBehaviour {
+	private static TutorialManager instance;
+	public static TutorialManager Instance{ get { return instance; } }
+	void Awake (){
+		if (instance != null && instance != this) {
+			Destroy (this.gameObject);
+			return;
+		} else {
+			instance = this;
+		}
+	}
+
 	public Image image;
 	public Button NextButton;
-	public int index;
 	CameraMover cm;
 	string usedSceneName;
 	List<TutorialScenario> scenarioList;
+	public int index;
+	List<AIScenario> AIscenarioList;
+	int AIscenarioIndex = 0;
 	public MouseMark markPrefab;
 
 	public void OnEnable(){
@@ -27,6 +40,8 @@ public class TutorialManager : MonoBehaviour {
 			EndTutorial ();
 		} else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>();
+			AIscenarioList = Parser.GetParsedData<AIScenario> ();
+			AIscenarioIndex = 0;
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			BattleData.onTutorial = true;
 			BattleData.rightClickLock = true;
@@ -73,5 +88,9 @@ public class TutorialManager : MonoBehaviour {
 		NextButton.enabled = !able;
 		image.raycastTarget = !able;
 		Setting.shortcutEnable = able;
+	}
+
+	public AIScenario GetNextAIScenario(){
+		return AIscenarioList [AIscenarioIndex++];
 	}
 }

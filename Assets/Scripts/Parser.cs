@@ -48,6 +48,9 @@ public class Parser : MonoBehaviour{
 		}else if(typeof(T) == typeof(TutorialScenario)){
 			object data = new TutorialScenario(rowData);
 			return (T)data;
+		}else if(typeof(T) == typeof(AIScenario)){
+			object data = new AIScenario(rowData);
+			return (T)data;
 		}else if(typeof(T) == typeof(UnitStatusEffectInfo)){
 			object data = new UnitStatusEffectInfo(rowData);
 			return (T)data;
@@ -81,6 +84,7 @@ public class Parser : MonoBehaviour{
 		if(typeof(T) == typeof(GlossaryData)) {address = "Data/Glossary";}
 		else if(typeof(T) == typeof(DialogueData)) {address = "Data/" + SceneData.dialogueName;}
 		else if(typeof(T) == typeof(TutorialScenario)) {address = "Tutorial/" + SceneManager.GetActiveScene().name + SceneData.stageNumber.ToString();}
+		else if(typeof(T) == typeof(AIScenario)) {address = "Tutorial/" + SceneManager.GetActiveScene ().name + SceneData.stageNumber.ToString () + "_AI";}
 		else if(typeof(T) == typeof(UnitStatusEffectInfo)) {address = "Data/UnitStatusEffectData";}
 		else if(typeof(T) == typeof(ActiveSkill)) {address = "Data/ActiveSkillData";}
 		else if(typeof(T) == typeof(PassiveSkill)) {address = "Data/PassiveSkillData";}
