@@ -181,7 +181,9 @@ namespace Battle.Turn{
 			battleManager.StartUnitTurn (unit);
 
 			if (BattleData.onTutorial) {
-				//yield return ActByScenario ();
+				while (state != State.EndTurn) {
+					yield return ActByScenario (TutorialManager.Instance.GetNextAIScenario ());
+				}
 			} else {
 				yield return CheckUnitIsActiveAndDecideActionAndAct ();
 			}
@@ -416,7 +418,10 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator ActByScenario(AIScenario scenario){
-			if (scenario.parameter != null) {
+			if (scenario.functionName == "UseSkill") {
+				Casting casting = new Casting (unit, unit.GetSkillList () [scenario.skillIndex], scenario.skillLocation);
+				yield return StartCoroutine (scenario.functionName, casting);
+			} else if (scenario.parameter != null) {
 				yield return StartCoroutine (scenario.functionName, scenario.parameter);
 			} else {
 				yield return StartCoroutine (scenario.functionName);

@@ -15,6 +15,11 @@ public class SkillLocation {
 		this.targetTile = targetTile;
 		this.direction = direction;
 	}
+	public SkillLocation(Vector2 casterPos, Vector2 targetPos, Direction direction){
+		this.casterTile = tileManager.GetTile (casterPos);
+		this.targetTile = tileManager.GetTile (targetPos);
+		this.direction = direction;
+	}
 	public Tile CasterTile{
 		get { return casterTile; }
 	}
