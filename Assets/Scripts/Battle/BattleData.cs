@@ -165,7 +165,7 @@ public static class BattleData{
 	public static Triggers triggers = new Triggers();
 	public static CurrentState currentState = CurrentState.None;
 
-	public static Vector2? preSelectedTilePosition;
+	public static Vector2? mouseOverTilePosition;
 	public static ActiveSkill preSelectedSkill;
 	public static ActiveSkill selectedSkill;
 	public static int rewardPoint;
@@ -223,7 +223,6 @@ public static class BattleData{
 		triggers = new Triggers();
 		currentState = CurrentState.None;
 
-		preSelectedTilePosition=null;
 		rewardPoint = 0;
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;

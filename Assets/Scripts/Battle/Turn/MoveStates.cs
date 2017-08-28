@@ -7,16 +7,16 @@ using Enums;
 namespace Battle.Turn{
 	public class MoveStates{
 		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			BattleData.preSelectedTilePosition = null;
+			BattleData.mouseOverTilePosition = null;
 			while (true){
 				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
 				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
 				viewer.OffPreviewAp();
-				if (BattleData.preSelectedTilePosition.HasValue == false){
+				if (BattleData.mouseOverTilePosition.HasValue == false){
 					BattleData.previewAPAction = null;
 				}
 				else{
-					var preSelectedTile = BattleData.preSelectedTilePosition.Value;
+					var preSelectedTile = BattleData.mouseOverTilePosition.Value;
 					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = TileManager.Instance.preSelectedMouseOverTile;

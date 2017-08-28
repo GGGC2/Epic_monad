@@ -497,7 +497,7 @@ public class BattleManager : MonoBehaviour{
 
 	public void OnMouseEnterHandlerFromTile(Vector2 position){
 		if (BattleData.isWaitingUserInput){
-			BattleData.preSelectedTilePosition = position;
+			BattleData.mouseOverTilePosition = position;
 		}
 	}
 
@@ -505,7 +505,7 @@ public class BattleManager : MonoBehaviour{
 	{
 		if (BattleData.isWaitingUserInput)
 		{
-			BattleData.preSelectedTilePosition = null;
+			BattleData.mouseOverTilePosition = null;
 		}
 	}
 
@@ -629,15 +629,16 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-		BattleData.preSelectedTilePosition = null;
+		BattleData.mouseOverTilePosition = null;
+		BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
+		Tile previousFrameDest;
 		while (true) {
-			BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
 			BattleData.tileManager.DepaintAllTiles (TileColor.Red);
-			viewer.OffPreviewAp ();
-			if (BattleData.preSelectedTilePosition.HasValue == false) {
+			if (BattleData.mouseOverTilePosition.HasValue == false) {
+				viewer.OffPreviewAp ();
 				BattleData.previewAPAction = null;
-			} else {
-				var preSelectedTile = BattleData.preSelectedTilePosition.Value;
+			}else{
+				var preSelectedTile = BattleData.mouseOverTilePosition.Value;
 				if (movableTilesWithPath.ContainsKey (preSelectedTile)){
 					movableTilesWithPath[preSelectedTile].tile.transform.position += new Vector3(0, 0, -0.5f);
 					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
