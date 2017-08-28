@@ -76,7 +76,6 @@ public class TutorialScenario{
 				UIManager.Instance.TurnOnOnlyOneSkill (missionSkillIndex);
 				UIManager.Instance.ActionButtonOnOffLock = true;
 				UIManager.Instance.ControlListenerOfActionButton(missionSkillIndex, true, ToNextStep);
-				TM.DepaintAllTiles(TileColor.Blue);
 				TM.DepreselectAllTiles();
 			};
 			ResetMissionCondition = () => {
@@ -87,6 +86,7 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOnOnlyOneSkill(BattleData.selectedUnit.activeSkillList.Count);
 				UIManager.Instance.ActionButtonOnOffLock = true;
+				TM.DepreselectAllTiles();
 				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
@@ -95,6 +95,9 @@ public class TutorialScenario{
 			};
 		} else if (mission == Mission.OpenDetailInfo) {
 			SetMissionCondition = () => {
+				UIManager.Instance.TurnOffAllActions();
+				UIManager.Instance.ActionButtonOnOffLock = true;
+				TM.DepreselectAllTiles();
 				BattleData.uiManager.activateDetailInfoEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
