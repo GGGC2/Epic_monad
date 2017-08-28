@@ -109,7 +109,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
-		transform.position -= new Vector3(0, 0, 0.5f);
 		OnMouseOver ();
 
 		if (isPreSeleted)
@@ -136,7 +135,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
-		transform.position += new Vector3(0, 0, 0.5f);
+		transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
 		clickStarted = false;
 		CostAP.text = "";
 

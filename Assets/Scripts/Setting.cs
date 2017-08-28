@@ -20,6 +20,8 @@ public class Setting{
 	public static int retreatHpPercent = 10;
 	public static float retreatHpFloat = 0.1f;
 	public static float fadeInWaitingTime = 0.3f;
+	public static float tileImageHeight = 0.5f;
+	public static float tileImageWidth = 1.0f;
 	//이동할 때 타일당 추가로 붙는 계차값
 	public static int moveCostAcc = 2;
 }

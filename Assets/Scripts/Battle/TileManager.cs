@@ -16,9 +16,6 @@ public class TileManager : MonoBehaviour {
 	bool preselectLockOn=false;
 	public Tile preSelectedMouseOverTile;
 
-	float tileImageHeight = 0.5f*100/100;
-	float tileImageWidth = 0.5f*200/100;
-
 	public Dictionary<Vector2, Tile> GetAllTiles(){
 		return tiles;
 	}
@@ -184,7 +181,6 @@ public class TileManager : MonoBehaviour {
 		foreach (var tileInfo in tileInfoList){
 			GenerateTile(tileInfo);
 		}
-		Debug.Log("GenerateTile Finished.");
 	}
 
 	public static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {
@@ -197,6 +193,9 @@ public class TileManager : MonoBehaviour {
 		return units;
 	}
 
+	public static Vector3 CalculateRealTilePosition(int posX, int posY, int height){
+		return new Vector3(Setting.tileImageWidth * (posY+posX) * 0.5f, Setting.tileImageHeight * (posY-posX+height) * 0.5f, (posY-posX) * 0.1f);
+	}
 	void GenerateTile (TileInfo tileInfo){
 		if (tileInfo.IsEmptyTile()) return;
 
@@ -211,7 +210,7 @@ public class TileManager : MonoBehaviour {
 		int i = (int)tilePosition.x;
 
 		// FIXME : 높이 보정치 추가할 것.
-		Tile tile = Instantiate(tilePrefab, new Vector3(tileImageWidth * (j+i) * 0.5f, tileImageHeight * (j-i+tileHeight) * 0.5f, (j-i) * 0.1f), Quaternion.identity).GetComponent<Tile>();
+		Tile tile = Instantiate(tilePrefab, CalculateRealTilePosition(i, j, tileHeight), Quaternion.identity).GetComponent<Tile>();
 		tile.name = "Tile(" + i + "," + j + ")";
 		tile.SetTilePos(i, j);
 		tile.SetTileInfo(tileElement, tileIndex, tileAPAtStandardHeight, tileHeight, displayName);
