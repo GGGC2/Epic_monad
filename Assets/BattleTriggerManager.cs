@@ -5,6 +5,7 @@ using System.Collections;
 using System.Linq;
 using System;
 using Enums;
+using GameData;
 
 public class BattleTriggerManager : MonoBehaviour {
 	UnitManager unitManager;
@@ -47,6 +48,9 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	void Awake(){
+		if (!SceneData.isTestMode && !SceneData.isStageMode){
+            GameDataManager.Load();
+		}
 		resultPanel = FindObjectOfType<ResultPanel>();
 		resultPanel.Checker = this;
 		resultPanel.gameObject.SetActive(false);

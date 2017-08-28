@@ -624,7 +624,6 @@ public class BattleManager : MonoBehaviour{
             if (SceneData.stageNumber == 0){
 				SceneData.stageNumber = 1;
 			}
-			Debug.Log("Loaded Stage : " + SceneData.stageNumber);
 
             TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
             mapData = nextMapFile;
