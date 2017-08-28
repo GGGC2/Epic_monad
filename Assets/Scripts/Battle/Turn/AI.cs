@@ -180,7 +180,11 @@ namespace Battle.Turn{
 		public IEnumerator UnitTurn(){
 			battleManager.StartUnitTurn (unit);
 
-			yield return CheckUnitIsActiveAndDecideActionAndAct();
+			if (BattleData.onTutorial) {
+				//yield return ActByScenario ();
+			} else {
+				yield return CheckUnitIsActiveAndDecideActionAndAct ();
+			}
 
 			if (state != State.Dead) {
 				battleManager.EndUnitTurn ();
@@ -246,7 +250,7 @@ namespace Battle.Turn{
 			}
 		}
 
-		public IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
+		IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
 			Tile startTile = unit.GetTileUnderUnit ();
 
 			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
@@ -296,7 +300,7 @@ namespace Battle.Turn{
 			}
 		}
 
-		IEnumerator MoveToTheTileAndChangeDirection(Tile destTile){
+		public IEnumerator MoveToTheTileAndChangeDirection(Tile destTile){
 			Vector2 destPos = destTile.GetTilePos ();
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
 			List<Tile> path = movableTilesWithPath [destPos].path;
@@ -380,7 +384,7 @@ namespace Battle.Turn{
 				yield return UseSkill(casting);
 			}
 		}
-		public IEnumerator StandbyOrRest(){
+		IEnumerator StandbyOrRest(){
 			yield return battleManager.ToDoBeforeAction ();
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby ();
@@ -390,29 +394,33 @@ namespace Battle.Turn{
 			state = State.EndTurn;
 		}
 
-		public IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
+		IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			PaintMovableTiles ();
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
 			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount));
 		}
-		public IEnumerator UseSkill(Casting casting){
+		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
 		}
-		public IEnumerator Standby(){
+		IEnumerator Standby(){
 			yield return new WaitForSeconds(0.2f);
 		}
-		public IEnumerator TakeRest(){
+		IEnumerator TakeRest(){
 			yield return BattleData.battleManager.StartCoroutine(RestAndRecover.Run());
 		}
-		public IEnumerator SkipTurn(){
+		IEnumerator SkipTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 			yield return new WaitForSeconds (0.05f);
 			state = State.EndTurn;
 		}
 
-		void CameraFocusToUnit(){
-			BattleManager.MoveCameraToUnit (unit);
+		IEnumerator ActByScenario(AIScenario scenario){
+			if (scenario.parameter != null) {
+				yield return StartCoroutine (scenario.functionName, scenario.parameter);
+			} else {
+				yield return StartCoroutine (scenario.functionName);
+			}
 		}
 
 		public void CheckActiveTrigger(){
