@@ -222,10 +222,7 @@ public class Unit : MonoBehaviour{
 		return isPossible;
 	}
 	public bool IsMovePossibleState(){
-		bool isPossible =  !(HasStatusEffect(StatusEffectType.Bind) ||
-			HasStatusEffect(StatusEffectType.Faint))
-			&& !(BattleData.alreadyMoved);
-		return isPossible;
+		return (!HasStatusEffect(StatusEffectType.Bind) && !HasStatusEffect(StatusEffectType.Faint));
 	}
 	public bool IsSkillUsePossibleState(){
 		bool isPossible = false;
