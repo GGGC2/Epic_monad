@@ -180,8 +180,10 @@ public class TileManager : MonoBehaviour {
             tile.Value.UpdateRemainPhaseAtPhaseEnd();
     }
 	public void GenerateTiles (List<TileInfo> tileInfoList){
-		foreach (var tileInfo in tileInfoList)
+		foreach (var tileInfo in tileInfoList){
 			GenerateTile(tileInfo);
+		}
+		Debug.Log("GenerateTile Finished.");
 	}
 
 	public static List<Unit> GetUnitsOnTiles(List<Tile> tiles) {

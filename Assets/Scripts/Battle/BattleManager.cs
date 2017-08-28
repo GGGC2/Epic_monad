@@ -25,15 +25,16 @@ public class BattleManager : MonoBehaviour{
 			return;
 		}else {instance = this;}
 
-		FindObjectOfType<TileManager>().GenerateTiles(Parser.GetParsedTileInfo());
 		BattleData.Initialize ();
 		triggers = BattleData.triggers;
 
-        if (!SceneData.isTestMode && !SceneData.isStageMode)
+        if (!SceneData.isTestMode && !SceneData.isStageMode){
             GameDataManager.Load();
+		}
 
-		PartyData.CheckLevelData();
 		Load();
+		FindObjectOfType<TileManager>().GenerateTiles(Parser.GetParsedTileInfo());
+		PartyData.CheckLevelData();
 		TileManager.SetInstance ();
 		SkillLocation.tileManager = BattleData.tileManager;
 	}
@@ -562,10 +563,8 @@ public class BattleManager : MonoBehaviour{
 
 	//이하는 StageManager의 Load기능 통합
 	public TextAsset mapData;
-	public TextAsset GetMapData()
-	{
-		if (loaded == false)
-		{
+	public TextAsset GetMapData(){
+		if (loaded == false){
 			Load();
 		}
 		return mapData;
@@ -612,8 +611,7 @@ public class BattleManager : MonoBehaviour{
 
 	private bool loaded = false;
 
-	public void Load()
-	{
+	public void Load(){
 		loaded = true;
 		GetStageDataFiles();
 	}
@@ -623,8 +621,10 @@ public class BattleManager : MonoBehaviour{
             mapData = Resources.Load<TextAsset>("Data/EQ_test_map");
             unitData = Resources.Load<TextAsset>("Data/EQ_test_unit");
         } else {
-            if (SceneData.stageNumber == 0)
-                SceneData.stageNumber = 1;
+            if (SceneData.stageNumber == 0){
+				SceneData.stageNumber = 1;
+			}
+			Debug.Log("Loaded Stage : " + SceneData.stageNumber);
 
             TextAsset nextMapFile = Resources.Load<TextAsset>("Data/Stage" + SceneData.stageNumber + "_map");
             mapData = nextMapFile;

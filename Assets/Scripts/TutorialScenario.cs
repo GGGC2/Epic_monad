@@ -108,7 +108,7 @@ public class TutorialScenario{
 			};
 		}
 
-		//isMarker = parser.ConsumeBool();
+		//마우스 표시가 되는지 아닌지. false의 경우에도 일일이 표기해야 한다
 		if(parser.ConsumeBool()){
 			mouseMarkPos = new Vector3(parser.ConsumeFloat(), parser.ConsumeFloat(), 0);
 		}

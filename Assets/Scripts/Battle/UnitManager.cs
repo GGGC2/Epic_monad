@@ -184,6 +184,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void GenerateUnits(){
+		Debug.Log("GenerateUnits Start.");
 		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int generatedPC = 0;
 		int enemyCount = 0;
