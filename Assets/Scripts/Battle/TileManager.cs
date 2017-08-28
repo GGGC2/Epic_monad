@@ -141,8 +141,9 @@ public class TileManager : MonoBehaviour {
 			tile.PaintTile(color);
 	}
 	public void DepaintTiles(List<Tile> tiles, TileColor color){
-		foreach(var tile in tiles)
+		foreach(var tile in tiles){
 			tile.DepaintTile(color);
+		}
 	}
 	public void SetHighlightTiles(List<Tile> tiles, bool action){
 		foreach(var tile in tiles){

@@ -105,7 +105,7 @@ public class Parser : MonoBehaviour{
 			Skills.Add(skill);
 		}
 
-		if(SceneData.stageNumber >= Setting.passiveOpenStage){
+		//if(SceneData.stageNumber >= Setting.passiveOpenStage){
 			Debug.Log("passiveOpen : " + SceneData.stageNumber + "Stage");
 			string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
 			string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -113,7 +113,7 @@ public class Parser : MonoBehaviour{
 				Skill skill = new PassiveSkill(passiveRowDataList[i]);
 				Skills.Add(skill);
 			}
-		}
+		//}
 
 		return Skills;
 	}

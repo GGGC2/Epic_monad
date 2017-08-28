@@ -1,7 +1,8 @@
 Index	Mission	Etc	
-1	SelectSkill	0	false
-4	SelectTile	5	4	false
-5	SelectSkill	0	true	570	70
+2	SelectSkill	0	false
+3	SelectTile	10	7	false
+5	SelectTile	3	4	false
+7	SelectSkill	1	false
 8	SelectDirection	RightDown	false
 9	SelectTile	6	5	false
 10	SelectSkill	0	true	570	70

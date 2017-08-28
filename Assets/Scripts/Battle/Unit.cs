@@ -1007,13 +1007,15 @@ public class Unit : MonoBehaviour{
 			}
         }
 
-		foreach (var passiveSkill in passiveSkills) {
-            //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-            if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
-                passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-                passiveSkillList.Add(passiveSkill);
-            }
-        }
+		if(SceneData.stageNumber >= Setting.passiveOpenStage){
+			foreach (var passiveSkill in passiveSkills) {
+        	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
+            	    passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
+	                passiveSkillList.Add(passiveSkill);
+    	        }
+        	}
+		}
+		
 
         // 비어있으면 디폴트 스킬로 채우도록.
         if (activeSkills.Count() == 0) {
