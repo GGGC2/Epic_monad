@@ -72,6 +72,7 @@ public class TutorialScenario{
 		} else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
+				//Debug.Log("Mission : SelectSkill");
 				UIManager.Instance.TurnOnOnlyOneSkill (missionSkillIndex);
 				UIManager.Instance.ActionButtonOnOffLock = true;
 				UIManager.Instance.ControlListenerOfActionButton(missionSkillIndex, true, ToNextStep);
@@ -86,10 +87,10 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOnOnlyOneSkill(BattleData.selectedUnit.activeSkillList.Count);
 				UIManager.Instance.ActionButtonOnOffLock = true;
-				BM.readyCommandEvent.AddListener (ToNextStep);
+				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				BM.readyCommandEvent.RemoveListener (ToNextStep);
+				BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.OpenDetailInfo) {

@@ -285,9 +285,6 @@ public class BattleManager : MonoBehaviour{
 
 			yield return ToDoBeforeAction ();
 
-			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
-			readyCommandEvent.Invoke ();
-
 			BattleData.tileManager.PreselectTiles (BattleData.tileManager.GetTilesInGlobalRange ());
 			BattleData.isWaitingUserInput = true;
 
@@ -309,6 +306,9 @@ public class BattleManager : MonoBehaviour{
 			//기술 Viewer 끄고(디폴트) 아이콘 불러오기
 			UIManager.Instance.skillViewer.gameObject.SetActive(false);
 			UIManager.Instance.SetActionButtons();
+
+			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
+			readyCommandEvent.Invoke ();
 
 			//직전에 이동한 상태면 actionCommand 클릭 말고도 우클릭으로 이동 취소도 가능, 아니면 그냥 actionCommand를 기다림
 			if (BattleData.alreadyMoved){
