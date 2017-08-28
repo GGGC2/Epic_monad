@@ -631,8 +631,15 @@ public class BattleManager : MonoBehaviour{
 	private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 		BattleData.mouseOverTilePosition = null;
 		BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
-		Tile previousFrameDest;
+		Vector2? previousFrameDest = null;
 		while (true) {
+			if(previousFrameDest == BattleData.mouseOverTilePosition){
+				yield return null;
+				continue;
+			}else{
+				previousFrameDest = BattleData.mouseOverTilePosition;
+			}
+
 			BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 			if (BattleData.mouseOverTilePosition.HasValue == false) {
 				viewer.OffPreviewAp ();
