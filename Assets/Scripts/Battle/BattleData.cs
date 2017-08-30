@@ -6,7 +6,7 @@ using Enums;
 
 public enum CurrentState{
 	None, Dead, FocusToUnit, CheckDestination,
-	MoveToTile, SelectSkill, SelectSkillApplyPoint, SelectSkillApplyDirection,
+	SelectSkillApplyPoint, SelectSkillApplyDirection,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 
@@ -165,7 +165,7 @@ public static class BattleData{
 	public static Triggers triggers = new Triggers();
 	public static CurrentState currentState = CurrentState.None;
 
-	public static Vector2? preSelectedTilePosition;
+	public static Vector2? mouseOverTilePosition;
 	public static ActiveSkill preSelectedSkill;
 	public static ActiveSkill selectedSkill;
 	public static int rewardPoint;
@@ -223,7 +223,6 @@ public static class BattleData{
 		triggers = new Triggers();
 		currentState = CurrentState.None;
 
-		preSelectedTilePosition=null;
 		rewardPoint = 0;
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;
@@ -233,9 +232,7 @@ public static class BattleData{
 
 		move = new Move();
 		alreadyMoved = false;
-		//moveSnapshot=new MoveSnapshot();
 
-		selectedUnit = null;
 		readiedUnits = new List<Unit>();
 		deadUnits = new List<Unit>();
 		retreatUnits = new List<Unit>();
@@ -253,17 +250,25 @@ public static class BattleData{
 		get {return preSelectedSkill;}
 	}
 
-	public static Tile SelectedTile
-	{
+	public static Unit SelectedUnit{
+		get{
+			return selectedUnit;
+		}
+	}
+
+	public static void SetSelectedUnit(Unit unit){
+		selectedUnit = unit;
+	}
+
+	public static Tile SelectedTile{
 		get {
 			return tileManager.GetTile(move.selectedTilePosition);
 		}
 	}
 
-	public static Tile SelectedUnitTile
-	{
-		get {
-			return tileManager.GetTile(selectedUnit.GetPosition());
+	public static Tile SelectedUnitTile{
+		get{
+			return tileManager.GetTile(SelectedUnit.GetPosition());
 		}
 	}
 	public static List<Unit> GetObjectUnitsList(){

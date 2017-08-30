@@ -222,10 +222,7 @@ public class Unit : MonoBehaviour{
 		return isPossible;
 	}
 	public bool IsMovePossibleState(){
-		bool isPossible =  !(HasStatusEffect(StatusEffectType.Bind) ||
-			HasStatusEffect(StatusEffectType.Faint))
-			&& !(BattleData.alreadyMoved);
-		return isPossible;
+		return (!HasStatusEffect(StatusEffectType.Bind) && !HasStatusEffect(StatusEffectType.Faint));
 	}
 	public bool IsSkillUsePossibleState(){
 		bool isPossible = false;
@@ -800,27 +797,35 @@ public class Unit : MonoBehaviour{
 
 	// 아래 - AI용 함수들
 
-	// FIXME : AI가 공격 외의 기술을 갖게 되는 시점이 오면 reward 함수를 확장해야 한다
+	// FIXME : AI가 공격, 회복 외의 기술을 갖게 되는 시점이 오면 reward 함수를 확장해야 한다
 	public float CalculateRewardByCastingToThisUnit(Casting casting){
-		float killNeedCount = CalculateFloatKillNeedCount(casting);
-		if (killNeedCount <= 1) {
-			killNeedCount = 0.4f;
-		}
-
 		float sideFactor = 0;
 		Unit caster = casting.Caster;
-		if (IsAlly (caster))
+		if (IsAlly (caster)) {
 			sideFactor = -0.6f;
-		if (IsSeenAsEnemyToThisAIUnit (caster))
+		}
+		if (IsSeenAsEnemyToThisAIUnit (caster)) {
 			sideFactor = 1;
+		}
 
 		float PCFactor = 1;
-		if (IsPC)
+		if (IsPC) {
 			PCFactor = 2;
+		}
 
 		float reward = 0;
-		reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
-		//Debug.Log ("Attack to " + name + " is " + ((int)reward) + " point");
+		if (casting.Skill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
+			float killNeedCount = CalculateFloatKillNeedCount (casting);
+			if (killNeedCount <= 1) {
+				killNeedCount = 0.4f;
+			}
+			reward = sideFactor * PCFactor * GetStat (Stat.Power) / killNeedCount;
+		} else if(casting.Skill.GetSkillApplyType() == SkillApplyType.HealHealth) {
+			sideFactor = -sideFactor;
+			float healNeedCount = CalculateFloatHealNeedCount (casting);
+			reward = sideFactor * PCFactor * GetStat (Stat.Power) * healNeedCount;
+		}
+		Debug.Log ("Skill apply to " + name + " is " + ((int)reward) + " point");
 		return reward;
 	}
 
@@ -841,9 +846,23 @@ public class Unit : MonoBehaviour{
 		float killNeedCount = remainHP / damage;
 		return killNeedCount;
 	}
-
 	public int CalculateIntKillNeedCount(Casting casting){
 		return (int)CalculateFloatKillNeedCount (casting);
+	}
+
+	public float CalculateFloatHealNeedCount(Casting casting){
+		CastingApply castingApply = new CastingApply (casting, this);
+		DamageCalculator.CalculateAmountOtherThanAttackDamage(castingApply);
+		float healAmount = castingApply.GetDamage().resultDamage;
+
+		int remainHP = GetCurrentHealth () + GetRemainShield();
+		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage) {
+			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
+		}
+		int recoverableHP = GetStat (Stat.MaxHealth) - remainHP;
+
+		float healNeedCount = recoverableHP / healAmount;
+		return healNeedCount;
 	}
 
 	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다(지금은 안 쓰는데 나중에 쓸지도)
@@ -1007,13 +1026,15 @@ public class Unit : MonoBehaviour{
 			}
         }
 
-		foreach (var passiveSkill in passiveSkills) {
-            //Debug.LogError("Passive skill name " + passiveSkillInfo.name);
-            if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
-                passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-                passiveSkillList.Add(passiveSkill);
-            }
-        }
+		if(SceneData.stageNumber >= Setting.passiveOpenStage){
+			foreach (var passiveSkill in passiveSkills) {
+        	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
+            	    passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
+	                passiveSkillList.Add(passiveSkill);
+    	        }
+        	}
+		}
+		
 
         // 비어있으면 디폴트 스킬로 채우도록.
         if (activeSkills.Count() == 0) {
@@ -1127,7 +1148,7 @@ public class Unit : MonoBehaviour{
 	}
 
 	public void CheckAndHideObjectHealth(){
-		if(IsObject){
+		if(IsObject && GetSide() == Side.Neutral){
 			healthViewer.gameObject.SetActive(false);
 		}
 	}

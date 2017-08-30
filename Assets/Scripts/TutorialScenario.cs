@@ -72,10 +72,10 @@ public class TutorialScenario{
 		} else if (mission == Mission.SelectSkill) {
 			int missionSkillIndex = parser.ConsumeInt ();
 			SetMissionCondition = () => {
+				//Debug.Log("Mission : SelectSkill");
 				UIManager.Instance.TurnOnOnlyOneSkill (missionSkillIndex);
 				UIManager.Instance.ActionButtonOnOffLock = true;
 				UIManager.Instance.ControlListenerOfActionButton(missionSkillIndex, true, ToNextStep);
-				TM.DepaintAllTiles(TileColor.Blue);
 				TM.DepreselectAllTiles();
 			};
 			ResetMissionCondition = () => {
@@ -86,14 +86,18 @@ public class TutorialScenario{
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOnOnlyOneSkill(BattleData.selectedUnit.activeSkillList.Count);
 				UIManager.Instance.ActionButtonOnOffLock = true;
-				BM.readyCommandEvent.AddListener (ToNextStep);
+				TM.DepreselectAllTiles();
+				BattleData.battleManager.readyCommandEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
-				BM.readyCommandEvent.RemoveListener (ToNextStep);
+				BattleData.battleManager.readyCommandEvent.RemoveListener (ToNextStep);
 				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.OpenDetailInfo) {
 			SetMissionCondition = () => {
+				UIManager.Instance.TurnOffAllActions();
+				UIManager.Instance.ActionButtonOnOffLock = true;
+				TM.DepreselectAllTiles();
 				BattleData.uiManager.activateDetailInfoEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
@@ -108,7 +112,7 @@ public class TutorialScenario{
 			};
 		}
 
-		//isMarker = parser.ConsumeBool();
+		//마우스 표시가 되는지 아닌지. false의 경우에도 일일이 표기해야 한다
 		if(parser.ConsumeBool()){
 			mouseMarkPos = new Vector3(parser.ConsumeFloat(), parser.ConsumeFloat(), 0);
 		}

@@ -6,13 +6,27 @@ using UnityEngine.SceneManagement;
 using GameData;
 
 public class TutorialManager : MonoBehaviour {
+	private static TutorialManager instance;
+	public static TutorialManager Instance{ get { return instance; } }
+	void Awake (){
+		if (instance != null && instance != this) {
+			Destroy (this.gameObject);
+			return;
+		} else {
+			instance = this;
+		}
+	}
+
 	public Image image;
 	public Button NextButton;
-	public int index;
 	CameraMover cm;
 	string usedSceneName;
 	List<TutorialScenario> scenarioList;
+	public int index;
+	List<AIScenario> AIscenarioList;
+	int AIscenarioIndex = 0;
 	public MouseMark markPrefab;
+	MouseMark mark;
 
 	public void OnEnable(){
 		TutorialScenario.tutorialManager = this;
@@ -27,6 +41,8 @@ public class TutorialManager : MonoBehaviour {
 			EndTutorial ();
 		} else{
 			scenarioList = Parser.GetParsedData<TutorialScenario>();
+			AIscenarioList = Parser.GetParsedData<AIScenario> ();
+			AIscenarioIndex = 0;
 			BattleManager battleManager = FindObjectOfType<BattleManager>();
 			BattleData.onTutorial = true;
 			BattleData.rightClickLock = true;
@@ -47,7 +63,12 @@ public class TutorialManager : MonoBehaviour {
 
 	public void ToNextStep(){
 		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
-		if (previousScenario != null) {previousScenario.ResetMissionCondition ();}
+		if (previousScenario != null) {
+			previousScenario.ResetMissionCondition ();
+			if(previousScenario.mouseMarkPos != Vector3.zero){
+				Destroy (mark.gameObject);
+			}
+		}
 
 		index++;
 		Debug.Log("Tutorial Step "+index);
@@ -58,7 +79,7 @@ public class TutorialManager : MonoBehaviour {
 			currentScenario.SetMissionCondition ();
 			SetControl(true);
 			if(currentScenario.mouseMarkPos != Vector3.zero){
-				MouseMark mark = Instantiate(markPrefab, currentScenario.mouseMarkPos, Quaternion.identity, GameObject.Find("FixedUICanvas").transform);
+				mark = Instantiate(markPrefab, currentScenario.mouseMarkPos, Quaternion.identity, GameObject.Find("FixedUICanvas").transform);
 			}
 		}
 		else {SetControl(false);}
@@ -73,5 +94,9 @@ public class TutorialManager : MonoBehaviour {
 		NextButton.enabled = !able;
 		image.raycastTarget = !able;
 		Setting.shortcutEnable = able;
+	}
+
+	public AIScenario GetNextAIScenario(){
+		return AIscenarioList [AIscenarioIndex++];
 	}
 }

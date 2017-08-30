@@ -135,6 +135,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
+		transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
 		clickStarted = false;
 		CostAP.text = "";
 

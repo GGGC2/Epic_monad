@@ -115,7 +115,7 @@ public class SkillInfoUI : MonoBehaviour{
         }
         else if(SceneManager.GetActiveScene().name == "Battle") {
             Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameEng() == skill.owner);
-            return (Math.Round(unit.GetStat(statType) * coef + baseValue)).ToString();
+            return ((int)(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
         else return ((int)((float)UnitInfo.GetStat(skill.owner, statType)*coef + baseValue)).ToString();
 	}

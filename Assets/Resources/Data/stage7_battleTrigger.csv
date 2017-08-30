@@ -1,4 +1,4 @@
-ResultType,UnitType,ActionType,targetCount,Repeatable,Reward,etc
-Win,¸ğµç ÀûÀ» ¹«·ÂÈ­,Enemy,Neutralize,11,false,300
-Lose,Á¦ÀÌ¼±°ú Æ®¸®¾Æ³ª°¡ ¹«·ÂÈ­,Target,Neutralize,2,false,0,2,json,triana
-End,Scene#14
+ï»¿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+Win	ì ì„ 2ëª… ì´í•˜ë¡œ ë‚¨ê¸°ê³  ë¬´ë ¥í™”	Enemy	Neutralize	11	false	300
+Lose	ì œì´ì„ ê³¼ íŠ¸ë¦¬ì•„ë‚˜ê°€ ë¬´ë ¥í™”	Target	Neutralize	2	false	0	2	json	triana
+End	Scene#14	true	true
