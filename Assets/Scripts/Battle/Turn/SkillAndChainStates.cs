@@ -13,7 +13,7 @@ namespace Battle.Turn {
             Unit selectedUnit = BattleData.selectedUnit;
 			Tile targetTile = selectedUnit.GetTileUnderUnit ();
 			Vector2 unitPos = selectedUnit.GetPosition ();
-            ActiveSkill selectedSkill = BattleData.SelectedSkill;
+            ActiveSkill selectedSkill = BattleData.selectedSkill;
 
 			Direction? beforeDirection = null;
 			Direction newDirection = selectedUnit.GetDirection ();
@@ -55,7 +55,7 @@ namespace Battle.Turn {
         public static IEnumerator SelectSkillApplyDirection(Direction originalDirection) {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = BattleData.selectedUnit;
-            ActiveSkill selectedSkill = BattleData.SelectedSkill;
+            ActiveSkill selectedSkill = BattleData.selectedSkill;
 
             while (true) {
                 BattleData.isWaitingUserInput = true;
@@ -118,7 +118,7 @@ namespace Battle.Turn {
         }
 
 		public static IEnumerator SkillSelected(){
-			ActiveSkill selectedSkill = BattleData.SelectedSkill;
+			ActiveSkill selectedSkill = BattleData.selectedSkill;
 			UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.selectedUnit, selectedSkill.GetRequireAP());
             SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
             if (skillTypeOfSelectedSkill == SkillType.Auto ||
@@ -134,7 +134,7 @@ namespace Battle.Turn {
 		
         private static IEnumerator UpdatePointSkillMouseDirection(Direction originalDirection) {
 			Unit selectedUnit = BattleData.selectedUnit;
-			ActiveSkill selectedSkill = BattleData.SelectedSkill;
+			ActiveSkill selectedSkill = BattleData.selectedSkill;
 			Vector2 unitPos = selectedUnit.GetPosition ();
 
 			Tile previousTargetTile = null;
@@ -193,7 +193,7 @@ namespace Battle.Turn {
                 Vector2 selectedUnitPos = BattleData.selectedUnit.GetPosition();
 
                 List<Tile> activeRange = new List<Tile>();
-                ActiveSkill selectedSkill = BattleData.SelectedSkill;
+                ActiveSkill selectedSkill = BattleData.selectedSkill;
 				activeRange = selectedSkill.GetTilesInFirstRange (selectedUnitPos, selectedUnit.GetDirection ());
 
                 BattleData.tileManager.PaintTiles(activeRange, TileColor.Red);
