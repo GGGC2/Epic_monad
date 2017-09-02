@@ -24,24 +24,16 @@ namespace Battle.Turn{
 			else
 				enemySide = Side.Ally;
 			return enemySide;
-		}/*
-		public static List<Tile> FindEnemyTilesInTheseTiles(List<Tile> tiles, Unit mainUnit){
-			List<Tile> tilesHaveEnemy = (from tile in tiles
-				where tile.GetUnitOnTile() != null
-				let unit = tile.GetUnitOnTile()
-				where IsSecondUnitEnemyToFirstUnit(mainUnit, unit)
-				select tile).ToList();
-			return tilesHaveEnemy;
-		}*/
+		}
 
 		// 1턴 내에 이동 후 공격 불가하거나 그럴 만한 가치가 없을 때 가장 가치있는 적을 향해 움직인다
 		// 가치에는 거리도 적용되므로 너무 멀면 그쪽으로 가진 않는다
-		public static Tile GetBestApproachWorthTile(Unit unit, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, List<Vector2> goalArea){
+		public static Tile GetBestApproachWorthTile(Unit unit, List<ActiveSkill> skills, List<Vector2> goalArea){
 			Tile unitTile = unit.GetTileUnderUnit ();
 			Vector2 unitPos = unit.GetPosition ();
 			int minAPUse = unit.MinAPUseForStandbyForAI ();
 
-			Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTileForAI (unit, unitTile, int.MaxValue, skill);
+
 			TileWithPath bestFinalTileWithPath = new TileWithPath (unit.GetTileUnderUnit ());
 			Tile bestTile = unit.GetTileUnderUnit ();
 
@@ -49,49 +41,64 @@ namespace Battle.Turn{
 				float maxFinalReward = 0;
 				Unit caster = unit;
 
-				foreach (var pair in allPaths) {
-					TileWithPath tileWithPath = pair.Value;
-					Tile tile = tileWithPath.tile;
-					int requireAP = pair.Value.requireActivityPoint;
+				foreach (ActiveSkill skill in skills) {
+					Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTileForAI (unit, unitTile, int.MaxValue, skill);
 
-					Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+					foreach (var pair in allPaths) {
+						TileWithPath tileWithPath = pair.Value;
+						Tile tile = tileWithPath.tile;
+						int requireAP = pair.Value.requireActivityPoint;
 
-					if (bestCastingOnThisTile != null) {
-						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-						float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
+						Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
 
-						if (reward > maxFinalReward) {
-							maxFinalReward = reward;
-							bestFinalTileWithPath = tileWithPath;
+						if (bestCastingOnThisTile != null) {
+							float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
+							float reward = singleCastingReward / (float)Math.Sqrt (requireAP);
+
+							if (reward > maxFinalReward) {
+								maxFinalReward = reward;
+								bestFinalTileWithPath = tileWithPath;
+								BattleData.selectedSkill = skill;
+							}
 						}
 					}
 				}
-					
+
 				if (maxFinalReward == 0) {
 					return bestTile;
 				}
 
 			} else {
 				Debug.Log ("For goal");
-				Dictionary<Vector2, TileWithPath> allGoalPaths = new Dictionary<Vector2, TileWithPath> ();
-				foreach (var pair in allPaths) {
-					TileWithPath tileWithPath = pair.Value;
-					Vector2 tilePos = tileWithPath.tile.GetTilePos ();
-					if (goalArea.Contains (tilePos)) {
-						allGoalPaths [pair.Key] = pair.Value;
+
+				foreach (ActiveSkill skill in skills) {
+					Dictionary<Vector2, TileWithPath> allGoalPaths = new Dictionary<Vector2, TileWithPath> ();
+					Dictionary<Vector2, TileWithPath> allPaths = PathFinder.CalculatePathsFromThisTileForAI (unit, unitTile, int.MaxValue, skill);
+					foreach (var pair in allPaths) {
+						TileWithPath tileWithPath = pair.Value;
+						Vector2 tilePos = tileWithPath.tile.GetTilePos ();
+						if (goalArea.Contains (tilePos)) {
+							allGoalPaths [pair.Key] = pair.Value;
+						}
 					}
-				}
 
-				bestFinalTileWithPath = GetMinRequireAPTileWithPath (allGoalPaths);
+					TileWithPath bestFinalTileWithPathForThisSkill = GetMinRequireAPTileWithPath (allGoalPaths);
+					if (bestFinalTileWithPath.requireActivityPoint == 0 || bestFinalTileWithPathForThisSkill.requireActivityPoint < bestFinalTileWithPath.requireActivityPoint) {
+						bestFinalTileWithPath = bestFinalTileWithPathForThisSkill;
+						BattleData.selectedSkill = skill;
+					}
 
-				if(unit.GetCurrentActivityPoint() >= bestFinalTileWithPath.requireActivityPoint){
-					bestTile=bestFinalTileWithPath.tile;
-					return bestTile;
+					if(unit.GetCurrentActivityPoint() >= bestFinalTileWithPath.requireActivityPoint){
+						bestTile=bestFinalTileWithPath.tile;
+						return bestTile;
+					}
 				}
 			}
 
 			List<Tile> path = bestFinalTileWithPath.path;
 			path.Add (bestFinalTileWithPath.tile);
+
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(unit, BattleData.selectedSkill);
 
 			foreach (Tile tile in path) {
 				Vector2 tilePos = tile.GetTilePos ();
@@ -108,30 +115,36 @@ namespace Battle.Turn{
 		}
 
 		// 1턴 내에 이동 후 공격하는 모든 경우 중 가장 가치있는 경우를 찾아서 이동 목적지 return
-		public static Tile GetBestMovableTile(Unit caster, ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPath, int moveRestrainFactor, int minWorthReward){
+		public static Tile GetBestMovableTile(Unit caster, List<ActiveSkill> skills, int moveRestrainFactor, int minWorthReward){
 			Tile bestTile = caster.GetTileUnderUnit ();
 			int currAP = caster.GetCurrentActivityPoint ();
-			int skillRequireAP = caster.GetActualRequireSkillAP (skill);
 			float maxReward = 0;
 
-			foreach (var pair in movableTilesWithPath) {
-				Tile tile = pair.Value.tile;
-				int requireAP = pair.Value.requireActivityPoint;
-				int actualRemainAP = currAP - requireAP - moveRestrainFactor;
-				int possibleSkillUseCount = actualRemainAP / skillRequireAP;
+			foreach (ActiveSkill skill in skills) {
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
-				if (possibleSkillUseCount <= 0)
-					continue;
+				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
 
-				float reward = 0;
-				Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
-				if (bestCastingOnThisTile != null) {
-					float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
-					reward = singleCastingReward * possibleSkillUseCount;
+				foreach (var pair in movableTilesWithPath) {
+					Tile tile = pair.Value.tile;
+					int requireAP = pair.Value.requireActivityPoint;
+					int actualRemainAP = currAP - requireAP - moveRestrainFactor;
+					int possibleSkillUseCount = actualRemainAP / skillRequireAP;
 
-					if (reward > maxReward) {
-						maxReward = reward;
-						bestTile = tile;
+					if (possibleSkillUseCount <= 0)
+						continue;
+
+					float reward = 0;
+					Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+					if (bestCastingOnThisTile != null) {
+						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
+						reward = singleCastingReward * possibleSkillUseCount;
+
+						if (reward > maxReward) {
+							maxReward = reward;
+							bestTile = tile;
+							BattleData.selectedSkill = skill;
+						}
 					}
 				}
 			}
@@ -227,33 +240,25 @@ namespace Battle.Turn{
 
 			yield return battleManager.ToDoBeforeAction ();
 
-			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
-			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
-			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
-			ActiveSkill selectedSkill = BattleData.SelectedSkill;
-
-			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI(unit, selectedSkill);
-
 			int minRewardWorthAttack = 0;
-
 			if (unit.GetNameEng () == "kashasty_Escape") {
 				minRewardWorthAttack = 400;
 			}
 
-			Tile destTile = AIUtil.GetBestMovableTile (unit, selectedSkill, movableTilesWithPathWithDestroying, 0, minRewardWorthAttack);
+			Tile destTile = AIUtil.GetBestMovableTile (unit, unit.GetSkillList(), 0, minRewardWorthAttack);
 
 			if (destTile != null) {
-				yield return MoveWithDestroyRoutine (selectedSkill, movableTilesWithPathWithDestroying, destTile);
+				yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
 				state = State.CastingLoop;
 			} else {
-				TileManager.Instance.DepaintAllTiles(TileColor.Blue);
 				state = State.Approach;
 				yield break;
 			}
 		}
 
-		IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying, Tile destTile){
+		IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Tile destTile){
 			Tile startTile = unit.GetTileUnderUnit ();
+			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
 
 			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
 			List<Tile> destPath = destTileWithPath.path;
@@ -330,22 +335,15 @@ namespace Battle.Turn{
 
 			yield return battleManager.ToDoBeforeAction ();
 
-			//이동 전에 먼저 기술부터 정해야 한다... 기술 범위에 따라 어떻게 이동할지 아니면 이동 안 할지가 달라지므로
-			//나중엔 여러 기술중에 선택해야겠지만 일단 지금은 AI 기술이 모두 하나뿐이니 그냥 첫번째걸로
-			BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
-			ActiveSkill skill = BattleData.SelectedSkill;
+			Tile destTile = AIUtil.GetBestApproachWorthTile (unit, unit.GetSkillList(), _AIData.goalArea);
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
-
-			Tile destTile = AIUtil.GetBestApproachWorthTile (unit, skill, movableTilesWithPathWithDestroying, _AIData.goalArea);
-			TileWithPath destTileWithPath = movableTilesWithPathWithDestroying [destTile.GetTilePos ()];
-
-			yield return MoveWithDestroyRoutine (skill, movableTilesWithPathWithDestroying, destTile);
+			yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
 			state = State.StandbyOrRest;
 		}
 
 		IEnumerator CastingLoop(){
 			bool flag = false;
+			ActiveSkill skill = BattleData.selectedSkill;
 
 			while(true){
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
@@ -360,9 +358,6 @@ namespace Battle.Turn{
 				}
 
 				yield return battleManager.ToDoBeforeAction ();
-
-				BattleData.selectedSkill = BattleData.selectedUnit.activeSkillList[0];
-				ActiveSkill skill = BattleData.SelectedSkill;
 
 				if (!unit.HasEnoughAPToUseSkill(skill)) {
 					state = State.StandbyOrRest;
