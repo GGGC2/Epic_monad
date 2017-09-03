@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using GameData;
+using UnityEngine.UI;
 
 public class Utility : MonoBehaviour {
 	public static Direction GetMouseDirectionByUnit(Unit unit, Direction originalDirection){
@@ -320,6 +321,62 @@ public class Utility : MonoBehaviour {
 		}
 		
 		return Resources.Load<Sprite>("Icon/Skill/" + owner + "/" + address);
+	}
+
+	public static Sprite ClassImageOf(UnitClass unitClass) {
+        if(SceneData.stageNumber < Setting.classOpenStage){
+            return Resources.Load<Sprite>("transparent");
+		}
+		
+		if (unitClass == UnitClass.Melee)
+            return Resources.Load<Sprite>("Icon/Stat/meleeClass");
+        else if (unitClass == UnitClass.Magic)
+            return Resources.Load<Sprite>("Icon/Stat/magicClass");
+        else
+            return Resources.Load<Sprite>("Icon/Empty");
+    }
+
+    public static Sprite ElementImageOf(Element element) {
+        if(SceneData.stageNumber < Setting.elementOpenStage){
+            return Resources.Load<Sprite>("transparent");
+        }
+		
+		if (element == Element.Fire)
+            return Resources.Load("Icon/Element/fire", typeof(Sprite)) as Sprite;
+        else if (element == Element.Water)
+            return Resources.Load("Icon/Element/water", typeof(Sprite)) as Sprite;
+        else if (element == Element.Plant)
+            return Resources.Load("Icon/Element/plant", typeof(Sprite)) as Sprite;
+        else if (element == Element.Metal)
+            return Resources.Load("Icon/Element/metal", typeof(Sprite)) as Sprite;
+        else
+            return Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
+    }
+
+    public static Sprite CelestialImageOf(Celestial celestial) {
+        if(SceneData.stageNumber < Setting.celestialOpenStage){
+            return Resources.Load<Sprite>("transparent");
+        }
+		
+		if (celestial == Celestial.Sun)
+            return Resources.Load("Icon/Celestial/sun", typeof(Sprite)) as Sprite;
+        else if (celestial == Celestial.Moon)
+            return Resources.Load("Icon/Celestial/moon", typeof(Sprite)) as Sprite;
+        else if (celestial == Celestial.Earth)
+            return Resources.Load("Icon/Celestial/earth", typeof(Sprite)) as Sprite;
+        else
+            return Resources.Load("Icon/Empty", typeof(Sprite)) as Sprite;
+    }
+
+	public static void SetClassImage(Image image, UnitClass unitClass) {
+		image.sprite = ClassImageOf(unitClass);
+	}
+	public static void SetElementImage(Image image, Element element) {
+		image.sprite = ElementImageOf(element);		
+	}
+
+	public static void SetCelestialImage(Image image, Celestial celestial) {
+		image.sprite = CelestialImageOf(celestial);
 	}
 
 	public static IEnumerator WaitForFewFrames(int frameCount){

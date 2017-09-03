@@ -48,9 +48,9 @@ namespace BattleUI{
             int level = PartyData.level;
             apText.text = level + 60 + (Agility / 2) + "(+" + Agility + ")";
 
-            SetClassImage(UnitInfo.GetUnitClass(unitName));
-            SetElementImage(UnitInfo.GetElement(unitName));
-            SetCelestialImage(UnitInfo.GetCelestial(unitName));
+            Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(unitName));
+            Utility.SetElementImage(elementImage, UnitInfo.GetElement(unitName));
+            Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(unitName));
         }
 
         public void RefreshStatusEffectIconList() {
