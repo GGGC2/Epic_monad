@@ -67,7 +67,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public Unit GetSelectedUnit(){
-		return BattleData.SelectedUnit;
+		return BattleData.selectedUnit;
 	}
 
 	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
@@ -86,10 +86,10 @@ public class BattleManager : MonoBehaviour{
 					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 					BattleData.uiManager.UpdateApBarUI();
 
-					if (BattleData.SelectedUnit.IsAI){
-						yield return BattleData.SelectedUnit.GetAI().UnitTurn ();
+					if (BattleData.selectedUnit.IsAI){
+						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
 					}else{
-						yield return StartCoroutine (ActionAtTurn (BattleData.SelectedUnit));
+						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
 					}
 
 					BattleData.SetSelectedUnit(null);
@@ -132,18 +132,18 @@ public class BattleManager : MonoBehaviour{
 		BattleData.SetSelectedUnit(unit);
 		BattleData.move = new BattleData.Move();
 		BattleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
-		ChainList.RemoveChainOfThisUnit(BattleData.SelectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
+		ChainList.RemoveChainOfThisUnit(BattleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 
 		BattleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
 		unit.TriggerTileStatusEffectAtTurnStart();
 
-		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.SelectedUnit);
-		BattleData.SelectedUnit.SetActive();
+		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
+		BattleData.selectedUnit.SetActive();
 	}
 	public void EndUnitTurn(){
-		BattleData.SelectedUnit.TriggerTileStatusEffectAtTurnEnd();
+		BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		BattleData.SelectedUnit.SetInactive();
+		BattleData.selectedUnit.SetInactive();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
 		foreach(Unit caster in BattleData.unitManager.GetAllUnits())
@@ -151,7 +151,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	/*private void OnOffSkillButton(){
-		bool isPossible = BattleData.SelectedUnit.IsSkillUsePossibleState ();
+		bool isPossible = BattleData.selectedUnit.IsSkillUsePossibleState ();
 		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
 	}
     private void SetStandbyButton(){
@@ -212,10 +212,10 @@ public class BattleManager : MonoBehaviour{
 
 	public static bool IsSelectedUnitRetreatOrDie()
 	{
-		if (BattleData.retreatUnits.Contains(BattleData.SelectedUnit))
+		if (BattleData.retreatUnits.Contains(BattleData.selectedUnit))
 			return true;
 
-		if (BattleData.deadUnits.Contains(BattleData.SelectedUnit))
+		if (BattleData.deadUnits.Contains(BattleData.selectedUnit))
 			return true;
 
 		return false;
@@ -275,7 +275,7 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator PrepareUnitActionAndGetCommand(){
 		while (BattleData.currentState == CurrentState.FocusToUnit){
-			Unit unit = BattleData.SelectedUnit;
+			Unit unit = BattleData.selectedUnit;
 
 			if (IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Dead;
@@ -292,8 +292,8 @@ public class BattleManager : MonoBehaviour{
 			List<Tile> movableTiles = new List<Tile>();
 			IEnumerator update = null;
 			//이동 가능한 범위 표시
-			if(BattleData.SelectedUnit.IsMovePossibleState()){
-				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.SelectedUnit);
+			if(BattleData.selectedUnit.IsMovePossibleState()){
+				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
 				movableTilesWithPath.Remove (unit.GetPosition ());
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath){
 					movableTiles.Add(movableTileWithPath.Value.tile);
@@ -325,7 +325,7 @@ public class BattleManager : MonoBehaviour{
 
 			if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
-				BattleData.SelectedUnit.ApplySnapshot();
+				BattleData.selectedUnit.ApplySnapshot();
 				yield return StartCoroutine(AtActionEnd());
 				BattleData.alreadyMoved = false;
 			}
@@ -339,7 +339,7 @@ public class BattleManager : MonoBehaviour{
 			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
 				Tile destTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
 				List<Tile> destPath = movableTilesWithPath[BattleData.move.selectedTilePosition].path;
-				Vector2 currentTilePos = BattleData.SelectedUnit.GetPosition();
+				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
 				Vector2 distanceVector = BattleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 				int totalUseActivityPoint = movableTilesWithPath[BattleData.move.selectedTilePosition].requireActivityPoint;
@@ -360,7 +360,7 @@ public class BattleManager : MonoBehaviour{
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 			}
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
-				if(BattleData.SelectedUnit.IsStandbyPossible()){
+				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
 					yield return StartCoroutine(Standby());
 				}else{
@@ -379,8 +379,8 @@ public class BattleManager : MonoBehaviour{
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}
 	public IEnumerator ToDoBeforeAction(){
-		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.SelectedUnit);
-		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.SelectedUnit);
+		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
+		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
 		yield return null;
 	}
 
@@ -652,7 +652,7 @@ public class BattleManager : MonoBehaviour{
 					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString ();
-					viewer.PreviewAp (BattleData.SelectedUnit, requiredAP);
+					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
 					foreach (Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path) {
 						tile.PaintTile (TileColor.Red);
 					}

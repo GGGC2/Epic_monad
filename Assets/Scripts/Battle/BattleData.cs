@@ -233,6 +233,7 @@ public static class BattleData{
 		move = new Move();
 		alreadyMoved = false;
 
+		selectedUnit = null;
 		readiedUnits = new List<Unit>();
 		deadUnits = new List<Unit>();
 		retreatUnits = new List<Unit>();
@@ -242,34 +243,15 @@ public static class BattleData{
 		previewAPAction = null;
 	}
 
-	public static ActiveSkill SelectedSkill{
-		get {return selectedSkill;}
-	}
-
-	public static ActiveSkill PreSelectedSkill{
-		get {return preSelectedSkill;}
-	}
-
-	public static Unit SelectedUnit{
-		get{
-			return selectedUnit;
-		}
-	}
-
 	public static void SetSelectedUnit(Unit unit){
 		selectedUnit = unit;
 	}
 
 	public static Tile SelectedTile{
-		get {
-			return tileManager.GetTile(move.selectedTilePosition);
-		}
+		get { return tileManager.GetTile(move.selectedTilePosition); }
 	}
-
 	public static Tile SelectedUnitTile{
-		get{
-			return tileManager.GetTile(SelectedUnit.GetPosition());
-		}
+		get{ return selectedUnit.GetTileUnderUnit (); }
 	}
 	public static List<Unit> GetObjectUnitsList(){
 		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject == true);
