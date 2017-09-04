@@ -19,11 +19,13 @@ public class ReadyManager : MonoBehaviour{
 		// string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
 		string[] stageData = Parser.FindRowDataOf(csvFile.text, "99");
 
+		int numberOfAvailableUnit = Int32.Parse(stageData[1]);
+		int numberOfSelectableUnit = Int32.Parse(stageData[2]);
 
 		for (int i = 1; i <= 20; i++){
 			GameObject availableUnitButton = GameObject.Find("CharacterButton" + i);
 			availableUnitButtons.Add(availableUnitButton);
-			if (i <= Int32.Parse(stageData[2]))
+			if (i <= numberOfAvailableUnit)
 				availableUnitButton.GetComponent<AvailableUnitButton>().SetNameAndSprite(stageData[i+2]);
 			else
 				availableUnitButton.SetActive(false);

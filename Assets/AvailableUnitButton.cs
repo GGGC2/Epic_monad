@@ -6,14 +6,18 @@ using Enums;
 
 public class AvailableUnitButton : MonoBehaviour {
 
+	public Image highlightImage;
 	Image standingImage;
 	Text unitName;
 	Image classImage;
 	Image celestialImage;
 	Image elementImage;
+	string nameString; // 영어이름
 
 	// Use this for initialization
 	void Start () {
+		InactiveHighlight();
+
 		standingImage = transform.Find("CharacterImageMask").Find("CharacterImage").GetComponent<Image>();
 		unitName = transform.Find("NameText").GetComponent<Text>();
 		classImage = transform.Find("ClassImageMask").Find("ClassImage").GetComponent<Image>();
@@ -27,6 +31,7 @@ public class AvailableUnitButton : MonoBehaviour {
 	}
 
 	public void SetNameAndSprite(string nameString) {
+		this.nameString = nameString;
 		unitName.text = UnitInfo.ConvertToKoreanName(nameString);
 
 		if(nameString == "unselected")
@@ -41,5 +46,17 @@ public class AvailableUnitButton : MonoBehaviour {
         // 첫번째 버튼에 있는 캐릭터 정보를 기본으로 띄우게 함
         if (gameObject.name == "CharacterButton1")
             FindObjectOfType<DetailInfoPanelInPartySelect>().SetCommonUnitInfoUI(nameString);       
+	}
+
+	public void ActiveHighlight() {
+		highlightImage.enabled = true;
+	}
+
+	public void InactiveHighlight() {
+		highlightImage.enabled = false;
+	}
+
+	public void SetUnitInfoToDetailPanel() {
+		FindObjectOfType<DetailInfoPanelInPartySelect>().SetCommonUnitInfoUI(nameString);
 	}
 }
