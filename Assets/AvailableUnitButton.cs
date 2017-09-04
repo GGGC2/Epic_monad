@@ -12,10 +12,13 @@ public class AvailableUnitButton : MonoBehaviour {
 	Image classImage;
 	Image celestialImage;
 	Image elementImage;
-	string nameString; // 영어이름
+	public string nameString; // 영어이름
+
+	DetailInfoPanelInPartySelect detailInfoPanelInPartySelect;
+	ReadyManager readyManager;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		InactiveHighlight();
 
 		standingImage = transform.Find("CharacterImageMask").Find("CharacterImage").GetComponent<Image>();
@@ -23,6 +26,13 @@ public class AvailableUnitButton : MonoBehaviour {
 		classImage = transform.Find("ClassImageMask").Find("ClassImage").GetComponent<Image>();
 		celestialImage = transform.Find("CelestialImageMask").Find("CelestialImage").GetComponent<Image>();
 		elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
+
+		detailInfoPanelInPartySelect = FindObjectOfType<DetailInfoPanelInPartySelect>();
+		readyManager = FindObjectOfType<ReadyManager>();
+	}
+
+	void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -45,7 +55,7 @@ public class AvailableUnitButton : MonoBehaviour {
 
         // 첫번째 버튼에 있는 캐릭터 정보를 기본으로 띄우게 함
         if (gameObject.name == "CharacterButton1")
-            FindObjectOfType<DetailInfoPanelInPartySelect>().SetCommonUnitInfoUI(nameString);       
+            detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);       
 	}
 
 	public void ActiveHighlight() {
@@ -57,6 +67,22 @@ public class AvailableUnitButton : MonoBehaviour {
 	}
 
 	public void SetUnitInfoToDetailPanel() {
-		FindObjectOfType<DetailInfoPanelInPartySelect>().SetCommonUnitInfoUI(nameString);
+		detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);
+		SelectUnitIfUnselected();
+	}
+
+	void SelectUnitIfUnselected() {
+		// 출전중이 아니라면
+		if (!readyManager.IsAlreadySelected(nameString)) {
+			// 풀팟이면
+			if (readyManager.selectableUnitCounter.IsPartyFull()) return;
+			else {
+				readyManager.AddUnitToSelectedUnitList(this);
+			}
+		}
+		// 출전중일때 누르면 빠짐
+		else {
+			readyManager.SubUnitToSelectedUnitList(this);
+		}
 	}
 }

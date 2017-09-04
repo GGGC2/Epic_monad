@@ -1,7 +1,7 @@
-StageNumber,UnitNumber,AvailableCount,Candidate1,Candidate2,Candidate3,Candidate4,Candidate5
+StageNumber,SelectableCount,AvailableCount,Candidate1,Candidate2,Candidate3,Candidate4,Candidate5
 2,4,5,noel,sepia,arcadia,grenev,darkenir
 3,1,1,yeong,,,,
 4,2,2,lucius,karldrich,,,
 5,4,4,grenev,darkenir,sepia,bianca
 7,2,2,json,triana
-99,8,4,noel,sepia,arcadia,grenev,darkenir,lucius,karldrich,triana
+99,4,7,noel,sepia,arcadia,grenev,darkenir,lucius,karldrich
