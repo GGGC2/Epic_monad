@@ -17,7 +17,7 @@ public class ReadyManager : MonoBehaviour{
 	void Start(){
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
 		// string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
-		string[] stageData = Parser.FindRowDataOf(csvFile.text, "2");
+		string[] stageData = Parser.FindRowDataOf(csvFile.text, "99");
 
 
 		for (int i = 1; i <= 20; i++){

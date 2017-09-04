@@ -37,5 +37,9 @@ public class AvailableUnitButton : MonoBehaviour {
 		Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(nameString));
 		Utility.SetElementImage(elementImage, UnitInfo.GetElement(nameString));
 		Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
+
+        // 첫번째 버튼에 있는 캐릭터 정보를 기본으로 띄우게 함
+        if (gameObject.name == "CharacterButton1")
+            FindObjectOfType<DetailInfoPanelInPartySelect>().SetCommonUnitInfoUI(nameString);       
 	}
 }
