@@ -12,7 +12,7 @@ public class AvailableUnitButton : MonoBehaviour {
 	Image classImage;
 	Image celestialImage;
 	Image elementImage;
-	public string nameString; // 영어이름
+	public string nameString; // 영어이름: 유닛정보 찾을때 필요
 
 	DetailInfoPanelInPartySelect detailInfoPanelInPartySelect;
 	ReadyManager readyManager;
