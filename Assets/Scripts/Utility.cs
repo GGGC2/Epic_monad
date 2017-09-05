@@ -324,7 +324,7 @@ public class Utility : MonoBehaviour {
 	}
 
 	public static Sprite ClassImageOf(UnitClass unitClass) {
-        if(SceneData.stageNumber < Setting.classOpenStage){
+        if (SceneData.stageNumber < Setting.classOpenStage && SceneData.stageNumber != 0){
             return Resources.Load<Sprite>("transparent");
 		}
 		
@@ -337,7 +337,7 @@ public class Utility : MonoBehaviour {
     }
 
     public static Sprite ElementImageOf(Element element) {
-        if(SceneData.stageNumber < Setting.elementOpenStage){
+        if(SceneData.stageNumber < Setting.elementOpenStage && SceneData.stageNumber != 0){
             return Resources.Load<Sprite>("transparent");
         }
 		
@@ -354,7 +354,7 @@ public class Utility : MonoBehaviour {
     }
 
     public static Sprite CelestialImageOf(Celestial celestial) {
-        if(SceneData.stageNumber < Setting.celestialOpenStage){
+        if(SceneData.stageNumber < Setting.celestialOpenStage && SceneData.stageNumber != 0){
             return Resources.Load<Sprite>("transparent");
         }
 		
