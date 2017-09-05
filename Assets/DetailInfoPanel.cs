@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class DetailInfoPanel : UnitInfoUI{
 	public Image illust;
@@ -28,12 +29,24 @@ public class DetailInfoPanel : UnitInfoUI{
 		SetCommonUnitInfoUI();
 
         Debug.Log("Passive : " + unit.passiveSkillList.Count + ", Active : " + unit.activeSkillList.Count);
-        for(int i = 0; i <= 10; i++){
-            skillButtons[i].gameObject.SetActive(true);
-            if(i < unit.passiveSkillList.Count){
-                skillButtons[i].Initialize(unit.passiveSkillList[i]);
-            }else if(i < unit.passiveSkillList.Count + unit.activeSkillList.Count){
-                skillButtons[i].Initialize(unit.activeSkillList[i - unit.passiveSkillList.Count]);
+        
+        skillButtons.ForEach(button => button.gameObject.SetActive(true));
+
+		// 고유특성 (렙제 0인 특성) 은 무조건 앞으로
+		if (unit.passiveSkillList.Any(pSkill => pSkill.requireLevel == 0)) {
+			PassiveSkill uniquePassive = unit.passiveSkillList.Find(pSkill => pSkill.requireLevel == 0);
+			skillButtons.First().Initialize(uniquePassive);
+		}
+		else {
+			skillButtons.First().gameObject.SetActive(false);
+		}
+		
+		// 나머지 스킬을 액티브 -> 패시브 순서로 표시
+		for (int i = 1; i <= 10; i++){
+            if (i <= unit.activeSkillList.Count){
+                skillButtons[i].Initialize(unit.activeSkillList[i-1]);
+            }else if(i < unit.activeSkillList.Count + unit.passiveSkillList.Count){
+                skillButtons[i].Initialize(unit.passiveSkillList[i - unit.activeSkillList.Count]);
             }else{
                 skillButtons[i].gameObject.SetActive(false);
             }
