@@ -121,12 +121,12 @@ namespace BattleUI{
 
             unitImage = transform.Find("UnitImage").GetComponent<Image>();
             unitName = transform.Find("NameText").GetComponent<Text>();
-            classImage = transform.Find("ClassImage").GetComponent<Image>();
+            classImage = transform.Find("ClassImageMask").Find("ClassImage").GetComponent<Image>();
 
-            elementImage = transform.Find("ElementImage").GetComponent<Image>();
-            elementBuffIcon = transform.Find("ElementImage").Find("BuffImage").gameObject;
+            elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
+            elementBuffIcon = transform.Find("ElementBuffImage").gameObject;
 
-            celestialImage = transform.Find("CelestialImage").GetComponent<Image>();
+            celestialImage = transform.Find("CelestialImageMask").Find("CelestialImage").GetComponent<Image>();
 
             hpText = transform.Find("HP").Find("HPText").GetComponent<Text>();
             apText = transform.Find("AP").Find("APText").GetComponent<Text>();
