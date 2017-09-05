@@ -74,7 +74,7 @@ namespace BattleUI {
             tileImage = transform.Find("TileImage").GetComponent<Image>();
             nameText = transform.Find("NameText").GetComponent<Text>();
             apText = transform.Find("APText").GetComponent<Text>();
-            elementImage = transform.Find("ElementImage").GetComponent<Image>();
+            elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
 
             //효과 표시 내용은 BattleReady씬에서 켜면 에러가 생기기 때문에 씬 이름으로 조건 확인하고 실행
             if (SceneManager.GetActiveScene().name == "Battle") {
