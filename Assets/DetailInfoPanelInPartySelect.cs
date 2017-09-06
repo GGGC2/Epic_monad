@@ -63,6 +63,9 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
 		if (passiveSkillList.Any(pSkill => pSkill.requireLevel == 0)) {
 			PassiveSkill uniquePassive = passiveSkillList.Find(pSkill => pSkill.requireLevel == 0);
 			skillButtons.First().Initialize(uniquePassive);
+
+			// 고유특성이 있으면 미리 집어넣어놓음
+			// SetCommonSkillInfoUI();
 		}
 		else {
 			skillButtons.First().gameObject.SetActive(false);

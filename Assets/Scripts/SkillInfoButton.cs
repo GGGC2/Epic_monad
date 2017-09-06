@@ -12,6 +12,19 @@ public class SkillInfoButton : SkillInfoUI, IPointerDownHandler{
 		myNameText = transform.Find("SkillText").GetComponent<Text>();
 		iconSlot = transform.Find("SkillImage").GetComponent<Image>();
 	}
+
+	public void Start() { 
+		if(gameObject.name == "SkillPrevButton0"){
+			// GetComponent<Button>().onClick.Invoke();
+			viewerNameText.text = "";
+			costText.text = "";
+			cooldownText.text = "";
+			rangeType.sprite = Resources.Load<Sprite>("transparent");
+			rangeText.text = "";
+			explainText.text = "";
+		}
+	}
+
 	public void Initialize(Skill newSkill){
 		Debug.Log("Setting Skill : " + newSkill.korName);
 		skill = newSkill;		
@@ -23,19 +36,9 @@ public class SkillInfoButton : SkillInfoUI, IPointerDownHandler{
 				iconSlot.sprite = skill.icon;
 			}
 		}
-
-		//조건 체크는 패널 지우는 동일 작업을 11번 반복하지 않기 위함
-		if(skill.requireLevel == 0){
-			viewerNameText.text = "";
-			costText.text = "";
-			cooldownText.text = "";
-			rangeType.sprite = Resources.Load<Sprite>("transparent");
-			rangeText.text = "";
-			explainText.text = "";
-		}
 	}
 
-	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
+	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){ //Debug.Log(eventData);
 		SetCommonSkillInfoUI();
 	}
 }
