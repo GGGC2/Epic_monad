@@ -684,6 +684,26 @@ Prefab:
       propertyPath: tutorialManager
       value: 
       objectReference: {fileID: 1436865757}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: aiData
+      value: 
+      objectReference: {fileID: 4900000, guid: 6a9a1f6532ca0dd49961c29e1ee1c574, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: battleConditionData
+      value: 
+      objectReference: {fileID: 4900000, guid: 91bcb1b9c2828b64b9004b6290a74885, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: unitData
+      value: 
+      objectReference: {fileID: 4900000, guid: 55161412750fc7345bac25e7d211978d, type: 3}
+    - target: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+        type: 2}
+      propertyPath: mapData
+      value: 
+      objectReference: {fileID: 4900000, guid: 98b8645f03868414ab6360655b7c3a51, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0
