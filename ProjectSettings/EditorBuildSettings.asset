@@ -8,30 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/title.unity
     guid: b00048fa0774c41ed8bc1e857250ce52
-  - enabled: 0
-    path: 
-    guid: e9cbfeb0cf1314629bde67ab26bd4f86
-  - enabled: 0
-    path: 
-    guid: 1201bb8741cb247b99d261245c1e5c2e
-  - enabled: 0
-    path: 
-    guid: 6a8f178b8bd6644169bf89778da907c9
   - enabled: 1
     path: Assets/Scene/dialogue.unity
     guid: e0d0971895ebc4947936555fe1dd9341
-  - enabled: 0
-    path: 
-    guid: 4af92ed65baebc444a87a8dc1372c366
   - enabled: 1
     path: Assets/Scene/Battle.unity
     guid: 4b4c540e51c224d6780c166d84212cb2
-  - enabled: 0
-    path: Assets/Scene/worldMap.unity
-    guid: 2231e6fe04d5645b9aa544975377056a
-  - enabled: 0
-    path: Assets/Scene/SkillTree.unity
-    guid: bcefe58f8ecc84337a80d97e2ffbc135
   - enabled: 1
     path: Assets/Scene/BattleReady.unity
     guid: dbdd7ed600ede044f833b7fa2431c678
