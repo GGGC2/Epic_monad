@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Enums;
 using GameData;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class DetailInfoPanelInPartySelect : MonoBehaviour {
 
@@ -81,6 +82,11 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
                 skillButtons[i].gameObject.SetActive(false);
             }
         }
+
+		// 스킬 상세설명 초기화
+		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
+		skillButton.GetComponent<SkillInfoButton>().SetCommonSkillInfoUI();
+		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 
 	public void SearchSkillList(string nameString) {
