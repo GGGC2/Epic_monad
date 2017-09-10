@@ -1,8 +1,8 @@
-﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject
-1	아스터 기병	soldier01	Ally	13	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-2	아스터 기병	soldier01	Ally	14	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-3	아스터 기병	soldier01	Ally	15	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-4	아스터 기병	soldier01	Ally	16	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
+1	아스터 기병	asterCavalry01	Ally	13	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
+2	아스터 기병	asterCavalry01	Ally	14	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
+3	아스터 기병	asterCavalry01	Ally	15	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
+4	아스터 기병	asterCavalry01	Ally	16	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
 5	아스터 궁수	asterArcher02	Ally	13	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
 6	아스터 궁수	asterArcher02	Ally	14	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
 7	아스터 궁수	asterArcher02	Ally	15	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
