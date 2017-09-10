@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class DetailInfoPanel : UnitInfoUI{
 	public Image illust;
@@ -51,6 +52,11 @@ public class DetailInfoPanel : UnitInfoUI{
                 skillButtons[i].gameObject.SetActive(false);
             }
         }
+
+		// 스킬 상세설명 초기화
+		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
+		skillButton.GetComponent<SkillInfoButton>().SetCommonSkillInfoUI();
+		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 }
 
