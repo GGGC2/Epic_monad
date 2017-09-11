@@ -856,10 +856,7 @@ public class Unit : MonoBehaviour{
 		float healAmount = castingApply.GetDamage().resultDamage;
 
 		int remainHP = GetCurrentHealth () + GetRemainShield();
-		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage) {
-			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
-		}
-		int recoverableHP = GetStat (Stat.MaxHealth) - remainHP;
+		int recoverableHP = Math.Max (0, GetStat (Stat.MaxHealth) - remainHP);
 
 		float healNeedCount = recoverableHP / healAmount;
 		return healNeedCount;

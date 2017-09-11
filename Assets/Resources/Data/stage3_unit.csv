@@ -1,15 +1,15 @@
-﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject
-1	아스터 기병	soldier01	Enemy	5	10	RightUp	173	68	5	5	52	Melee	Plant	Sun	false	0
-2	아스터 기병	soldier01	Enemy	11	10	RightUp	173	68	5	5	52	Melee	Plant	Sun	false	0
-3	아스터 기병	soldier01	Enemy	6	15	LeftDown	173	68	5	5	52	Melee	Plant	Sun	false	0
-4	아스터 기병	soldier01	Enemy	10	15	LeftDown	173	68	5	5	52	Melee	Plant	Sun	false	0
-5	아스터 기병	soldier01	Enemy	8	16	LeftDown	173	68	5	5	52	Melee	Plant	Sun	false	0
-6	아스터 궁수	asterArcher01	Enemy	8	8	RightUp	163	64	22	5	44	Melee	Plant	Moon	false	0
-7	아스터 궁수	asterArcher01	Enemy	3	12	RightDown	163	64	22	5	44	Melee	Plant	Moon	false	0
-8	아스터 궁수	asterArcher01	Enemy	13	12	LeftUp	163	64	22	5	44	Melee	Plant	Moon	false	0
-9	아스터 궁수	asterArcher01	Enemy	3	14	RightDown	163	64	22	5	44	Melee	Plant	Moon	false	0
-10	아스터 궁수	asterArcher01	Enemy	13	14	LeftUp	163	64	22	5	44	Melee	Plant	Moon	false	0
-11	아스터 궁수	asterArcher01	Enemy	8	18	LeftDown	163	64	22	5	44	Melee	Plant	Moon	false	0
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
+1	아스터 기병	asterCavalry01	Enemy	5	10	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
+2	아스터 기병	asterCavalry01	Enemy	11	10	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
+3	아스터 기병	asterCavalry01	Enemy	6	15	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
+4	아스터 기병	asterCavalry01	Enemy	10	15	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
+5	아스터 기병	asterCavalry01	Enemy	8	16	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
+6	아스터 궁수	asterArcher01	Enemy	8	8	RightUp	163	50	22	5	44	Melee	Plant	Moon	false	0
+7	아스터 궁수	asterArcher01	Enemy	3	12	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
+8	아스터 궁수	asterArcher01	Enemy	13	12	LeftUp	163	50	22	5	44	Melee	Plant	Moon	false	0
+9	아스터 궁수	asterArcher01	Enemy	3	14	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
+10	아스터 궁수	asterArcher01	Enemy	13	14	LeftUp	163	50	22	5	44	Melee	Plant	Moon	false	0
+11	아스터 궁수	asterArcher01	Enemy	8	18	LeftDown	163	50	22	5	44	Melee	Plant	Moon	false	0
 12	제이선	json	Enemy	8	20	LeftDown	393	97	57	40	63	Melee	Fire	Moon	false	0
 13	트리아나	triana	Ally	8	11	LeftDown	474	68	74	57	49	Melee	Metal	Earth	false	0
 14	PCyeong	yeong	Ally	8	13	RightUp	0	0	0	0	0	None	None	None	false	0
