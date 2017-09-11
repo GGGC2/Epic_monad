@@ -193,8 +193,13 @@ public class UnitManager : MonoBehaviour {
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [generatedPC].unitName;}
-			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
+			if (unitInfo.nameKor == "unselected") {
+				if (generatedPC >= readyManager.selectedUnitList.Count) continue;
+				PCName = readyManager.selectedUnitList [generatedPC];
+			}
+			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
+				PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);
+			}
 			
 			if(PCName != ""){
 				unitInfo.nameKor = UnitInfo.ConvertToKoreanName (PCName);
@@ -222,6 +227,8 @@ public class UnitManager : MonoBehaviour {
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
 		foreach (var unitInfo in unitInfoList){
+			if (unitInfo.nameEng == "unselected") continue;
+
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
 			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);

@@ -82,12 +82,12 @@ public class SceneLoader : MonoBehaviour{
         if (!SceneData.isTestMode && !SceneData.isStageMode) {
             GameDataManager.Save();
         }
-		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady"){
+		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady_new"){
 			Instantiate(loadingScreen);
             SceneManager.LoadScene("Battle");
 		}
         else
-            SceneManager.LoadScene("BattleReady");
+            SceneManager.LoadScene("BattleReady_new");
     }
 
 	IEnumerator FadeoutAndLoadDialogueScene(string nextScriptFileName){
