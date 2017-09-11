@@ -26,7 +26,6 @@ public class SkillInfoButton : SkillInfoUI, IPointerDownHandler{
 	}
 
 	public void Initialize(Skill newSkill){
-		Debug.Log("Setting Skill : " + newSkill.korName);
 		skill = newSkill;		
 		if(newSkill == null){
 			gameObject.SetActive(false);
