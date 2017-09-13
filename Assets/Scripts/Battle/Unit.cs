@@ -139,6 +139,9 @@ public class Unit : MonoBehaviour{
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
 	public List<UnitStatusEffect> StatusEffectList{ get{return statusEffectList;} }
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
+	public void AddStatusEffectList(UnitStatusEffect effect){
+		statusEffectList.Add(effect);
+	}
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
 	public float GetHpRatio() {return (float)GetCurrentHealth()/(float)GetMaxHealth();}
@@ -505,9 +508,10 @@ public class Unit : MonoBehaviour{
 					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
 				}
 
-				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
 				if (myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
-					appliedChangeList.Add (new StatChange (false, 30));
+					Debug.Log("금속 타일 보너스 적용");
+					appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
 				}
 			}
 

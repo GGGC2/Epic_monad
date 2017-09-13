@@ -126,9 +126,10 @@ public static class StatusEffector{
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
-                List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
+                target.AddStatusEffectList(statusEffect);
+                /*List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
-                target.SetStatusEffectList(newStatusEffectList);
+                target.SetStatusEffectList(newStatusEffectList);*/
                 target.updateStats(statusEffect, true, false);
                 target.UpdateSpriteByStealth();
             }
