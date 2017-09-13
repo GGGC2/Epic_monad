@@ -137,6 +137,10 @@ public class Unit : MonoBehaviour{
 		return learnedSkills.ToList();
 	}
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
+	public List<UnitStatusEffect> StatusEffectList{
+		get{return statusEffectList;}
+		set{statusEffectList = value;}
+	}
     public List<UnitStatusEffect> GetStatusEffectList() { return statusEffectList; }
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
