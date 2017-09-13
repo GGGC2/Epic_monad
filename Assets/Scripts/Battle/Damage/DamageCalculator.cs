@@ -139,7 +139,7 @@ namespace Battle
 			attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 			// 해당 기술의 추가데미지 계산
 			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
-			foreach(var statusEffect in target.GetStatusEffectList()) {
+			foreach(var statusEffect in target.StatusEffectList) {
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if(originSkill.GetType() == typeof(ActiveSkill))
 					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
@@ -180,7 +180,7 @@ namespace Battle
 
 			// 해당 기술의 추가데미지 계산
 			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
-			foreach (var statusEffect in target.GetStatusEffectList()) {
+			foreach (var statusEffect in target.StatusEffectList){
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill.GetType() == typeof(ActiveSkill))
                     ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
@@ -295,7 +295,7 @@ namespace Battle
 		public static float CalculateReflectDamage(float attackDamage, Unit target, Unit reflectTarget, UnitClass damageType)
 		{
 			float reflectAmount = 0;
-			foreach (var statusEffect in target.GetStatusEffectList())
+			foreach (var statusEffect in target.StatusEffectList)
 			{
 				bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
 					(statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||

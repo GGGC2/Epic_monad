@@ -7,7 +7,7 @@ namespace Battle.Skills {
             if(Utility.GetDistance(caster.GetPosition(), turnStarter.GetPosition()) <= 2) {
                 UnitStatusEffect.FixedElement fixedElement = passiveSkill.GetUnitStatusEffectList().Find(se => se.display.displayName == "길잡이");
                 UnitStatusEffect statusEffectToAttach = new UnitStatusEffect(fixedElement, caster, turnStarter, passiveSkill);
-                turnStarter.GetStatusEffectList().Add(statusEffectToAttach);
+                turnStarter.StatusEffectList.Add(statusEffectToAttach);
             }
         }
         public override void TriggerStatusEffectsOnMove(Unit target, UnitStatusEffect statusEffect) {

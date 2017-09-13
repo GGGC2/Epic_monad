@@ -77,7 +77,7 @@ namespace BattleUI{
 
         void UpdateEffect(Unit unit){
             RefreshStatusEffectIconList();
-            List<UnitStatusEffect> effectList = unit.GetStatusEffectList();
+            List<UnitStatusEffect> effectList = unit.StatusEffectList;
             int numberOfEffects = effectList.Count;
             for (int i = 0; i < numberOfEffects; i++){
                 StatusEffectIcon statusEffectIcon = Instantiate(statusEffectIconPrefab).GetComponent<StatusEffectIcon>();

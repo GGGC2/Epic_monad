@@ -10,7 +10,7 @@ namespace Battle.Skills
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
-            UnitStatusEffect AbsorptionStatusEffect = owner.GetStatusEffectList().Find(se => se.GetDisplayName() == "흡수");
+            UnitStatusEffect AbsorptionStatusEffect = owner.StatusEffectList.Find(se => se.GetDisplayName() == "흡수");
             int stack = 0;
             if (AbsorptionStatusEffect != null)
                 stack = AbsorptionStatusEffect.GetRemainStack();

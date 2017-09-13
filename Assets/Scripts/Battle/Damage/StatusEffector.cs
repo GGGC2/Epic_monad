@@ -85,7 +85,7 @@ public static class StatusEffector{
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetNameKor());
                 continue;
             }
-            List<UnitStatusEffect> targetStatusEffectList = target.GetStatusEffectList();
+            List<UnitStatusEffect> targetStatusEffectList = target.StatusEffectList;
             foreach (var targetStatusEffect in targetStatusEffectList) {
                 Skill originSkill = targetStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {
@@ -96,7 +96,7 @@ public static class StatusEffector{
                 }
             }
 
-            var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
+            var alreadyAppliedSameEffect = target.StatusEffectList.Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);
 
@@ -104,7 +104,7 @@ public static class StatusEffector{
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
 				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
-                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(alreadyAppliedSameEffect, false, true);
@@ -126,7 +126,7 @@ public static class StatusEffector{
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
-                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
+                List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
                 target.updateStats(statusEffect, true, false);

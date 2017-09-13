@@ -20,7 +20,7 @@ namespace Battle.Skills {
             List<UnitStatusEffect> markStatusEffects = new List<UnitStatusEffect>();
             markStatusEffects.Add(mark);
 
-            UnitStatusEffect alreadyAppliedStatusEffect = target.GetStatusEffectList().Find(se => se.GetDisplayName() == "표식");
+            UnitStatusEffect alreadyAppliedStatusEffect = target.StatusEffectList.Find(se => se.GetDisplayName() == "표식");
             if(alreadyAppliedStatusEffect != null && alreadyAppliedStatusEffect.GetRemainStack() >= 4) {
                 StatusEffector.AttachStatusEffect(caster, evasionStatusEffects, caster);
                 target.RemoveStatusEffect(alreadyAppliedStatusEffect);

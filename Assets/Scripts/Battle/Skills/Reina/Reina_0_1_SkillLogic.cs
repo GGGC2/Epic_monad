@@ -8,7 +8,7 @@ public class Reina_0_1_SkillLogic : BasePassiveSkillLogic {
 	public override float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		float powerBonusPerBuff = 0.05f;
-		int numberOfBuffFromOtherUnits = caster.GetStatusEffectList().Count(
+		int numberOfBuffFromOtherUnits = caster.StatusEffectList.Count(
 						x => x.GetIsBuff() && (x.GetCaster() != caster));
 		return numberOfBuffFromOtherUnits * powerBonusPerBuff + 1.0f;
 	}

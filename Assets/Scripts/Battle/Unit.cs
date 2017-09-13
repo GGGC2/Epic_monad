@@ -137,11 +137,7 @@ public class Unit : MonoBehaviour{
 		return learnedSkills.ToList();
 	}
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
-	public List<UnitStatusEffect> StatusEffectList{
-		get{return statusEffectList;}
-		set{statusEffectList = value;}
-	}
-    public List<UnitStatusEffect> GetStatusEffectList() { return statusEffectList; }
+	public List<UnitStatusEffect> StatusEffectList{ get{return statusEffectList;} }
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
@@ -254,6 +250,7 @@ public class Unit : MonoBehaviour{
 		snapshot.tile.SetUnitOnTile(this);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
+		SetStatusEffectList(snapshot.statEffectList);
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {
@@ -266,7 +263,7 @@ public class Unit : MonoBehaviour{
 
 		ChainList.RemoveChainOfThisUnit (this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
-        foreach (var statusEffect in GetStatusEffectList()) {
+        foreach (var statusEffect in StatusEffectList) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
             if (originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
@@ -288,7 +285,7 @@ public class Unit : MonoBehaviour{
 		SetDirection (finalDirection);
 		AddMovedTileCount(tileCount);
 
-        foreach (var statusEffect in GetStatusEffectList()) {
+        foreach (var statusEffect in StatusEffectList) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
                 statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);

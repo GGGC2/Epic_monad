@@ -73,7 +73,7 @@ public class UnitManager : MonoBehaviour {
 
     public IEnumerator TriggerStatusEffectsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
-            List<UnitStatusEffect> statusEffectList = unit.GetStatusEffectList();
+            List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
                 Skill skill = statusEffect.GetOriginSkill();
                 if (skill.GetType() == typeof(ActiveSkill))
@@ -84,14 +84,14 @@ public class UnitManager : MonoBehaviour {
 
     public void UpdateStatusEffectsAtActionEnd() {
         foreach (var unit in GetAllUnits()) {
-            foreach (var statusEffect in unit.GetStatusEffectList()) {
+            foreach (var statusEffect in unit.StatusEffectList) {
                 if(statusEffect.IsOfType(StatusEffectType.Aura)) {
                     Aura.Update(unit, statusEffect);
                 }
             }
         }
         foreach (var unit in GetAllUnits()) {
-            foreach(UnitStatusEffect statusEffect in unit.GetStatusEffectList()) {
+            foreach(UnitStatusEffect statusEffect in unit.StatusEffectList) {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);

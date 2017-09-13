@@ -193,7 +193,7 @@ public static class BattleData{
 			ap = unit.GetCurrentActivityPoint();
 			movedTileCount = unit.GetMovedTileCount();
 			direction = unit.GetDirection();
-			statEffectList = unit.GetStatusEffectList();
+			statEffectList = unit.StatusEffectList;
 		}
 	}
 

@@ -388,7 +388,7 @@ public class ActiveSkill : Skill{
 
 		// 기술 사용 시 적용되는 특성
 		passiveSkillLogicsOfCaster.TriggerUsingSkill(caster, targets);
-		foreach(var statusEffect in caster.GetStatusEffectList()) {
+		foreach(var statusEffect in caster.StatusEffectList) {
 			Skill originPassiveSkill = statusEffect.GetOriginSkill();
 			if(originPassiveSkill.GetType() == typeof(PassiveSkill))
 				((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
@@ -397,7 +397,7 @@ public class ActiveSkill : Skill{
 
 		// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
 		if (skillApplyType == SkillApplyType.DamageHealth) {
-			List<UnitStatusEffect> statusEffectsToRemove = caster.GetStatusEffectList ().FindAll (x => (x.GetIsOnce () &&
+			List<UnitStatusEffect> statusEffectsToRemove = caster.StatusEffectList.FindAll (x => (x.GetIsOnce () &&
 				(x.IsOfType (StatusEffectType.PowerChange) ||
 					x.IsOfType (StatusEffectType.DamageChange) ||
 					x.IsOfType (StatusEffectType.Smite) ||
@@ -418,7 +418,7 @@ public class ActiveSkill : Skill{
 		float randomNumber = UnityEngine.Random.Range(0, 1.0f);
 
 		// 회피에 성공했는지 아닌지에 상관 없이 회피 효과 해제
-		List<UnitStatusEffect> statusEffectsToRemove =  target.GetStatusEffectList().FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
+		List<UnitStatusEffect> statusEffectsToRemove =  target.StatusEffectList.FindAll(x => x.IsOfType(StatusEffectType.EvasionChange));
 		foreach(var statusEffect in statusEffectsToRemove)
 			target.RemoveStatusEffect(statusEffect);
 
@@ -472,7 +472,7 @@ public class ActiveSkill : Skill{
 		BattleManager battleManager = BattleData.battleManager;
 		yield return battleManager.StartCoroutine(caster.ApplyDamageByNonCasting(reflectAmount, target, 0, 0, true, false, false));
 
-		foreach (var statusEffect in target.GetStatusEffectList()) {
+		foreach (var statusEffect in target.StatusEffectList) {
 			bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
 				(statusEffect.IsOfType(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
 				(statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);

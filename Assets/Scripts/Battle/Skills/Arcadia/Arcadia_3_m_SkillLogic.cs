@@ -7,7 +7,7 @@ namespace Battle.Skills {
         public override void TriggerOnActionEnd(Unit caster) {
             Tile currentTile = caster.GetTileUnderUnit();
             Element elementOfTile = currentTile.GetTileElement();
-            List<UnitStatusEffect> statusEffectList = caster.GetStatusEffectList();
+            List<UnitStatusEffect> statusEffectList = caster.StatusEffectList;
 
             if (elementOfTile != Element.Plant) {
                 UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "광합성");

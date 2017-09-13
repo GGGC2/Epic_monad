@@ -10,7 +10,7 @@ namespace Battle.Skills {
             yield return null;
         }
         public override void TriggerOnMove(Unit caster) {
-            UnitStatusEffect statusEffectToRemove = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == passiveSkill.GetName());
+            UnitStatusEffect statusEffectToRemove = caster.StatusEffectList.Find(se => se.GetOriginSkillName() == passiveSkill.GetName());
             caster.RemoveStatusEffect(statusEffectToRemove);
         }
     }

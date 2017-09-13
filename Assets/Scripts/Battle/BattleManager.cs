@@ -203,7 +203,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
     public static void RemoveAuraEffectFromDeadOrRetreatUnit(Unit unit) {
-        foreach(var se in unit.GetStatusEffectList()) {
+        foreach(var se in unit.StatusEffectList) {
             if(se.IsOfType(StatusEffectType.Aura)) {
                 Aura.TriggerOnRemoved(unit, se);
             }

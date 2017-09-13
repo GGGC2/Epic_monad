@@ -9,7 +9,7 @@ namespace Battle.Skills {
             bool firstTarget = true;
             Element element = Element.None;
 
-            UnitStatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
+            UnitStatusEffect originalStatusEffect = caster.StatusEffectList.Find(se => se.GetOriginSkillName() == "정제");
 
             foreach (var target in targets) {
                 if (firstTarget == true) {
@@ -29,13 +29,13 @@ namespace Battle.Skills {
                 if (originalStatusEffect != null)
                     caster.RemoveStatusEffect(originalStatusEffect);
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-                caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제").flexibleElem.display.element = element;
+                caster.StatusEffectList.Find(se => se.GetOriginSkillName() == "정제").flexibleElem.display.element = element;
             } else if(originalStatusEffect != null)
                 caster.RemoveStatusEffect(originalStatusEffect);
         }
         public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {
             Unit caster = castingApply.GetCaster();
-            UnitStatusEffect originalStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "정제");
+            UnitStatusEffect originalStatusEffect = caster.StatusEffectList.Find(se => se.GetOriginSkillName() == "정제");
             if (originalStatusEffect != null) {
                 castingApply.GetDamage().relativeDamageBonus *= 1 + (0.05f * originalStatusEffect.GetRemainStack());
             }

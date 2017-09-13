@@ -9,7 +9,7 @@ namespace Battle.Skills {
             TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
             Direction front = caster.GetDirection();
             List<Tile> tilesInRange = tileManager.GetTilesInRange(RangeForm.Straight, caster.GetPosition(), -2, -1, 1, front);
-			List<UnitStatusEffect> statusEffectList = caster.GetStatusEffectList();
+			List<UnitStatusEffect> statusEffectList = caster.StatusEffectList;
 
             foreach(var tile in tilesInRange) {
                 if(tile.IsUnitOnTile()) {

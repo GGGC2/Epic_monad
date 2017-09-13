@@ -14,7 +14,7 @@ namespace Battle.Skills {
         }
         public override bool TriggerStatusEffectApplied(UnitStatusEffect statusEffect, Unit caster, Unit target, List<Tile> targetTiles) {
             if(caster == target) {
-                UnitStatusEffect alreadyAppliedStatusEffect = caster.GetStatusEffectList().Find(se => se.GetOriginSkillName() == "떠밀기");
+                UnitStatusEffect alreadyAppliedStatusEffect = caster.StatusEffectList.Find(se => se.GetOriginSkillName() == "떠밀기");
                 int stack = 2;
                 if (alreadyAppliedStatusEffect != null) {
                     stack += alreadyAppliedStatusEffect.GetRemainStack();

@@ -11,7 +11,7 @@ public class Yeong_2_l_SkillLogic : BaseSkillLogic {
     {
 		int totalEvasion = 0;
 
-		List<UnitStatusEffect> statusEffects = castingApply.GetCaster().GetStatusEffectList();
+		List<UnitStatusEffect> statusEffects = castingApply.GetCaster().StatusEffectList;
 		foreach (var statusEffect in statusEffects)
 		{
 			int num = statusEffect.fixedElem.actuals.Count;
