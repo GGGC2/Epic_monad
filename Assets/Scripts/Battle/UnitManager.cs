@@ -95,7 +95,7 @@ public class UnitManager : MonoBehaviour {
                 if (statusEffect.GetRemainStack() != 0) {
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
-                    unit.updateStats(statusEffect, false, false);
+                    unit.UpdateStats(statusEffect, false, false);
                     unit.UpdateSpriteByStealth();
                 }
                 else

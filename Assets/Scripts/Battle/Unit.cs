@@ -272,7 +272,7 @@ public class Unit : MonoBehaviour{
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
         BattleTriggerManager.CountBattleTrigger(this, destTile);
-        updateStats();
+        UpdateStats();
     }
 
     public void ForceMove(Tile destTile) { //강제이동
@@ -302,7 +302,7 @@ public class Unit : MonoBehaviour{
             currentHealth = GetMaxHealth();
     }
 
-    public void updateStats() {
+    public void UpdateStats(){
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
@@ -311,7 +311,7 @@ public class Unit : MonoBehaviour{
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
-    public void updateStats(UnitStatusEffect statusEffect, bool isApplied, bool isRemoved) {
+    public void UpdateStats(UnitStatusEffect statusEffect, bool isApplied, bool isRemoved) {
         List<ActualStat> statsToUpdate = new List<ActualStat>();
         for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
             StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
@@ -413,7 +413,7 @@ public class Unit : MonoBehaviour{
         if (toBeRemoved) {
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
-            updateStats(statusEffect, false, true);
+            UpdateStats(statusEffect, false, true);
             UpdateSpriteByStealth();
             if(statusEffect.IsOfType(StatusEffectType.Shield)) {
                 UpdateHealthViewer();
@@ -510,7 +510,6 @@ public class Unit : MonoBehaviour{
 
 				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
 				if (myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
-					Debug.Log("금속 타일 보너스 적용");
 					appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
 				}
 			}

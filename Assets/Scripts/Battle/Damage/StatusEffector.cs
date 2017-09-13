@@ -107,8 +107,8 @@ public static class StatusEffector{
                 List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
-                target.updateStats(alreadyAppliedSameEffect, false, true);
-                target.updateStats(statusEffect, true, false);
+                target.UpdateStats(alreadyAppliedSameEffect, false, true);
+                target.UpdateStats(statusEffect, true, false);
             }
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
@@ -130,7 +130,7 @@ public static class StatusEffector{
                 /*List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);*/
-                target.updateStats(statusEffect, true, false);
+                target.UpdateStats(statusEffect, true, false);
                 target.UpdateSpriteByStealth();
             }
 		}
@@ -186,7 +186,7 @@ public static class StatusEffector{
                 newStatusEffectList.Add(statusEffect);
                 targetTile.SetStatusEffectList(newStatusEffectList);
             }
-            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().updateStats();
+            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().UpdateStats();
         }
     }
 }

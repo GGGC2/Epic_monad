@@ -28,6 +28,7 @@ namespace BattleUI{
         //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
         public void UpdateUnitViewer(Unit unit) {
             base.unit = unit;
+            unit.UpdateStats();
             unitImage.sprite = unit.GetDefaultSprite();
             CheckElementBuff(unit);
             UpdateHpBar(unit);
