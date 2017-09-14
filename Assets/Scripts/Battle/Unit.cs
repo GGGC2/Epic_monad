@@ -559,7 +559,7 @@ public class Unit : MonoBehaviour{
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
 		int realDamage = (int)CalculateDamageByCasting (castingApply, isHealth);
-		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
 		Unit caster = castingApply.GetCaster();
@@ -580,7 +580,7 @@ public class Unit : MonoBehaviour{
 	}
 	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
 		int realDamage = (int)CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
-		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
 		float damage = originalDamage;
@@ -604,7 +604,7 @@ public class Unit : MonoBehaviour{
 	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
 		if (isHealth) {
 			int damageAfterShieldApply = damage;
-			// 실드 차감. 먼저 걸린 실드부터 차감.
+			// 보호막 차감(먼저 적용된 것 우선).
 			Dictionary<UnitStatusEffect, int> attackedShieldDict = new Dictionary<UnitStatusEffect, int>();
 			if (!ignoreShield) {
 				foreach (var se in statusEffectList) {
@@ -707,7 +707,7 @@ public class Unit : MonoBehaviour{
                     Unit caster = se.GetCaster();
 
                     bool isSourceTrap = checkIfSourceIsTrap(se);
-					yield return FindObjectOfType<BattleManager>().StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
+					yield return StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
                 }
             }
         }

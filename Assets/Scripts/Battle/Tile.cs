@@ -21,6 +21,11 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public GameObject highlightWall;
+	public bool IsEscapePoint{
+		get{
+			return highlightWall.activeSelf && FindObjectOfType<TutorialManager>() == null;
+		}
+	}
 	public bool isMouseOver;
 	public List<Color> colors;
     List<TileStatusEffect> statusEffectList = new List<TileStatusEffect>();

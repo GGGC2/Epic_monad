@@ -73,9 +73,6 @@ namespace BattleUI{
 		void CallbackStandbyCommand(){
 			battleManager.CallbackStandbyCommand();
 		}
-		void CallbackRestCommand(){
-			battleManager.CallbackRestCommand();
-		}
 
 		void CallbackOnPointerEnterRestCommand(){
 			battleManager.CallbackOnPointerEnterRestCommand();

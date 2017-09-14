@@ -174,7 +174,6 @@ namespace Battle.Turn {
 
 						DisplayPreviewDamage (newCasting);
 					}
-
 				}
 
                 yield return null;
