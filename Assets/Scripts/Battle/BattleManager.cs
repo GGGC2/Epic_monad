@@ -50,6 +50,11 @@ public class BattleManager : MonoBehaviour{
 
 		InitCameraPosition(); // temp init position;
 		yield return null;
+
+		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
+	}
+
+	public void StartByManager(){
 		BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
 		BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 		BattleData.uiManager.UpdateApBarUI();

@@ -1104,10 +1104,10 @@ public class Unit : MonoBehaviour{
 		LoadSprite();
 		Initialize();
 
-		chainBonusTextObject.SetActive(false);
-		celestialBonusTextObject.SetActive(false);
-		directionBonusTextObject.SetActive(false);
-		heightBonusTextObject.SetActive(false);
+		// chainBonusTextObject.SetActive(false);
+		// celestialBonusTextObject.SetActive(false);
+		// directionBonusTextObject.SetActive(false);
+		// heightBonusTextObject.SetActive(false);
 
 		if(isAI){
 			GetComponent<Battle.Turn.AI>().CheckActiveTrigger();
