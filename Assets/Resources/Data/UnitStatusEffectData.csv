@@ -1,4 +1,4 @@
-﻿owner	requireLevel	toBeReplaced	originSkillName	displayName	isBuff	isInfinite	isStackable	isOnce	defaultPhase	maxStack	amountToBeUpdated	amountNotEffectedByStack	isRemovable	effectName	effectVisualType	effectMoveType	numberOfActualElement	statusEffectType_01	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_02	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_03	amountVar	amountCoef	amountBase	isPercent	isMultiply	explanation
+owner	requireLevel	toBeReplaced	originSkillName	displayName	isBuff	isInfinite	isStackable	isOnce	defaultPhase	maxStack	amountToBeUpdated	amountNotEffectedByStack	isRemovable	effectName	effectVisualType	effectMoveType	numberOfActualElement	statusEffectType_01	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_02	amountVar	amountCoef	amountBase	isPercent	isMultiply	statusEffectType_03	amountVar	amountCoef	amountBase	isPercent	isMultiply	explanation
 arcadia	1	FALSE	생명의 요람	생명의 요람	TRUE	FALSE	FALSE	FALSE	3	1	TRUE	FALSE	TRUE	None	None	None	3	HealOverPhase	O	0.1	0	FALSE	FALSE	DefenseChange	Level	1.2	87	FALSE	FALSE	ResistanceChange	Level	1.2	87	FALSE	FALSE	페이즈를 시작할 때마다 체력을 <color=green>10%</color> 회복하며 방어력과 저항력이 <color=green>AMOUNT1</color>높아집니다.
 arcadia	8	FALSE	뿌리 내리기	뿌리 내리기	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.9	59	FALSE	FALSE	ResistanceChange	Level	0.9	59	FALSE	FALSE							
 arcadia	8	FALSE	갈고리 씨앗	지속 피해	FALSE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	DamageOverPhase	Power	0.5	0	FALSE	FALSE													
@@ -84,6 +84,7 @@ sepia	1	FALSE	신뢰의 끈	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	F
 sepia	1	FALSE	반달베기	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Shield	Power	0.2	0	FALSE	FALSE													받는 피해를 상쇄합니다.
 triana	8	FALSE	들불	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	15	FALSE	FALSE													
 triana	8	FALSE	나무 껍질	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.5	41	FALSE	FALSE													
+triana_Rest	1	FALSE	광폭화	공/방/저 상승	TRUE	FALSE	FALSE	FALSE	10	1	TRUE	FALSE	TRUE	None	None	None	3	PowerChange	Power	1	0	FALSE	FALSE	DefenseChange	Defense	1	0	FALSE	FALSE	ResistanceChange	Resistance	1	0	FALSE	FALSE	공격력과 방어력과 저항력이 2배로 높아집니다.
 yeong	0	FALSE	방랑자	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	15	TRUE	FALSE													
 yeong	1	FALSE	어려운 목표물	도발	FALSE	FALSE	FALSE	FALSE	3	1	FALSE	FALSE	TRUE	None	None	None	1	Taunt	X	X	X	FALSE	NONE													
 yeong	1	FALSE	동체 시력	회피	TRUE	FALSE	FALSE	TRUE	1	1	FALSE	FALSE	TRUE	None	None	None	1	EvasionChange	O	0	10	TRUE	FALSE													
