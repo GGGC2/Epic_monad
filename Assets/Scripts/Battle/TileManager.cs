@@ -122,6 +122,15 @@ public class TileManager : MonoBehaviour {
 		}
 	}
 
+	public void DepreselectTiles(List<Tile> tiles) {
+		if (preselectLockOn) {return;}
+		else {
+			foreach (Tile tile in tiles) {
+				tile.SetPreSelected (false);
+			}
+		}
+	}
+
 	public void DepreselectAllTiles(){
 		if(preselectLockOn) {return;}
 		else{
