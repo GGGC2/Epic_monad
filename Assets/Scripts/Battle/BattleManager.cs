@@ -118,7 +118,7 @@ public class BattleManager : MonoBehaviour{
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
-		if (BattleData.currentState != CurrentState.Dead) {
+		if (BattleData.currentState != CurrentState.Destroy) {
 			EndUnitTurn ();
 		}
 	}
@@ -155,16 +155,7 @@ public class BattleManager : MonoBehaviour{
 			SkillLogicFactory.Get(caster.GetLearnedPassiveSkillList()).TriggerOnTurnStart(caster, turnStarter);
 	}
 
-	/*private void OnOffSkillButton(){
-		bool isPossible = BattleData.selectedUnit.IsSkillUsePossibleState ();
-		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Skill, isPossible);
-	}
-    private void SetStandbyButton(){
-		BattleData.uiManager.commandPanel.OnOffButton (ActionCommand.Standby, true);
-	}*/
-
-	public static IEnumerator FadeOutEffect(Unit unit)
-	{
+	public static IEnumerator FadeOutEffect(Unit unit){
 		float time = 0.3f;
 		SpriteRenderer sr = unit.gameObject.GetComponent<SpriteRenderer>();
 		for (int i = 0; i < 10; i++)
@@ -174,6 +165,47 @@ public class BattleManager : MonoBehaviour{
 		}
 	}
 
+	public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
+		BattleManager battleManager = BattleData.battleManager;
+
+		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
+		if(actionType == BattleTrigger.ActionType.Kill){
+			unit.GetComponent<SpriteRenderer>().color = Color.red;
+		}
+
+		ChainList.RemoveChainOfThisUnit (unit);
+		RemoveAuraEffectFromUnit(unit);
+		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
+        yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
+		BattleData.unitManager.DeleteRetreatUnit(unit);
+
+		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
+			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
+			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
+		}else{
+			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
+		}
+
+		Destroy(unit.gameObject);
+	}
+
+	/*public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
+		ChainList.RemoveChainOfThisUnit (unit);
+		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
+		RemoveAuraEffectFromUnit(unit);
+        yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
+		BattleData.unitManager.DeleteRetreatUnit(unit);
+
+		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
+			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
+			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
+		}else{
+			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
+		}
+
+		Destroy(unit.gameObject);
+	}
+
 	public static IEnumerator DestroyDeadUnits(){
 		BattleManager battleManager = BattleData.battleManager;
 
@@ -181,57 +213,75 @@ public class BattleManager : MonoBehaviour{
 			Debug.Log(deadUnit.GetNameKor() + " is dead");
 			// 죽은 유닛에게 추가 이펙트.
 			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return DestroyDeadOrRetreatUnit (deadUnit, BattleTrigger.ActionType.Kill);
+			yield return DestroyUnit (deadUnit, BattleTrigger.ActionType.Kill);
 		}
 	}
 
-	public static IEnumerator DestroyRetreatUnits()
-	{
+	public static IEnumerator DestroyRetreatUnits(){
 		BattleManager battleManager = BattleData.battleManager;
 
 		foreach (Unit retreatUnit in BattleData.retreatUnits){
 			Debug.Log(retreatUnit.GetNameKor() + " retreats");
-			yield return DestroyDeadOrRetreatUnit (retreatUnit, BattleTrigger.ActionType.Retreat);
+			yield return DestroyUnit (retreatUnit, BattleTrigger.ActionType.Retreat);
 		}
 	}
 
-	public static IEnumerator DestroyDeadOrRetreatUnit(Unit unit, BattleTrigger.ActionType deadOrRetreat)
-	{
+	public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
 		ChainList.RemoveChainOfThisUnit (unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
-		RemoveAuraEffectFromDeadOrRetreatUnit(unit);
+		RemoveAuraEffectFromUnit(unit);
         yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
 		BattleData.unitManager.DeleteRetreatUnit(unit);
-		yield return BattleTriggerManager.CountBattleTrigger(unit, deadOrRetreat);
-		yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
-		Destroy(unit.gameObject);
-	}
 
-    public static void RemoveAuraEffectFromDeadOrRetreatUnit(Unit unit) {
-        foreach(var se in unit.GetStatusEffectList()) {
+		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
+			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
+			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
+		}else{
+			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
+		}
+
+		Destroy(unit.gameObject);
+	}*/
+
+    public static void RemoveAuraEffectFromUnit(Unit unit) {
+        foreach(var se in unit.StatusEffectList) {
             if(se.IsOfType(StatusEffectType.Aura)) {
                 Aura.TriggerOnRemoved(unit, se);
             }
         }
     }
 
-	public static bool IsSelectedUnitRetreatOrDie()
-	{
+	public static bool IsSelectedUnitRetreatOrDie(){
 		if (BattleData.retreatUnits.Contains(BattleData.selectedUnit))
 			return true;
 
 		if (BattleData.deadUnits.Contains(BattleData.selectedUnit))
 			return true;
 
+		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
+			return true;
+		}
+
 		return false;
 	}
 
-	public IEnumerator UpdateRetreatAndDeadUnits()
-	{
+	public IEnumerator UpdateUnitsForDestroy(){
+		foreach(var unit in BattleData.unitManager.GetRetreatUnits()){
+			yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Retreat));
+		}
+		foreach(var unit in BattleData.unitManager.GetDeadUnits()){
+			yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Kill));
+		}
+		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
+			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, BattleTrigger.ActionType.Reach));
+		}
+		/*BattleData.unitManager.GetRetreatUnits().ForEach(unit => yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Retreat)));
+		BattleData.unitManager.GetDeadUnits().ForEach(unit => StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Kill)));
+
 		BattleData.retreatUnits = BattleData.unitManager.GetRetreatUnits();
 		BattleData.deadUnits = BattleData.unitManager.GetDeadUnits();
 		yield return StartCoroutine(DestroyRetreatUnits());
-		yield return StartCoroutine(DestroyDeadUnits());
+		yield return StartCoroutine(DestroyDeadUnits());*/
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
@@ -258,7 +308,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator AtActionEnd(){
-		yield return StartCoroutine(UpdateRetreatAndDeadUnits());
+		yield return StartCoroutine(UpdateUnitsForDestroy());
 
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
@@ -283,8 +333,8 @@ public class BattleManager : MonoBehaviour{
 			Unit unit = BattleData.selectedUnit;
 
 			if (IsSelectedUnitRetreatOrDie()) {
-				BattleData.currentState = CurrentState.Dead;
-				Debug.Log ("Current PC Died.");
+				BattleData.currentState = CurrentState.Destroy;
+				Debug.Log ("Current PC Destroyed.");
 				yield break;
 			}
 
@@ -390,22 +440,14 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CallbackMoveCommand(){
-		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Move);
 	}
 
 	public void CallbackSkillCommand(){
-		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Skill);
 	}
 
-	public void CallbackRestCommand(){
-		//BattleData.uiManager.DisableCommandUI();
-		triggers.actionCommand.Trigger(ActionCommand.Rest);
-	}
-
 	public void CallbackStandbyCommand(){
-		//BattleData.uiManager.DisableCommandUI();
 		triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
 

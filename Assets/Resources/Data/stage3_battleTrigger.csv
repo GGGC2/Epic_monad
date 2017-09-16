@@ -1,5 +1,5 @@
 ﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	맵의 구석으로 탈출	Target	Reach	1	false	190	1	yeong	4	1	1	1	23	15	1	15	23
-Win	모든 적을 무력화	Enemy	Neutralize	12	false	300
+Win	적 4명을 무력화	Enemy	Neutralize	4	false	50
+Win	맵의 구석으로 탈출	Target	Reach	1	false	50	1	yeong	4	1	1	1	23	15	1	15	23
 Lose	영의 무력화	Target	Neutralize	1	false	0	1	yeong
-End	Scene#6	false	false
+End	Scene#6	true	false

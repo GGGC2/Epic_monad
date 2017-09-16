@@ -22,6 +22,5 @@ public class Setting{
 	public static float fadeInWaitingTime = 0.3f;
 	public static float tileImageHeight = 0.5f;
 	public static float tileImageWidth = 1.0f;
-	//이동할 때 타일당 추가로 붙는 계차값
-	public static int moveCostAcc = 2;
+	public static int moveCostAcc = 2; //이동할 때 타일당 추가로 붙는 계차값
 }

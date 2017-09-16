@@ -5,7 +5,7 @@ namespace Battle.Skills {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
             DamageCalculator.AttackDamage damage = castingApply.GetDamage();
-            UnitStatusEffect mark = target.GetStatusEffectList().Find(se => se.GetDisplayName() == "표식");
+            UnitStatusEffect mark = target.StatusEffectList.Find(se => se.GetDisplayName() == "표식");
             if (mark == null) {
                 damage.relativeDamageBonus *= 0;
             }

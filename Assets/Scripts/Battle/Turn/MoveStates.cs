@@ -30,12 +30,6 @@ namespace Battle.Turn{
 				yield return null;
 			}
 		}
-
-		/*public static IEnumerator CheckDestination(Tile destTile, List<Tile> destPath, int totalUseActivityPoint){
-		// 이동했을때 볼 방향 설정
-			Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
-			yield return BattleManager.Instance.StartCoroutine(MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
-		}*/
 		
 		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
@@ -43,8 +37,11 @@ namespace Battle.Turn{
 			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
 
 			BattleData.previewAPAction = null;
-			BattleData.currentState = CurrentState.FocusToUnit;
 			BattleData.alreadyMoved = true;
+			BattleData.currentState = CurrentState.FocusToUnit;
+			if(destTile.IsEscapePoint){
+				BattleData.currentState = CurrentState.Destroy;
+			}
 
 			yield return BattleData.battleManager.AtActionEnd();
 		}

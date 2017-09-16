@@ -8,7 +8,7 @@ public class Reina_3_l_SkillLogic : BasePassiveSkillLogic {
 
 	public override float ApplyIgnoreResistanceAbsoluteValueByEachPassive(ActiveSkill appliedSkill, Unit target, Unit caster, float resistance)	
 	{
-		int numberOfBuffFromOtherUnits = caster.GetStatusEffectList().Count(
+		int numberOfBuffFromOtherUnits = caster.StatusEffectList.Count(
 						x => x.GetIsBuff() && (x.GetCaster() != caster));
 
 		// 갯수 * {40 + (레벨 * 0.5)} %

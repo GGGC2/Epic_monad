@@ -28,6 +28,7 @@ namespace BattleUI{
         //UpdateUnitViewer가 2개 있는데, 위의 것은 Battle / 아래 것은 BattleReady 씬에서 사용
         public void UpdateUnitViewer(Unit unit) {
             base.unit = unit;
+            unit.UpdateStats();
             unitImage.sprite = unit.GetDefaultSprite();
             CheckElementBuff(unit);
             UpdateHpBar(unit);
@@ -77,7 +78,7 @@ namespace BattleUI{
 
         void UpdateEffect(Unit unit){
             RefreshStatusEffectIconList();
-            List<UnitStatusEffect> effectList = unit.GetStatusEffectList();
+            List<UnitStatusEffect> effectList = unit.StatusEffectList;
             int numberOfEffects = effectList.Count;
             for (int i = 0; i < numberOfEffects; i++){
                 StatusEffectIcon statusEffectIcon = Instantiate(statusEffectIconPrefab).GetComponent<StatusEffectIcon>();

@@ -137,8 +137,11 @@ public class Unit : MonoBehaviour{
 		return learnedSkills.ToList();
 	}
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
-    public List<UnitStatusEffect> GetStatusEffectList() { return statusEffectList; }
+	public List<UnitStatusEffect> StatusEffectList{ get{return statusEffectList;} }
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
+	public void AddStatusEffectList(UnitStatusEffect effect){
+		statusEffectList.Add(effect);
+	}
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
 	public float GetHpRatio() {return (float)GetCurrentHealth()/(float)GetMaxHealth();}
@@ -250,6 +253,7 @@ public class Unit : MonoBehaviour{
 		snapshot.tile.SetUnitOnTile(this);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
+		SetStatusEffectList(snapshot.statEffectList);
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {
@@ -262,13 +266,13 @@ public class Unit : MonoBehaviour{
 
 		ChainList.RemoveChainOfThisUnit (this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
-        foreach (var statusEffect in GetStatusEffectList()) {
+        foreach (var statusEffect in StatusEffectList) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
             if (originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
         BattleTriggerManager.CountBattleTrigger(this, destTile);
-        updateStats();
+        UpdateStats();
     }
 
     public void ForceMove(Tile destTile) { //강제이동
@@ -284,7 +288,7 @@ public class Unit : MonoBehaviour{
 		SetDirection (finalDirection);
 		AddMovedTileCount(tileCount);
 
-        foreach (var statusEffect in GetStatusEffectList()) {
+        foreach (var statusEffect in StatusEffectList) {
             if ((statusEffect.IsOfType(StatusEffectType.RequireMoveAPChange) ||
                 statusEffect.IsOfType(StatusEffectType.SpeedChange)) && statusEffect.GetIsOnce() == true) {
                 RemoveStatusEffect(statusEffect);
@@ -298,7 +302,7 @@ public class Unit : MonoBehaviour{
             currentHealth = GetMaxHealth();
     }
 
-    public void updateStats() {
+    public void UpdateStats(){
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
@@ -307,7 +311,7 @@ public class Unit : MonoBehaviour{
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
-    public void updateStats(UnitStatusEffect statusEffect, bool isApplied, bool isRemoved) {
+    public void UpdateStats(UnitStatusEffect statusEffect, bool isApplied, bool isRemoved) {
         List<ActualStat> statsToUpdate = new List<ActualStat>();
         for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
             StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
@@ -409,7 +413,7 @@ public class Unit : MonoBehaviour{
         if (toBeRemoved) {
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
-            updateStats(statusEffect, false, true);
+            UpdateStats(statusEffect, false, true);
             UpdateSpriteByStealth();
             if(statusEffect.IsOfType(StatusEffectType.Shield)) {
                 UpdateHealthViewer();
@@ -504,9 +508,9 @@ public class Unit : MonoBehaviour{
 					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
 				}
 
-				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 +30 
+				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
 				if (myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
-					appliedChangeList.Add (new StatChange (false, 30));
+					appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
 				}
 			}
 
@@ -555,7 +559,7 @@ public class Unit : MonoBehaviour{
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
 		int realDamage = (int)CalculateDamageByCasting (castingApply, isHealth);
-		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
 		Unit caster = castingApply.GetCaster();
@@ -576,7 +580,7 @@ public class Unit : MonoBehaviour{
 	}
 	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
 		int realDamage = (int)CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
-		yield return BattleData.battleManager.StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
 		float damage = originalDamage;
@@ -600,7 +604,7 @@ public class Unit : MonoBehaviour{
 	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
 		if (isHealth) {
 			int damageAfterShieldApply = damage;
-			// 실드 차감. 먼저 걸린 실드부터 차감.
+			// 보호막 차감(먼저 적용된 것 우선).
 			Dictionary<UnitStatusEffect, int> attackedShieldDict = new Dictionary<UnitStatusEffect, int>();
 			if (!ignoreShield) {
 				foreach (var se in statusEffectList) {
@@ -703,7 +707,7 @@ public class Unit : MonoBehaviour{
                     Unit caster = se.GetCaster();
 
                     bool isSourceTrap = checkIfSourceIsTrap(se);
-					yield return FindObjectOfType<BattleManager>().StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
+					yield return StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
                 }
             }
         }

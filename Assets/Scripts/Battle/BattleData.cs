@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Enums;
 
 public enum CurrentState{
-	None, Dead, FocusToUnit, CheckDestination,
+	None, Destroy, FocusToUnit, CheckDestination,
 	SelectSkillApplyPoint, SelectSkillApplyDirection,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
@@ -186,12 +186,14 @@ public static class BattleData{
 		public int ap;
 		public int movedTileCount;
 		public Direction direction;
+		public List<UnitStatusEffect> statEffectList;
 
 		public MoveSnapshot(Unit unit){
 			tile = unit.GetTileUnderUnit();
 			ap = unit.GetCurrentActivityPoint();
 			movedTileCount = unit.GetMovedTileCount();
 			direction = unit.GetDirection();
+			statEffectList = unit.StatusEffectList;
 		}
 	}
 

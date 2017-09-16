@@ -85,7 +85,7 @@ public static class StatusEffector{
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetNameKor());
                 continue;
             }
-            List<UnitStatusEffect> targetStatusEffectList = target.GetStatusEffectList();
+            List<UnitStatusEffect> targetStatusEffectList = target.StatusEffectList;
             foreach (var targetStatusEffect in targetStatusEffectList) {
                 Skill originSkill = targetStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {
@@ -96,7 +96,7 @@ public static class StatusEffector{
                 }
             }
 
-            var alreadyAppliedSameEffect = target.GetStatusEffectList().Find(
+            var alreadyAppliedSameEffect = target.StatusEffectList.Find(
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);
 
@@ -104,11 +104,11 @@ public static class StatusEffector{
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
 			{
 				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
-                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
                 target.SetStatusEffectList(newStatusEffectList);
-                target.updateStats(alreadyAppliedSameEffect, false, true);
-                target.updateStats(statusEffect, true, false);
+                target.UpdateStats(alreadyAppliedSameEffect, false, true);
+                target.UpdateStats(statusEffect, true, false);
             }
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
@@ -126,10 +126,11 @@ public static class StatusEffector{
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
-                List<UnitStatusEffect> newStatusEffectList = target.GetStatusEffectList().FindAll(se => true);
+                target.AddStatusEffectList(statusEffect);
+                /*List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
                 newStatusEffectList.Add(statusEffect);
-                target.SetStatusEffectList(newStatusEffectList);
-                target.updateStats(statusEffect, true, false);
+                target.SetStatusEffectList(newStatusEffectList);*/
+                target.UpdateStats(statusEffect, true, false);
                 target.UpdateSpriteByStealth();
             }
 		}
@@ -185,7 +186,7 @@ public static class StatusEffector{
                 newStatusEffectList.Add(statusEffect);
                 targetTile.SetStatusEffectList(newStatusEffectList);
             }
-            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().updateStats();
+            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().UpdateStats();
         }
     }
 }

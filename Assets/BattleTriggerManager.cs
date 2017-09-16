@@ -97,8 +97,13 @@ public class BattleTriggerManager : MonoBehaviour {
 		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
-			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit))
+			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
+				//Debug.Log("Setting Dead State");
+				//BattleData.currentState = CurrentState.Destroy;
 				Checker.CountBattleTrigger(trigger);
+				//Checker.StartCoroutine(BattleManager.DestroyUnit(unit, BattleTrigger.ActionType.Reach));
+				//FindObjectOfType<BattleManager>().CallbackStandbyCommand();
+			}
 		}
 	}
 
