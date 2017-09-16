@@ -43,6 +43,13 @@ public class ConditionPanel : MonoBehaviour{
 	public void OnClicked(){
 		cm.SetMovable(true);
 		gameObject.SetActive(false);
+
+		if (FindObjectOfType<ReadyManager>() == null) {
+			BattleData.battleManager.StartTurnManager();
+		}
+		else {
+			BattleData.uiManager.EnablePlacedUnitCheckUI();
+		}
 		//tutorial.gameObject.SetActive(true);
 	}
 }

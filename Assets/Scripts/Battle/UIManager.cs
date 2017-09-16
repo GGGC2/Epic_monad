@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour{
 	GameObject movedUICanvas;
 	GameObject phaseUI;
 	DetailInfoPanel detailInfoUI;
+	GameObject placedUnitCheckUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
 
@@ -49,6 +50,7 @@ public class UIManager : MonoBehaviour{
 		movedUICanvas = GameObject.Find("MovingUICanvas");
 		phaseUI = GameObject.Find("PhasePanel");
 		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
+		placedUnitCheckUI = GameObject.Find("PlacedUnitCheckPanel");
 		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
 		TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
@@ -61,6 +63,7 @@ public class UIManager : MonoBehaviour{
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
 		detailInfoUI.gameObject.SetActive(false);
+		placedUnitCheckUI.SetActive(false);
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
@@ -310,6 +313,14 @@ public class UIManager : MonoBehaviour{
 	{
 		Vector3 newPosition = (new Vector3(position.x, position.y, -8));
 		movedUICanvas.transform.position = newPosition;
+	}
+
+	public void EnablePlacedUnitCheckUI() {
+		placedUnitCheckUI.SetActive(true);
+	}
+
+	public void DisablePlacedUnitCheckUI() {
+		placedUnitCheckUI.SetActive(false);
 	}
 
 	public UnityEvent activateDetailInfoEvent = new UnityEvent ();

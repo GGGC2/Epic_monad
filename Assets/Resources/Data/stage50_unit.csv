@@ -1,0 +1,8 @@
+﻿Index	NameKor	NameEng	Side	InitPosX	InitPosY	InitDir	Health	Power	Defense	Resistance	Agility	Class	Element	Celestial	IsObject
+1	제국군 병사	soldier01	Enemy	10	4	LeftUp	184	60	0	0	1	Melee	None	None	false	0
+2	제국군 병사	soldier01	Enemy	10	5	LeftUp	184	60	0	0	1	Melee	None	None	false	0
+3	제국군 병사	soldier01	Enemy	6	4	LeftUp	184	60	0	0	1	Melee	None	None	false	0
+4	unselected	unselected	Ally	2	4	RightDown	0	0	0	0	0	Melee	None	None	false	0
+5	unselected	unselected	Ally	2	3	RightDown	0	0	0	0	0	Magic	None	None	false	0
+6	unselected	unselected	Ally	3	4	RightDown	0	0	0	0	0	Melee	None	None	false	0
+7	unselected	unselected	Ally	3	3	RightDown	0	0	0	0	0	Magic	None	None	false	0

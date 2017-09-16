@@ -183,7 +183,7 @@ public class UnitManager : MonoBehaviour {
 		});
 	}
 
-	public void GenerateUnits(){
+	public IEnumerator GenerateUnits(){
 		Debug.Log("GenerateUnits Start.");
 		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int generatedPC = 0;
@@ -193,8 +193,13 @@ public class UnitManager : MonoBehaviour {
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
-			if (unitInfo.nameKor == "unselected") {PCName = readyManager.selected [generatedPC].unitName;}
-			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);}
+			if (unitInfo.nameKor == "unselected") {
+				if (generatedPC >= readyManager.selectedUnitList.Count) continue;
+				PCName = readyManager.selectedUnitList [generatedPC];
+			}
+			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
+				PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);
+			}
 			
 			if(PCName != ""){
 				unitInfo.nameKor = UnitInfo.ConvertToKoreanName (PCName);
@@ -221,7 +226,25 @@ public class UnitManager : MonoBehaviour {
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
+		// 배치 가능 위치 표시 & 카메라 이동
+		if (readyManager != null) {
+			var selectablePosList = unitInfoList.FindAll(unitInfo => readyManager.selectedUnitList.Contains(unitInfo.nameEng));
+			var selectableTileList = new List<Tile>();
+			selectablePosList.ForEach(unitInfo => selectableTileList.Add(BattleData.tileManager.GetTile(unitInfo.initPosition)));
+			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
+
+			BattleManager.MoveCameraToTile(selectableTileList.First());
+		}
+		
+		// 유닛 배치
 		foreach (var unitInfo in unitInfoList){
+			if (unitInfo.nameEng == "unselected") continue;
+
+			if (readyManager != null && readyManager.selectedUnitList.Contains(unitInfo.nameEng)) {
+				Debug.Log("unit add ready");
+				yield return new WaitUntil (() => Input.GetMouseButtonDown(0) && GameObject.Find("ConditionPanel") == null);
+				yield return new WaitForEndOfFrame();
+			}
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
 			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
@@ -235,6 +258,9 @@ public class UnitManager : MonoBehaviour {
 			tileUnderUnit.SetUnitOnTile(unit);
 			units.Add(unit);
 		}
+
+		// 배치 가능 위치 지우고 턴 시작(은 아직 안됨)
+		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 			
 		units.ForEach(unit => {
 			if (controllableUnitNameList.Contains(unit.GetNameEng())){
@@ -354,17 +380,18 @@ public class UnitManager : MonoBehaviour {
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start() {
+	IEnumerator Start() {
 		GameData.PartyData.CheckLevelData();
 		activeSkillList = Parser.GetParsedData<ActiveSkill>();
 		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
         LoadUnitStatusEffects();
         LoadTileStatusEffects();
-		GenerateUnits();
-		if (!GameData.SceneData.isTestMode) {
-            ApplyAIInfo();
-        }
-        GetEnemyUnits();
+		//* yield return StartCoroutine(GenerateUnits());
+		// if (!GameData.SceneData.isTestMode) {
+        //     ApplyAIInfo();
+        // }
+        // GetEnemyUnits();
+		yield return null;
 	}
 
 	public void UpdateUnitOrder (){
