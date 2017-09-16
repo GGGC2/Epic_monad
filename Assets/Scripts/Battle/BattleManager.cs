@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour{
 	public TutorialManager tutorialManager;
 	private static BattleManager instance;
 	public static BattleManager Instance{ get { return instance; } }
-	BattleData.Triggers triggers;
+	public BattleData.Triggers triggers;
 
 	void Awake (){
 		if (instance != null && instance != this) {
@@ -55,12 +55,16 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartByManager(){
+		BattleData.unitManager.StartByBattleManager();
+
 		BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
 		BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 		BattleData.uiManager.UpdateApBarUI();
 	}
 
 	public void StartTurnManager(){
+		StartByManager();
+
 		if(!TurnManagerStarted){
 			StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;
