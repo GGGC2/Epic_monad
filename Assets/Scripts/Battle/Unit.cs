@@ -835,7 +835,7 @@ public class Unit : MonoBehaviour{
 			float healNeedCount = CalculateFloatHealNeedCount (casting);
 			reward = sideFactor * PCFactor * GetStat (Stat.Power) * healNeedCount;
 		}
-		Debug.Log ("Skill apply to " + name + " is " + ((int)reward) + " point");
+		//Debug.Log ("Skill apply to " + name + " is " + ((int)reward) + " point");
 		return reward;
 	}
 

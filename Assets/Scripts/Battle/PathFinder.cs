@@ -70,8 +70,8 @@ public static class PathFinder {
 		if (nearbyTile.IsUnitOnTile ()) {
 			Unit obstacle = nearbyTile.GetUnitOnTile ();
 
-			// 한칸 바로 앞을 공격할 수 없는 AI가 나오면 수정해야 함
-			if (obstacle.IsSeenAsEnemyToThisAIUnit (unit) || obstacle.GetSide() == Side.Neutral) {
+			// 한칸 바로 앞을 공격할 수 없는 AI 스킬이 나오면 수정해야 함
+			if (skill != null && skill.GetSkillApplyType () == SkillApplyType.DamageHealth && (obstacle.IsSeenAsEnemyToThisAIUnit (unit) || obstacle.GetSide() == Side.Neutral)) {
 				Tile obstacleTile = nearbyTile;
 				Vector2 obstaclePos = obstacleTile.GetTilePos ();
 
