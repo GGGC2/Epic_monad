@@ -374,7 +374,7 @@ public class ActiveSkill : Skill{
 						}
 					}
 				}
-				caster.ActiveFalseAllBonusText();
+				BattleData.uiManager.DeactivateAllBonusText();
 				// 사이사이에도 특성 발동 조건을 체크해준다.
 				BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
 				yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
@@ -440,11 +440,12 @@ public class ActiveSkill : Skill{
 
 		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
 		DamageCalculator.AttackDamage attackDamage = castingApply.GetDamage();
+		UIManager UIM = BattleData.uiManager;
 
-		if (attackDamage.directionBonus > 1) caster.PrintDirectionBonus(attackDamage);
-		if (attackDamage.celestialBonus != 1) caster.PrintCelestialBonus(attackDamage.celestialBonus);
-		if (attackDamage.chainBonus > 1) caster.PrintChainBonus(chainCombo);
-		if (attackDamage.heightBonus != 1) caster.PrintHeightBonus(attackDamage.heightBonus);
+		if (attackDamage.directionBonus > 1) UIM.PrintDirectionBonus(attackDamage);
+		if (attackDamage.celestialBonus != 1) UIM.PrintCelestialBonus(attackDamage.celestialBonus);
+		if (attackDamage.chainBonus > 1) UIM.PrintChainBonus(chainCombo);
+		if (attackDamage.heightBonus != 1) UIM.PrintHeightBonus(attackDamage.heightBonus);
 
 		BattleManager battleManager = BattleData.battleManager;
 		UnitClass damageType = caster.GetUnitClass();

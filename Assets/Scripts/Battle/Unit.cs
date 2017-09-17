@@ -26,10 +26,6 @@ public class Unit : MonoBehaviour{
 	GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
-	GameObject chainBonusTextObject;
-	GameObject celestialBonusTextObject;
-	GameObject directionBonusTextObject;
-	GameObject heightBonusTextObject;
 	public HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 	List<HitInfo> latelyHitInfos;
@@ -958,60 +954,11 @@ public class Unit : MonoBehaviour{
             color.a = 1;
         GetComponent<SpriteRenderer>().color = color;
     }
-    
-	// 보너스 텍스트 표시.
-	public void PrintDirectionBonus(DamageCalculator.AttackDamage attackDamage)
-	{
-		directionBonusTextObject.SetActive (true);
-		if (attackDamage.attackDirection == DirectionCategory.Side)
-			directionBonusTextObject.GetComponentInChildren<Text> ().text = "측면 공격 (x" + attackDamage.directionBonus + ")";
-		else if (attackDamage.attackDirection == DirectionCategory.Back)
-			directionBonusTextObject.GetComponentInChildren<Text> ().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
-	}
-	public void PrintCelestialBonus(float bonus)
-	{
-		celestialBonusTextObject.SetActive(true);
-		// bonusTextObject.GetComponent<TextMesh>().text = "Celestial bonus";
-		celestialBonusTextObject.GetComponentInChildren<Text>().text = "천체속성 (x" + bonus + ")";
-		// Invoke("ActiveFalseAtDelay", 0.5f);
-	}
-	public void PrintHeightBonus(float bonus)
-	{
-		heightBonusTextObject.SetActive(true);
-		heightBonusTextObject.GetComponentInChildren<Text>().text = "고저차 (x" + bonus + ")";
-	}
-	public void ActiveFalseAllBonusText()
-	{
-		celestialBonusTextObject.SetActive(false);
-		chainBonusTextObject.SetActive(false);
-		directionBonusTextObject.SetActive(false);
-		heightBonusTextObject.SetActive(false);
-	}
-	public void PrintChainBonus(int chainCount)
-	{
-		float chainBonus;
 
-		if (chainCount < 2)	chainBonus = 1.0f;
-		else if (chainCount == 2) chainBonus = 1.2f;
-		else if (chainCount == 3) chainBonus = 1.5f;
-		else if (chainCount == 4) chainBonus = 2.0f;
-		else chainBonus = 3.0f;
-
-		if (chainCount < 2)	return;
-
-		chainBonusTextObject.SetActive(true);
-		chainBonusTextObject.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
-	}
-	public void DisableChainText()
-	{
-		chainBonusTextObject.SetActive(false);
-	}
-	public void ShowChainIcon()
-	{
+	public void ShowChainIcon(){
 		chainAttackerIcon.SetActive(true);
 	}
-	public void HideChainIcon()
-	{
+	public void HideChainIcon(){
 		chainAttackerIcon.SetActive(false);
 	}
 
@@ -1104,14 +1051,10 @@ public class Unit : MonoBehaviour{
 	}
 
 	void Awake(){
-		chainBonusTextObject = GameObject.Find("ChainBonusPanel");
 		damageTextObject = transform.Find("DamageText").gameObject;
 		recoverTextObject = transform.Find("RecoverText").gameObject;
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
-		celestialBonusTextObject = GameObject.Find("CelestialBonusPanel");
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
-		directionBonusTextObject = GameObject.Find("DirectionBonusPanel");
-		heightBonusTextObject = GameObject.Find("HeightBonusPanel");
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
 	}
 
@@ -1119,11 +1062,6 @@ public class Unit : MonoBehaviour{
 		ApplyStats();
 		LoadSprite();
 		Initialize();
-
-		// chainBonusTextObject.SetActive(false);
-		// celestialBonusTextObject.SetActive(false);
-		// directionBonusTextObject.SetActive(false);
-		// heightBonusTextObject.SetActive(false);
 
 		if(isAI){
 			GetComponent<Battle.Turn.AI>().CheckActiveTrigger();

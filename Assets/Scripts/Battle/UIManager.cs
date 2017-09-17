@@ -5,8 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-
 using BattleUI;
+using Enums;
 
 public class UIManager : MonoBehaviour{
 	private static UIManager instance;
@@ -29,6 +29,11 @@ public class UIManager : MonoBehaviour{
 	GameObject placedUnitCheckUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
+
+	public GameObject chainBonusObj;
+	public GameObject celestialBonusObj;
+	public GameObject directionBonusObj;
+	public GameObject heightBonusObj;
 
 	GameObject notImplementedDebugPanel;
 	List<ActionButton> actionButtons = new List<ActionButton>();
@@ -67,6 +72,7 @@ public class UIManager : MonoBehaviour{
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
+		DeactivateAllBonusText();
 	}
 
 	void Update(){
@@ -96,6 +102,44 @@ public class UIManager : MonoBehaviour{
 			apBarUI.gameObject.SetActive(true);
 			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
 		}
+	}
+
+	//전술 보너스 텍스트 표시
+	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage){
+		directionBonusObj.SetActive (true);
+		if (attackDamage.attackDirection == DirectionCategory.Side)
+			directionBonusObj.GetComponentInChildren<Text> ().text = "측면 공격 (x" + attackDamage.directionBonus + ")";
+		else if (attackDamage.attackDirection == DirectionCategory.Back)
+			directionBonusObj.GetComponentInChildren<Text> ().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
+	}
+	public void PrintCelestialBonus(float bonus){
+		celestialBonusObj.SetActive(true);
+		celestialBonusObj.GetComponentInChildren<Text>().text = "천체속성 (x" + bonus + ")";
+		// Invoke("ActiveFalseAtDelay", 0.5f);
+	}
+	public void PrintHeightBonus(float bonus){
+		heightBonusObj.SetActive(true);
+		heightBonusObj.GetComponentInChildren<Text>().text = "고저차 (x" + bonus + ")";
+	}
+	public void PrintChainBonus(int chainCount){
+		float chainBonus;
+
+		if (chainCount < 2)	chainBonus = 1.0f;
+		else if (chainCount == 2) chainBonus = 1.2f;
+		else if (chainCount == 3) chainBonus = 1.5f;
+		else if (chainCount == 4) chainBonus = 2.0f;
+		else chainBonus = 3.0f;
+
+		if (chainCount < 2)	return;
+
+		chainBonusObj.SetActive(true);
+		chainBonusObj.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
+	}
+	public void DeactivateAllBonusText(){
+		celestialBonusObj.SetActive(false);
+		chainBonusObj.SetActive(false);
+		directionBonusObj.SetActive(false);
+		heightBonusObj.SetActive(false);
 	}
 
 	public void TurnOnOnlyOneAction(int skillIndex){

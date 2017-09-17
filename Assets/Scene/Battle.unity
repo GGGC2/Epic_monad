@@ -108,6 +108,11 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &75019686 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1391369272438742, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 223427294}
 --- !u!1001 &223427294
 Prefab:
   m_ObjectHideFlags: 0
@@ -710,6 +715,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &366532726 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1163370873362240, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 223427294}
 --- !u!1001 &593842745
 Prefab:
   m_ObjectHideFlags: 0
@@ -908,6 +918,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 894933682}
   m_Script: {fileID: 11500000, guid: 57f3d8c6c102e4d929ac0ff67682787b, type: 3}
+--- !u!1 &1250482587 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1580896798599148, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 223427294}
 --- !u!1001 &1333908123
 Prefab:
   m_ObjectHideFlags: 0
@@ -956,6 +971,11 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 593842745}
   m_Script: {fileID: 11500000, guid: e5a875ef131a549dea154a98219459e1, type: 3}
+--- !u!1 &1465502489 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1448048055539306, guid: 4b39f95afa3dd460e9610c859bd55188,
+    type: 2}
+  m_PrefabInternal: {fileID: 223427294}
 --- !u!1001 &1762320281
 Prefab:
   m_ObjectHideFlags: 0
@@ -1170,7 +1190,6 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
 --- !u!4 &1835291131
 Transform:
   m_ObjectHideFlags: 0
@@ -1223,6 +1242,22 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11411640, guid: 750256399ab32466f94897aae008d915, type: 2}
+      propertyPath: chainBonusObj
+      value: 
+      objectReference: {fileID: 366532726}
+    - target: {fileID: 11411640, guid: 750256399ab32466f94897aae008d915, type: 2}
+      propertyPath: celestialBonusObj
+      value: 
+      objectReference: {fileID: 75019686}
+    - target: {fileID: 11411640, guid: 750256399ab32466f94897aae008d915, type: 2}
+      propertyPath: directionBonusObj
+      value: 
+      objectReference: {fileID: 1250482587}
+    - target: {fileID: 11411640, guid: 750256399ab32466f94897aae008d915, type: 2}
+      propertyPath: heightBonusObj
+      value: 
+      objectReference: {fileID: 1465502489}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 750256399ab32466f94897aae008d915, type: 2}
   m_IsPrefabParent: 0

@@ -358,7 +358,7 @@ namespace Battle.Turn {
 			List<Chain> allTriggeredChains = ChainList.GetAllChainTriggered (casting);
 			int chainCombo = allTriggeredChains.Count;
 
-			caster.PrintChainBonus (chainCombo);
+			BattleData.uiManager.PrintChainBonus (chainCombo);
 
 			// 발동되는 모든 시전을 순서대로 실행
 			foreach (var chain in allTriggeredChains) {
@@ -369,7 +369,7 @@ namespace Battle.Turn {
 				BattleData.currentState = CurrentState.ApplySkill;
 				chain.Caster.HideChainIcon ();
 				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
-				caster.DisableChainText ();
+				BattleData.uiManager.chainBonusObj.SetActive(false);
 			}
 
 			yield return BattleData.battleManager.AtActionEnd();

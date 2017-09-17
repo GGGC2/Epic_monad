@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 486734}
-  - 114: {fileID: 11411640}
+  - component: {fileID: 486734}
+  - component: {fileID: 11411640}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -28,6 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11411640
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -39,6 +40,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 070a334ea70414203b29e80f4cae8ab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startFinished: 0
+  apBarUI: {fileID: 0}
+  skillViewer: {fileID: 0}
+  selectedUnitViewerUI: {fileID: 0}
+  chainBonusObj: {fileID: 0}
+  celestialBonusObj: {fileID: 0}
+  directionBonusObj: {fileID: 0}
+  heightBonusObj: {fileID: 0}
+  ActionButtonOnOffLock: 0
+  activateDetailInfoEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  deactivateDetailInfoEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
