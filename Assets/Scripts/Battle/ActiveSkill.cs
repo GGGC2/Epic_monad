@@ -605,6 +605,7 @@ public class ActiveSkill : Skill{
 
 	public IEnumerator AIUseSkill(Casting casting){
 		Unit caster = casting.Caster;
+		ActiveSkill skill = casting.Skill;
 		SkillLocation location = casting.Location;
 
 		caster.SetDirection (location.Direction);
@@ -617,6 +618,9 @@ public class ActiveSkill : Skill{
 		BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		caster.UseActivityPoint (casting.RequireAP);
+		if (skill.GetCooldown () > 0) {
+			caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
+		}
 
 		List<Tile> secondRange = casting.SecondRange;
 		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);
