@@ -1,7 +1,7 @@
 owner,requireLevel,name,column,Text,Type1,Coef1,Base1,Type2,Coef2,Base2
-reina,0,핀토스의 긍지,1,ABCD,None,0,0,None,0,0
-reina,8,상처 태우기,1,ABCD,None,0,0,None,0,0
-reina,8,불의 파동,2,ABCD,None,0,0,None,0,0
+reina,0,핀토스의 긍지,1,다른 유닛에게 받은 강화 하나당 공격력이 5% 높아집니다.,None,0,0,None,0,0
+reina,8,상처 태우기,1,모든 공격이 2페이즈 동안 내상(자신이 다른 유닛에게 받은 강화 하나당 10%) 효과를 줍니다.,None,0,0,None,0,0
+reina,8,불의 파동,2,<color=green>나무</color> 속성 유닛을 공격할 때 피해량이 <color=red>15%<color> 높아집니다.,None,0,0,None,0,0
 reina,15,점화,1,ABCD,None,0,0,None,0,0
 reina,15,잉걸불,2,ABCD,None,0,0,None,0,0
 reina,15,마력 연쇄,3,ABCD,None,0,0,None,0,0
@@ -11,21 +11,15 @@ reina,36,잿더미,1,ABCD,None,0,0,None,0,0
 reina,36,흐름 변환,3,ABCD,None,0,0,None,0,0
 reina,43,열상 낙인,2,ABCD,None,0,0,None,0,0
 reina,43,에테르 순환,3,ABCD,None,0,0,None,0,0
-lenien,0,감전,1,ABCD,None,0,0,None,0,0
-lenien,1,에너지 변환,1,ABCD,None,0,0,None,0,0
-lenien,8,전도체,3,ABCD,None,0,0,None,0,0
+lenien,0,감전,1,<color=blue>물</color> 또는 <color=gray>금속</color> 속성 타일에 있는 유닛을 공격하면 1페이즈 동안 대상의 저항력이 <color=green>42+레벨당 0.6</color>(<color=green>VALUE1</color>),Level,0.6,42,None,0,0
+lenien,1,에너지 변환,1,자신보다 낮은 타일에 있는 유닛을 공격할 때 피해량이 <color=red>높이차x15%</color>만큼 높아집니다. 높이 보정치와 중복으로 적용됩니다.,None,0,0,None,0,0
+lenien,8,전도체,3,<color=blue>물</color> 속성 타일에 있는 유닛을 공격할 때 저항력을 51+레벨당 0.7(<color=green>VALUE1</color>) 무시합니다.,Level,0.7,51,None,0,0
 lenien,15,피뢰침,1,ABCD,None,0,0,None,0,0
 lenien,15,정전기 유도,3,ABCD,None,0,0,None,0,0
 lenien,29,연쇄 방전,2,ABCD,None,0,0,None,0,0
 lenien,29,자기 부상,3,ABCD,None,0,0,None,0,0
 lenien,36,에테르 전위,1,ABCD,None,0,0,None,0,0
 lenien,43,입자 가속,3,ABCD,None,0,0,None,0,0
-sisterna,0,흡수,1,ABCD,None,0,0,None,0,0
-sisterna,0,방랑자,1,ABCD,None,0,0,None,0,0
-sisterna,1,유법,2,ABCD,None,0,0,None,0,0
-sisterna,0,동체 시력,3,ABCD,None,0,0,None,0,0
-sisterna,1,기척 감지,3,ABCD,None,0,0,None,0,0
-sisterna,0,압도적인 공포,1,ABCD,None,0,0,None,0,0
 eren,0,흡수,1,ABCD,None,0,0,None,0,0
 eren,8,흑화,1,ABCD,None,0,0,None,0,0
 eren,8,축성,3,ABCD,None,0,0,None,0,0
@@ -77,9 +71,9 @@ luvericha,29,넘치는 사랑,3,ABCD,None,0,0,None,0,0
 luvericha,36,영혼의 교감,3,ABCD,None,0,0,None,0,0
 luvericha,43,헌신,2,ABCD,None,0,0,None,0,0
 luvericha,43,응급처치,3,ABCD,None,0,0,None,0,0
-curi,0,정제,1,ABCD,None,0,0,None,0,0
-curi,1,호기심,1,ABCD,None,0,0,None,0,0
-curi,8,신속 반응,1,ABCD,None,0,0,None,0,0
+curi,0,정제,1,공격할 때 모든 대상의 원소속성이 같으면 '정제(공격력 +5%, 5중첩까지 가능)' 효과를 얻습니다. 서로 다른 원소속성의 유닛들을 동시에 공격하면 모든 중첩이 사라집니다.,None,0,0,None,0,0
+curi,1,호기심,1,전투를 시작한 후 초반 5페이즈 동안 공격력이 <color=red>15%</color> 높아집니다.,None,0,0,None,0,0
+curi,8,신속 반응,1,<color=red>불</color> 속성 타일에 있는 동안 <color=blue>속도</color>가 <color=blue>20<color> 높아집니다.,None,0,0,None,0,0
 curi,8,가연성 부착물,2,ABCD,None,0,0,None,0,0
 curi,15,동적 평형,1,ABCD,None,0,0,None,0,0
 curi,15,조연성 부착물,2,ABCD,None,0,0,None,0,0
@@ -101,10 +95,10 @@ json,0,표식,1,제이선의 공격은 적에게 표식을 남깁니다. 표식�
 json,8,바람 가르기,1,이동하고 나면 바로 다음 공격에 필요한 행동력이 (이동한 타일*10%) 줄어듭니다.,None,0,0,None,0,0
 karldrich,0,모두에게 평등한 죽창,1,공격할 때 대상의 방어력을 무시합니다.,None,0,0,None,0,0
 karldrich,1,행동하는 혁명가,3,속도가 10 높아집니다.,None,0,0,None,0,0
-sepia,1,신뢰의 끈,2,자신으로부터 2타일 이내의 후면에 동료가 있으면 방어력이 <color=green>48(+레벨당 0.6)</color>(<color=green>VALUE1</color>) 높아집니다.,Level,0.6,48,None,0,0
+sepia,1,신뢰의 끈,2,자신으로부터 2타일 이내의 후면에 동료가 있으면 방어력이 <color=green>51(+레벨당 0.7)</color>(<color=green>VALUE1</color>) 높아집니다.,Level,0.7,51,None,0,0
 darkenir,0,흐름 동화,1,자신에게 효과를 건 대상도 절반의 해당 효과를 받는다. 보스 유닛의 경우 무효화되거나 효과가 감소한다. 이 특성으로 얻은 효과는 원래의 효과와 중첩되지 않는다.,None,0,0,None,0,0
 noel,0,심판의 빛,1,자신이 사용한 보호막이 피해를 흡수할 때 흡수한 만큼 공격자에게 마법 피해를 줍니다.,None,0,0,None,0,0
-arcadia,8,뿌리 내리기,1,나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>59(+레벨당 0.9)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.,Level,0.9,59,None,0,0
+arcadia,8,뿌리 내리기,1,나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.,Level,0.8,63,None,0,0
 arcadia,15,광합성,2,ABCD,None,0,0,None,0,0
 bianca,0,사뿐사뿐,1,비앙카는 자신의 덫을 발동시키지 않으며 덫에 의한 피해를 받지 않는다.,None,0,0,None,0,0
 grenev,0,타고난 저격수,1,이동할 때 행동력 소모가 <color=red>30%</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.,None,0,0,None,0,0
