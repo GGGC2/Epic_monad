@@ -246,16 +246,13 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		// 배치 가능 위치 표시 & 카메라 이동
-		// 지금은 주변 사각 1칸 여유를 둠
+		var selectablePlaceList = new List<PlaceInfo>();
+		var selectableTileList = new List<Tile>();
 		if (RM != null) {
-			var selectablePosList = unitInfoList.FindAll(unitInfo => RM.selectedUnitList.Contains(unitInfo.nameEng));
-			var selectableTileList = new List<Tile>();
-			selectablePosList.ForEach(unitInfo => {
-				var tiles = BattleData.tileManager.GetTilesInRange(RangeForm.Square, unitInfo.initPosition, 0, 1, 0, Direction.LeftDown);
-				tiles.ForEach(tile => {
-					if (!selectableTileList.Contains(tile)) selectableTileList.Add(tile);
-				});
-			});
+			selectablePlaceList = Parser.GetPlacesInfo(SceneData.stageNumber);
+			selectableTileList = new List<Tile>();
+			selectablePlaceList.ForEach(sp => selectableTileList.Add(BattleData.tileManager.GetTile(sp.position)));
+
 			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
 			BattleData.tileManager.PreselectTiles(selectableTileList);
 
@@ -272,7 +269,7 @@ public class UnitManager : MonoBehaviour {
 			BattleData.isWaitingUserInput = true;
 			yield return StartCoroutine(EventTrigger.WaitOr(BattleData.battleManager.triggers.tileSelectedByUser));
 			BattleData.isWaitingUserInput = false;
-			
+		
 			Vector2 triggeredPos = BattleData.move.selectedTilePosition; 
 			Tile triggeredTile = BattleData.tileManager.GetTile(triggeredPos);
 
@@ -284,6 +281,9 @@ public class UnitManager : MonoBehaviour {
 			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
 			respawnPos -= new Vector3(0, 0, 0.05f);
 			unit.transform.position = respawnPos;
+
+			Direction triggerDirection = selectablePlaceList.Find(sp => sp.position == triggeredPos).direction;
+			unit.SetDirection(triggerDirection);
 
 			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.SetUnitOnTile(unit);

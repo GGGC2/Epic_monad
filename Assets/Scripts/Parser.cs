@@ -234,7 +234,7 @@ public class Parser : MonoBehaviour{
 	public static List<SkillColumnInfo> GetSkillColumInfo()
 	{
 		List<SkillColumnInfo> columnInfos = new List<SkillColumnInfo>();
-		TextAsset csvFile = Resources.Load("Data/unitSkillColumns") as TextAsset;;
+		TextAsset csvFile = Resources.Load("Data/unitSkillColumns") as TextAsset;
 
 		string csvText = csvFile.text;
 		string[] lines = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -249,5 +249,24 @@ public class Parser : MonoBehaviour{
 		}
 
 		return columnInfos;
+	}
+
+	public static List<PlaceInfo> GetPlacesInfo(int stageNumber) {
+		List<PlaceInfo> placeInfoList = new List<PlaceInfo>();
+		TextAsset csvFile = Resources.Load("Data/stage"+stageNumber+"_unitPos") as TextAsset;
+
+		string csvText = csvFile.text;
+		string[] lines = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+		List<string> dataLines = new List<string>(lines);
+		dataLines = dataLines.GetRange(1, lines.Length - 1);
+
+		foreach (string line in dataLines)
+		{
+			PlaceInfo placeInfo = new PlaceInfo(line);
+			placeInfoList.Add(placeInfo);
+		}
+
+		return placeInfoList;
 	}
 }
