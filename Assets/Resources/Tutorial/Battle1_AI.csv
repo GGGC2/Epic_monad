@@ -1,11 +1,11 @@
-Index	Action	Etc					
-1	Move	8	5
-2	UseSkill	0	8	5	6	5	LeftUp
-3	StandbyOrRest 						
-4	Move	6	4
-5	UseSkill	0	6	4	6	5	RightUp
-6	StandbyOrRest 						
-7	UseSkill	0	8	5	6	5	LeftUp
-8	StandbyOrRest 						
-9	UseSkill	0	6	4	6	5	RightUp
-10	StandbyOrRest 						
+Action	Etc					
+Move	8	5
+UseSkill	0	8	5	6	5	LeftUp
+StandbyOrRest 						
+Move	6	4
+UseSkill	0	6	4	6	5	RightUp
+StandbyOrRest 						
+UseSkill	0	8	5	6	5	LeftUp
+StandbyOrRest 						
+UseSkill	0	6	4	6	5	RightUp
+StandbyOrRest
