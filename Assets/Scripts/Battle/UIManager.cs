@@ -76,24 +76,26 @@ public class UIManager : MonoBehaviour{
 	}
 
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.Alpha1)){
+		if(Setting.shortcutEnable){
+			if(Input.GetKeyDown(KeyCode.Alpha1)){
 			StartCoroutine(actionButtons[0].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha2)){
-			StartCoroutine(actionButtons[1].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha3)){
-			StartCoroutine(actionButtons[2].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha4)){
-			StartCoroutine(actionButtons[3].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha5)){
-			StartCoroutine(actionButtons[4].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha6)){
-			StartCoroutine(actionButtons[5].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha7)){
-			StartCoroutine(actionButtons[6].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Alpha8)){
-			StartCoroutine(actionButtons[7].OnClick());
-		}if(Input.GetKeyDown(KeyCode.Q)){
-			StartCoroutine(actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha2)){
+				StartCoroutine(actionButtons[1].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha3)){
+				StartCoroutine(actionButtons[2].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha4)){
+				StartCoroutine(actionButtons[3].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha5)){
+				StartCoroutine(actionButtons[4].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha6)){
+				StartCoroutine(actionButtons[5].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha7)){
+				StartCoroutine(actionButtons[6].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Alpha8)){
+				StartCoroutine(actionButtons[7].OnClick());
+			}if(Input.GetKeyDown(KeyCode.Q)){
+				StartCoroutine(actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick());
+			}
 		}
 	}
 
