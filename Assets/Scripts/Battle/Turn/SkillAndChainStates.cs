@@ -276,8 +276,9 @@ namespace Battle.Turn {
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
 			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown() > 0)
-				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+			if (skill.GetCooldown () > 0) {
+				caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
+			}
 			yield return ApplyAllTriggeredChains(casting);
 
 			BattleManager.MoveCameraToUnit(caster);

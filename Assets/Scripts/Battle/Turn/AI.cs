@@ -186,7 +186,7 @@ namespace Battle.Turn{
 			this._AIData = _AIData;
 		}
 
-		enum State{ Dead, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest }
+		enum State{ Dead, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
 
 		State state;
 
@@ -216,6 +216,12 @@ namespace Battle.Turn{
 				state = State.SkipTurn;
 			} else if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
+			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
+				state = State.Triana_Rest;
+			} else if (unit.GetNameEng ().Equals ("burglar")) {
+				state = State.Burglar;
+			} else if (unit.GetNameEng ().Equals ("childHolder")) {
+				state = State.ChildHolder;
 			} else {
 				state = State.MoveToBestCasting;
 			}
@@ -359,7 +365,7 @@ namespace Battle.Turn{
 
 				yield return battleManager.ToDoBeforeAction ();
 
-				if (!unit.HasEnoughAPToUseSkill(skill)) {
+				if (!unit.IsThisSkillUsable (skill)) {
 					state = State.StandbyOrRest;
 					yield break;
 				}
@@ -389,6 +395,25 @@ namespace Battle.Turn{
 				yield return TakeRest ();
 			}
 			state = State.EndTurn;
+		}
+
+		IEnumerator Triana_Rest(){
+			if (2 * unit.GetCurrentHealth () > unit.GetMaxHealth ()) {
+				state = State.StandbyOrRest;
+			} else {
+				ActiveSkill skill1 = unit.GetSkillList () [0];
+				ActiveSkill skill2 = unit.GetSkillList () [1];
+				if (unit.IsThisSkillUsable (skill1)) {
+					BattleData.selectedSkill = skill1;
+					Casting casting = new Casting (unit, skill1, new SkillLocation (unit.GetTileUnderUnit (), unit.GetTileUnderUnit (), unit.GetDirection ()));
+					yield return UseSkill (casting);
+				} else if (unit.IsThisSkillUsable (skill2)) {
+					state = State.MoveToBestCasting;
+				} else {
+					state = State.StandbyOrRest;
+				}
+			}
+			yield return null;
 		}
 
 		IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){

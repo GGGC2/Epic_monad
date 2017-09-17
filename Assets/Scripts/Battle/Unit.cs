@@ -244,6 +244,12 @@ public class Unit : MonoBehaviour{
 		}
 		return isPossible;
 	}
+	public bool IsThisSkillUsable(ActiveSkill skill){
+		bool isPossible = IsSkillUsePossibleState ();
+		isPossible = isPossible && HasEnoughAPToUseSkill (skill);
+		isPossible = isPossible && !usedSkillDict.ContainsKey (skill.GetName());
+		return isPossible;
+	}
 	public void ApplySnapshot(){
 		BattleData.MoveSnapshot snapshot = BattleData.moveSnapshot;
 		GetTileUnderUnit().SetUnitOnTile(null);
@@ -829,7 +835,7 @@ public class Unit : MonoBehaviour{
 			float healNeedCount = CalculateFloatHealNeedCount (casting);
 			reward = sideFactor * PCFactor * GetStat (Stat.Power) * healNeedCount;
 		}
-		Debug.Log ("Skill apply to " + name + " is " + ((int)reward) + " point");
+		//Debug.Log ("Skill apply to " + name + " is " + ((int)reward) + " point");
 		return reward;
 	}
 
@@ -847,7 +853,13 @@ public class Unit : MonoBehaviour{
 		
 		damage = Math.Min (damage, remainHP);
 
-		float killNeedCount = remainHP / damage;
+		float killNeedCount;
+
+		if (damage >= 1) {
+			killNeedCount = remainHP / damage;
+		} else {
+			killNeedCount = 10000;
+		}
 		return killNeedCount;
 	}
 	public int CalculateIntKillNeedCount(Casting casting){

@@ -226,25 +226,12 @@ public class UnitManager : MonoBehaviour {
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
-		// 배치 가능 위치 표시 & 카메라 이동
-		if (readyManager != null) {
-			var selectablePosList = unitInfoList.FindAll(unitInfo => readyManager.selectedUnitList.Contains(unitInfo.nameEng));
-			var selectableTileList = new List<Tile>();
-			selectablePosList.ForEach(unitInfo => selectableTileList.Add(BattleData.tileManager.GetTile(unitInfo.initPosition)));
-			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
-
-			BattleManager.MoveCameraToTile(selectableTileList.First());
-		}
-		
-		// 유닛 배치
+		// 유닛 배치 (자동)
 		foreach (var unitInfo in unitInfoList){
 			if (unitInfo.nameEng == "unselected") continue;
 
-			if (readyManager != null && readyManager.selectedUnitList.Contains(unitInfo.nameEng)) {
-				Debug.Log("unit add ready");
-				yield return new WaitUntil (() => Input.GetMouseButtonDown(0) && GameObject.Find("ConditionPanel") == null);
-				yield return new WaitForEndOfFrame();
-			}
+			if (readyManager != null && readyManager.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
 			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
@@ -257,6 +244,56 @@ public class UnitManager : MonoBehaviour {
 			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.SetUnitOnTile(unit);
 			units.Add(unit);
+		}
+
+		// 배치 가능 위치 표시 & 카메라 이동
+		// 지금은 주변 사각 1칸 여유를 둠
+		if (readyManager != null) {
+			var selectablePosList = unitInfoList.FindAll(unitInfo => readyManager.selectedUnitList.Contains(unitInfo.nameEng));
+			var selectableTileList = new List<Tile>();
+			selectablePosList.ForEach(unitInfo => {
+				var tiles = BattleData.tileManager.GetTilesInRange(RangeForm.Square, unitInfo.initPosition, 0, 1, 0, Direction.LeftDown);
+				tiles.ForEach(tile => {
+					if (!selectableTileList.Contains(tile)) selectableTileList.Add(tile);
+				});
+			});
+			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
+			BattleData.tileManager.PreselectTiles(selectableTileList);
+
+			BattleManager.MoveCameraToTile(selectableTileList.First());
+		}
+
+		// 유닛 배치 (수동)
+		foreach (var unitInfo in unitInfoList){
+			if (readyManager == null) continue;
+			if (unitInfo.nameEng == "unselected") continue;
+			if (!readyManager.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+
+			Debug.Log("unit add ready : " + unitInfo.nameEng);
+			BattleData.isWaitingUserInput = true;
+			yield return StartCoroutine(EventTrigger.WaitOr(BattleData.battleManager.triggers.tileSelectedByUser));
+			BattleData.isWaitingUserInput = false;
+			
+			Vector2 triggeredPos = BattleData.move.selectedTilePosition; 
+			Tile triggeredTile = BattleData.tileManager.GetTile(triggeredPos);
+
+			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+			unit.myInfo = unitInfo;
+			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
+
+			Vector2 initPosition = triggeredTile.GetTilePos();
+			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+			respawnPos -= new Vector3(0, 0, 0.05f);
+			unit.transform.position = respawnPos;
+
+			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+			tileUnderUnit.SetUnitOnTile(unit);
+			units.Add(unit);
+
+			List<Tile> triggeredTiles = new List<Tile>();
+			triggeredTiles.Add(triggeredTile);
+			BattleData.tileManager.DepaintTiles(triggeredTiles, TileColor.Blue);
+			BattleData.tileManager.DepreselectTiles(triggeredTiles);
 		}
 
 		// 배치 가능 위치 지우고 턴 시작(은 아직 안됨)
@@ -380,18 +417,19 @@ public class UnitManager : MonoBehaviour {
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	IEnumerator Start() {
+	void Start() {
 		GameData.PartyData.CheckLevelData();
 		activeSkillList = Parser.GetParsedData<ActiveSkill>();
 		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
         LoadUnitStatusEffects();
         LoadTileStatusEffects();
-		//* yield return StartCoroutine(GenerateUnits());
-		// if (!GameData.SceneData.isTestMode) {
-        //     ApplyAIInfo();
-        // }
-        // GetEnemyUnits();
-		yield return null;
+	}
+
+	public void StartByBattleManager() {
+		if (!GameData.SceneData.isTestMode) {
+            ApplyAIInfo();
+        }
+        GetEnemyUnits();
 	}
 
 	public void UpdateUnitOrder (){
