@@ -58,7 +58,7 @@ public class UnitInfo{
 	}
 
 	public static int GetStat(string unitName, Stat type){
-		TextAsset UnitDataMatrix = Resources.Load<TextAsset>("Data/UnitDataPC");
+		TextAsset UnitDataMatrix = Resources.Load<TextAsset>("Data/PCStatData");
 		TextAsset CoefTable = Resources.Load<TextAsset>("Data/StatCoefTable");
         int RelativePoint = 0;
         if((int)type <= 5)
@@ -81,7 +81,7 @@ public class UnitInfo{
 	}
 
 	public static UnitClass GetUnitClass(string Name){
-		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[6];
+		string className = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/PCStatData").text, Name)[6];
 		if(className == "melee")
 			return UnitClass.Melee;
 		else if(className == "magic")
@@ -91,7 +91,7 @@ public class UnitInfo{
 	}
 
 	public static Element GetElement(string Name){
-		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[7];
+		string element = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/PCStatData").text, Name)[7];
 		if (element == "fire")
 			return Element.Fire;
 		else if (element == "water")
@@ -105,7 +105,7 @@ public class UnitInfo{
 	}
 
 	public static Celestial GetCelestial(string Name){
-		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, Name)[8];
+		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/PCStatData").text, Name)[8];
 		if (celestial == "sun")
 			return Celestial.Sun;
 		else if (celestial == "moon")
@@ -117,7 +117,7 @@ public class UnitInfo{
 	}
 
 	void SetCelestialImage(string unitName){
-		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/UnitDataPC").text, unitName)[8];
+		string celestial = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/PCStatData").text, unitName)[8];
 		
 	}
 

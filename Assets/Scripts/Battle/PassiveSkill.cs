@@ -13,7 +13,7 @@ public class PassiveSkill : Skill{
 	}
 
 	public PassiveSkill(string skillData){
-		StringParser commaParser = new StringParser(skillData, ',');
+		StringParser commaParser = new StringParser(skillData, '\t');
 		
 		GetCommonSkillData(commaParser);
 		skillDataText = commaParser.Consume();
