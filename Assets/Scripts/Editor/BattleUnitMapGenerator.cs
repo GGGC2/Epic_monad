@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using UnityEditor;
 
 public class BattleUnitMapGenerator{
@@ -11,4 +11,4 @@ public class BattleUnitMapGenerator{
 		unitManager.GenerateUnits();
 		Debug.Log("Hi");
 	}
-}
+}*/

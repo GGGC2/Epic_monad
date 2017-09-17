@@ -54,7 +54,7 @@ public class BattleManager : MonoBehaviour{
 		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
 	}
 
-	public void StartByManager(){
+	public void BattleModeInitialize(){
 		BattleData.unitManager.StartByBattleManager();
 
 		BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits();
@@ -63,8 +63,6 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		StartByManager();
-
 		if(!TurnManagerStarted){
 			StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;

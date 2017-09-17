@@ -184,18 +184,17 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public IEnumerator GenerateUnits(){
-		Debug.Log("GenerateUnits Start.");
 		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int generatedPC = 0;
 		int enemyCount = 0;
 
-		ReadyManager readyManager = FindObjectOfType<ReadyManager>();
+		ReadyManager RM = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
 			if (unitInfo.nameKor == "unselected") {
-				if (generatedPC >= readyManager.selectedUnitList.Count) continue;
-				PCName = readyManager.selectedUnitList [generatedPC];
+				if (generatedPC >= RM.selectedUnitList.Count) continue;
+				PCName = RM.selectedUnitList [generatedPC];
 			}
 			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
 				PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);
@@ -230,7 +229,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unitInfo in unitInfoList){
 			if (unitInfo.nameEng == "unselected") continue;
 
-			if (readyManager != null && readyManager.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+			if (RM != null && RM.selectedUnitList.Contains(unitInfo.nameEng)) continue;
 
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
@@ -248,8 +247,8 @@ public class UnitManager : MonoBehaviour {
 
 		// 배치 가능 위치 표시 & 카메라 이동
 		// 지금은 주변 사각 1칸 여유를 둠
-		if (readyManager != null) {
-			var selectablePosList = unitInfoList.FindAll(unitInfo => readyManager.selectedUnitList.Contains(unitInfo.nameEng));
+		if (RM != null) {
+			var selectablePosList = unitInfoList.FindAll(unitInfo => RM.selectedUnitList.Contains(unitInfo.nameEng));
 			var selectableTileList = new List<Tile>();
 			selectablePosList.ForEach(unitInfo => {
 				var tiles = BattleData.tileManager.GetTilesInRange(RangeForm.Square, unitInfo.initPosition, 0, 1, 0, Direction.LeftDown);
@@ -265,9 +264,9 @@ public class UnitManager : MonoBehaviour {
 
 		// 유닛 배치 (수동)
 		foreach (var unitInfo in unitInfoList){
-			if (readyManager == null) continue;
+			if (RM == null) continue;
 			if (unitInfo.nameEng == "unselected") continue;
-			if (!readyManager.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+			if (!RM.selectedUnitList.Contains(unitInfo.nameEng)) continue;
 
 			Debug.Log("unit add ready : " + unitInfo.nameEng);
 			BattleData.isWaitingUserInput = true;
@@ -305,7 +304,9 @@ public class UnitManager : MonoBehaviour {
 			}
 		});
 
-		if(readyManager != null) {Destroy(readyManager.gameObject);}
+		if(RM != null) {Destroy(RM.gameObject);}
+		yield return null;
+		BattleData.battleManager.BattleModeInitialize();
 	}
 
 	public IEnumerator DeleteDeadUnit(Unit deadUnit){

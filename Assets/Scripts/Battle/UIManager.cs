@@ -94,7 +94,9 @@ public class UIManager : MonoBehaviour{
 	}
 
 	public void UpdateApBarUI() {
+		//Debug.Log("UpdateApBarUI Called");
 		if (BattleData.readiedUnits.Count != 0) {
+			//Debug.Log("REALLY UpdateApBarUI");
 			apBarUI.gameObject.SetActive(true);
 			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
 		}
