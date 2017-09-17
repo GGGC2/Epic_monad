@@ -186,12 +186,14 @@ namespace Battle.Turn{
 			this._AIData = _AIData;
 		}
 
-		enum State{ Dead, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
+		enum State{ Dead, TurnStart, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
 
 		State state;
 
 		public IEnumerator UnitTurn(){
 			battleManager.StartUnitTurn (unit);
+
+			state = State.TurnStart;
 
 			if (BattleData.onTutorial) {
 				while (state != State.EndTurn) {
