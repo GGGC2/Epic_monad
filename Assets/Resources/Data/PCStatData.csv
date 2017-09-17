@@ -6,7 +6,7 @@ bianca,-2,1,-1,-1,4,magic,metal,sun
 sepia,2,0,3,0,0,melee,fire,sun
 arcadia,1,-1,2,2,-2,magic,plant,earth
 deus,-3,-1,0,0,2,magic,fire,moon
-reina,-2,2,-1,1,0,magic,fire,sun
+reina,-2,2,-1,1,-1,magic,fire,sun
 lenien,0,1,-3,-3,-1,magic,metal,moon
 eren,-4,4,-2,2,-2,magic,water,moon
 yeong,3,0,0,0,2,melee,metal,earth
