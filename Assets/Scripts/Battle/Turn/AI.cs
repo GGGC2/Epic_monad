@@ -186,18 +186,20 @@ namespace Battle.Turn{
 			this._AIData = _AIData;
 		}
 
-		enum State{ Dead, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
+		enum State{ Dead, TurnStart, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
 
 		State state;
 
 		public IEnumerator UnitTurn(){
 			battleManager.StartUnitTurn (unit);
 
-			if(BattleData.onTutorial){
-				while(state != State.EndTurn){
-					yield return ActByScenario(TutorialManager.Instance.GetNextAIScenario());
+			state = State.TurnStart;
+
+			if (BattleData.onTutorial) {
+				while (state != State.EndTurn) {
+					yield return ActByScenario (TutorialManager.Instance.GetNextAIScenario ());
 				}
-			}else{
+			} else {
 				yield return CheckUnitIsActiveAndDecideActionAndAct ();
 			}
 
@@ -438,7 +440,6 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator ActByScenario(AIScenario scenario){
-			Debug.Log("Following Scenario.");
 			if (scenario.functionName == "UseSkill") {
 				Casting casting = new Casting (unit, unit.GetSkillList () [scenario.skillIndex], scenario.skillLocation);
 				yield return StartCoroutine (scenario.functionName, casting);
