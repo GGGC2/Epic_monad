@@ -266,6 +266,7 @@ public class UnitManager : MonoBehaviour {
 			if (!RM.selectedUnitList.Contains(unitInfo.nameEng)) continue;
 
 			Debug.Log("unit add ready : " + unitInfo.nameEng);
+			FindObjectOfType<PlacedUnitCheckPanel>().HighlightPortrait(unitInfo.nameEng);
 			BattleData.isWaitingUserInput = true;
 			yield return StartCoroutine(EventTrigger.WaitOr(BattleData.battleManager.triggers.tileSelectedByUser));
 			BattleData.isWaitingUserInput = false;
@@ -296,6 +297,8 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		// 배치 가능 위치 지우고 턴 시작(은 아직 안됨)
+		FindObjectOfType<PlacedUnitCheckPanel>().SetText("배치를 이대로 확정할까요?");
+
 		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 			
 		units.ForEach(unit => {

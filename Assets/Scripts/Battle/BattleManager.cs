@@ -51,6 +51,12 @@ public class BattleManager : MonoBehaviour{
 		InitCameraPosition(); // temp init position;
 		yield return null;
 
+		// condition panel이 사라진 이후 유닛 배치 UI가 뜨고, 그 이후 유닛 배치를 해야 하므로 일시정지.
+		while (true) {
+			if (GameObject.Find("ConditionPanel") == null) break;
+			else yield return null;
+		}
+
 		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
 	}
 
