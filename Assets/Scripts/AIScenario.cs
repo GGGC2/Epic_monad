@@ -7,7 +7,6 @@ using Enums;
 using BattleUI;
 
 public class AIScenario{
-	public int index;
 	enum Act{ Move, UseSkill, StandbyOrRest, SkipTurn }
 	Act act;
 	public string functionName;
@@ -20,7 +19,6 @@ public class AIScenario{
 
 	public AIScenario(string data){
 		StringParser parser = new StringParser(data, '\t');
-		index = parser.ConsumeInt();
 		act = parser.ConsumeEnum<Act>();
 
 		//BattleManager BM = BattleData.battleManager;
