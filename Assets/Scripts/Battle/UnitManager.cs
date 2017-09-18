@@ -256,9 +256,30 @@ public class UnitManager : MonoBehaviour {
 			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
 			BattleData.tileManager.PreselectTiles(selectableTileList);
 
-			BattleManager.MoveCameraToTile(selectableTileList.First());
+			BattleManager.MoveCameraToTile(selectableTileList.Last());
 		}
 
+		yield return StartCoroutine(GenerateUnitsByManual(unitInfoList, selectablePlaceList));
+
+		// 배치 가능 위치 지우고 턴 시작
+		FindObjectOfType<PlacedUnitCheckPanel>().SetText("배치를 이대로 확정할까요?");
+
+		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
+			
+		units.ForEach(unit => {
+			if (controllableUnitNameList.Contains(unit.GetNameEng())){
+				Destroy(unit.GetComponent<AIData>());
+			}
+		});
+
+		if(RM != null) {Destroy(RM.gameObject);}
+		yield return null;
+		BattleData.battleManager.BattleModeInitialize();
+	}
+
+	public IEnumerator GenerateUnitsByManual(List<UnitInfo> unitInfoList, List<PlaceInfo> selectablePlaceList) {
+		ReadyManager RM = FindObjectOfType<ReadyManager>();
+		
 		// 유닛 배치 (수동)
 		foreach (var unitInfo in unitInfoList){
 			if (RM == null) continue;
@@ -295,21 +316,6 @@ public class UnitManager : MonoBehaviour {
 			BattleData.tileManager.DepaintTiles(triggeredTiles, TileColor.Blue);
 			BattleData.tileManager.DepreselectTiles(triggeredTiles);
 		}
-
-		// 배치 가능 위치 지우고 턴 시작(은 아직 안됨)
-		FindObjectOfType<PlacedUnitCheckPanel>().SetText("배치를 이대로 확정할까요?");
-
-		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
-			
-		units.ForEach(unit => {
-			if (controllableUnitNameList.Contains(unit.GetNameEng())){
-				Destroy(unit.GetComponent<AIData>());
-			}
-		});
-
-		if(RM != null) {Destroy(RM.gameObject);}
-		yield return null;
-		BattleData.battleManager.BattleModeInitialize();
 	}
 
 	public IEnumerator DeleteDeadUnit(Unit deadUnit){
