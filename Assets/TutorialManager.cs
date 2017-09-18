@@ -65,7 +65,7 @@ public class TutorialManager : MonoBehaviour {
 		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
 		if (previousScenario != null) {
 			previousScenario.ResetMissionCondition ();
-			if(previousScenario.mouseMarkPos != Vector3.zero){
+			if(previousScenario.mouseMarkPos != Vector3.zero && mark != null){
 				Destroy (mark.gameObject);
 			}
 		}
