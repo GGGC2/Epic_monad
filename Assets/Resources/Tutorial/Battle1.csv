@@ -13,6 +13,7 @@ Index	Mission	Etc
 21	SelectDirection	RightDown	false
 22	Standby	true	680	70
 23	Standby	true	625	70
-24	SelectSkill	0	true	570	70
+24	SelectTile	5	3	false
+25	SelectSkill	0	true	570	70
 26	SelectAnyDirection	false
 27	End	false
