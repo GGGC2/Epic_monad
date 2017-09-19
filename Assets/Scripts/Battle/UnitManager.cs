@@ -47,7 +47,7 @@ public class UnitManager : MonoBehaviour {
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
 	public GameObject unitPrefab;
-	List<Unit> units = new List<Unit>();
+	public List<Unit> units = new List<Unit>();
 	List<Unit> readiedUnits = new List<Unit>();
 	List<Unit> deadUnits = new List<Unit>();
 	List<Unit> retreatUnits = new List<Unit>();

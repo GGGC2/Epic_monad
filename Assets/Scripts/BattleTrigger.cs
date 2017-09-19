@@ -6,7 +6,7 @@ using Enums;
 public class BattleTrigger{
 	public enum ResultType{Win, Lose, Bonus, End}
 	public enum UnitType{Target, Ally, Enemy, None, PC}
-	public enum ActionType{Neutralize, Reach, Phase, Kill, Retreat}
+	public enum ActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount}
 	public bool acquired;
 	public bool repeatable;
 	public ResultType resultType;
@@ -34,8 +34,7 @@ public class BattleTrigger{
 			nextSceneIndex = commaParser.Consume();
 			winTriggerAll = commaParser.ConsumeBool();
 			loseTriggerAll = commaParser.ConsumeBool();
-		}
-		else{
+		}else{
 			korName = commaParser.Consume();
 			unitType = commaParser.ConsumeEnum<UnitType>();
 		

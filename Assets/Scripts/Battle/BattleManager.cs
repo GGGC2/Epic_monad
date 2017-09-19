@@ -188,68 +188,15 @@ public class BattleManager : MonoBehaviour{
 		BattleData.unitManager.DeleteRetreatUnit(unit);
 
 		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
-			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
-			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
+			yield return BattleTriggerManager.CheckBattleTrigger(unit, actionType);
+			yield return BattleTriggerManager.CheckBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
+			yield return BattleTriggerManager.CheckBattleTrigger(unit, BattleTrigger.ActionType.UnderCount);
 		}else{
 			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
 		}
 
 		Destroy(unit.gameObject);
 	}
-
-	/*public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
-		ChainList.RemoveChainOfThisUnit (unit);
-		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
-		RemoveAuraEffectFromUnit(unit);
-        yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
-		BattleData.unitManager.DeleteRetreatUnit(unit);
-
-		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
-			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
-			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
-		}else{
-			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
-		}
-
-		Destroy(unit.gameObject);
-	}
-
-	public static IEnumerator DestroyDeadUnits(){
-		BattleManager battleManager = BattleData.battleManager;
-
-		foreach (Unit deadUnit in BattleData.deadUnits){
-			Debug.Log(deadUnit.GetNameKor() + " is dead");
-			// 죽은 유닛에게 추가 이펙트.
-			deadUnit.GetComponent<SpriteRenderer>().color = Color.red;
-			yield return DestroyUnit (deadUnit, BattleTrigger.ActionType.Kill);
-		}
-	}
-
-	public static IEnumerator DestroyRetreatUnits(){
-		BattleManager battleManager = BattleData.battleManager;
-
-		foreach (Unit retreatUnit in BattleData.retreatUnits){
-			Debug.Log(retreatUnit.GetNameKor() + " retreats");
-			yield return DestroyUnit (retreatUnit, BattleTrigger.ActionType.Retreat);
-		}
-	}
-
-	public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
-		ChainList.RemoveChainOfThisUnit (unit);
-		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
-		RemoveAuraEffectFromUnit(unit);
-        yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
-		BattleData.unitManager.DeleteRetreatUnit(unit);
-
-		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
-			yield return BattleTriggerManager.CountBattleTrigger(unit, actionType);
-			yield return BattleTriggerManager.CountBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
-		}else{
-			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
-		}
-
-		Destroy(unit.gameObject);
-	}*/
 
     public static void RemoveAuraEffectFromUnit(Unit unit) {
         foreach(var se in unit.StatusEffectList) {
@@ -283,13 +230,6 @@ public class BattleManager : MonoBehaviour{
 		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
 			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, BattleTrigger.ActionType.Reach));
 		}
-		/*BattleData.unitManager.GetRetreatUnits().ForEach(unit => yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Retreat)));
-		BattleData.unitManager.GetDeadUnits().ForEach(unit => StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Kill)));
-
-		BattleData.retreatUnits = BattleData.unitManager.GetRetreatUnits();
-		BattleData.deadUnits = BattleData.unitManager.GetDeadUnits();
-		yield return StartCoroutine(DestroyRetreatUnits());
-		yield return StartCoroutine(DestroyDeadUnits());*/
 	}
 
 	public static void MoveCameraToUnit(Unit unit)
@@ -587,7 +527,7 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
-		BattleTriggerManager.CountBattleTrigger();
+		BattleTriggerManager.CheckBattleTrigger();
 		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));

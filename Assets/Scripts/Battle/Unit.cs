@@ -273,7 +273,7 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CountBattleTrigger(this, destTile);
+        BattleTriggerManager.CheckBattleTrigger(this, destTile);
         UpdateStats();
     }
 
@@ -968,16 +968,8 @@ public class Unit : MonoBehaviour{
         actualStats = new Dictionary<Stat, ActualStat>();
         actualStats.Add(Stat.MaxHealth, new ActualStat(myInfo.baseStats[Stat.MaxHealth], Stat.MaxHealth));
         actualStats.Add(Stat.Power, new ActualStat(myInfo.baseStats[Stat.Power], Stat.Power));
-
-		//if(SceneData.stageNumber >= Setting.classOpenStage){
-			actualStats.Add(Stat.Defense, new ActualStat(myInfo.baseStats[Stat.Defense], Stat.Defense));
-        	actualStats.Add(Stat.Resistance, new ActualStat(myInfo.baseStats[Stat.Resistance], Stat.Resistance));
-		/*}else{
-			Debug.Log("Set Def/Res to 0");
-			actualStats.Add(Stat.Defense, new ActualStat(0, Stat.Defense));
-        	actualStats.Add(Stat.Resistance, new ActualStat(0, Stat.Resistance));
-		}*/
-
+		actualStats.Add(Stat.Defense, new ActualStat(myInfo.baseStats[Stat.Defense], Stat.Defense));
+        actualStats.Add(Stat.Resistance, new ActualStat(myInfo.baseStats[Stat.Resistance], Stat.Resistance));
         actualStats.Add(Stat.Agility, new ActualStat(myInfo.baseStats[Stat.Agility], Stat.Agility));
     }
 

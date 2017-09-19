@@ -23,9 +23,22 @@ public class BattleTriggerManager : MonoBehaviour {
 	public List<string> ReachedTargetUnitNames { get { return reachedTargetUnitNames; } }
 
 	public void CountBattleTrigger(BattleTrigger trigger){
-		trigger.count += 1;
-		Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
-		if (trigger.count == trigger.targetCount && !trigger.acquired) {
+		if(trigger.actionType == BattleTrigger.ActionType.UnderCount && CountUnitOfCondition(trigger) <= trigger.targetCount){
+			//Debug.Log("UnderCount trigger Acquire!");
+			AcquireTrigger(trigger);
+		}else{
+			trigger.count += 1;
+			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
+			if (trigger.count == trigger.targetCount) {
+				AcquireTrigger(trigger);
+			} else if (trigger.repeatable && trigger.acquired){
+				BattleData.rewardPoint += trigger.reward;
+			}
+		}
+	}
+
+	void AcquireTrigger(BattleTrigger trigger){
+		if(!trigger.acquired){
 			trigger.acquired = true;
 			Debug.Log ("Trigger acquired : " + trigger.korName);
 			if (trigger.resultType == BattleTrigger.ResultType.Bonus)
@@ -36,8 +49,8 @@ public class BattleTriggerManager : MonoBehaviour {
 				Debug.Log ("Mission FAIL : " + trigger.korName);
 				sceneLoader.LoadNextDialogueScene ("Title");
 			}
-		} else if (trigger.repeatable) {
-			BattleData.rewardPoint += trigger.reward;
+		}else{
+			Debug.Log("This trigger is already Acquired.");
 		}
 	}
 
@@ -66,7 +79,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public static IEnumerator CountBattleTrigger(Unit unit, BattleTrigger.ActionType actionType){
+	public static IEnumerator CheckBattleTrigger(Unit unit, BattleTrigger.ActionType actionType){
 		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.triggers){
@@ -75,14 +88,15 @@ public class BattleTriggerManager : MonoBehaviour {
 			else if(actionType == BattleTrigger.ActionType.Kill && unit.IsObject)
 				continue;
 			else{
-				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType))
+				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType)){
 					Checker.CountBattleTrigger(trigger);
+				}
 			}
 		}
 		return null;
 	}
 
-	public static void CountBattleTrigger(){
+	public static void CheckBattleTrigger(){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
@@ -92,21 +106,26 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public static void CountBattleTrigger(Unit unit, Tile destination){
+	public static void CheckBattleTrigger(Unit unit, Tile destination){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.triggers){
 			if(trigger.resultType == BattleTrigger.ResultType.End)
 				continue;
 			else if(trigger.actionType == BattleTrigger.ActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
-				//Debug.Log("Setting Dead State");
-				//BattleData.currentState = CurrentState.Destroy;
 				Checker.CountBattleTrigger(trigger);
-				//Checker.StartCoroutine(BattleManager.DestroyUnit(unit, BattleTrigger.ActionType.Reach));
-				//FindObjectOfType<BattleManager>().CallbackStandbyCommand();
 			}
 		}
 	}
 
+	int CountUnitOfCondition(BattleTrigger trigger){
+		int result = 0;
+		foreach(var unit in unitManager.units){
+			if(CheckUnitType(trigger, unit)){
+				result += 1;
+			}
+		}
+		return result;
+	}
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
 		if (trigger.unitType == BattleTrigger.UnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameEng())))
 			return true;
