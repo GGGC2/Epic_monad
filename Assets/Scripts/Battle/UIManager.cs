@@ -69,6 +69,7 @@ public class UIManager : MonoBehaviour{
 		selectDirectionUI.gameObject.SetActive(false);
 		detailInfoUI.gameObject.SetActive(false);
 		placedUnitCheckUI.SetActive(false);
+		apBarUI.MoveOverScreen(false);
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
@@ -101,7 +102,7 @@ public class UIManager : MonoBehaviour{
 
 	public void UpdateApBarUI() {
 		if (BattleData.readiedUnits.Count != 0) {
-			apBarUI.gameObject.SetActive(true);
+			apBarUI.MoveOverScreen(true);
 			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
 		}
 	}

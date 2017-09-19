@@ -17,6 +17,7 @@ namespace BattleUI{
 		private Sprite notFoundProfileSprite;
 		private Sprite defaultProfileSprite;
 		private Sprite defaultBigProfileSprite;
+		Vector3 initPos;
 
 		private int seperationSpace = 10;
 
@@ -36,6 +37,8 @@ namespace BattleUI{
 			Debug.Assert(defaultProfileSprite != null, "Cannot find 'default' sprite");
 			defaultBigProfileSprite = Resources.Load("UnitImage/portrait_placeholder_circle", typeof(Sprite)) as Sprite;
 			Debug.Assert(defaultBigProfileSprite != null, "Cannot find 'default big'sprite");
+
+			initPos = transform.position;
 		}
 
 		public void UpdateAPDisplay(List<Unit> allUnits){
@@ -239,8 +242,7 @@ namespace BattleUI{
 			return sprite;
 		}
 
-		private void Clear()
-		{
+		private void Clear(){
 			// make invisible all things
 			bigProfile.GetComponent<Image>().enabled = false;
 			foreach (GameObject profile in otherProfiles)
@@ -270,8 +272,7 @@ namespace BattleUI{
 			}
 		}
 
-		private List<GameObject> GetChildObjects(Transform parent)
-		{
+		private List<GameObject> GetChildObjects(Transform parent){
 			List<GameObject> resultList = new List<GameObject>();
 			foreach (Transform child in parent)
 			{
@@ -280,8 +281,7 @@ namespace BattleUI{
 			return resultList;
 		}
 
-		private List<UnitWrapper> SortUnits(List<UnitWrapper> units)
-		{
+		private List<UnitWrapper> SortUnits(List<UnitWrapper> units){
 			UnitManager unitManager = BattleData.unitManager;
 			int standardActivityPoint =  unitManager.GetStandardActivityPoint();
 
@@ -320,6 +320,15 @@ namespace BattleUI{
 				activityPoint -= BattleData.previewAPAction.requiredAP;
 			}
 			return activityPoint;
+		}
+
+		//화면 안/밖으로 위치를 옮겨서 게임상으로 나타났다 사라지는 것처럼 보이도록 연출하는 기술. true이면 나타나고 false면 사라진다.
+		public void MoveOverScreen(bool appear){
+			if(appear){
+				transform.position = initPos;
+			}else{
+				transform.position = new Vector3(initPos.x, -110, initPos.z);
+			}
 		}
 	}
 }
