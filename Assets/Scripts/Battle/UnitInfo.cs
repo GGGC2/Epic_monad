@@ -146,6 +146,8 @@ public class UnitInfo{
             return "트리아나";
 		else if(codeName == "reina")
 			return "레이나";
+		else if	(codeName == "curi")
+			return "큐리";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
@@ -179,6 +181,8 @@ public class UnitInfo{
             return "트리아나 페르단트";
 		else if(codeName == "reina")
 			return "레이나 닐 핀토스";
+		else if (codeName == "curi")
+			return "큐리 디아즈";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
