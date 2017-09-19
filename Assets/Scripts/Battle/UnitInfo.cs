@@ -192,8 +192,15 @@ public class UnitInfo{
 		baseStats.Clear();
 		baseStats.Add(Stat.MaxHealth, GetStat(PCName, Stat.MaxHealth));
 		baseStats.Add(Stat.Power, GetStat(PCName, Stat.Power));
-		baseStats.Add(Stat.Defense, GetStat(PCName, Stat.Defense));
-		baseStats.Add(Stat.Resistance, GetStat(PCName, Stat.Resistance));
+
+		if(SceneData.stageNumber >= Setting.classOpenStage){
+			baseStats.Add(Stat.Defense, GetStat(PCName, Stat.Defense));
+			baseStats.Add(Stat.Resistance, GetStat(PCName, Stat.Resistance));
+		}else{
+			baseStats.Add(Stat.Defense, 0);
+			baseStats.Add(Stat.Resistance, 0);
+		}
+		
 		baseStats.Add(Stat.Agility, GetStat(PCName, Stat.Agility));
 		unitClass = UnitInfo.GetUnitClass (PCName);
 

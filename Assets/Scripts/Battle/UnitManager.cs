@@ -190,7 +190,7 @@ public class UnitManager : MonoBehaviour {
 
 		ReadyManager RM = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
-		//UnitInfo들을 받아와서 그것이 unselected이면 선택된 PC 정보로 대체
+		//UnitInfo들을 받아와서 그것이 unselected이면 선택된 PC 정보로 대체한다
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
 			if (unitInfo.nameKor == "unselected") {
