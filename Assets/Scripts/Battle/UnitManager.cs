@@ -262,7 +262,8 @@ public class UnitManager : MonoBehaviour {
 		yield return StartCoroutine(GenerateUnitsByManual(unitInfoList, selectablePlaceList));
 
 		// 배치 가능 위치 지우고 턴 시작
-		FindObjectOfType<PlacedUnitCheckPanel>().SetText("배치를 이대로 확정할까요?");
+		if (FindObjectOfType<PlacedUnitCheckPanel>() != null)
+			FindObjectOfType<PlacedUnitCheckPanel>().SetText("배치를 이대로 확정할까요?");
 
 		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 			
