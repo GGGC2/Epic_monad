@@ -1,16 +1,2 @@
-Index	Action	Etc					
-1	StandbyOrRest 						
-2	UseSkill	0	7	5	8	5	RightDown
-3	StandbyOrRest 						
-4	StandbyOrRest 						
-5	StandbyOrRest 						
-6	StandbyOrRest 						
-7	StandbyOrRest 						
-8	StandbyOrRest 						
-9	StandbyOrRest 						
-10	StandbyOrRest 						
-11	StandbyOrRest 						
-12	StandbyOrRest 						
-13	StandbyOrRest 						
-14	StandbyOrRest 						
-15	StandbyOrRest 						
+Action	Etc					
+StandbyOrRest

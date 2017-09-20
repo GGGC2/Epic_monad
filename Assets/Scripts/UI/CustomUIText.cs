@@ -28,8 +28,7 @@ public class CustomUIText : MonoBehaviour
 		RIGHT
 	}
 
-	void Start()
-	{
+	void Start(){
 		DestroyAllChilds();
 		GenerateTextInstances();
 		RePosition();
@@ -69,16 +68,13 @@ public class CustomUIText : MonoBehaviour
 		RePosition();
 	}
 
-	IEnumerator CheckValueChanged()
-	{
+	IEnumerator CheckValueChanged(){
 		var previousText = text;
 		var previousAlign = align;
 
-		while (true)
-		{
+		while (true){
 			yield return null;
-			if (previousText != text || previousAlign != align)
-			{
+			if (previousText != text || previousAlign != align){
 				previousText = text;
 				previousAlign = align;
 
@@ -157,10 +153,8 @@ public class CustomUIText : MonoBehaviour
 		}
 	}
 
-	private Image GetPrefab(char character)
-	{
-		switch (character)
-		{
+	private Image GetPrefab(char character){
+		switch (character){
 			case '0':
 				return image0;
 			case '1':
