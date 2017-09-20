@@ -255,7 +255,10 @@ public class Unit : MonoBehaviour{
 		snapshot.tile.SetUnitOnTile(this);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
+		Debug.Log("check snapshot's effectList twice : " + snapshot.statEffectList.Count);
+		snapshot.statEffectList.ForEach(effect => Debug.Log(effect.GetDisplayName()));
 		SetStatusEffectList(snapshot.statEffectList);
+		BattleData.uiManager.UpdateUnitViewer(this);
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {

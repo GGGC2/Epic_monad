@@ -77,6 +77,8 @@ namespace BattleUI{
         }
 
         void UpdateEffect(Unit unit){
+            //Debug.Log("Update Viewer's EffectIcon");
+            //unit.StatusEffectList.ForEach(effect => Debug.Log(effect.GetDisplayName()));
             RefreshStatusEffectIconList();
             List<UnitStatusEffect> effectList = unit.StatusEffectList;
             int numberOfEffects = effectList.Count;

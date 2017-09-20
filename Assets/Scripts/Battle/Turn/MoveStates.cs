@@ -33,7 +33,6 @@ namespace Battle.Turn{
 		
 		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
-			BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
 			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
 
 			BattleData.previewAPAction = null;

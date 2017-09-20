@@ -340,6 +340,7 @@ public class BattleManager : MonoBehaviour{
 					BattleData.uiManager.ActivateDetailInfoUI(triggeredTile.GetUnitOnTile());
 				}
 			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
+				BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
 				Tile destTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
 				List<Tile> destPath = movableTilesWithPath[BattleData.move.selectedTilePosition].path;
 				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
