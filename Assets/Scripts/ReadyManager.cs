@@ -66,18 +66,23 @@ public class ReadyManager : MonoBehaviour{
 	}
 
 	void Update(){
-		// if (IsThereAnyReadiedUnit())
-		// 	readyButton.interactable = true;
-		// else
-		// 	readyButton.interactable = false;
+		if (readyButton == null) return;
+
+		if (IsThereAnyReadiedUnit()) {
+			readyButton.interactable = true;
+			readyButton.GetComponent<Image>().color = Color.white;
+		}
+		else {
+			readyButton.interactable = false;
+			readyButton.GetComponent<Image>().color = Color.gray;
+		}
 
 		if(Input.GetKeyDown(KeyCode.A))
 			GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene();
 	}
 
 	bool IsThereAnyReadiedUnit(){
-		List<GameObject> selectedUnitPanels = FindObjectOfType<SelectedUnits>().SelectedUnitPanels;
-		return selectedUnitPanels.Any(panel => panel.GetComponent<UnitPanel>().unitName != "unselected");
+		return selectedUnitList.Count > 0;
 	}
 
 	public void ReadyButtonDown(){
