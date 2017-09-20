@@ -24,7 +24,6 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		if(trigger.actionType == BattleTrigger.ActionType.UnderCount && CountUnitOfCondition(trigger) <= trigger.targetCount){
-			//Debug.Log("UnderCount trigger Acquire!");
 			AcquireTrigger(trigger);
 		}else{
 			trigger.count += 1;
@@ -56,7 +55,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void InitializeResultPanel(){
 		resultPanel.gameObject.SetActive(true);
-		resultPanel.Active();
+		resultPanel.Activate();
 		resultPanel.UpdatePanel(0);
 	}
 

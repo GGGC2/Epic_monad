@@ -23,8 +23,7 @@ public class ResultPanel : MonoBehaviour{
 		}
 	}
 
-	public void Active()
-	{
+	public void Activate(){
 		Initialize();
 		UpdatePanel(0);
 		PrintResult();
@@ -40,8 +39,7 @@ public class ResultPanel : MonoBehaviour{
 		ScoreText.text = "";
 	}
 
-	void PrintResult()
-	{
+	void PrintResult(){
 		StartCoroutine (IClicked ());
 	}
 
