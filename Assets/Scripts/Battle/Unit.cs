@@ -248,6 +248,7 @@ public class Unit : MonoBehaviour{
 	}
 	public void ApplySnapshot(){
 		BattleData.MoveSnapshot snapshot = BattleData.moveSnapshot;
+		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 		GetTileUnderUnit().SetUnitOnTile(null);
 		transform.position = snapshot.tile.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(snapshot.tile.GetTilePos());
