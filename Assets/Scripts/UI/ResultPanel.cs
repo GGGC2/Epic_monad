@@ -23,15 +23,13 @@ public class ResultPanel : MonoBehaviour{
 		}
 	}
 
-	public void Active()
-	{
+	public void Activate(){
 		Initialize();
 		UpdatePanel(0);
 		PrintResult();
 	}
 
-	void Initialize()
-	{
+	void Initialize(){
 		LevelUpText.enabled = false;
 		LevelText.text = "" + PartyData.GetLevel();
 		ReqExpText.text = "Next " + PartyData.reqExp;
@@ -40,8 +38,7 @@ public class ResultPanel : MonoBehaviour{
 		ScoreText.text = "";
 	}
 
-	void PrintResult()
-	{
+	void PrintResult(){
 		StartCoroutine (IClicked ());
 	}
 

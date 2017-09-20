@@ -193,7 +193,10 @@ public static class BattleData{
 			ap = unit.GetCurrentActivityPoint();
 			movedTileCount = unit.GetMovedTileCount();
 			direction = unit.GetDirection();
-			statEffectList = unit.StatusEffectList;
+			statEffectList = new List<UnitStatusEffect>();
+			unit.StatusEffectList.ForEach(effect => statEffectList.Add(effect));
+			Debug.Log("show snapshot's effectlist : " + statEffectList.Count);
+			statEffectList.ForEach(effect => Debug.Log(effect.GetDisplayName()));
 		}
 	}
 

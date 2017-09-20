@@ -248,6 +248,7 @@ public class Unit : MonoBehaviour{
 	}
 	public void ApplySnapshot(){
 		BattleData.MoveSnapshot snapshot = BattleData.moveSnapshot;
+		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 		GetTileUnderUnit().SetUnitOnTile(null);
 		transform.position = snapshot.tile.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(snapshot.tile.GetTilePos());
@@ -255,7 +256,10 @@ public class Unit : MonoBehaviour{
 		snapshot.tile.SetUnitOnTile(this);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
+		Debug.Log("check snapshot's effectList twice : " + snapshot.statEffectList.Count);
+		snapshot.statEffectList.ForEach(effect => Debug.Log(effect.GetDisplayName()));
 		SetStatusEffectList(snapshot.statEffectList);
+		BattleData.uiManager.UpdateUnitViewer(this);
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {
