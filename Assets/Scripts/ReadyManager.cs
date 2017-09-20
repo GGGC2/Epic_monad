@@ -52,16 +52,6 @@ public class ReadyManager : MonoBehaviour{
 				availableUnitButton.SetActive(false);
 		}
 
-		// for (int i = 1; i <= 8; i++){
-		// 	UnitPanel Panel = GameObject.Find("SelectedUnit"+i).GetComponent<UnitPanel>();
-		// 	if (i <= Int32.Parse(stageData[1])){
-		// 		selected.Add(Panel);
-		// 		Panel.unitName = "unselected";
-		// 	}
-		// 	else
-		// 		Panel.gameObject.SetActive(false);
-		// }
-
 		DontDestroyOnLoad(gameObject);
 	}
 
