@@ -269,8 +269,15 @@ public class BattleManager : MonoBehaviour{
 
 		//승리 조건이 충족되었으면 결과창 출력하기
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		if(Checker.triggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired))
+		List<BattleTrigger> triggers = Checker.triggers;
+		bool winTriggerAll = triggers.Find(trig => trig.resultType == BattleTrigger.ResultType.End).winTriggerAll;
+		if(winTriggerAll){
+			if(triggers.FindAll(trig => trig.resultType == BattleTrigger.ResultType.Win).All(trig => trig.acquired)){
+				Checker.InitializeResultPanel();	
+			}
+		}else if(triggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired)){
 			Checker.InitializeResultPanel();
+		}
         FindObjectOfType<CameraMover>().CalculateBoundary();
     }
 

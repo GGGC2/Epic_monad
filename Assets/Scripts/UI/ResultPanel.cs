@@ -29,8 +29,7 @@ public class ResultPanel : MonoBehaviour{
 		PrintResult();
 	}
 
-	void Initialize()
-	{
+	void Initialize(){
 		LevelUpText.enabled = false;
 		LevelText.text = "" + PartyData.GetLevel();
 		ReqExpText.text = "Next " + PartyData.reqExp;
