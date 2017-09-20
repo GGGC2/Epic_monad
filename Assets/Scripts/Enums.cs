@@ -38,6 +38,10 @@ namespace Enums {
 	public enum Direction{ LeftUp, LeftDown, RightUp, RightDown, Left, Right, Up, Down }
 	// 지정형, 경로형, 자동형, 재귀형
 	public enum SkillType{ Point, Route, Auto, Self }
+	//트리거 관련
+	public enum TrigResultType{Win, Lose, Bonus, End}
+	public enum TrigUnitType{Target, Ally, Enemy, None, PC}
+	public enum TrigActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount}
     public enum Stat
     {
         MaxHealth = 1,

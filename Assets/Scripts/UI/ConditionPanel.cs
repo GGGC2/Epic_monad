@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Enums;
 
 public class ConditionPanel : MonoBehaviour{
 	public Text Win;
@@ -17,24 +18,26 @@ public class ConditionPanel : MonoBehaviour{
 		Win.text = "";
 		Lose.text = "";
 
-		if(triggers.FindAll(trigger => trigger.resultType == BattleTrigger.ResultType.Win).Count > 1){
-			SetAllOrOneTrigger(Win, triggers[triggers.Count-1].winTriggerAll);
+		if(triggers.FindAll(trigger => trigger.resultType == TrigResultType.Win).Count > 1){
+			SetAllOrOneTrigger(Win, triggers[triggers.Count-1].winTriggerRelation);
 		}
-		if(triggers.FindAll(trigger => trigger.resultType == BattleTrigger.ResultType.Lose).Count > 1){
-			SetAllOrOneTrigger(Lose, triggers[triggers.Count-1].loseTriggerAll);
+		if(triggers.FindAll(trigger => trigger.resultType == TrigResultType.Lose).Count > 1){
+			SetAllOrOneTrigger(Lose, triggers[triggers.Count-1].loseTriggerRelation);
 		}
 
 		foreach(BattleTrigger trigger in triggers){
-			if(trigger.resultType == BattleTrigger.ResultType.Win)
+			if(trigger.resultType == TrigResultType.Win)
 				Win.text += "- " + trigger.korName + "\n";
-			else if(trigger.resultType == BattleTrigger.ResultType.Lose)
+			else if(trigger.resultType == TrigResultType.Lose)
 				Lose.text += "- " + trigger.korName + "\n";
 		}
 	}
 
-	void SetAllOrOneTrigger(Text target, bool isAll){
-		if(isAll){
+	void SetAllOrOneTrigger(Text target, BattleTrigger.TriggerRelation relation){
+		if(relation == BattleTrigger.TriggerRelation.All){
 			target.text += "다음 조건을 모두 충족 :\n";
+		}else if(relation == BattleTrigger.TriggerRelation.Sequence){
+			target.text += "다음 조건을 순서대로 충족 :\n";
 		}else{
 			target.text += "다음 중 하나를 충족 :\n";
 		}

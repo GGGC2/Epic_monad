@@ -52,7 +52,7 @@ public class AIData : MonoBehaviour {
 	public void SetGoalArea(Unit AIunit){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach (BattleTrigger trigger in Checker.triggers) {
-			if (trigger.actionType == BattleTrigger.ActionType.Reach && Checker.CheckUnitType (trigger, AIunit)) {
+			if (trigger.actionType == TrigActionType.Reach && Checker.CheckUnitType (trigger, AIunit)) {
 				Debug.Log ("added goal area");
 				goalArea = trigger.targetTiles;
 			}

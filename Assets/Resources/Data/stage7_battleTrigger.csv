@@ -1,4 +1,4 @@
 ﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	적을 2명 이하로 남기고 무력화	Enemy	Neutralize	11	false	300
+Win	적을 2명 이하로 만들기	Enemy	UnderCount	2	false	300
 Lose	제이선과 트리아나가 무력화	Target	Neutralize	2	false	0	2	json	triana
-End	Scene#14	true	true
+End	Scene#14	One	One

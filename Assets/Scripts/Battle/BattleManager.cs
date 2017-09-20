@@ -173,11 +173,11 @@ public class BattleManager : MonoBehaviour{
 		}
 	}
 
-	public static IEnumerator DestroyUnit(Unit unit, BattleTrigger.ActionType actionType){
+	public static IEnumerator DestroyUnit(Unit unit, TrigActionType actionType){
 		BattleManager battleManager = BattleData.battleManager;
 
 		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
-		if(actionType == BattleTrigger.ActionType.Kill){
+		if(actionType == TrigActionType.Kill){
 			unit.GetComponent<SpriteRenderer>().color = Color.red;
 		}
 
@@ -187,12 +187,12 @@ public class BattleManager : MonoBehaviour{
         yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
 		BattleData.unitManager.DeleteRetreatUnit(unit);
 
-		if(actionType == BattleTrigger.ActionType.Kill || actionType == BattleTrigger.ActionType.Retreat){
+		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
 			yield return BattleTriggerManager.CheckBattleTrigger(unit, actionType);
-			yield return BattleTriggerManager.CheckBattleTrigger(unit, BattleTrigger.ActionType.Neutralize);
-			yield return BattleTriggerManager.CheckBattleTrigger(unit, BattleTrigger.ActionType.UnderCount);
+			yield return BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
+			yield return BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.UnderCount);
 		}else{
-			Debug.Assert(actionType == BattleTrigger.ActionType.Reach, "Invalid actionType!");
+			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
 		}
 
 		Destroy(unit.gameObject);
@@ -222,18 +222,20 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator UpdateUnitsForDestroy(){
 		foreach(var unit in BattleData.unitManager.GetRetreatUnits()){
-			yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Retreat));
+			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Retreat));
 		}
 		foreach(var unit in BattleData.unitManager.GetDeadUnits()){
-			yield return StartCoroutine(DestroyUnit(unit, BattleTrigger.ActionType.Kill));
+			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
 		}
 		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
-			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, BattleTrigger.ActionType.Reach));
+			BattleTriggerManager TrigM = FindObjectOfType<BattleTriggerManager>();
+			if(TrigM.isTriggerActive(TrigM.triggers.Find(trig => trig.actionType == TrigActionType.Reach))){
+				yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
+			}
 		}
 	}
 
-	public static void MoveCameraToUnit(Unit unit)
-	{
+	public static void MoveCameraToUnit(Unit unit){
 		MoveCameraToObject (unit);
 	}
 	public static void MoveCameraToTile(Tile tile)
@@ -267,15 +269,16 @@ public class BattleManager : MonoBehaviour{
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
-		//승리 조건이 충족되었으면 결과창 출력하기
+		//승리 조건이 충족되었는지 확인
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		List<BattleTrigger> triggers = Checker.triggers;
-		bool winTriggerAll = triggers.Find(trig => trig.resultType == BattleTrigger.ResultType.End).winTriggerAll;
-		if(winTriggerAll){
-			if(triggers.FindAll(trig => trig.resultType == BattleTrigger.ResultType.Win).All(trig => trig.acquired)){
+		List<BattleTrigger> winTriggers = Checker.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
+		BattleTrigger.TriggerRelation winTrigRelation = Checker.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
+		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리
+		if(winTrigRelation == BattleTrigger.TriggerRelation.All || winTrigRelation == BattleTrigger.TriggerRelation.Sequence){
+			if(winTriggers.All(trig => trig.acquired)){
 				Checker.InitializeResultPanel();	
 			}
-		}else if(triggers.Any(trig => trig.resultType == BattleTrigger.ResultType.Win && trig.acquired)){
+		}else if(winTriggers.Any(trig => trig.acquired)){
 			Checker.InitializeResultPanel();
 		}
         FindObjectOfType<CameraMover>().CalculateBoundary();
@@ -548,7 +551,7 @@ public class BattleManager : MonoBehaviour{
 
 	// 승/패 조건과 관련된 타일을 하이라이트 처리
 	void HighlightBattleTriggerTiles(){
-		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().triggers.FindAll(bt => bt.actionType == BattleTrigger.ActionType.Reach);
+		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().triggers.FindAll(bt => bt.actionType == TrigActionType.Reach);
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
 		});

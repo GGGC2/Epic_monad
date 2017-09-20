@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using Enums;
 
 public class BattleTrigger{
-	public enum ResultType{Win, Lose, Bonus, End}
-	public enum UnitType{Target, Ally, Enemy, None, PC}
-	public enum ActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount}
 	public bool acquired;
 	public bool repeatable;
-	public ResultType resultType;
-	public UnitType unitType;
+	public TrigResultType resultType;
+	public TrigUnitType unitType;
 	public string unitName;
-	public ActionType actionType;
+	public TrigActionType actionType;
 	public int reward;
 	public int count;
 	public int targetCount;
@@ -23,27 +20,28 @@ public class BattleTrigger{
 	public string korName;
 	
 	//승리&패배 조건이 전부 만족시켜야 하는지/하나만 만족시켜도 되는지에 대한 정보
-	public bool winTriggerAll;
-	public bool loseTriggerAll;
+	public enum TriggerRelation{One, All, Sequence}
+	public TriggerRelation winTriggerRelation;
+	public TriggerRelation loseTriggerRelation;
 
 	public BattleTrigger(string data){
 		StringParser commaParser = new StringParser(data, '\t');
 
-		resultType = commaParser.ConsumeEnum<ResultType>();
-		if(resultType == ResultType.End) {
+		resultType = commaParser.ConsumeEnum<TrigResultType>();
+		if(resultType == TrigResultType.End) {
 			nextSceneIndex = commaParser.Consume();
-			winTriggerAll = commaParser.ConsumeBool();
-			loseTriggerAll = commaParser.ConsumeBool();
+			winTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
+			loseTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
 		}else{
 			korName = commaParser.Consume();
-			unitType = commaParser.ConsumeEnum<UnitType>();
+			unitType = commaParser.ConsumeEnum<TrigUnitType>();
 		
-			actionType = commaParser.ConsumeEnum<ActionType>();
+			actionType = commaParser.ConsumeEnum<TrigActionType>();
 			targetCount = commaParser.ConsumeInt();
 			repeatable = commaParser.ConsumeBool();
 			reward = commaParser.ConsumeInt();
 
-			if(unitType == UnitType.Target){
+			if(unitType == TrigUnitType.Target){
 				targetCount = commaParser.ConsumeInt();
 				targetUnitNames = new List<string>();
 				for (int i = 0; i < targetCount; i++){
@@ -52,7 +50,7 @@ public class BattleTrigger{
 				}
 			}
 
-			if(actionType == ActionType.Reach){
+			if(actionType == TrigActionType.Reach){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
 				for (int i = 0; i < numberOfTiles; i++){
