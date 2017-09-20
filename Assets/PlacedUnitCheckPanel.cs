@@ -39,7 +39,7 @@ public class PlacedUnitCheckPanel : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		text.text = "시작 위치를 정해주세요";
+		text.text = "시작 위치를 선택해주세요";
 	}
 	
 	// Update is called once per frame
