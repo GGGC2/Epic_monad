@@ -44,6 +44,15 @@ public class TileManager : MonoBehaviour {
 		return tile.transform.position;
 	}
 
+    public Vector3 CalculateAverageRealPositionOfTile() {
+        Vector3 average = new Vector3(0, 0, 0);
+        foreach(var tile in tiles) {
+            average += tile.Value.realPosition;
+        }
+        average /= tiles.Count;
+        return average;
+    }
+
 	public static List<Tile> GetRouteTiles(List<Tile> tiles) {
 		List<Tile> routeTiles = new List<Tile>();
 		foreach (var tile in tiles) {
@@ -201,9 +210,32 @@ public class TileManager : MonoBehaviour {
 		}
 		return units;
 	}
-
+    public void UpdateRealTilePositions() {
+        foreach(var tile in GetAllTiles()) {
+            tile.Value.UpdateRealPosition();
+        }
+    }
 	public static Vector3 CalculateRealTilePosition(int posX, int posY, int height){
-		return new Vector3(Setting.tileImageWidth * (posY+posX) * 0.5f, Setting.tileImageHeight * (posY-posX+height) * 0.5f, (posY-posX) * 0.1f);
+        int realX = 0 , realZ = 0;
+        switch(BattleData.aspect) {
+        case (Aspect.North):
+            realX = posX + posY;
+            realZ = posY - posX;
+            break;
+        case (Aspect.East):
+            realX = posX - posY;
+            realZ = posY + posX;
+            break;
+        case (Aspect.South):
+            realX = - posX - posY;
+            realZ = - posY + posX;
+            break;
+        case (Aspect.West):
+            realX = - posX + posY;
+            realZ = - posY - posX;
+            break;
+        }
+		return new Vector3(Setting.tileImageWidth * realX * 0.5f, Setting.tileImageHeight * (realZ+height) * 0.5f, realZ * 0.1f);
 	}
 	void GenerateTile (TileInfo tileInfo){
 		if (tileInfo.IsEmptyTile()) return;

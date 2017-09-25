@@ -12,7 +12,7 @@ public class CameraMover : MonoBehaviour {
     const float MARGIN = 1;
 
 	float speed = 4f;
-	Vector3 fixedPosition = Vector3.zero;
+	public Vector3 fixedPosition = Vector3.zero;
 
 	public void SetFixedPosition(Vector3 position){
 		fixedPosition = new Vector3(position.x, position.y, transform.position.z);

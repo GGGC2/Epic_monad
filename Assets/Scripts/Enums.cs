@@ -34,8 +34,9 @@ namespace Enums {
 	public enum UnitClass{ None, Melee, Magic }
 	public enum Celestial{ None, Sun, Moon, Earth }
 	public enum Element{ None, Fire, Water, Plant, Metal }
+    public enum Aspect { North, East, South, West } //임의로 지정해둔 방향. North가 기본 방향((0, 0)이 화면의 맨 왼쪽)임
 	// 앞 4개만이 실제 게임의 타일 방향, 뒤 4개는 개발용 변수
-	public enum Direction{ LeftUp, LeftDown, RightUp, RightDown, Left, Right, Up, Down }
+	public enum Direction{ RightDown, RightUp, LeftUp, LeftDown, Right, Up, Left, Down }
 	// 지정형, 경로형, 자동형, 재귀형
 	public enum SkillType{ Point, Route, Auto, Self }
 	//트리거 관련

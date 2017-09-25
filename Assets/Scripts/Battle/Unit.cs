@@ -340,7 +340,15 @@ public class Unit : MonoBehaviour{
         healthViewer.UpdateCurrentHealth(currentHealth, GetRemainShield(), GetMaxHealth());
 		CheckAndHideObjectHealth();
     }
-	public void AddSkillCooldown(int phase)
+    public void UpdateRealPosition(int direction) { //direction = 1 : 반시계방향으로 회전, direction = -1 : 시계방향으로 회전 
+        transform.position = GetTileUnderUnit().transform.position + new Vector3(0, 0, -0.05f);
+        
+        int directionBefore = (int)GetDirection();
+        int directionAfter = (directionBefore + direction + 4) % 4;
+        SetDirection((Direction)directionAfter);
+    }
+
+    public void AddSkillCooldown(int phase)
 	{
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
 		foreach (var skill in activeSkillList)
