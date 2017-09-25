@@ -342,10 +342,7 @@ public class Unit : MonoBehaviour{
     }
     public void UpdateRealPosition(int direction) { //direction = 1 : 반시계방향으로 회전, direction = -1 : 시계방향으로 회전 
         transform.position = GetTileUnderUnit().transform.position + new Vector3(0, 0, -0.05f);
-        
-        int directionBefore = (int)GetDirection();
-        int directionAfter = (directionBefore + direction + 4) % 4;
-        SetDirection((Direction)directionAfter);
+		SetDirection (this.direction);
     }
 
     public void AddSkillCooldown(int phase)
@@ -948,13 +945,14 @@ public class Unit : MonoBehaviour{
 
 	public void UpdateSpriteByDirection()
 	{
-		if (direction == Direction.LeftUp)
+		Direction faceDirection = (Direction)(((int)direction + (int)BattleData.aspect + 4) % 4);
+		if (faceDirection == Direction.LeftUp)
 			GetComponent<SpriteRenderer>().sprite = spriteLeftUp;
-		if (direction == Direction.LeftDown)
+		if (faceDirection == Direction.LeftDown)
 			GetComponent<SpriteRenderer>().sprite = spriteLeftDown;
-		if (direction == Direction.RightUp)
+		if (faceDirection == Direction.RightUp)
 			GetComponent<SpriteRenderer>().sprite = spriteRightUp;
-		if (direction == Direction.RightDown)
+		if (faceDirection == Direction.RightDown)
 			GetComponent<SpriteRenderer>().sprite = spriteRightDown;
 	}
 

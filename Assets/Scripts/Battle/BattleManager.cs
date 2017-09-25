@@ -360,13 +360,15 @@ public class BattleManager : MonoBehaviour{
 
 				BattleData.move.moveCount += distance;
 
-				BattleData.tileManager.DepaintTiles (movableTiles, TileColor.Blue);
 				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 				yield return StartCoroutine(MoveStates.MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
 			}else if(triggers.skillSelected.Triggered){
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				yield return StartCoroutine(SkillAndChainStates.SkillSelected());
 
                 BattleData.previewAPAction = null;
@@ -374,6 +376,8 @@ public class BattleManager : MonoBehaviour{
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 			}
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
 					yield return StartCoroutine(Standby());
@@ -381,8 +385,6 @@ public class BattleManager : MonoBehaviour{
 					BattleData.currentState = CurrentState.RestAndRecover;
 					yield return StartCoroutine(RestAndRecover.Run());
 				}
-				BattleData.tileManager.DepaintAllTiles(TileColor.Red);
-				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			}
 		}
 		UIManager.Instance.HideActionButtons();
