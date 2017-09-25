@@ -492,7 +492,28 @@ public class BattleManager : MonoBehaviour{
 
 		if(Input.GetKeyDown(KeyCode.B))
 			SceneManager.LoadScene("BattleReady");
+
+        if(Input.GetKeyDown(KeyCode.A))
+            ChangeAspect(1);
+        if(Input.GetKeyDown(KeyCode.D))
+            ChangeAspect(-1);
 	}
+
+    public void ChangeAspect(int direction) { // direction = 1 : 반시계 방향, direction = -1 : 시계방향
+        TileManager tileManager = TileManager.Instance;
+        UnitManager unitManager = UnitManager.Instance;
+        int aspectBefore = (int)BattleData.aspect;
+        int aspectAfter = (aspectBefore + direction + 4) % 4;
+        Debug.Log(aspectBefore + "->" + aspectAfter);
+        BattleData.aspect = (Aspect)aspectAfter;
+        tileManager.UpdateRealTilePositions();
+        unitManager.UpdateRealUnitPositions(direction);
+
+        CameraMover cm = FindObjectOfType<CameraMover>();
+        cm.SetFixedPosition(tileManager.CalculateAverageRealPositionOfTile());
+        cm.CalculateBoundary();
+        MoveCameraToPosition(cm.fixedPosition);
+    }
 
 	public bool EnemyUnitSelected()
 	{

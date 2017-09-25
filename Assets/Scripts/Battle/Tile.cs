@@ -138,9 +138,12 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			BM.OnMouseEnterHandlerFromTile(position);
 		}
 	}
-
-	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
-		transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
+    public void UpdateRealPosition() {
+        Vector3 positionBefore = transform.position;
+        transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
+    }
+    void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
+		UpdateRealPosition();
 		clickStarted = false;
 		CostAP.text = "";
 

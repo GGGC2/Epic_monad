@@ -172,6 +172,7 @@ public static class BattleData{
 	public static bool isWaitingUserInput = false;
 	public static bool enemyUnitSelected = false;
     public static bool tileSelected = false;
+    public static Aspect aspect = Aspect.North;
 
 	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 

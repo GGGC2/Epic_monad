@@ -104,7 +104,13 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-	public List<Unit> GetRetreatUnits(){
+    public void UpdateRealUnitPositions(int direction) {
+        foreach (var unit in GetAllUnits()) {
+            unit.UpdateRealPosition(direction);
+        }
+    }
+
+    public List<Unit> GetRetreatUnits(){
 		retreatUnits.Clear();
 		
 		if(SceneData.stageNumber < Setting.retreatOpenStage)
