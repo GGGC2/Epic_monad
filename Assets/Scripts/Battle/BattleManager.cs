@@ -504,7 +504,6 @@ public class BattleManager : MonoBehaviour{
         UnitManager unitManager = UnitManager.Instance;
         int aspectBefore = (int)BattleData.aspect;
         int aspectAfter = (aspectBefore + direction + 4) % 4;
-        Debug.Log(aspectBefore + "->" + aspectAfter);
         BattleData.aspect = (Aspect)aspectAfter;
         tileManager.UpdateRealTilePositions();
         unitManager.UpdateRealUnitPositions(direction);
