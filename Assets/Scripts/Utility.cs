@@ -28,6 +28,8 @@ public class Utility : MonoBehaviour {
 			directionString += "Down";
 		
 		mouseDirectionByUnit = (Direction)Enum.Parse(typeof(Direction), directionString);
+
+		mouseDirectionByUnit = (Direction)(((int)mouseDirectionByUnit - (int)BattleData.aspect + 4) % 4);
 		
 		return mouseDirectionByUnit;
 	}

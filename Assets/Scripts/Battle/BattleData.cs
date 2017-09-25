@@ -233,6 +233,7 @@ public static class BattleData{
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;
 		tileSelected = false;
+		aspect = Aspect.North;
 
 		skillApplyCommand = SkillApplyCommand.Waiting;
 
