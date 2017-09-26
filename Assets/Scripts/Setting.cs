@@ -12,7 +12,7 @@ public class Setting{
 	public static int chainOpenStage = 4;
 	public static int celestialOpenStage = 4;
 	public static int retreatOpenStage = 4;
-	public static int readySceneOpenStage = 7;
+	public static int readySceneOpenStage = 11;
 	public static int heightOpenStage = 7;
 	public static bool shortcutEnable = true;
 
