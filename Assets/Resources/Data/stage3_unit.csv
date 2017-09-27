@@ -1,15 +1,54 @@
-Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
-1	아스터 기병	asterCavalry01	Enemy	5	10	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
-2	아스터 기병	asterCavalry01	Enemy	11	10	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
-3	아스터 기병	asterCavalry01	Enemy	6	15	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
-4	아스터 기병	asterCavalry01	Enemy	10	15	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
-5	아스터 기병	asterCavalry01	Enemy	8	16	LeftDown	173	55	5	5	52	Melee	Plant	Sun	false	0
-6	아스터 궁수	asterArcher01	Enemy	8	8	RightUp	163	50	22	5	44	Melee	Plant	Moon	false	0
-7	아스터 궁수	asterArcher01	Enemy	3	12	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
-8	아스터 궁수	asterArcher01	Enemy	13	12	LeftUp	163	50	22	5	44	Melee	Plant	Moon	false	0
-9	아스터 궁수	asterArcher01	Enemy	3	14	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
-10	아스터 궁수	asterArcher01	Enemy	13	14	LeftUp	163	50	22	5	44	Melee	Plant	Moon	false	0
-11	아스터 궁수	asterArcher01	Enemy	8	18	LeftDown	163	50	22	5	44	Melee	Plant	Moon	false	0
-12	제이선	json	Enemy	8	20	LeftDown	393	97	57	40	63	Melee	Fire	Moon	false	0
-13	트리아나	triana_Rest	Ally	8	11	LeftDown	474	68	74	57	49	Melee	Metal	Earth	false	0
-14	PCyeong	yeong	Ally	8	13	RightUp	0	0	0	0	0	None	None	None	false	0
+Index	Name	NameInCode	Side	InitPositionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject
+1	아스터 기병	asterCavalry01	Enemy	8	4	RightUp	150	55	5	5	52	Melee	Plant	Sun	false	0
+2	아스터 기병	asterCavalry01	Enemy	15	10	LeftUp	150	55	5	5	52	Melee	Plant	Sun	false	0
+3	아스터 기병	asterCavalry01	Enemy	19	11	LeftUp	150	55	5	5	52	Melee	Plant	Sun	false	0
+4	아스터 기병	asterCavalry01	Enemy	9	16	RightUp	150	55	5	5	52	Melee	Plant	Sun	false	0
+5	아스터 기병	asterCavalry01	Enemy	5	20	RightDown	150	55	5	5	52	Melee	Plant	Sun	false	0
+6	아스터 궁수	asterArcher01	Enemy	4	7	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+7	아스터 궁수	asterArcher01	Enemy	11	6	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+8	아스터 궁수	asterArcher01	Enemy	6	13	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+9	아스터 궁수	asterArcher01	Enemy	13	13	LeftUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+10	아스터 궁수	asterArcher01	Enemy	14	21	LeftUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+11	제이선	json	Enemy	11	21	LeftUp	393	97	57	40	63	Melee	Fire	Moon	false	0
+11	덤불	bush	Neutral	3	7	LeftDown	800	0	0	0	0	None	None	None	true	0
+12	덤불	bush	Neutral	4	6	LeftDown	800	0	0	0	0	None	None	None	true	0
+13	덤불	bush	Neutral	4	8	LeftDown	800	0	0	0	0	None	None	None	true	0
+14	덤불	bush	Neutral	5	6	LeftDown	800	0	0	0	0	None	None	None	true	0
+15	덤불	bush	Neutral	5	8	LeftDown	800	0	0	0	0	None	None	None	true	0
+16	덤불	bush	Neutral	5	13	LeftDown	800	0	0	0	0	None	None	None	true	0
+17	덤불	bush	Neutral	6	7	LeftDown	800	0	0	0	0	None	None	None	true	0
+18	덤불	bush	Neutral	6	12	LeftDown	800	0	0	0	0	None	None	None	true	0
+19	덤불	bush	Neutral	6	14	LeftDown	800	0	0	0	0	None	None	None	true	0
+20	덤불	bush	Neutral	7	12	LeftDown	800	0	0	0	0	None	None	None	true	0
+21	덤불	bush	Neutral	7	14	LeftDown	800	0	0	0	0	None	None	None	true	0
+22	덤불	bush	Neutral	7	17	LeftDown	800	0	0	0	0	None	None	None	true	0
+23	덤불	bush	Neutral	7	19	LeftDown	800	0	0	0	0	None	None	None	true	0
+24	덤불	bush	Neutral	8	13	LeftDown	800	0	0	0	0	None	None	None	true	0
+25	덤불	bush	Neutral	8	18	LeftDown	800	0	0	0	0	None	None	None	true	0
+26	덤불	bush	Neutral	8	19	LeftDown	800	0	0	0	0	None	None	None	true	0
+27	덤불	bush	Neutral	9	19	LeftDown	800	0	0	0	0	None	None	None	true	0
+28	덤불	bush	Neutral	10	5	LeftDown	800	0	0	0	0	None	None	None	true	0
+29	덤불	bush	Neutral	10	6	LeftDown	800	0	0	0	0	None	None	None	true	0
+30	덤불	bush	Neutral	11	4	LeftDown	800	0	0	0	0	None	None	None	true	0
+31	덤불	bush	Neutral	11	7	LeftDown	800	0	0	0	0	None	None	None	true	0
+32	덤불	bush	Neutral	11	13	LeftDown	800	0	0	0	0	None	None	None	true	0
+33	덤불	bush	Neutral	12	5	LeftDown	800	0	0	0	0	None	None	None	true	0
+34	덤불	bush	Neutral	12	7	LeftDown	800	0	0	0	0	None	None	None	true	0
+35	덤불	bush	Neutral	12	12	LeftDown	800	0	0	0	0	None	None	None	true	0
+36	덤불	bush	Neutral	12	14	LeftDown	800	0	0	0	0	None	None	None	true	0
+37	덤불	bush	Neutral	12	21	LeftDown	800	0	0	0	0	None	None	None	true	0
+38	덤불	bush	Neutral	12	22	LeftDown	800	0	0	0	0	None	None	None	true	0
+39	덤불	bush	Neutral	13	6	LeftDown	800	0	0	0	0	None	None	None	true	0
+40	덤불	bush	Neutral	13	12	LeftDown	800	0	0	0	0	None	None	None	true	0
+41	덤불	bush	Neutral	13	14	LeftDown	800	0	0	0	0	None	None	None	true	0
+42	덤불	bush	Neutral	13	19	LeftDown	800	0	0	0	0	None	None	None	true	0
+43	덤불	bush	Neutral	13	20	LeftDown	800	0	0	0	0	None	None	None	true	0
+44	덤불	bush	Neutral	14	13	LeftDown	800	0	0	0	0	None	None	None	true	0
+45	덤불	bush	Neutral	14	19	LeftDown	800	0	0	0	0	None	None	None	true	0
+46	덤불	bush	Neutral	16	10	LeftDown	800	0	0	0	0	None	None	None	true	0
+47	덤불	bush	Neutral	16	11	LeftDown	800	0	0	0	0	None	None	None	true	0
+48	덤불	bush	Neutral	17	10	LeftDown	800	0	0	0	0	None	None	None	true	0
+49	덤불	bush	Neutral	18	7	LeftDown	800	0	0	0	0	None	None	None	true	0
+50	덤불	bush	Neutral	18	8	LeftDown	800	0	0	0	0	None	None	None	true	0
+51	트리아나	triana_Rest	Ally	8	22	LeftDown	474	68	74	57	49	Melee	Metal	Earth	false	0
+52	PCyeong	yeong	Ally	8	20	LeftUp	0	0	0	0	0	None	None	None	false	0
