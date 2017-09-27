@@ -1,4 +1,4 @@
-ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc			
-Win	레이나 또는 리니안의 무력화	Enemy	UnderCount	1	false	300			
-Lose	아르카디아와 세피아가 모두 무력화	Target	Neutralize	2	false	0	2	sepia	arcadia
-End	Scene#18	One	One						
+ResultType	korName	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+Win	레이나 또는 리니안의 무력화	Enemy	Neutralize	1	false	300	
+Lose	아르카디아와 세피아가 모두 무력화	PC	Neutralize	2	false	0	
+End	Scene#18	One	One				
