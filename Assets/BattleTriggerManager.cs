@@ -170,6 +170,8 @@ public class BattleTriggerManager : MonoBehaviour {
 			return true;
 		else if(trigger.unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
 			return true;
+		else if(trigger.unitType == TrigUnitType.NeutralChar && unit.IsObject == false && unit.GetSide() == Side.Neutral)
+			return true;
 		else
 			return false;
 	}
