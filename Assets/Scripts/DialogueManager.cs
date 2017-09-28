@@ -308,7 +308,7 @@ public class DialogueManager : MonoBehaviour{
 		Initialize();
 		GlobalData.SetGlossaryDataList();
 
-		if(dialogueData.name == "Scene#1-1")
+		if(dialogueData.name == "Scene#1")
 			StartCoroutine(BlinkClickIcon());
 	}
 

@@ -5,16 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace Save
-{
-	public class SaveData
-	{
+namespace Save{
+	public class SaveData{
 		public Progress progress;
 		public PartySaveData party;
 		public List<SkillSaveData> skills;
 
-		public static SaveData MakeInitialData()
-		{
+		public static SaveData MakeInitialData(){
 			SaveData saveData = new SaveData();
 			saveData.progress = Progress.MakeInitialData();
 			saveData.party = PartySaveData.MakeInitialData();
@@ -23,17 +20,15 @@ namespace Save
 		}
 	}
 
-	public class Progress
-	{
+	public class Progress{
 		public string worldMap = "";
 		public string dialogue = "";
 		public string battle = "";
 
-		public static Progress MakeInitialData()
-		{
+		public static Progress MakeInitialData(){
 			Progress progress = new Progress();
 			progress.worldMap = "Pintos1";
-			progress.dialogue = "Pintos#1-1";
+			progress.dialogue = "Scene#1";
 			return progress;
 		}
 	}

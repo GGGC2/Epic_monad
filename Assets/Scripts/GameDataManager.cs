@@ -10,7 +10,7 @@ public class GameDataManager {
     
     public static void Reset() {
         PartyData.SetDefault();
-        SceneData.dialogueName = "Scene#1-1";
+        SceneData.dialogueName = "Scene#1";
         SceneData.stageNumber = 1;
         SceneData.isDialogue = true;
         Save();

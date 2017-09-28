@@ -7,8 +7,7 @@ using WorldMap;
 using GameData;
 using UnityEngine.SceneManagement;
 
-public class TitleForNexon : MonoBehaviour
-{
+public class TitleForNexon : MonoBehaviour{
     public GameDataManager gameDataManager;
 	public DOTweenAnimation titlePath;
 	public DOTweenAnimation titleAnimation;
