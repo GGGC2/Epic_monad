@@ -256,8 +256,6 @@ public class Unit : MonoBehaviour{
 		snapshot.tile.SetUnitOnTile(this);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
-		Debug.Log("check snapshot's effectList twice : " + snapshot.statEffectList.Count);
-		snapshot.statEffectList.ForEach(effect => Debug.Log(effect.GetDisplayName()));
 		SetStatusEffectList(snapshot.statEffectList);
 		BattleData.uiManager.UpdateUnitViewer(this);
 		unitManager.UpdateUnitOrder();
@@ -345,8 +343,7 @@ public class Unit : MonoBehaviour{
 		SetDirection (this.direction);
     }
 
-    public void AddSkillCooldown(int phase)
-	{
+    public void AddSkillCooldown(int phase){
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
 		foreach (var skill in activeSkillList)
 		{
@@ -358,8 +355,7 @@ public class Unit : MonoBehaviour{
 		usedSkillDict = newUsedSkillDict;
 	}
 
-	public void SubSkillCooldown(int phase)
-	{
+	public void SubSkillCooldown(int phase){
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
 		foreach (var skill in usedSkillDict)
 		{
@@ -370,8 +366,7 @@ public class Unit : MonoBehaviour{
 		usedSkillDict = newUsedSkillDict;
 	}
 
-	public void UpdateSkillCooldown()
-	{
+	public void UpdateSkillCooldown(){
 		Dictionary<string, int> newUsedSkillDict = new Dictionary<string, int>();
 		foreach (var skill in usedSkillDict)
 		{
@@ -382,8 +377,7 @@ public class Unit : MonoBehaviour{
 		usedSkillDict = newUsedSkillDict;
 	}
 
-	public void SetStatusEffect(UnitStatusEffect statusEffect)
-	{
+	public void SetStatusEffect(UnitStatusEffect statusEffect){
 		statusEffectList.Add(statusEffect);
 		// 침묵이나 기절상태가 될 경우 체인 해제.
 		// FIXME : 넉백 추가할 것. (넉백은 디버프가 아니라서 다른 곳에서 적용할 듯?)
@@ -404,8 +398,7 @@ public class Unit : MonoBehaviour{
 	}
 
 	// searching certain StatusEffectType
-	public bool HasStatusEffect(StatusEffectType statusEffectType)
-	{
+	public bool HasStatusEffect(StatusEffectType statusEffectType){
 		bool hasStatusEffect = false;
 		if (statusEffectList.Any(se => se.fixedElem.actuals.Any(elem => elem.statusEffectType == statusEffectType)))
 			hasStatusEffect = true;
@@ -432,7 +425,7 @@ public class Unit : MonoBehaviour{
         }
     }
     public void RemoveStatusEffect(Unit caster, StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
-    {
+	{
         foreach (var statusEffect in statusEffectList) {
             if (num == 0) break;
 
@@ -501,14 +494,9 @@ public class Unit : MonoBehaviour{
 				float relativePowerBonus = SkillLogicFactory.Get (passiveSkills).GetAdditionalRelativePowerBonus (this);
 				relativePowerBonus = (relativePowerBonus - 1) * 100;
 				appliedChangeList.Add (new StatChange (true, relativePowerBonus));
-
-				// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-				if (myInfo.element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire) {
-					appliedChangeList.Add (new StatChange (true, 1.2f));
-				}
 			}
 
-			// 방어력 변동 특성 영향 합산
+			// 방어/저항력 변동 특성 영향 합산
 			if (statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) {
 				List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList ();
 				if (statusEffectType == StatusEffectType.DefenseChange) {
@@ -518,11 +506,6 @@ public class Unit : MonoBehaviour{
 					float additiveResistanceBouns = SkillLogicFactory.Get (passiveSkills).GetAdditionalAbsoluteResistanceBonus (this);
 					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
 				}
-
-				// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
-				if (myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal) {
-					appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
-				}
 			}
 
 			if (statusEffectType == StatusEffectType.SpeedChange) {
@@ -530,6 +513,15 @@ public class Unit : MonoBehaviour{
 					appliedChangeList.Add (new StatChange (false, 15));
 				}
 			}
+		}
+
+		// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
+		if(statusEffectType == StatusEffectType.PowerChange && myInfo.element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire){
+			appliedChangeList.Add (new StatChange (true, 1.2f));
+		}
+		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
+		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
+			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
 		}
 
 		return CalculateThroughChangeList(data, appliedChangeList);

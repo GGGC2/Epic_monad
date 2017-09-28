@@ -38,9 +38,6 @@ namespace Battle.Turn{
 			BattleData.previewAPAction = null;
 			BattleData.alreadyMoved = true;
 			BattleData.currentState = CurrentState.FocusToUnit;
-			/*if(destTile.IsEscapePoint){
-				BattleData.currentState = CurrentState.Destroy;
-			}*/
 
 			yield return BattleData.battleManager.AtActionEnd();
 		}

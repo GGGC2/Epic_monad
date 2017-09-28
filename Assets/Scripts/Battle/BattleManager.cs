@@ -265,6 +265,8 @@ public class BattleManager : MonoBehaviour{
 		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+		/*BattleData.selectedUnit.UpdateStats();
+		FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);*/
 
 		//승리 조건이 충족되었는지 확인
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
