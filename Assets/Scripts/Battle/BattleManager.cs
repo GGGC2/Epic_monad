@@ -213,7 +213,7 @@ public class BattleManager : MonoBehaviour{
 		if (BattleData.deadUnits.Contains(BattleData.selectedUnit))
 			return true;
 
-		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
+		if(BattleData.selectedUnit.CheckReach()){
 			return true;
 		}
 
@@ -227,11 +227,8 @@ public class BattleManager : MonoBehaviour{
 		foreach(var unit in BattleData.unitManager.GetDeadUnits()){
 			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
 		}
-		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
-			BattleTriggerManager TrigM = FindObjectOfType<BattleTriggerManager>();
-			if(TrigM.isTriggerActive(TrigM.triggers.Find(trig => trig.actionType == TrigActionType.Reach))){
-				yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
-			}
+		if(BattleData.selectedUnit.CheckReach()){
+			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
 		}
 	}
 

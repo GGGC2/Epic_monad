@@ -22,6 +22,12 @@ public class BattleTriggerManager : MonoBehaviour {
 	public List<Vector2> TargetTiles { get { return targetTiles; } }
 	public List<string> ReachedTargetUnitNames { get { return reachedTargetUnitNames; } }
 
+	public List<BattleTrigger> ActiveTriggers{
+		get{
+			return triggers.FindAll(trig => isTriggerActive(trig));
+		}
+	}
+
 	public void CountBattleTrigger(BattleTrigger trigger){
 		if(trigger.actionType == TrigActionType.UnderCount && CountUnitOfCondition(trigger) <= trigger.targetCount){
 			AcquireTrigger(trigger);
@@ -81,12 +87,10 @@ public class BattleTriggerManager : MonoBehaviour {
 	public static IEnumerator CheckBattleTrigger(Unit unit, TrigActionType actionType){
 		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.triggers){
-			if(trigger.resultType == TrigResultType.End)
+		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
+			if(actionType == TrigActionType.Kill && unit.IsObject){
 				continue;
-			else if(actionType == TrigActionType.Kill && unit.IsObject)
-				continue;
-			else{
+			}else{
 				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType)){
 					Checker.CountBattleTrigger(trigger);
 				}
@@ -97,20 +101,17 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public static void CheckBattleTrigger(){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.triggers){
-			if(trigger.resultType == TrigResultType.End)
-				continue;
-			else if(trigger.actionType == TrigActionType.Phase)
+		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
+			if(trigger.actionType == TrigActionType.Phase){
 				Checker.CountBattleTrigger(trigger);
+			}
 		}
 	}
 
 	public static void CheckBattleTrigger(Unit unit, Tile destination){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.triggers){
-			if(trigger.resultType == TrigResultType.End)
-				continue;
-			else if(trigger.actionType == TrigActionType.Reach && trigger.targetTiles.Any(x => x == destination.position) && Checker.CheckUnitType(trigger, unit)){
+		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
+			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Checker.CheckUnitType(trigger, unit)){
 				Checker.CountBattleTrigger(trigger);
 			}
 		}
@@ -118,8 +119,9 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	//트리거가 현재 활성화되어있는지 여부를 확인. relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
 	public bool isTriggerActive(BattleTrigger trigger){
-		Debug.Assert(trigger.resultType != TrigResultType.End);
-		if(trigger.resultType == TrigResultType.Bonus){
+		if(trigger.resultType == TrigResultType.End){
+			return false;
+		}else if(trigger.resultType == TrigResultType.Bonus){
 			return true;
 		}else{
 			List<BattleTrigger> checkList;

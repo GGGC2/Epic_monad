@@ -21,7 +21,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public GameObject highlightWall;
-	public bool IsEscapePoint{
+	public bool IsReachPoint{
 		get{
 			return highlightWall.activeSelf && FindObjectOfType<TutorialManager>() == null;
 		}

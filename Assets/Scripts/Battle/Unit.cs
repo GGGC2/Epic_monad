@@ -1113,4 +1113,8 @@ public class Unit : MonoBehaviour{
 			healthViewer.gameObject.SetActive(false);
 		}
 	}
+
+	public bool CheckReach(){
+		return GetTileUnderUnit().IsReachPoint && FindObjectOfType<BattleTriggerManager>().ActiveTriggers.Any(trig => trig.actionType == TrigActionType.Reach);
+	}
 }
