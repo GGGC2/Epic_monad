@@ -19,6 +19,11 @@ public class BattleReadyPanel : MonoBehaviour{
 	public void Initialize(){
 		Buttons = Utility.ArrayToList(transform.Find("CharacterButtonMask").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
 
+		var firstButton = Instantiate(SkillButtonPrefab);
+		skillButtonList.Add(firstButton);
+		firstButton.transform.parent = SkillPart.transform;
+		firstButton.transform.localPosition = new Vector3(400, 205, 0);
+		
 		for(int column = 1; column <= 8; column++){
 			for(int row = 1; row <= 3; row++){
 				var button = Instantiate(SkillButtonPrefab);
@@ -27,10 +32,13 @@ public class BattleReadyPanel : MonoBehaviour{
 				button.level = column*7-6;
 				button.transform.parent = SkillPart.transform;
 				button.transform.localPosition = new Vector3(-320 + column*buttonDist, 170 - row*buttonDist, 0);
-				button.viewer = skillViewer;
-				button.RightPanel = RightPanel;
 			}
 		}
+
+		skillButtonList.ForEach(button => {
+			button.viewer = skillViewer;
+			button.RightPanel = RightPanel;
+		});
 
 		Reset();
 

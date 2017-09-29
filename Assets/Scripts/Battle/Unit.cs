@@ -521,7 +521,7 @@ public class Unit : MonoBehaviour{
 		}
 		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
 		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
-			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.GetLevel()+53));
+			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.level+53));
 		}
 
 		return CalculateThroughChangeList(data, appliedChangeList);
