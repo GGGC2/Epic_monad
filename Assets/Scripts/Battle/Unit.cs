@@ -915,7 +915,7 @@ public class Unit : MonoBehaviour{
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
     public void TriggerTileStatusEffectAtTurnStart() {
-        foreach(var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+		foreach(var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {
@@ -925,7 +925,7 @@ public class Unit : MonoBehaviour{
         }
     }
     public void TriggerTileStatusEffectAtTurnEnd() {
-        foreach (var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+		foreach (var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {

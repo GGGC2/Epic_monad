@@ -10,7 +10,7 @@ namespace Battle.Turn{
 			BattleData.mouseOverTilePosition = null;
 			while (true){
 				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
-				MonoBehaviour.FindObjectOfType<TileManager>().DepaintAllTiles(TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles(TileColor.Red);
 				viewer.OffPreviewAp();
 				if (BattleData.mouseOverTilePosition.HasValue == false){
 					BattleData.previewAPAction = null;

@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Battle.Skills {
     class Bianca_1_r_SkillLogic : BaseSkillLogic {
-        private Tile GetBackTile(Unit caster, Unit target) {
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		private Tile GetBackTile(Unit caster, Unit target) {
+			TileManager tileManager = BattleData.tileManager;
             Vector2 directionVector = target.GetPosition() - caster.GetPosition();
             Vector2 positionVector = target.GetPosition() + directionVector;
             return tileManager.GetTile(positionVector);

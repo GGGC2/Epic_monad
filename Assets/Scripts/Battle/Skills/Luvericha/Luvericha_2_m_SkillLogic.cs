@@ -12,7 +12,7 @@ namespace Battle.Skills {
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+			UnitManager unitManager = BattleData.unitManager;
             int numberOfInjuredAlly = 0;
             foreach(var unit in unitManager.GetAllUnits()) {
                 if (unit.GetSide() == Side.Ally) {

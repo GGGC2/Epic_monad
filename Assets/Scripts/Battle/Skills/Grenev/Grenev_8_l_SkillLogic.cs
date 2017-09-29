@@ -18,7 +18,7 @@ namespace Battle.Skills {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
             if (isHealthRatioSmallEnough(target)) {
-                BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+				BattleManager battleManager = BattleData.battleManager;
                 yield return battleManager.StartCoroutine(target.
 					ApplyDamageByNonCasting(target.GetCurrentHealth(), caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
             }
