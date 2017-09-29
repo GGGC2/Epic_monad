@@ -44,6 +44,7 @@ public class SkillViewer : SkillUI{
 	public void SetCommonSkillInfoUI(Skill skill){
 		mySkill = skill;
 		if(mySkill is ActiveSkill){
+			Debug.Log("View ActiveSkill.");
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
 			costText.text = "행동력 " + activeSkill.GetRequireAP();
@@ -64,8 +65,7 @@ public class SkillViewer : SkillUI{
 			}
 			else
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");	
-		}
-		else{
+		}else{
 			costText.text = "";
 			cooldownText.text = "특성(자동 적용)";
 			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");

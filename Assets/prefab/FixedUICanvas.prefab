@@ -7663,12 +7663,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114098770473234080
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8779,12 +8775,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114186238039440180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9193,12 +9185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114211020397547504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9633,12 +9621,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114242718696811220
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10646,12 +10630,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114344209296244200
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12303,12 +12283,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114481713173165580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13782,12 +13758,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114577787223975862
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16291,6 +16263,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489c2cf6c8ba349828531bd0c49bd7ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 0}
   viewerNameText: {fileID: 114875379266632750}
   costText: {fileID: 114941799232219384}
   cooldownText: {fileID: 114160116914206990}
@@ -17049,12 +17023,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114869837197096718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18449,12 +18419,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114961957598511200
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18499,12 +18465,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114967211856230018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18554,12 +18516,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2d710f4db182a4aa375c804e836631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewerNameText: {fileID: 114314060862530616}
-  costText: {fileID: 114911479604039390}
-  cooldownText: {fileID: 114595383820211362}
-  rangeType: {fileID: 114370250171399722}
-  rangeText: {fileID: 114531199619039054}
-  explainText: {fileID: 114077760576955526}
+  iconSlot: {fileID: 0}
+  viewer: {fileID: 114798465576907426}
 --- !u!114 &114974346508234106
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -27108,7 +27066,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10, y: -230}
+  m_AnchoredPosition: {x: 10, y: -229.99998}
   m_SizeDelta: {x: 300, y: 40}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224838954132168354
