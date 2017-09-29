@@ -200,8 +200,8 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unitInfo in unitInfoList){
 			string PCName = "";
 			if (unitInfo.nameKor == "unselected") {
-				if (generatedPC >= RM.selectedUnitList.Count) continue;
-				PCName = RM.selectedUnitList [generatedPC];
+				if (generatedPC >= RM.selectedUnits.Count) continue;
+				PCName = RM.selectedUnits [generatedPC].name;
 			}
 			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
 				PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);
@@ -236,7 +236,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unitInfo in unitInfoList){
 			if (unitInfo.nameEng == "unselected") continue;
 
-			if (RM != null && RM.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+			if (RM != null && RM.selectedUnits.Any(selectedUnit => selectedUnit.name == unitInfo.nameEng)) continue;
 
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
@@ -293,7 +293,7 @@ public class UnitManager : MonoBehaviour {
 		foreach (var unitInfo in unitInfoList){
 			if (RM == null) continue;
 			if (unitInfo.nameEng == "unselected") continue;
-			if (!RM.selectedUnitList.Contains(unitInfo.nameEng)) continue;
+			if (!RM.selectedUnits.Any(selectedUnit => selectedUnit.name == unitInfo.nameEng)) continue;
 
 			Debug.Log("unit add ready : " + unitInfo.nameEng);
 			FindObjectOfType<PlacedUnitCheckPanel>().HighlightPortrait(unitInfo.nameEng);
@@ -306,7 +306,8 @@ public class UnitManager : MonoBehaviour {
 
 			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
 			unit.myInfo = unitInfo;
-			unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
+			unit.ApplySkillList(RM.selectedUnits, statusEffectInfoList, tileStatusEffectInfoList);
+			//unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
 
 			Vector2 initPosition = triggeredTile.GetTilePos();
 			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));

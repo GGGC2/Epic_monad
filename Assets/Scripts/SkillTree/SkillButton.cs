@@ -115,7 +115,7 @@ class SkillButton : MonoBehaviour{
 
 	private void LoadIcon(SkillTreeManager skillTreeManager)
 	{
-		string path = "Icon/" + skillTreeManager.SelectedUnitName + "_" + skill.column + "_" + skill.requireLevel;
+		string path = "Icon/" + skillTreeManager.SelectedUnitName + "_" + skill.row + "_" + skill.requireLevel;
 		Debug.Log("Path is " + path);
 		Sprite sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
 		icon.GetComponent<Image>().sprite = sprite;

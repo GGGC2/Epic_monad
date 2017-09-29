@@ -644,7 +644,7 @@ public class ActiveSkill : Skill{
 	}
 
     public string GetOwner(){return owner;}
-	public int GetColumn() { return column; }
+	public int GetColumn() { return row; }
 	public string GetName() {return korName;}
     public int GetRequireLevel() { return requireLevel;}
     public void SetRequireAP(int requireAP) { this.requireAP = requireAP;}

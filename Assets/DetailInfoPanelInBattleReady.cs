@@ -7,7 +7,7 @@ using GameData;
 using System.Linq;
 using UnityEngine.EventSystems;
 
-public class DetailInfoPanelInPartySelect : MonoBehaviour {
+public class DetailInfoPanelInBattleReady : MonoBehaviour {
 
 	public Image unitImage;
 	public Text unitName;
@@ -22,18 +22,19 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
     public Image elementImage;
 	public Image celestialImage;
 
+	public List<Skill> allSkillList;
 	List<ActiveSkill> allActiveSkillList;
 	List<PassiveSkill> allPassiveSkillList;
 	List<UnitStatusEffectInfo> allStatusEffectInfoList;
 	List<TileStatusEffectInfo> allTileStatusEffectInfoList;
 
 	List<SkillInfoButton> skillButtons = new List<SkillInfoButton>();
+	public AvailableUnitButton RecentButton;
 
 	readonly int testLevel = 30;
 		
 	public void SetCommonUnitInfoUI(string nameString){
 		unitImage.sprite = Utility.IllustOf(nameString);
-		unitName.text = UnitInfo.ConvertToKoreanFullName(nameString);
 		string hpStatText = UnitInfo.GetStat(nameString, Stat.MaxHealth).ToString();
 		hpText.text = hpStatText + " / " + hpStatText;
 		int Agility = UnitInfo.GetStat(nameString, Stat.Agility);
@@ -64,11 +65,7 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
 		if (passiveSkillList.Any(pSkill => pSkill.requireLevel == 0)) {
 			PassiveSkill uniquePassive = passiveSkillList.Find(pSkill => pSkill.requireLevel == 0);
 			skillButtons.First().Initialize(uniquePassive);
-
-			// 고유특성이 있으면 미리 집어넣어놓음
-			// SetCommonSkillInfoUI();
-		}
-		else {
+		}else{
 			skillButtons.First().gameObject.SetActive(false);
 		}
 		
@@ -85,7 +82,7 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
 
 		// 스킬 상세설명 초기화
 		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
-		skillButton.GetComponent<SkillInfoButton>().SetCommonSkillInfoUI();
+		skillButton.GetComponent<SkillInfoButton>().SetViewer();
 		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 
@@ -123,6 +120,7 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
     }
 
 	void Awake () {
+		allSkillList = Parser.GetSkills();
 		allActiveSkillList = Parser.GetParsedData<ActiveSkill>();
 		allPassiveSkillList = Parser.GetParsedData<PassiveSkill>();
 		allStatusEffectInfoList = Parser.GetParsedData<UnitStatusEffectInfo>();
@@ -132,10 +130,5 @@ public class DetailInfoPanelInPartySelect : MonoBehaviour {
         for(int i = 0; i <= 10; i++){
             skillButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
         }
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

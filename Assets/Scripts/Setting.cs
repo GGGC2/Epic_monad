@@ -12,8 +12,9 @@ public class Setting{
 	public static int chainOpenStage = 4;
 	public static int celestialOpenStage = 4;
 	public static int retreatOpenStage = 4;
-	public static int readySceneOpenStage = 11;
 	public static int heightOpenStage = 7;
+	public static int readySceneOpenStage = 8; //능력 선택과 동시에 개방
+	public static int unitSelectOpenStage = 11;
 	public static bool shortcutEnable = true;
 
 	//변수 통제

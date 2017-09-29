@@ -148,6 +148,9 @@ public class UnitInfo{
 			return "레이나";
 		else if	(codeName == "curi")
 			return "큐리";
+		else if (codeName == "lenien"){
+			return "리니안";
+		}
         else if(codeName == "unselected")
 			return "Empty";
 		else{
@@ -183,10 +186,12 @@ public class UnitInfo{
 			return "레이나 닐 핀토스";
 		else if (codeName == "curi")
 			return "큐리 디아즈";
+		else if (codeName == "lenien")
+			return "리니안 레온하르트";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
-			Debug.LogError(codeName + " has NO KoreanName");
+			Debug.LogError(codeName + " has NO KoreanFullName!");
 			return "";
 		}
 	}
