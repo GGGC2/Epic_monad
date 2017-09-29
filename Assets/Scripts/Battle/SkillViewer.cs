@@ -76,6 +76,10 @@ public class SkillViewer : SkillUI{
 		explainText.text = mySkill.skillDataText.Replace("VALUE1", GetSkillValueText(mySkill.firstTextValueType, mySkill.firstTextValueCoef, mySkill.firstTextValueBase)).
 												 Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)).
 												 Replace("NL", Environment.NewLine);
+
+		if(SceneManager.GetActiveScene().name == "BattleReady"){
+			explainText.text += "\n\n에테르 " + mySkill.ether;
+		}
 	}
 
 	public void SetNameText(){

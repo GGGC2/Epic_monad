@@ -20,7 +20,7 @@ lenien	0	29	연쇄 방전	2	ABCD	None	0	0	None	0	0
 lenien	0	29	자기 부상	3	ABCD	None	0	0	None	0	0
 lenien	0	36	에테르 전위	1	ABCD	None	0	0	None	0	0
 lenien	0	43	입자 가속	3	ABCD	None	0	0	None	0	0
-eren	0	0	흡수	0	ABCD	None	0	0	None	0	0
+eren	0	0	에테르 지배	0	유닛이 처치될 때마다 <color=ff9999ff>흡수</color>(3페이즈, 중첩가능) 효과를 얻습니다.	None	0	0	None	0	0
 eren	0	8	흑화	1	ABCD	None	0	0	None	0	0
 eren	0	8	축성	3	ABCD	None	0	0	None	0	0
 eren	0	15	초월	2	ABCD	None	0	0	None	0	0
@@ -38,9 +38,9 @@ kashasty	0	29	압축탄	1	ABCD	None	0	0	None	0	0
 kashasty	0	29	마법공학 조준경	3	ABCD	None	0	0	None	0	0
 kashasty	0	36	시들지 않는 의지	3	ABCD	None	0	0	None	0	0
 kashasty	0	43	에테르화	1	ABCD	None	0	0	None	0	0
-yeong	0	0	방랑자	0	페이즈를 시작한 지점으로부터 주변 2타일 바깥으로 이동하면 해당 페이즈 동안 회피 +15%를 얻습니다.	None	0	0	None	0	0
-yeong	0	1	어려운 목표물	2	ABCD	None	0	0	None	0	0
-yeong	0	1	동체 시력	3	기술을 사용하면 다음에 받는 공격에 회피 +10%를 얻습니다. 여러 번 사용해도 중첩되지 않습니다.	None	0	0	None	0	0
+yeong	0	0	방랑자	0	페이즈를 시작한 지점으로부터 주변 <color=ff9999ff>2타일</color> 바깥으로 이동하면 해당 페이즈 동안 <color=orange>회피 +15%</color>를 얻습니다.	None	0	0	None	0	0
+yeong	0	1	어려운 목표물	2	회피에 성공하면, 공격한 유닛에게 <color=ff9999ff>3페이즈</color> 동안 <color=ff9999ff>도발</color> 효과를 줍니다.	None	0	0	None	0	0
+yeong	0	1	동체 시력	3	기술을 사용하면, 다음에 받는 공격에 <color=orange>회피 +10%</color>를 적용합니다. 여러 번 사용해도 중첩되지 않습니다.	None	0	0	None	0	0
 yeong	0	8	간파	2	ABCD	None	0	0	None	0	0
 yeong	0	8	기척 감지	3	ABCD	None	0	0	None	0	0
 yeong	0	15	질풍노도	2	ABCD	None	0	0	None	0	0
@@ -62,9 +62,9 @@ triana	0	36	불걸음	1	ABCD	None	0	0	None	0	0
 triana	0	36	동상	2	ABCD	None	0	0	None	0	0
 triana	0	43	마그마 폭발	1	ABCD	None	0	0	None	0	0
 triana	0	43	옭아매는 가시	3	ABCD	None	0	0	None	0	0
-luvericha	0	0	고유특성1	0	ABCD	None	0	0	None	0	0
-luvericha	0	8	위기상황	2	ABCD	None	0	0	None	0	0
-luvericha	0	8	자가치유	3	ABCD	None	0	0	None	0	0
+luvericha	0	50	고유특성1	0	ABCD	None	0	0	None	0	0
+luvericha	0	8	위기상황	2	<color=green>현재 체력</color>이 <color=green>40%</color> 이하인 동료 1명당 <color=cyan>속도</color>가 <color=cyan>10</color> 높아집니다.	None	0	0	None	0	0
+luvericha	0	8	자가치유	3	휴식할 때 <color=green>50%</color> 더 많이 <color=green>회복</color>합니다.	None	0	0	None	0	0
 luvericha	0	15	수호의 오오라	2	ABCD	None	0	0	None	0	0
 luvericha	0	15	치유의 오오라	3	ABCD	None	0	0	None	0	0
 luvericha	0	29	넘치는 사랑	3	ABCD	None	0	0	None	0	0

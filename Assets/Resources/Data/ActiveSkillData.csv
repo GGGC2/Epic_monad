@@ -36,7 +36,7 @@ lenien	5	8	하전 파동	2	28	0	Power	0.5	Route	Straight	1	4	0	Sector	0	2	0	Dama
 lenien	0	22	벼락	2	62	5	Power	1.6	Point	Diamond	1	4	0	Diamond	0	2	0	DamageHealth	-	Area	Move	-	?	None	0	0	None	0	0
 lenien	0	43	축전	1	46	3	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
 lenien	0	50	낙뢰 폭격	2	84	6	Power	2.4	Point	Diamond	1	4	0	Diamond	0	2	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
-eren	0	1	칠흑의 화살	2	42	0	Power	1	Point	Diamond	1	6	0	Diamond	0	1	0	DamageHealth	RedBlast	Area	Move	-	--	None	0	0	None	0	0
+eren	0	1	칠흑의 화살	2	42	0	Power	1	Point	Diamond	1	6	0	Diamond	0	1	0	DamageHealth	RedBlast	Area	Move	-	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. 흡수 중첩 하나당 <color=red>0.2x공격력</color>(<color=red>VALUE2</color>)이 피해량에 더해집니다.	Power	1.0	0	Power	0.2	0
 eren	0	1	광휘	3	27	2	Power	0.6	Point	Diamond	0	6	0	Diamond	0	0	0	Buff	YellowBlast	Individual	NonMove	-	--	None	0	0	None	0	0
 eren	0	15	죽음의 화살	1	49	1	Power	0.9	Point	Diamond	1	6	0	Diamond	0	1	0	DamageHealth	RedBlast	Individual	NonMove	-	--	None	0	0	None	0	0
 eren	0	22	대규모 흡수	1	69	5	Power	1.8	Auto	Diamond	1	3	0	Diamond	1	3	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
@@ -44,15 +44,15 @@ eren	0	22	순간 재충전	3	25	5	Power	0	Point	Diamond	0	9	0	Diamond	0	0	0	Buff
 eren	0	36	치유의 빛	3	56	5	Power	0.6	Point	Diamond	0	9	0	Diamond	0	0	0	HealHealth	-	Area	Move	-	?	None	0	0	None	0	0
 eren	0	50	영혼 소각	1	97	5	Power	2.7	Auto	Sector	1	4	0	Sector	1	4	0	DamageHealth	-	Area	Move	-	?	None	0	0	None	0	0
 eren	0	50	운명의 개척자	3	90	5	Agility	0.3	Point	Diamond	0	9	0	Diamond	0	0	0	HealAP	-	Area	Move	-	--	None	0	0	None	0	0
-luvericha	0	1	정화된 밤	1	0	2	Power	0	Point	Diamond	0	5	0	Diamond	0	0	0	Buff	-	Area	Move	-	?	None	0	0	None	0	0
-luvericha	0	1	사랑의 기쁨	3	39	3	Power	0.7	Auto	Diamond	1	4	0	Diamond	1	4	0	HealHealth	-	Area	Move	-	?	None	0	0	None	0	0
+luvericha	0	1	교향곡 : 운명	1	41	1	Power	0	Auto	Sector	1	5	0	Sector	1	5	0	DamageHealth	-	Area	NonMove	-	대상 <color=green>현재 체력의 20%</color>의 피해를 줍니다. 특별한 적에게는 효과가 없습니다.	None	0	0	None	0	0
+luvericha	0	1	사랑의 기쁨	3	39	1	Power	0.7	Auto	Diamond	1	4	0	Diamond	1	4	0	HealHealth	-	Area	Move	-	NLNL대상의 체력을 <color=red>0.7x공격력</color>(<color=red>VALUE1</color>) 회복합니다.	Power	0.7	0	None	0	0
 luvericha	0	22	에튀드 : 겨울바람	1	56	4	Power	0	Auto	Front	1	5	5	Front	1	5	5	DamageAP	-	Area	NonMove	-	--	None	0	0	None	0	0
 luvericha	0	22	에튀드 : 햇빛	3	68	4	Power	0	Auto	Square	1	2	0	Square	1	2	0	Buff	-	Area	NonMove	-	--	None	0	0	None	0	0
 luvericha	0	29	소녀의 기도	2	52	0	Power	1.5	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Area	NonMove	-	--	None	0	0	None	0	0
-luvericha	0	36	교향곡 : 운명	1	58	1	Power	0	Auto	Sector	1	5	0	Sector	1	5	0	DamageHealth	-	Area	NonMove	-	?	None	0	0	None	0	0
+luvericha	0	36	정화된 밤	1	0	2	Power	0	Point	Diamond	0	5	0	Diamond	0	0	0	Buff	-	Area	Move	-	?	None	0	0	None	0	0
 luvericha	0	50	4분 33초	1	93	4	Power	0	Auto	Front	1	5	5	Front	1	5	5	DamageAP	-	Area	NonMove	-	--	None	0	0	None	0	0
 luvericha	0	50	환상곡	3	98	4	Power	0.9	Auto	Diamond	1	2	0	Diamond	1	2	0	Buff	-	Area	NonMove	-	?	None	0	0	None	0	0
-yeong	0	1	은빛 베기	1	40	0	Power	0.9	Auto	Sector	1	2	0	Sector	1	2	0	DamageHealth	MeleeArea	Area	NonMove	Slash	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '방랑자' 효과가 발동된 상태이면 위력이 <color=red>20%</color> 높아집니다.	Power	0.9	0	None	0	0
+yeong	0	1	은빛 베기	1	40	0	Power	0.9	Auto	Sector	1	2	0	Sector	1	2	0	DamageHealth	MeleeArea	Area	NonMove	Slash	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다. '<color=ff9999ff>방랑자</color>' 효과가 발동된 상태이면 피해량이 <color=red>20%</color> 높아집니다.	Power	0.9	0	None	0	0
 yeong	0	8	섬광 찌르기	1	51	0	Power	1.2	Auto	Straight	1	3	0	Straight	1	3	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
 yeong	0	22	배후의 습격	1	50	3	Power	1.8	Point	Diamond	1	2	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
 yeong	0	29	초감각	3	47	3	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	-	--	None	0	0	None	0	0
