@@ -13,11 +13,11 @@ namespace Battle.Skills
         {
             int casterHeight = caster.GetHeight();
 
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+			UnitManager unitManager = BattleData.unitManager;
             List<Unit> allUnit = unitManager.GetAllUnits();
             bool isThereAnyUnitHigherThanCaster = allUnit.Any(x => x.GetHeight() > casterHeight);
 
-            BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+			BattleManager battleManager = BattleData.battleManager;
             int currentPhase = BattleData.currentPhase;
 
             // 짝수 페이즈 시작 시, 자신보다 높은 유닛이 없으면 반경 2 영역 대상에게 기절 1페이즈
@@ -25,7 +25,7 @@ namespace Battle.Skills
             {
                 BattleManager.MoveCameraToUnit(caster);
                 Vector2 unitPosition = caster.GetPosition();
-                TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+				TileManager tileManager = BattleData.tileManager;
                 List<Tile> targetArea = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 2, 0, Direction.LeftUp);
                 List<Unit> targets = new List<Unit>();
                 targetArea.ForEach(x =>

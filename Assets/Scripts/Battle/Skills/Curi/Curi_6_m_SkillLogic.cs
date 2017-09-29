@@ -5,7 +5,7 @@ using Enums;
 namespace Battle.Skills {
     public class Curi_6_m_SkillLogic : BaseSkillLogic {
         public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
-            BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+			BattleManager battleManager = BattleData.battleManager;
             Unit target = castingApply.GetTarget();
             Unit caster = castingApply.GetCaster();
             float defense = target.GetStat(Stat.Defense);

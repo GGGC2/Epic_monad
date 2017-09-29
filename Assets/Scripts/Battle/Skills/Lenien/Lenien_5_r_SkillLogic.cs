@@ -10,7 +10,7 @@ public class Lenien_5_r_SkillLogic : BasePassiveSkillLogic {
 
 	public override void TriggerOnActionEnd(Unit lenien)
 	{
-		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		TileManager tileManager = BattleData.tileManager;
 		
 		if (lenien.GetTileUnderUnit().GetTileElement() == Element.Metal)
 			StatusEffector.AttachStatusEffect(lenien, this.passiveSkill, lenien);

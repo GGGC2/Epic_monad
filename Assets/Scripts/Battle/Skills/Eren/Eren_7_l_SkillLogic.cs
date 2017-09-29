@@ -9,8 +9,8 @@ namespace Battle.Skills
 {
     public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
 	    public override IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
-	    {
-		    TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		{
+			TileManager tileManager = BattleData.tileManager;
 		    Vector2 deadUnitPos = deadUnit.GetPosition();
 
 		    List<Tile> applyArea = tileManager.GetTilesInRange(RangeForm.Diamond, deadUnitPos, 1, 2, 0, Direction.LeftDown);
