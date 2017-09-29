@@ -55,11 +55,11 @@ public class DialogueManager : MonoBehaviour{
 
 	bool HandleSceneChange (DialogueData Data){
 		//뭔가 명령이 인식됐으면 true, 아무것도 하지 않았으면 false
-		if (Data.Command == DialogueData.CommandType.Adv){
+		/*if (Data.Command == DialogueData.CommandType.Adv){
 			SetActiveAdventureUI(true);
 			LoadAdventureObjects ();
 			return true;
-		}else if (Data.Command == DialogueData.CommandType.Script){
+		}else*/if (Data.Command == DialogueData.CommandType.Script){
 			string nextScriptName = Data.GetCommandSubType ();
 			sceneLoader.LoadNextDialogueScene (nextScriptName);
 			return true;
@@ -173,7 +173,7 @@ public class DialogueManager : MonoBehaviour{
         dialogueUI.SetActive(true);
     }
 
-    public void LoadAdventureObjects(){
+    /*public void LoadAdventureObjects(){
         objects = adventureUI.GetComponent<AdventureManager>().objects;
 
 		objects.ToList().ForEach(x => x.SetActive(true));
@@ -196,7 +196,7 @@ public class DialogueManager : MonoBehaviour{
 		for (int i = objectIndex; i < objects.Length; i++){
 			objects[i].SetActive(false);
 		}
-    }
+    }*/
 
     public void PrintLinesFromObjectIndex(int objectIndex){
         GameObject buttonPanel = objects[objectIndex];

@@ -31,15 +31,6 @@ public class AvailableUnitButton : MonoBehaviour {
 		readyManager = FindObjectOfType<ReadyManager>();
 	}
 
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 	public void SetNameAndSprite(string nameString) {
 		this.nameString = nameString;
 		unitName.text = UnitInfo.ConvertToKoreanName(nameString);
@@ -54,8 +45,9 @@ public class AvailableUnitButton : MonoBehaviour {
 		Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
 
         // 첫번째 버튼에 있는 캐릭터 정보를 기본으로 띄우게 함
-        if (gameObject.name == "CharacterButton1")
-            detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);       
+        if (gameObject.name == "CharacterButton1"){
+            detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);
+		}
 	}
 
 	public void ActiveHighlight() {
