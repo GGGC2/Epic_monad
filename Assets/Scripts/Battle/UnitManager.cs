@@ -28,12 +28,12 @@ public class RetreatUnitInfo{
 	}
 }
 
-public class UnitManager : MonoBehaviour {
+public class UnitManager : MonoBehaviour{
 	private static UnitManager instance;
 	public static UnitManager Instance{ get { return instance; } }
 
 	void Awake(){
-		if (instance != null && instance != this) {
+		if (instance != null && instance != this){
 			Destroy (this.gameObject);
 			return;
 		}else {instance = this;}
@@ -65,13 +65,13 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-    public void TriggerPassiveSkillsAtActionEnd() {
+    public void TriggerPassiveSkillsAtActionEnd(){
 		foreach(var unit in GetAllUnits()) {
             SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
         }
     }
 
-    public IEnumerator TriggerStatusEffectsAtActionEnd() {
+    public IEnumerator TriggerStatusEffectsAtActionEnd(){
         foreach(var unit in GetAllUnits()) {
             List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
@@ -92,19 +92,19 @@ public class UnitManager : MonoBehaviour {
         }
         foreach (var unit in GetAllUnits()) {
             foreach(UnitStatusEffect statusEffect in unit.StatusEffectList) {
-                if (statusEffect.GetRemainStack() != 0) {
+                if(statusEffect.GetRemainStack() != 0){
                     for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++)
                         statusEffect.CalculateAmount(i, true);
                     unit.UpdateStats(statusEffect, false, false);
                     unit.UpdateSpriteByStealth();
-                }
-                else
-                    unit.RemoveStatusEffect(statusEffect);
+                }else{
+					unit.RemoveStatusEffect(statusEffect);
+				}
             }
         }
     }
 
-    public void UpdateRealUnitPositions(int direction) {
+    public void UpdateRealUnitPositions(int direction){
         foreach (var unit in GetAllUnits()) {
             unit.UpdateRealPosition(direction);
         }
@@ -171,7 +171,7 @@ public class UnitManager : MonoBehaviour {
 		standardActivityPoint = GameData.PartyData.level + 60;
 	}
 
-	public void ApplyAIInfo (){
+	public void ApplyAIInfo(){
 		List<AIInfo> aiInfoList = Parser.GetParsedData<AIInfo>();
 		aiInfoList.ForEach(aiInfo => {
 			int index = aiInfo.index;

@@ -6,6 +6,7 @@ using Enums;
 public class Skill{
     //기본 정보
     public string owner;
+    public int ether;
 	public int row;
 	public string korName;
 	public int requireLevel;
@@ -23,6 +24,7 @@ public class Skill{
     //기술,특성의 공통되는 부분을 받아온다
     public void GetCommonSkillData(StringParser parser){
         owner = parser.Consume();
+        ether = parser.ConsumeInt();
 		requireLevel = parser.ConsumeInt();
 		korName = parser.Consume();
 		row = parser.ConsumeInt();
