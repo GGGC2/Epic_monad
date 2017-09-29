@@ -122,32 +122,47 @@ public class UnitInfo{
 	}
 
 	public static string ConvertToKoreanName(string codeName){
-		if (codeName == "noel")
+		// 가나다순
+		if (codeName == "grenev")
+			return "그레네브";
+		else if (codeName == "noel")
 			return "노엘";
+		else if (codeName == "darkenir")
+			return "달케니르";
+		else if (codeName == "deus")
+			return "데우스";
+		else if(codeName == "ratice")
+			return "라티스";
+		else if(codeName == "reina")
+			return "레이나";
+		else if	(codeName == "luvericha")
+			return "루베리카";
+		else if (codeName == "lucius")
+			return "루키어스";
+		else if	(codeName == "lenien")
+			return "리니안";
+		else if (codeName == "bianca")
+			return "비앙카";
 		else if (codeName == "sepia")
 			return "세피아";
 		else if (codeName == "arcadia")
 			return "아르카디아";
-		else if (codeName == "grenev")
-			return "그레네브";
-		else if (codeName == "darkenir")
-			return "달케니르";
+		else if	(codeName == "eren")
+			return "에렌";
 		else if (codeName == "yeong")
 			return "영";
-		else if (codeName == "bianca")
-			return "비앙카";
+		else if (codeName == "eugene")
+			return "유진";
+		else if (codeName == "json")
+			return "제이선";
+		else if (codeName == "kashasty")
+			return "카샤스티";
 		else if (codeName == "karldrich")
 			return "칼드리치";
-		else if (codeName == "lucius")
-			return "루키어스";
-        else if (codeName == "json")
-            return "제이선";
-        else if (codeName == "triana")
-            return "트리아나";
-		else if(codeName == "reina")
-			return "레이나";
 		else if	(codeName == "curi")
 			return "큐리";
+        else if (codeName == "triana")
+            return "트리아나";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
@@ -157,32 +172,47 @@ public class UnitInfo{
 	}
 
 	public static string ConvertToKoreanFullName(string codeName){
-		if (codeName == "noel")
+		// 가나다순
+		if (codeName == "grenev")
+			return "그레네브 다리윌리안";
+		else if (codeName == "noel")
 			return "노엘 글로우 포트란";
+		else if (codeName == "darkenir")
+			return "달케니르 쟌 시리우스";
+		else if (codeName == "deus")
+			return "데우스";
+		else if(codeName == "ratice")
+			return "라티스 P. 컴파일";
+		else if(codeName == "reina")
+			return "레이나 닐 핀토스";
+		else if	(codeName == "luvericha")
+			return "루베리카 하스켈";
+		else if (codeName == "lucius")
+			return "루키어스 에카르트 하스켈";
+		else if	(codeName == "lenien")
+			return "리니안 레온하르트";
+		else if (codeName == "bianca")
+			return "비앙카 프레이";
 		else if (codeName == "sepia")
 			return "세피아 로젠힐트";
 		else if (codeName == "arcadia")
 			return "아르카디아";
-		else if (codeName == "grenev")
-			return "그레네브 다리윌리안";
-		else if (codeName == "darkenir")
-			return "달케니르 쟌 시리우스";
+		else if	(codeName == "eren")
+			return "에렌 오블리비언";
 		else if (codeName == "yeong")
 			return "영";
-		else if (codeName == "bianca")
-			return "비앙카 프레이";
+		else if (codeName == "eugene")
+			return "유진 수";
+		else if (codeName == "json")
+			return "제이선 어셈블리";
+		else if (codeName == "kashasty")
+			return "카샤스티 러브레이스";
 		else if (codeName == "karldrich")
 			return "칼드리치 플레임";
-		else if (codeName == "lucius")
-			return "루키어스 에카르트 하스켈";
-        else if (codeName == "json")
-            return "제이선 어셈블리";
-        else if (codeName == "triana")
-            return "트리아나 페르단트";
-		else if(codeName == "reina")
-			return "레이나 닐 핀토스";
 		else if (codeName == "curi")
 			return "큐리 디아즈";
+        else if (codeName == "triana")
+            return "트리아나 페르단트";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
