@@ -13,13 +13,15 @@ public class Parser : MonoBehaviour{
 		return RowDataStrings[row].Split(',')[column];
 	}
 	
+	//각 행 중에 첫번째 항목 searchigWord로 시작하는 행을 찾아서 return
 	public static string[] FindRowDataOf(string text, string searchingWord){
 		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach(string row in RowDataStrings){
-			string[] tempRowData = row.Split(',');
-			if(tempRowData[0] == searchingWord)
+			string[] tempRowData = row.Split('\t');
+			if(tempRowData[0] == searchingWord){
 				return tempRowData;
+			}
 		}
 
 		Debug.Log("RowData Not Found : " + searchingWord + "in " + text);
@@ -109,15 +111,12 @@ public class Parser : MonoBehaviour{
 			Skills.Add(skill);
 		}
 
-		//if(SceneData.stageNumber >= Setting.passiveOpenStage){
-			Debug.Log("passiveOpen : " + SceneData.stageNumber + "Stage");
-			string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
-			string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-			for(int i = 1; i < passiveRowDataList.Length; i++){
-				Skill skill = new PassiveSkill(passiveRowDataList[i]);
-				Skills.Add(skill);
-			}
-		//}
+		string passiveSkillData = Resources.Load<TextAsset>("Data/PassiveSkillData").text;
+		string[] passiveRowDataList = passiveSkillData.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for(int i = 1; i < passiveRowDataList.Length; i++){
+			Skill skill = new PassiveSkill(passiveRowDataList[i]);
+			Skills.Add(skill);
+		}
 
 		return Skills;
 	}
@@ -231,8 +230,7 @@ public class Parser : MonoBehaviour{
 		return stories;
 	}
 
-	public static List<SkillColumnInfo> GetSkillColumInfo()
-	{
+	public static List<SkillColumnInfo> GetSkillColumInfo(){
 		List<SkillColumnInfo> columnInfos = new List<SkillColumnInfo>();
 		TextAsset csvFile = Resources.Load("Data/unitSkillColumns") as TextAsset;
 
@@ -242,8 +240,7 @@ public class Parser : MonoBehaviour{
 		List<string> dataLines = new List<string>(lines);
 		dataLines = dataLines.GetRange(1, lines.Length - 1);
 
-		foreach (string line in dataLines)
-		{
+		foreach (string line in dataLines){
 			SkillColumnInfo storyInfo = new SkillColumnInfo(line);
 			columnInfos.Add(storyInfo);
 		}
@@ -251,7 +248,7 @@ public class Parser : MonoBehaviour{
 		return columnInfos;
 	}
 
-	public static List<PlaceInfo> GetPlacesInfo(int stageNumber) {
+	public static List<PlaceInfo> GetPlacesInfo(int stageNumber){
 		List<PlaceInfo> placeInfoList = new List<PlaceInfo>();
 		TextAsset csvFile = Resources.Load("Data/stage"+stageNumber+"_unitPos") as TextAsset;
 
@@ -261,8 +258,7 @@ public class Parser : MonoBehaviour{
 		List<string> dataLines = new List<string>(lines);
 		dataLines = dataLines.GetRange(1, lines.Length - 1);
 
-		foreach (string line in dataLines)
-		{
+		foreach (string line in dataLines){
 			PlaceInfo placeInfo = new PlaceInfo(line);
 			placeInfoList.Add(placeInfo);
 		}

@@ -10,7 +10,7 @@ public class Lenien_2_r_SkillLogic : BasePassiveSkillLogic {
 		float ignoreAmountPerLevel = 0.7f;
 		float baseAmountPerLevel = 51;
 
-		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		TileManager tileManager = BattleData.tileManager;
 		Tile tileUnderTarget = tileManager.GetTile(target.GetPosition());
 		if (tileUnderTarget.GetTileElement() == Enums.Element.Water)
 			resistance -= baseAmountPerLevel + (ignoreAmountPerLevel * GameData.PartyData.level);

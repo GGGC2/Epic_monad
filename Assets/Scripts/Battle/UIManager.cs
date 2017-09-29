@@ -363,7 +363,7 @@ public class UIManager : MonoBehaviour{
 	public void EnablePlacedUnitCheckUI() {
 		placedUnitCheckUI.SetActive(true);
 		ReadyManager RM = FindObjectOfType<ReadyManager>();
-		placedUnitCheckUI.GetComponent<PlacedUnitCheckPanel>().SetUnitPortraits(RM.selectedUnitList);
+		placedUnitCheckUI.GetComponent<PlacedUnitCheckPanel>().SetUnitPortraits(RM.selectedUnits);
 	}
 
 	public void DisablePlacedUnitCheckUI() {

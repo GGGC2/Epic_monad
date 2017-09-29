@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Battle.Skills {
     class Sepia_1_m_SkillLogic : BasePassiveSkillLogic {
-        public override void TriggerOnActionEnd(Unit caster) {
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		public override void TriggerOnActionEnd(Unit caster) {
+			TileManager tileManager = BattleData.tileManager;
             Direction front = caster.GetDirection();
             List<Tile> tilesInRange = tileManager.GetTilesInRange(RangeForm.Straight, caster.GetPosition(), -2, -1, 1, front);
 			List<UnitStatusEffect> statusEffectList = caster.StatusEffectList;

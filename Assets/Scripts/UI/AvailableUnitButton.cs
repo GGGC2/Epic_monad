@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using Enums;
 
 public class AvailableUnitButton : MonoBehaviour {
-
 	public Image highlightImage;
 	Image standingImage;
 	Text unitName;
@@ -14,11 +13,11 @@ public class AvailableUnitButton : MonoBehaviour {
 	Image elementImage;
 	public string nameString; // 영어이름: 유닛정보 찾을때 필요
 
-	DetailInfoPanelInPartySelect detailInfoPanelInPartySelect;
+	public BattleReadyPanel ReadyPanel;
+	public DetailInfoPanelInBattleReady BattleReadyRightPanel; //오른쪽 절반 화면(RightScreen)을 담당
 	ReadyManager readyManager;
 
-	// Use this for initialization
-	void Awake () {
+	void Awake (){
 		InactiveHighlight();
 
 		standingImage = transform.Find("CharacterImageMask").Find("CharacterImage").GetComponent<Image>();
@@ -27,7 +26,6 @@ public class AvailableUnitButton : MonoBehaviour {
 		celestialImage = transform.Find("CelestialImageMask").Find("CelestialImage").GetComponent<Image>();
 		elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
 
-		detailInfoPanelInPartySelect = FindObjectOfType<DetailInfoPanelInPartySelect>();
 		readyManager = FindObjectOfType<ReadyManager>();
 	}
 
@@ -43,11 +41,6 @@ public class AvailableUnitButton : MonoBehaviour {
 		Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(nameString));
 		Utility.SetElementImage(elementImage, UnitInfo.GetElement(nameString));
 		Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
-
-        // 첫번째 버튼에 있는 캐릭터 정보를 기본으로 띄우게 함
-        if (gameObject.name == "CharacterButton1"){
-            detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);
-		}
 	}
 
 	public void ActiveHighlight() {
@@ -58,9 +51,16 @@ public class AvailableUnitButton : MonoBehaviour {
 		highlightImage.enabled = false;
 	}
 
+	//유니티 에디터상 OnClick으로도 작동
 	public void SetUnitInfoToDetailPanel() {
-		detailInfoPanelInPartySelect.SetCommonUnitInfoUI(nameString);
-		SelectUnitIfUnselected();
+		BattleReadyRightPanel.RecentButton = this;
+		BattleReadyRightPanel.unitName.text = UnitInfo.ConvertToKoreanFullName(nameString);
+		if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Party){
+			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
+			SelectUnitIfUnselected();
+		}else if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Ether){
+			ReadyPanel.Reset();
+		}
 	}
 
 	void SelectUnitIfUnselected() {

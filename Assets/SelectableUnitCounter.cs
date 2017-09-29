@@ -20,13 +20,7 @@ public class SelectableUnitCounter : MonoBehaviour {
 	public void PartyNumberChange(int num) {
 		currentSelectedUnitNumber += num;
 	}
-
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
-	// Update is called once per frame
 	void Update () {
 		text.text = "출전 가능 인원 : " + currentSelectedUnitNumber + " / " + maxSelectableUnitNumber;
 	}

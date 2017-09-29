@@ -915,7 +915,7 @@ public class Unit : MonoBehaviour{
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
     public void TriggerTileStatusEffectAtTurnStart() {
-        foreach(var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+		foreach(var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {
@@ -925,7 +925,7 @@ public class Unit : MonoBehaviour{
         }
     }
     public void TriggerTileStatusEffectAtTurnEnd() {
-        foreach (var tile in FindObjectOfType<TileManager>().GetAllTiles().Values) {
+		foreach (var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill.GetType() == typeof(ActiveSkill)) {
@@ -975,24 +975,46 @@ public class Unit : MonoBehaviour{
         actualStats.Add(Stat.Agility, new ActualStat(myInfo.baseStats[Stat.Agility], Stat.Agility));
     }
 
+	void AddActiveSkill(ActiveSkill skill, List<UnitStatusEffectInfo> statusEffectInfoList, List<TileStatusEffectInfo> tileStatusEffectInfoList){
+		skill.ApplyUnitStatusEffectList(statusEffectInfoList, PartyData.level);
+        skill.ApplyTileStatusEffectList(tileStatusEffectInfoList, PartyData.level);
+        activeSkillList.Add(skill);
+	}
+
+	void AddPassiveSkill(PassiveSkill skill, List<UnitStatusEffectInfo> statusEffectInfoList){
+		skill.ApplyUnitStatusEffectList(statusEffectInfoList, PartyData.level);
+        passiveSkillList.Add(skill);
+	}
+
+	public void ApplySkillList(List<SelectedUnit> selectInfo, List<UnitStatusEffectInfo> statusEffectInfoList, List<TileStatusEffectInfo> tileStatusEffectInfoList){
+		int partyLevel = GameData.PartyData.level;
+		selectInfo.Find(info => info.name == myInfo.nameEng).selectedSkills.ForEach(skill => {
+			if(skill is ActiveSkill){
+				AddActiveSkill((ActiveSkill)skill, statusEffectInfoList, tileStatusEffectInfoList);
+			}else{
+				AddPassiveSkill((PassiveSkill)skill, statusEffectInfoList);
+			}
+		});
+	}
     public void ApplySkillList(List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
                                List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
         int partyLevel = GameData.PartyData.level;
 
         foreach (var activeSkill in activeSkills) {
             if (activeSkill.owner == myInfo.nameEng && activeSkill.requireLevel <= partyLevel){
-                // if(SkillDB.IsLearned(this.nameInCode, skill.GetName()))
-                activeSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
+				AddActiveSkill(activeSkill, statusEffectInfoList, tileStatusEffectInfoList);
+                /*activeSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
                 activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                activeSkillList.Add(activeSkill);
+                activeSkillList.Add(activeSkill);*/
 			}
         }
 
 		if(SceneData.stageNumber >= Setting.passiveOpenStage){
 			foreach (var passiveSkill in passiveSkills) {
         	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
-            	    passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-	                passiveSkillList.Add(passiveSkill);
+					AddPassiveSkill(passiveSkill, statusEffectInfoList);
+            	    //passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
+	                //passiveSkillList.Add(passiveSkill);
     	        }
         	}
 		}

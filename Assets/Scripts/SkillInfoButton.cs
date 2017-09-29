@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SkillInfoButton : SkillInfoUI, IPointerDownHandler{
-	Image iconSlot;
+public class SkillInfoButton : SkillUI{
 	Text myNameText;
 
 	public void Awake(){
@@ -13,31 +12,21 @@ public class SkillInfoButton : SkillInfoUI, IPointerDownHandler{
 		iconSlot = transform.Find("SkillImage").GetComponent<Image>();
 	}
 
-	public void Start() { 
+	public void Start(){ 
 		if(gameObject.name == "SkillPrevButton0"){
-			// GetComponent<Button>().onClick.Invoke();
-			viewerNameText.text = "";
-			costText.text = "";
-			cooldownText.text = "";
-			rangeType.sprite = Resources.Load<Sprite>("transparent");
-			rangeText.text = "";
-			explainText.text = "";
+			viewer.Initialize();
 		}
 	}
 
 	public void Initialize(Skill newSkill){
-		skill = newSkill;		
+		mySkill = newSkill;
 		if(newSkill == null){
 			gameObject.SetActive(false);
 		}else{
-			myNameText.text = skill.korName;
-			if(skill.icon != null){
-				iconSlot.sprite = skill.icon;
+			myNameText.text = mySkill.korName;
+			if(mySkill.icon != null){
+				iconSlot.sprite = mySkill.icon;
 			}
 		}
-	}
-
-	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){ //Debug.Log(eventData);
-		SetCommonSkillInfoUI();
 	}
 }

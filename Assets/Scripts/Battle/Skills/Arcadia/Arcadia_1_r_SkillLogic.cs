@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Battle.Skills {
     class Arcadia_1_r_SkillLogic : BaseSkillLogic {
         private Tile GetFrontTile(Unit caster, Unit target) {
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+			TileManager tileManager = BattleData.tileManager;
             Vector2 directionVector = target.GetPosition() - caster.GetPosition();
             directionVector.Normalize();
             Tile frontTile = caster.GetTileUnderUnit();

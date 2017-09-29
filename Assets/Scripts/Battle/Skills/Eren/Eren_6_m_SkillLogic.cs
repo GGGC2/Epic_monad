@@ -10,7 +10,7 @@ public class Eren_6_m_SkillLogic : BasePassiveSkillLogic {
     {
 		float damageBonusPerEachEnemyUnit = 0.05f;
 		Unit target = castingApply.GetTarget();
-		TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		TileManager tileManager = BattleData.tileManager;
 		List<Tile> nearByTilesFromTarget = tileManager.GetTilesInRange(Enums.RangeForm.Diamond, target.GetPosition(), 1, 2, 0, target.GetDirection());
 
 		int numberOfEnemyUnitsInRange = nearByTilesFromTarget.Count(x => x.GetUnitOnTile().GetSide() == Enums.Side.Enemy);

@@ -16,7 +16,7 @@ public class Eren_2_r_SkillLogic : BasePassiveSkillLogic {
 		int dexterity = eren.GetStat(Stat.Agility);
 		int amount = (int)(dexterity * 0.1f);
 		Debug.Log("Amount : " + amount);
-		MonoBehaviour.FindObjectOfType<BattleManager>().StartCoroutine(eren.RecoverActionPoint(amount));
+		BattleData.battleManager.StartCoroutine(eren.RecoverActionPoint(amount));
 		Debug.Log("AP before : " + hitInfo.caster.GetCurrentActivityPoint());
         yield return null;
 	}

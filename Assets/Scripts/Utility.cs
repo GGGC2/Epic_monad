@@ -386,4 +386,12 @@ public class Utility : MonoBehaviour {
 			yield return null;
 		}
 	}
+
+	public static List<T> ArrayToList<T>(T[] array){
+		List<T> newList = new List<T>();
+		foreach(T item in array){
+			newList.Add(item);
+		}
+		return newList;
+	}
 }

@@ -164,7 +164,7 @@ public class SkillTreeManager : MonoBehaviour
 
 		foreach (Skill unitSkill in unitSkills)
 		{
-			GameObject skillGameObject = GetSkillGameObject(unitSkill.column, unitSkill.requireLevel);
+			GameObject skillGameObject = GetSkillGameObject(unitSkill.row, unitSkill.requireLevel);
 			skillGameObject.GetComponent<SkillButton>().SetSkillInfo(unitSkill);
 
 			Skill skill = unitSkill;
