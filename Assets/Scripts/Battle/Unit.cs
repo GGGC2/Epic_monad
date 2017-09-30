@@ -653,7 +653,7 @@ public class Unit : MonoBehaviour{
 				SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, damageAfterShieldApply, caster);
 			}
 			foreach (var kv in attackedShieldDict) {
-				BattleManager battleManager = FindObjectOfType<BattleManager>();
+				BattleManager battleManager = BattleData.battleManager;
 				UnitStatusEffect statusEffect = kv.Key;
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill.GetType() == typeof(ActiveSkill))

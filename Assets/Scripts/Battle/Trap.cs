@@ -7,7 +7,7 @@ using Battle.Skills;
 
 class Trap {
     private static List<Tile> GetTilesInRange(TileStatusEffect trap, Tile trapTile) {
-        TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+		TileManager tileManager = BattleData.tileManager;
         return tileManager.GetTilesInRange(RangeForm.Square, trapTile.position, 0,
                                     (int)trap.GetAmountOfType(StatusEffectType.Trap), 1, Direction.Down);
     }
