@@ -352,6 +352,7 @@ namespace Battle.Turn{
 		IEnumerator CastingLoop(){
 			bool flag = false;
 			ActiveSkill skill = BattleData.selectedSkill;
+			Debug.Assert(skill != null);
 
 			while(true){
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
