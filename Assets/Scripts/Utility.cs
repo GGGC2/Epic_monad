@@ -147,12 +147,55 @@ public class Utility : MonoBehaviour {
 	public static int GetDistance(Vector2 position1, Vector2 position2){
 		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
 	}
+	public static int GetDistanceToUnit(Vector2 pos, string engName){
+		Unit unit = BattleData.unitManager.GetAnUnit (engName);
+		if (unit != null) {
+			Vector2 unitPos = unit.GetPosition ();
+			return Utility.GetDistance (pos, unitPos);
+		} else {
+			return -1;
+		}
+	}
+	public static Tile GetFarthestTileToUnit(List<Vector2> range, Dictionary<Vector2, TileWithPath> movableTilesWithPath, string engName){
+		Tile farthestTile = null;
+		int maxDistanceToUnit = -1;
+		foreach (Vector2 pos in range) {
+			if (movableTilesWithPath.ContainsKey(pos)) {
+				Tile tile = BattleData.tileManager.GetTile (pos);
+				int distanceToUnit = GetDistanceToUnit (pos, engName);
+				if (distanceToUnit > maxDistanceToUnit) {
+					Tile tileNearChild = BattleData.tileManager.GetTile (pos);
+					farthestTile = tile;
+					maxDistanceToUnit = distanceToUnit;
+				}
+			}
+		}
+		return farthestTile;
+	}
+	public static Tile GetNearestTileToUnit(List<Vector2> range, Dictionary<Vector2, TileWithPath> movableTilesWithPath, string engName){
+		Tile nearestTile = null;
+		int minDistanceToUnit = 999999;
+		foreach (Vector2 pos in range) {
+			if (movableTilesWithPath.ContainsKey(pos)) {
+				Tile tile = BattleData.tileManager.GetTile (pos);
+				int distanceToUnit = GetDistanceToUnit (pos, engName);
+				if (distanceToUnit != -1 && distanceToUnit < minDistanceToUnit) {
+					Tile tileNearChild = BattleData.tileManager.GetTile (pos);
+					nearestTile = tile;
+					minDistanceToUnit = distanceToUnit;
+				}
+			}
+		}
+		return nearestTile;
+	}
 
 	public static List<Vector2> GetRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
 		if (form == RangeForm.Diamond)
 			return GetDiamondRange(mid, minReach, maxReach);
 		else if (form == RangeForm.Square)
 			return GetSquareRange(mid, minReach, maxReach);
+        else if (form == RangeForm.Triangle) 
+            return GetTriangleRange(mid, minReach, maxReach, dir);
 		else if (form == RangeForm.Straight)
 			return GetStraightRange(mid, minReach, maxReach, dir);
 		else if (form == RangeForm.Cross)
@@ -195,6 +238,19 @@ public class Utility : MonoBehaviour {
 		}
 		return range;
 	}
+    public static List<Vector2> GetTriangleRange(Vector2 mid, int minReach, int maxReach, Direction dir) {
+        List<Vector2> range = new List<Vector2>();
+        Vector2 frontVector = ToVector2(dir);
+        Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
+        for (int i = minReach; i <= maxReach; i++) {
+            int width = maxReach - i;
+            for (int j = -width; j <= width; j++) {
+                Vector2 pos = mid + j * perpendicularVector + i * frontVector;
+                range.Add(pos);
+            }
+        }
+        return range;
+    }
 	public static List<Vector2> GetStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir){
 		List<Vector2> range = GetFrontRange(mid, minReach, maxReach, 1, dir);
 		return range;

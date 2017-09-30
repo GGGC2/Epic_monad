@@ -119,6 +119,9 @@ public static class SkillLogicFactory
             case "반달베기":
 				skillLogic = new Sepia_1_r_SkillLogic();
             break;
+            case "???":
+                skillLogic = new Sepia_2_l_SkillLogic();
+            break;
 
             //아르카디아
             case "생명의 요람":

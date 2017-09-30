@@ -17,7 +17,7 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	}
 
 	public void SetViewer(){
-		viewer.SetCommonSkillInfoUI(mySkill);
+		viewer.UpdateSkillViewer(mySkill);
 	}
 }
 
@@ -41,34 +41,49 @@ public class SkillViewer : SkillUI{
 		explainText.text = "";
 	}
 
-	public void SetCommonSkillInfoUI(Skill skill){
+	/*public void UpdateSkillViewer(Skill skill){
+		mySkill = skill;
+		SetCommonSkillInfoUI(skill);
+
+		if(skill is ActiveSkill){
+			DisplaySecondRange ((ActiveSkill)skill);
+		}else{
+			HideSecondRange ();
+		}
+	}*/
+
+	public void UpdateSkillViewer(Skill skill){
 		mySkill = skill;
 		if(mySkill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
-			costText.text = "행동력 " + activeSkill.GetRequireAP();
+			costText.text = "<color=cyan>행동력 " + activeSkill.GetRequireAP() + "</color>";
 			int cooldown = activeSkill.GetCooldown();
-			if (cooldown > 0)
+			if(cooldown > 0){
 				cooldownText.text = "재사용 대기 " + cooldown.ToString() + "페이즈";
-			else
+			}else{
 				cooldownText.text = "";
+			}
 
 			rangeText.text = "";
+
 			if(activeSkill.GetSkillType() == Enums.SkillType.Point){
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Target");
 				rangeText.text += GetFirstRangeText(activeSkill);
-			}
-			else if(activeSkill.GetSkillType() == Enums.SkillType.Route){
+			}else if(activeSkill.GetSkillType() == Enums.SkillType.Route){
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Line");
 				rangeText.text += GetFirstRangeText(activeSkill);
-			}
-			else
+			}else{
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");	
+			}
+
+			DisplaySecondRange ((ActiveSkill)mySkill);
 		}else{
 			costText.text = "";
 			cooldownText.text = "특성(자동 적용)";
 			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
 			rangeText.text = "";
+			HideSecondRange ();
 		}
 
 		SetNameText();
@@ -77,7 +92,7 @@ public class SkillViewer : SkillUI{
 								  Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)));
 
 		if(SceneManager.GetActiveScene().name == "BattleReady"){
-			explainText.text += "\n\n에테르 " + mySkill.ether;
+			explainText.text += "\n<color=#ff9999ff>에테르 " + mySkill.ether + "</color>";
 		}
 	}
 
@@ -107,25 +122,15 @@ public class SkillViewer : SkillUI{
         if(statType == Stat.Level) {
             return ((int)(GameData.PartyData.level * coef + baseValue)).ToString();
         }
-        else if(SceneManager.GetActiveScene().name == "Battle") {
+        else if(SceneManager.GetActiveScene().name == "Battle"){
             Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameEng() == mySkill.owner);
             return ((int)(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
         else return ((int)((float)UnitInfo.GetStat(mySkill.owner, statType)*coef + baseValue)).ToString();
 	}
 
-	public void UpdateSkillViewer(Skill skill){
-		mySkill = skill;
-		SetCommonSkillInfoUI(skill);
-
-		if(skill is ActiveSkill){
-			DisplaySecondRange ((ActiveSkill)skill);
-		}else{
-			HideSecondRange ();
-		}
-	}
-
 	void DisplaySecondRange(ActiveSkill skill){
+		Debug.Log("Show SecondRange.");
 		for (int i = cells.Count - 1; i >= 0; i--) {
 			Cell cell = cells [i];
 			cells.Remove (cell);
@@ -139,7 +144,11 @@ public class SkillViewer : SkillUI{
 				cells.Add (cell);
 				cell.SetSize (new Vector2 (9, 9));
 				Vector2 pos = new Vector2 (x, y);
-				cell.SetPosition (pos, new Vector2(-85, -145));
+				if(SceneManager.GetActiveScene().name == "BattleReady"){
+					cell.SetPosition (pos, new Vector2(-30, -120));
+				}else{
+					cell.SetPosition (pos, new Vector2(-85, -145));
+				}
 				cell.SetColor (rangeColors [pos]);
 				if (x == (rowNum - 1) / 2 && x == y)
 					cell.SetAsDotCell ();

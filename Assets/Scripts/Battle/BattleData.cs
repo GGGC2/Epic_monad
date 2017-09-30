@@ -146,6 +146,7 @@ public static class BattleData{
 	public static UnitManager unitManager;
 	public static UIManager uiManager;
 	public static BattleManager battleManager;
+	public static TutorialManager tutorialManager;
 
 	public class Triggers{
 		public EventTrigger rightClicked = new EventTrigger();
@@ -222,6 +223,7 @@ public static class BattleData{
 		unitManager = GameObject.FindObjectOfType<UnitManager>();
 		uiManager = GameObject.FindObjectOfType<UIManager>();
 		battleManager = GameObject.FindObjectOfType<BattleManager>();
+		tutorialManager = GameObject.FindObjectOfType<TutorialManager> ();
 
 		onTutorial = false;
 		rightClickLock = false;

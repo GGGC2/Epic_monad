@@ -60,7 +60,7 @@ namespace Battle.Turn
 			effect.transform.position = objectUnit.realPosition - new Vector3(0, 0, 0.01f);
 			yield return new WaitForSeconds(0.5f);
 
-			UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+			UnitManager unitManager = BattleData.unitManager;
 			List<Unit> targets = unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
 			foreach (var target in targets) {
 				BattleManager.MoveCameraToUnit (target);
