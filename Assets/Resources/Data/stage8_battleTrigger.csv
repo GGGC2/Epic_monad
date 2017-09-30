@@ -1,0 +1,4 @@
+ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+Win	4개의 상자를 모두 파괴하기	NeutralChar	Neutralize	4	false	250
+Lose	아군이 모두 무력화	Ally	Neutralize	5	false	0	5	yeong	luvericha	reina	lenien	eren
+End	Scene#16	One	One

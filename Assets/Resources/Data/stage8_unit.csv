@@ -1,0 +1,51 @@
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
+1	상자	box	Neutral	14	10	LeftDown	500	0	0	0	0	None	None	None	true	0
+2	상자	box	Neutral	14	13	LeftDown	500	0	0	0	0	None	None	None	true	0
+3	상자	box	Neutral	4	11	LeftDown	500	0	0	0	0	None	None	None	true	0
+4	상자	box	Neutral	4	22	LeftDown	500	0	0	0	0	None	None	None	true	0
+5	제국군 병사	soldier01	Enemy	13	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+6	제국군 병사	soldier01	Enemy	13	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+7	제국군 병사	soldier01	Enemy	15	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+8	제국군 병사	soldier01	Enemy	15	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+9	제국군 병사	soldier01	Enemy	15	11	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+10	제국군 병사	soldier01	Enemy	16	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+11	제국군 병사	soldier01	Enemy	16	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+12	제국군 병사	soldier01	Enemy	10	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+13	제국군 병사	soldier01	Enemy	11	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+14	제국군 병사	soldier01	Enemy	5	9	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+15	제국군 병사	soldier01	Enemy	5	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+16	제국군 병사	soldier01	Enemy	4	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+17	제국군 병사	soldier01	Enemy	3	19	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+18	제국군 병사	soldier01	Enemy	3	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+19	제국군 병사	soldier01	Enemy	2	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+20	연금술 견습생	archemyApprentice	Enemy	12	12	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+21	연금술 견습생	archemyApprentice	Enemy	13	12	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+22	연금술 견습생	archemyApprentice	Enemy	13	13	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+23	연금술 견습생	archemyApprentice	Enemy	14	8	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+24	연금술 견습생	archemyApprentice	Enemy	14	9	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+25	연금술 견습생	archemyApprentice	Enemy	14	11	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+26	연금술 견습생	archemyApprentice	Enemy	14	12	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+27	연금술 견습생	archemyApprentice	Enemy	14	14	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+28	연금술 견습생	archemyApprentice	Enemy	15	12	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+29	연금술 견습생	archemyApprentice	Enemy	15	13	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+30	연금술 견습생	archemyApprentice	Enemy	16	12	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+31	연금술 견습생	archemyApprentice	Enemy	2	9	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+32	연금술 견습생	archemyApprentice	Enemy	2	10	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+33	연금술 견습생	archemyApprentice	Enemy	2	11	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+34	연금술 견습생	archemyApprentice	Enemy	2	12	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+35	연금술 견습생	archemyApprentice	Enemy	3	11	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+36	연금술 견습생	archemyApprentice	Enemy	3	12	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+37	연금술 견습생	archemyApprentice	Enemy	4	12	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+38	연금술 견습생	archemyApprentice	Enemy	5	11	RightDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+39	연금술 견습생	archemyApprentice	Enemy	2	21	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+40	연금술 견습생	archemyApprentice	Enemy	2	22	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+41	연금술 견습생	archemyApprentice	Enemy	3	21	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+42	연금술 견습생	archemyApprentice	Enemy	4	21	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+43	연금술 견습생	archemyApprentice	Enemy	5	21	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+44	연금술 견습생	archemyApprentice	Enemy	5	22	LeftDown	229	97	-21	19	52	Magic	Fire	Moon	false	0
+45	현자	Sage	Enemy	8	22	LeftDown	494	105	92	130	59	Magic	Metal	Moon	false	0
+46	PCyeong	yeong	Ally	13	4	RightUp	0	0	0	0	0	Melee	Metal	Earth	false	0
+47	PCluvericha	luvericha	Ally	13	2	RightUp	0	0	0	0	0	Magic	Plant	Earth	false	0
+48	PCreina	reina	Ally	14	3	RightUp	0	0	0	0	0	Magic	Fire	Sun	false	0
+49	PClenien	lenien	Ally	12	3	RightUp	0	0	0	0	0	Magic	Metal	Moon	false	0
+50	PCeren	eren	Ally	11	3	RightUp	0	0	0	0	0	Magic	Water	Moon	false	0
