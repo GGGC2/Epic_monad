@@ -220,9 +220,9 @@ namespace Battle.Turn{
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
-			} /*else if (unit.GetNameEng ().Equals ("burglar")) {
-				state = State.Burglar;
-			} */else if (unit.GetNameEng ().Equals ("childHolder")) {
+			} else if (unit.GetNameEng ().Equals ("child")) {
+				state = State.Child;
+			} else if (unit.GetNameEng ().Equals ("childHolder")) {
 				state = State.ChildHolder;
 			} else {
 				state = State.MoveToBestCasting;
@@ -256,7 +256,9 @@ namespace Battle.Turn{
 			Tile destTile = AIUtil.GetBestMovableTile (unit, unit.GetSkillList(), 0, minRewardWorthAttack);
 
 			if (destTile != null) {
+				ActiveSkill skill = BattleData.selectedSkill;
 				yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
+				BattleData.selectedSkill = skill;
 				state = State.CastingLoop;
 			} else {
 				state = State.Approach;
@@ -377,7 +379,7 @@ namespace Battle.Turn{
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
 				if (casting == null) {
-					if (flag) {
+					if (flag && unit.GetNameEng() != "childHolder") {
 						state = State.MoveToBestCasting;
 						yield break;
 					} else {
@@ -461,10 +463,33 @@ namespace Battle.Turn{
 					if (destTile != null) {
 						yield return MoveToTheTileAndChangeDirection (destTile);
 					}
-					state = State.StandbyOrRest;
+					BattleData.selectedSkill = unit.GetSkillList () [0];
+					state = State.CastingLoop;
 
 				}
 
+			}
+			yield return null;
+		}
+
+		IEnumerator Child(){
+			Vector2 childPos = unit.GetPosition ();
+			Unit nearEnemy = null;
+			foreach(Direction direction in EnumUtil.directions){
+				Tile tileNearChild = BattleData.tileManager.GetTile (childPos + Utility.ToVector2 (direction));
+				if (tileNearChild != null) {
+					if (tileNearChild.IsUnitOnTile ()) {
+						Unit nearUnit = tileNearChild.GetUnitOnTile ();
+						if (nearUnit.GetSide()==Side.Enemy) {
+							nearEnemy = nearUnit;
+						}
+					}
+				}
+			}
+			if (nearEnemy == null) {
+				state = State.Approach;
+			} else {
+				state = State.StandbyOrRest;
 			}
 			yield return null;
 		}

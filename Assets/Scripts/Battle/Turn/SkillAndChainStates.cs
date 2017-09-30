@@ -264,7 +264,9 @@ namespace Battle.Turn {
 		static void HidePreviewDamage(){
 			// 데미지 미리보기 해제.
 			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
-				kv.Key.GetComponentInChildren<HealthViewer>().CancelPreview();
+				if (kv.Key.GetComponentInChildren<HealthViewer> () != null) {
+					kv.Key.GetComponentInChildren<HealthViewer> ().CancelPreview ();
+				}
 				kv.Key.CheckAndHideObjectHealth();
 			}
 		}

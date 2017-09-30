@@ -66,6 +66,8 @@ lenien	29	FALSE	자기 부상	자기 부상	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	F
 lenien	36	FALSE	에테르 전위	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	TRUE	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													
 lenien	43	FALSE	축전	전하막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
 lenien	43	FALSE	입자 가속	공격력 증가	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	10	0	TRUE	TRUE													
+luvericha	0	FALSE	셈여림	포르테	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													공격 기술의 위력 <color=red>+20%</color>, 비공격 기술의 위력 <color=red>-10%</color>
+luvericha	0	FALSE	셈여림	피아노	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													비공격 기술의 위력 <color=red>+20%</color>, 공격 기술의 위력 <color=red>-10%</color>
 luvericha	8	FALSE	위기상황	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	10	0	FALSE	FALSE													
 luvericha	15	FALSE	수호의 오오라	수호의 오오라_aura	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	Aura	O	0	2	FALSE	NONE													
 luvericha	15	FALSE	수호의 오오라	수호의 오오라	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	2	DefenseChange	Level	0.3	24	FALSE	FALSE	ResistanceChange	Level	0.3	24	FALSE	FALSE							

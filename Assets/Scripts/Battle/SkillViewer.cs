@@ -44,7 +44,6 @@ public class SkillViewer : SkillUI{
 	public void SetCommonSkillInfoUI(Skill skill){
 		mySkill = skill;
 		if(mySkill is ActiveSkill){
-			Debug.Log("View ActiveSkill.");
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
 			costText.text = "행동력 " + activeSkill.GetRequireAP();

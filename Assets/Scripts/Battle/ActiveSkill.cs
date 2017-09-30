@@ -387,7 +387,7 @@ public class ActiveSkill : Skill{
 		}
 
 		// 기술 사용 시 적용되는 특성
-		passiveSkillLogicsOfCaster.TriggerUsingSkill(caster, targets);
+		passiveSkillLogicsOfCaster.TriggerUsingSkill(casting, targets);
 		foreach(var statusEffect in caster.StatusEffectList) {
 			Skill originPassiveSkill = statusEffect.GetOriginSkill();
 			if(originPassiveSkill.GetType() == typeof(PassiveSkill))
