@@ -256,7 +256,9 @@ namespace Battle.Turn{
 			Tile destTile = AIUtil.GetBestMovableTile (unit, unit.GetSkillList(), 0, minRewardWorthAttack);
 
 			if (destTile != null) {
+				ActiveSkill skill = BattleData.selectedSkill;
 				yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
+				BattleData.selectedSkill = skill;
 				state = State.CastingLoop;
 			} else {
 				state = State.Approach;
@@ -376,7 +378,7 @@ namespace Battle.Turn{
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
 				if (casting == null) {
-					if (flag) {
+					if (flag && unit.GetNameEng() != "childHolder") {
 						state = State.MoveToBestCasting;
 						yield break;
 					} else {
@@ -460,7 +462,8 @@ namespace Battle.Turn{
 					if (destTile != null) {
 						yield return MoveToTheTileAndChangeDirection (destTile);
 					}
-					state = State.StandbyOrRest;
+					BattleData.selectedSkill = unit.GetSkillList () [0];
+					state = State.CastingLoop;
 
 				}
 
