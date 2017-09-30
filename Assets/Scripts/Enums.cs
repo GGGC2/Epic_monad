@@ -64,6 +64,7 @@ namespace Enums {
 		Straight,
 		Diamond,
 		Square,
+        Triangle,
 		Cross,
         Diagonal,
 		Sector,
