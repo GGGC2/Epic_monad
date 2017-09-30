@@ -220,9 +220,9 @@ namespace Battle.Turn{
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
-			} /*else if (unit.GetNameEng ().Equals ("burglar")) {
-				state = State.Burglar;
-			} */else if (unit.GetNameEng ().Equals ("childHolder")) {
+			} else if (unit.GetNameEng ().Equals ("child")) {
+				state = State.Child;
+			} else if (unit.GetNameEng ().Equals ("childHolder")) {
 				state = State.ChildHolder;
 			} else {
 				state = State.MoveToBestCasting;
@@ -467,6 +467,28 @@ namespace Battle.Turn{
 
 				}
 
+			}
+			yield return null;
+		}
+
+		IEnumerator Child(){
+			Vector2 childPos = unit.GetPosition ();
+			Unit nearEnemy = null;
+			foreach(Direction direction in EnumUtil.directions){
+				Tile tileNearChild = BattleData.tileManager.GetTile (childPos + Utility.ToVector2 (direction));
+				if (tileNearChild != null) {
+					if (tileNearChild.IsUnitOnTile ()) {
+						Unit nearUnit = tileNearChild.GetUnitOnTile ();
+						if (nearUnit.GetSide()==Side.Enemy) {
+							nearEnemy = nearUnit;
+						}
+					}
+				}
+			}
+			if (nearEnemy == null) {
+				state = State.Approach;
+			} else {
+				state = State.StandbyOrRest;
 			}
 			yield return null;
 		}
