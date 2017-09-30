@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 5fe2f80109284a54a80e43a57a095d63
-timeCreated: 1472027051
+guid: a90be8b6dc2e715448fbebee81323b00
+timeCreated: 1506756010
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: monster_0
-    21300002: monster_1
-    21300004: monster_2
-    21300006: monster_3
+    21300000: elvenSoldier01_0
+    21300002: elvenSoldier01_1
+    21300004: elvenSoldier01_2
+    21300006: elvenSoldier01_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -28,11 +28,11 @@ TextureImporter:
   generateCubemap: 6
   cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -1
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: 16
+    aniso: -1
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -62,11 +62,19 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: monster_0
+      name: elvenSoldier01_0
       rect:
         serializedVersion: 2
         x: 0
@@ -74,12 +82,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5, y: 0.24960877}
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: monster_1
+      name: elvenSoldier01_1
       rect:
         serializedVersion: 2
         x: 250
@@ -87,12 +95,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5187793, y: 0.24569641}
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: monster_2
+      name: elvenSoldier01_2
       rect:
         serializedVersion: 2
         x: 500
@@ -100,12 +108,12 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.47343212, y: 0.2224594}
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: monster_3
+      name: elvenSoldier01_3
       rect:
         serializedVersion: 2
         x: 750
@@ -113,7 +121,7 @@ TextureImporter:
         width: 250
         height: 400
       alignment: 9
-      pivot: {x: 0.5683179, y: 0.21059872}
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

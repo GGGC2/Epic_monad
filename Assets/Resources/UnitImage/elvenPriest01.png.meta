@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: f5987275ee9f24be8aeecfcb1c1489c4
-timeCreated: 1506757675
+guid: f62f1017cf47d664b95c72736fd3a411
+timeCreated: 1506756235
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: unit_Magician_0
-    21300002: unit_Magician_1
-    21300004: unit_Magician_2
-    21300006: unit_Magician_3
+    21300000: elvenPriest01_0
+    21300002: elvenPriest01_1
+    21300004: elvenPriest01_2
+    21300006: elvenPriest01_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,27 +70,11 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-  - buildTarget: iPhone
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-  - buildTarget: Android
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: unit_Magician_0
+      name: elvenPriest01_0
       rect:
         serializedVersion: 2
         x: 0
@@ -103,7 +87,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: unit_Magician_1
+      name: elvenPriest01_1
       rect:
         serializedVersion: 2
         x: 250
@@ -116,7 +100,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: unit_Magician_2
+      name: elvenPriest01_2
       rect:
         serializedVersion: 2
         x: 500
@@ -129,7 +113,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: unit_Magician_3
+      name: elvenPriest01_3
       rect:
         serializedVersion: 2
         x: 750
