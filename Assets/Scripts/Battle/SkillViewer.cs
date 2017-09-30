@@ -46,7 +46,7 @@ public class SkillViewer : SkillUI{
 		if(mySkill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
-			costText.text = "행동력 " + activeSkill.GetRequireAP();
+			costText.text = "<color=cyan>행동력 " + activeSkill.GetRequireAP() + "</color>";
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
 				cooldownText.text = "재사용 대기 " + cooldown.ToString() + "페이즈";
@@ -77,7 +77,7 @@ public class SkillViewer : SkillUI{
 								  Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)));
 
 		if(SceneManager.GetActiveScene().name == "BattleReady"){
-			explainText.text += "\n\n에테르 " + mySkill.ether;
+			explainText.text += "\n<color=#ff9999ff>에테르 " + mySkill.ether + "</color>";
 		}
 	}
 
