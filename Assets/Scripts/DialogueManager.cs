@@ -55,11 +55,7 @@ public class DialogueManager : MonoBehaviour{
 
 	bool HandleSceneChange (DialogueData Data){
 		//뭔가 명령이 인식됐으면 true, 아무것도 하지 않았으면 false
-		/*if (Data.Command == DialogueData.CommandType.Adv){
-			SetActiveAdventureUI(true);
-			LoadAdventureObjects ();
-			return true;
-		}else*/if (Data.Command == DialogueData.CommandType.Script){
+		if (Data.Command == DialogueData.CommandType.Script){
 			string nextScriptName = Data.GetCommandSubType ();
 			sceneLoader.LoadNextDialogueScene (nextScriptName);
 			return true;
@@ -139,8 +135,9 @@ public class DialogueManager : MonoBehaviour{
 		}else if(Command == DialogueData.CommandType.FI){
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
-		}else if(Command == DialogueData.CommandType.Glos) {SetGlossaryLevel(data);}
-		else
+		}else if(Command == DialogueData.CommandType.Glos){
+			SetGlossaryLevel(data);
+		}else
 			Debug.LogError("Undefined effectType : " + dialogueDataList[line].Command);
 
 		if (dialogueDataList [line + 1].IsEffect()) {
@@ -172,31 +169,6 @@ public class DialogueManager : MonoBehaviour{
         adventureUI.SetActive(false);
         dialogueUI.SetActive(true);
     }
-
-    /*public void LoadAdventureObjects(){
-        objects = adventureUI.GetComponent<AdventureManager>().objects;
-
-		objects.ToList().ForEach(x => x.SetActive(true));
-        
-        int objectIndex = 0;
-
-        for (int i = line; i < endLine; i++) {
-            if (dialogueDataList[i].IsAdventureObject()){
-                objects[objectIndex].transform.Find("ObjectNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectName();
-                objects[objectIndex].transform.Find("ObjectSubNameText").gameObject.GetComponent<Text>().text = dialogueDataList[i].GetObjectSubName();
-                objects[objectIndex].transform.Find("New").gameObject.SetActive(true);
-                objects[objectIndex].transform.Find("Highlight").gameObject.SetActive(true);
-                objectIndex++;
-            }
-        }
-
-		//마지막 오브젝트(끝내기)는 New 표시를 없앤다
-		objects[objectIndex-1].transform.Find("New").gameObject.SetActive(false);
-		
-		for (int i = objectIndex; i < objects.Length; i++){
-			objects[i].SetActive(false);
-		}
-    }*/
 
     public void PrintLinesFromObjectIndex(int objectIndex){
         GameObject buttonPanel = objects[objectIndex];
@@ -300,8 +272,9 @@ public class DialogueManager : MonoBehaviour{
 	}
 
 	public void OnClickDialogue(){
-		if (isWaitingMouseInput)
+		if (isWaitingMouseInput){
 			isWaitingMouseInput = false;
+		}
 	}
 
 	void Start() {
@@ -321,8 +294,16 @@ public class DialogueManager : MonoBehaviour{
 		}
 	}
 
+	int frameWait = 0;
 	void Update(){
-		if(Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf)
+		if(Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf){
 			skipQuestionUI.SetActive(false);
+		}else if(Input.GetKey(KeyCode.LeftControl)){
+			frameWait += 1;
+			if(frameWait == Setting.fastDialogueFrameLag){
+				frameWait = 0;
+				OnClickDialogue();
+			}
+		}
 	}
 }

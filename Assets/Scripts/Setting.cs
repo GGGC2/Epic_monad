@@ -24,4 +24,5 @@ public class Setting{
 	public static float tileImageHeight = 0.5f;
 	public static float tileImageWidth = 1.0f;
 	public static int moveCostAcc = 2; //이동할 때 타일당 추가로 붙는 계차값
+	public static int fastDialogueFrameLag = 4; //대화 모드에서 빨리 넘길 때(CTRL) 몇 프레임마다 한 번씩 넘길지 설정
 }

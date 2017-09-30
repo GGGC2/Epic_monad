@@ -87,8 +87,8 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator InstantiateTurnManager(){
 		if (BattleData.uiManager.startFinished) {
-			while (true) {
-				yield return StartCoroutine (StartPhaseOnGameManager ());
+			while(true){
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				if(BattleData.currentPhase == 1){
 					tutorialManager.gameObject.SetActive(true);
@@ -100,7 +100,7 @@ public class BattleManager : MonoBehaviour{
 					if(FindObjectOfType<ResultPanel>() != null){
 						yield break;
 					}
-					
+
 					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 					BattleData.uiManager.UpdateApBarUI();
 
