@@ -87,15 +87,20 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator InstantiateTurnManager(){
 		if (BattleData.uiManager.startFinished) {
-			while (true) {
-				yield return StartCoroutine (StartPhaseOnGameManager ());
+			while(true){
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				if(BattleData.currentPhase == 1){
 					tutorialManager.gameObject.SetActive(true);
 				}
 				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
-				while (BattleData.readiedUnits.Count != 0) {
+				while (BattleData.readiedUnits.Count != 0){
+					//전투에 승리해서 결과창이 나오면 진행 정지
+					if(FindObjectOfType<ResultPanel>() != null){
+						yield break;
+					}
+
 					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 					BattleData.uiManager.UpdateApBarUI();
 
