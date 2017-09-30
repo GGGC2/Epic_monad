@@ -23,7 +23,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public GameObject highlightWall;
 	public bool IsReachPoint{
 		get{
-			return highlightWall.activeSelf && FindObjectOfType<TutorialManager>() == null;
+			return highlightWall.activeSelf && BattleData.tutorialManager == null;
 		}
 	}
 	public bool isMouseOver;

@@ -22,9 +22,7 @@ namespace Battle.Turn
 				if (selectedObjectUnit == null) {
 					break;
 				} else if (selectedObjectUnit.GetComponent<AI> () != null) {
-					yield return BattleData.battleManager.ToDoBeforeAction ();
 					yield return AnObjectUnitBehave (selectedObjectUnit);
-					yield return BattleData.battleManager.AtActionEnd ();
 				}
 				
 				selectedObjectUnit.SetAlreadyBehavedObject ();
@@ -43,15 +41,18 @@ namespace Battle.Turn
 		}
 
 		private static IEnumerator AnObjectUnitBehave(Unit objectUnit){
-			//Debug.Log ("An object behaves");
 			BattleData.selectedUnit = objectUnit;
 			if (objectUnit.GetNameEng () == "controller") {
+				yield return BattleData.battleManager.ToDoBeforeAction ();
 				yield return ControllerAttack (objectUnit);
+				yield return BattleData.battleManager.AtActionEnd ();
 			}
 			yield return null;
 		}
 
 		static IEnumerator ControllerAttack(Unit objectUnit){
+			BattleData.uiManager.SetSkillNamePanelUI("침입자 제거");
+
 			SoundManager.Instance.PlaySE ("ControllerGrawl");
 
 			BattleManager.MoveCameraToUnit(objectUnit);
@@ -59,7 +60,7 @@ namespace Battle.Turn
 			effect.transform.position = objectUnit.realPosition - new Vector3(0, 0, 0.01f);
 			yield return new WaitForSeconds(0.5f);
 
-			UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+			UnitManager unitManager = BattleData.unitManager;
 			List<Unit> targets = unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
 			foreach (var target in targets) {
 				BattleManager.MoveCameraToUnit (target);
@@ -68,6 +69,8 @@ namespace Battle.Turn
 			}
 
 			MonoBehaviour.Destroy(effect);
+
+			BattleData.uiManager.HideSkillNamePanelUI ();
 
 			yield return null;
 		}		

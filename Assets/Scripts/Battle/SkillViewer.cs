@@ -46,7 +46,7 @@ public class SkillViewer : SkillUI{
 		if(mySkill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
-			costText.text = "행동력 " + activeSkill.GetRequireAP();
+			costText.text = "<color=cyan>행동력 " + activeSkill.GetRequireAP() + "</color>";
 			int cooldown = activeSkill.GetCooldown();
 			if (cooldown > 0)
 				cooldownText.text = "재사용 대기 " + cooldown.ToString() + "페이즈";
@@ -72,13 +72,23 @@ public class SkillViewer : SkillUI{
 		}
 
 		SetNameText();
-		explainText.text = mySkill.skillDataText.Replace("VALUE1", GetSkillValueText(mySkill.firstTextValueType, mySkill.firstTextValueCoef, mySkill.firstTextValueBase)).
-												 Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)).
-												 Replace("NL", Environment.NewLine);
+		explainText.text = SkillTextReplacement(
+			mySkill.skillDataText.Replace("VALUE1", GetSkillValueText(mySkill.firstTextValueType, mySkill.firstTextValueCoef, mySkill.firstTextValueBase)).
+								  Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)));
 
 		if(SceneManager.GetActiveScene().name == "BattleReady"){
-			explainText.text += "\n\n에테르 " + mySkill.ether;
+			explainText.text += "\n<color=#ff9999ff>에테르 " + mySkill.ether + "</color>";
 		}
+	}
+
+	string SkillTextReplacement(string input){
+		return input.Replace("NL", Environment.NewLine)
+					.Replace("회피", "<color=orange>회피</color>")
+					.Replace("불", "<color=red>불</color>")
+					.Replace("물", "<color=cyan>물</color>")
+					.Replace("나무", "<color=green>나무</color>")
+					.Replace("금속", "<color=gray>금속</color>")
+					.Replace("속도", "<color=cyan>속도</color>");
 	}
 
 	public void SetNameText(){
