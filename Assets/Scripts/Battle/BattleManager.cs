@@ -510,7 +510,7 @@ public class BattleManager : MonoBehaviour{
         unitManager.UpdateRealUnitPositions(direction);
 
         CameraMover cm = FindObjectOfType<CameraMover>();
-        cm.SetFixedPosition(tileManager.CalculateAverageRealPositionOfTile());
+        cm.SetFixedPosition(BattleData.selectedUnit.realPosition);
         cm.CalculateBoundary();
         MoveCameraToPosition(cm.fixedPosition);
     }

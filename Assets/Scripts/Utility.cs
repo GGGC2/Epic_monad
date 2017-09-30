@@ -153,6 +153,8 @@ public class Utility : MonoBehaviour {
 			return GetDiamondRange(mid, minReach, maxReach);
 		else if (form == RangeForm.Square)
 			return GetSquareRange(mid, minReach, maxReach);
+        else if (form == RangeForm.Triangle) 
+            return GetTriangleRange(mid, minReach, maxReach, dir);
 		else if (form == RangeForm.Straight)
 			return GetStraightRange(mid, minReach, maxReach, dir);
 		else if (form == RangeForm.Cross)
@@ -195,6 +197,19 @@ public class Utility : MonoBehaviour {
 		}
 		return range;
 	}
+    public static List<Vector2> GetTriangleRange(Vector2 mid, int minReach, int maxReach, Direction dir) {
+        List<Vector2> range = new List<Vector2>();
+        Vector2 frontVector = ToVector2(dir);
+        Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
+        for (int i = minReach; i <= maxReach; i++) {
+            int width = maxReach - i;
+            for (int j = -width; j <= width; j++) {
+                Vector2 pos = mid + j * perpendicularVector + i * frontVector;
+                range.Add(pos);
+            }
+        }
+        return range;
+    }
 	public static List<Vector2> GetStraightRange(Vector2 mid, int minReach, int maxReach, Direction dir){
 		List<Vector2> range = GetFrontRange(mid, minReach, maxReach, 1, dir);
 		return range;
