@@ -84,7 +84,8 @@ reina	29	FALSE	에테르 과부하	에테르 과부하	FALSE	FALSE	FALSE	FALSE	1
 reina	43	FALSE	열상 낙인	화속성 약점	FALSE	FALSE	FALSE	FALSE	2	99	TRUE	FALSE	TRUE	None	None	None	1	FireWeakness	Stack	10	0	TRUE	TRUE													
 sepia	1	FALSE	신뢰의 끈	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	TRUE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.7	51	FALSE	FALSE													방어력이 <color=green>AMOUNT0</color>높아집니다.
 sepia	1	FALSE	반달베기	보호막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Shield	Power	0.2	0	FALSE	FALSE													받는 피해를 상쇄합니다.
-sepia	8	FALSE	???	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
+sepia	8	FALSE	무아베기	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	TRUE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
+triana	1	FALSE	얼음날	속도 하락	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	SpeedChange	O	0	-20	FALSE	FALSE													속도가 <color=red>AMOUNT0</color> 증가합니다.
 triana	8	FALSE	들불	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	0	15	FALSE	FALSE													
 triana	8	FALSE	나무 껍질	방어력 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.5	41	FALSE	FALSE													
 triana_Rest	1	FALSE	광폭화	공/방/저 상승	TRUE	FALSE	FALSE	FALSE	10	1	TRUE	FALSE	TRUE	None	None	None	3	PowerChange	Level	0	68	FALSE	FALSE	DefenseChange	Level	0	74	FALSE	FALSE	ResistanceChange	Level	0	57	FALSE	FALSE	공격력과 방어력과 저항력이 2배로 높아집니다.

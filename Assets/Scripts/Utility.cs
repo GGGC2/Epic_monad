@@ -242,11 +242,13 @@ public class Utility : MonoBehaviour {
         List<Vector2> range = new List<Vector2>();
         Vector2 frontVector = ToVector2(dir);
         Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
-        for (int i = minReach; i <= maxReach; i++) {
+        for (int i = 1; i <= maxReach; i++) {
             int width = maxReach - i;
             for (int j = -width; j <= width; j++) {
-                Vector2 pos = mid + j * perpendicularVector + i * frontVector;
-                range.Add(pos);
+                if (Math.Abs(j) >= minReach - i) {
+                    Vector2 pos = mid + j * perpendicularVector + i * frontVector;
+                    range.Add(pos);
+                }
             }
         }
         return range;
