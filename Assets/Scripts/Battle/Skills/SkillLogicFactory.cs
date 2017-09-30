@@ -71,7 +71,7 @@ public static class SkillLogicFactory
 			break;
 
             // 루베리카
-            case "정화된 밤":
+            case "교향곡 : 운명":
             skillLogic = new Luvericha_1_l_SkillLogic();
             break;
             case "사랑의 기쁨":
@@ -86,7 +86,7 @@ public static class SkillLogicFactory
             case "소녀의 기도":
             skillLogic = new Luvericha_5_m_SkillLogic();
             break;
-            case "교향곡 : 운명":
+            case "정화된 밤":
             skillLogic = new Luvericha_6_l_SkillLogic();
             break;
             case "4분 33초":
@@ -329,6 +329,9 @@ public static class SkillLogicFactory
             // break;
 
             // 루베리카
+            case "셈여림":
+            passiveSkillLogic = new Luvericha_0_1_SkillLogic();
+            break;
             case "위기상황":
             passiveSkillLogic = new Luvericha_2_m_SkillLogic();
             break;

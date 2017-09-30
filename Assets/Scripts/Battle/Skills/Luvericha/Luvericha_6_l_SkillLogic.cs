@@ -1,15 +1,13 @@
-﻿
+﻿using System.Collections;
+using Enums;
+
 namespace Battle.Skills {
     class Luvericha_6_l_SkillLogic : BaseSkillLogic {
-        public override void ApplyAdditionalDamage(CastingApply castingApply) {
-            Unit caster = castingApply.GetCaster();
+        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
             Unit target = castingApply.GetTarget();
-            castingApply.GetDamage().baseDamage = caster.GetMaxHealth();
-            
-            if(target.GetCurrentHealth() < caster.GetMaxHealth()) {
-                castingApply.GetDamage().baseDamage = target.GetCurrentHealth();
-            }
-            castingApply.GetDamage().baseDamage *= 0.2f;
+            Unit caster = castingApply.GetCaster();
+            target.RemoveStatusEffect(caster, StatusEffectCategory.Buff, 1);
+            yield return null;
         }
     }
 }

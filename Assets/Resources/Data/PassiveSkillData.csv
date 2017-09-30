@@ -1,7 +1,7 @@
 owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
 reina	0	0	핀토스의 긍지	0	다른 유닛에게 받은 강화 하나당 공격력이 5% 높아집니다.	None	0	0	None	0	0
-reina	0	8	상처 태우기	1	모든 공격이 2페이즈 동안 내상(자신이 다른 유닛에게 받은 강화 하나당 10%) 효과를 줍니다.	None	0	0	None	0	0
-reina	0	8	불의 파동	2	<color=green>나무</color> 속성 유닛을 공격할 때 피해량이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
+reina	4	8	상처 태우기	1	모든 공격이 2페이즈 동안 내상(자신이 다른 유닛에게 받은 강화 하나당 10%) 효과를 줍니다.	None	0	0	None	0	0
+reina	9	8	불의 파동	2	<color=green>나무</color> 속성 유닛을 공격할 때 피해량이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
 reina	0	15	점화	1	ABCD	None	0	0	None	0	0
 reina	0	15	잉걸불	2	ABCD	None	0	0	None	0	0
 reina	0	15	마력 연쇄	3	ABCD	None	0	0	None	0	0
@@ -12,15 +12,15 @@ reina	0	36	흐름 변환	3	ABCD	None	0	0	None	0	0
 reina	0	43	열상 낙인	2	ABCD	None	0	0	None	0	0
 reina	0	43	에테르 순환	3	ABCD	None	0	0	None	0	0
 lenien	0	0	감전	0	<color=blue>물</color> 또는 <color=gray>금속</color> 속성 타일에 있는 유닛을 공격하면 1페이즈 동안 대상의 저항력이 <color=green>42+레벨당 0.6</color>(<color=green>VALUE1</color>)	Level	0.6	42	None	0	0
-lenien	0	1	에너지 변환	1	자신보다 낮은 타일에 있는 유닛을 공격할 때 피해량이 <color=red>높이차x15%</color>만큼 높아집니다. 높이 보정치와 중복으로 적용됩니다.	None	0	0	None	0	0
-lenien	0	8	전도체	3	<color=blue>물</color> 속성 타일에 있는 유닛을 공격할 때 <color=green>저항력</color>을 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 무시합니다.	Level	0.7	51	None	0	0
+lenien	10	1	에너지 변환	1	자신보다 낮은 타일에 있는 유닛을 공격할 때 피해량이 <color=red>높이차x15%</color>만큼 높아집니다. 높이 보정치와 중복으로 적용됩니다.	None	0	0	None	0	0
+lenien	9	8	전도체	3	<color=blue>물</color> 속성 타일에 있는 유닛을 공격할 때 <color=green>저항력</color>을 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 무시합니다.	Level	0.7	51	None	0	0
 lenien	0	15	피뢰침	1	ABCD	None	0	0	None	0	0
 lenien	0	15	정전기 유도	3	ABCD	None	0	0	None	0	0
 lenien	0	29	연쇄 방전	2	ABCD	None	0	0	None	0	0
 lenien	0	29	자기 부상	3	ABCD	None	0	0	None	0	0
 lenien	0	36	에테르 전위	1	ABCD	None	0	0	None	0	0
 lenien	0	43	입자 가속	3	ABCD	None	0	0	None	0	0
-eren	0	0	흡수	0	ABCD	None	0	0	None	0	0
+eren	0	0	에테르 지배	0	유닛이 처치될 때마다 <color=ff9999ff>흡수</color>(3페이즈, 중첩가능) 효과를 얻습니다.	None	0	0	None	0	0
 eren	0	8	흑화	1	ABCD	None	0	0	None	0	0
 eren	0	8	축성	3	ABCD	None	0	0	None	0	0
 eren	0	15	초월	2	ABCD	None	0	0	None	0	0
@@ -38,9 +38,9 @@ kashasty	0	29	압축탄	1	ABCD	None	0	0	None	0	0
 kashasty	0	29	마법공학 조준경	3	ABCD	None	0	0	None	0	0
 kashasty	0	36	시들지 않는 의지	3	ABCD	None	0	0	None	0	0
 kashasty	0	43	에테르화	1	ABCD	None	0	0	None	0	0
-yeong	0	0	방랑자	0	페이즈를 시작한 지점으로부터 주변 2타일 바깥으로 이동하면 해당 페이즈 동안 회피 +15%를 얻습니다.	None	0	0	None	0	0
-yeong	0	1	어려운 목표물	2	ABCD	None	0	0	None	0	0
-yeong	0	1	동체 시력	3	기술을 사용하면 다음에 받는 공격에 회피 +10%를 얻습니다. 여러 번 사용해도 중첩되지 않습니다.	None	0	0	None	0	0
+yeong	0	0	방랑자	0	페이즈를 시작한 지점으로부터 주변 <color=ff9999ff>2타일</color> 바깥으로 이동하면 해당 페이즈 동안 <color=orange>회피 +15%</color>를 얻습니다.	None	0	0	None	0	0
+yeong	0	1	어려운 목표물	2	회피에 성공하면, 공격한 유닛에게 <color=ff9999ff>3페이즈</color> 동안 <color=ff9999ff>도발</color> 효과를 줍니다.	None	0	0	None	0	0
+yeong	0	1	동체 시력	3	기술을 사용하면, 다음에 받는 공격에 <color=orange>회피 +10%</color>를 적용합니다. 여러 번 사용해도 중첩되지 않습니다.	None	0	0	None	0	0
 yeong	0	8	간파	2	ABCD	None	0	0	None	0	0
 yeong	0	8	기척 감지	3	ABCD	None	0	0	None	0	0
 yeong	0	15	질풍노도	2	ABCD	None	0	0	None	0	0
@@ -62,19 +62,19 @@ triana	0	36	불걸음	1	ABCD	None	0	0	None	0	0
 triana	0	36	동상	2	ABCD	None	0	0	None	0	0
 triana	0	43	마그마 폭발	1	ABCD	None	0	0	None	0	0
 triana	0	43	옭아매는 가시	3	ABCD	None	0	0	None	0	0
-luvericha	0	0	고유특성1	0	ABCD	None	0	0	None	0	0
-luvericha	0	8	위기상황	2	ABCD	None	0	0	None	0	0
-luvericha	0	8	자가치유	3	ABCD	None	0	0	None	0	0
+luvericha	0	0	셈여림	0	공격 기술을 사용한 후 '포르테', 비공격 기술을 사용한 후 '피아노' 상태가 됩니다.	None	0	0	None	0	0
+luvericha	0	8	위기상황	2	<color=green>현재 체력</color>이 <color=green>40%</color> 이하인 동료 1명당 <color=cyan>속도</color>가 <color=cyan>10</color> 높아집니다.	None	0	0	None	0	0
+luvericha	0	8	자가치유	3	휴식할 때 <color=green>50%</color> 더 많이 <color=green>회복</color>합니다.	None	0	0	None	0	0
 luvericha	0	15	수호의 오오라	2	ABCD	None	0	0	None	0	0
 luvericha	0	15	치유의 오오라	3	ABCD	None	0	0	None	0	0
 luvericha	0	29	넘치는 사랑	3	ABCD	None	0	0	None	0	0
 luvericha	0	36	영혼의 교감	3	ABCD	None	0	0	None	0	0
 luvericha	0	43	헌신	2	ABCD	None	0	0	None	0	0
 luvericha	0	43	응급처치	3	ABCD	None	0	0	None	0	0
-curi	0	0	정제	0	공격할 때 모든 대상의 원소속성이 같으면 '정제(공격력 +5%, 5중첩까지 가능)' 효과를 얻고, 서로 다른 원소속성의 유닛들을 동시에 공격하면 모든 중첩이 사라집니다.	None	0	0	None	0	0
-curi	0	1	호기심	1	전투를 시작한 후 초반 5페이즈 동안 공격력이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
-curi	0	8	신속 반응	1	<color=red>불</color> 속성 타일에 있는 동안 <color=blue>속도</color>가 <color=blue>20<color> 높아집니다.	None	0	0	None	0	0
-curi	0	8	가연성 부착물	2	ABCD	None	0	0	None	0	0
+curi	0	0	정제	0	공격할 때 모든 대상의 원소속성이 같으면 '<b>정제</b>(<color=red>공격력 +5%</color>, 5중첩까지 가능)' 효과를 얻고, 서로 다른 원소속성의 유닛들을 동시에 공격하면 모든 중첩이 사라집니다.	None	0	0	None	0	0
+curi	11	1	호기심	1	전투를 시작한 후 초반 5페이즈 동안 공격력이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
+curi	9	8	신속 반응	1	<color=red>불</color> 속성 타일에 있는 동안 <color=cyan>속도</color>가 <color=cyan>20</color> 높아집니다.	None	0	0	None	0	0
+curi	7	8	가연성 부착물	2	ABCD	None	0	0	None	0	0
 curi	0	15	동적 평형	1	ABCD	None	0	0	None	0	0
 curi	0	15	조연성 부착물	2	ABCD	None	0	0	None	0	0
 curi	0	15	환원	3	ABCD	None	0	0	None	0	0
@@ -94,11 +94,11 @@ eugene	0	43	길잡이	3	ABCD	None	0	0	None	0	0
 json	0	0	표식	0	제이선의 공격은 적에게 표식을 남깁니다. 표식을 4스택 쌓은 상태에서 공격하면 표식이 모두 사라지며 이 공격으로 가한 데미지의 n%만큼 제이선의 체력이 회복됩니다	None	0	0	None	0	0
 json	0	8	바람 가르기	1	이동하고 나면 바로 다음 공격에 필요한 행동력이 (이동한 타일*10%) 줄어듭니다.	None	0	0	None	0	0
 karldrich	0	0	모두에게 평등한 죽창	1	공격할 때 대상의 방어력을 무시합니다.	None	0	0	None	0	0
-karldrich	0	1	행동하는 혁명가	3	속도가 10 높아집니다.	None	0	0	None	0	0
-sepia	0	1	신뢰의 끈	2	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
+karldrich	10	1	행동하는 혁명가	3	속도가 10 높아집니다.	None	0	0	None	0	0
+sepia	9	1	신뢰의 끈	2	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
 darkenir	0	0	흐름 동화	0	자신에게 효과를 건 대상도 절반의 해당 효과를 받는다. 보스 유닛의 경우 무효화되거나 효과가 감소한다. 이 특성으로 얻은 효과는 원래의 효과와 중첩되지 않는다.	None	0	0	None	0	0
 noel	0	0	심판의 빛	0	자신이 사용한 보호막이 피해를 흡수할 때 흡수한 만큼 공격자에게 마법 피해를 줍니다.	None	0	0	None	0	0
-arcadia	0	8	뿌리 내리기	1	나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.	Level	0.8	63	None	0	0
+arcadia	11	8	뿌리 내리기	1	나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.	Level	0.8	63	None	0	0
 arcadia	0	15	광합성	2	ABCD	None	0	0	None	0	0
 bianca	0	0	사뿐사뿐	0	비앙카는 자신의 덫을 발동시키지 않으며 덫에 의한 피해를 받지 않는다.	None	0	0	None	0	0
 grenev	0	0	타고난 저격수	0	이동할 때 행동력 소모가 <color=red>30%</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.	None	0	0	None	0	0

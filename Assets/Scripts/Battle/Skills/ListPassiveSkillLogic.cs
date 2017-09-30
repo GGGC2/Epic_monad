@@ -163,11 +163,11 @@ namespace Battle.Skills
             return !ignored;
         }
 
-        public override void TriggerUsingSkill(Unit caster, List<Unit> targets)
+        public override void TriggerUsingSkill(Casting casting, List<Unit> targets)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    skillLogic.TriggerUsingSkill(caster, targets);
+			    skillLogic.TriggerUsingSkill(casting, targets);
 		    }
 	    }
         public override IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {

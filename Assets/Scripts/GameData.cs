@@ -8,10 +8,10 @@ namespace GameData{
 		public static int exp;
 		public static int reqExp;
 
-		public static void SetReqExp(){ reqExp = (int)(Mathf.Pow((0.117f*GetLevel())+0.883f, 3)*100); }
+		public static void SetReqExp(){ reqExp = (int)(Mathf.Pow((0.117f*level)+0.883f, 3)*100); }
 
 		public static void CheckLevelData(){
-			if(GetLevel() == 0) {level = 1;}
+			if(level == 0) {level = 1;}
 			if(reqExp == 0) {SetReqExp();}
 		}
 
@@ -29,8 +29,12 @@ namespace GameData{
 				SetReqExp();
 			}
 		}
-
-		public static int GetLevel(){ return level; }
+		
+		public static int MaxEther{
+			get{
+				return level + 15;
+			}
+		}
 	}
 
 	public class SceneData {

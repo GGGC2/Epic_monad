@@ -64,8 +64,7 @@ public class SkillViewer : SkillUI{
 			}
 			else
 				rangeType.sprite = Resources.Load<Sprite>("Icon/Skill/SkillType/Auto");	
-		}
-		else{
+		}else{
 			costText.text = "";
 			cooldownText.text = "특성(자동 적용)";
 			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
@@ -76,6 +75,10 @@ public class SkillViewer : SkillUI{
 		explainText.text = mySkill.skillDataText.Replace("VALUE1", GetSkillValueText(mySkill.firstTextValueType, mySkill.firstTextValueCoef, mySkill.firstTextValueBase)).
 												 Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)).
 												 Replace("NL", Environment.NewLine);
+
+		if(SceneManager.GetActiveScene().name == "BattleReady"){
+			explainText.text += "\n\n에테르 " + mySkill.ether;
+		}
 	}
 
 	public void SetNameText(){

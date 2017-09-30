@@ -148,9 +148,12 @@ public class UnitInfo{
 			return "레이나";
 		else if	(codeName == "curi")
 			return "큐리";
-		else if (codeName == "lenien"){
+		else if (codeName == "lenien")
 			return "리니안";
-		}
+		else if(codeName == "eren")
+			return "에렌";
+		else if(codeName == "luvericha")
+			return "루베리카";
         else if(codeName == "unselected")
 			return "Empty";
 		else{
