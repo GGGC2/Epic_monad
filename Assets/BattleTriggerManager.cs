@@ -29,8 +29,10 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public void CountBattleTrigger(BattleTrigger trigger){
-		if(trigger.actionType == TrigActionType.UnderCount && CountUnitOfCondition(trigger) <= trigger.targetCount){
-			AcquireTrigger(trigger);
+		if(trigger.actionType == TrigActionType.UnderCount){
+			if(CountUnitOfCondition(trigger) <= trigger.targetCount){
+				AcquireTrigger(trigger);
+			}
 		}else{
 			trigger.count += 1;
 			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
