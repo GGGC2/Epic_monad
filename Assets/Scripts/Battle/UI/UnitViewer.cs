@@ -135,15 +135,16 @@ namespace BattleUI{
             apText = transform.Find("AP").Find("APText").GetComponent<Text>();
 
             powerText = transform.Find("Power").Find("PowerText").GetComponent<Text>();
-            defenseText = transform.Find("Defense").Find("DefenseText").GetComponent<Text>();
-            resistText = transform.Find("Resistance").Find("ResistanceText").GetComponent<Text>();
+            
+            defenseText = transform.Find("Defense").Find("Text").GetComponent<Text>();
+            resistText = transform.Find("Resistance").Find("Text").GetComponent<Text>();
 
             //효과 표시 내용은 BattleReady씬에서 켜면 에러가 생기기 때문에 씬 이름으로 조건 확인하고 실행
             if(SceneManager.GetActiveScene().name == "Battle"){
                 statusEffectIconBarPosition = transform.Find("StatusEffectIcons").GetComponent<RectTransform>().localPosition;
                 statusEffectIcons = new List<StatusEffectIcon>();
 				//원래 Speed도 위에 들어가야 하는데 준비창이 준비되지 않아서 임시로 if문 안ㅔ 넣어둠
-				speedText = transform.Find("Speed").Find("SpeedText").GetComponent<Text> ();
+				speedText = transform.Find("Speed").Find("Text").GetComponent<Text> ();
             }
         }
 

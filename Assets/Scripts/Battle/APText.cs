@@ -11,15 +11,15 @@ public class APText : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		text = gameObject.GetComponent<Text>();
-		unitManager = FindObjectOfType<UnitManager>();
-		battleManager = FindObjectOfType<BattleManager>();
+		unitManager = BattleData.unitManager;
+		battleManager = BattleData.battleManager;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		string newText = "";
 
-		string phaseText = "[Phase " + FindObjectOfType<BattleManager>().GetCurrentPhase() + "]\n";
+		string phaseText = "[Phase " + BattleData.battleManager.GetCurrentPhase() + "]\n";
 		newText += phaseText;
 		string apText = "[Standard AP : " + unitManager.GetStandardActivityPoint() + "]\n";
 		newText += apText;

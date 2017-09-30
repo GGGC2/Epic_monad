@@ -121,6 +121,8 @@ namespace Battle.Turn{
 			float maxReward = 0;
 
 			foreach (ActiveSkill skill in skills) {
+				Debug.Log (skill.GetName ());
+
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
 				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -139,6 +141,8 @@ namespace Battle.Turn{
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
+
+						Debug.Log (reward);
 
 						if (reward > maxReward) {
 							maxReward = reward;

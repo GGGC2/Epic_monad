@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour{
 
 	public void UpdateApBarUI() {
 		if (BattleData.readiedUnits.Count != 0) {
-			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
+			apBarUI.UpdateAPDisplay(BattleData.unitManager.GetAllUnits());	
 			apBarUI.MoveOverScreen(true);
 		}
 	}
