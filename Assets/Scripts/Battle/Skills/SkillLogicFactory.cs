@@ -204,6 +204,18 @@ public static class SkillLogicFactory
             skillLogic = new Karldrich_1_l_SkillLogic();
             break;
 
+            //트리아나
+            case "열풍":
+            skillLogic = new Triana_1_l_SkillLogic();
+            break;
+            case "얼음날":
+            skillLogic = new Triana_1_m_SkillLogic();
+            break;
+            case "포획":
+            skillLogic = new Triana_1_r_SkillLogic();
+            break;
+
+
 			// Not used
 			/*case "조화진동":
             skillLogic = new HarmonySkillLogic();
@@ -517,7 +529,10 @@ public static class SkillLogicFactory
             passiveSkillLogic = new Json_2_m_SkillLogic();
             break;
 
-			// 트리아나
+            // 트리아나
+            case "감응":
+            passiveSkillLogic = new Triana_0_1_SkillLogic();
+            break;
 			case "나무 껍질":
 			passiveSkillLogic = new Triana_2_r_SkillLogic();
 			break;

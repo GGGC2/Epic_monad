@@ -35,6 +35,7 @@ public class Unit : MonoBehaviour{
 	int movedTileCount;
 	Battle.Turn.AI _AI;
 	public UnitInfo myInfo;
+    public Element element;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -158,7 +159,7 @@ public class Unit : MonoBehaviour{
 	}
 	public int GetCurrentActivityPoint() {return activityPoint;}
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
-	public Element GetElement() {return myInfo.element;}
+	public Element GetElement() {return element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
@@ -509,18 +510,18 @@ public class Unit : MonoBehaviour{
 			}
 
 			if (statusEffectType == StatusEffectType.SpeedChange) {
-				if (myInfo.element == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
+				if (GetElement() == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
 					appliedChangeList.Add (new StatChange (false, 15));
 				}
 			}
 		}
 
 		// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-		if(statusEffectType == StatusEffectType.PowerChange && myInfo.element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire){
+		if(statusEffectType == StatusEffectType.PowerChange && GetElement() == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire){
 			appliedChangeList.Add (new StatChange (true, 1.2f));
 		}
 		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
-		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
+		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && GetElement() == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
 			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.level+53));
 		}
 
@@ -1032,6 +1033,7 @@ public class Unit : MonoBehaviour{
 	void Initialize(){
 		gameObject.name = myInfo.nameEng;
 		position = myInfo.initPosition;
+        element = myInfo.element;
 		startPositionOfPhase = position;
 		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();
