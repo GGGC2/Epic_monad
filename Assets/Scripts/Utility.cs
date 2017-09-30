@@ -147,6 +147,47 @@ public class Utility : MonoBehaviour {
 	public static int GetDistance(Vector2 position1, Vector2 position2){
 		return Math.Abs((int)position1.x - (int)position2.x) + Math.Abs((int)position1.y - (int)position2.y);
 	}
+	public static int GetDistanceToUnit(Vector2 pos, string engName){
+		Unit unit = BattleData.unitManager.GetAnUnit (engName);
+		if (unit != null) {
+			Vector2 unitPos = unit.GetPosition ();
+			return Utility.GetDistance (pos, unitPos);
+		} else {
+			return -1;
+		}
+	}
+	public static Tile GetFarthestTileToUnit(List<Vector2> range, Dictionary<Vector2, TileWithPath> movableTilesWithPath, string engName){
+		Tile farthestTile = null;
+		int maxDistanceToUnit = -1;
+		foreach (Vector2 pos in range) {
+			if (movableTilesWithPath.ContainsKey(pos)) {
+				Tile tile = BattleData.tileManager.GetTile (pos);
+				int distanceToUnit = GetDistanceToUnit (pos, engName);
+				if (distanceToUnit > maxDistanceToUnit) {
+					Tile tileNearChild = BattleData.tileManager.GetTile (pos);
+					farthestTile = tile;
+					maxDistanceToUnit = distanceToUnit;
+				}
+			}
+		}
+		return farthestTile;
+	}
+	public static Tile GetNearestTileToUnit(List<Vector2> range, Dictionary<Vector2, TileWithPath> movableTilesWithPath, string engName){
+		Tile nearestTile = null;
+		int minDistanceToUnit = 999999;
+		foreach (Vector2 pos in range) {
+			if (movableTilesWithPath.ContainsKey(pos)) {
+				Tile tile = BattleData.tileManager.GetTile (pos);
+				int distanceToUnit = GetDistanceToUnit (pos, engName);
+				if (distanceToUnit != -1 && distanceToUnit < minDistanceToUnit) {
+					Tile tileNearChild = BattleData.tileManager.GetTile (pos);
+					nearestTile = tile;
+					minDistanceToUnit = distanceToUnit;
+				}
+			}
+		}
+		return nearestTile;
+	}
 
 	public static List<Vector2> GetRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
 		if (form == RangeForm.Diamond)
