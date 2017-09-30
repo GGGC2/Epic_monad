@@ -57,6 +57,16 @@ public class UnitManager : MonoBehaviour{
     
 	public List<Unit> GetAllUnits(){
 		return units;
+	}    
+
+	public Unit GetAnUnit(string engName){
+		Unit wantedUnit = null;
+		foreach(Unit unit in GetAllUnits()){
+			if (unit.GetNameEng () == engName) {
+				wantedUnit = unit;
+			}
+		}
+		return wantedUnit;
 	}
 
 	public void ResetLatelyHitUnits(){

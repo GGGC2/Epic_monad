@@ -220,9 +220,9 @@ namespace Battle.Turn{
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
-			} else if (unit.GetNameEng ().Equals ("burglar")) {
+			} /*else if (unit.GetNameEng ().Equals ("burglar")) {
 				state = State.Burglar;
-			} else if (unit.GetNameEng ().Equals ("childHolder")) {
+			} */else if (unit.GetNameEng ().Equals ("childHolder")) {
 				state = State.ChildHolder;
 			} else {
 				state = State.MoveToBestCasting;
@@ -414,6 +414,56 @@ namespace Battle.Turn{
 				} else {
 					state = State.StandbyOrRest;
 				}
+			}
+			yield return null;
+		}
+
+		IEnumerator ChildHolder(){
+			Vector2 holderPos = unit.GetPosition ();
+			Unit nearChild = null;
+			foreach(Direction direction in EnumUtil.directions){
+				Tile tileNearHolder = BattleData.tileManager.GetTile (holderPos + Utility.ToVector2 (direction));
+				if (tileNearHolder != null) {
+					if (tileNearHolder.IsUnitOnTile ()) {
+						Unit nearUnit = tileNearHolder.GetUnitOnTile ();
+						if (nearUnit.GetNameEng () == "child") {
+							nearChild = nearUnit;
+						}
+					}
+				}
+			}
+			if (nearChild == null) {
+				state = State.MoveToBestCasting;
+			} else {
+				
+				Unit eren = BattleData.unitManager.GetAnUnit ("eren");
+
+				if (eren != null) {
+					Vector2 childPos = nearChild.GetPosition ();
+					Vector2 erenPos = eren.GetPosition ();
+					Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+
+					Tile destTile = null;
+					int maxDistanceToEren = -1;
+					foreach (Direction direction in EnumUtil.directions) {
+						Vector2 posNearChild=childPos + Utility.ToVector2 (direction);
+						if (movableTilesWithPath.ContainsKey(posNearChild)) {
+							int distanceToEren = Utility.GetDistance (posNearChild, erenPos);
+							if (distanceToEren > maxDistanceToEren) {
+								Tile tileNearChild = BattleData.tileManager.GetTile (posNearChild);
+								destTile = tileNearChild;
+								maxDistanceToEren = distanceToEren;
+							}
+						}
+					}
+
+					if (destTile != null) {
+						yield return MoveToTheTileAndChangeDirection (destTile);
+					}
+					state = State.StandbyOrRest;
+
+				}
+
 			}
 			yield return null;
 		}
