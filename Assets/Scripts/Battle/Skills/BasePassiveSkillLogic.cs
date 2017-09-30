@@ -48,13 +48,14 @@ public class BasePassiveSkillLogic
 		return resistance;
 	}
 
-	public virtual void ApplyBonusDamageFromEachPassive(CastingApply castingApply)
-	{
+	public virtual void ApplyBonusDamageFromEachPassive(CastingApply castingApply){
 	}
 
-	public virtual void ApplyTacticalBonusFromEachPassive(CastingApply castingApply)
-	{
-	}
+    public virtual void ApplyTacticalBonusFromEachPassive(CastingApply castingApply){
+    }
+
+    public virtual void ApplyAdditionalDamageFromCasterStatusEffect(CastingApply castingApply, StatusEffect statusEffect) {
+    }
 
     public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
         yield return null;
@@ -100,7 +101,7 @@ public class BasePassiveSkillLogic
     {
         return true;
     }
-    public virtual void TriggerUsingSkill(Unit caster, List<Unit> targets) {
+    public virtual void TriggerUsingSkill(Casting casting, List<Unit> targets) {
     }
     public virtual IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
         yield return null;
