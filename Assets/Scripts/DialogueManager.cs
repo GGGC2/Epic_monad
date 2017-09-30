@@ -30,7 +30,7 @@ public class DialogueManager : MonoBehaviour{
 	int endLine;
 	bool isWaitingMouseInput;
 	
-	bool isLeftUnitOld;
+	public bool isLeftUnitOld;
 	
 	public SceneLoader sceneLoader;
 	public GameObject skipQuestionUI;
@@ -43,11 +43,9 @@ public class DialogueManager : MonoBehaviour{
 		int newLine = line;
 		for (int i = newLine; i < endLine; i++){
 			DialogueData data = dialogueDataList[i];
-			if (data.IsAdventureObject()){
-				SetActiveAdventureUI(true);
-				break;
-			}else if(data.Command == DialogueData.CommandType.Glos) {SetGlossaryLevel(data);}
-			
+			if(data.Command == DialogueData.CommandType.Glos){
+				SetGlossaryLevel(data);
+			}
 			if(HandleSceneChange(dialogueDataList[i])) {return;}
 		}
 		SetActiveAdventureUI(true);
@@ -277,12 +275,13 @@ public class DialogueManager : MonoBehaviour{
 		}
 	}
 
-	void Start() {
+	void Start(){
 		Initialize();
 		GlobalData.SetGlossaryDataList();
 
-		if(dialogueData.name == "Scene#1")
+		if(dialogueData.name == "Scene#1"){
 			StartCoroutine(BlinkClickIcon());
+		}
 	}
 
 	IEnumerator BlinkClickIcon(){		
