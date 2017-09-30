@@ -404,6 +404,11 @@ namespace Battle.Turn{
 
 		IEnumerator Triana_Rest(){
 			if (2 * unit.GetCurrentHealth () > unit.GetMaxHealth ()) {
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths (unit);
+				Tile tileNearYeong = Utility.GetNearestTileToUnit (BattleData.tileManager.GetAllTiles ().Keys.ToList(), movableTilesWithPath, "yeong");
+				if (tileNearYeong != null) {
+					yield return MoveToTheTileAndChangeDirection (tileNearYeong);
+				}
 				state = State.StandbyOrRest;
 			} else {
 				ActiveSkill skill1 = unit.GetSkillList () [0];
@@ -443,22 +448,14 @@ namespace Battle.Turn{
 
 				if (eren != null) {
 					Vector2 childPos = nearChild.GetPosition ();
-					Vector2 erenPos = eren.GetPosition ();
 					Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
 
-					Tile destTile = null;
-					int maxDistanceToEren = -1;
+					List<Vector2> range = new List<Vector2> ();
 					foreach (Direction direction in EnumUtil.directions) {
-						Vector2 posNearChild=childPos + Utility.ToVector2 (direction);
-						if (movableTilesWithPath.ContainsKey(posNearChild)) {
-							int distanceToEren = Utility.GetDistance (posNearChild, erenPos);
-							if (distanceToEren > maxDistanceToEren) {
-								Tile tileNearChild = BattleData.tileManager.GetTile (posNearChild);
-								destTile = tileNearChild;
-								maxDistanceToEren = distanceToEren;
-							}
-						}
+						range.Add (childPos + Utility.ToVector2 (direction));
 					}
+
+					Tile destTile = Utility.GetFarthestTileToUnit (range, movableTilesWithPath, "eren");
 
 					if (destTile != null) {
 						yield return MoveToTheTileAndChangeDirection (destTile);
