@@ -43,7 +43,7 @@ public class TutorialManager : MonoBehaviour {
 			scenarioList = Parser.GetParsedData<TutorialScenario>();
 			AIscenarioList = Parser.GetParsedData<AIScenario> ();
 			AIscenarioIndex = 0;
-			BattleManager battleManager = FindObjectOfType<BattleManager>();
+			BattleManager battleManager = BattleData.battleManager;
 			BattleData.onTutorial = true;
 			BattleData.rightClickLock = true;
 			ToNextStep();
