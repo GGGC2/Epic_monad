@@ -11,29 +11,29 @@ public class SceneLoader : MonoBehaviour{
 	public GameObject loadingScreen;
 
 	public void GoToTitle(){
-		FindAndOffAdvUI ();
+		//FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
 	public void LoadNextBattleScene(){
-		FindAndOffAdvUI ();
+		//FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 
 	public void LoadNextDialogueScene(string nextSceneName){
-		FindAndOffAdvUI ();
+		//FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadDialogueScene(nextSceneName));
 	}
 
 	public void LoadNextWorldMapScene(string storyName){
-		FindAndOffAdvUI ();
+		//FindAndOffAdvUI ();
 		StartCoroutine(FadeoutAndLoadWorldmapScene(storyName));
 	}
 
-	void FindAndOffAdvUI(){
+	/*void FindAndOffAdvUI(){
 		if (FindObjectOfType<DialogueManager>() != null)
 			FindObjectOfType<DialogueManager>().SetActiveAdventureUI(false);
-	}
+	}*/
 
 	public bool IsScreenActive(){
 		return fadeoutScreenObject.activeInHierarchy;
@@ -84,6 +84,8 @@ public class SceneLoader : MonoBehaviour{
         }
 		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady"){
 			Instantiate(loadingScreen);
+			PartyData.level = SceneData.stageNumber;
+			PartyData.exp = 0;
             SceneManager.LoadScene("Battle");
 		}
         else
