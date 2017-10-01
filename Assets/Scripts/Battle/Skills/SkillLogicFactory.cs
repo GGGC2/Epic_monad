@@ -71,7 +71,7 @@ public static class SkillLogicFactory
 			break;
 
             // 루베리카
-            case "정화된 밤":
+            case "교향곡 : 운명":
             skillLogic = new Luvericha_1_l_SkillLogic();
             break;
             case "사랑의 기쁨":
@@ -86,7 +86,7 @@ public static class SkillLogicFactory
             case "소녀의 기도":
             skillLogic = new Luvericha_5_m_SkillLogic();
             break;
-            case "교향곡 : 운명":
+            case "정화된 밤":
             skillLogic = new Luvericha_6_l_SkillLogic();
             break;
             case "4분 33초":
@@ -118,6 +118,9 @@ public static class SkillLogicFactory
             //세피아
             case "반달베기":
 				skillLogic = new Sepia_1_r_SkillLogic();
+            break;
+            case "???":
+                skillLogic = new Sepia_2_l_SkillLogic();
             break;
 
             //아르카디아
@@ -200,6 +203,18 @@ public static class SkillLogicFactory
             case "죽창 찌르기":
             skillLogic = new Karldrich_1_l_SkillLogic();
             break;
+
+            //트리아나
+            case "열풍":
+            skillLogic = new Triana_1_l_SkillLogic();
+            break;
+            case "얼음날":
+            skillLogic = new Triana_1_m_SkillLogic();
+            break;
+            case "포획":
+            skillLogic = new Triana_1_r_SkillLogic();
+            break;
+
 
 			// Not used
 			/*case "조화진동":
@@ -329,6 +344,9 @@ public static class SkillLogicFactory
             // break;
 
             // 루베리카
+            case "셈여림":
+            passiveSkillLogic = new Luvericha_0_1_SkillLogic();
+            break;
             case "위기상황":
             passiveSkillLogic = new Luvericha_2_m_SkillLogic();
             break;
@@ -511,7 +529,10 @@ public static class SkillLogicFactory
             passiveSkillLogic = new Json_2_m_SkillLogic();
             break;
 
-			// 트리아나
+            // 트리아나
+            case "감응":
+            passiveSkillLogic = new Triana_0_1_SkillLogic();
+            break;
 			case "나무 껍질":
 			passiveSkillLogic = new Triana_2_r_SkillLogic();
 			break;

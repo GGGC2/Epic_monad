@@ -1,14 +1,40 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
-using System.Linq;
 using GameData;
+
+public class SelectedUnit{
+	public string name;
+	public List<Skill> selectedSkills = new List<Skill>();
+
+	public SelectedUnit(string name){
+		this.name = name;
+		Skill unique = Skill.Find(Parser.GetSkills(), name, 0, 0);
+		if(unique != null){
+			selectedSkills.Add(unique);
+		}
+	}
+
+	public int CurrentEther{
+		get{
+			int result = 0;
+			selectedSkills.ForEach(skill => {
+				result += skill.ether;
+			});
+			return result;
+		}
+	}
+}
+
 public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
 	public SelectableUnitCounter selectableUnitCounter;
-	public List<string> selectedUnitList = new List<string>();
+	public BattleReadyPanel ReadyPanel;
+	public List<AvailableUnitButton> unitButtons;
+	public List<SelectedUnit> selectedUnits = new List<SelectedUnit>();
 	public List<UnitPanel> selected = new List<UnitPanel>();
 	public string currentUnitName;
 
@@ -17,25 +43,24 @@ public class ReadyManager : MonoBehaviour{
 	public Button readyButton;
 	
 	public bool IsAlreadySelected(string unitName) {
-		return selectedUnitList.Contains(unitName);
+		return selectedUnits.Any(unit => unit.name == unitName);
 	}
 
-	public void AddUnitToSelectedUnitList(AvailableUnitButton abbutton) {
-		selectedUnitList.Add(abbutton.nameString);
+	public void AddUnitToSelectedUnitList(AvailableUnitButton button) {
+		selectedUnits.Add(new SelectedUnit(button.nameString));
 		selectableUnitCounter.PartyNumberChange(1);
-		abbutton.ActiveHighlight();
+		button.ActiveHighlight();
 	}
 
-	public void SubUnitToSelectedUnitList(AvailableUnitButton abbutton) {
-		selectedUnitList.Remove(abbutton.nameString);
+	public void SubUnitToSelectedUnitList(AvailableUnitButton button) {
+		selectedUnits.Remove(selectedUnits.Find(unit => unit.name == button.nameString)); 
 		selectableUnitCounter.PartyNumberChange(-1);
-		abbutton.InactiveHighlight();
+		button.InactiveHighlight();
 	}
 
 	void Start(){
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
-		// string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
-		string[] stageData = Parser.FindRowDataOf(csvFile.text, "99");
+		string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
 
 		int numberOfSelectableUnit = Int32.Parse(stageData[1]);
 		int numberOfAvailableUnit = Int32.Parse(stageData[2]);
@@ -43,16 +68,18 @@ public class ReadyManager : MonoBehaviour{
 		selectableUnitCounter = FindObjectOfType<SelectableUnitCounter>();
 		selectableUnitCounter.SetMaxSelectableUnitNumber(numberOfSelectableUnit);
 
-		for (int i = 1; i <= 20; i++){
-			GameObject availableUnitButton = GameObject.Find("CharacterButton" + i);
-			availableUnitButtons.Add(availableUnitButton);
-			if (i <= numberOfAvailableUnit)
-				availableUnitButton.GetComponent<AvailableUnitButton>().SetNameAndSprite(stageData[i+2]);
-			else
-				availableUnitButton.SetActive(false);
+		unitButtons = Utility.ArrayToList<AvailableUnitButton>(GameObject.Find("CharacterButtons").transform.GetComponentsInChildren<AvailableUnitButton>());
+		for(int i = 0; i < unitButtons.Count; i++){
+			if (i < numberOfAvailableUnit){
+				//이쪽 실행 전에 AvailableUnitButton.Awake의 UI 참조가 완료돼야 함
+				unitButtons[i].GetComponent<AvailableUnitButton>().SetNameAndSprite(stageData[i+3]);
+			}else{
+				unitButtons[i].gameObject.SetActive(false);
+			}
 		}
 
 		DontDestroyOnLoad(gameObject);
+		ReadyPanel.Initialize();
 	}
 
 	void Update(){
@@ -61,8 +88,7 @@ public class ReadyManager : MonoBehaviour{
 		if (IsThereAnyReadiedUnit()) {
 			readyButton.interactable = true;
 			readyButton.GetComponent<Image>().color = Color.white;
-		}
-		else {
+		}else{
 			readyButton.interactable = false;
 			readyButton.GetComponent<Image>().color = Color.gray;
 		}
@@ -72,7 +98,7 @@ public class ReadyManager : MonoBehaviour{
 	}
 
 	bool IsThereAnyReadiedUnit(){
-		return selectedUnitList.Count > 0;
+		return selectedUnits.Count > 0;
 	}
 
 	public void ReadyButtonDown(){

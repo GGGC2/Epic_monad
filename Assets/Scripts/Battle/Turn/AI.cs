@@ -121,6 +121,8 @@ namespace Battle.Turn{
 			float maxReward = 0;
 
 			foreach (ActiveSkill skill in skills) {
+				Debug.Log (skill.GetName ());
+
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
 				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -139,6 +141,8 @@ namespace Battle.Turn{
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
+
+						Debug.Log (reward);
 
 						if (reward > maxReward) {
 							maxReward = reward;
@@ -220,8 +224,8 @@ namespace Battle.Turn{
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
-			} else if (unit.GetNameEng ().Equals ("burglar")) {
-				state = State.Burglar;
+			} else if (unit.GetNameEng ().Equals ("child")) {
+				state = State.Child;
 			} else if (unit.GetNameEng ().Equals ("childHolder")) {
 				state = State.ChildHolder;
 			} else {
@@ -256,7 +260,9 @@ namespace Battle.Turn{
 			Tile destTile = AIUtil.GetBestMovableTile (unit, unit.GetSkillList(), 0, minRewardWorthAttack);
 
 			if (destTile != null) {
+				ActiveSkill skill = BattleData.selectedSkill;
 				yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
+				BattleData.selectedSkill = skill;
 				state = State.CastingLoop;
 			} else {
 				state = State.Approach;
@@ -352,6 +358,7 @@ namespace Battle.Turn{
 		IEnumerator CastingLoop(){
 			bool flag = false;
 			ActiveSkill skill = BattleData.selectedSkill;
+			Debug.Assert(skill != null);
 
 			while(true){
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
@@ -376,7 +383,7 @@ namespace Battle.Turn{
 				Casting casting = skill.GetBestAttack (unit, currTile);
 
 				if (casting == null) {
-					if (flag) {
+					if (flag && unit.GetNameEng() != "childHolder") {
 						state = State.MoveToBestCasting;
 						yield break;
 					} else {
@@ -401,6 +408,11 @@ namespace Battle.Turn{
 
 		IEnumerator Triana_Rest(){
 			if (2 * unit.GetCurrentHealth () > unit.GetMaxHealth ()) {
+				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths (unit);
+				Tile tileNearYeong = Utility.GetNearestTileToUnit (BattleData.tileManager.GetAllTiles ().Keys.ToList(), movableTilesWithPath, "yeong");
+				if (tileNearYeong != null) {
+					yield return MoveToTheTileAndChangeDirection (tileNearYeong);
+				}
 				state = State.StandbyOrRest;
 			} else {
 				ActiveSkill skill1 = unit.GetSkillList () [0];
@@ -414,6 +426,71 @@ namespace Battle.Turn{
 				} else {
 					state = State.StandbyOrRest;
 				}
+			}
+			yield return null;
+		}
+
+		IEnumerator ChildHolder(){
+			Vector2 holderPos = unit.GetPosition ();
+			Unit nearChild = null;
+			foreach(Direction direction in EnumUtil.directions){
+				Tile tileNearHolder = BattleData.tileManager.GetTile (holderPos + Utility.ToVector2 (direction));
+				if (tileNearHolder != null) {
+					if (tileNearHolder.IsUnitOnTile ()) {
+						Unit nearUnit = tileNearHolder.GetUnitOnTile ();
+						if (nearUnit.GetNameEng () == "child") {
+							nearChild = nearUnit;
+						}
+					}
+				}
+			}
+			if (nearChild == null) {
+				state = State.MoveToBestCasting;
+			} else {
+				
+				Unit eren = BattleData.unitManager.GetAnUnit ("eren");
+
+				if (eren != null) {
+					Vector2 childPos = nearChild.GetPosition ();
+					Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+
+					List<Vector2> range = new List<Vector2> ();
+					foreach (Direction direction in EnumUtil.directions) {
+						range.Add (childPos + Utility.ToVector2 (direction));
+					}
+
+					Tile destTile = Utility.GetFarthestTileToUnit (range, movableTilesWithPath, "eren");
+
+					if (destTile != null) {
+						yield return MoveToTheTileAndChangeDirection (destTile);
+					}
+					BattleData.selectedSkill = unit.GetSkillList () [0];
+					state = State.CastingLoop;
+
+				}
+
+			}
+			yield return null;
+		}
+
+		IEnumerator Child(){
+			Vector2 childPos = unit.GetPosition ();
+			Unit nearEnemy = null;
+			foreach(Direction direction in EnumUtil.directions){
+				Tile tileNearChild = BattleData.tileManager.GetTile (childPos + Utility.ToVector2 (direction));
+				if (tileNearChild != null) {
+					if (tileNearChild.IsUnitOnTile ()) {
+						Unit nearUnit = tileNearChild.GetUnitOnTile ();
+						if (nearUnit.GetSide()==Side.Enemy) {
+							nearEnemy = nearUnit;
+						}
+					}
+				}
+			}
+			if (nearEnemy == null) {
+				state = State.Approach;
+			} else {
+				state = State.StandbyOrRest;
 			}
 			yield return null;
 		}

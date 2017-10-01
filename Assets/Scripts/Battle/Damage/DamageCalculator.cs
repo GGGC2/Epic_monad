@@ -93,7 +93,7 @@ namespace Battle
 					DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
 					damageList.Add(target, damageInfo);
 
-					//Debug.Log(actualDamage + " damage will be applied to " + target.GetName() + "\n" +
+					//Debug.Log(actualDamage + " damage will be applied to " + target.GetNameEng() + "\n" +
 					//	"ChainCombo : " + chainCombo);
 
 					if (reflectDamage != 0) {
@@ -103,7 +103,7 @@ namespace Battle
 
 						DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
 						damageList.Add(caster, reflectDamageInfo);
-						//Debug.Log(reflectDamage + " damage will be reflected from " + target.GetName() + " to " + caster.GetName());
+						//Debug.Log(reflectDamage + " damage will be reflected from " + target.GetNameEng() + " to " + caster.GetNameEng());
 					}
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
@@ -112,7 +112,7 @@ namespace Battle
 					DamageInfo damageInfo = new DamageInfo(caster, -actualHealAmount);
 					damageList.Add(target, damageInfo);
 
-					//Debug.Log(actualHealAmount + " heal will be applied to " + target.GetName());
+					//Debug.Log(actualHealAmount + " heal will be applied to " + target.GetNameEng());
 				}
 			}
 			return damageList;
@@ -139,11 +139,19 @@ namespace Battle
 			attackDamage.baseDamage = PowerFactorDamage(appliedSkill, caster);
 			// 해당 기술의 추가데미지 계산
 			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
+            // 타겟의 statusEffect에 의한 추가데미지 계산
 			foreach(var statusEffect in target.StatusEffectList) {
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if(originSkill.GetType() == typeof(ActiveSkill))
 					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
+            // 시전자의 statusEffect에 의한 추가데미지 계산
+            foreach(var statusEffect in caster.StatusEffectList) {
+                Skill originSkill = statusEffect.GetOriginSkill();
+                if(originSkill.GetType() == typeof(PassiveSkill))
+                    ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
+            }
+
 			// 특성에 의한 추가데미지
 			List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(castingApply);
@@ -180,7 +188,8 @@ namespace Battle
 
 			// 해당 기술의 추가데미지 계산
 			SkillLogicFactory.Get(appliedSkill).ApplyAdditionalDamage(castingApply);
-			foreach (var statusEffect in target.StatusEffectList){
+            // 타겟의 statusEffect에 의한 추가데미지 계산
+            foreach (var statusEffect in target.StatusEffectList){
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill.GetType() == typeof(ActiveSkill))
                     ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
@@ -189,8 +198,15 @@ namespace Battle
 			originalRelativeDamageBonus = castingApply.GetDamage().relativeDamageBonus;
 			originalAbsoluteDamageBonus = castingApply.GetDamage().absoluteDamageBonus;
 
-			// 특성에 의한 추가데미지
-			List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
+            // 시전자의 statusEffect에 의한 추가데미지 계산
+            foreach (var statusEffect in caster.StatusEffectList) {
+                Skill originSkill = statusEffect.GetOriginSkill();
+                if (originSkill.GetType() == typeof(PassiveSkill))
+                    ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
+            }
+
+            // 특성에 의한 추가데미지
+            List<PassiveSkill> passiveSkills = caster.GetLearnedPassiveSkillList();
 			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(castingApply);
 			// 특성에 의한 전략보너스 추가
 			SkillLogicFactory.Get(passiveSkills).ApplyTacticalBonusFromEachPassive(castingApply);

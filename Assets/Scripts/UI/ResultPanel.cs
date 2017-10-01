@@ -31,7 +31,7 @@ public class ResultPanel : MonoBehaviour{
 
 	void Initialize(){
 		LevelUpText.enabled = false;
-		LevelText.text = "" + PartyData.GetLevel();
+		LevelText.text = "" + PartyData.level;
 		ReqExpText.text = "Next " + PartyData.reqExp;
 
 		TriggerIndex.text = ""; // initialized
@@ -64,7 +64,7 @@ public class ResultPanel : MonoBehaviour{
 		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
 
 		int expTick = BattleData.rewardPoint/runningFrame;
-		int levelInPrevFrame = PartyData.GetLevel();
+		int levelInPrevFrame = PartyData.level;
 		while(BattleData.rewardPoint > 0){
 			if(expTick == 0)
 				UpdateExp(1);
@@ -74,9 +74,9 @@ public class ResultPanel : MonoBehaviour{
 				UpdateExp(BattleData.rewardPoint);
 			yield return null;
 
-			if (levelInPrevFrame != PartyData.GetLevel())
+			if (levelInPrevFrame != PartyData.level)
 				yield return StartCoroutine(ShowLevelUpText());
-			levelInPrevFrame = PartyData.GetLevel();
+			levelInPrevFrame = PartyData.level;
 		}
 
 		//다 출력된 후 클릭을 해야 넘어감
@@ -105,9 +105,9 @@ public class ResultPanel : MonoBehaviour{
 	}
 
 	public void UpdatePanel(int remainScore){
-		Debug.Log("exp : " +PartyData.exp + ", reqExp : " + PartyData.reqExp + ", Level : " + PartyData.GetLevel());
+		Debug.Log("exp : " +PartyData.exp + ", reqExp : " + PartyData.reqExp + ", Level : " + PartyData.level);
 		TotalExpText.text = "획득 경험치 : " + remainScore;
-		LevelText.text = "" + PartyData.GetLevel();
+		LevelText.text = "" + PartyData.level;
 		ReqExpText.text = "Next " + (PartyData.reqExp - PartyData.exp);
 		ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
 	}

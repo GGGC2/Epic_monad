@@ -7,6 +7,6 @@ Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	
 6	수인족 전사	furryWarrior	Enemy	5	5	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	0
 7	수인족 전사	furryWarrior	Enemy	9	5	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	0
 8	수인족 장로	furryElder	Enemy	7	6	LeftDown	405	50	50	32	55	Magic	Plant	Sun	false	0
-9	PCcuri	curi	Ally	6	20	LeftDown	0	0	0	0	0	None	None	None	false	0
+9	PCcuri	curi	Ally	8	20	LeftDown	0	0	0	0	0	None	None	None	false	0
 10	PCkarldrich	karldrich	Ally	6	20	LeftDown	0	0	0	0	0	None	None	None	false	0
 11	PClucius	lucius	Ally	7	19	LeftDown	0	0	0	0	0	None	None	None	false	0

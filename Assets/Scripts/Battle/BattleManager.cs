@@ -87,15 +87,20 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator InstantiateTurnManager(){
 		if (BattleData.uiManager.startFinished) {
-			while (true) {
-				yield return StartCoroutine (StartPhaseOnGameManager ());
+			while(true){
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				if(BattleData.currentPhase == 1){
 					tutorialManager.gameObject.SetActive(true);
 				}
 				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
-				while (BattleData.readiedUnits.Count != 0) {
+				while (BattleData.readiedUnits.Count != 0){
+					//전투에 승리해서 결과창이 나오면 진행 정지
+					if(FindObjectOfType<ResultPanel>() != null){
+						yield break;
+					}
+
 					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 					BattleData.uiManager.UpdateApBarUI();
 
@@ -213,7 +218,7 @@ public class BattleManager : MonoBehaviour{
 		if (BattleData.deadUnits.Contains(BattleData.selectedUnit))
 			return true;
 
-		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
+		if(BattleData.selectedUnit.CheckReach()){
 			return true;
 		}
 
@@ -227,11 +232,8 @@ public class BattleManager : MonoBehaviour{
 		foreach(var unit in BattleData.unitManager.GetDeadUnits()){
 			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
 		}
-		if(BattleData.selectedUnit.GetTileUnderUnit().IsEscapePoint){
-			BattleTriggerManager TrigM = FindObjectOfType<BattleTriggerManager>();
-			if(TrigM.isTriggerActive(TrigM.triggers.Find(trig => trig.actionType == TrigActionType.Reach))){
-				yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
-			}
+		if(BattleData.selectedUnit.CheckReach()){
+			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
 		}
 	}
 
@@ -268,6 +270,8 @@ public class BattleManager : MonoBehaviour{
 		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
+		/*BattleData.selectedUnit.UpdateStats();
+		FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);*/
 
 		//승리 조건이 충족되었는지 확인
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
@@ -360,13 +364,15 @@ public class BattleManager : MonoBehaviour{
 
 				BattleData.move.moveCount += distance;
 
-				BattleData.tileManager.DepaintTiles (movableTiles, TileColor.Blue);
 				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
 				yield return StartCoroutine(MoveStates.MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
 			}else if(triggers.skillSelected.Triggered){
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				yield return StartCoroutine(SkillAndChainStates.SkillSelected());
 
                 BattleData.previewAPAction = null;
@@ -374,6 +380,8 @@ public class BattleManager : MonoBehaviour{
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 			}
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
+				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
+				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
 					yield return StartCoroutine(Standby());
@@ -381,8 +389,6 @@ public class BattleManager : MonoBehaviour{
 					BattleData.currentState = CurrentState.RestAndRecover;
 					yield return StartCoroutine(RestAndRecover.Run());
 				}
-				BattleData.tileManager.DepaintAllTiles(TileColor.Red);
-				BattleData.tileManager.DepaintTiles(movableTiles, TileColor.Blue);
 			}
 		}
 		UIManager.Instance.HideActionButtons();
@@ -492,7 +498,27 @@ public class BattleManager : MonoBehaviour{
 
 		if(Input.GetKeyDown(KeyCode.B))
 			SceneManager.LoadScene("BattleReady");
+
+        if(Input.GetKeyDown(KeyCode.A))
+            ChangeAspect(1);
+        if(Input.GetKeyDown(KeyCode.D))
+            ChangeAspect(-1);
 	}
+
+    public void ChangeAspect(int direction) { // direction = 1 : 반시계 방향, direction = -1 : 시계방향
+        TileManager tileManager = TileManager.Instance;
+        UnitManager unitManager = UnitManager.Instance;
+        int aspectBefore = (int)BattleData.aspect;
+        int aspectAfter = (aspectBefore + direction + 4) % 4;
+        BattleData.aspect = (Aspect)aspectAfter;
+        tileManager.UpdateRealTilePositions();
+        unitManager.UpdateRealUnitPositions(direction);
+
+        CameraMover cm = FindObjectOfType<CameraMover>();
+        cm.SetFixedPosition(BattleData.selectedUnit.realPosition);
+        cm.CalculateBoundary();
+        MoveCameraToPosition(cm.fixedPosition);
+    }
 
 	public bool EnemyUnitSelected()
 	{
@@ -654,7 +680,7 @@ public class BattleManager : MonoBehaviour{
 			}else{
 				var preSelectedTile = BattleData.mouseOverTilePosition.Value;
 				if (movableTilesWithPath.ContainsKey (preSelectedTile)){
-					movableTilesWithPath[preSelectedTile].tile.transform.position += new Vector3(0, 0, -0.5f);
+					//movableTilesWithPath[preSelectedTile].tile.transform.position += new Vector3(0, 0, -0.5f);
 					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
 					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;

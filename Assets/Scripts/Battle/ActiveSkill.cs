@@ -387,7 +387,7 @@ public class ActiveSkill : Skill{
 		}
 
 		// 기술 사용 시 적용되는 특성
-		passiveSkillLogicsOfCaster.TriggerUsingSkill(caster, targets);
+		passiveSkillLogicsOfCaster.TriggerUsingSkill(casting, targets);
 		foreach(var statusEffect in caster.StatusEffectList) {
 			Skill originPassiveSkill = statusEffect.GetOriginSkill();
 			if(originPassiveSkill.GetType() == typeof(PassiveSkill))
@@ -644,7 +644,7 @@ public class ActiveSkill : Skill{
 	}
 
     public string GetOwner(){return owner;}
-	public int GetColumn() { return column; }
+	public int GetColumn() { return row; }
 	public string GetName() {return korName;}
     public int GetRequireLevel() { return requireLevel;}
     public void SetRequireAP(int requireAP) { this.requireAP = requireAP;}

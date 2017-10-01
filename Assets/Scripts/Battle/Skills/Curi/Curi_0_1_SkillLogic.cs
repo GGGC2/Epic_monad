@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace Battle.Skills {
     public class Curi_0_1_SkillLogic : BasePassiveSkillLogic {
-        public override void TriggerUsingSkill(Unit caster, List<Unit> targets) {
+        public override void TriggerUsingSkill(Casting casting, List<Unit> targets) {
+            Unit caster = casting.Caster;
             bool allTargetsHaveSameElement = true;
             bool firstTarget = true;
             Element element = Element.None;

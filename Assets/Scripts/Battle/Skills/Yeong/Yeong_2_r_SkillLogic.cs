@@ -11,8 +11,8 @@ namespace Battle.Skills
             StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
-            TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+			UnitManager unitManager = BattleData.unitManager;
+			TileManager tileManager = BattleData.tileManager;
             Vector2 unitPosition = owner.GetPosition();
             List<Tile> nearbyTiles = tileManager.GetTilesInRange(RangeForm.Diamond, unitPosition, 1, 3, 0, Direction.LeftUp);
 

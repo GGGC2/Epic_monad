@@ -9,8 +9,8 @@ namespace Battle.Skills {
             if (statusEffect.GetDisplayName() == "가연성 부착물") {
                 Unit caster = statusEffect.GetCaster();
                 Tile tileUnderUnit = target.GetTileUnderUnit();
-                if (tileUnderUnit.GetTileElement() == Element.Fire) {
-                    TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
+				if (tileUnderUnit.GetTileElement() == Element.Fire) {
+					TileManager tileManager = BattleData.tileManager;
                     List<Tile> tileList = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 1, 0, Direction.Left);
                     float damage = statusEffect.GetAmountOfType(StatusEffectType.Etc);
 
@@ -22,8 +22,8 @@ namespace Battle.Skills {
                         }
                     }
                     foreach (var secondaryTarget in damagedUnitList) {
-                        //secondaryTarget.Damaged(castingApply, true);
-                        BattleManager battleManager = MonoBehaviour.FindObjectOfType<BattleManager>();
+						//secondaryTarget.Damaged(castingApply, true);
+						BattleManager battleManager = BattleData.battleManager;
 						yield return battleManager.StartCoroutine(secondaryTarget.ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, false));
                     }
                 }

@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour{
 
 	public void UpdateApBarUI() {
 		if (BattleData.readiedUnits.Count != 0) {
-			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
+			apBarUI.UpdateAPDisplay(BattleData.unitManager.GetAllUnits());	
 			apBarUI.MoveOverScreen(true);
 		}
 	}
@@ -363,7 +363,7 @@ public class UIManager : MonoBehaviour{
 	public void EnablePlacedUnitCheckUI() {
 		placedUnitCheckUI.SetActive(true);
 		ReadyManager RM = FindObjectOfType<ReadyManager>();
-		placedUnitCheckUI.GetComponent<PlacedUnitCheckPanel>().SetUnitPortraits(RM.selectedUnitList);
+		placedUnitCheckUI.GetComponent<PlacedUnitCheckPanel>().SetUnitPortraits(RM.selectedUnits);
 	}
 
 	public void DisablePlacedUnitCheckUI() {

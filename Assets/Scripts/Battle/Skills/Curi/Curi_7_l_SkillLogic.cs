@@ -6,10 +6,10 @@ using Battle.Damage;
 namespace Battle.Skills {
     public class Curi_7_l_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerOnStart(Unit caster) {
-            StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
+			StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
-            UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+			UnitManager unitManager = BattleData.unitManager;
             List<Unit> unitsExceptThis = new List<Unit>();
             foreach(Unit unit in unitManager.GetAllUnits()) {
                 if(unit != owner) 

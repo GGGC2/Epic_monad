@@ -21,9 +21,9 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public GameObject highlightWall;
-	public bool IsEscapePoint{
+	public bool IsReachPoint{
 		get{
-			return highlightWall.activeSelf && FindObjectOfType<TutorialManager>() == null;
+			return highlightWall.activeSelf && BattleData.tutorialManager == null;
 		}
 	}
 	public bool isMouseOver;
@@ -104,23 +104,14 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		return displayName;
 	}
 
-	int CalculatingRequireAPOfTile(int tileAPAtStandardHeight, int tileHeight){
-		if (tileAPAtStandardHeight >= 0 && tileHeight >= 0)
-			return tileAPAtStandardHeight * (1 + tileHeight); // 임시 공식.
-		else{
-			Debug.Log("Invaild input. tileAP : " + tileAPAtStandardHeight + " height : " + tileHeight);
-			return 1;
-		}
-	}
-
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
 		OnMouseOver ();
 
 		if (isPreSeleted)
 			TileManager.Instance.preSelectedMouseOverTile = this;
 
-		BattleManager BM = FindObjectOfType<BattleManager>();
-		UIManager UM = FindObjectOfType<UIManager>();
+		BattleManager BM = BattleData.battleManager;
+		UIManager UM = BattleData.uiManager;
 
 		if (IsUnitOnTile()){
 			ChainList.ShowChainOfThisUnit(unitOnTile);
@@ -138,9 +129,12 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			BM.OnMouseEnterHandlerFromTile(position);
 		}
 	}
-
-	void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
-		transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
+    public void UpdateRealPosition() {
+        Vector3 positionBefore = transform.position;
+        transform.position = TileManager.CalculateRealTilePosition((int)position.x, (int)position.y, height);
+    }
+    void IPointerExitHandler.OnPointerExit(PointerEventData pointerData){
+		UpdateRealPosition();
 		clickStarted = false;
 		CostAP.text = "";
 
@@ -151,8 +145,8 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 			ChainList.HideUnitsTargetingThisTile (this);
 		}
 
-		BattleManager BM = FindObjectOfType<BattleManager>();
-		UIManager UM = FindObjectOfType<UIManager>();
+		BattleManager BM = BattleData.battleManager;
+		UIManager UM = BattleData.uiManager;
 
         if (!BM.TileSelected())
             UM.DisableTileViewerUI();
@@ -212,7 +206,6 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	}
 
 	void InitializeEvents(){
-		//BattleManager battleManager = FindObjectOfType<BattleManager>();
 		BattleManager battleManager = BattleManager.Instance;
 		UnityEngine.Events.UnityAction UserSelectTile= () => {
 			Debug.Log("Tile(" + position.x + "," + position.y + ") PreSelected : " + isPreSeleted);

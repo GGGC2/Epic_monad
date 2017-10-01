@@ -17,7 +17,7 @@ namespace BattleUI {
             if(skill.requireLevel == 0)
                 return "Passive";
             string column = "";
-            switch(skill.column) {
+            switch(skill.row) {
             case 1:
                 column = "Left";
             break;

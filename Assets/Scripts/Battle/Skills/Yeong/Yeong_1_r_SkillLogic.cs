@@ -6,9 +6,10 @@ namespace Battle.Skills
 {
 public class Yeong_1_r_SkillLogic : BasePassiveSkillLogic
 {
-	public override void TriggerUsingSkill(Unit yeong, List<Unit> targets)
+	public override void TriggerUsingSkill(Casting casting, List<Unit> targets)
 	{
-		StatusEffector.AttachStatusEffect(yeong, this.passiveSkill, yeong);
+        Unit caster = casting.Caster;
+		StatusEffector.AttachStatusEffect(caster, this.passiveSkill, caster);
 	}
 }
 }

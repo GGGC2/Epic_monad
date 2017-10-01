@@ -69,8 +69,7 @@ public static class StatusEffector{
 		return true;
 	}
 
-	public static void AttachStatusEffect(Unit caster, List<UnitStatusEffect> statusEffects, Unit target)
-	{
+	public static void AttachStatusEffect(Unit caster, List<UnitStatusEffect> statusEffects, Unit target){
 		List<UnitStatusEffect> validStatusEffects = new List<UnitStatusEffect>();
 		foreach (var statusEffect in statusEffects)
 		{
@@ -78,8 +77,7 @@ public static class StatusEffector{
 				validStatusEffects.Add(statusEffect);
 		}
 
-		foreach (var statusEffect in validStatusEffects)
-		{
+		foreach (var statusEffect in validStatusEffects){
             List<PassiveSkill> targetPassiveSkills = target.GetLearnedPassiveSkillList();
             if(SkillLogicFactory.Get(targetPassiveSkills).TriggerStatusEffectAppliedToOwner(statusEffect, caster, target) == false) {
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by passiveSkills of " + target.GetNameKor());
@@ -101,8 +99,7 @@ public static class StatusEffector{
 			);
 
 			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
-			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable())
-			{
+			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable()){
 				Debug.Log("Update SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
                 List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
                 newStatusEffectList.Add(statusEffect);
@@ -111,8 +108,7 @@ public static class StatusEffector{
                 target.UpdateStats(statusEffect, true, false);
             }
 			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
-			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable())
-			{
+			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()){
 				Debug.Log("Add same SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
 				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++)
@@ -127,9 +123,6 @@ public static class StatusEffector{
 			else{
 				Debug.Log("Apply new SE : " + statusEffect.GetDisplayName() + " to " + target.GetNameKor() + target.GetPosition());
                 target.AddStatusEffectList(statusEffect);
-                /*List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => true);
-                newStatusEffectList.Add(statusEffect);
-                target.SetStatusEffectList(newStatusEffectList);*/
                 target.UpdateStats(statusEffect, true, false);
                 target.UpdateSpriteByStealth();
             }

@@ -27,12 +27,11 @@ public class UnitPanel : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
 			unitImage.sprite = sprites[3] as Sprite;
 			unitViewer.UpdateUnitViewer(unitName);
 			Manager.currentUnitName = unitName;
-			FindObjectOfType<SkillEquipPanel>().UpdateIcons(unitName);
+			//FindObjectOfType<SkillEquipPanel>().UpdateIcons(unitName);
 		}
 	}
 
-	void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
-	{ 
+	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){ 
 		if(AvailableOrSelected){
 			bool AlreadySelected = false;
 			foreach(UnitPanel Panel in Manager.selected){

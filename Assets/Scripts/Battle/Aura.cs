@@ -7,8 +7,8 @@ using System.Text;
 
 class Aura{
     private static Dictionary<Unit, bool> TagUnitInRange(Unit target, UnitStatusEffect statusEffect) {   //각 unit이 target이 가진 오오라 범위 안에 있을 경우 true 태그를 닮.
-        TileManager tileManager = MonoBehaviour.FindObjectOfType<TileManager>();
-        UnitManager unitManager = MonoBehaviour.FindObjectOfType<UnitManager>();
+		TileManager tileManager = BattleData.tileManager;
+		UnitManager unitManager = BattleData.unitManager;
         Dictionary<Unit, bool> unitDictionary = new Dictionary<Unit, bool>();
         List<Tile> auraRange = tileManager.GetTilesInRange(RangeForm.Diamond, target.GetPosition(), 0, 
                                     (int)statusEffect.GetAmountOfType(StatusEffectType.Aura), 0, Direction.Down);

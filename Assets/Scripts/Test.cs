@@ -30,7 +30,7 @@ public class Test : MonoBehaviour {
             else PartyData.level = Convert.ToInt32(partyLevel);
 
             string stageNumber = stageInputField.text;
-            if (stageNumber == "") SceneData.stageNumber = 1;
+            if (stageNumber == "") SceneData.stageNumber = 10;
             else SceneData.stageNumber = Convert.ToInt32(stageNumber);
 
             SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();

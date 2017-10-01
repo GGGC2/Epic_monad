@@ -146,6 +146,7 @@ public static class BattleData{
 	public static UnitManager unitManager;
 	public static UIManager uiManager;
 	public static BattleManager battleManager;
+	public static TutorialManager tutorialManager;
 
 	public class Triggers{
 		public EventTrigger rightClicked = new EventTrigger();
@@ -172,6 +173,7 @@ public static class BattleData{
 	public static bool isWaitingUserInput = false;
 	public static bool enemyUnitSelected = false;
     public static bool tileSelected = false;
+    public static Aspect aspect = Aspect.North;
 
 	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
@@ -221,6 +223,7 @@ public static class BattleData{
 		unitManager = GameObject.FindObjectOfType<UnitManager>();
 		uiManager = GameObject.FindObjectOfType<UIManager>();
 		battleManager = GameObject.FindObjectOfType<BattleManager>();
+		tutorialManager = GameObject.FindObjectOfType<TutorialManager> ();
 
 		onTutorial = false;
 		rightClickLock = false;
@@ -232,6 +235,7 @@ public static class BattleData{
 		isWaitingUserInput = false;
 		enemyUnitSelected = false;
 		tileSelected = false;
+		aspect = Aspect.North;
 
 		skillApplyCommand = SkillApplyCommand.Waiting;
 
