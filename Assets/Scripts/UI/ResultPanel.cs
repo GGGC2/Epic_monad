@@ -63,7 +63,7 @@ public class ResultPanel : MonoBehaviour{
 		//다 출력된 후 클릭을 해야 넘어감
 		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
 
-		int expTick = BattleData.rewardPoint/runningFrame;
+		/*int expTick = BattleData.rewardPoint/runningFrame;
 		int levelInPrevFrame = PartyData.level;
 		while(BattleData.rewardPoint > 0){
 			if(expTick == 0)
@@ -77,7 +77,9 @@ public class ResultPanel : MonoBehaviour{
 			if (levelInPrevFrame != PartyData.level)
 				yield return StartCoroutine(ShowLevelUpText());
 			levelInPrevFrame = PartyData.level;
-		}
+		}*/
+
+		PartyData.level += 1;
 
 		//다 출력된 후 클릭을 해야 넘어감
 		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));

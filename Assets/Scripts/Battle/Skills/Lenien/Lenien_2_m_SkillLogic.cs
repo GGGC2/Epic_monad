@@ -18,7 +18,8 @@ public class Lenien_2_m_SkillLogic : BaseSkillLogic {
 
 	int GetDistance(Unit target, Tile midPointTile)
 	{
-		Debug.Log("Target : " + target.GetPosition() + ", MidPoint : " + midPointTile.GetTilePos());
+		Debug.Log("Target : " + target.GetPosition() + 
+        ", MidPoint : " + midPointTile.GetTilePos());
 		int deltaX = (int)Mathf.Abs(target.GetPosition().x - midPointTile.GetTilePos().x);
 		int deltaY = (int)Mathf.Abs(target.GetPosition().y - midPointTile.GetTilePos().y);
 		

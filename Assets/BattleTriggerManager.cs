@@ -30,13 +30,13 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void CountBattleTrigger(BattleTrigger trigger){
 		if(trigger.actionType == TrigActionType.UnderCount){
-			if(CountUnitOfCondition(trigger) <= trigger.targetCount){
+			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
 				AcquireTrigger(trigger);
 			}
 		}else{
 			trigger.count += 1;
-			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count);
-			if (trigger.count == trigger.targetCount) {
+			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count + " / " + trigger.reqCount);
+			if (trigger.count == trigger.reqCount) {
 				AcquireTrigger(trigger);
 			} else if (trigger.repeatable && trigger.acquired){
 				BattleData.rewardPoint += trigger.reward;

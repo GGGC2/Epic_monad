@@ -48,7 +48,6 @@ public class DialogueManager : MonoBehaviour{
 			}
 			if(HandleSceneChange(dialogueDataList[i])) {return;}
 		}
-		SetActiveAdventureUI(true);
 	}
 
 	bool HandleSceneChange (DialogueData Data){
@@ -158,10 +157,10 @@ public class DialogueManager : MonoBehaviour{
 		skipQuestionUI.SetActive(false);
 	}
 
-	public void SetActiveAdventureUI(bool active){
+	/*public void SetActiveAdventureUI(bool active){
 		adventureUI.SetActive(active);
 		if(active) { dialogueUI.SetActive(false); }
-	}
+	}*/
 
     public void ActiveDialogueUI(){
         adventureUI.SetActive(false);
@@ -191,7 +190,6 @@ public class DialogueManager : MonoBehaviour{
 		dialogueDataList = Parser.GetParsedData<DialogueData>();
 
 		InactiveSkipQuestionUI();
-		adventureUI.SetActive(false);
 
 		endLine = dialogueDataList.Count;
 		StartCoroutine(PrintLinesFrom(0));
@@ -218,7 +216,6 @@ public class DialogueManager : MonoBehaviour{
 			rightPortrait.color = Color.gray;
 
 			if (dialogueDataList[line].IsAdventureObject()){
-				SetActiveAdventureUI(true);
 				yield break;
 			}else if (dialogueDataList[line].IsEffect()){
 				yield return StartCoroutine(HandleCommand());
@@ -233,8 +230,6 @@ public class DialogueManager : MonoBehaviour{
 		}
 
 		yield return new WaitForSeconds(0.01f);
-
-		SetActiveAdventureUI(true);
 	}
 
 	void HandleDialogue(){

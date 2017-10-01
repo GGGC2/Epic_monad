@@ -66,6 +66,11 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		}
 	}
 
+	void Start(){
+		if(viewer.gameObject.activeSelf){
+			viewer.gameObject.SetActive(false);
+		}
+	}
 	void IPointerExitHandler.OnPointerExit(PointerEventData eventData){
 		viewer.gameObject.SetActive(false);
 	}
