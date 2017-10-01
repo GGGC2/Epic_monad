@@ -9,8 +9,10 @@ public class Cell : MonoBehaviour {
 	RectTransform rect;
 	Image image;
 	void Awake(){
-		rect = GetComponent<RectTransform> ();
+		rect = GetComponent<RectTransform>();
 		image = GetComponent<Image> ();
+		Debug.Assert(rect != null);
+		Debug.Assert(image != null);
 	}
 	public void SetSize(Vector2 size){
 		this.size = size;

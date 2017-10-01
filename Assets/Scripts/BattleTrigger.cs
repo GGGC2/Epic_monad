@@ -12,7 +12,7 @@ public class BattleTrigger{
 	public TrigActionType actionType;
 	public int reward;
 	public int count;
-	public int targetCount;
+	public int reqCount;
 
 	public List<string> targetUnitNames;
 	public List<Vector2> targetTiles = new List<Vector2>();
@@ -37,12 +37,12 @@ public class BattleTrigger{
 			unitType = commaParser.ConsumeEnum<TrigUnitType>();
 		
 			actionType = commaParser.ConsumeEnum<TrigActionType>();
-			targetCount = commaParser.ConsumeInt();
+			reqCount = commaParser.ConsumeInt();
 			repeatable = commaParser.ConsumeBool();
 			reward = commaParser.ConsumeInt();
 
 			if(unitType == TrigUnitType.Target){
-				targetCount = commaParser.ConsumeInt();
+				int targetCount = commaParser.ConsumeInt();
 				targetUnitNames = new List<string>();
 				for (int i = 0; i < targetCount; i++){
 					string targetUnitName = commaParser.Consume();
