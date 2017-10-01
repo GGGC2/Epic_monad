@@ -172,6 +172,68 @@ public class UIManager : MonoBehaviour{
 			transform.gameObject.SetActive(true);
 		}
 	}
+    public void SetSkillUI(Unit selectedUnit) {
+        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
+        //skillPanel.SetMaxPage((skillList.Count - 1) / SkillPanel.onePageButtonsNum);
+        //skillPanel.triggerEnabled(selectedUnit);
+        EnableSkillUI();
+        
+        UpdateSkillInfo(selectedUnit);
+    }
+    public void UpdateSkillInfo(Unit selectedUnit) {
+        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
+        for (int i = 0; i < SkillPanel.onePageButtonsNum; i++){
+			/*int skillIndex = i + SkillPanel.onePageButtonsNum * skillPanel.GetPage();
+			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
+			if (skillIndex >= skillList.Count)
+			{
+				//Debug.Log(selectedUnit+"'s skillCount : "+skillList.Count);
+				skillButton.SetActive(false);
+				continue;
+			}
+            skillButton.SetActive(true);
+
+			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[skillIndex].GetName();
+			
+			ActiveSkill skill = skillList[skillIndex];
+			Unit caster = selectedUnit;
+            int originAP = skill.GetRequireAP();
+			int APChangedByStatusEffects = caster.GetActualRequireSkillAP(skill);
+			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(APChangedByStatusEffects, caster);			
+			Text apText = skillButton.transform.Find("APText").GetComponent<Text>();
+			apText.text = actualAP.ToString() + " AP";
+			if (originAP < actualAP)
+				apText.color = Color.red;
+			else if (originAP > actualAP)
+				apText.color = Color.green;
+			else
+				apText.color = Color.white;
+
+			var skillCooldownDict = selectedUnit.GetUsedSkillDict();
+			if (skillCooldownDict.ContainsKey(skillList[skillIndex].GetName()))
+			{
+				int remainCooldown = skillCooldownDict[skillList[skillIndex].GetName()];
+				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "재사용까지 " + remainCooldown + "페이즈";
+			}
+			else
+				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";*/
+		}
+        TurnOnOnlyUsableSkills(selectedUnit);
+	}
+
+	public void TurnOnOnlyUsableSkills(Unit selectedUnit){
+		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
+		/*int page = skillPanel.GetPage();
+
+		for (int skillIndex = SkillPanel.onePageButtonsNum * page + 1; skillIndex <= SkillPanel.onePageButtonsNum * (page + 1); skillIndex++) {
+			if (skillIndex > skillList.Count
+				|| selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex - 1])
+				|| selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex - 1].GetName ()))
+				skillPanel.OnOffSkillButton (skillIndex, false);
+			else
+				skillPanel.OnOffSkillButton (skillIndex, true);
+		}*/
+	}
 
 	public void DisableSkillUI(){
 		skillViewer.gameObject.SetActive(false);
