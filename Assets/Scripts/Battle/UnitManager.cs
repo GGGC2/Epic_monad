@@ -235,10 +235,10 @@ public class UnitManager : MonoBehaviour{
 		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
 		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
 		Debug.Log("Triggers Count : " + allTriggers.Count);
-		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.PC && trig.targetCount == 0);
-		triggersOfAllPC.ForEach(trig => trig.targetCount = generatedPC);
-		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.Enemy && trig.targetCount == 0);
-		triggersOfAllEnemy.ForEach(trig => trig.targetCount = enemyCount);
+		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.PC && trig.reqCount == 0);
+		triggersOfAllPC.ForEach(trig => trig.reqCount = generatedPC);
+		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.Enemy && trig.reqCount == 0);
+		triggersOfAllEnemy.ForEach(trig => trig.reqCount = enemyCount);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
