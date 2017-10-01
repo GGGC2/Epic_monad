@@ -11,10 +11,11 @@ public class Cell : MonoBehaviour {
 	void Awake(){
 		rect = GetComponent<RectTransform>();
 		image = GetComponent<Image> ();
+		Debug.Assert(rect != null);
+		Debug.Assert(image != null);
 	}
 	public void SetSize(Vector2 size){
 		this.size = size;
-		Debug.Assert(rect != null);
 		rect.sizeDelta = this.size;
 	}
 	public void SetPosition(Vector2 pos, Vector2 offset){

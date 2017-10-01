@@ -41,7 +41,6 @@ public class UIManager : MonoBehaviour{
 	void Awake(){
 		instance = this;
 		apBarUI = FindObjectOfType<APBarPanel>();
-		skillViewer = FindObjectOfType<SkillViewer>();
 		for(int i = 0; i < 8; i++){
 			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
 		}

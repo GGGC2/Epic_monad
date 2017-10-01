@@ -17,7 +17,7 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	}
 
 	public void SetViewer(){
-		if(mySkill != null){
+		if(mySkill != null && viewer != null){
 			viewer.UpdateSkillViewer(mySkill);
 		}
 	}
@@ -34,6 +34,12 @@ public class SkillViewer : SkillUI{
 	public GameObject CellPrefab;
 	public List<Cell> cells = new List<Cell> ();
 
+	public enum CallerType{DetailInfo, ActionButton, EtherPanel}
+	public CallerType caller;
+
+	void OnDisable(){
+		Debug.Log("Why Disabled?");
+	}
 	public void Initialize(){
 		viewerNameText.text = "";
 		costText.text = "";
@@ -42,10 +48,6 @@ public class SkillViewer : SkillUI{
 		rangeText.text = "";
 		explainText.text = "";
 	}
-
-	/*void Start(){
-		gameObject.SetActive(false);
-	}*/
 
 	public void UpdateSkillViewer(Skill skill){
 		mySkill = skill;
@@ -135,15 +137,19 @@ public class SkillViewer : SkillUI{
 		Dictionary<Vector2, Color> rangeColors = skill.RangeColorsForSecondRangeDisplay (rowNum);
 		for (int x = 0; x < rowNum; x++) {
 			for (int y = 0; y < rowNum; y++) {
-				Cell cell = Instantiate (CellPrefab, rangeText.transform).GetComponent<Cell> ();
+				Cell cell = Instantiate(CellPrefab, rangeText.transform).GetComponent<Cell>();
 				cells.Add (cell);
 				cell.SetSize (new Vector2 (9, 9));
 				Vector2 pos = new Vector2 (x, y);
-				if(SceneManager.GetActiveScene().name == "BattleReady"){
+
+				if(caller == CallerType.EtherPanel){
 					cell.SetPosition (pos, new Vector2(-30, -120));
-				}else{
+				}else if(caller == CallerType.ActionButton){
 					cell.SetPosition (pos, new Vector2(-85, -145));
+				}else{
+					cell.SetPosition (pos, new Vector2(-35, -110));
 				}
+				
 				cell.SetColor (rangeColors [pos]);
 				if (x == (rowNum - 1) / 2 && x == y)
 					cell.SetAsDotCell ();
