@@ -1,0 +1,11 @@
+﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
+1	아스터 기병	asterCavalry01	Enemy	3	1	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
+2	아스터 기병	asterCavalry01	Enemy	5	1	RightUp	173	55	5	5	52	Melee	Plant	Sun	false	0
+3	아스터 궁수	asterArcher01	Enemy	3	2	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
+4	아스터 궁수	asterArcher01	Enemy	5	2	RightDown	163	50	22	5	44	Melee	Plant	Moon	false	0
+5	요정 병사	elvenSoldier01	Enemy	3	3	LeftUp	433	46	50	69	58	Melee	Plant	Earth	false	0
+6	요정 궁수	elvenArcher01	Enemy	5	3	LeftUp	311	78	13	50	55	Melee	Plant	Earth	false	0
+7	요정 사제	elvenPriest01	Enemy	3	4	LeftDown	254	73	-6	50	55	Magic	Plant	Earth	false	0
+8	요정 사제	elvenPriest01	Enemy	5	4	LeftDown	254	73	-6	50	55	Magic	Plant	Earth	false	0
+9	아르카디아	arcadia	Ally	4	1	RightUp	600	100	100	60	60	Melee	Plant	Sun	false	0
+
