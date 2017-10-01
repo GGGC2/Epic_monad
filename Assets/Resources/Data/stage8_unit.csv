@@ -1,49 +1,49 @@
 Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
-1	»óÀÚ	box	Neutral	14	10	LeftDown	500	0	0	0	0	None	None	None	true	0
-2	»óÀÚ	box	Neutral	14	13	LeftDown	500	0	0	0	0	None	None	None	true	0
-3	»óÀÚ	box	Neutral	4	11	LeftDown	500	0	0	0	0	None	None	None	true	0
-4	»óÀÚ	box	Neutral	4	22	LeftDown	500	0	0	0	0	None	None	None	true	0
-5	Á¦±¹±º º´»ç	soldier01	Enemy	13	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-6	Á¦±¹±º º´»ç	soldier01	Enemy	13	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-7	Á¦±¹±º º´»ç	soldier01	Enemy	15	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-8	Á¦±¹±º º´»ç	soldier01	Enemy	15	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-9	Á¦±¹±º º´»ç	soldier01	Enemy	15	11	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-10	Á¦±¹±º º´»ç	soldier01	Enemy	16	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-11	Á¦±¹±º º´»ç	soldier01	Enemy	16	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-12	Á¦±¹±º º´»ç	soldier01	Enemy	10	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-13	Á¦±¹±º º´»ç	soldier01	Enemy	11	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-14	Á¦±¹±º º´»ç	soldier01	Enemy	5	9	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-15	Á¦±¹±º º´»ç	soldier01	Enemy	5	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-16	Á¦±¹±º º´»ç	soldier01	Enemy	4	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-17	Á¦±¹±º º´»ç	soldier01	Enemy	3	19	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-18	Á¦±¹±º º´»ç	soldier01	Enemy	3	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-34	Á¦±¹±º º´»ç	soldier01	Enemy	2	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
-20	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	12	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-21	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	13	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-22	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	13	13	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-23	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	14	8	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-24	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	14	9	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-25	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	14	11	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-26	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	14	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-27	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	14	14	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-28	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	15	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-29	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	15	13	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-30	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	16	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-31	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	9	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-32	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	10	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-33	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-34	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-35	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	3	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-36	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	3	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-37	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	4	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-38	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	5	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-39	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-40	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	2	22	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-41	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	3	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-42	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	4	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-43	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	5	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-44	¿¬±Ý¼ú °ß½À»ý	asterArcher02	Enemy	5	22	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
-45	ÇöÀÚ	sage	Enemy	8	22	LeftDown	494	105	92	130	59	Magic	Metal	Moon	false	0
+1	ï¿½ï¿½ï¿½ï¿½	box	Neutral	14	10	LeftDown	500	0	0	0	0	None	None	None	true	0
+2	ï¿½ï¿½ï¿½ï¿½	box	Neutral	14	13	LeftDown	500	0	0	0	0	None	None	None	true	0
+3	ï¿½ï¿½ï¿½ï¿½	box	Neutral	4	11	LeftDown	500	0	0	0	0	None	None	None	true	0
+4	ï¿½ï¿½ï¿½ï¿½	box	Neutral	4	22	LeftDown	500	0	0	0	0	None	None	None	true	0
+5	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	13	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+6	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	13	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+7	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	15	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+8	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	15	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+9	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	15	11	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+10	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	16	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+11	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	16	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+12	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	10	9	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+13	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	11	10	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+14	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	5	9	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+15	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	5	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+16	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	4	10	RightDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+17	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	3	19	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+18	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	3	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+19	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½	soldier01	Enemy	2	20	LeftDown	252	76	34	34	47	Melee	Plant	Earth	false	0
+20	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	12	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+21	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	13	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+22	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	13	13	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+23	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	14	8	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+24	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	14	9	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+25	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	14	11	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+26	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	14	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+27	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	14	14	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+28	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	15	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+29	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	15	13	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+30	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	16	12	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+31	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	9	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+32	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	10	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+33	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+34	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+35	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	3	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+36	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	3	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+37	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	4	12	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+38	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	5	11	RightDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+39	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+40	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	2	22	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+41	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	3	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+42	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	4	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+43	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	5	21	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+44	ï¿½ï¿½ï¿½Ý¼ï¿½ ï¿½ß½ï¿½ï¿½ï¿½	asterArcher02	Enemy	5	22	LeftDown	235	88	-4	34	50	Magic	Fire	Moon	false	0
+45	ï¿½ï¿½ï¿½ï¿½	sage	Enemy	8	22	LeftDown	494	105	92	130	59	Magic	Metal	Moon	false	0
 46	PCyeong	yeong	Ally	13	4	RightUp	0	0	0	0	0	Melee	Metal	Earth	false	0
 47	PCluvericha	luvericha	Ally	13	2	RightUp	0	0	0	0	0	Magic	Plant	Earth	false	0
 48	PCreina	reina	Ally	14	3	RightUp	0	0	0	0	0	Magic	Fire	Sun	false	0

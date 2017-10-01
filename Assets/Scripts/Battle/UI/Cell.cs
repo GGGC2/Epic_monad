@@ -9,11 +9,12 @@ public class Cell : MonoBehaviour {
 	RectTransform rect;
 	Image image;
 	void Awake(){
-		rect = GetComponent<RectTransform> ();
+		rect = GetComponent<RectTransform>();
 		image = GetComponent<Image> ();
 	}
 	public void SetSize(Vector2 size){
 		this.size = size;
+		Debug.Assert(rect != null);
 		rect.sizeDelta = this.size;
 	}
 	public void SetPosition(Vector2 pos, Vector2 offset){

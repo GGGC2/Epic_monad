@@ -47,6 +47,10 @@ public class TitleForNexon : MonoBehaviour{
 		SceneManager.LoadScene("StageSelect");
 	}
 
+	public void ToTestScene(){
+		SceneManager.LoadScene("Test");
+	}
+
     private void ShowWorldMap(){
 		WorldMapManager.currentStory = SaveDataCenter.GetSaveData().progress.worldMap;
 

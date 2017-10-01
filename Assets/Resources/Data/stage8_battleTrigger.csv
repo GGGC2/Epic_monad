@@ -1,4 +1,4 @@
 ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	4°³ÀÇ »óÀÚ¸¦ ¸ğµÎ ÆÄ±«ÇÏ±â	NeutralChar	Neutralize	4	false	250
-Lose	¾Æ±ºÀÌ ¸ğµÎ ¹«·ÂÈ­	Ally	Neutralize	5	false	0	5	yeong	luvericha	reina	lenien	eren
+Win	4ê°œì˜ ìƒìë¥¼ ëª¨ë‘ íŒŒê´´í•˜ê¸°	NeutralChar	Neutralize	4	false	250
+Lose	ëª¨ë“  ë™ë£Œ ë¬´ë ¥í™”	Ally	Neutralize	5	false	0	5	yeong	luvericha	reina	lenien	eren
 End	Scene#16	One	One

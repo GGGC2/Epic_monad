@@ -17,7 +17,9 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	}
 
 	public void SetViewer(){
-		viewer.UpdateSkillViewer(mySkill);
+		if(mySkill != null){
+			viewer.UpdateSkillViewer(mySkill);
+		}
 	}
 }
 
@@ -41,15 +43,8 @@ public class SkillViewer : SkillUI{
 		explainText.text = "";
 	}
 
-	/*public void UpdateSkillViewer(Skill skill){
-		mySkill = skill;
-		SetCommonSkillInfoUI(skill);
-
-		if(skill is ActiveSkill){
-			DisplaySecondRange ((ActiveSkill)skill);
-		}else{
-			HideSecondRange ();
-		}
+	/*void Start(){
+		gameObject.SetActive(false);
 	}*/
 
 	public void UpdateSkillViewer(Skill skill){
