@@ -260,8 +260,12 @@ public class StatusEffect {
     public string GetExplanation() {
         string text = fixedElem.display.explanation;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {
+            string remainAmountString = ((int)GetRemainAmount(i)).ToString();
+            string minusAmountString = (-(int)GetAmount(i)).ToString();
             string amountString = ((int)GetAmount(i)).ToString();
             if(fixedElem.actuals[i].isPercent)  amountString += "%";
+            text = text.Replace("REMAINAMOUNT" + i, remainAmountString);
+            text = text.Replace("-AMOUNT" + i, minusAmountString);
             text = text.Replace("AMOUNT" + i, amountString);
         }
         return text;
