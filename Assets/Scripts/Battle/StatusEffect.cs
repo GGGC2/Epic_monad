@@ -13,6 +13,7 @@ public class StatusEffect {
         public DisplayElement display;
         public List<ActualElement> actuals;
         public class DisplayElement {
+            public readonly string ownerOfSkill;    //스킬의 소유자
             public readonly bool toBeReplaced;  //상위의 강화 스킬이 있는 경우 true. 큐리의 '가연성 부착물'과 '조연성 부착물' 스킬 같은 경우 
                                                 //csv 파일에 같은 originSkillName을 가지고 있는데, 이 때 둘 중 하나만 읽어야 하므로 '가연성 부착물'
                                                 //statusEffect는 읽지 않게 하기 위함.
@@ -33,10 +34,11 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
+            public DisplayElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
                   int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
+                this.ownerOfSkill = ownerOfSkill;
                 this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
@@ -79,11 +81,11 @@ public class StatusEffect {
             }
         }
 
-        public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
+        public FixedElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
                   int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
-            display = new DisplayElement(toBeReplaced, originSkillName, displayName,
+            display = new DisplayElement(ownerOfSkill, toBeReplaced, originSkillName, displayName,
                     isInfinite, isStackable, isOnce, defaultPhase, 
                     maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable,
                     explanation, effectName, effectVisualType, effectMoveType);
@@ -141,6 +143,7 @@ public class StatusEffect {
         this.flexibleElem = new FlexibleElement(this, caster, originSkill);
     }
 
+    public string GetOwnerOfSkill() { return fixedElem.display.ownerOfSkill; }
     public bool GetToBeReplaced() { return fixedElem.display.toBeReplaced; }
     public string GetOriginSkillName() { return fixedElem.display.originSkillName; }
     public string GetDisplayName() { return fixedElem.display.displayName; }

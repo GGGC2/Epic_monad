@@ -456,7 +456,7 @@ public class UnitManager : MonoBehaviour{
     public void ReadTileBuffInfos() {
         foreach (var statusEffectInfo in statusEffectInfoList) {
             UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
-            if (statusEffectInfo.GetOwner() == "tile") {
+            if (statusEffectInfo.GetOwnerOfSkill() == "tile") {
                 switch (statusEffectToAdd.actuals[0].statusEffectType) {
                 case StatusEffectType.PowerChange:
                     BattleData.tileBuffInfos.Add(Element.Fire, statusEffectToAdd);

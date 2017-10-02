@@ -908,14 +908,14 @@ public class Unit : MonoBehaviour{
         List<UnitStatusEffect> statusEffectList = StatusEffectList;
 
         if (elementOfTile != GetElement()) {
-            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetDisplayName().Contains("타일버프"));
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOwnerOfSkill() == "tile");
             if (statusEffect != null)
                 RemoveStatusEffect(statusEffect);
         } else {
-            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetDisplayName().Contains("타일버프"));
-            if (statusEffect != null)
-                RemoveStatusEffect(statusEffect);
             UnitStatusEffect.FixedElement fixedElem = BattleData.tileBuffInfos[elementOfTile];
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOwnerOfSkill() == "tile");
+            if (statusEffect != null && statusEffect.fixedElem != fixedElem)
+                RemoveStatusEffect(statusEffect);
             UnitStatusEffect newStatusEffect = new UnitStatusEffect(fixedElem, this, this, null);
             List<UnitStatusEffect> newStatusEffectList = new List<UnitStatusEffect>();
             newStatusEffectList.Add(newStatusEffect);

@@ -30,8 +30,8 @@ public class PassiveSkill : Skill{
         foreach (var statusEffectInfo in statusEffectInfoList) {
             UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if (statusEffectInfo.GetRequireLevel() <= partyLevel) {
-                if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //������ previousStatusEffect�� ���ؼ��� ��ü ���θ� Ȯ����.
-                                                                                                 //��, ��ü�Ǿ�� �ϴ� StatusEffect�� csv ���Ͽ��� �ٷ� ���� �ٿ� ������ ��.
+                if (previousStatusEffect != null && previousStatusEffect.display.toBeReplaced) { //이전의 previousStatusEffect에 대해서만 대체 여부를 확인함.
+                                                                                                 //즉, 대체되어야 하는 StatusEffect는 csv 파일에서 바로 다음 줄에 만들어야 함.
                     unitStatusEffectList.Remove(previousStatusEffect);
                 }
                 if (statusEffectInfo.GetOriginSkillName().Equals(korName)) {
