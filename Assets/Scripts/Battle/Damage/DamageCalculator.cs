@@ -142,13 +142,13 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
 			foreach(var statusEffect in target.StatusEffectList) {
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if(originSkill.GetType() == typeof(ActiveSkill))
+				if(originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach(var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if(originSkill.GetType() == typeof(PassiveSkill))
+                if(originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 
@@ -191,7 +191,7 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in target.StatusEffectList){
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
                     ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
 			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, castingApply.GetSkill().GetName());
@@ -201,7 +201,7 @@ namespace Battle
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(PassiveSkill))
+                if (originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 

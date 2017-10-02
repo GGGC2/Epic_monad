@@ -265,7 +265,8 @@ public class BattleManager : MonoBehaviour{
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
 		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-		if (!IsSelectedUnitRetreatOrDie ()) {
+        BattleData.unitManager.ApplyTileBuffsAtActionEnd();
+        if (!IsSelectedUnitRetreatOrDie ()) {
 			yield return StartCoroutine (BattleData.unitManager.TriggerStatusEffectsAtActionEnd ());
 		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();

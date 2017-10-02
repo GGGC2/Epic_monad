@@ -175,6 +175,7 @@ public static class BattleData{
     public static bool tileSelected = false;
     public static Aspect aspect = Aspect.North;
 
+    public static Dictionary<Element, UnitStatusEffect.FixedElement> tileBuffInfos = new Dictionary<Element, UnitStatusEffect.FixedElement>();
 	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
 	public class Move {

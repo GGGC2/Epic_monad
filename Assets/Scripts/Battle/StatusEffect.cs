@@ -277,6 +277,8 @@ public class StatusEffect {
                 statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
             else if (seVarEnum == StatusEffectVar.Power)
                 statusEffectVar = caster.GetStat(Stat.Power);
+            else if (seVarEnum == StatusEffectVar.MaxHealth)
+                statusEffectVar = caster.GetStat(Stat.MaxHealth);
             else
                 statusEffectVar = GetStatusEffectVar(i);
             flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);

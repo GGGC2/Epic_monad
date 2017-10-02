@@ -8,6 +8,7 @@ using Enums;
 using Battle;
 using Battle.Skills;
 using GameData;
+using Battle.Damage;
 using Save;
 
 public class HitInfo{
@@ -233,7 +234,7 @@ public class Unit : MonoBehaviour{
 		Tile tileUnderCaster = GetTileUnderUnit();
 		foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
 			Skill originSkill = tileStatusEffect.GetOriginSkill();
-			if (originSkill.GetType() == typeof(ActiveSkill)) {
+			if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
 				if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
 					isPossible = false;
 				}
@@ -273,7 +274,7 @@ public class Unit : MonoBehaviour{
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
         foreach (var statusEffect in StatusEffectList) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
-            if (originPassiveSkill.GetType() == typeof(PassiveSkill))
+            if (originPassiveSkill != null && originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
         BattleTriggerManager.CheckBattleTrigger(this, destTile);
@@ -412,7 +413,7 @@ public class Unit : MonoBehaviour{
 
         toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
         Skill originSkill = statusEffect.GetOriginSkill();
-        if (originSkill.GetType() == typeof(ActiveSkill)) {
+        if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
             toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectRemoved(statusEffect, this);
         }
         if (toBeRemoved) {
@@ -508,21 +509,6 @@ public class Unit : MonoBehaviour{
 					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
 				}
 			}
-
-			if (statusEffectType == StatusEffectType.SpeedChange) {
-				if (GetElement() == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
-					appliedChangeList.Add (new StatChange (false, 15));
-				}
-			}
-		}
-
-		// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-		if(statusEffectType == StatusEffectType.PowerChange && GetElement() == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire){
-			appliedChangeList.Add (new StatChange (true, 1.2f));
-		}
-		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
-		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && GetElement() == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
-			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.level+53));
 		}
 
 		return CalculateThroughChangeList(data, appliedChangeList);
@@ -657,7 +643,7 @@ public class Unit : MonoBehaviour{
 				BattleManager battleManager = BattleData.battleManager;
 				UnitStatusEffect statusEffect = kv.Key;
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value));
 				Unit shieldCaster = statusEffect.GetCaster();
 				List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
@@ -689,7 +675,7 @@ public class Unit : MonoBehaviour{
     private bool checkIfSourceIsTrap(UnitStatusEffect se) {
         List<TileStatusEffect.FixedElement> statusEffectList = new List<TileStatusEffect.FixedElement>();
         Skill originSkill = se.GetOriginSkill();
-        if(originSkill.GetType() == typeof(ActiveSkill)) 
+        if(originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) 
             statusEffectList = ((ActiveSkill)originSkill).GetTileStatusEffectList();
         bool isSourceTrap = false;
         foreach(var fixedElem in statusEffectList) {
@@ -901,7 +887,7 @@ public class Unit : MonoBehaviour{
 		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (var statusEffect in statusEffectList) {
             Skill originSkill = statusEffect.GetOriginSkill();
-            if (originSkill.GetType() == typeof(ActiveSkill)) {
+            if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                 ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectAtPhaseStart(this, statusEffect);
             }
         }
@@ -915,11 +901,33 @@ public class Unit : MonoBehaviour{
     {
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
+
+    public void ApplyTileBuffAtActionEnd() {
+        Tile tile = GetTileUnderUnit();
+        Element elementOfTile = tile.GetTileElement();
+        List<UnitStatusEffect> statusEffectList = StatusEffectList;
+
+        if (elementOfTile != GetElement()) {
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetDisplayName().Contains("타일버프"));
+            if (statusEffect != null)
+                RemoveStatusEffect(statusEffect);
+        } else {
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetDisplayName().Contains("타일버프"));
+            if (statusEffect != null)
+                RemoveStatusEffect(statusEffect);
+            UnitStatusEffect.FixedElement fixedElem = BattleData.tileBuffInfos[elementOfTile];
+            UnitStatusEffect newStatusEffect = new UnitStatusEffect(fixedElem, this, this, null);
+            List<UnitStatusEffect> newStatusEffectList = new List<UnitStatusEffect>();
+            newStatusEffectList.Add(newStatusEffect);
+            StatusEffector.AttachStatusEffect(this, newStatusEffectList, this);
+        }
+    }
+
     public void TriggerTileStatusEffectAtTurnStart() {
 		foreach(var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnStart(this, tile, tileStatusEffect);
                 }
             }
@@ -929,7 +937,7 @@ public class Unit : MonoBehaviour{
 		foreach (var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
                 }
             }

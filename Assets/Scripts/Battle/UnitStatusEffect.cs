@@ -63,11 +63,14 @@ public class UnitStatusEffect : StatusEffect {
     public bool GetIsBuff() { return ((FixedElement.DisplayElement)fixedElem.display).isBuff; }
     public Unit GetOwner() { return ((UnitStatusEffect.FlexibleElement.DisplayElement)flexibleElem.display).owner; }
     protected override float GetStatusEffectVar(int i) {
-        float statusEffectVar;
-        if (GetOriginSkill().GetType() == typeof(ActiveSkill))
-            statusEffectVar = ((ActiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
-        else
-            statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+        float statusEffectVar = 0;
+        Skill originSkill = GetOriginSkill();
+        if (originSkill != null) {
+            if (originSkill.GetType() == typeof(ActiveSkill))
+                statusEffectVar = ((ActiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+            else
+                statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+        }
         return statusEffectVar;
     }
 }

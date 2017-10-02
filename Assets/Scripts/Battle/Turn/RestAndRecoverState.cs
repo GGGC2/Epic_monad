@@ -32,7 +32,7 @@ public class RestAndRecover {
         List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
         foreach(UnitStatusEffect statusEffect in statusEffectList) {
             Skill passiveSkill = statusEffect.GetOriginSkill();
-            if(passiveSkill.GetType() == typeof(PassiveSkill)) {
+            if(passiveSkill != null && passiveSkill.GetType() == typeof(PassiveSkill)) {
                 ((PassiveSkill)passiveSkill).SkillLogic.TriggerStatusEffectsOnRest(unit, statusEffect);
             }
         }

@@ -339,7 +339,7 @@ namespace Battle.Turn {
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
 						tileStatusConditionPossible = false;
                     }

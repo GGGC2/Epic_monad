@@ -75,6 +75,12 @@ public class UnitManager : MonoBehaviour{
 		}
 	}
 
+    public void ApplyTileBuffsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            unit.ApplyTileBuffAtActionEnd();
+        }
+    }
+
     public void TriggerPassiveSkillsAtActionEnd(){
 		foreach(var unit in GetAllUnits()) {
             SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
@@ -86,7 +92,7 @@ public class UnitManager : MonoBehaviour{
             List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
                 Skill skill = statusEffect.GetOriginSkill();
-                if (skill.GetType() == typeof(ActiveSkill))
+                if (skill != null && skill.GetType() == typeof(ActiveSkill))
                     yield return StartCoroutine(((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect));
             }
         }
@@ -447,7 +453,32 @@ public class UnitManager : MonoBehaviour{
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start() {
+    public void ReadTileBuffInfos() {
+        foreach (var statusEffectInfo in statusEffectInfoList) {
+            UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+            if (statusEffectInfo.GetOwner() == "tile") {
+                switch (statusEffectToAdd.actuals[0].statusEffectType) {
+                case StatusEffectType.PowerChange:
+                    BattleData.tileBuffInfos.Add(Element.Fire, statusEffectToAdd);
+                    break;
+                case StatusEffectType.DefenseChange:
+                    BattleData.tileBuffInfos.Add(Element.Metal, statusEffectToAdd);
+                    break;
+                case StatusEffectType.SpeedChange:
+                    BattleData.tileBuffInfos.Add(Element.Water, statusEffectToAdd);
+                    break;
+                case StatusEffectType.HealOverPhase:
+                    BattleData.tileBuffInfos.Add(Element.Plant, statusEffectToAdd);
+                    break;
+                default:
+                    Debug.Log("fail reading tile buff infos");
+                    break;
+                }
+            }
+        }
+    }
+
+    void Start() {
 		GameData.PartyData.CheckLevelData();
 		activeSkillList = Parser.GetParsedData<ActiveSkill>();
 		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
@@ -459,6 +490,7 @@ public class UnitManager : MonoBehaviour{
 		if (!GameData.SceneData.isTestMode) {
             ApplyAIInfo();
         }
+        ReadTileBuffInfos();
         GetEnemyUnits();
 	}
 

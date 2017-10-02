@@ -363,7 +363,7 @@ public class ActiveSkill : Skill{
 						bool ignored = false;
 						foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
 							Skill originSkill = tileStatusEffect.GetOriginSkill();
-							if (originSkill.GetType() == typeof(ActiveSkill)) {
+							if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
 								if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(castingApply, tile, tileStatusEffect))
 									ignored = true;
 							}
@@ -377,6 +377,7 @@ public class ActiveSkill : Skill{
 				BattleData.uiManager.DeactivateAllBonusText();
 				// 사이사이에도 특성 발동 조건을 체크해준다.
 				BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
+                BattleData.unitManager.ApplyTileBuffsAtActionEnd();
 				yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
 				BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 				BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
@@ -390,7 +391,7 @@ public class ActiveSkill : Skill{
 		passiveSkillLogicsOfCaster.TriggerUsingSkill(casting, targets);
 		foreach(var statusEffect in caster.StatusEffectList) {
 			Skill originPassiveSkill = statusEffect.GetOriginSkill();
-			if(originPassiveSkill.GetType() == typeof(PassiveSkill))
+			if(originPassiveSkill != null && originPassiveSkill.GetType() == typeof(PassiveSkill))
 				((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
 		}
 		caster.SetHasUsedSkillThisTurn(true);
@@ -479,7 +480,7 @@ public class ActiveSkill : Skill{
 				(statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.
 						TriggerStatusEffectAtReflection(target, statusEffect, caster));
 				if (statusEffect.GetIsOnce() == true)
