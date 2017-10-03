@@ -644,6 +644,7 @@ public class BattleManager : MonoBehaviour{
         if (SceneData.isTestMode) {
             mapData = Resources.Load<TextAsset>("Data/EQ_test_map");
             unitData = Resources.Load<TextAsset>("Data/EQ_test_unit");
+            battleConditionData = Resources.Load<TextAsset>("Data/EQ_test_battleEndCondition");
         } else {
             if (SceneData.stageNumber == 0){
 				SceneData.stageNumber = 1;
