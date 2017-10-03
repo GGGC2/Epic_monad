@@ -494,7 +494,7 @@ public class Unit : MonoBehaviour{
 			if (statusEffectType == StatusEffectType.PowerChange) {
 				List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList ();
 				float relativePowerBonus = SkillLogicFactory.Get (passiveSkills).GetAdditionalRelativePowerBonus (this);
-				relativePowerBonus = (relativePowerBonus - 1) * 100;
+				//relativePowerBonus = (relativePowerBonus - 1) * 100;
 				appliedChangeList.Add (new StatChange (true, relativePowerBonus));
 			}
 
