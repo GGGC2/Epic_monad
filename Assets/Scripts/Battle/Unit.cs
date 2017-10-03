@@ -565,7 +565,11 @@ public class Unit : MonoBehaviour{
 			float defense = DamageCalculator.CalculateDefense(appliedSkill, this, caster);
 			float resistance = DamageCalculator.CalculateResistance(appliedSkill, this, caster);
 			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
-		}
+
+            if (!SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerDamagedByCasting(caster, this, damage)) {
+                damage = 0;
+            }
+        }
 		return (int)Math.Round(damage);
 	}
 	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
@@ -584,7 +588,7 @@ public class Unit : MonoBehaviour{
 			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
 
 			// 비앙카 고유스킬 - 덫 데미지 안 받음
-			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamagedByCasting(caster, this, damage)) {
+			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamagedByNonCasting(caster, damage, this, isSourceTrap)) {
 				damage = 0;
 			}
 		}
