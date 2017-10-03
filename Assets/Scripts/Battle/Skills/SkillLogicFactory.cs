@@ -67,8 +67,11 @@ public static class SkillLogicFactory
 
 			//루키어스
 			case "가로베기":
-				skillLogic = new BaseSkillLogic();
+				skillLogic = new Lucius_1_l_SkillLogic();
 			break;
+            case "푸른 쇄도":
+                skillLogic = new Lucius_2_r_SkillLogic();
+            break;
 
             // 루베리카
             case "교향곡 : 운명":
@@ -370,6 +373,17 @@ public static class SkillLogicFactory
             break;
             case "응급처치":
             passiveSkillLogic = new Luvericha_7_r_SkillLogic();
+            break;
+
+            //루키어스
+            case "검사의 직감":
+            passiveSkillLogic = new Lucius_1_m_SkillLogic();
+            break;
+            case "정면 승부":
+            passiveSkillLogic = new Lucius_2_l_SkillLogic();
+            break;
+            case "배수진":
+            passiveSkillLogic = new Lucius_2_m_SkillLogic();
             break;
 
 			// 리니안

@@ -38,6 +38,36 @@ public class Utility : MonoBehaviour {
 		float deltaDegree = Mathf.Atan2(targetPosition.y - startPosition.y, targetPosition.x - startPosition.x) * Mathf.Rad2Deg;
 		return deltaDegree;
 	}
+
+    public static Tile GetGrabResultTile(Unit caster, Unit target) {    //caster,result,...,target
+        TileManager tileManager = BattleData.tileManager;
+        Vector2 casterPosition = caster.GetPosition();
+        Vector2 targetPosition = target.GetPosition();
+        Vector2 directionVector = (targetPosition - casterPosition).normalized;
+        Vector2 currentPosition = targetPosition;
+        for (int i = 0; i < (targetPosition - casterPosition).magnitude; i++) {
+            currentPosition -= directionVector;
+            Tile tile = tileManager.GetTile(currentPosition);
+            if (tile == null || tile.IsUnitOnTile())
+                return tileManager.GetTile(currentPosition + directionVector);
+        }
+        return tileManager.GetTile(currentPosition);
+    }
+
+    public static Tile GetChargeResultTile(Unit caster, Unit target) {
+        TileManager tileManager = BattleData.tileManager;
+        Vector2 casterPosition = caster.GetPosition();
+        Vector2 targetPosition = target.GetPosition();
+        Vector2 directionVector = (targetPosition - casterPosition).normalized;
+        Vector2 currentPosition = casterPosition;
+        for (int i = 0; i < (targetPosition - casterPosition).magnitude; i++) {
+            currentPosition += directionVector;
+            Tile tile = tileManager.GetTile(currentPosition);
+            if (tile == null || tile.IsUnitOnTile())
+                return tileManager.GetTile(currentPosition - directionVector);
+        }
+        return tileManager.GetTile(currentPosition);
+    }
 	
 	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles){
 		Vector2 averagePos = new Vector2(0, 0);

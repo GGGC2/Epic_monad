@@ -7,7 +7,7 @@ namespace Battle.Skills {
             if(trap.GetCaster() == caster) return false;
             return true;
         }
-        public override bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        public override bool TriggerDamagedByNonCasting(Unit caster, float damage, Unit target, bool isSourceTrap) {
             return !isSourceTrap;
         }
     }

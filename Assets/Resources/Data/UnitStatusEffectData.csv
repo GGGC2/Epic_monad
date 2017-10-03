@@ -70,6 +70,7 @@ lenien	29	FALSE	자기 부상	자기 부상	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	F
 lenien	36	FALSE	에테르 전위	저항력 감소	FALSE	FALSE	FALSE	FALSE	1	1	TRUE	FALSE	TRUE	None	None	None	1	ResistanceChange	Level	-0.6	-42	FALSE	FALSE													저항력이 <color=red>-AMOUNT0</color> 감소합니다.
 lenien	43	FALSE	축전	전하막	TRUE	FALSE	FALSE	FALSE	2	1	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													지속이 끝나면 강타(<color=red>AMOUNT0</color>)로 바뀝니다. 단, 지속이 끝나기 전에 쌓인 피해가 최대 체력의 30%를 넘으면 기절(1페이즈)로 바뀝니다.
 lenien	43	FALSE	입자 가속	공격력 증가	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	10	0	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
+lucius	8	FALSE	배수진	방어력 상승	TRUE	TRUE	TRUE	FALSE	9999	4	FALSE	FALSE	FALSE	None	None	None	1	DefenseChange	Level	0.4	33	FALSE	FALSE													방어력이 <color=green>AMOUNT0</color> 증가합니다.
 luvericha	0	FALSE	셈여림	포르테	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													공격 기술의 위력 <color=red>+20%</color>, 비공격 기술의 위력 <color=red>-10%</color>
 luvericha	0	FALSE	셈여림	피아노	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	TRUE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													비공격 기술의 위력 <color=red>+20%</color>, 공격 기술의 위력 <color=red>-10%</color>
 luvericha	8	FALSE	위기상황	속도 상승	TRUE	TRUE	FALSE	FALSE	9999	1	FALSE	FALSE	FALSE	None	None	None	1	SpeedChange	O	10	0	FALSE	FALSE													속도가 <color=red>AMOUNT0</color> 증가합니다.

@@ -1,4 +1,7 @@
 owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
+lucius	7	1	검사의 직감	2	바로 옆 타일의 유닛이 시전한 공격의 피해를 받지 않습니다.	None	0	0	None	0	0
+lucius	8	8	정면 승부	1	전술 보정치가 없는 공격의 피해량이 20% 높아집니다.	None	0	0	None	0	0
+lucius	10	8	배수진	2	자신이 위치한 타일을 기준으로 움직일 수 없는 방향 하나당 방어력이 33(+레벨당 0.4)(<color=green>VALUE1</color>) 높아집니다.	Level	0.4	33	None	0	0
 reina	0	0	핀토스의 긍지	0	다른 유닛에게 받은 강화 하나당 공격력이 5% 높아집니다.	None	0	0	None	0	0
 reina	4	8	상처 태우기	1	모든 공격이 2페이즈 동안 내상(자신이 다른 유닛에게 받은 강화 하나당 10%) 효과를 줍니다.	None	0	0	None	0	0
 reina	9	8	불의 파동	2	<color=green>나무</color> 속성 유닛을 공격할 때 피해량이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
