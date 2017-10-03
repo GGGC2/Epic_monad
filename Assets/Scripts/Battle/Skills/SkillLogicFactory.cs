@@ -566,6 +566,9 @@ public static class SkillLogicFactory
             case "행동하는 혁명가":
             passiveSkillLogic = new Karldrich_1_r_SkillLogic();
             break;
+            case "노조결성":
+            passiveSkillLogic = new Karldrich_2_r_SkillLogic();
+            break;
 
             // 큐리
             case "정제":

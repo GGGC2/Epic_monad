@@ -98,6 +98,7 @@ json	0	0	표식	0	제이선의 공격은 적에게 표식을 남깁니다. 표�
 json	0	8	바람 가르기	1	이동하고 나면 바로 다음 공격에 필요한 행동력이 (이동한 타일*10%) 줄어듭니다.	None	0	0	None	0	0
 karldrich	0	0	모두에게 평등한 죽창	1	공격할 때 대상의 방어력을 무시합니다.	None	0	0	None	0	0
 karldrich	10	1	행동하는 혁명가	3	속도가 <color=cyan>10</color> 높아집니다.	None	0	0	None	0	0
+karldrich	7	8	노조결성	3	반경 2타일 이내의 동료 1명당 자신의 공격력이 <color=red>5%</color>씩 높아집니다.	None	0	0	None	0	0
 sepia	9	1	신뢰의 끈	2	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
 darkenir	0	0	흐름 동화	0	자신에게 효과를 건 대상도 절반의 해당 효과를 받는다. 보스 유닛의 경우 무효화되거나 효과가 감소한다. 이 특성으로 얻은 효과는 원래의 효과와 중첩되지 않는다.	None	0	0	None	0	0
 noel	0	0	심판의 빛	0	자신이 사용한 보호막이 피해를 흡수할 때 흡수한 만큼 공격자에게 마법 피해를 줍니다.	None	0	0	None	0	0

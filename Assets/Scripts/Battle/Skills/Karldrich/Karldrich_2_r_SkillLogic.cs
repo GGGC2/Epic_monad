@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
 using Enums;
-using UnityEngine;
 using Battle.Damage;
 using System;
+using System.Collections.Generic;
 
 namespace Battle.Skills {
-    class Lucius_2_m_SkillLogic : BasePassiveSkillLogic {
+    class Karldrich_2_r_SkillLogic : BasePassiveSkillLogic {
         public override void TriggerOnActionEnd(Unit caster) {
             TileManager tileManager = TileManager.Instance;
             Vector2 casterPosition = caster.GetPosition();
             int count = 0;
-            List<Tile> tilesInRange = tileManager.GetTilesInRange(RangeForm.Diamond, casterPosition, 1, 1, 0, Direction.Down);
-            foreach (Tile tile in tilesInRange) {
-                if (!tileManager.isTilePassable(tile))
+            List<Tile> tileInRange = tileManager.GetTilesInRange(RangeForm.Diamond, casterPosition, 1, 2, 0, Direction.Down);
+            foreach (Tile tile in tileInRange) {
+                Unit unit = tile.GetUnitOnTile();
+                if(unit != null && unit.GetSide() == Side.Ally)
                     count++;
             }
 
