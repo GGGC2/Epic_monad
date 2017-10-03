@@ -910,7 +910,7 @@ public class Unit : MonoBehaviour{
         Element elementOfTile = tile.GetTileElement();
         List<UnitStatusEffect> statusEffectList = StatusEffectList;
 
-        if (elementOfTile != GetElement()) {
+        if (elementOfTile == Element.None || elementOfTile != GetElement()) {
             UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOwnerOfSkill() == "tile");
             if (statusEffect != null)
                 RemoveStatusEffect(statusEffect);

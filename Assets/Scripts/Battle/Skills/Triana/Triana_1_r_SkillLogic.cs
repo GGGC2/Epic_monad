@@ -12,7 +12,7 @@ namespace Battle.Skills {
             int reach = castingApply.GetSkill().GetFirstMaxReach();
             if (caster.element == Element.Plant) {
                 Tile resultTile = Utility.GetGrabResultTile(caster, target);
-                if (resultTile != null && !resultTile.IsUnitOnTile())
+                if (TileManager.Instance.isTilePassable(resultTile))
                     target.ForceMove(resultTile);
                 yield return new WaitForSeconds(0.2f);
             }
