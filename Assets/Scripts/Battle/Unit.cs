@@ -313,7 +313,7 @@ public class Unit : MonoBehaviour{
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
             if (statusEffectType != StatusEffectType.Etc)
-                actualStat.value = (int)CalculateActualAmount(myInfo.baseStats[statType], statusEffectType);
+                actualStat.value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statType], statusEffectType));
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -330,7 +330,7 @@ public class Unit : MonoBehaviour{
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
             
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
-            statsToUpdate[i].value = (int)CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType);
+            statsToUpdate[i].value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType));
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -519,7 +519,7 @@ public class Unit : MonoBehaviour{
         foreach(var statusEffect in statusEffectList) {
             remainShieldAmount += statusEffect.GetRemainAmountOfType(StatusEffectType.Shield);
         }
-        return (int)remainShieldAmount;
+        return (int)Math.Round(remainShieldAmount);
     }
 
 	public void UpdateRemainPhaseAtPhaseEnd()
@@ -548,7 +548,7 @@ public class Unit : MonoBehaviour{
 		var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
-		int realDamage = (int)CalculateDamageByCasting (castingApply, isHealth);
+		int realDamage = CalculateDamageByCasting (castingApply, isHealth);
 		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
@@ -566,10 +566,10 @@ public class Unit : MonoBehaviour{
 			float resistance = DamageCalculator.CalculateResistance(appliedSkill, this, caster);
 			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
 		}
-		return (int)damage;
+		return (int)Math.Round(damage);
 	}
 	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
-		int realDamage = (int)CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
+		int realDamage = CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
 		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
@@ -588,7 +588,7 @@ public class Unit : MonoBehaviour{
 				damage = 0;
 			}
 		}
-		return (int)damage;
+		return (int)Math.Round(damage);
 	}
     
 	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
@@ -601,7 +601,7 @@ public class Unit : MonoBehaviour{
 					int num = se.fixedElem.actuals.Count;
 					for (int i = 0; i < num; i++) {
 						if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
-							int remainShieldAmount = (int)se.GetRemainAmount(i);
+							int remainShieldAmount = (int)Math.Round(se.GetRemainAmount(i));
 							if (remainShieldAmount >= damageAfterShieldApply) {
 								se.SubAmount(i, damageAfterShieldApply);
 								attackedShieldDict.Add(se, damageAfterShieldApply);
@@ -727,7 +727,7 @@ public class Unit : MonoBehaviour{
 		amount = CalculateActualAmount(amount, StatusEffectType.TakenHealChange);
 
 		// 초과회복시 최대체력까지만 올라감
-		int actualAmount = (int)amount;
+		int actualAmount = (int)Math.Round(amount);
 		if (currentHealth + actualAmount > maxHealth)
 		{
 			actualAmount = maxHealth - currentHealth;
@@ -775,10 +775,10 @@ public class Unit : MonoBehaviour{
 
         // 기술의 행동력 소모 증감 효과 적용
         if (HasStatusEffect(StatusEffectType.RequireSkillAPChange)) {
-			requireSkillAP = (int) CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange);
+			requireSkillAP = (int)Math.Round(CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange));
 		}
 		float speed = GetSpeed ();
-		requireSkillAP = (int)(requireSkillAP * (100f / speed));
+		requireSkillAP = (int)Math.Round(requireSkillAP * (100f / speed));
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
 		if (skill.GetRequireAP() == 1000)
@@ -1047,7 +1047,7 @@ public class Unit : MonoBehaviour{
 		UpdateSpriteByDirection();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
-		activityPoint = (int)(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
+		activityPoint = (int)Math.Round(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
 		//Info에 넣어뒀던 변동사항 적용
 		foreach(KeyValuePair<Stat, int> change in myInfo.InitStatChanges){
 			if(change.Key == Stat.CurrentHealth){
