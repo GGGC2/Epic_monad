@@ -353,6 +353,9 @@ namespace Battle.Turn{
 
 			yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
 			state = State.StandbyOrRest;
+			if (BattleData.selectedUnit.CheckReach ()) {
+				state = State.Dead;
+			}
 		}
 
 		IEnumerator CastingLoop(){
