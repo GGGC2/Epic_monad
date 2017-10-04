@@ -728,31 +728,30 @@ public class Unit : MonoBehaviour{
 
 		// 초과회복시 최대체력까지만 올라감
 		int actualAmount = (int)Math.Round(amount);
-		if (currentHealth + actualAmount > maxHealth)
-		{
+		if (currentHealth + actualAmount > maxHealth){
 			actualAmount = maxHealth - currentHealth;
 		}
 
-		currentHealth += actualAmount;
-
-		DisplayRecoverText (actualAmount);
-		UpdateHealthViewer();
-		yield return new WaitForSeconds(1);
-		recoverTextObject.SetActive(false);
+		if (actualAmount > 0) {
+			currentHealth += actualAmount;
+			DisplayRecoverText (actualAmount);
+			UpdateHealthViewer ();
+			yield return new WaitForSeconds (0.5f);
+			recoverTextObject.SetActive (false);
+		}
 	}
 
 	public IEnumerator RecoverActionPoint(int amount)
 	{
-		activityPoint += amount;
-
-		//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
-		DisplayRecoverText (amount);
-
-		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(1);
-		recoverTextObject.SetActive(false);
-
-		unitManager.UpdateUnitOrder();
+		if (amount > 0) {
+			activityPoint += amount;
+			//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
+			DisplayRecoverText (amount);
+			// 회복량 표시되는 시간.
+			yield return new WaitForSeconds (0.5f);
+			recoverTextObject.SetActive (false);
+			unitManager.UpdateUnitOrder ();
+		}
 	}
 
 	public void RegenerateActionPoint(){
