@@ -34,6 +34,7 @@ public class AIData : MonoBehaviour {
 	public void SetActive()
 	{
 		isActive = true;
+        LogManager.Instance.Record(new AISetActiveLog(gameObject.GetComponent<Unit>()));
 	}
 
 	public void SetActiveByExternalFactor()

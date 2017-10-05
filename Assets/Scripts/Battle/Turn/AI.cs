@@ -208,7 +208,7 @@ namespace Battle.Turn{
 			}
 
 			if (state != State.Dead) {
-				battleManager.EndUnitTurn ();
+				battleManager.EndUnitTurn (unit);
 			}
 		}
 
@@ -597,9 +597,8 @@ namespace Battle.Turn{
 				// SkillAndChainState.ApplySkill에서 체크하므로 여기선 할 일 없음
 			}
 
-			if (satisfyActiveCondition) {
+			if (satisfyActiveCondition)
 				_AIData.SetActive ();
-			}
 		}
 	}
 }

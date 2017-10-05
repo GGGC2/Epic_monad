@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviour{
 	GameObject placedUnitCheckUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
+    public GameObject logDisplayPanel;
 
 	public GameObject chainBonusObj;
 	public GameObject celestialBonusObj;
@@ -44,25 +45,27 @@ public class UIManager : MonoBehaviour{
 		for(int i = 0; i < 8; i++){
 			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
 		}
-		unitViewerUI = GameObject.Find("UnitViewerPanel");
-        statusEffectDisplayPanel = GameObject.Find("StatusEffectDisplayPanel");
-        selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
-		tileViewerUI = GameObject.Find("TileViewerPanel");
-		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
-		selectDirectionUI.Initialize ();
-		skillNamePanelUI = GameObject.Find("SkillNamePanel");
-		movedUICanvas = GameObject.Find("MovingUICanvas");
-		phaseUI = GameObject.Find("PhasePanel");
-		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
-		placedUnitCheckUI = GameObject.Find("PlacedUnitCheckPanel");
-		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
-		TutorialScenario.selectDirectionUI = selectDirectionUI;
+		unitViewerUI                            = GameObject.Find("UnitViewerPanel");
+        statusEffectDisplayPanel                = GameObject.Find("StatusEffectDisplayPanel");
+        logDisplayPanel                         = GameObject.Find("LogDisplayPanel");
+        selectedUnitViewerUI                    = GameObject.Find("SelectedUnitViewerPanel");
+		tileViewerUI                            = GameObject.Find("TileViewerPanel");
+		selectDirectionUI                       = FindObjectOfType<SelectDirectionUI>();
+		skillNamePanelUI                        = GameObject.Find("SkillNamePanel");
+		movedUICanvas                           = GameObject.Find("MovingUICanvas");
+		phaseUI                                 = GameObject.Find("PhasePanel");
+		detailInfoUI                            = FindObjectOfType<DetailInfoPanel>();
+		placedUnitCheckUI                       = GameObject.Find("PlacedUnitCheckPanel");
+		notImplementedDebugPanel                = GameObject.Find("NotImplementedDebugPanel");
+        selectDirectionUI.Initialize();
+        TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
 
 	void Start(){
 		skillViewer.gameObject.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
+        logDisplayPanel.SetActive(false);
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
@@ -243,6 +246,15 @@ public class UIManager : MonoBehaviour{
     public void DisableStatusEffectDisplayPanel() {
         statusEffectDisplayPanel.transform.position = originalStatusEffectDisplayPanelPosition;
         statusEffectDisplayPanel.SetActive(false);
+    }
+
+    public void ActivateLogDisplayPanel() {
+        logDisplayPanel.SetActive(true);
+        logDisplayPanel.GetComponent<LogDisplayPanel>().Initialize();
+    }
+
+    public void InActiveLogDisplayPanel() {
+        logDisplayPanel.SetActive(false);
     }
 
 	public void SetTileViewer(Tile tile)

@@ -167,32 +167,19 @@ public class StatusEffect {
     public bool GetIsPercent(int index) { return fixedElem.actuals[index].isPercent; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
-    public void AddRemainPhase(int phase) { flexibleElem.display.remainPhase += phase; }
-    public void DecreaseRemainPhase() { flexibleElem.display.remainPhase -= 1; }
-    public void DecreaseRemainPhase(int phase) { flexibleElem.display.remainPhase -= phase; }
-    public void SetRemainPhase(int phase) { flexibleElem.display.remainPhase = phase; }
-    public void AddRemainStack(int stack) { 
-		flexibleElem.display.remainStack += stack;
-        if(flexibleElem.display.remainStack > fixedElem.display.maxStack) {
-            flexibleElem.display.remainStack = fixedElem.display.maxStack;
-        }
+    public void AddRemainPhase(int phase) { SetRemainPhase(flexibleElem.display.remainPhase + phase); }
+    public void DecreaseRemainPhase() { SetRemainPhase(flexibleElem.display.remainPhase - 1); }
+    public void DecreaseRemainPhase(int phase) { SetRemainPhase(flexibleElem.display.remainPhase - phase); }
+    public void SetRemainPhase(int phase) {
+        int beforePhase = flexibleElem.display.remainPhase;
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainPhaseChange, 0, beforePhase, phase));
+        flexibleElem.display.remainPhase = phase; 
     }
-    
-    public void DecreaseRemainStack() { 
-		flexibleElem.display.remainStack -= 1;
-        if (flexibleElem.display.remainStack < 0) {
-            flexibleElem.display.remainStack = 0;
-        }
-    }
-    
-    public void DecreaseRemainStack(int stack) {
-		flexibleElem.display.remainStack -= stack;
-        if (flexibleElem.display.remainStack < 0) {
-            flexibleElem.display.remainStack = 0;
-        }
-    }
-
+    public void AddRemainStack(int stack) { SetRemainStack(flexibleElem.display.remainStack + stack); }
+    public void DecreaseRemainStack() { DecreaseRemainStack(1); }
+    public void DecreaseRemainStack(int stack) { SetRemainStack(flexibleElem.display.remainStack - stack); }
     public void SetRemainStack(int stack) {
+        int beforeStack = flexibleElem.display.remainStack;
 		flexibleElem.display.remainStack = stack;
         if (flexibleElem.display.remainStack > fixedElem.display.maxStack) {
             flexibleElem.display.remainStack = fixedElem.display.maxStack;
@@ -200,6 +187,7 @@ public class StatusEffect {
         if (flexibleElem.display.remainStack < 0) {
             flexibleElem.display.remainStack = 0;
         }
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainStackChange, 0, beforeStack, flexibleElem.display.remainStack));
     }
     
     private List<int> FindIndexOfType(StatusEffectType statusEffectType) {
@@ -229,14 +217,24 @@ public class StatusEffect {
             amount += GetRemainAmount(index);
         return amount;
     }
-    public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
+    public void SetAmount(int index, float amount) {
+        float beforeAmount = flexibleElem.actuals[index].amount;
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.AmountChange, index, beforeAmount, amount));
+        flexibleElem.actuals[index].amount = amount; 
+    }
     public void SetAmountOfType(StatusEffectType statusEffectType, float amount) {
         List<int> indices = FindIndexOfType(statusEffectType);
         foreach(var index in indices)
             SetAmount(index, amount);
     }
-    public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
-    public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
+    public void SetRemainAmount(int index, float amount, bool recordLog) {
+        if (recordLog) {
+            float beforeRemainAmount = flexibleElem.actuals[index].remainAmount;
+            LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainAmountChange, index, beforeRemainAmount, amount));
+        }
+        flexibleElem.actuals[index].remainAmount = amount; 
+    }
+    public void SubAmount(int index, float amount) { SetRemainAmount(index, flexibleElem.actuals[index].remainAmount - amount, true); }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {

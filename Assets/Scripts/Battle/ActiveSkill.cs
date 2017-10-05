@@ -307,6 +307,7 @@ public class ActiveSkill : Skill{
 	}
 
 	public IEnumerator Apply(Casting casting, int chainCombo) {
+        LogManager logManager = LogManager.Instance;
 		BattleManager battleManager = BattleData.battleManager;
 		Unit caster = casting.Caster;
 		List<Tile> secondRange = casting.SecondRange;
@@ -315,11 +316,12 @@ public class ActiveSkill : Skill{
 		List<PassiveSkill> passiveSkillsOfCaster = caster.GetLearnedPassiveSkillList();
 		ListPassiveSkillLogic passiveSkillLogicsOfCaster = SkillLogicFactory.Get (passiveSkillsOfCaster);
 
-		//secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
-		//realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
+        //secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
+        //realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
-		if (IsChainable())
-			ChainList.RemoveChainOfThisUnit(caster);
+        if (IsChainable()) {
+            ChainList.RemoveChainOfThisUnit(caster);
+        }
 
 		ApplySoundEffect();
 		yield return battleManager.StartCoroutine(ApplyVisualEffect (caster, secondRange));
@@ -328,9 +330,9 @@ public class ActiveSkill : Skill{
 			if (tile.IsUnitOnTile()) {
 				Unit target = tile.GetUnitOnTile();
 
-				// AI 유닛에게 뭔가 기술이 날아오면, 그 유닛이 활성화조건 5번(기술 날아온 순간 활성화)을 가지고 있는지 확인하고 맞으면 활성화시킨다
-				if (target.GetComponent<AIData>() != null) 
-					target.GetComponent<AIData>().SetActiveByExternalFactor();
+                // AI 유닛에게 뭔가 기술이 날아오면, 그 유닛이 활성화조건 5번(기술 날아온 순간 활성화)을 가지고 있는지 확인하고 맞으면 활성화시킨다
+                if (target.GetComponent<AIData>() != null) 
+                    target.GetComponent<AIData>().SetActiveByExternalFactor();
 
 				//공격/약화계 스킬이면 회피 체크를 하고 아니라면 무조건 효과를 가한다
 				if (!IsChainable() || !CheckEvasion(caster, target)) {
@@ -606,22 +608,31 @@ public class ActiveSkill : Skill{
 	}
 
 	public IEnumerator AIUseSkill(Casting casting){
+        LogManager logManager = LogManager.Instance;
 		Unit caster = casting.Caster;
 		ActiveSkill skill = casting.Skill;
 		SkillLocation location = casting.Location;
+        Direction beforeDirection = caster.GetDirection();
 
-		caster.SetDirection (location.Direction);
-		BattleManager.MoveCameraToUnit (caster);
-		SetSkillNamePanelUI ();
+        logManager.Record(new CastLog(casting));
+        caster.SetDirection (location.Direction);
+        logManager.Record(new DirectionChangeLog(caster, beforeDirection, location.Direction));
+
+        BattleManager.MoveCameraToUnit (caster);
+        SetSkillNamePanelUI ();
+        logManager.Record(new CameraMoveLog((Vector2)caster.transform.position));
 
 		List<Tile> firstRange = casting.FirstRange;
-		BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
-		yield return new WaitForSeconds (0.4f);
-		BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+
+        BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
+        yield return new WaitForSeconds (0.4f);
+        BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		caster.UseActivityPoint (casting.RequireAP);
-		if (skill.GetCooldown () > 0) {
+
+        if (skill.GetCooldown () > 0) {
 			caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
+            logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
 		}
 
 		List<Tile> secondRange = casting.SecondRange;
@@ -629,7 +640,7 @@ public class ActiveSkill : Skill{
 		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
-		HideSkillNamePanelUI ();
+        HideSkillNamePanelUI ();
 	}
 
 	public void SetSkillNamePanelUI(){

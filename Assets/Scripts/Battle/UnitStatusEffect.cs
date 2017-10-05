@@ -9,7 +9,7 @@ public class UnitStatusEffect : StatusEffect {
         ((FlexibleElement.DisplayElement)flexibleElem.display).owner = owner;
         for (int i = 0; i < fixedElem.actuals.Count; i++) {
             CalculateAmount(i, false);
-            SetRemainAmount(i, GetAmount(i));
+            SetRemainAmount(i, GetAmount(i), false);
         }
     }
     public new class FixedElement : StatusEffect.FixedElement {

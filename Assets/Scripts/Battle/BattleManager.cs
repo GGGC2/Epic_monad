@@ -36,6 +36,7 @@ public class BattleManager : MonoBehaviour{
 		FindObjectOfType<TileManager>().GenerateTiles(Parser.GetParsedTileInfo());
 		PartyData.CheckLevelData();
 		TileManager.SetInstance ();
+        LogManager.SetInstance();
 		SkillLocation.tileManager = BattleData.tileManager;
 	}
 
@@ -132,7 +133,7 @@ public class BattleManager : MonoBehaviour{
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
 		if (BattleData.currentState != CurrentState.Destroy) {
-			EndUnitTurn ();
+			EndUnitTurn (unit);
 		}
 	}
 
@@ -143,6 +144,8 @@ public class BattleManager : MonoBehaviour{
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
 	}
 	public void StartUnitTurn(Unit unit){
+        LogManager logManager = LogManager.Instance;
+        logManager.Record(new TurnStartLog(unit));
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		Debug.Log(unit.GetNameKor() + "'s turn");
@@ -158,8 +161,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
 		BattleData.selectedUnit.SetActive();
 	}
-	public void EndUnitTurn(){
-		BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
+	public void EndUnitTurn(Unit unit) {
+        LogManager.Instance.Record(new TurnEndLog(unit));
+        BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
 		BattleData.selectedUnit.SetInactive();
 	}
@@ -179,6 +183,8 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public static IEnumerator DestroyUnit(Unit unit, TrigActionType actionType){
+        LogManager logManager = LogManager.Instance;
+        logManager.Record(new DestroyUnitLog(unit));
 		BattleManager battleManager = BattleData.battleManager;
 
 		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
@@ -504,6 +510,14 @@ public class BattleManager : MonoBehaviour{
             ChangeAspect(1);
         if(Input.GetKeyDown(KeyCode.D))
             ChangeAspect(-1);
+        
+        if(Input.GetKeyDown(KeyCode.J)) {
+            UIManager.Instance.ActivateLogDisplayPanel();
+        }
+        if(Input.GetKeyDown(KeyCode.H)) {
+            UIManager.Instance.InActiveLogDisplayPanel();
+        }
+            
 	}
 
     public void ChangeAspect(int direction) { // direction = 1 : 반시계 방향, direction = -1 : 시계방향
@@ -566,6 +580,7 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
+
 		BattleTriggerManager.CheckBattleTrigger();
 		HighlightBattleTriggerTiles();
 

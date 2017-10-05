@@ -100,6 +100,14 @@ namespace Enums {
 		Back
 	}
 
+    public enum StatusEffectChangeType {
+        Attach,
+        Remove,
+        AmountChange,
+        RemainAmountChange,
+        RemainPhaseChange,
+        RemainStackChange
+    }
 	public enum StatusEffectType
 	{
         MaxHealthChange,

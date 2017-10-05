@@ -270,7 +270,7 @@ public class Unit : MonoBehaviour{
         destTile.SetUnitOnTile(this);
         notMovedTurnCount = 0;
 
-		ChainList.RemoveChainOfThisUnit (this);
+        ChainList.RemoveChainOfThisUnit(this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
         foreach (var statusEffect in StatusEffectList) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
@@ -283,12 +283,15 @@ public class Unit : MonoBehaviour{
 
     public void ForceMove(Tile destTile) { //강제이동
 		if (!IsObject && SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
+            LogManager.Instance.Record(new ForceMoveLog(this, GetPosition(), destTile.GetTilePos()));
 			ChangePosition (destTile);
         }
     }
     
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount) {
+        LogManager logManager = LogManager.Instance;
         Tile beforeTile = GetTileUnderUnit();
+        logManager.Record(new MoveLog(this, beforeTile.GetTilePos(), GetDirection(), destTile.GetTilePos(), finalDirection));
         UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
@@ -309,6 +312,7 @@ public class Unit : MonoBehaviour{
     }
 
     public void UpdateStats(){
+        
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
@@ -417,6 +421,7 @@ public class Unit : MonoBehaviour{
             toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectRemoved(statusEffect, this);
         }
         if (toBeRemoved) {
+            LogManager.Instance.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Remove, 0, 0, 0));
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             UpdateStats(statusEffect, false, true);
@@ -596,6 +601,7 @@ public class Unit : MonoBehaviour{
 	}
     
 	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
+        LogManager logManager = LogManager.Instance;
 		if (isHealth) {
 			int damageAfterShieldApply = damage;
 			// 보호막 차감(먼저 적용된 것 우선).
@@ -613,9 +619,9 @@ public class Unit : MonoBehaviour{
 							}
 							else {
 								se.SubAmount(i, remainShieldAmount);
-								attackedShieldDict.Add(se, remainShieldAmount);
+                                attackedShieldDict.Add(se, remainShieldAmount);
 								RemoveStatusEffect(se);
-								damageAfterShieldApply -= remainShieldAmount;
+                                damageAfterShieldApply -= remainShieldAmount;
 							}
 						}
 					}
@@ -623,6 +629,7 @@ public class Unit : MonoBehaviour{
 				}
 			}
 			currentHealth -= damageAfterShieldApply;
+            logManager.Record(new HPChangeLog(this, -damageAfterShieldApply));
 
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -661,6 +668,7 @@ public class Unit : MonoBehaviour{
 				activityPoint -= damage;
 			else
 				activityPoint = 0;
+            logManager.Record(new APChangeLog(this, -damage));
 			Debug.Log(GetNameKor() + " loses " + damage + "AP.");
 		}
 	}
@@ -738,6 +746,7 @@ public class Unit : MonoBehaviour{
 		}
 
 		currentHealth += actualAmount;
+        LogManager.Instance.Record(new HPChangeLog(this, actualAmount));
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
@@ -748,6 +757,7 @@ public class Unit : MonoBehaviour{
 	public IEnumerator RecoverActionPoint(int amount)
 	{
 		activityPoint += amount;
+        LogManager.Instance.Record(new APChangeLog(this, amount));
 
 		//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
 		DisplayRecoverText (amount);
@@ -882,8 +892,9 @@ public class Unit : MonoBehaviour{
 	}
 	public void UseActivityPoint(int amount){
 		activityPoint -= amount;
-		//Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
-		unitManager.UpdateUnitOrder();
+        LogManager.Instance.Record(new APChangeLog(this, -amount));
+        //Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
+        unitManager.UpdateUnitOrder();
 		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 

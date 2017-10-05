@@ -272,18 +272,22 @@ namespace Battle.Turn {
 		}
 
 		public static IEnumerator ApplyCasting (Casting casting) {
+            LogManager logManager = LogManager.Instance;
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+            logManager.Record(new CastLog(casting));
 			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown () > 0) {
+            if (skill.GetCooldown () > 0) {
 				caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
-			}
+                logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
+            }
 			yield return ApplyAllTriggeredChains(casting);
 
 			BattleManager.MoveCameraToUnit(caster);
+            logManager.Record(new CameraMoveLog(caster.transform.position));
 			BattleData.currentState = CurrentState.FocusToUnit;
         }
 
@@ -291,12 +295,18 @@ namespace Battle.Turn {
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			SkillLocation location = casting.Location;
+            LogManager logManager = LogManager.Instance;
+            Direction direction = caster.GetDirection();
 
+            logManager.Record(new ChainLog(casting));
 			caster.SetDirection(location.Direction);
+            logManager.Record(new DirectionChangeLog(caster, direction, caster.GetDirection()));
 
 			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown() > 0)
-				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+            if (skill.GetCooldown() > 0) {
+                caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+                logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
+            }
 
 			// 체인 목록에 추가.
 			ChainList.AddChains(casting);
@@ -304,6 +314,7 @@ namespace Battle.Turn {
 			yield return new WaitForSeconds(0.5f);
 
 			BattleManager.MoveCameraToUnit(caster);
+            logManager.Record(new CameraMoveLog(caster.transform.position));
 			BattleData.currentState = CurrentState.Standby;
 			yield return BattleData.battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
 		}
@@ -367,6 +378,7 @@ namespace Battle.Turn {
 				if (chain.SecondRange.Count > 0) {
 					Tile focusedTile = chain.SecondRange [0];
 					BattleManager.MoveCameraToTile (focusedTile);
+                    LogManager.Instance.Record(new CameraMoveLog(focusedTile.transform.position));
 				}
 				BattleData.currentState = CurrentState.ApplySkill;
 				chain.Caster.HideChainIcon ();

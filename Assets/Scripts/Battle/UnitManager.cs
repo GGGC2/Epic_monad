@@ -422,16 +422,24 @@ public class UnitManager : MonoBehaviour{
         }
     }
 
-	public void StartPhase(int phase){
-		foreach (var unit in units){
-			unit.ResetMovedTileCount();
+    public void StartPhase(int phase) {
+        if (phase == 1) {
+            LogManager.Instance.Record(new BattleStartLog());
+            foreach (var unit in units) {
+                unit.ApplyTriggerOnStart();
+            }
+        }
+
+        LogManager.Instance.Record(new PhaseStartLog(phase));
+        foreach (var unit in units) {
+            unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
-			if (phase == 1) {unit.ApplyTriggerOnStart ();}
 		}
 	}
 
 	public void EndPhase(int phase){
+        LogManager.Instance.Record(new PhaseEndLog(phase));
 		// Decrease each buff & debuff phase
 		foreach (var unit in units){
 			unit.UpdateRemainPhaseAtPhaseEnd();

@@ -21,7 +21,7 @@ namespace Battle.Skills {
             float power = caster.GetStat(Stat.Power);
             statusEffect.CalculateAmount(0, targetCount);
             statusEffect.SetAmount(0, statusEffect.GetAmountOfType(StatusEffectType.Shield) * power);
-            statusEffect.SetRemainAmount(0, statusEffect.GetAmount(0));
+            statusEffect.SetRemainAmount(0, statusEffect.GetAmount(0), true);
             return true;
         }
     }

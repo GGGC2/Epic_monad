@@ -174,6 +174,7 @@ public static class BattleData{
 	public static bool enemyUnitSelected = false;
     public static bool tileSelected = false;
     public static Aspect aspect = Aspect.North;
+    public static List<LogDisplay>   logDisplayList = new List<LogDisplay>();
 
     public static Dictionary<Element, UnitStatusEffect.FixedElement> tileBuffInfos = new Dictionary<Element, UnitStatusEffect.FixedElement>();
 	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
