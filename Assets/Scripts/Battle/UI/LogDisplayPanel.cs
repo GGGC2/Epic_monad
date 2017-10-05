@@ -12,14 +12,11 @@ public class LogDisplayPanel : MonoBehaviour {
     int maxNumDisplay;
 
     public void Awake() {
-        //scrollView = GetComponentInChildren<ScrollRect>().gameObject;
-        //scrollbar = scrollView.GetComponentInChildren<Scrollbar>();
-        //logs = scrollView.GetComponentInChildren<VerticalLayoutGroup>();
         CalculateMaxNumDisplay();
     }
 
     public void CalculateMaxNumDisplay() {
-        maxNumDisplay = (int)(GetComponent<RectTransform>().sizeDelta.y / displayHeight);
+        maxNumDisplay = (int)(scrollView.GetComponent<RectTransform>().rect.height / displayHeight);
     }
 
     public void AddLogDisplay(LogDisplay logDisplay, int num) {
