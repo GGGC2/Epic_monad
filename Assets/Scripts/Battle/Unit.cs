@@ -740,17 +740,15 @@ public class Unit : MonoBehaviour{
 
 		// 초과회복시 최대체력까지만 올라감
 		int actualAmount = (int)Math.Round(amount);
-		if (currentHealth + actualAmount > maxHealth)
-		{
+		if (currentHealth + actualAmount > maxHealth){
 			actualAmount = maxHealth - currentHealth;
 		}
-
 		currentHealth += actualAmount;
         LogManager.Instance.Record(new HPChangeLog(this, actualAmount));
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(0.5f);
 		recoverTextObject.SetActive(false);
 	}
 
@@ -763,7 +761,7 @@ public class Unit : MonoBehaviour{
 		DisplayRecoverText (amount);
 
 		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(0.5f);
 		recoverTextObject.SetActive(false);
 
 		unitManager.UpdateUnitOrder();
