@@ -28,7 +28,7 @@ public class LogDisplayPanel : MonoBehaviour {
         logDisplay.SetText();
     }
     public void Initialize() {
-        scrollbar.value = 0;
         scrollbar.numberOfSteps = BattleData.logDisplayList.Count - maxNumDisplay + 1;
+        scrollbar.value = 0;
     }
 }
