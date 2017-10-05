@@ -511,14 +511,6 @@ public class BattleManager : MonoBehaviour{
             ChangeAspect(1);
         if(Input.GetKeyDown(KeyCode.D))
             ChangeAspect(-1);
-        
-        if(Input.GetKeyDown(KeyCode.J)) {
-            UIManager.Instance.ActivateLogDisplayPanel();
-        }
-        if(Input.GetKeyDown(KeyCode.H)) {
-            UIManager.Instance.InActiveLogDisplayPanel();
-        }
-            
 	}
 
     public void ChangeAspect(int direction) { // direction = 1 : 반시계 방향, direction = -1 : 시계방향

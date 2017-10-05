@@ -8,4 +8,8 @@ public class MenuButton : MonoBehaviour{
 	public void GoToTitleScene(){
 		SceneManager.LoadScene("Title");
 	}
+
+    public void RestartBattle() {
+        FindObjectOfType<SceneLoader>().LoadNextBattleScene();
+    }
 }

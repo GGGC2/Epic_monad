@@ -640,7 +640,7 @@ public class Unit : MonoBehaviour{
 
 			UpdateHealthViewer();
 
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds(Configuration.textObjectDuration);
 
 			damageTextObject.SetActive(false);
 
@@ -748,7 +748,7 @@ public class Unit : MonoBehaviour{
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(Configuration.textObjectDuration);
 		recoverTextObject.SetActive(false);
 	}
 
@@ -761,7 +761,7 @@ public class Unit : MonoBehaviour{
 		DisplayRecoverText (amount);
 
 		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(Configuration.textObjectDuration);
 		recoverTextObject.SetActive(false);
 
 		unitManager.UpdateUnitOrder();

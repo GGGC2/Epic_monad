@@ -29,7 +29,8 @@ public class UIManager : MonoBehaviour{
 	GameObject placedUnitCheckUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
-    public GameObject logDisplayPanel;
+    GameObject logDisplayPanel;
+    GameObject configurationPanel;
 
 	public GameObject chainBonusObj;
 	public GameObject celestialBonusObj;
@@ -48,6 +49,7 @@ public class UIManager : MonoBehaviour{
 		unitViewerUI                            = GameObject.Find("UnitViewerPanel");
         statusEffectDisplayPanel                = GameObject.Find("StatusEffectDisplayPanel");
         logDisplayPanel                         = GameObject.Find("LogDisplayPanel");
+        configurationPanel                      = GameObject.Find("ConfigurationPanel");
         selectedUnitViewerUI                    = GameObject.Find("SelectedUnitViewerPanel");
 		tileViewerUI                            = GameObject.Find("TileViewerPanel");
 		selectDirectionUI                       = FindObjectOfType<SelectDirectionUI>();
@@ -65,6 +67,7 @@ public class UIManager : MonoBehaviour{
 		skillViewer.gameObject.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
+        configurationPanel.SetActive(false);
         logDisplayPanel.SetActive(false);
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
