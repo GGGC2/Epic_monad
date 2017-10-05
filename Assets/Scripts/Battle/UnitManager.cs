@@ -462,6 +462,8 @@ public class UnitManager : MonoBehaviour{
     }
 
     public void ReadTileBuffInfos() {
+        if(BattleData.tileBuffInfos.Count != 0)
+            return;
         foreach (var statusEffectInfo in statusEffectInfoList) {
             UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
             if (statusEffectInfo.GetOwnerOfSkill() == "tile") {

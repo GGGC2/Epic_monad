@@ -620,7 +620,6 @@ public class ActiveSkill : Skill{
 
         BattleManager.MoveCameraToUnit (caster);
         SetSkillNamePanelUI ();
-        logManager.Record(new CameraMoveLog((Vector2)caster.transform.position));
 
 		List<Tile> firstRange = casting.FirstRange;
 

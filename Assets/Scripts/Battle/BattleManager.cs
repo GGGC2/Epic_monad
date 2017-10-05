@@ -256,6 +256,7 @@ public class BattleManager : MonoBehaviour{
 			return;
 		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
 		MoveCameraToPosition (objPos);
+        //LogManager.Instance.Record(new CameraMoveLog(objPos));
 	}
 	private static void MoveCameraToPosition(Vector2 position)
 	{

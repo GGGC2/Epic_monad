@@ -287,7 +287,6 @@ namespace Battle.Turn {
 			yield return ApplyAllTriggeredChains(casting);
 
 			BattleManager.MoveCameraToUnit(caster);
-            logManager.Record(new CameraMoveLog(caster.transform.position));
 			BattleData.currentState = CurrentState.FocusToUnit;
         }
 
@@ -314,7 +313,6 @@ namespace Battle.Turn {
 			yield return new WaitForSeconds(0.5f);
 
 			BattleManager.MoveCameraToUnit(caster);
-            logManager.Record(new CameraMoveLog(caster.transform.position));
 			BattleData.currentState = CurrentState.Standby;
 			yield return BattleData.battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
 		}
@@ -378,7 +376,6 @@ namespace Battle.Turn {
 				if (chain.SecondRange.Count > 0) {
 					Tile focusedTile = chain.SecondRange [0];
 					BattleManager.MoveCameraToTile (focusedTile);
-                    LogManager.Instance.Record(new CameraMoveLog(focusedTile.transform.position));
 				}
 				BattleData.currentState = CurrentState.ApplySkill;
 				chain.Caster.HideChainIcon ();
