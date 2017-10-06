@@ -96,6 +96,9 @@ public class TileManager : MonoBehaviour {
 			return tiles.Last ();
 	}
 
+    public bool isTilePassable(Tile tile) {
+        return (tile != null) && (tile.APAtStandardHeight <= 1000) && !tile.IsUnitOnTile(); 
+    }
 	public List<Tile> GetTilesInRange(RangeForm form, Vector2 mid, int minReach, int maxReach, int width, Direction dir){
 		if (form == RangeForm.Global)
 			return GetTilesInGlobalRange ();

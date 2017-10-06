@@ -121,6 +121,8 @@ namespace Battle.Turn{
 			float maxReward = 0;
 
 			foreach (ActiveSkill skill in skills) {
+				Debug.Log (skill.GetName ());
+
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
 				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -139,6 +141,8 @@ namespace Battle.Turn{
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
+
+						Debug.Log (reward);
 
 						if (reward > maxReward) {
 							maxReward = reward;
@@ -204,7 +208,7 @@ namespace Battle.Turn{
 			}
 
 			if (state != State.Dead) {
-				battleManager.EndUnitTurn ();
+				battleManager.EndUnitTurn (unit);
 			}
 		}
 
@@ -349,12 +353,17 @@ namespace Battle.Turn{
 
 			yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
 			state = State.StandbyOrRest;
+			if (BattleData.selectedUnit.CheckReach ()) {
+				state = State.Dead;
+			}
 		}
 
 		IEnumerator CastingLoop(){
 			bool flag = false;
 			ActiveSkill skill = BattleData.selectedSkill;
-			Debug.Assert(skill != null);
+			if(skill == null){
+				skill = BattleData.selectedUnit.GetSkillList()[0];
+			}
 
 			while(true){
 				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
@@ -591,9 +600,8 @@ namespace Battle.Turn{
 				// SkillAndChainState.ApplySkill에서 체크하므로 여기선 할 일 없음
 			}
 
-			if (satisfyActiveCondition) {
+			if (satisfyActiveCondition)
 				_AIData.SetActive ();
-			}
 		}
 	}
 }

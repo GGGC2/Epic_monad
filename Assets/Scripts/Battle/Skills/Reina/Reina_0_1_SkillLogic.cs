@@ -10,7 +10,7 @@ public class Reina_0_1_SkillLogic : BasePassiveSkillLogic {
 		float powerBonusPerBuff = 0.05f;
 		int numberOfBuffFromOtherUnits = caster.StatusEffectList.Count(
 						x => x.GetIsBuff() && (x.GetCaster() != caster));
-		return numberOfBuffFromOtherUnits * powerBonusPerBuff + 1.0f;
+		return 1 + numberOfBuffFromOtherUnits * powerBonusPerBuff;
 	}
 }
 }

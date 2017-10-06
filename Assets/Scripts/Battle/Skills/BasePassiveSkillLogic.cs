@@ -78,8 +78,12 @@ public class BasePassiveSkillLogic
 	public virtual void TriggerActiveSkillDamageApplied(Unit caster, Unit target)
 	{
 	}
+
+    public virtual bool TriggerDamagedByCasting(Unit caster, Unit target, float damage) {
+        return true;
+    }
     
-    public virtual bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+    public virtual bool TriggerDamagedByNonCasting(Unit caster, float damage, Unit target, bool isSourceTrap) {
         return true;
     }
     public virtual void TriggerAfterDamaged(Unit target, int damage, Unit caster) 

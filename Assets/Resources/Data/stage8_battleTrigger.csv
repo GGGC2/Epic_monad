@@ -1,0 +1,4 @@
+﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+Win	4개의 마력석을 모두 채굴하기	NeutralChar	Neutralize	4	false	250
+Lose	레이나 또는 리니안이 무력화	Ally	Neutralize	1	false	0	2	reina	lenien
+End	Scene#16	One	One

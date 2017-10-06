@@ -75,6 +75,12 @@ public class UnitManager : MonoBehaviour{
 		}
 	}
 
+    public void ApplyTileBuffsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            unit.ApplyTileBuffAtActionEnd();
+        }
+    }
+
     public void TriggerPassiveSkillsAtActionEnd(){
 		foreach(var unit in GetAllUnits()) {
             SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnActionEnd(unit);
@@ -86,7 +92,7 @@ public class UnitManager : MonoBehaviour{
             List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
                 Skill skill = statusEffect.GetOriginSkill();
-                if (skill.GetType() == typeof(ActiveSkill))
+                if (skill != null && skill.GetType() == typeof(ActiveSkill))
                     yield return StartCoroutine(((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect));
             }
         }
@@ -235,10 +241,10 @@ public class UnitManager : MonoBehaviour{
 		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
 		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
 		Debug.Log("Triggers Count : " + allTriggers.Count);
-		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.PC && trig.targetCount == 0);
-		triggersOfAllPC.ForEach(trig => trig.targetCount = generatedPC);
-		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.Enemy && trig.targetCount == 0);
-		triggersOfAllEnemy.ForEach(trig => trig.targetCount = enemyCount);
+		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.PC && trig.reqCount == 0);
+		triggersOfAllPC.ForEach(trig => trig.reqCount = generatedPC);
+		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.Enemy && trig.reqCount == 0);
+		triggersOfAllEnemy.ForEach(trig => trig.reqCount = enemyCount);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
 
@@ -416,16 +422,24 @@ public class UnitManager : MonoBehaviour{
         }
     }
 
-	public void StartPhase(int phase){
-		foreach (var unit in units){
-			unit.ResetMovedTileCount();
+    public void StartPhase(int phase) {
+        if (phase == 1) {
+            LogManager.Instance.Record(new BattleStartLog());
+            foreach (var unit in units) {
+                unit.ApplyTriggerOnStart();
+            }
+        }
+
+        LogManager.Instance.Record(new PhaseStartLog(phase));
+        foreach (var unit in units) {
+            unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
-			if (phase == 1) {unit.ApplyTriggerOnStart ();}
 		}
 	}
 
 	public void EndPhase(int phase){
+        LogManager.Instance.Record(new PhaseEndLog(phase));
 		// Decrease each buff & debuff phase
 		foreach (var unit in units){
 			unit.UpdateRemainPhaseAtPhaseEnd();
@@ -447,7 +461,34 @@ public class UnitManager : MonoBehaviour{
         tileStatusEffectInfoList = Parser.GetParsedTileStatusEffectInfo();
     }
 
-	void Start() {
+    public void ReadTileBuffInfos() {
+        if(BattleData.tileBuffInfos.Count != 0)
+            return;
+        foreach (var statusEffectInfo in statusEffectInfoList) {
+            UnitStatusEffect.FixedElement statusEffectToAdd = statusEffectInfo.GetStatusEffect();
+            if (statusEffectInfo.GetOwnerOfSkill() == "tile") {
+                switch (statusEffectToAdd.actuals[0].statusEffectType) {
+                case StatusEffectType.PowerChange:
+                    BattleData.tileBuffInfos.Add(Element.Fire, statusEffectToAdd);
+                    break;
+                case StatusEffectType.DefenseChange:
+                    BattleData.tileBuffInfos.Add(Element.Metal, statusEffectToAdd);
+                    break;
+                case StatusEffectType.SpeedChange:
+                    BattleData.tileBuffInfos.Add(Element.Water, statusEffectToAdd);
+                    break;
+                case StatusEffectType.HealOverPhase:
+                    BattleData.tileBuffInfos.Add(Element.Plant, statusEffectToAdd);
+                    break;
+                default:
+                    Debug.Log("fail reading tile buff infos");
+                    break;
+                }
+            }
+        }
+    }
+
+    void Start() {
 		GameData.PartyData.CheckLevelData();
 		activeSkillList = Parser.GetParsedData<ActiveSkill>();
 		passiveSkillList = Parser.GetParsedData<PassiveSkill>();
@@ -459,6 +500,7 @@ public class UnitManager : MonoBehaviour{
 		if (!GameData.SceneData.isTestMode) {
             ApplyAIInfo();
         }
+        ReadTileBuffInfos();
         GetEnemyUnits();
 	}
 

@@ -10,10 +10,8 @@ namespace Battle.Skills
         {
             StatusEffector.AttachStatusEffect(caster, this.passiveSkill, target);
         }
-        public override bool TriggerStatusEffectAppliedToOwner(UnitStatusEffect statusEffect, Unit caster, Unit target) {
-            int numberOfBuffsFromOthers = caster.StatusEffectList.Count(x => x.GetIsBuff() && (x.GetCaster() != caster));
-            statusEffect.CalculateAmount(0, numberOfBuffsFromOthers);
-            return true;
+        public override float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {
+            return caster.StatusEffectList.Count(x => x.GetIsBuff() && (x.GetCaster() != caster));
         }
     }
 }

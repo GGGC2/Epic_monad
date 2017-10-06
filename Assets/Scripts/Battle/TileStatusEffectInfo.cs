@@ -6,14 +6,14 @@ using System.Collections.Generic;
 
 public class TileStatusEffectInfo {
 
-    string owner;
+    string ownerOfSkill;
     int requireLevel;
     bool toBeReplaced;
     string originSkillName; // 효과를 유발하는 기술/특성의 이름
     string displayName; // 상태창에 표시되는 효과의 이름
     TileStatusEffect.FixedElement statusEffect;
 
-    public string GetOwner() { return owner; }
+    public string GetOwnerOfSkill() { return ownerOfSkill; }
     public int GetRequireLevel() { return requireLevel; }
     public bool GetToBeReplaced() { return toBeReplaced; }
     public string GetOriginSkillName() { return originSkillName; }
@@ -24,7 +24,7 @@ public class TileStatusEffectInfo {
         // Debug.Log(data);
         StringParser commaParser = new StringParser(data, ',');
 
-        owner = commaParser.Consume();
+        ownerOfSkill = commaParser.Consume();
         requireLevel = commaParser.ConsumeInt();
         toBeReplaced = commaParser.ConsumeBool();
         originSkillName = commaParser.Consume();
@@ -72,7 +72,7 @@ public class TileStatusEffectInfo {
                 commaParser.Consume();
         }
         string explanation = commaParser.Consume();
-        this.statusEffect = new TileStatusEffect.FixedElement(toBeReplaced, originSkillName, displayName,
+        this.statusEffect = new TileStatusEffect.FixedElement(ownerOfSkill, toBeReplaced, originSkillName, displayName,
                                              isInfinite, isStackable, isOnce, defaultPhase, 
                                              maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation,
                                              effectName, effectVisualType, effectMoveType,

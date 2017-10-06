@@ -9,17 +9,17 @@ public class UnitStatusEffect : StatusEffect {
         ((FlexibleElement.DisplayElement)flexibleElem.display).owner = owner;
         for (int i = 0; i < fixedElem.actuals.Count; i++) {
             CalculateAmount(i, false);
-            SetRemainAmount(i, GetAmount(i));
+            SetRemainAmount(i, GetAmount(i), false);
         }
     }
     public new class FixedElement : StatusEffect.FixedElement {
-        public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
+        public FixedElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite, bool isStackable, bool isOnce,
                   int defaultPhase, int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects)
-                  : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, amountToBeUpdated,
+                  : base(ownerOfSkill, toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, amountToBeUpdated,
                     amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType, actualEffects) {
-            display = new DisplayElement(toBeReplaced, originSkillName, displayName,
+            display = new DisplayElement(ownerOfSkill, toBeReplaced, originSkillName, displayName,
                     isBuff, isInfinite, isStackable, isOnce,
                     defaultPhase, maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable,
                     explanation, effectName, effectVisualType, effectMoveType);
@@ -27,11 +27,11 @@ public class UnitStatusEffect : StatusEffect {
         public new class DisplayElement : StatusEffect.FixedElement.DisplayElement {
             public readonly bool isBuff;
 
-            public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
+            public DisplayElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isBuff, bool isInfinite, bool isStackable, bool isOnce,
                   int defaultPhase, int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) 
-                  : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase,
+                  : base(ownerOfSkill, toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase,
                     maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType){
                 this.isBuff = isBuff;
             }
@@ -63,11 +63,14 @@ public class UnitStatusEffect : StatusEffect {
     public bool GetIsBuff() { return ((FixedElement.DisplayElement)fixedElem.display).isBuff; }
     public Unit GetOwner() { return ((UnitStatusEffect.FlexibleElement.DisplayElement)flexibleElem.display).owner; }
     protected override float GetStatusEffectVar(int i) {
-        float statusEffectVar;
-        if (GetOriginSkill().GetType() == typeof(ActiveSkill))
-            statusEffectVar = ((ActiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
-        else
-            statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+        float statusEffectVar = 0;
+        Skill originSkill = GetOriginSkill();
+        if (originSkill != null) {
+            if (originSkill.GetType() == typeof(ActiveSkill))
+                statusEffectVar = ((ActiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+            else
+                statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
+        }
         return statusEffectVar;
     }
 }

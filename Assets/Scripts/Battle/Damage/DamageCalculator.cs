@@ -21,6 +21,12 @@ namespace Battle
 			public float chainBonus = 1.0f;
 			public float smiteAmount = 0;
 			public float resultDamage = 0;
+
+            public bool HasTacticalBonus { 
+                get {
+                    return !(directionBonus == 1.0f && celestialBonus == 1.0f && heightBonus == 1.0f && chainBonus == 1.0f);
+                } 
+            }
 		}
 
 		public class DamageInfo{
@@ -93,8 +99,8 @@ namespace Battle
 					DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
 					damageList.Add(target, damageInfo);
 
-					Debug.Log(actualDamage + " damage will be applied to " + target.GetNameEng() + "\n" +
-						"ChainCombo : " + chainCombo);
+					//Debug.Log(actualDamage + " damage will be applied to " + target.GetNameEng() + "\n" +
+					//	"ChainCombo : " + chainCombo);
 
 					if (reflectDamage != 0) {
 						float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
@@ -103,7 +109,7 @@ namespace Battle
 
 						DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
 						damageList.Add(caster, reflectDamageInfo);
-						Debug.Log(reflectDamage + " damage will be reflected from " + target.GetNameEng() + " to " + caster.GetNameEng());
+						//Debug.Log(reflectDamage + " damage will be reflected from " + target.GetNameEng() + " to " + caster.GetNameEng());
 					}
 				}
 				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
@@ -112,7 +118,7 @@ namespace Battle
 					DamageInfo damageInfo = new DamageInfo(caster, -actualHealAmount);
 					damageList.Add(target, damageInfo);
 
-					Debug.Log(actualHealAmount + " heal will be applied to " + target.GetNameEng());
+					//Debug.Log(actualHealAmount + " heal will be applied to " + target.GetNameEng());
 				}
 			}
 			return damageList;
@@ -142,13 +148,13 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
 			foreach(var statusEffect in target.StatusEffectList) {
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if(originSkill.GetType() == typeof(ActiveSkill))
+				if(originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach(var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if(originSkill.GetType() == typeof(PassiveSkill))
+                if(originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 
@@ -157,7 +163,7 @@ namespace Battle
 			SkillLogicFactory.Get(passiveSkills).ApplyBonusDamageFromEachPassive(castingApply);
 
 			attackDamage.resultDamage = attackDamage.baseDamage * attackDamage.relativeDamageBonus;
-			Debug.Log("resultAmount : " + attackDamage.resultDamage);
+			//Debug.Log("resultAmount : " + attackDamage.resultDamage);
 		}
 		public static void CalculateAttackDamage(CastingApply castingApply, int chainCombo){
 			Unit caster = castingApply.GetCaster();
@@ -173,12 +179,14 @@ namespace Battle
 			attackDamage.chainBonus = ChainComboBonus(chainCombo);
 			attackDamage.smiteAmount = SmiteAmount(caster);
 
-			Element casterElement = caster.GetElement();
+            // '지형지물'은 방향 보너스를 받지 않음
+            if (target.IsObject) attackDamage.directionBonus = 1.0f;
+            Element casterElement = caster.GetElement();
 			if(casterElement != Element.None){
 				StatusEffectType casterElementWeakness = EnumConverter.GetCorrespondingStatusEffectType(casterElement);
 				if (target.HasStatusEffect(casterElementWeakness)){
 					float elementBonus = target.CalculateActualAmount(1, casterElementWeakness);
-					Debug.Log("\tElement bonus" + "(" + casterElement + ")" + " : " + elementBonus);
+					//Debug.Log("\tElement bonus" + "(" + casterElement + ")" + " : " + elementBonus);
 					attackDamage.relativeDamageBonus *= elementBonus;
 				}
 			}
@@ -191,7 +199,7 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in target.StatusEffectList){
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
                     ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
 			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, castingApply.GetSkill().GetName());
@@ -201,7 +209,7 @@ namespace Battle
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(PassiveSkill))
+                if (originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 
@@ -217,8 +225,6 @@ namespace Battle
 			attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
 			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, "buff from " + caster.GetNameEng());
 
-			// '지형지물'은 방향 보너스를 받지 않음
-			if (target.IsObject) attackDamage.directionBonus = 1.0f;
 
 			attackDamage.resultDamage = ((attackDamage.baseDamage + attackDamage.smiteAmount)
 				* attackDamage.relativeDamageBonus + attackDamage.absoluteDamageBonus) 
@@ -227,17 +233,17 @@ namespace Battle
 				* attackDamage.heightBonus
 				* attackDamage.chainBonus;
 
-			Debug.Log("resultDamage : " + attackDamage.resultDamage);
+			//Debug.Log("resultDamage : " + attackDamage.resultDamage);
 		}
 
 		public static void printBonusDamageLog(AttackDamage damage, float originalAbsoluteDamageBonus, float originalRelativeDamageBonus, string damageSource) {
 			if (damage.relativeDamageBonus != originalRelativeDamageBonus) {
 				float bonus = damage.relativeDamageBonus / originalRelativeDamageBonus;
-				Debug.Log("\tRelative damage bonus from " + damageSource + " : " + bonus);
+				//Debug.Log("\tRelative damage bonus from " + damageSource + " : " + bonus);
 			}
 			if (damage.absoluteDamageBonus != originalAbsoluteDamageBonus) {
 				float bonus = damage.absoluteDamageBonus - originalAbsoluteDamageBonus;
-				Debug.Log("\tAbsolute damage bonus from " + damageSource + " : " + bonus);
+				//Debug.Log("\tAbsolute damage bonus from " + damageSource + " : " + bonus);
 			}
 		}
 
@@ -250,7 +256,7 @@ namespace Battle
 
 			damage = powerFactor * powerStat;
 
-			Debug.Log("baseDamage : " + damage);
+			//Debug.Log("baseDamage : " + damage);
 
 			return damage;
 		}
@@ -259,7 +265,7 @@ namespace Battle
 			if(SceneData.stageNumber < Setting.directionOpenStage)
 				return 1.0f;
 			float directionBonus = Utility.GetDirectionBonus(caster, target);
-			Debug.Log("\tdirectionBonus : " + directionBonus);
+			//Debug.Log("\tdirectionBonus : " + directionBonus);
 			return directionBonus;
 		}
 
@@ -276,19 +282,19 @@ namespace Battle
 
 		private static float CelestialBonus(Unit caster, Unit target) {
 			float celestialBonus = Utility.GetCelestialBonus(caster, target);
-			Debug.Log("\tcelestialBonus : " + celestialBonus);
+			//Debug.Log("\tcelestialBonus : " + celestialBonus);
 			return celestialBonus;
 		}
 
 		private static float HeightBonus(Unit caster, Unit target) {
 			float heightBonus = Utility.GetHeightBonus(caster, target);
-			Debug.Log("\theightBonus : " + heightBonus);
+			//Debug.Log("\theightBonus : " + heightBonus);
 			return heightBonus;
 		}
 
 		private static float ChainComboBonus(int chainCombo) {
 			float chainBonus = GetChainDamageFactorFromChainCombo(chainCombo);
-			Debug.Log("\tchainBonus : " + chainBonus);
+			//Debug.Log("\tchainBonus : " + chainBonus);
 			return chainBonus;
 		}
 
@@ -304,7 +310,7 @@ namespace Battle
 		private static float SmiteAmount(Unit casterUnit) {
 			float smiteAmount = 0;
 			smiteAmount = casterUnit.CalculateActualAmount(smiteAmount, StatusEffectType.Smite);
-			Debug.Log("\tsmiteAmount : " + smiteAmount);
+			//Debug.Log("\tsmiteAmount : " + smiteAmount);
 			return smiteAmount;
 		}
 
@@ -340,7 +346,7 @@ namespace Battle
 				if (resistance <= -180) damage = damage * 10;
 				else damage = damage * 200.0f / (200.0f + resistance);
 			}
-			Debug.Log("resultDamage applying defense and resistance applied : " + damage);
+			//Debug.Log("resultDamage applying defense and resistance applied : " + damage);
 			return damage;
 		}
 		public static float CalculateDefense(ActiveSkill appliedSkill, Unit target, Unit caster) {

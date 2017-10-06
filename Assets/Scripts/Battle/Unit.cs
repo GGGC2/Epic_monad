@@ -8,6 +8,7 @@ using Enums;
 using Battle;
 using Battle.Skills;
 using GameData;
+using Battle.Damage;
 using Save;
 
 public class HitInfo{
@@ -35,6 +36,7 @@ public class Unit : MonoBehaviour{
 	int movedTileCount;
 	Battle.Turn.AI _AI;
 	public UnitInfo myInfo;
+    public Element element;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -158,7 +160,7 @@ public class Unit : MonoBehaviour{
 	}
 	public int GetCurrentActivityPoint() {return activityPoint;}
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
-	public Element GetElement() {return myInfo.element;}
+	public Element GetElement() {return element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
@@ -232,7 +234,7 @@ public class Unit : MonoBehaviour{
 		Tile tileUnderCaster = GetTileUnderUnit();
 		foreach (var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
 			Skill originSkill = tileStatusEffect.GetOriginSkill();
-			if (originSkill.GetType() == typeof(ActiveSkill)) {
+			if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
 				if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenUnitTryToUseSkill(tileUnderCaster, tileStatusEffect)) {
 					isPossible = false;
 				}
@@ -268,11 +270,11 @@ public class Unit : MonoBehaviour{
         destTile.SetUnitOnTile(this);
         notMovedTurnCount = 0;
 
-		ChainList.RemoveChainOfThisUnit (this);
+        ChainList.RemoveChainOfThisUnit(this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
         foreach (var statusEffect in StatusEffectList) {
             Skill originPassiveSkill = statusEffect.GetOriginSkill();
-            if (originPassiveSkill.GetType() == typeof(PassiveSkill))
+            if (originPassiveSkill != null && originPassiveSkill.GetType() == typeof(PassiveSkill))
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
         BattleTriggerManager.CheckBattleTrigger(this, destTile);
@@ -281,12 +283,15 @@ public class Unit : MonoBehaviour{
 
     public void ForceMove(Tile destTile) { //강제이동
 		if (!IsObject && SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
+            LogManager.Instance.Record(new ForceMoveLog(this, GetPosition(), destTile.GetTilePos()));
 			ChangePosition (destTile);
         }
     }
     
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount) {
+        LogManager logManager = LogManager.Instance;
         Tile beforeTile = GetTileUnderUnit();
+        logManager.Record(new MoveLog(this, beforeTile.GetTilePos(), GetDirection(), destTile.GetTilePos(), finalDirection));
         UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
@@ -307,11 +312,12 @@ public class Unit : MonoBehaviour{
     }
 
     public void UpdateStats(){
+        
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
             if (statusEffectType != StatusEffectType.Etc)
-                actualStat.value = (int)CalculateActualAmount(myInfo.baseStats[statType], statusEffectType);
+                actualStat.value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statType], statusEffectType));
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -328,7 +334,7 @@ public class Unit : MonoBehaviour{
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
             
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
-            statsToUpdate[i].value = (int)CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType);
+            statsToUpdate[i].value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType));
         }
         updateCurrentHealthRelativeToMaxHealth();
     }
@@ -411,10 +417,11 @@ public class Unit : MonoBehaviour{
 
         toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);
         Skill originSkill = statusEffect.GetOriginSkill();
-        if (originSkill.GetType() == typeof(ActiveSkill)) {
+        if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
             toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectRemoved(statusEffect, this);
         }
         if (toBeRemoved) {
+            LogManager.Instance.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Remove, 0, 0, 0));
             Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
             statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             UpdateStats(statusEffect, false, true);
@@ -492,7 +499,7 @@ public class Unit : MonoBehaviour{
 			if (statusEffectType == StatusEffectType.PowerChange) {
 				List<PassiveSkill> passiveSkills = this.GetLearnedPassiveSkillList ();
 				float relativePowerBonus = SkillLogicFactory.Get (passiveSkills).GetAdditionalRelativePowerBonus (this);
-				relativePowerBonus = (relativePowerBonus - 1) * 100;
+				relativePowerBonus -= 1;
 				appliedChangeList.Add (new StatChange (true, relativePowerBonus));
 			}
 
@@ -507,21 +514,6 @@ public class Unit : MonoBehaviour{
 					appliedChangeList.Add (new StatChange (false, additiveResistanceBouns));
 				}
 			}
-
-			if (statusEffectType == StatusEffectType.SpeedChange) {
-				if (myInfo.element == Element.Water && GetTileUnderUnit ().GetTileElement () == Element.Water) {
-					appliedChangeList.Add (new StatChange (false, 15));
-				}
-			}
-		}
-
-		// 불속성 유닛이 불 타일 위에 있을 경우 공격력 * 1.2
-		if(statusEffectType == StatusEffectType.PowerChange && myInfo.element == Element.Fire && GetTileUnderUnit ().GetTileElement () == Element.Fire){
-			appliedChangeList.Add (new StatChange (true, 1.2f));
-		}
-		// 금속성 유닛이 금타일 위에 있을경우 방어/저항 상승
-		else if((statusEffectType == StatusEffectType.DefenseChange || statusEffectType == StatusEffectType.ResistanceChange) && myInfo.element == Element.Metal && GetTileUnderUnit ().GetTileElement () == Element.Metal){
-			appliedChangeList.Add (new StatChange (false, 0.7f*PartyData.level+53));
 		}
 
 		return CalculateThroughChangeList(data, appliedChangeList);
@@ -532,7 +524,7 @@ public class Unit : MonoBehaviour{
         foreach(var statusEffect in statusEffectList) {
             remainShieldAmount += statusEffect.GetRemainAmountOfType(StatusEffectType.Shield);
         }
-        return (int)remainShieldAmount;
+        return (int)Math.Round(remainShieldAmount);
     }
 
 	public void UpdateRemainPhaseAtPhaseEnd()
@@ -561,7 +553,7 @@ public class Unit : MonoBehaviour{
 		var passiveSkillsOfAttacker = caster.GetLearnedPassiveSkillList();
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
-		int realDamage = (int)CalculateDamageByCasting (castingApply, isHealth);
+		int realDamage = CalculateDamageByCasting (castingApply, isHealth);
 		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
@@ -578,11 +570,15 @@ public class Unit : MonoBehaviour{
 			float defense = DamageCalculator.CalculateDefense(appliedSkill, this, caster);
 			float resistance = DamageCalculator.CalculateResistance(appliedSkill, this, caster);
 			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
-		}
-		return (int)damage;
+
+            if (!SkillLogicFactory.Get(GetLearnedPassiveSkillList()).TriggerDamagedByCasting(caster, this, damage)) {
+                damage = 0;
+            }
+        }
+		return (int)Math.Round(damage);
 	}
 	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
-		int realDamage = (int)CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
+		int realDamage = CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
 		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
 	}
 	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
@@ -597,14 +593,15 @@ public class Unit : MonoBehaviour{
 			damage = DamageCalculator.ApplyDefenseAndResistance (damage, caster.GetUnitClass (), defense, resistance);
 
 			// 비앙카 고유스킬 - 덫 데미지 안 받음
-			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamaged (this, damage, caster, isSourceTrap)) {
+			if (!SkillLogicFactory.Get (GetLearnedPassiveSkillList ()).TriggerDamagedByNonCasting(caster, damage, this, isSourceTrap)) {
 				damage = 0;
 			}
 		}
-		return (int)damage;
+		return (int)Math.Round(damage);
 	}
     
 	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
+        LogManager logManager = LogManager.Instance;
 		if (isHealth) {
 			int damageAfterShieldApply = damage;
 			// 보호막 차감(먼저 적용된 것 우선).
@@ -614,7 +611,7 @@ public class Unit : MonoBehaviour{
 					int num = se.fixedElem.actuals.Count;
 					for (int i = 0; i < num; i++) {
 						if (se.GetStatusEffectType(i) == StatusEffectType.Shield) {
-							int remainShieldAmount = (int)se.GetRemainAmount(i);
+							int remainShieldAmount = (int)Math.Round(se.GetRemainAmount(i));
 							if (remainShieldAmount >= damageAfterShieldApply) {
 								se.SubAmount(i, damageAfterShieldApply);
 								attackedShieldDict.Add(se, damageAfterShieldApply);
@@ -622,9 +619,9 @@ public class Unit : MonoBehaviour{
 							}
 							else {
 								se.SubAmount(i, remainShieldAmount);
-								attackedShieldDict.Add(se, remainShieldAmount);
+                                attackedShieldDict.Add(se, remainShieldAmount);
 								RemoveStatusEffect(se);
-								damageAfterShieldApply -= remainShieldAmount;
+                                damageAfterShieldApply -= remainShieldAmount;
 							}
 						}
 					}
@@ -632,6 +629,7 @@ public class Unit : MonoBehaviour{
 				}
 			}
 			currentHealth -= damageAfterShieldApply;
+            logManager.Record(new HPChangeLog(this, -damageAfterShieldApply));
 
 			if (currentHealth < 0)
 				currentHealth = 0;
@@ -642,7 +640,7 @@ public class Unit : MonoBehaviour{
 
 			UpdateHealthViewer();
 
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds(Configuration.textObjectDuration);
 
 			damageTextObject.SetActive(false);
 
@@ -656,7 +654,7 @@ public class Unit : MonoBehaviour{
 				BattleManager battleManager = BattleData.battleManager;
 				UnitStatusEffect statusEffect = kv.Key;
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value));
 				Unit shieldCaster = statusEffect.GetCaster();
 				List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
@@ -670,6 +668,7 @@ public class Unit : MonoBehaviour{
 				activityPoint -= damage;
 			else
 				activityPoint = 0;
+            logManager.Record(new APChangeLog(this, -damage));
 			Debug.Log(GetNameKor() + " loses " + damage + "AP.");
 		}
 	}
@@ -688,7 +687,7 @@ public class Unit : MonoBehaviour{
     private bool checkIfSourceIsTrap(UnitStatusEffect se) {
         List<TileStatusEffect.FixedElement> statusEffectList = new List<TileStatusEffect.FixedElement>();
         Skill originSkill = se.GetOriginSkill();
-        if(originSkill.GetType() == typeof(ActiveSkill)) 
+        if(originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) 
             statusEffectList = ((ActiveSkill)originSkill).GetTileStatusEffectList();
         bool isSourceTrap = false;
         foreach(var fixedElem in statusEffectList) {
@@ -740,29 +739,29 @@ public class Unit : MonoBehaviour{
 		amount = CalculateActualAmount(amount, StatusEffectType.TakenHealChange);
 
 		// 초과회복시 최대체력까지만 올라감
-		int actualAmount = (int)amount;
-		if (currentHealth + actualAmount > maxHealth)
-		{
+		int actualAmount = (int)Math.Round(amount);
+		if (currentHealth + actualAmount > maxHealth){
 			actualAmount = maxHealth - currentHealth;
 		}
-
 		currentHealth += actualAmount;
+        LogManager.Instance.Record(new HPChangeLog(this, actualAmount));
 
 		DisplayRecoverText (actualAmount);
 		UpdateHealthViewer();
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(Configuration.textObjectDuration);
 		recoverTextObject.SetActive(false);
 	}
 
 	public IEnumerator RecoverActionPoint(int amount)
 	{
 		activityPoint += amount;
+        LogManager.Instance.Record(new APChangeLog(this, amount));
 
 		//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
 		DisplayRecoverText (amount);
 
 		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(Configuration.textObjectDuration);
 		recoverTextObject.SetActive(false);
 
 		unitManager.UpdateUnitOrder();
@@ -788,10 +787,10 @@ public class Unit : MonoBehaviour{
 
         // 기술의 행동력 소모 증감 효과 적용
         if (HasStatusEffect(StatusEffectType.RequireSkillAPChange)) {
-			requireSkillAP = (int) CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange);
+			requireSkillAP = (int)Math.Round(CalculateActualAmount(requireSkillAP, StatusEffectType.RequireSkillAPChange));
 		}
 		float speed = GetSpeed ();
-		requireSkillAP = (int)(requireSkillAP * (100f / speed));
+		requireSkillAP = (int)Math.Round(requireSkillAP * (100f / speed));
 
 		// 스킬 시전 유닛의 모든 행동력을 요구하는 경우
 		if (skill.GetRequireAP() == 1000)
@@ -891,8 +890,9 @@ public class Unit : MonoBehaviour{
 	}
 	public void UseActivityPoint(int amount){
 		activityPoint -= amount;
-		//Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
-		unitManager.UpdateUnitOrder();
+        LogManager.Instance.Record(new APChangeLog(this, -amount));
+        //Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
+        unitManager.UpdateUnitOrder();
 		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
@@ -900,7 +900,7 @@ public class Unit : MonoBehaviour{
 		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (var statusEffect in statusEffectList) {
             Skill originSkill = statusEffect.GetOriginSkill();
-            if (originSkill.GetType() == typeof(ActiveSkill)) {
+            if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                 ((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectAtPhaseStart(this, statusEffect);
             }
         }
@@ -914,11 +914,33 @@ public class Unit : MonoBehaviour{
     {
         SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseEnd(this);
     }
+
+    public void ApplyTileBuffAtActionEnd() {
+        Tile tile = GetTileUnderUnit();
+        Element elementOfTile = tile.GetTileElement();
+        List<UnitStatusEffect> statusEffectList = StatusEffectList;
+
+        if (elementOfTile != GetElement() || elementOfTile == Element.None) {
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOwnerOfSkill() == "tile");
+            if (statusEffect != null)
+                RemoveStatusEffect(statusEffect);
+        } else {
+            UnitStatusEffect.FixedElement fixedElem = BattleData.tileBuffInfos[elementOfTile];
+            UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOwnerOfSkill() == "tile");
+            if (statusEffect != null && statusEffect.fixedElem != fixedElem)
+                RemoveStatusEffect(statusEffect);
+            UnitStatusEffect newStatusEffect = new UnitStatusEffect(fixedElem, this, this, null);
+            List<UnitStatusEffect> newStatusEffectList = new List<UnitStatusEffect>();
+            newStatusEffectList.Add(newStatusEffect);
+            StatusEffector.AttachStatusEffect(this, newStatusEffectList, this);
+        }
+    }
+
     public void TriggerTileStatusEffectAtTurnStart() {
 		foreach(var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnStart(this, tile, tileStatusEffect);
                 }
             }
@@ -928,7 +950,7 @@ public class Unit : MonoBehaviour{
 		foreach (var tile in BattleData.tileManager.GetAllTiles().Values) {
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnEnd(this, tile, tileStatusEffect);
                 }
             }
@@ -1032,12 +1054,13 @@ public class Unit : MonoBehaviour{
 	void Initialize(){
 		gameObject.name = myInfo.nameEng;
 		position = myInfo.initPosition;
+        element = myInfo.element;
 		startPositionOfPhase = position;
 		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
-		activityPoint = (int)(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
+		activityPoint = (int)Math.Round(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
 		//Info에 넣어뒀던 변동사항 적용
 		foreach(KeyValuePair<Stat, int> change in myInfo.InitStatChanges){
 			if(change.Key == Stat.CurrentHealth){

@@ -40,7 +40,7 @@ namespace Battle.Turn {
 					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 
 					List<Tile> realEffectRange = casting.RealEffectRange;
-					if (selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (selectedUnit, realEffectRange)) {
+					if (CheckApplyPossibleToTargetTiles(targetTile, casting)) { 
 						DisplayPreviewDamage (casting);
 					}
 
@@ -91,7 +91,7 @@ namespace Battle.Turn {
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
 					Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 					
-					if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+					if (!CheckApplyPossibleToTargetTiles(targetTile, casting))
 						continue;
 					
 					if (BattleData.triggers.directionSelectedByUser.Triggered) {
@@ -172,7 +172,8 @@ namespace Battle.Turn {
 						BattleData.tileManager.PaintTiles (secondRange, TileColor.Blue);
 						List<Tile> realEffectRange = newCasting.RealEffectRange;
 
-						DisplayPreviewDamage (newCasting);
+                        if(CheckApplyPossibleToTargetTiles(targetTile, newCasting))
+						    DisplayPreviewDamage (newCasting);
 					}
 				}
 
@@ -225,10 +226,11 @@ namespace Battle.Turn {
                 BattleData.uiManager.DisableSkillUI();
 
                 BattleManager BM = BattleData.battleManager;
-				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
+                Tile targetTile = BattleData.SelectedTile;
+				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, targetTile, selectedUnit.GetDirection ());
 				Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 
-				if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+				if (!CheckApplyPossibleToTargetTiles(targetTile, casting))
 					continue;
 
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
@@ -252,6 +254,13 @@ namespace Battle.Turn {
 
 		static Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages;
 
+        static bool CheckApplyPossibleToTargetTiles(Tile targetTile, Casting casting) {
+            ActiveSkill skill = casting.Skill;
+            if((!(skill.GetSkillType() == SkillType.Point) || casting.FirstRange.Contains(targetTile)) && skill.SkillLogic.CheckApplyPossibleToTargetTiles(casting))
+                return true;
+            else return false;
+        }
+
 		static void DisplayPreviewDamage(Casting casting){
 			//데미지 미리보기
 			allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(casting);
@@ -272,15 +281,18 @@ namespace Battle.Turn {
 		}
 
 		public static IEnumerator ApplyCasting (Casting casting) {
+            LogManager logManager = LogManager.Instance;
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
+            logManager.Record(new CastLog(casting));
 			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown () > 0) {
+            if (skill.GetCooldown () > 0) {
 				caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
-			}
+                logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
+            }
 			yield return ApplyAllTriggeredChains(casting);
 
 			BattleManager.MoveCameraToUnit(caster);
@@ -291,12 +303,18 @@ namespace Battle.Turn {
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			SkillLocation location = casting.Location;
+            LogManager logManager = LogManager.Instance;
+            Direction direction = caster.GetDirection();
 
+            logManager.Record(new ChainLog(casting));
 			caster.SetDirection(location.Direction);
+            logManager.Record(new DirectionChangeLog(caster, direction, caster.GetDirection()));
 
 			caster.UseActivityPoint (casting.RequireAP);
-			if (skill.GetCooldown() > 0)
-				caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+            if (skill.GetCooldown() > 0) {
+                caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+                logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
+            }
 
 			// 체인 목록에 추가.
 			ChainList.AddChains(casting);
@@ -339,7 +357,7 @@ namespace Battle.Turn {
             Tile tileUnderCaster = caster.GetTileUnderUnit();
             foreach(var tileStatusEffect in tileUnderCaster.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
                     if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenUnitTryToChain(tileUnderCaster, tileStatusEffect)) {
 						tileStatusConditionPossible = false;
                     }

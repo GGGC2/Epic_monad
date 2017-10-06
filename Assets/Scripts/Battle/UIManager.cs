@@ -29,6 +29,8 @@ public class UIManager : MonoBehaviour{
 	GameObject placedUnitCheckUI;
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
+    GameObject logDisplayPanel;
+    GameObject configurationPanel;
 
 	public GameObject chainBonusObj;
 	public GameObject celestialBonusObj;
@@ -41,29 +43,32 @@ public class UIManager : MonoBehaviour{
 	void Awake(){
 		instance = this;
 		apBarUI = FindObjectOfType<APBarPanel>();
-		skillViewer = FindObjectOfType<SkillViewer>();
 		for(int i = 0; i < 8; i++){
 			actionButtons.Add(GameObject.Find("ActionButton"+i).GetComponent<ActionButton>());
 		}
-		unitViewerUI = GameObject.Find("UnitViewerPanel");
-        statusEffectDisplayPanel = GameObject.Find("StatusEffectDisplayPanel");
-        selectedUnitViewerUI = GameObject.Find("SelectedUnitViewerPanel");
-		tileViewerUI = GameObject.Find("TileViewerPanel");
-		selectDirectionUI = FindObjectOfType<SelectDirectionUI>();
-		selectDirectionUI.Initialize ();
-		skillNamePanelUI = GameObject.Find("SkillNamePanel");
-		movedUICanvas = GameObject.Find("MovingUICanvas");
-		phaseUI = GameObject.Find("PhasePanel");
-		detailInfoUI = FindObjectOfType<DetailInfoPanel>();
-		placedUnitCheckUI = GameObject.Find("PlacedUnitCheckPanel");
-		notImplementedDebugPanel = GameObject.Find("NotImplementedDebugPanel");
-		TutorialScenario.selectDirectionUI = selectDirectionUI;
+		unitViewerUI                            = GameObject.Find("UnitViewerPanel");
+        statusEffectDisplayPanel                = GameObject.Find("StatusEffectDisplayPanel");
+        logDisplayPanel                         = GameObject.Find("LogDisplayPanel");
+        configurationPanel                      = GameObject.Find("ConfigurationPanel");
+        selectedUnitViewerUI                    = GameObject.Find("SelectedUnitViewerPanel");
+		tileViewerUI                            = GameObject.Find("TileViewerPanel");
+		selectDirectionUI                       = FindObjectOfType<SelectDirectionUI>();
+		skillNamePanelUI                        = GameObject.Find("SkillNamePanel");
+		movedUICanvas                           = GameObject.Find("MovingUICanvas");
+		phaseUI                                 = GameObject.Find("PhasePanel");
+		detailInfoUI                            = FindObjectOfType<DetailInfoPanel>();
+		placedUnitCheckUI                       = GameObject.Find("PlacedUnitCheckPanel");
+		notImplementedDebugPanel                = GameObject.Find("NotImplementedDebugPanel");
+        selectDirectionUI.Initialize();
+        TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
 
 	void Start(){
 		skillViewer.gameObject.SetActive(false);
 		unitViewerUI.SetActive(false);
         statusEffectDisplayPanel.SetActive(false);
+        configurationPanel.SetActive(false);
+        logDisplayPanel.SetActive(false);
         selectedUnitViewerUI.SetActive(false);
 		tileViewerUI.SetActive(false);
 		selectDirectionUI.gameObject.SetActive(false);
@@ -102,7 +107,7 @@ public class UIManager : MonoBehaviour{
 
 	public void UpdateApBarUI() {
 		if (BattleData.readiedUnits.Count != 0) {
-			apBarUI.UpdateAPDisplay(FindObjectOfType<UnitManager>().GetAllUnits());	
+			apBarUI.UpdateAPDisplay(BattleData.unitManager.GetAllUnits());	
 			apBarUI.MoveOverScreen(true);
 		}
 	}
@@ -171,68 +176,6 @@ public class UIManager : MonoBehaviour{
 		foreach (Transform transform in skillViewer.transform){
 			transform.gameObject.SetActive(true);
 		}
-	}
-    public void SetSkillUI(Unit selectedUnit) {
-        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        //skillPanel.SetMaxPage((skillList.Count - 1) / SkillPanel.onePageButtonsNum);
-        //skillPanel.triggerEnabled(selectedUnit);
-        EnableSkillUI();
-        
-        UpdateSkillInfo(selectedUnit);
-    }
-    public void UpdateSkillInfo(Unit selectedUnit) {
-        List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-        for (int i = 0; i < SkillPanel.onePageButtonsNum; i++){
-			/*int skillIndex = i + SkillPanel.onePageButtonsNum * skillPanel.GetPage();
-			GameObject skillButton = skillUI.transform.Find((i+1) + "SkillButton").gameObject;
-			if (skillIndex >= skillList.Count)
-			{
-				//Debug.Log(selectedUnit+"'s skillCount : "+skillList.Count);
-				skillButton.SetActive(false);
-				continue;
-			}
-            skillButton.SetActive(true);
-
-			skillButton.transform.Find("NameText").GetComponent<Text>().text = skillList[skillIndex].GetName();
-			
-			ActiveSkill skill = skillList[skillIndex];
-			Unit caster = selectedUnit;
-            int originAP = skill.GetRequireAP();
-			int APChangedByStatusEffects = caster.GetActualRequireSkillAP(skill);
-			int actualAP = Battle.Skills.SkillLogicFactory.Get(skill).CalculateAP(APChangedByStatusEffects, caster);			
-			Text apText = skillButton.transform.Find("APText").GetComponent<Text>();
-			apText.text = actualAP.ToString() + " AP";
-			if (originAP < actualAP)
-				apText.color = Color.red;
-			else if (originAP > actualAP)
-				apText.color = Color.green;
-			else
-				apText.color = Color.white;
-
-			var skillCooldownDict = selectedUnit.GetUsedSkillDict();
-			if (skillCooldownDict.ContainsKey(skillList[skillIndex].GetName()))
-			{
-				int remainCooldown = skillCooldownDict[skillList[skillIndex].GetName()];
-				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "재사용까지 " + remainCooldown + "페이즈";
-			}
-			else
-				skillButton.transform.Find("CooldownText").GetComponent<Text>().text = "";*/
-		}
-        TurnOnOnlyUsableSkills(selectedUnit);
-	}
-
-	public void TurnOnOnlyUsableSkills(Unit selectedUnit){
-		List<ActiveSkill> skillList = selectedUnit.GetLearnedSkillList();
-		/*int page = skillPanel.GetPage();
-
-		for (int skillIndex = SkillPanel.onePageButtonsNum * page + 1; skillIndex <= SkillPanel.onePageButtonsNum * (page + 1); skillIndex++) {
-			if (skillIndex > skillList.Count
-				|| selectedUnit.GetCurrentActivityPoint () < selectedUnit.GetActualRequireSkillAP (skillList [skillIndex - 1])
-				|| selectedUnit.GetUsedSkillDict ().ContainsKey (skillList [skillIndex - 1].GetName ()))
-				skillPanel.OnOffSkillButton (skillIndex, false);
-			else
-				skillPanel.OnOffSkillButton (skillIndex, true);
-		}*/
 	}
 
 	public void DisableSkillUI(){
@@ -306,6 +249,15 @@ public class UIManager : MonoBehaviour{
     public void DisableStatusEffectDisplayPanel() {
         statusEffectDisplayPanel.transform.position = originalStatusEffectDisplayPanelPosition;
         statusEffectDisplayPanel.SetActive(false);
+    }
+
+    public void ActivateLogDisplayPanel() {
+        logDisplayPanel.SetActive(true);
+        logDisplayPanel.GetComponent<LogDisplayPanel>().Initialize();
+    }
+
+    public void InActiveLogDisplayPanel() {
+        logDisplayPanel.SetActive(false);
     }
 
 	public void SetTileViewer(Tile tile)

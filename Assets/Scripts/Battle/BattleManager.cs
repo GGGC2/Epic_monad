@@ -36,6 +36,7 @@ public class BattleManager : MonoBehaviour{
 		FindObjectOfType<TileManager>().GenerateTiles(Parser.GetParsedTileInfo());
 		PartyData.CheckLevelData();
 		TileManager.SetInstance ();
+        LogManager.SetInstance();
 		SkillLocation.tileManager = BattleData.tileManager;
 	}
 
@@ -87,15 +88,20 @@ public class BattleManager : MonoBehaviour{
 
 	public IEnumerator InstantiateTurnManager(){
 		if (BattleData.uiManager.startFinished) {
-			while (true) {
-				yield return StartCoroutine (StartPhaseOnGameManager ());
+			while(true){
+				yield return StartCoroutine(StartPhaseOnGameManager());
 
 				if(BattleData.currentPhase == 1){
 					tutorialManager.gameObject.SetActive(true);
 				}
 				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
 
-				while (BattleData.readiedUnits.Count != 0) {
+				while (BattleData.readiedUnits.Count != 0){
+					//전투에 승리해서 결과창이 나오면 진행 정지
+					if(FindObjectOfType<ResultPanel>() != null){
+						yield break;
+					}
+
 					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 					BattleData.uiManager.UpdateApBarUI();
 
@@ -127,7 +133,7 @@ public class BattleManager : MonoBehaviour{
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
 		if (BattleData.currentState != CurrentState.Destroy) {
-			EndUnitTurn ();
+			EndUnitTurn (unit);
 		}
 	}
 
@@ -138,6 +144,8 @@ public class BattleManager : MonoBehaviour{
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
 	}
 	public void StartUnitTurn(Unit unit){
+        LogManager logManager = LogManager.Instance;
+        logManager.Record(new TurnStartLog(unit));
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		Debug.Log(unit.GetNameKor() + "'s turn");
@@ -153,8 +161,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
 		BattleData.selectedUnit.SetActive();
 	}
-	public void EndUnitTurn(){
-		BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
+	public void EndUnitTurn(Unit unit) {
+        LogManager.Instance.Record(new TurnEndLog(unit));
+        BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
 		BattleData.selectedUnit.SetInactive();
 	}
@@ -174,6 +183,8 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public static IEnumerator DestroyUnit(Unit unit, TrigActionType actionType){
+        LogManager logManager = LogManager.Instance;
+        logManager.Record(new DestroyUnitLog(unit));
 		BattleManager battleManager = BattleData.battleManager;
 
 		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
@@ -245,6 +256,7 @@ public class BattleManager : MonoBehaviour{
 			return;
 		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
 		MoveCameraToPosition (objPos);
+        //LogManager.Instance.Record(new CameraMoveLog(objPos));
 	}
 	private static void MoveCameraToPosition(Vector2 position)
 	{
@@ -260,7 +272,8 @@ public class BattleManager : MonoBehaviour{
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
 		BattleData.unitManager.ResetLatelyHitUnits();
 		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-		if (!IsSelectedUnitRetreatOrDie ()) {
+        BattleData.unitManager.ApplyTileBuffsAtActionEnd();
+        if (!IsSelectedUnitRetreatOrDie ()) {
 			yield return StartCoroutine (BattleData.unitManager.TriggerStatusEffectsAtActionEnd ());
 		}
 		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
@@ -560,6 +573,7 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
+
 		BattleTriggerManager.CheckBattleTrigger();
 		HighlightBattleTriggerTiles();
 
@@ -638,6 +652,7 @@ public class BattleManager : MonoBehaviour{
         if (SceneData.isTestMode) {
             mapData = Resources.Load<TextAsset>("Data/EQ_test_map");
             unitData = Resources.Load<TextAsset>("Data/EQ_test_unit");
+            battleConditionData = Resources.Load<TextAsset>("Data/EQ_test_battleEndCondition");
         } else {
             if (SceneData.stageNumber == 0){
 				SceneData.stageNumber = 1;

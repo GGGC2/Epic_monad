@@ -38,6 +38,36 @@ public class Utility : MonoBehaviour {
 		float deltaDegree = Mathf.Atan2(targetPosition.y - startPosition.y, targetPosition.x - startPosition.x) * Mathf.Rad2Deg;
 		return deltaDegree;
 	}
+
+    public static Tile GetGrabResultTile(Unit caster, Unit target) {    //caster,result,...,target
+        TileManager tileManager = BattleData.tileManager;
+        Vector2 casterPosition = caster.GetPosition();
+        Vector2 targetPosition = target.GetPosition();
+        Vector2 directionVector = (targetPosition - casterPosition).normalized;
+        Vector2 currentPosition = targetPosition;
+        for (int i = 0; i < (targetPosition - casterPosition).magnitude; i++) {
+            currentPosition -= directionVector;
+            Tile tile = tileManager.GetTile(currentPosition);
+            if (tile == null || tile.IsUnitOnTile())
+                return tileManager.GetTile(currentPosition + directionVector);
+        }
+        return tileManager.GetTile(currentPosition);
+    }
+
+    public static Tile GetChargeResultTile(Unit caster, Unit target) {
+        TileManager tileManager = BattleData.tileManager;
+        Vector2 casterPosition = caster.GetPosition();
+        Vector2 targetPosition = target.GetPosition();
+        Vector2 directionVector = (targetPosition - casterPosition).normalized;
+        Vector2 currentPosition = casterPosition;
+        for (int i = 0; i < (targetPosition - casterPosition).magnitude; i++) {
+            currentPosition += directionVector;
+            Tile tile = tileManager.GetTile(currentPosition);
+            if (tile == null || tile.IsUnitOnTile())
+                return tileManager.GetTile(currentPosition - directionVector);
+        }
+        return tileManager.GetTile(currentPosition);
+    }
 	
 	public static Direction GetDirectionToTarget(Unit unit, List<Tile> selectedTiles){
 		Vector2 averagePos = new Vector2(0, 0);
@@ -242,11 +272,13 @@ public class Utility : MonoBehaviour {
         List<Vector2> range = new List<Vector2>();
         Vector2 frontVector = ToVector2(dir);
         Vector2 perpendicularVector = new Vector2(frontVector.y, frontVector.x);
-        for (int i = minReach; i <= maxReach; i++) {
+        for (int i = 1; i <= maxReach; i++) {
             int width = maxReach - i;
             for (int j = -width; j <= width; j++) {
-                Vector2 pos = mid + j * perpendicularVector + i * frontVector;
-                range.Add(pos);
+                if (Math.Abs(j) >= minReach - i) {
+                    Vector2 pos = mid + j * perpendicularVector + i * frontVector;
+                    range.Add(pos);
+                }
             }
         }
         return range;

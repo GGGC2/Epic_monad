@@ -8,15 +8,15 @@ public class TileStatusEffect : StatusEffect {
         ((FlexibleElement.DisplayElement)flexibleElem.display).ownerTile = ownerTile;
         for (int i = 0; i < fixedElem.actuals.Count; i++) {
             CalculateAmount(i, false);
-            SetRemainAmount(i, GetAmount(i));
+            SetRemainAmount(i, GetAmount(i), false);
         }
     }
     public new class FixedElement : StatusEffect.FixedElement {
-        public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
+        public FixedElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
                   int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) 
-                  : base(toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, 
+                  : base(ownerOfSkill, toBeReplaced, originSkillName, displayName, isInfinite, isStackable, isOnce, defaultPhase, maxStack, 
                     amountToBeUpdated, amountNotEffectedByStack, isRemovable, explanation, effectName, effectVisualType, effectMoveType, actualEffects){
         }
     }

@@ -9,17 +9,20 @@ EditorBuildSettings:
     path: Assets/Scene/title.unity
     guid: b00048fa0774c41ed8bc1e857250ce52
   - enabled: 1
-    path: Assets/Scene/dialogue.unity
+    path: Assets/Scene/Dialogue.unity
     guid: e0d0971895ebc4947936555fe1dd9341
   - enabled: 1
     path: Assets/Scene/Battle.unity
     guid: 4b4c540e51c224d6780c166d84212cb2
-  - enabled: 1
-    path: Assets/Scene/BattleReady.unity
+  - enabled: 0
+    path: 
     guid: dbdd7ed600ede044f833b7fa2431c678
   - enabled: 1
     path: Assets/Scene/StageSelect.unity
     guid: 105dacf6c6e9d41b390dd891f954421a
   - enabled: 1
-    path: Assets/Scene/BattleReady_new.unity
+    path: Assets/Scene/BattleReady.unity
     guid: b4ab96516633647a1abf4c5bb353fb2c
+  - enabled: 1
+    path: Assets/Scene/Test.unity
+    guid: acdb391d6fdace5408affd34a5372b3f

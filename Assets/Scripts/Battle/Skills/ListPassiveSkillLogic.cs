@@ -121,10 +121,20 @@ namespace Battle.Skills
             }
         }
 
-        public override bool TriggerDamaged(Unit target, float damage, Unit caster, bool isSourceTrap) {
+        public override bool TriggerDamagedByCasting(Unit caster, Unit target, float damage) {
+            bool ignored = false;
+            foreach (var skillLogic in passiveSkillLogics) {
+                if (!skillLogic.TriggerDamagedByCasting(caster, target, damage)) {
+                    ignored = true;
+                }
+            }
+            return !ignored;
+        }
+
+        public override bool TriggerDamagedByNonCasting(Unit caster, float damage, Unit target, bool isSourceTrap) {
         bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                if (!skillLogic.TriggerDamaged(target, damage, caster, isSourceTrap)) {
+                if (!skillLogic.TriggerDamagedByNonCasting(caster, damage, target, isSourceTrap)) {
                     ignored = true;
                 }
             }

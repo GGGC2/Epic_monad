@@ -67,8 +67,11 @@ public static class SkillLogicFactory
 
 			//루키어스
 			case "가로베기":
-				skillLogic = new BaseSkillLogic();
+				skillLogic = new Lucius_1_l_SkillLogic();
 			break;
+            case "푸른 쇄도":
+                skillLogic = new Lucius_2_r_SkillLogic();
+            break;
 
             // 루베리카
             case "교향곡 : 운명":
@@ -203,6 +206,18 @@ public static class SkillLogicFactory
             case "죽창 찌르기":
             skillLogic = new Karldrich_1_l_SkillLogic();
             break;
+
+            //트리아나
+            case "열풍":
+            skillLogic = new Triana_1_l_SkillLogic();
+            break;
+            case "얼음날":
+            skillLogic = new Triana_1_m_SkillLogic();
+            break;
+            case "포획":
+            skillLogic = new Triana_1_r_SkillLogic();
+            break;
+
 
 			// Not used
 			/*case "조화진동":
@@ -358,6 +373,17 @@ public static class SkillLogicFactory
             break;
             case "응급처치":
             passiveSkillLogic = new Luvericha_7_r_SkillLogic();
+            break;
+
+            //루키어스
+            case "검사의 직감":
+            passiveSkillLogic = new Lucius_1_m_SkillLogic();
+            break;
+            case "정면 승부":
+            passiveSkillLogic = new Lucius_2_l_SkillLogic();
+            break;
+            case "배수진":
+            passiveSkillLogic = new Lucius_2_m_SkillLogic();
             break;
 
 			// 리니안
@@ -517,7 +543,10 @@ public static class SkillLogicFactory
             passiveSkillLogic = new Json_2_m_SkillLogic();
             break;
 
-			// 트리아나
+            // 트리아나
+            case "감응":
+            passiveSkillLogic = new Triana_0_1_SkillLogic();
+            break;
 			case "나무 껍질":
 			passiveSkillLogic = new Triana_2_r_SkillLogic();
 			break;
@@ -536,6 +565,9 @@ public static class SkillLogicFactory
             break;
             case "행동하는 혁명가":
             passiveSkillLogic = new Karldrich_1_r_SkillLogic();
+            break;
+            case "노조결성":
+            passiveSkillLogic = new Karldrich_2_r_SkillLogic();
             break;
 
             // 큐리
