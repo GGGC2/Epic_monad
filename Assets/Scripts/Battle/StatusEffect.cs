@@ -13,6 +13,7 @@ public class StatusEffect {
         public DisplayElement display;
         public List<ActualElement> actuals;
         public class DisplayElement {
+            public readonly string ownerOfSkill;    //스킬의 소유자
             public readonly bool toBeReplaced;  //상위의 강화 스킬이 있는 경우 true. 큐리의 '가연성 부착물'과 '조연성 부착물' 스킬 같은 경우 
                                                 //csv 파일에 같은 originSkillName을 가지고 있는데, 이 때 둘 중 하나만 읽어야 하므로 '가연성 부착물'
                                                 //statusEffect는 읽지 않게 하기 위함.
@@ -33,10 +34,11 @@ public class StatusEffect {
             public readonly EffectVisualType effectVisualType;
             public readonly EffectMoveType effectMoveType;
 
-            public DisplayElement(bool toBeReplaced, string originSkillName, string displayName,
+            public DisplayElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
                   int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType) {
+                this.ownerOfSkill = ownerOfSkill;
                 this.toBeReplaced = toBeReplaced;
                 this.originSkillName = originSkillName;
                 this.displayName = displayName;
@@ -79,11 +81,11 @@ public class StatusEffect {
             }
         }
 
-        public FixedElement(bool toBeReplaced, string originSkillName, string displayName,
+        public FixedElement(string ownerOfSkill, bool toBeReplaced, string originSkillName, string displayName,
                   bool isInfinite, bool isStackable, bool isOnce, int defaultPhase, 
                   int maxStack, bool amountToBeUpdated, bool amountNotEffectedByStack, bool isRemovable,
                   string explanation, string effectName, EffectVisualType effectVisualType, EffectMoveType effectMoveType, List<ActualElement> actualEffects) {
-            display = new DisplayElement(toBeReplaced, originSkillName, displayName,
+            display = new DisplayElement(ownerOfSkill, toBeReplaced, originSkillName, displayName,
                     isInfinite, isStackable, isOnce, defaultPhase, 
                     maxStack, amountToBeUpdated, amountNotEffectedByStack, isRemovable,
                     explanation, effectName, effectVisualType, effectMoveType);
@@ -141,6 +143,7 @@ public class StatusEffect {
         this.flexibleElem = new FlexibleElement(this, caster, originSkill);
     }
 
+    public string GetOwnerOfSkill() { return fixedElem.display.ownerOfSkill; }
     public bool GetToBeReplaced() { return fixedElem.display.toBeReplaced; }
     public string GetOriginSkillName() { return fixedElem.display.originSkillName; }
     public string GetDisplayName() { return fixedElem.display.displayName; }
@@ -164,32 +167,19 @@ public class StatusEffect {
     public bool GetIsPercent(int index) { return fixedElem.actuals[index].isPercent; }
     public bool GetIsMultiply(int index) { return fixedElem.actuals[index].isMultiply; }
     public float GetRemainAmount(int index) { return flexibleElem.actuals[index].remainAmount; }
-    public void AddRemainPhase(int phase) { flexibleElem.display.remainPhase += phase; }
-    public void DecreaseRemainPhase() { flexibleElem.display.remainPhase -= 1; }
-    public void DecreaseRemainPhase(int phase) { flexibleElem.display.remainPhase -= phase; }
-    public void SetRemainPhase(int phase) { flexibleElem.display.remainPhase = phase; }
-    public void AddRemainStack(int stack) { 
-		flexibleElem.display.remainStack += stack;
-        if(flexibleElem.display.remainStack > fixedElem.display.maxStack) {
-            flexibleElem.display.remainStack = fixedElem.display.maxStack;
-        }
+    public void AddRemainPhase(int phase) { SetRemainPhase(flexibleElem.display.remainPhase + phase); }
+    public void DecreaseRemainPhase() { SetRemainPhase(flexibleElem.display.remainPhase - 1); }
+    public void DecreaseRemainPhase(int phase) { SetRemainPhase(flexibleElem.display.remainPhase - phase); }
+    public void SetRemainPhase(int phase) {
+        int beforePhase = flexibleElem.display.remainPhase;
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainPhaseChange, 0, beforePhase, phase));
+        flexibleElem.display.remainPhase = phase; 
     }
-    
-    public void DecreaseRemainStack() { 
-		flexibleElem.display.remainStack -= 1;
-        if (flexibleElem.display.remainStack < 0) {
-            flexibleElem.display.remainStack = 0;
-        }
-    }
-    
-    public void DecreaseRemainStack(int stack) {
-		flexibleElem.display.remainStack -= stack;
-        if (flexibleElem.display.remainStack < 0) {
-            flexibleElem.display.remainStack = 0;
-        }
-    }
-
+    public void AddRemainStack(int stack) { SetRemainStack(flexibleElem.display.remainStack + stack); }
+    public void DecreaseRemainStack() { DecreaseRemainStack(1); }
+    public void DecreaseRemainStack(int stack) { SetRemainStack(flexibleElem.display.remainStack - stack); }
     public void SetRemainStack(int stack) {
+        int beforeStack = flexibleElem.display.remainStack;
 		flexibleElem.display.remainStack = stack;
         if (flexibleElem.display.remainStack > fixedElem.display.maxStack) {
             flexibleElem.display.remainStack = fixedElem.display.maxStack;
@@ -197,6 +187,7 @@ public class StatusEffect {
         if (flexibleElem.display.remainStack < 0) {
             flexibleElem.display.remainStack = 0;
         }
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainStackChange, 0, beforeStack, flexibleElem.display.remainStack));
     }
     
     private List<int> FindIndexOfType(StatusEffectType statusEffectType) {
@@ -226,14 +217,24 @@ public class StatusEffect {
             amount += GetRemainAmount(index);
         return amount;
     }
-    public void SetAmount(int index, float amount) { flexibleElem.actuals[index].amount = amount; }
+    public void SetAmount(int index, float amount) {
+        float beforeAmount = flexibleElem.actuals[index].amount;
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.AmountChange, index, beforeAmount, amount));
+        flexibleElem.actuals[index].amount = amount; 
+    }
     public void SetAmountOfType(StatusEffectType statusEffectType, float amount) {
         List<int> indices = FindIndexOfType(statusEffectType);
         foreach(var index in indices)
             SetAmount(index, amount);
     }
-    public void SetRemainAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount = amount; }
-    public void SubAmount(int index, float amount) { flexibleElem.actuals[index].remainAmount -= amount; }
+    public void SetRemainAmount(int index, float amount, bool recordLog) {
+        if (recordLog) {
+            float beforeRemainAmount = flexibleElem.actuals[index].remainAmount;
+            LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainAmountChange, index, beforeRemainAmount, amount));
+        }
+        flexibleElem.actuals[index].remainAmount = amount; 
+    }
+    public void SubAmount(int index, float amount) { SetRemainAmount(index, flexibleElem.actuals[index].remainAmount - amount, true); }
     public bool IsOfType(StatusEffectType statusEffectType) {
         bool isOfType = false;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {
@@ -257,8 +258,12 @@ public class StatusEffect {
     public string GetExplanation() {
         string text = fixedElem.display.explanation;
         for(int i = 0; i < fixedElem.actuals.Count; i++) {
+            string remainAmountString = ((int)GetRemainAmount(i)).ToString();
+            string minusAmountString = (-(int)GetAmount(i)).ToString();
             string amountString = ((int)GetAmount(i)).ToString();
             if(fixedElem.actuals[i].isPercent)  amountString += "%";
+            text = text.Replace("REMAINAMOUNT" + i, remainAmountString);
+            text = text.Replace("-AMOUNT" + i, minusAmountString);
             text = text.Replace("AMOUNT" + i, amountString);
         }
         return text;
@@ -277,6 +282,8 @@ public class StatusEffect {
                 statusEffectVar = 100 - (100 * ((float)caster.GetCurrentHealth() / (float)caster.GetMaxHealth()));
             else if (seVarEnum == StatusEffectVar.Power)
                 statusEffectVar = caster.GetStat(Stat.Power);
+            else if (seVarEnum == StatusEffectVar.MaxHealth)
+                statusEffectVar = caster.GetStat(Stat.MaxHealth);
             else
                 statusEffectVar = GetStatusEffectVar(i);
             flexibleElem.actuals[i].amount = (statusEffectVar * fixedElem.actuals[i].seCoef + fixedElem.actuals[i].seBase);

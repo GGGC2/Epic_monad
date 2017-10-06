@@ -37,7 +37,7 @@ namespace Battle.Skills {
 
             StatusEffector.AttachStatusEffect(caster, skill, caster, tiles);
             Tile backTile = GetBackTile(caster, target);
-            if(backTile != null && !backTile.IsUnitOnTile())
+            if(TileManager.Instance.isTilePassable(backTile))
                 target.ForceMove(backTile);
 
             yield return new WaitForSeconds(0.2f);

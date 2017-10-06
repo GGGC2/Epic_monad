@@ -100,6 +100,14 @@ namespace Enums {
 		Back
 	}
 
+    public enum StatusEffectChangeType {
+        Attach,
+        Remove,
+        AmountChange,
+        RemainAmountChange,
+        RemainPhaseChange,
+        RemainStackChange
+    }
 	public enum StatusEffectType
 	{
         MaxHealthChange,
@@ -150,6 +158,7 @@ namespace Enums {
         Once,
 		Stack, // 스택 비례일 경우
 		Power,
+        MaxHealth,
 		Level,
 		LostHpPercent, // 잃은 체력 %
 		Etc // 기타 변수

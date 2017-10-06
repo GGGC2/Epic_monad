@@ -31,10 +31,10 @@ class Aura{
                 alreadyAppliedEffect.SetRemainStack(alreadyAppliedEffect.GetMemorizedUnits().Count);
             } else if(kv.Value == true){
                 UnitStatusEffect.FixedElement fixedElementOfAuraStatusEffect = null;
-                if (originSkill.GetType() == typeof(ActiveSkill))
+                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
                     fixedElementOfAuraStatusEffect = ((ActiveSkill)originSkill).GetUnitStatusEffectList().Find(se => 
                                                         se.actuals[0].statusEffectType != StatusEffectType.Aura);
-                if (originSkill.GetType() == typeof(PassiveSkill))
+                if (originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     fixedElementOfAuraStatusEffect = ((PassiveSkill)originSkill).GetUnitStatusEffectList().Find(se =>
                                                         se.actuals[0].statusEffectType != StatusEffectType.Aura);
 

@@ -24,8 +24,11 @@ public class ChainList : MonoBehaviour {
 	public static void RemoveChainOfThisUnit(Unit unit)
 	{
 		Chain myChain = chainList.Find(x => x.Caster == unit);
-		chainList.Remove(myChain);
-		RemoveChargeEffectOfUnit(unit);
+        if (myChain != null) {
+            chainList.Remove(myChain);
+            RemoveChargeEffectOfUnit(unit);
+            LogManager.Instance.Record(new RemoveChainLog(unit));
+        }
 	}
 	private static void RemoveChargeEffectOfUnit(Unit unit)
 	{

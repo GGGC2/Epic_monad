@@ -12,7 +12,7 @@ namespace Battle.Skills {
             for (int i = 0; i < 3; i++) {
                 currentPosition += directionVector;
                 Tile tile = tileManager.GetTile(currentPosition);
-                if (tile == null || tile.IsUnitOnTile())
+                if (!tileManager.isTilePassable(tile))
                     return tileManager.GetTile(currentPosition - directionVector);
             }
             return tileManager.GetTile(currentPosition);
@@ -23,7 +23,7 @@ namespace Battle.Skills {
             Unit target = castingApply.GetTarget();
             if (caster.element == Element.Fire) {
                 Tile backTile = GetBackTile(caster, target);
-                if (backTile != null && !backTile.IsUnitOnTile())
+                if (TileManager.Instance.isTilePassable(backTile))
                     target.ForceMove(backTile);
 
                 yield return new WaitForSeconds(0.2f);

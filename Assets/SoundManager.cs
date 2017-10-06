@@ -14,12 +14,17 @@ public class SoundManager : MonoBehaviour {
 
 	public void PlayBGM(string name){
 		audioSource.clip = BGMs [name];
+        audioSource.volume = Configuration.BGMVolume;
 		if(!audioSource.isPlaying)
 			audioSource.Play();
 	}
 	public void PlaySE(string name){
-		audioSource.PlayOneShot (SEs[name]);
+		audioSource.PlayOneShot (SEs[name], Configuration.soundEffectVolume);
 	}
+
+    public void ChangeBGMVolume(float BGMVolume) {
+        audioSource.volume = Configuration.BGMVolume;
+    }
 
 	void Awake () {
 		if (instance != null && instance != this) {

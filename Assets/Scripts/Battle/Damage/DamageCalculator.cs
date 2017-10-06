@@ -21,6 +21,12 @@ namespace Battle
 			public float chainBonus = 1.0f;
 			public float smiteAmount = 0;
 			public float resultDamage = 0;
+
+            public bool HasTacticalBonus { 
+                get {
+                    return !(directionBonus == 1.0f && celestialBonus == 1.0f && heightBonus == 1.0f && chainBonus == 1.0f);
+                } 
+            }
 		}
 
 		public class DamageInfo{
@@ -142,13 +148,13 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
 			foreach(var statusEffect in target.StatusEffectList) {
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if(originSkill.GetType() == typeof(ActiveSkill))
+				if(originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
 					((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach(var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if(originSkill.GetType() == typeof(PassiveSkill))
+                if(originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 
@@ -173,7 +179,9 @@ namespace Battle
 			attackDamage.chainBonus = ChainComboBonus(chainCombo);
 			attackDamage.smiteAmount = SmiteAmount(caster);
 
-			Element casterElement = caster.GetElement();
+            // '지형지물'은 방향 보너스를 받지 않음
+            if (target.IsObject) attackDamage.directionBonus = 1.0f;
+            Element casterElement = caster.GetElement();
 			if(casterElement != Element.None){
 				StatusEffectType casterElementWeakness = EnumConverter.GetCorrespondingStatusEffectType(casterElement);
 				if (target.HasStatusEffect(casterElementWeakness)){
@@ -191,7 +199,7 @@ namespace Battle
             // 타겟의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in target.StatusEffectList){
 				Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
                     ((ActiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromTargetStatusEffect(castingApply, statusEffect);
 			}
 			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, castingApply.GetSkill().GetName());
@@ -201,7 +209,7 @@ namespace Battle
             // 시전자의 statusEffect에 의한 추가데미지 계산
             foreach (var statusEffect in caster.StatusEffectList) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-                if (originSkill.GetType() == typeof(PassiveSkill))
+                if (originSkill != null && originSkill.GetType() == typeof(PassiveSkill))
                     ((PassiveSkill)originSkill).SkillLogic.ApplyAdditionalDamageFromCasterStatusEffect(castingApply, statusEffect);
             }
 
@@ -217,8 +225,6 @@ namespace Battle
 			attackDamage.baseDamage = caster.CalculateActualAmount(attackDamage.baseDamage, StatusEffectType.DamageChange);
 			printBonusDamageLog(attackDamage, originalAbsoluteDamageBonus, originalRelativeDamageBonus, "buff from " + caster.GetNameEng());
 
-			// '지형지물'은 방향 보너스를 받지 않음
-			if (target.IsObject) attackDamage.directionBonus = 1.0f;
 
 			attackDamage.resultDamage = ((attackDamage.baseDamage + attackDamage.smiteAmount)
 				* attackDamage.relativeDamageBonus + attackDamage.absoluteDamageBonus) 
