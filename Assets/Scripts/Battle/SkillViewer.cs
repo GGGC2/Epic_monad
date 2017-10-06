@@ -38,7 +38,7 @@ public class SkillViewer : SkillUI{
 	public CallerType caller;
 
 	void OnDisable(){
-		Debug.Log("Why Disabled?");
+		//Debug.Log("Why Disabled?");
 	}
 	public void Initialize(){
 		viewerNameText.text = "";
