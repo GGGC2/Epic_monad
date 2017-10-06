@@ -40,7 +40,7 @@ namespace Battle.Turn {
 					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 
 					List<Tile> realEffectRange = casting.RealEffectRange;
-					if (selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (selectedUnit, realEffectRange)) {
+					if (CheckApplyPossibleToTargetTiles(targetTile, casting)) { 
 						DisplayPreviewDamage (casting);
 					}
 
@@ -91,7 +91,7 @@ namespace Battle.Turn {
 					selectedSkill.SetRealTargetTileForSkillLocation (skillLocation);
 					Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 					
-					if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+					if (!CheckApplyPossibleToTargetTiles(targetTile, casting))
 						continue;
 					
 					if (BattleData.triggers.directionSelectedByUser.Triggered) {
@@ -172,7 +172,8 @@ namespace Battle.Turn {
 						BattleData.tileManager.PaintTiles (secondRange, TileColor.Blue);
 						List<Tile> realEffectRange = newCasting.RealEffectRange;
 
-						DisplayPreviewDamage (newCasting);
+                        if(CheckApplyPossibleToTargetTiles(targetTile, newCasting))
+						    DisplayPreviewDamage (newCasting);
 					}
 				}
 
@@ -225,10 +226,11 @@ namespace Battle.Turn {
                 BattleData.uiManager.DisableSkillUI();
 
                 BattleManager BM = BattleData.battleManager;
-				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, BattleData.SelectedTile, selectedUnit.GetDirection ());
+                Tile targetTile = BattleData.SelectedTile;
+				SkillLocation skillLocation = new SkillLocation (selectedUnitPos, targetTile, selectedUnit.GetDirection ());
 				Casting casting = new Casting (selectedUnit, selectedSkill, skillLocation);
 
-				if (!selectedSkill.SkillLogic.CheckApplyPossibleToTargetTiles (casting.Caster, casting.RealEffectRange))
+				if (!CheckApplyPossibleToTargetTiles(targetTile, casting))
 					continue;
 
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
@@ -251,6 +253,13 @@ namespace Battle.Turn {
 
 
 		static Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages;
+
+        static bool CheckApplyPossibleToTargetTiles(Tile targetTile, Casting casting) {
+            ActiveSkill skill = casting.Skill;
+            if((!(skill.GetSkillType() == SkillType.Point) || casting.FirstRange.Contains(targetTile)) && skill.SkillLogic.CheckApplyPossibleToTargetTiles(casting))
+                return true;
+            else return false;
+        }
 
 		static void DisplayPreviewDamage(Casting casting){
 			//데미지 미리보기
