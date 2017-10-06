@@ -1,5 +1,0 @@
-﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	적 1명 무력화	Enemy	Neutralize	1	false	50
-Win	맵의 중앙으로 탈출	target	Reach	1	false	50	1	arcadia	1	4	7
-Lose	아르카디아의 무력화	PC	Neutralize	1	false	0
-End	Scene#2	One	false
