@@ -70,7 +70,7 @@ public class APChangeLog : EffectLog {
     }
 }
 
-public class StatChangeLog : EffectLog {
+/*public class StatChangeLog : EffectLog {
     Unit unit;
     Stat stat;
     int beforeAmount;
@@ -91,7 +91,7 @@ public class StatChangeLog : EffectLog {
         unit.updateCurrentHealthRelativeToMaxHealth();
         yield return null;
     }
-}
+}*/
 
 public class CoolDownLog : EffectLog {
     Unit caster;

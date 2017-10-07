@@ -28,7 +28,8 @@ public class LogManager : MonoBehaviour {
 
         logDisplay.log = log;
         BattleData.logDisplayList.Add(logDisplay);
-        logDisplayPanel.AddLogDisplay(logDisplay, numLog + 1);
+        if(DisplayThisLog(log))
+            logDisplayPanel.AddLogDisplay(logDisplay, numLog + 1);
     }
     public IEnumerator ExecuteLastEventLogAndConsequences() {
         do {
@@ -125,5 +126,10 @@ public class LogManager : MonoBehaviour {
     LogDisplay GetLastEffectLogDisplay() {
         int numLog = BattleData.logDisplayList.Count;
         return BattleData.logDisplayList[numLog - 1];
+    }
+    bool DisplayThisLog(Log log) {
+        if(log is CameraMoveLog || log is PrintBonusTextLog || log is SoundEffectLog || log is VisualEffectLog
+            || log is DisplayDamageOrHealTextLog || log is AddLatelyHitInfoLog || log is WaitForSecondsLog)   return false;
+        return true;
     }
 }
