@@ -24,7 +24,7 @@ public class HitInfo{
 }
 
 public class Unit : MonoBehaviour{
-	GameObject damageTextObject;
+	public GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
 	public HealthViewer healthViewer;
@@ -47,7 +47,7 @@ public class Unit : MonoBehaviour{
     // 효과 리스트
     List<UnitStatusEffect> statusEffectList = new List<UnitStatusEffect>();
 
-    class ActualStat {
+    public class ActualStat {
         public int value;
         public Stat stat;
         public List<UnitStatusEffect> appliedStatusEffects;
@@ -58,20 +58,20 @@ public class Unit : MonoBehaviour{
             this.appliedStatusEffects = new List<UnitStatusEffect>();
         }
     }
-    Dictionary<Stat, ActualStat> actualStats;
+    public Dictionary<Stat, ActualStat> actualStats;
 
 	// Variable values.
 	Vector2 position;
 	// 유닛이 해당 페이즈에서 처음 있었던 위치 - 영 패시브에서 체크
 	Vector2 startPositionOfPhase;
     //이 유닛이 이 턴에 움직였을 경우에 true - 큐리 스킬 '재결정'에서 체크
-    int notMovedTurnCount;
+    public int notMovedTurnCount;
     //이 유닛이 이 턴에 스킬을 사용했을 경우에 true - 유진 스킬 '여행자의 발걸음', '길잡이'에서 체크
     bool hasUsedSkillThisTurn;
 
 	Direction direction;
-	int currentHealth;
-	int activityPoint;
+	public int currentHealth;
+	public int activityPoint;
 
 	GameObject chargeEffect;
 
@@ -137,9 +137,6 @@ public class Unit : MonoBehaviour{
 	public List<PassiveSkill> GetLearnedPassiveSkillList() { return passiveSkillList; }
 	public List<UnitStatusEffect> StatusEffectList{ get{return statusEffectList;} }
 	public void SetStatusEffectList(List<UnitStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
-	public void AddStatusEffectList(UnitStatusEffect effect){
-		statusEffectList.Add(effect);
-	}
 	public int GetMaxHealth() { return actualStats[Stat.MaxHealth].value; }
     public int GetCurrentHealth() { return currentHealth; }
 	public float GetHpRatio() {return (float)GetCurrentHealth()/(float)GetMaxHealth();}
@@ -182,13 +179,12 @@ public class Unit : MonoBehaviour{
 		get { return transform.position; }
 	}
     public Vector2 GetStartPositionOfPhase() { return startPositionOfPhase; }
-    public int GetNotMovedTurnCount() { return notMovedTurnCount; }
     public bool GetHasUsedSkillThisTurn() { return hasUsedSkillThisTurn; }
     public void SetHasUsedSkillThisTurn(bool hasUsedSkillThisTurn) { this.hasUsedSkillThisTurn = hasUsedSkillThisTurn; }
     public Dictionary<string, int> GetUsedSkillDict() {return usedSkillDict;}
     public Direction GetDirection() { return direction; }
     public void SetDirection(Direction direction) {
-		this.direction = direction;
+        this.direction = direction;
 		UpdateSpriteByDirection();
 	}
 	public int GetStandardAP(){
@@ -251,11 +247,13 @@ public class Unit : MonoBehaviour{
 	public void ApplySnapshot(){
 		BattleData.MoveSnapshot snapshot = BattleData.moveSnapshot;
 		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
-		GetTileUnderUnit().SetUnitOnTile(null);
+        LogManager.Instance.Record(new PositionChangeLog(this, GetPosition(), snapshot.tile.GetTilePos()));
+
+        /*GetTileUnderUnit().SetUnitOnTile(null);
 		transform.position = snapshot.tile.transform.position + new Vector3(0, 0, -0.05f);
 		SetPosition(snapshot.tile.GetTilePos());
-		SetDirection(snapshot.direction);
-		snapshot.tile.SetUnitOnTile(this);
+        snapshot.tile.SetUnitOnTile(this);*/
+        SetDirection(snapshot.direction);
 		activityPoint = snapshot.ap;
 		movedTileCount = snapshot.movedTileCount;
 		SetStatusEffectList(snapshot.statEffectList);
@@ -263,12 +261,12 @@ public class Unit : MonoBehaviour{
 		unitManager.UpdateUnitOrder();
 	}
     private void ChangePosition(Tile destTile) {
-        Tile tileBefore = GetTileUnderUnit();
-        tileBefore.SetUnitOnTile(null);
+        /*GetTileUnderUnit().SetUnitOnTile(null);
         transform.position = destTile.transform.position + new Vector3(0, 0, -0.05f);
         SetPosition(destTile.GetTilePos());
         destTile.SetUnitOnTile(this);
-        notMovedTurnCount = 0;
+        notMovedTurnCount = 0;*/
+        LogManager.Instance.Record(new PositionChangeLog(this, GetPosition(), destTile.GetTilePos()));
 
         ChainList.RemoveChainOfThisUnit(this);
         SkillLogicFactory.Get(passiveSkillList).TriggerOnMove(this);
@@ -278,20 +276,18 @@ public class Unit : MonoBehaviour{
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
         BattleTriggerManager.CheckBattleTrigger(this, destTile);
-        UpdateStats();
     }
 
     public void ForceMove(Tile destTile) { //강제이동
 		if (!IsObject && SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
-            LogManager.Instance.Record(new ForceMoveLog(this, GetPosition(), destTile.GetTilePos()));
 			ChangePosition (destTile);
+            LogManager.Instance.Record(new WaitForSecondsLog(0.2f));
         }
     }
     
 	public void ApplyMove(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount) {
         LogManager logManager = LogManager.Instance;
         Tile beforeTile = GetTileUnderUnit();
-        logManager.Record(new MoveLog(this, beforeTile.GetTilePos(), GetDirection(), destTile.GetTilePos(), finalDirection));
         UseActivityPoint (totalAPCost);
 		ChangePosition (destTile);
 		SetDirection (finalDirection);
@@ -306,23 +302,26 @@ public class Unit : MonoBehaviour{
         SkillLogicFactory.Get(passiveSkillList).TriggerAfterMove(this, beforeTile, destTile);
     }
 
-    private void updateCurrentHealthRelativeToMaxHealth() {
+    public void updateCurrentHealthRelativeToMaxHealth() {
         if(currentHealth > GetMaxHealth())
             currentHealth = GetMaxHealth();
     }
 
     public void UpdateStats(){
-        
         foreach (var actualStat in actualStats.Values) {
             Stat statType = actualStat.stat;
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statType);
-            if (statusEffectType != StatusEffectType.Etc)
+            if (statusEffectType != StatusEffectType.Etc) {
+                int beforeAmount = actualStat.value;
                 actualStat.value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statType], statusEffectType));
+                //LogManager.Instance.Record(new StatChangeLog(this, statType, 
+                //            beforeAmount, (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statType], statusEffectType))));
+            }
         }
-        updateCurrentHealthRelativeToMaxHealth();
+        //updateCurrentHealthRelativeToMaxHealth();
     }
     public void UpdateStats(UnitStatusEffect statusEffect, bool isApplied, bool isRemoved) {
-        List<ActualStat> statsToUpdate = new List<ActualStat>();
+        /*List<ActualStat> statsToUpdate = new List<ActualStat>();
         for (int i = 0; i < statusEffect.fixedElem.actuals.Count; i++) {
             StatusEffectType type = statusEffect.fixedElem.actuals[i].statusEffectType;
             Stat statTypeToUpdate = EnumConverter.GetCorrespondingStat(type);
@@ -334,9 +333,12 @@ public class Unit : MonoBehaviour{
             else if (isRemoved) statsToUpdate[i].appliedStatusEffects.Remove(statusEffect);
             
             StatusEffectType statusEffectType = EnumConverter.GetCorrespondingStatusEffectType(statsToUpdate[i].stat);
-            statsToUpdate[i].value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType));
-        }
-        updateCurrentHealthRelativeToMaxHealth();
+            int beforeAmount = statsToUpdate[i].value;
+            //statsToUpdate[i].value = (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType));
+            LogManager.Instance.Record(new StatChangeLog(this, statsToUpdate[i].stat, beforeAmount, 
+                                    (int)Math.Round(CalculateActualAmount(myInfo.baseStats[statsToUpdate[i].stat], statusEffectType))));
+        }*/
+        //updateCurrentHealthRelativeToMaxHealth();
     }
     
     public void UpdateHealthViewer() {
@@ -346,7 +348,7 @@ public class Unit : MonoBehaviour{
     }
     public void UpdateRealPosition(int direction) { //direction = 1 : 반시계방향으로 회전, direction = -1 : 시계방향으로 회전 
         transform.position = GetTileUnderUnit().transform.position + new Vector3(0, 0, -0.05f);
-		SetDirection (this.direction);
+		UpdateSpriteByDirection();
     }
 
     public void AddSkillCooldown(int phase){
@@ -422,13 +424,11 @@ public class Unit : MonoBehaviour{
         }
         if (toBeRemoved) {
             LogManager.Instance.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Remove, 0, 0, 0));
-            Debug.Log(statusEffect.GetDisplayName() + " is removed from " + myInfo.nameKor);
-            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+            //statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
             UpdateStats(statusEffect, false, true);
-            UpdateSpriteByStealth();
-            if(statusEffect.IsOfType(StatusEffectType.Shield)) {
-                UpdateHealthViewer();
-            }
+            //if(statusEffect.IsOfType(StatusEffectType.Shield)) {
+            //    UpdateHealthViewer();
+            //}
         }
     }
     public void RemoveStatusEffect(Unit caster, StatusEffectCategory category, int num)  //해당 category의 statusEffect를 num개 까지 제거
@@ -544,7 +544,7 @@ public class Unit : MonoBehaviour{
         hasUsedSkillThisTurn = false;
 	}
 
-	public IEnumerator ApplyDamageByCasting(CastingApply castingApply, bool isHealth) {
+	public void ApplyDamageByCasting(CastingApply castingApply, bool isHealth) {
 		Unit caster = castingApply.GetCaster();
 		ActiveSkill skill = castingApply.GetSkill();
 		bool ignoreShield = SkillLogicFactory.Get(skill).IgnoreShield(castingApply);
@@ -554,7 +554,7 @@ public class Unit : MonoBehaviour{
 		SkillLogicFactory.Get(passiveSkillsOfAttacker).TriggerActiveSkillDamageApplied(caster, this);
 
 		int realDamage = CalculateDamageByCasting (castingApply, isHealth);
-		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		ApplyDamage (realDamage, caster, isHealth, ignoreShield);
 	}
 	public int CalculateDamageByCasting(CastingApply castingApply, bool isHealth){
 		Unit caster = castingApply.GetCaster();
@@ -577,9 +577,9 @@ public class Unit : MonoBehaviour{
         }
 		return (int)Math.Round(damage);
 	}
-	public IEnumerator ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
+	public void ApplyDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool ignoreShield, bool isSourceTrap){
 		int realDamage = CalculateDamageByNonCasting (originalDamage, caster, additionalDefense, additionalResistance, isHealth, isSourceTrap);
-		yield return StartCoroutine (ApplyDamage (realDamage, caster, isHealth, ignoreShield));
+		ApplyDamage (realDamage, caster, isHealth, ignoreShield);
 	}
 	public int CalculateDamageByNonCasting(float originalDamage, Unit caster, float additionalDefense, float additionalResistance, bool isHealth, bool isSourceTrap){
 		float damage = originalDamage;
@@ -600,7 +600,7 @@ public class Unit : MonoBehaviour{
 		return (int)Math.Round(damage);
 	}
     
-	IEnumerator ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
+	void ApplyDamage(int damage, Unit caster, bool isHealth, bool ignoreShield) {
         LogManager logManager = LogManager.Instance;
 		if (isHealth) {
 			int damageAfterShieldApply = damage;
@@ -628,24 +628,18 @@ public class Unit : MonoBehaviour{
 					if (damage == 0) break;
 				}
 			}
-			currentHealth -= damageAfterShieldApply;
+			//currentHealth -= damageAfterShieldApply;
+			//if (currentHealth < 0)
+			//    currentHealth = 0;
             logManager.Record(new HPChangeLog(this, -damageAfterShieldApply));
 
-			if (currentHealth < 0)
-				currentHealth = 0;
-
-			Debug.Log(damageAfterShieldApply + " damage applied to " + GetNameKor());
-
-			DisplayDamageText(damageAfterShieldApply);
-
-			UpdateHealthViewer();
-
-			yield return new WaitForSeconds(Configuration.textObjectDuration);
-
-			damageTextObject.SetActive(false);
+            // DisplayDamageText(damageAfterShieldApply, true);
+            logManager.Record(new DisplayDamageOrHealTextLog(this, -damageAfterShieldApply, true));
 
 			if (damageAfterShieldApply > 0) {
-				latelyHitInfos.Add(new HitInfo(caster, null, damageAfterShieldApply));
+                HitInfo hitInfo = new HitInfo(caster, null, damageAfterShieldApply);
+                //latelyHitInfos.Add(hitInfo);
+                logManager.Record(new AddLatelyHitInfoLog(this, hitInfo));
 
 				// 데미지를 받을 때 발동하는 피격자 특성
 				SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, damageAfterShieldApply, caster);
@@ -655,34 +649,40 @@ public class Unit : MonoBehaviour{
 				UnitStatusEffect statusEffect = kv.Key;
 				Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
-					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value));
+					((ActiveSkill)originSkill).SkillLogic.TriggerShieldAttacked(this, kv.Value);
 				Unit shieldCaster = statusEffect.GetCaster();
 				List<PassiveSkill> shieldCastersPassiveSkills = shieldCaster.GetLearnedPassiveSkillList();
-				yield return battleManager.StartCoroutine(SkillLogicFactory.Get(shieldCastersPassiveSkills).
-					TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value));
+				SkillLogicFactory.Get(shieldCastersPassiveSkills).TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(caster, shieldCaster, this, kv.Value);
 			}
 
 		}
 		else {
-			if (activityPoint >= damage)
-				activityPoint -= damage;
-			else
-				activityPoint = 0;
+			//if (activityPoint >= damage)
+			//	  activityPoint -= damage;
+			//else
+			//	  activityPoint = 0;
             logManager.Record(new APChangeLog(this, -damage));
-			Debug.Log(GetNameKor() + " loses " + damage + "AP.");
 		}
 	}
 
-	public void DisplayDamageText(int damage){
-		damageTextObject.SetActive(true);
-		damageTextObject.GetComponent<CustomWorldText>().text = damage.ToString();
-		damageTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.DAMAGE);
-	}
-	public void DisplayRecoverText(int recover){
+	public IEnumerator DisplayDamageText(int damage, bool isHealth){
+        damageTextObject.SetActive(true);
+        damageTextObject.GetComponent<CustomWorldText>().text = damage.ToString();
+        damageTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.DAMAGE);
+        yield return new WaitForSeconds(Configuration.textObjectDuration);
+        damageTextObject.SetActive(false);
+        if(isHealth)    UpdateHealthViewer();
+        else            unitManager.UpdateUnitOrder();
+    }
+	public IEnumerator DisplayRecoverText(int recover, bool isHealth){
 		recoverTextObject.SetActive(true);
 		recoverTextObject.GetComponent<CustomWorldText>().text = recover.ToString();
 		recoverTextObject.GetComponent<CustomWorldText>().ApplyText(CustomWorldText.Font.RECOVER);
-	}
+        yield return new WaitForSeconds(Configuration.textObjectDuration);
+        recoverTextObject.SetActive(false);
+        if (isHealth) UpdateHealthViewer();
+        else unitManager.UpdateUnitOrder();
+    }
 
     private bool checkIfSourceIsTrap(UnitStatusEffect se) {
         List<TileStatusEffect.FixedElement> statusEffectList = new List<TileStatusEffect.FixedElement>();
@@ -698,7 +698,7 @@ public class Unit : MonoBehaviour{
         }
         return isSourceTrap;
     }
-    public IEnumerator ApplyDamageOverPhase() {
+    public void ApplyDamageOverPhase() {
         foreach (var se in statusEffectList) {
             int actuals = se.fixedElem.actuals.Count;
             for (int i = 0; i < actuals; i++) {
@@ -709,15 +709,13 @@ public class Unit : MonoBehaviour{
                     Unit caster = se.GetCaster();
 
                     bool isSourceTrap = checkIfSourceIsTrap(se);
-					yield return StartCoroutine(ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap));
+					ApplyDamageByNonCasting(damage, caster, 0, 0, true, false, isSourceTrap);
                 }
             }
         }
-
-        yield return null;
     }
 
-	public IEnumerator ApplyHealOverPhase(){
+	public void ApplyHealOverPhase(){
 		float totalAmount = 0.0f;
 
 		if (this.HasStatusEffect(StatusEffectType.HealOverPhase)){
@@ -729,10 +727,10 @@ public class Unit : MonoBehaviour{
 			}
 		}
         if(totalAmount != 0)
-		    yield return RecoverHealth(totalAmount);
+		    RecoverHealth(totalAmount);
 	}
 
-	public IEnumerator RecoverHealth(float amount)
+	public void RecoverHealth(float amount)
 	{
         int maxHealth = GetMaxHealth();
 		// 회복량 증감 효과 적용
@@ -741,30 +739,23 @@ public class Unit : MonoBehaviour{
 		// 초과회복시 최대체력까지만 올라감
 		int actualAmount = (int)Math.Round(amount);
 		if (currentHealth + actualAmount > maxHealth){
-			actualAmount = maxHealth - currentHealth;
+			  actualAmount = maxHealth - currentHealth;
 		}
-		currentHealth += actualAmount;
+		//currentHealth += actualAmount;
         LogManager.Instance.Record(new HPChangeLog(this, actualAmount));
 
-		DisplayRecoverText (actualAmount);
-		UpdateHealthViewer();
-		yield return new WaitForSeconds(Configuration.textObjectDuration);
-		recoverTextObject.SetActive(false);
+		// DisplayRecoverText (actualAmount, true);
+        LogManager.Instance.Record(new DisplayDamageOrHealTextLog(this, actualAmount, true));
 	}
 
-	public IEnumerator RecoverActionPoint(int amount)
+	public void RecoverActionPoint(int amount)
 	{
-		activityPoint += amount;
+		//activityPoint += amount;
         LogManager.Instance.Record(new APChangeLog(this, amount));
 
 		//AP 회복인데 체력 회복과 똑같은 폰트로 나오면 헷갈리지 않을까
-		DisplayRecoverText (amount);
-
-		// 회복량 표시되는 시간.
-		yield return new WaitForSeconds(Configuration.textObjectDuration);
-		recoverTextObject.SetActive(false);
-
-		unitManager.UpdateUnitOrder();
+		// DisplayRecoverText (amount, false);
+        LogManager.Instance.Record(new DisplayDamageOrHealTextLog(this, amount, false));
 	}
 
 	public void RegenerateActionPoint(){
@@ -889,11 +880,11 @@ public class Unit : MonoBehaviour{
 		unitManager.UpdateUnitOrder();
 	}
 	public void UseActivityPoint(int amount){
-		activityPoint -= amount;
+		//activityPoint -= amount;
         LogManager.Instance.Record(new APChangeLog(this, -amount));
         //Debug.Log(name + " use " + amount + "AP. Current AP : " + activityPoint);
-        unitManager.UpdateUnitOrder();
-		UIManager.Instance.UpdateSelectedUnitViewerUI (this);
+        //unitManager.UpdateUnitOrder();
+		//UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
 	public void ApplyTriggerOnPhaseStart(int phase){

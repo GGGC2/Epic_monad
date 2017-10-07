@@ -101,9 +101,9 @@ public static class StatusEffector{
 
 			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
 			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable()){
-                List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
-                newStatusEffectList.Add(statusEffect);
-                target.SetStatusEffectList(newStatusEffectList);
+                //List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
+                //newStatusEffectList.Add(statusEffect);
+                //starget.SetStatusEffectList(newStatusEffectList);
                 logManager.Record(new StatusEffectLog(alreadyAppliedSameEffect, StatusEffectChangeType.Remove, 0, 0, 0));
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
                 target.UpdateStats(alreadyAppliedSameEffect, false, true);
@@ -113,23 +113,18 @@ public static class StatusEffector{
 			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()){
 				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++) {
-                    float beforeAmount = alreadyAppliedSameEffect.GetAmount(i);
                     float amount = statusEffect.GetAmount(i);
-                    float beforeRemainAmount = statusEffect.GetRemainAmount(i);
-                    int beforeRemainPhase = alreadyAppliedSameEffect.GetRemainPhase();
-                    int remainPhase = statusEffect.GetRemainPhase();
 					alreadyAppliedSameEffect.SetAmount(i, amount);
-					alreadyAppliedSameEffect.SetRemainAmount(i, amount, true);
-					alreadyAppliedSameEffect.SetRemainPhase(remainPhase);
+					alreadyAppliedSameEffect.SetRemainAmount(i, amount);
+					alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
                 }
                 alreadyAppliedSameEffect.AddRemainStack(1);
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
-                target.AddStatusEffectList(statusEffect);
+                //target.StatusEffectList.Add(statusEffect);
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
                 target.UpdateStats(statusEffect, true, false);
-                target.UpdateSpriteByStealth();
             }
 		}
 	}
@@ -140,18 +135,18 @@ public static class StatusEffector{
         List<TileStatusEffect> statusEffects = fixedStatusEffects
             .Select(fixedElem => new TileStatusEffect(fixedElem, caster, targetTile, appliedSkill))
             .ToList();
-            List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
-            foreach (var statusEffect in statusEffects) {
-                bool ignoreStatusEffect = false;
-                if (SkillLogicFactory.Get(appliedSkill).TriggerTileStatusEffectApplied(statusEffect, caster, targetTile) == false) {
-                    ignoreStatusEffect = true;
-                    Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
-                }
-                if (ignoreStatusEffect == false)
-                    newStatusEffects.Add(statusEffect);
+        List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
+        foreach (var statusEffect in statusEffects) {
+            bool ignoreStatusEffect = false;
+            if (SkillLogicFactory.Get(appliedSkill).TriggerTileStatusEffectApplied(statusEffect, caster, targetTile) == false) {
+                ignoreStatusEffect = true;
+                Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
             }
-            AttachStatusEffect(caster, newStatusEffects, targetTile);
+            if (ignoreStatusEffect == false)
+                newStatusEffects.Add(statusEffect);
         }
+        AttachStatusEffect(caster, newStatusEffects, targetTile);
+    }
     public static void AttachStatusEffect(Unit caster, List<TileStatusEffect> statusEffects, Tile targetTile) {
         LogManager logManager = LogManager.Instance;
         Vector2 tilePos = targetTile.GetTilePos();
@@ -162,9 +157,9 @@ public static class StatusEffector{
 
             // 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
             if (alreadyAppliedSameEffect != null && !statusEffect.GetIsStackable()) {
-                List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
-                newStatusEffectList.Add(statusEffect);
-                targetTile.SetStatusEffectList(newStatusEffectList);
+                //List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
+                //newStatusEffectList.Add(statusEffect);
+                //targetTile.SetStatusEffectList(newStatusEffectList);
                 logManager.Record(new StatusEffectLog(alreadyAppliedSameEffect, StatusEffectChangeType.Remove, 0, 0, 0));
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
             }
@@ -172,25 +167,20 @@ public static class StatusEffector{
             else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()) {
                 int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
                 for (int i = 0; i < num; i++) {
-                    float beforeAmount = alreadyAppliedSameEffect.GetAmount(i);
                     float amount = statusEffect.GetAmount(i);
-                    float beforeRemainAmount = statusEffect.GetRemainAmount(i);
-                    int beforeRemainPhase = alreadyAppliedSameEffect.GetRemainPhase();
-                    int remainPhase = statusEffect.GetRemainPhase();
                     alreadyAppliedSameEffect.SetAmount(i, statusEffect.GetAmount(i));
-                    alreadyAppliedSameEffect.SetRemainAmount(i, statusEffect.GetAmount(i), true);
+                    alreadyAppliedSameEffect.SetRemainAmount(i, statusEffect.GetAmount(i));
                     alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
                 }
                 alreadyAppliedSameEffect.AddRemainStack(1);
             }
             // 동일한 효과가 없음 -> 새로 넣음
             else {
-                List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => true);
-                newStatusEffectList.Add(statusEffect);
-                targetTile.SetStatusEffectList(newStatusEffectList);
+                //List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => true);
+                //newStatusEffectList.Add(statusEffect);
+                //targetTile.SetStatusEffectList(newStatusEffectList);
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
             }
-            if(targetTile.IsUnitOnTile())   targetTile.GetUnitOnTile().UpdateStats();
         }
     }
 }

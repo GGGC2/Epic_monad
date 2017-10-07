@@ -306,7 +306,7 @@ public class ActiveSkill : Skill{
 		return attackAbleTilesGroups;
 	}
 
-	public IEnumerator Apply(Casting casting, int chainCombo) {
+	public void Apply(Casting casting, int chainCombo) {
         LogManager logManager = LogManager.Instance;
 		BattleManager battleManager = BattleData.battleManager;
 		Unit caster = casting.Caster;
@@ -319,14 +319,15 @@ public class ActiveSkill : Skill{
         //secondRange -> 스킬 이펙트용으로만 쓰인다(투사체가 아무 효과 없이 사라져도 이펙트가 날아갈 목표점은 있어야 하니까)
         //realEffectRange -> 효과와 데미지 적용 등 모든 곳에 쓰이는 실제 범위
 
-        if (IsChainable()) {
+        if (IsChainable()) 
             ChainList.RemoveChainOfThisUnit(caster);
-        }
 
-		ApplySoundEffect();
-		yield return battleManager.StartCoroutine(ApplyVisualEffect (caster, secondRange));
+		// ApplySoundEffect();
+        // yield return battleManager.StartCoroutine(ApplyVisualEffect (casting));
+        LogManager.Instance.Record(new SoundEffectLog(this));
+        LogManager.Instance.Record(new VisualEffectLog(casting));
 
-		foreach (var tile in realEffectRange) {
+        foreach (var tile in realEffectRange) {
 			if (tile.IsUnitOnTile()) {
 				Unit target = tile.GetUnitOnTile();
 
@@ -340,25 +341,25 @@ public class ActiveSkill : Skill{
 					// 데미지 적용
 					if (SkillLogic.MayDisPlayDamageCoroutine(castingApply)) {
 						if (skillApplyType == SkillApplyType.DamageHealth) {
-							yield return battleManager.StartCoroutine(ApplyDamage(castingApply, chainCombo, target == targets.Last()));
+							ApplyDamage(castingApply, chainCombo, target == targets.Last());
 						} else {
 							Battle.DamageCalculator.CalculateAmountOtherThanAttackDamage(castingApply);
 							float amount = castingApply.GetDamage().resultDamage;
 							if (skillApplyType == SkillApplyType.DamageAP) {
-								yield return battleManager.StartCoroutine(target.ApplyDamageByCasting(castingApply, false));
+								target.ApplyDamageByCasting(castingApply, false);
 								BattleData.uiManager.UpdateApBarUI();
 							} else if (skillApplyType == SkillApplyType.HealHealth) {
-								yield return battleManager.StartCoroutine(target.RecoverHealth(amount));
-								yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.TriggerApplyingHeal(castingApply));
+								target.RecoverHealth(amount);
+								passiveSkillLogicsOfCaster.TriggerApplyingHeal(castingApply);
 							} else if (skillApplyType == SkillApplyType.HealAP) {
-								yield return battleManager.StartCoroutine(target.RecoverActionPoint((int)amount));
+								target.RecoverActionPoint((int)amount);
 							}
 						}
 					}
 
 					// 효과 외의 부가 액션 (AP 감소 등)
-					yield return battleManager.StartCoroutine(SkillLogic.ActionInDamageRoutine(castingApply));
-					yield return battleManager.StartCoroutine(passiveSkillLogicsOfCaster.ActionInDamageRoutine(castingApply));
+					SkillLogic.ActionInDamageRoutine(castingApply);
+					passiveSkillLogicsOfCaster.ActionInDamageRoutine(castingApply);
 
 					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 					if (unitStatusEffectList.Count > 0) {
@@ -370,17 +371,16 @@ public class ActiveSkill : Skill{
 									ignored = true;
 							}
 						}
-
-						if (!ignored) {
+						if (!ignored)
 							StatusEffector.AttachStatusEffect (caster, this, target, realEffectRange);
-						}
 					}
 				}
-				BattleData.uiManager.DeactivateAllBonusText();
+				//BattleData.uiManager.DeactivateAllBonusText();
+                logManager.Record(new PrintBonusTextLog("All", 0, false));
 				// 사이사이에도 특성 발동 조건을 체크해준다.
 				BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
                 BattleData.unitManager.ApplyTileBuffsAtActionEnd();
-				yield return battleManager.StartCoroutine(BattleData.unitManager.TriggerStatusEffectsAtActionEnd());
+				BattleData.unitManager.TriggerStatusEffectsAtActionEnd();
 				BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
 				BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
 
@@ -396,7 +396,6 @@ public class ActiveSkill : Skill{
 			if(originPassiveSkill != null && originPassiveSkill.GetType() == typeof(PassiveSkill))
 				((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
 		}
-		caster.SetHasUsedSkillThisTurn(true);
 
 		// 공격스킬 시전시 관련 효과중 1회용인 효과 제거 (공격할 경우 - 공격력 변화, 데미지 변화, 강타)
 		if (skillApplyType == SkillApplyType.DamageHealth) {
@@ -408,10 +407,6 @@ public class ActiveSkill : Skill{
 			foreach (var statusEffect in statusEffectsToRemove)
 				caster.RemoveStatusEffect (statusEffect);
 		}
-		BattleData.selectedSkill = null;
-
-		yield return new WaitForSeconds(0.5f);
-		BattleData.alreadyMoved = false;
 	}
 
 	private static bool CheckEvasion(Unit caster, Unit target) {
@@ -435,7 +430,7 @@ public class ActiveSkill : Skill{
 		}
 	}
 
-	private static IEnumerator ApplyDamage(CastingApply castingApply, int chainCombo, bool isLastTarget) {
+	private static void ApplyDamage(CastingApply castingApply, int chainCombo, bool isLastTarget) {
 		Unit caster = castingApply.GetCaster();
 		Unit target = castingApply.GetTarget();
 		ActiveSkill skill = castingApply.GetSkill();
@@ -444,13 +439,18 @@ public class ActiveSkill : Skill{
 		DamageCalculator.CalculateAttackDamage(castingApply, chainCombo);
 		DamageCalculator.AttackDamage attackDamage = castingApply.GetDamage();
 		UIManager UIM = BattleData.uiManager;
+        LogManager logManager = LogManager.Instance;
+        if (attackDamage.directionBonus > 1) {
+            if(attackDamage.attackDirection == DirectionCategory.Back)
+                LogManager.Instance.Record(new PrintBonusTextLog("DirectionBack", attackDamage.directionBonus, true));
+            else if(attackDamage.attackDirection == DirectionCategory.Side)
+                LogManager.Instance.Record(new PrintBonusTextLog("DirectionSide", attackDamage.directionBonus, true));
+        }
+		if (attackDamage.celestialBonus != 1)   logManager.Record(new PrintBonusTextLog("Celestial", attackDamage.celestialBonus, true));
+		if (attackDamage.chainBonus > 1) logManager.Record(new PrintBonusTextLog("Chain", chainCombo, true));
+        if (attackDamage.heightBonus != 1) logManager.Record(new PrintBonusTextLog("Height", attackDamage.heightBonus, true));
 
-		if (attackDamage.directionBonus > 1) UIM.PrintDirectionBonus(attackDamage);
-		if (attackDamage.celestialBonus != 1) UIM.PrintCelestialBonus(attackDamage.celestialBonus);
-		if (attackDamage.chainBonus > 1) UIM.PrintChainBonus(chainCombo);
-		if (attackDamage.heightBonus != 1) UIM.PrintHeightBonus(attackDamage.heightBonus);
-
-		BattleManager battleManager = BattleData.battleManager;
+        BattleManager battleManager = BattleData.battleManager;
 		UnitClass damageType = caster.GetUnitClass();
 		bool canReflect = target.HasStatusEffect(StatusEffectType.Reflect) ||
 			(target.HasStatusEffect(StatusEffectType.MagicReflect) && damageType == UnitClass.Magic) ||
@@ -460,21 +460,14 @@ public class ActiveSkill : Skill{
 			reflectAmount = DamageCalculator.CalculateReflectDamage(attackDamage.resultDamage, target, caster, damageType);
 			attackDamage.resultDamage -= reflectAmount;
 		}
-
-		var damageCoroutine = target.ApplyDamageByCasting(castingApply, true);
-		if (isLastTarget) {
-			yield return battleManager.StartCoroutine(damageCoroutine);
-		} else {
-			battleManager.StartCoroutine(damageCoroutine);
-			yield return null;
-		}
-
-		if(canReflect)  yield return battleManager.StartCoroutine(reflectDamage(caster, target, reflectAmount));
+        
+        target.ApplyDamageByCasting(castingApply, true);
+		if(canReflect)  reflectDamage(caster, target, reflectAmount);
 	}
-	private static IEnumerator reflectDamage(Unit caster, Unit target, float reflectAmount) {
+	private static void reflectDamage(Unit caster, Unit target, float reflectAmount) {
 		UnitClass damageType = caster.GetUnitClass();
 		BattleManager battleManager = BattleData.battleManager;
-		yield return battleManager.StartCoroutine(caster.ApplyDamageByNonCasting(reflectAmount, target, 0, 0, true, false, false));
+		caster.ApplyDamageByNonCasting(reflectAmount, target, 0, 0, true, false, false);
 
 		foreach (var statusEffect in target.StatusEffectList) {
 			bool canReflect = statusEffect.IsOfType(StatusEffectType.Reflect) ||
@@ -483,8 +476,7 @@ public class ActiveSkill : Skill{
 			if (canReflect) {
                 Skill originSkill = statusEffect.GetOriginSkill();
 				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
-					yield return battleManager.StartCoroutine(((ActiveSkill)originSkill).SkillLogic.
-						TriggerStatusEffectAtReflection(target, statusEffect, caster));
+					((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectAtReflection(target, statusEffect, caster);
 				if (statusEffect.GetIsOnce() == true)
 					target.RemoveStatusEffect(statusEffect);
 			}
@@ -526,10 +518,13 @@ public class ActiveSkill : Skill{
     }
 
 	public void ApplySoundEffect(){
-		if(soundEffectName != null && soundEffectName != "-")
-			SoundManager.Instance.PlaySE (soundEffectName);
+        if (soundEffectName != null && soundEffectName != "-") {
+            SoundManager.Instance.PlaySE(soundEffectName);
+        }
 	}
-	public IEnumerator ApplyVisualEffect(Unit unit, List<Tile> secondRange) {
+	public IEnumerator ApplyVisualEffect(Casting casting) {
+        Unit unit = casting.Caster;
+        List<Tile> secondRange = casting.SecondRange;
 		if (secondRange.Count == 0) {
 			yield break;
 		}
@@ -538,7 +533,6 @@ public class ActiveSkill : Skill{
 			Debug.Log("There is no visual effect for " + korName);
 			yield break;
 		}
-
 		if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {
 			// 투사체, 범위형 이펙트.
 			Vector3 startPos = unit.realPosition;
@@ -604,19 +598,17 @@ public class ActiveSkill : Skill{
 				GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 			}
 			yield return new WaitForSeconds(0.5f);
-		}
-	}
+        }
+    }
 
 	public IEnumerator AIUseSkill(Casting casting){
         LogManager logManager = LogManager.Instance;
 		Unit caster = casting.Caster;
 		ActiveSkill skill = casting.Skill;
 		SkillLocation location = casting.Location;
-        Direction beforeDirection = caster.GetDirection();
 
         logManager.Record(new CastLog(casting));
         caster.SetDirection (location.Direction);
-        logManager.Record(new DirectionChangeLog(caster, beforeDirection, location.Direction));
 
         BattleManager.MoveCameraToUnit (caster);
         SetSkillNamePanelUI ();
@@ -630,13 +622,13 @@ public class ActiveSkill : Skill{
 		caster.UseActivityPoint (casting.RequireAP);
 
         if (skill.GetCooldown () > 0) {
-			caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
+			//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
             logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
 		}
 
 		List<Tile> secondRange = casting.SecondRange;
 		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);
-		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
+		Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
 		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
 
         HideSkillNamePanelUI ();

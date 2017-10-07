@@ -172,8 +172,7 @@ public class TileManager : MonoBehaviour {
 	public void DepaintAllTiles(TileColor color){
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}
-
-    public void UpdateTileStatusEffectsAtActionEnd() {
+    public void CheckAllTrpas() {
         foreach (var tile in GetAllTiles().Values) {
             foreach (var statusEffect in tile.GetStatusEffectList()) {
                 if (statusEffect.IsOfType(StatusEffectType.Trap)) {
@@ -181,6 +180,8 @@ public class TileManager : MonoBehaviour {
                 }
             }
         }
+    }
+    public void UpdateTileStatusEffectsAtActionEnd() {
         foreach (var tile in GetAllTiles().Values) {
             foreach (var statusEffect in tile.GetStatusEffectList()) {
                 if (statusEffect.GetRemainStack() != 0) {

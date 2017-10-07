@@ -45,7 +45,7 @@ namespace Battle.Turn
 			if (objectUnit.GetNameEng () == "controller") {
 				yield return BattleData.battleManager.ToDoBeforeAction ();
 				yield return ControllerAttack (objectUnit);
-				yield return BattleData.battleManager.AtActionEnd ();
+				LogManager.Instance.ExecuteLastEventLogAndConsequences();
 			}
 			yield return null;
 		}
@@ -58,14 +58,15 @@ namespace Battle.Turn
 			BattleManager.MoveCameraToUnit(objectUnit);
 			GameObject effect = MonoBehaviour.Instantiate(Resources.Load("Effect/ControllerActive")) as GameObject;
 			effect.transform.position = objectUnit.realPosition - new Vector3(0, 0, 0.01f);
-			yield return new WaitForSeconds(0.5f);
+			//yield return new WaitForSeconds(0.5f);
+            LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
 
 			UnitManager unitManager = BattleData.unitManager;
 			List<Unit> targets = unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);
 			foreach (var target in targets) {
 				BattleManager.MoveCameraToUnit (target);
 				float damageAmount = target.GetMaxHealth () * 0.15f;
-				yield return target.ApplyDamageByNonCasting (damageAmount, objectUnit, -target.GetStat (Stat.Defense), -target.GetStat (Stat.Resistance), true, false, false);
+				target.ApplyDamageByNonCasting (damageAmount, objectUnit, -target.GetStat (Stat.Defense), -target.GetStat (Stat.Resistance), true, false, false);
 			}
 
 			MonoBehaviour.Destroy(effect);

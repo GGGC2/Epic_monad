@@ -9,8 +9,7 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill;
 
-	public virtual IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
-        yield return null;
+	public virtual void TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
 	}
 
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)
@@ -57,8 +56,7 @@ public class BasePassiveSkillLogic
     public virtual void ApplyAdditionalDamageFromCasterStatusEffect(CastingApply castingApply, StatusEffect statusEffect) {
     }
 
-    public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
-        yield return null;
+    public virtual void ActionInDamageRoutine(CastingApply castingApply) {
     }
     public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect�� i��° actualElement �� seVar ���� ����.
         return 0;
@@ -107,23 +105,20 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerUsingSkill(Casting casting, List<Unit> targets) {
     }
-    public virtual IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
-        yield return null;
+    public virtual void TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
     }
     public virtual void TriggerOnMove(Unit caster) {
     }
     public virtual bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
         return true;
     }
-    public virtual IEnumerator TriggerApplyingHeal(CastingApply castingApply) {
-        yield return null;
+    public virtual void TriggerApplyingHeal(CastingApply castingApply) {
     }
 
     public virtual void TriggerOnStart(Unit caster) {		
 	}
 
-	public virtual IEnumerator TriggerOnPhaseStart(Unit caster, int phase) {
-        yield return null;
+	public virtual void TriggerOnPhaseStart(Unit caster, int phase) {
 	}
     
     public virtual void TriggerOnPhaseEnd(Unit caster) {

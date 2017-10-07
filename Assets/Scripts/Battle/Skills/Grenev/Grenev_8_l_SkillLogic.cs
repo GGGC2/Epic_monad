@@ -14,15 +14,13 @@ namespace Battle.Skills {
             }
             return true;
         }
-        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+        public override void ActionInDamageRoutine(CastingApply castingApply) {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
             if (isHealthRatioSmallEnough(target)) {
 				BattleManager battleManager = BattleData.battleManager;
-                yield return battleManager.StartCoroutine(target.
-					ApplyDamageByNonCasting(target.GetCurrentHealth(), caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false));
+                target.ApplyDamageByNonCasting(target.GetCurrentHealth(), caster, target.GetStat(Stat.Defense), target.GetStat(Stat.Resistance), true, true, false);
             }
-            else yield return null;
         }
         public override void ApplyAdditionalDamage(CastingApply castingApply) {
             if(isHealthRatioSmallEnough(castingApply.GetTarget())) {

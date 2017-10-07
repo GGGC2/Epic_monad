@@ -32,7 +32,7 @@ public class Casting {
 	public int RequireAP{
 		get { return Caster.GetActualRequireSkillAP(Skill); }
 	}
-	public IEnumerator Cast(int chainCombo){
-		yield return Skill.Apply(this, chainCombo);
+	public void Cast(int chainCombo){
+		Skill.Apply(this, chainCombo);
 	}
 }

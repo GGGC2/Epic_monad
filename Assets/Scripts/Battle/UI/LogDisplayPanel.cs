@@ -23,6 +23,7 @@ public class LogDisplayPanel : MonoBehaviour {
         logDisplay.gameObject.transform.SetParent(logs.gameObject.transform, false);
         logDisplay.name = "Log " + num;
         logDisplay.SetText();
+        Debug.Log(logDisplay.name + " : " + logDisplay.text.text);
     }
     public void Initialize() {
         scrollbar.numberOfSteps = BattleData.logDisplayList.Count - maxNumDisplay + 1;

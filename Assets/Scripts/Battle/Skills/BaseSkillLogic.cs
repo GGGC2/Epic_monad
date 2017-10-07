@@ -52,9 +52,7 @@ public class BaseSkillLogic
 		return castingApply.GetDamage();
 	}
 
-	public virtual IEnumerator ActionInDamageRoutine(CastingApply castingApply)
-	{
-        yield return null;
+	public virtual void ActionInDamageRoutine(CastingApply castingApply) {
 	}
     public virtual bool CheckApplyPossibleToTargetTiles(Casting casting) {
         return true;
@@ -78,11 +76,9 @@ public class BaseSkillLogic
     }
     public virtual void TriggerStatusEffectAtPhaseStart(Unit target, UnitStatusEffect statusEffect) {
     }
-    public virtual IEnumerator TriggerStatusEffectAtActionEnd(Unit target, UnitStatusEffect statusEffect) {
-        yield return null;
+    public virtual void TriggerStatusEffectAtActionEnd(Unit target, UnitStatusEffect statusEffect) {
     }
-    public virtual IEnumerator TriggerStatusEffectAtReflection(Unit target, UnitStatusEffect statusEffect, Unit reflectTarget) {
-        yield return null;
+    public virtual void TriggerStatusEffectAtReflection(Unit target, UnitStatusEffect statusEffect, Unit reflectTarget) {
     }
     public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, UnitStatusEffect statusEffect, UnitStatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
@@ -108,8 +104,7 @@ public class BaseSkillLogic
     }
     public virtual void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
     }
-    public virtual IEnumerator TriggerShieldAttacked(Unit target, float amount) {
-        yield return null;
+    public virtual void TriggerShieldAttacked(Unit target, float amount) {
     }
 }
 }
