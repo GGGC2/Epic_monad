@@ -66,9 +66,9 @@ public class UnitStatusEffect : StatusEffect {
         float statusEffectVar = 0;
         Skill originSkill = GetOriginSkill();
         if (originSkill != null) {
-            if (originSkill.GetType() == typeof(ActiveSkill))
+            if (originSkill is ActiveSkill)
                 statusEffectVar = ((ActiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
-            else
+            else if(originSkill is PassiveSkill)
                 statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
         }
         return statusEffectVar;

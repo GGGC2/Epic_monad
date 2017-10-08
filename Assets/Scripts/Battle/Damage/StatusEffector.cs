@@ -90,7 +90,7 @@ public static class StatusEffector{
             List<UnitStatusEffect> targetStatusEffectList = target.StatusEffectList;
             foreach (var targetStatusEffect in targetStatusEffectList) {
                 Skill originSkill = targetStatusEffect.GetOriginSkill();
-                if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
+                if (originSkill is ActiveSkill) {
                     if(((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectWhenStatusEffectApplied(target, targetStatusEffect, statusEffect) == false) {
                         Debug.Log(statusEffect.GetDisplayName() + " ignored by " + targetStatusEffect.GetOriginSkillName() + " of " + target.GetNameKor());
                         continue;

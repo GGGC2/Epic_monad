@@ -366,7 +366,7 @@ public class ActiveSkill : Skill{
 						bool ignored = false;
 						foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
 							Skill originSkill = tileStatusEffect.GetOriginSkill();
-							if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill)) {
+							if (originSkill is ActiveSkill) {
 								if (!((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(castingApply, tile, tileStatusEffect))
 									ignored = true;
 							}
@@ -393,7 +393,7 @@ public class ActiveSkill : Skill{
 		passiveSkillLogicsOfCaster.TriggerUsingSkill(casting, targets);
 		foreach(var statusEffect in caster.StatusEffectList) {
 			Skill originPassiveSkill = statusEffect.GetOriginSkill();
-			if(originPassiveSkill != null && originPassiveSkill.GetType() == typeof(PassiveSkill))
+			if(originPassiveSkill is PassiveSkill)
 				((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnUsingSkill(caster, targets, statusEffect);
 		}
 
@@ -475,7 +475,7 @@ public class ActiveSkill : Skill{
 				(statusEffect.IsOfType(StatusEffectType.MeleeReflect) && damageType == UnitClass.Melee);
 			if (canReflect) {
                 Skill originSkill = statusEffect.GetOriginSkill();
-				if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
+				if (originSkill is ActiveSkill)
 					((ActiveSkill)originSkill).SkillLogic.TriggerStatusEffectAtReflection(target, statusEffect, caster);
 				if (statusEffect.GetIsOnce() == true)
 					target.RemoveStatusEffect(statusEffect);

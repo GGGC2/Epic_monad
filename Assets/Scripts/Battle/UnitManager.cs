@@ -94,7 +94,7 @@ public class UnitManager : MonoBehaviour{
             List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
                 Skill skill = statusEffect.GetOriginSkill();
-                if (skill != null && skill.GetType() == typeof(ActiveSkill))
+                if (skill is ActiveSkill)
                     ((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect);
             }
         }

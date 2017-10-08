@@ -29,7 +29,7 @@ class Trap {
         Unit caster = trap.GetCaster();
         Skill skill = trap.GetOriginSkill();
         List<TileStatusEffect> statusEffects = new List<TileStatusEffect>();
-        if (skill != null && skill.GetType() == typeof(ActiveSkill)) {
+        if (skill is ActiveSkill) {
             statusEffects = ((ActiveSkill)skill).GetTileStatusEffectList()
                         .Select(fixedElem => new TileStatusEffect(fixedElem, caster, tile, skill))
                         .ToList();
@@ -48,7 +48,7 @@ class Trap {
         List<Unit> unitsInRange = GetUnitsInRange(trap, tile);
         foreach (var unit in unitsInRange) {
             Skill originSkill = trap.GetOriginSkill();
-            if(originSkill.GetType() == typeof(ActiveSkill))
+            if(originSkill is ActiveSkill)
                 StatusEffector.AttachStatusEffect(caster, (ActiveSkill)originSkill, unit, GetTilesInRange(trap, tile));
         }
 		if (unitsInRange.Count > 0) {
