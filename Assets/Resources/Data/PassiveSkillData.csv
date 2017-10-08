@@ -1,4 +1,4 @@
-owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
+﻿owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
 lucius	7	1	검사의 직감	2	바로 옆 타일의 유닛이 시전한 공격의 피해를 받지 않습니다.	None	0	0	None	0	0
 lucius	8	8	정면 승부	1	전술 보정치가 없는 공격의 피해량이 20% 높아집니다.	None	0	0	None	0	0
 lucius	10	8	배수진	2	자신이 위치한 타일을 기준으로 움직일 수 없는 방향 하나당 방어력이 33(+레벨당 0.4)(<color=green>VALUE1</color>) 높아집니다.	Level	0.4	33	None	0	0
@@ -108,7 +108,7 @@ bianca	0	0	사뿐사뿐	0	비앙카는 자신의 덫을 발동시키지 않으�
 grenev	0	0	타고난 저격수	0	이동할 때 행동력 소모가 <color=red>30%</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.	None	0	0	None	0	0
 grenev	0	1	살의	3	6페이즈 이후부터 속도가 25 높아집니다.	None	0	0	None	0	0
 grenev	0	8	살육의 희열	3	그레네브가 1명 처치할 때마다 공격력이 <color=red>5%</color>(<color=red>VALUE1</color>) 영구적으로(스테이지 끝날 때까지 유지) 증가합니다.(중첩 가능)	Power	0.05	0	None	0	0
-grenev	0	15	약자멸시	3	자신보다 공격력이 작은 상대에게 주는 피해량에 <color=red>25%</color> 보너스가 주어집니다.	None	0	0	None	0	0
+grenev	0	15	약자멸시	3	자신보다 공격력이 작은 상대에게 주는 피해량에 <color=red>20%</color> 보너스가 주어집니다.	None	0	0	None	0	0
 grenev	0	29	전망	1	본인이 대상보다 높이 3 이상 높은 타일에 있을시 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.	None	0	0	None	0	0
 grenev	0	36	암살	2	은신 상태에서 적에게 공격을 할 경우 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.	None	0	0	None	0	0
 grenev	0	36	전쟁광	3	그레네브의 최대체력을 <color=green>15%</color> 감소시키고 공격력을 <color=red>15%</color> 상승시킵니다.	None	0	0	None	0	0

@@ -1,14 +1,14 @@
-Index	Name	NameInCode	Side	InitPositionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject
+Index	Name	NameInCode	Side	InitPositionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
 1	아스터 기병	asterCavalry01	Enemy	8	4	RightUp	150	55	5	5	52	Melee	Plant	Sun	false	0
 2	아스터 기병	asterCavalry01	Enemy	15	10	LeftUp	150	55	5	5	52	Melee	Plant	Sun	false	0
 3	아스터 기병	asterCavalry01	Enemy	19	11	LeftUp	150	55	5	5	52	Melee	Plant	Sun	false	0
 4	아스터 기병	asterCavalry01	Enemy	9	16	RightUp	150	55	5	5	52	Melee	Plant	Sun	false	0
 5	아스터 기병	asterCavalry01	Enemy	5	20	RightDown	150	55	5	5	52	Melee	Plant	Sun	false	0
-6	아스터 궁수	asterArcher01	Enemy	4	7	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
-7	아스터 궁수	asterArcher01	Enemy	11	6	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
-8	아스터 궁수	asterArcher01	Enemy	6	13	RightUp	163	70	22	5	44	Melee	Plant	Moon	false	0
-9	아스터 궁수	asterArcher01	Enemy	13	13	LeftUp	163	70	22	5	44	Melee	Plant	Moon	false	0
-10	아스터 궁수	asterArcher01	Enemy	14	21	LeftUp	163	70	22	5	44	Melee	Plant	Moon	false	0
+6	아스터 궁수	asterArcher01	Enemy	4	7	RightUp	100	70	22	5	44	Melee	Plant	Moon	false	0
+7	아스터 궁수	asterArcher01	Enemy	11	6	RightUp	100	70	22	5	44	Melee	Plant	Moon	false	0
+8	아스터 궁수	asterArcher01	Enemy	6	13	RightUp	100	70	22	5	44	Melee	Plant	Moon	false	0
+9	아스터 궁수	asterArcher01	Enemy	13	13	LeftUp	100	70	22	5	44	Melee	Plant	Moon	false	0
+10	아스터 궁수	asterArcher01	Enemy	14	21	LeftUp	100	70	22	5	44	Melee	Plant	Moon	false	0
 11	제이선	json	Enemy	11	21	LeftUp	393	97	57	40	63	Melee	Fire	Moon	false	0
 11	덤불	bush	Neutral	3	7	LeftDown	800	0	0	0	0	None	None	None	true	0
 12	덤불	bush	Neutral	4	6	LeftDown	800	0	0	0	0	None	None	None	true	0
