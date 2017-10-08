@@ -11,7 +11,6 @@ public class EventLog : Log {
     public override IEnumerator Execute() {
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
-                Debug.Log(effectLog.GetText() + "being executed");
                 effectLog.executed = true;
                 if(this is CastLog && effectLog is DisplayDamageOrHealTextLog && !((CastLog)this).isLastTarget((DisplayDamageOrHealTextLog)effectLog)) {
                     BattleManager.Instance.StartCoroutine(effectLog.Execute());

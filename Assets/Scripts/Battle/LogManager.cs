@@ -13,10 +13,9 @@ public class LogManager : MonoBehaviour {
     }
 
     public void Record(Log log) {
-        LogDisplay logDisplay = Instantiate(logDisplayPrefab).GetComponent<LogDisplay>();
-        int numLog = BattleData.logDisplayList.Count;
-
         if (log is EffectLog) {
+            if(!((EffectLog)log).isValid())
+                return;
             LogDisplay LastEventLogDisplay = GetLastEventLogDisplay();
             if (LastEventLogDisplay == null)
                 Debug.LogError("EffectLog appears faster than EventLog");
@@ -26,24 +25,34 @@ public class LogManager : MonoBehaviour {
             }
         }
 
+        LogDisplay logDisplay = Instantiate(logDisplayPrefab).GetComponent<LogDisplay>();
+        int numLog = BattleData.logDisplayList.Count;
+
         logDisplay.log = log;
         BattleData.logDisplayList.Add(logDisplay);
-        if(DisplayThisLog(log))
-            logDisplayPanel.AddLogDisplay(logDisplay, numLog + 1);
+        if(DisplayThisLog(log)) logDisplayPanel.AddLogDisplay(logDisplay, numLog + 1);
     }
-    public IEnumerator ExecuteLastEventLogAndConsequences() {
+    public IEnumerator ExecuteLastEventLogAndConsequences() {   // 마지막 Event와 그로 인해 발생하는 모든 새로운 Effect와 Event를 실행한다.
         do {
             do {
-                yield return ExecuteLastEventLog();
-                GenerateConsequentEffectLogs();
-            }while(IsThereNewEffect());
-
-            yield return ExecuteLastEventLog();
-            GenerateConsequentEventLogs();
-        } while (IsThereNewEvent());
+                yield return ExecuteLastEventLog();         // 마지막 Event와 그로 인해 발생했던 Effect들을 실행한다.
+                GenerateConsequentEffectLogs();             // 이 Event로 인해 발생한 Effect들이 더 있는지 확인한다.
+            } while(ThereIsNewEffect());                    // 있다면 다시 실행한다.
+            yield return ExecuteLastEventLog();             
+            GenerateConsequentEventLogs();                  // 새로 발생한 Event가 있는지 확인한다.
+        } while (ThereIsNewEvent());                        // 있다면 그 Event를 실행한다.
         BattleManager.Instance.CheckBattleTriggers();
     }
-    void GenerateConsequentEffectLogs() { // lastEvent에 의해 발생하는 Effect들을 발생시킴
+    public EventLog PopLastEventLog() {                     // 마지막 Event를 실행하지 않고 없앤 후 리턴한다(Preview에 쓰임)
+        int numLog = BattleData.logDisplayList.Count;
+        int lastEventLogIndex = BattleData.logDisplayList.FindLastIndex(logDisplay => logDisplay.log is EventLog);
+
+        LogDisplay lastEventLogDisplay = BattleData.logDisplayList[lastEventLogIndex];
+        BattleData.logDisplayList.RemoveRange(lastEventLogIndex, numLog - lastEventLogIndex); //그 EventLog와, 그 Event로부터 발생한 모든 EffectLog를 삭제
+        logDisplayPanel.RemoveLogsFrom(lastEventLogIndex);
+        return (EventLog)lastEventLogDisplay.log;
+    }
+    void GenerateConsequentEffectLogs() { 
         UnitManager unitManager = UnitManager.Instance;
         TileManager tileManager = TileManager.Instance;
         unitManager.TriggerPassiveSkillsAtActionEnd();
@@ -76,21 +85,16 @@ public class LogManager : MonoBehaviour {
         BattleManager.Instance.UpdateUnitsForDestroy();
         BattleData.unitManager.ResetLatelyHitUnits();
     }
-    bool IsThereNewEvent() {
+    bool ThereIsNewEvent() {
         return !GetLastEventLogDisplay().log.executed;
     }
-    bool IsThereNewEffect() {
-        LogDisplay lastEffectLogDisplay = GetLastEffectLogDisplay();
-        return !(lastEffectLogDisplay == null || lastEffectLogDisplay.log.executed);
-    }
-    public EventLog PopLastEventLog() {
-        int numLog = BattleData.logDisplayList.Count;
-        int lastEventLogIndex = BattleData.logDisplayList.FindLastIndex(logDisplay => logDisplay.log is EventLog);
-
-        LogDisplay lastEventLogDisplay = BattleData.logDisplayList[lastEventLogIndex];
-        BattleData.logDisplayList.RemoveRange(lastEventLogIndex, numLog - lastEventLogIndex); //그 EventLog와, 그 Event로부터 발생한 모든 EffectLog를 삭제
-
-        return (EventLog)lastEventLogDisplay.log;
+    bool ThereIsNewEffect() {
+        LogDisplay lastEventLogDisplay = GetLastEventLogDisplay();
+        foreach(var effectLog in ((EventLog)lastEventLogDisplay.log).getEffectLogList()) {
+            if(!effectLog.executed) 
+                return true;
+        }
+        return false;
     }
     IEnumerator HandleAfterCastLog() {
         BattleData.currentState = CurrentState.FocusToUnit;

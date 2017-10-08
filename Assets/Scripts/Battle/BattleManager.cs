@@ -282,7 +282,6 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CheckBattleTriggers() {
-        Debug.Log("OnEventEnd called");
 
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
         //승리 조건이 충족되었는지 확인

@@ -99,32 +99,22 @@ public static class StatusEffector{
 				alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
 			);
 
-			// 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
-			if (alreadyAppliedSameEffect != null  && !statusEffect.GetIsStackable()){
-                //List<UnitStatusEffect> newStatusEffectList = target.StatusEffectList.FindAll(se => se != alreadyAppliedSameEffect);
-                //newStatusEffectList.Add(statusEffect);
-                //starget.SetStatusEffectList(newStatusEffectList);
-                logManager.Record(new StatusEffectLog(alreadyAppliedSameEffect, StatusEffectChangeType.Remove, 0, 0, 0));
-                logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
-                target.UpdateStats(alreadyAppliedSameEffect, false, true);
-                target.UpdateStats(statusEffect, true, false);
-            }
-			// 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
-			else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()){
+			// 동일한 효과가 있을 경우 -> 지속시간, 수치 초기화. 스택 가능할 경우 1스택 추가
+			if (alreadyAppliedSameEffect != null){
 				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++) {
                     float amount = statusEffect.GetAmount(i);
 					alreadyAppliedSameEffect.SetAmount(i, amount);
 					alreadyAppliedSameEffect.SetRemainAmount(i, amount);
-					alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
                 }
-                alreadyAppliedSameEffect.AddRemainStack(1);
+                alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
+                if(statusEffect.GetIsStackable())
+                    alreadyAppliedSameEffect.AddRemainStack(1);
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
-                //target.StatusEffectList.Add(statusEffect);
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
-                target.UpdateStats(statusEffect, true, false);
+                //target.UpdateStats(statusEffect, true, false);
             }
 		}
 	}
@@ -155,32 +145,20 @@ public static class StatusEffector{
                 alreadyAppliedEffect => statusEffect.IsSameStatusEffect(alreadyAppliedEffect)
             );
 
-            // 동일한 효과가 있고 스택 불가능 -> 최신것으로 대체
-            if (alreadyAppliedSameEffect != null && !statusEffect.GetIsStackable()) {
-                //List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => se != alreadyAppliedSameEffect);
-                //newStatusEffectList.Add(statusEffect);
-                //targetTile.SetStatusEffectList(newStatusEffectList);
-                logManager.Record(new StatusEffectLog(alreadyAppliedSameEffect, StatusEffectChangeType.Remove, 0, 0, 0));
-                logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
-            }
-            // 동일한 효과가 있지만 스택 가능 -> 지속시간, 수치 초기화. 1스택 추가
-            else if (alreadyAppliedSameEffect != null && statusEffect.GetIsStackable()) {
+            // 동일한 효과가 있을 경우 -> 지속시간, 수치 초기화. 스택 가능할 경우 1스택 추가
+            if (alreadyAppliedSameEffect != null) {
                 int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
                 for (int i = 0; i < num; i++) {
                     float amount = statusEffect.GetAmount(i);
-                    alreadyAppliedSameEffect.SetAmount(i, statusEffect.GetAmount(i));
-                    alreadyAppliedSameEffect.SetRemainAmount(i, statusEffect.GetAmount(i));
-                    alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
+                    alreadyAppliedSameEffect.SetAmount(i, amount);
+                    alreadyAppliedSameEffect.SetRemainAmount(i, amount);
                 }
-                alreadyAppliedSameEffect.AddRemainStack(1);
+                alreadyAppliedSameEffect.SetRemainPhase(statusEffect.GetRemainPhase());
+                if (statusEffect.GetIsStackable())
+                    alreadyAppliedSameEffect.AddRemainStack(1);
             }
             // 동일한 효과가 없음 -> 새로 넣음
-            else {
-                //List<TileStatusEffect> newStatusEffectList = targetTile.GetStatusEffectList().FindAll(se => true);
-                //newStatusEffectList.Add(statusEffect);
-                //targetTile.SetStatusEffectList(newStatusEffectList);
-                logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
-            }
+            else logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
         }
     }
 }

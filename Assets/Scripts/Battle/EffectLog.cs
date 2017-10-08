@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Collections;
 
 public class EffectLog : Log {
-
+    public virtual bool isValid() {
+        return true;
+    }
 }
 
 public class HPChangeLog : EffectLog {
@@ -37,9 +39,12 @@ public class HPChangeLog : EffectLog {
         else                    unit.currentHealth = result;
         yield return null;
     }
+    public override bool isValid() {
+        return amount != 0;
+    }
     public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
         return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
-    } 
+    }
 }
 
 public class APChangeLog : EffectLog {
@@ -70,6 +75,9 @@ public class APChangeLog : EffectLog {
         else                unit.activityPoint = result;
 
         yield return null;
+    }
+    public override bool isValid() {
+        return amount != 0;
     }
 }
 
@@ -112,6 +120,9 @@ public class CoolDownLog : EffectLog {
     public override IEnumerator Execute() {
         caster.GetUsedSkillDict().Add(skillName, skillCooldown);
         yield return null;
+    }
+    public override bool isValid() {
+        return skillCooldown != 0;
     }
 }
 
@@ -264,6 +275,10 @@ public class StatusEffectLog : EffectLog {
         }
         yield return null;
     }
+    public override bool isValid() {
+        return !(type != StatusEffectChangeType.Attach && type != StatusEffectChangeType.Remove
+                && beforeAmount == afterAmount);
+    }
     public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
         if (statusEffect is UnitStatusEffect && statusEffect.IsOfType(StatusEffectType.Shield)) {
             Unit unit = ((UnitStatusEffect)statusEffect).GetOwner();
@@ -304,6 +319,9 @@ public class PositionChangeLog : EffectLog {
         unit.notMovedTurnCount = 0;
         yield return null;
     }
+    public override bool isValid() {
+        return beforePos != afterPos;
+    }
 }
 
 public class AISetActiveLog : EffectLog {
@@ -319,6 +337,9 @@ public class AISetActiveLog : EffectLog {
         unit.GetComponent<AIData>().isActive = true;
         yield return null;
     }
+    public override bool isValid() {
+        return !unit.GetComponent<AIData>().isActive;
+    }
 }
 
 public class CameraMoveLog : EffectLog {
@@ -333,6 +354,9 @@ public class CameraMoveLog : EffectLog {
     public override IEnumerator Execute() {
         BattleManager.MoveCameraToPosition(position);
         yield return null;
+    }
+    public override bool isValid() {
+        return !(Camera.main.transform.position == new Vector3(position.x, position.y, -10));
     }
 }
 
@@ -444,6 +468,9 @@ public class AddLatelyHitInfoLog : EffectLog {
     public override IEnumerator Execute() {
         unit.GetLatelyHitInfos().Add(hitInfo);
         yield return null;
+    }
+    public override bool isValid() {
+        return !(hitInfo == null);
     }
 }
 
