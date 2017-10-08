@@ -68,6 +68,7 @@ public class DialogueData{
 			emotion = parser.Consume();
 			name = parser.Consume();
 			dialogue = parser.Consume();
+			dialogue = dialogue.Replace ("^", "\n");
 		}
 	}
 }
