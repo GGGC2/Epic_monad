@@ -35,8 +35,6 @@ public class RestAndRecover {
                 ((PassiveSkill)passiveSkill).SkillLogic.TriggerStatusEffectsOnRest(unit, statusEffect);
             }
         }
-
-		Debug.Log("Rest. Using " + usingActivityPointToRest + "AP and recover " + recoverHealthDuringRest + " HP");
         
         logManager.Record(new WaitForSecondsLog(0.1f));
 	}

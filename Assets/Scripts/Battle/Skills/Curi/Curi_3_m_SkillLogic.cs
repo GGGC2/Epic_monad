@@ -1,4 +1,4 @@
-﻿
+﻿using UnityEngine;
 namespace Battle.Skills {
     public class Curi_3_m_SkillLogic : BasePassiveSkillLogic {
         public override void ApplyBonusDamageFromEachPassive(CastingApply castingApply) {

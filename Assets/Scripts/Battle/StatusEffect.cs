@@ -187,7 +187,7 @@ public class StatusEffect {
         if (flexibleElem.display.remainStack < 0) {
             flexibleElem.display.remainStack = 0;
         }*/
-        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainStackChange, 0, beforeStack, flexibleElem.display.remainStack));
+        LogManager.Instance.Record(new StatusEffectLog(this, StatusEffectChangeType.RemainStackChange, 0, beforeStack, stack));
     }
     
     private List<int> FindIndexOfType(StatusEffectType statusEffectType) {
@@ -254,15 +254,20 @@ public class StatusEffect {
                     GetCaster().Equals(anotherStatusEffect.GetCaster()));
     }
     public string GetExplanation() {
-        string text = fixedElem.display.explanation;
-        for(int i = 0; i < fixedElem.actuals.Count; i++) {
-            string remainAmountString = ((int)GetRemainAmount(i)).ToString();
-            string minusAmountString = (-(int)GetAmount(i)).ToString();
-            string amountString = ((int)GetAmount(i)).ToString();
-            if(fixedElem.actuals[i].isPercent)  amountString += "%";
-            text = text.Replace("REMAINAMOUNT" + i, remainAmountString);
-            text = text.Replace("-AMOUNT" + i, minusAmountString);
-            text = text.Replace("AMOUNT" + i, amountString);
+        string text = "";
+        if(GetOriginSkill() is PassiveSkill)
+            text = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectExplanation(this);
+        if (text == "") {
+            text = fixedElem.display.explanation;
+            for (int i = 0; i < fixedElem.actuals.Count; i++) {
+                string remainAmountString = ((int)GetRemainAmount(i)).ToString();
+                string minusAmountString = (-(int)GetAmount(i)).ToString();
+                string amountString = ((int)GetAmount(i)).ToString();
+                if (fixedElem.actuals[i].isPercent) amountString += "%";
+                text = text.Replace("REMAINAMOUNT" + i, remainAmountString);
+                text = text.Replace("-AMOUNT" + i, minusAmountString);
+                text = text.Replace("AMOUNT" + i, amountString);
+            }
         }
         return text;
     }

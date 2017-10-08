@@ -196,7 +196,7 @@ namespace Battle.Turn{
 
 		public IEnumerator UnitTurn() {
             LogManager.Instance.Record(new TurnStartLog(unit));
-            battleManager.StartUnitTurn (unit);
+            yield return battleManager.StartUnitTurn (unit);
 
 			state = State.TurnStart;
 

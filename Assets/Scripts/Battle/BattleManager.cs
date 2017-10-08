@@ -88,59 +88,57 @@ public class BattleManager : MonoBehaviour{
 	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
 
 	public IEnumerator InstantiateTurnManager() {
-        foreach (var unit in BattleData.unitManager.GetAllUnits())
+        while(!(UnitManager.Instance.startFinished && UIManager.Instance.startFinished))
+            yield return null;
+        foreach (var unit in UnitManager.Instance.GetAllUnits())
             unit.ApplyTriggerOnStart();
-        LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        while (true) {
+            yield return StartCoroutine(StartPhaseOnGameManager());
 
-        if (BattleData.uiManager.startFinished) {
-			while(true){
-                yield return StartCoroutine(StartPhaseOnGameManager());
-
-				if(BattleData.currentPhase == 1){
-					tutorialManager.gameObject.SetActive(true);
-				}
-				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
-
-				while (BattleData.readiedUnits.Count != 0){
-					//전투에 승리해서 결과창이 나오면 진행 정지
-					if(FindObjectOfType<ResultPanel>() != null){
-						yield break;
-					}
-
-					BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
-					BattleData.uiManager.UpdateApBarUI();
-
-					if (BattleData.selectedUnit.IsAI){
-						yield return BattleData.selectedUnit.GetAI().UnitTurn ();
-					}else{
-						yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
-					}
-
-					BattleData.SetSelectedUnit(null);
-					
-					BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
-					yield return null;
-				}
-
-				//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
-				yield return StartCoroutine (ObjectUnitBehaviour.AllObjectUnitsBehave ());
-				yield return StartCoroutine (EndPhaseOnGameManager ());
+			if(BattleData.currentPhase == 1){
+				tutorialManager.gameObject.SetActive(true);
 			}
-		} else {
-			Debug.Log ("uiManager is not started.");
+			BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
+
+			while (BattleData.readiedUnits.Count != 0){
+				//전투에 승리해서 결과창이 나오면 진행 정지
+				if(FindObjectOfType<ResultPanel>() != null){
+					yield break;
+				}
+
+				BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
+				BattleData.uiManager.UpdateApBarUI();
+
+				if (BattleData.selectedUnit.IsAI){
+					yield return BattleData.selectedUnit.GetAI().UnitTurn ();
+				}else{
+					yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
+				}
+
+				BattleData.SetSelectedUnit(null);
+					
+				BattleData.readiedUnits = BattleData.unitManager.GetUpdatedReadiedUnits ();
+				yield return null;
+			}
+
+			//해당 페이즈에 행동할 유닛들의 턴이 모두 끝나면 오브젝트들이 행동한다
+			yield return StartCoroutine (ObjectUnitBehaviour.AllObjectUnitsBehave ());
+			yield return StartCoroutine (EndPhaseOnGameManager ());
 		}
 	}
 
 	IEnumerator ActionAtTurn(Unit unit) {
         LogManager logManager = LogManager.Instance;
         logManager.Record(new TurnStartLog(unit));
-        StartUnitTurn(unit);
+        yield return StartUnitTurn(unit);
 
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
 		if (BattleData.currentState != CurrentState.Destroy) {
-			EndUnitTurn (unit);
+            LogManager.Instance.Record(new TurnEndLog(unit));
+            EndUnitTurn (unit);
 		}
 	}
 
@@ -150,7 +148,7 @@ public class BattleManager : MonoBehaviour{
 			return;
 		FindObjectOfType<CameraMover>().SetFixedPosition(unit.realPosition);
 	}
-	public void StartUnitTurn(Unit unit){
+	public IEnumerator StartUnitTurn(Unit unit){
         LogManager logManager = LogManager.Instance;
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
@@ -160,17 +158,18 @@ public class BattleManager : MonoBehaviour{
 		ChainList.RemoveChainOfThisUnit(BattleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 
 		BattleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
-		unit.TriggerTileStatusEffectAtTurnStart();
+        yield return logManager.ExecuteLastEventLogAndConsequences();   // 트랩이 발동하여 새로운 Event가 생길 수도 있으니 실행시켜놓는다.
+        unit.TriggerTileStatusEffectAtTurnStart();
 
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
 		BattleData.selectedUnit.SetActive();
-        logManager.ExecuteLastEventLogAndConsequences();
+        yield return logManager.ExecuteLastEventLogAndConsequences();
     }
-	public void EndUnitTurn(Unit unit) {
-        LogManager.Instance.Record(new TurnEndLog(unit));
+	public IEnumerator EndUnitTurn(Unit unit) {
         BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
 		BattleData.selectedUnit.SetInactive();
+        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
 		foreach(Unit caster in BattleData.unitManager.GetAllUnits())
@@ -570,10 +569,12 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
-
-		BattleData.unitManager.EndPhase(BattleData.currentPhase);
-        BattleData.tileManager.EndPhase(BattleData.currentPhase);
-		yield return new WaitForSeconds(0.5f);
+        int phase = BattleData.currentPhase;
+        LogManager.Instance.Record(new PhaseEndLog(phase));
+        BattleData.unitManager.EndPhase(phase);
+        BattleData.tileManager.EndPhase(phase);
+        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        yield return new WaitForSeconds(0.5f);
 	}
 
 	IEnumerator StartPhaseOnGameManager(){

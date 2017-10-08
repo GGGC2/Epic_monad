@@ -25,7 +25,8 @@ public static class StatusEffector{
         AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
-	public static void AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target){
+	public static List<UnitStatusEffect> AttachStatusEffect(Unit caster, PassiveSkill appliedSkill, Unit target){
+        //실제로 적용된 statusEffect들을 리턴함
 		List<UnitStatusEffect.FixedElement> fixedStatusEffects = appliedSkill.GetUnitStatusEffectList();
 		List<UnitStatusEffect> statusEffects = fixedStatusEffects
 			.Select(fixedElem => new UnitStatusEffect(fixedElem, caster, target, appliedSkill))
@@ -39,7 +40,7 @@ public static class StatusEffector{
             }
             if (ignoreStatusEffect == false) {newStatusEffects.Add(statusEffect);}
         }
-        AttachStatusEffect(caster, newStatusEffects, target);
+        return AttachStatusEffect(caster, newStatusEffects, target);
 	}
 
 	private static bool IsValidAtZero(StatusEffectType seType){
@@ -69,9 +70,11 @@ public static class StatusEffector{
 		return true;
 	}
 
-	public static void AttachStatusEffect(Unit caster, List<UnitStatusEffect> statusEffects, Unit target){
+	public static List<UnitStatusEffect> AttachStatusEffect(Unit caster, List<UnitStatusEffect> statusEffects, Unit target){
+        //실제로 적용된 statusEffect들을 리턴함
         LogManager logManager = LogManager.Instance;
 		List<UnitStatusEffect> validStatusEffects = new List<UnitStatusEffect>();
+        List<UnitStatusEffect> actuallyAppliedStatusEffects = new List<UnitStatusEffect>();
 		foreach (var statusEffect in statusEffects)
 		{
 			if (IsValid(statusEffect))
@@ -113,10 +116,12 @@ public static class StatusEffector{
 			}
 			// 동일한 효과가 없음 -> 새로 넣음
 			else{
+                actuallyAppliedStatusEffects.Add(statusEffect);
                 logManager.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
                 //target.UpdateStats(statusEffect, true, false);
             }
 		}
+        return actuallyAppliedStatusEffects;
 	}
 
 

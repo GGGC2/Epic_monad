@@ -532,8 +532,8 @@ public class Unit : MonoBehaviour{
 		foreach (var statusEffect in statusEffectList)
 		{
 			if (!statusEffect.GetIsInfinite())
-				statusEffect.DecreaseRemainPhase();
-			if (statusEffect.GetRemainPhase() <= 0)
+                statusEffect.flexibleElem.display.remainPhase--;
+            if (statusEffect.GetRemainPhase() <= 0)
 				RemoveStatusEffect(statusEffect);
 		}
 	}
@@ -761,7 +761,6 @@ public class Unit : MonoBehaviour{
 	public void RegenerateActionPoint(){
 		if (!myInfo.isObject) {
 			activityPoint = GetRegeneratedActionPoint ();
-			Debug.Log (name + " recover " + GetStat(Stat.Agility) + "AP. Current AP : " + activityPoint);
 		}
 	}
 

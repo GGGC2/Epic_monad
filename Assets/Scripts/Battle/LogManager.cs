@@ -123,8 +123,7 @@ public class LogManager : MonoBehaviour {
     LogDisplay GetLastEventLogDisplay() {
         int lastEventLogIndex = BattleData.logDisplayList.FindLastIndex(logDisplay => logDisplay.log is EventLog);
 
-        if (lastEventLogIndex == -1)
-            return null;
+        if (lastEventLogIndex == -1)    return null;
         else return BattleData.logDisplayList[lastEventLogIndex];
     }
     LogDisplay GetLastEffectLogDisplay() {

@@ -45,7 +45,7 @@ namespace Battle.Turn
 			if (objectUnit.GetNameEng () == "controller") {
 				yield return BattleData.battleManager.ToDoBeforeAction ();
 				yield return ControllerAttack (objectUnit);
-				LogManager.Instance.ExecuteLastEventLogAndConsequences();
+				yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 			}
 			yield return null;
 		}

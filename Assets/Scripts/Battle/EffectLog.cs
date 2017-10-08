@@ -243,17 +243,9 @@ public class StatusEffectLog : EffectLog {
     }
 
     public override IEnumerator Execute() {
-        if (statusEffect is UnitStatusEffect) {
-            UnitStatusEffect unitStatusEffect = (UnitStatusEffect) statusEffect;
-            Unit owner = unitStatusEffect.GetOwner();
+        if (type == StatusEffectChangeType.AmountChange || type == StatusEffectChangeType.RemainAmountChange
+            || type == StatusEffectChangeType.RemainPhaseChange || type == StatusEffectChangeType.RemainStackChange) {
             switch (type) {
-            case StatusEffectChangeType.Remove:
-                List<UnitStatusEffect> newStatusEffectList = owner.StatusEffectList.FindAll(se => se != statusEffect);
-                owner.SetStatusEffectList(newStatusEffectList);
-                break;
-            case StatusEffectChangeType.Attach:
-                owner.StatusEffectList.Add(unitStatusEffect);
-                break;
             case StatusEffectChangeType.AmountChange:
                 statusEffect.flexibleElem.actuals[index].amount = afterAmount;
                 break;
@@ -267,10 +259,36 @@ public class StatusEffectLog : EffectLog {
                 int result;
                 int maxStack = statusEffect.fixedElem.display.maxStack;
                 result = (int)afterAmount;
-                if (result > maxStack)      result = maxStack;
-                if (result < 0)             result = 0;
+                if (result > maxStack) result = maxStack;
+                if (result < 0) result = 0;
                 statusEffect.flexibleElem.display.remainStack = result;
                 break;
+            }
+        } else {
+            if (statusEffect is UnitStatusEffect) {
+                UnitStatusEffect unitStatusEffect = (UnitStatusEffect)statusEffect;
+                Unit owner = unitStatusEffect.GetOwner();
+                switch (type) {
+                case StatusEffectChangeType.Remove:
+                    List<UnitStatusEffect> newStatusEffectList = owner.StatusEffectList.FindAll(se => se != statusEffect);
+                    owner.SetStatusEffectList(newStatusEffectList);
+                    break;
+                case StatusEffectChangeType.Attach:
+                    owner.StatusEffectList.Add(unitStatusEffect);
+                    break;
+                }
+            } else if (statusEffect is TileStatusEffect) {
+                TileStatusEffect tileStatusEffect = (TileStatusEffect)statusEffect;
+                Tile ownerTile = tileStatusEffect.GetOwnerTile();
+                switch (type) {
+                case StatusEffectChangeType.Remove:
+                    List<TileStatusEffect> newStatusEffectList = ownerTile.StatusEffectList.FindAll(se => se != statusEffect);
+                    ownerTile.SetStatusEffectList(newStatusEffectList);
+                    break;
+                case StatusEffectChangeType.Attach:
+                    ownerTile.StatusEffectList.Add(tileStatusEffect);
+                    break;
+                }
             }
         }
         yield return null;

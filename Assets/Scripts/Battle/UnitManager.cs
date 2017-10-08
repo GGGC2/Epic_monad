@@ -32,6 +32,8 @@ public class UnitManager : MonoBehaviour{
 	private static UnitManager instance;
 	public static UnitManager Instance{ get { return instance; } }
 
+    public bool startFinished = false;
+
 	void Awake(){
 		if (instance != null && instance != this){
 			Destroy (this.gameObject);
@@ -276,7 +278,7 @@ public class UnitManager : MonoBehaviour{
 			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.SetUnitOnTile(unit);
 			units.Add(unit);
-		}
+        }
 
 		// 배치 가능 위치 표시 & 카메라 이동
 		var selectablePlaceList = new List<PlaceInfo>();
@@ -293,6 +295,8 @@ public class UnitManager : MonoBehaviour{
 		}
 
 		yield return StartCoroutine(GenerateUnitsByManual(unitInfoList, selectablePlaceList));
+        
+        startFinished = true;
 
 		// 배치 가능 위치 지우고 턴 시작
 		if(FindObjectOfType<PlacedUnitCheckPanel>() != null){
@@ -346,6 +350,7 @@ public class UnitManager : MonoBehaviour{
 			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
 			tileUnderUnit.SetUnitOnTile(unit);
 			units.Add(unit);
+            Debug.Log(unit.GetNameKor() + "Added");
 
 			List<Tile> triggeredTiles = new List<Tile>();
 			triggeredTiles.Add(triggeredTile);
@@ -444,7 +449,6 @@ public class UnitManager : MonoBehaviour{
     }
 
 	public void EndPhase(int phase){
-        LogManager.Instance.Record(new PhaseEndLog(phase));
 		// Decrease each buff & debuff phase
 		foreach (var unit in units){
 			unit.UpdateRemainPhaseAtPhaseEnd();

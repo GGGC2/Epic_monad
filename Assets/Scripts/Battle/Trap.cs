@@ -72,7 +72,9 @@ class Trap {
     public static void TriggerAtTurnStart(TileStatusEffect trap, Tile tile, Unit turnStarter) {
         if (trap.IsOfType(StatusEffectType.Trap))
             if (GetTilesInRange(trap, tile).Contains(turnStarter.GetTileUnderUnit()))
-                if (SkillLogicFactory.Get(turnStarter.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(turnStarter, tile, trap))
+                if (SkillLogicFactory.Get(turnStarter.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(turnStarter, tile, trap)) {
+                    LogManager.Instance.Record(new TrapOperatedLog(trap));
                     OperateTrap(trap, tile);
+                }
     }
 }

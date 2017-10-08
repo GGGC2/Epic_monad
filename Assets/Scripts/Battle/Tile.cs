@@ -55,6 +55,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		SetDisplayName (displayName);
 	}
 
+    public List<TileStatusEffect> StatusEffectList { get { return statusEffectList; } }
     public List<TileStatusEffect> GetStatusEffectList() { return statusEffectList; }
     public void SetStatusEffectList(List<TileStatusEffect> newStatusEffectList) { statusEffectList = newStatusEffectList; }
     public void SetTileAPAtStandardHeight(int APAtStandardHeight)	{	this.APAtStandardHeight = APAtStandardHeight;	}
@@ -83,14 +84,13 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
         if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
             toBeRemoved = ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectRemoved(this, statusEffect);
         if (toBeRemoved) {
-            Debug.Log(statusEffect.GetDisplayName() + " is removed from tile ( " + position.x + ", " + position.y + ")");
-            statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
+            LogManager.Instance.Record(new StatusEffectLog(statusEffect, StatusEffectChangeType.Remove, 0, 0, 0));
+            // statusEffectList = statusEffectList.FindAll(se => se != statusEffect);
         }
     }
     public void UpdateRemainPhaseAtPhaseEnd() {
         foreach (var statusEffect in statusEffectList) {
-            if (!statusEffect.GetIsInfinite())
-                statusEffect.DecreaseRemainPhase();
+            if (!statusEffect.GetIsInfinite())  statusEffect.flexibleElem.display.remainPhase--;
             if (statusEffect.GetRemainPhase() <= 0) {
                 RemoveStatusEffect(statusEffect);
             }

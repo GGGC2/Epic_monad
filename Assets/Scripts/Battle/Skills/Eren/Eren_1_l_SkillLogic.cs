@@ -6,7 +6,7 @@ using System.Linq;
 namespace Battle.Skills {
     public class Eren_1_l_SkillLogic : BaseSkillLogic {
         public override void ApplyAdditionalDamage(CastingApply castingApply) {
-            UnitStatusEffect uniqueStatusEffect = castingApply.GetCaster().StatusEffectList.Find(se => se.GetDisplayName() == "í씉ì닔");
+            UnitStatusEffect uniqueStatusEffect = castingApply.GetCaster().StatusEffectList.Find(se => se.GetDisplayName() == "흡수");
 
             if (uniqueStatusEffect != null) {
                 int stack = uniqueStatusEffect.GetRemainStack();

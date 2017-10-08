@@ -61,6 +61,9 @@ public class BasePassiveSkillLogic
     public virtual float GetStatusEffectVar(UnitStatusEffect statusEffect, int i, Unit caster, Unit owner) {    //statusEffect�� i��° actualElement �� seVar ���� ����.
         return 0;
     }
+    public virtual string GetStatusEffectExplanation(StatusEffect statusEffect) {
+        return "";
+    }
     public virtual float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
         return baseAmount;
     }

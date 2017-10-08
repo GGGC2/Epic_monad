@@ -530,7 +530,6 @@ public class ActiveSkill : Skill{
 		}
 
 		if (visualEffectName == "-") {
-			Debug.Log("There is no visual effect for " + korName);
 			yield break;
 		}
 		if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {

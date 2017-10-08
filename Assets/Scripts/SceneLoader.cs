@@ -84,7 +84,8 @@ public class SceneLoader : MonoBehaviour{
         }
 		if (SceneData.isTestMode || SceneData.stageNumber < Setting.readySceneOpenStage || SceneManager.GetActiveScene().name == "BattleReady"){
 			Instantiate(loadingScreen);
-			PartyData.level = SceneData.stageNumber;
+            if(!SceneData.isTestMode)
+			    PartyData.level = SceneData.stageNumber;
 			PartyData.exp = 0;
             SceneManager.LoadScene("Battle");
 		}
