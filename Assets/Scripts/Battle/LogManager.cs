@@ -81,7 +81,7 @@ public class LogManager : MonoBehaviour {
         else if (log is MoveCancelLog)  HandleAfterMoveCancelLog();
     }
     void GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
-        TileManager.Instance.CheckAllTrpas();
+        TileManager.Instance.CheckAllTraps();
         BattleManager.Instance.UpdateUnitsForDestroy();
         BattleData.unitManager.ResetLatelyHitUnits();
     }

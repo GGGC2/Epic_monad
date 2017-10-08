@@ -432,13 +432,16 @@ public class UnitManager : MonoBehaviour{
         }
     }
 
-    public void StartPhase(int phase) {
+    public IEnumerator StartPhase(int phase) {
+        ApplyEachHeal();
+        ApplyEachDOT();
         foreach (var unit in units) {
             unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
-		}
-	}
+        }
+        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+    }
 
 	public void EndPhase(int phase){
         LogManager.Instance.Record(new PhaseEndLog(phase));

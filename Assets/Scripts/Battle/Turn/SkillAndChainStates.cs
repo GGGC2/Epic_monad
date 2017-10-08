@@ -40,10 +40,8 @@ namespace Battle.Turn {
 					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 
 					List<Tile> realEffectRange = casting.RealEffectRange;
-					if (CheckApplyPossibleToTargetTiles(targetTile, casting)) { 
+					if (CheckApplyPossibleToTargetTiles(targetTile, casting))
 						DisplayPreviewDamage (casting);
-					}
-
 				}
 				yield return null;
 				if(BattleData.selectedUnit != null){
@@ -287,17 +285,15 @@ namespace Battle.Turn {
             ApplyCasting(casting);                                              // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
             EventLog lastEventLog = LogManager.Instance.PopLastEventLog();      // 아까 남겼던 EventLog로 인해 생긴 로그들을 다 돌려받는다.
 			allCalculatedTotalDamages = CullPreviewDamageFromEventLog(lastEventLog);    // EventLog로부터 데미지와 연관된 부분만 추린다.
-			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages)
                 kv.Key.healthViewer.PreviewDamageInfoList(kv.Value);
-			}
 		}
 		static void HidePreviewDamage(){
 			// 데미지 미리보기 해제.
 			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
                 Unit unit = kv.Key;
-				if (unit.GetComponentInChildren<HealthViewer> () != null) {
+				if (unit.GetComponentInChildren<HealthViewer> () != null)
 					unit.GetComponentInChildren<HealthViewer> ().CancelPreview ();
-				}
 				unit.CheckAndHideObjectHealth();
 			}
 		}

@@ -71,13 +71,7 @@ public class BattleManager : MonoBehaviour{
 
 	public void StartTurnManager(){
 		if(!TurnManagerStarted) {
-            LogManager logManager = LogManager.Instance;
-
-            logManager.Record(new BattleStartLog());
-            foreach (var unit in BattleData.unitManager.GetAllUnits())
-                unit.ApplyTriggerOnStart();
-            logManager.ExecuteLastEventLogAndConsequences();
-
+            LogManager.Instance.Record(new BattleStartLog());
             StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;
 		}else {Debug.Log ("TurnManager Already Started.");}
@@ -93,8 +87,12 @@ public class BattleManager : MonoBehaviour{
 
 	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
 
-	public IEnumerator InstantiateTurnManager(){
-		if (BattleData.uiManager.startFinished) {
+	public IEnumerator InstantiateTurnManager() {
+        foreach (var unit in BattleData.unitManager.GetAllUnits())
+            unit.ApplyTriggerOnStart();
+        LogManager.Instance.ExecuteLastEventLogAndConsequences();
+
+        if (BattleData.uiManager.startFinished) {
 			while(true){
                 yield return StartCoroutine(StartPhaseOnGameManager());
 
@@ -137,7 +135,6 @@ public class BattleManager : MonoBehaviour{
         LogManager logManager = LogManager.Instance;
         logManager.Record(new TurnStartLog(unit));
         StartUnitTurn(unit);
-        logManager.ExecuteLastEventLogAndConsequences();
 
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
@@ -167,7 +164,8 @@ public class BattleManager : MonoBehaviour{
 
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
 		BattleData.selectedUnit.SetActive();
-	}
+        logManager.ExecuteLastEventLogAndConsequences();
+    }
 	public void EndUnitTurn(Unit unit) {
         LogManager.Instance.Record(new TurnEndLog(unit));
         BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
@@ -397,7 +395,7 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
-                    LogManager.Instance.Record(new StandbyLog(unit));
+                    logManager.Record(new StandbyLog(unit));
                     Standby(unit);
 				}else{
 					BattleData.currentState = CurrentState.RestAndRecover;
@@ -586,10 +584,7 @@ public class BattleManager : MonoBehaviour{
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
         LogManager.Instance.Record(new PhaseStartLog(phase));
-        BattleData.unitManager.StartPhase(BattleData.currentPhase);
-        BattleData.unitManager.ApplyEachHeal();
-		BattleData.unitManager.ApplyEachDOT();
-        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        yield return BattleData.unitManager.StartPhase(BattleData.currentPhase);
 
 		yield return new WaitForSeconds(0.5f);
 	}
