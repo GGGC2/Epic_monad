@@ -27,9 +27,9 @@ class Aura{
             UnitStatusEffect alreadyAppliedEffect = unit.StatusEffectList.Find(se => (se.GetOriginSkill() == originSkill
                                                     && !se.IsOfType(StatusEffectType.Aura)));
             if (alreadyAppliedEffect != null && kv.Value == false) {                    //원래 오오라 범위 안에 있었는데 액션 이후 벗어난 경우
-                alreadyAppliedEffect.GetMemorizedUnits().Remove(owner); 
+                alreadyAppliedEffect.GetMemorizedUnits().Remove(owner);
                 alreadyAppliedEffect.SetRemainStack(alreadyAppliedEffect.GetMemorizedUnits().Count);
-            } else if(kv.Value == true){
+            } else if(kv.Value){
                 UnitStatusEffect.FixedElement fixedElementOfAuraStatusEffect = null;
                 if (originSkill != null && originSkill.GetType() == typeof(ActiveSkill))
                     fixedElementOfAuraStatusEffect = ((ActiveSkill)originSkill).GetUnitStatusEffectList().Find(se => 
@@ -41,7 +41,8 @@ class Aura{
                 if (alreadyAppliedEffect == null) {                                     //원래 오오라 효과를 받지 않았던 대상이 범위 안으로 들어왔을 경우
                     UnitStatusEffect auraStatusEffect = new UnitStatusEffect(fixedElementOfAuraStatusEffect, statusEffect.GetCaster(), unit, originSkill);
                     auraStatusEffect.GetMemorizedUnits().Add(owner); 
-                    unit.StatusEffectList.Add(auraStatusEffect);
+                    LogManager.Instance.Record(new StatusEffectLog(auraStatusEffect, StatusEffectChangeType.Attach, 0, 0, 0));
+                    //unit.StatusEffectList.Add(auraStatusEffect);
                 } else if (!alreadyAppliedEffect.GetMemorizedUnits().Contains(owner)) {  //원래 오오라 효과를 받고 있었는데, 그 효과가 이 오오라를 가진 유닛으로 인한 것이 아닌 경우
                     alreadyAppliedEffect.AddRemainStack(1);
                     alreadyAppliedEffect.GetMemorizedUnits().Add(owner);
@@ -57,15 +58,15 @@ class Aura{
     }
     public static void TriggerOnRemoved(Unit owner, UnitStatusEffect statusEffect) {
         if (statusEffect.IsOfType(StatusEffectType.Aura)) {
-            Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(owner, statusEffect);
+            Dictionary<Unit, bool> unitInRangeDictionary = TagUnitInRange(owner, statusEffect); //각 유닛에 대해 범위 안에 있는지 확인
             foreach (var kv in unitInRangeDictionary) {
                 Unit unit = kv.Key;
-                if (kv.Value == true) {
-                    UnitStatusEffect statusEffectToRemove = unit.StatusEffectList.Find(se => (se.GetOriginSkill() == statusEffect.GetOriginSkill()
-                                                        && !se.IsOfType(StatusEffectType.Aura)));
+                if (kv.Value) {     //유닛이 범위 안에 있다면
+                    UnitStatusEffect statusEffectToRemove = unit.StatusEffectList.Find(se => 
+                                (se.GetOriginSkill() == statusEffect.GetOriginSkill()   && !se.IsOfType(StatusEffectType.Aura)));   //Aura 그 자체가 아닌 효과를 찾아서
                     if (statusEffectToRemove != null) {
                         statusEffectToRemove.GetMemorizedUnits().Remove(owner);
-                        statusEffectToRemove.SetRemainStack(statusEffectToRemove.GetMemorizedUnits().Count);
+                        statusEffectToRemove.SetRemainStack(statusEffectToRemove.GetMemorizedUnits().Count);    // 스택을 감소시킨다.
                     }
                 }
             }
