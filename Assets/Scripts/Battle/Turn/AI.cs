@@ -194,8 +194,9 @@ namespace Battle.Turn{
 
 		State state;
 
-		public IEnumerator UnitTurn(){
-			battleManager.StartUnitTurn (unit);
+		public IEnumerator UnitTurn() {
+            LogManager.Instance.Record(new TurnStartLog(unit));
+            battleManager.StartUnitTurn (unit);
 
 			state = State.TurnStart;
 
@@ -406,7 +407,7 @@ namespace Battle.Turn{
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby ();
 			} else {
-				yield return TakeRest ();
+				TakeRest ();
 			}
 			state = State.EndTurn;
 		}
@@ -504,7 +505,8 @@ namespace Battle.Turn{
 			PaintMovableTiles ();
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
-			yield return BattleData.battleManager.StartCoroutine (MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount));
+            LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
+            MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
 		}
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
@@ -512,8 +514,9 @@ namespace Battle.Turn{
 		IEnumerator Standby(){
 			yield return new WaitForSeconds(0.2f);
 		}
-		IEnumerator TakeRest(){
-			yield return BattleData.battleManager.StartCoroutine(RestAndRecover.Run());
+		void TakeRest() {
+            LogManager.Instance.Record(new RestLog(unit));
+            RestAndRecover.Run();
 		}
 		IEnumerator SkipTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);

@@ -30,7 +30,7 @@ namespace Battle.Skills {
             skill.SetRequireAP(ap);
             return true;
         }
-        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+        public override void ActionInDamageRoutine(CastingApply castingApply) {
             List<Tile> tiles = castingApply.GetRealEffectRange();
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
@@ -39,8 +39,6 @@ namespace Battle.Skills {
             Tile backTile = GetBackTile(caster, target);
             if(TileManager.Instance.isTilePassable(backTile))
                 target.ForceMove(backTile);
-
-            yield return new WaitForSeconds(0.2f);
         }
     }
 }

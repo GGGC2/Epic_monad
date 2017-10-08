@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Battle.Skills {
     class Json_0_1_SkillLogic : BasePassiveSkillLogic {
-        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+        public override void ActionInDamageRoutine(CastingApply castingApply) {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
 
@@ -26,7 +26,6 @@ namespace Battle.Skills {
                 target.RemoveStatusEffect(alreadyAppliedStatusEffect);
             }
             else StatusEffector.AttachStatusEffect(caster, markStatusEffects, target);
-            yield return null;
         }
     }
 }

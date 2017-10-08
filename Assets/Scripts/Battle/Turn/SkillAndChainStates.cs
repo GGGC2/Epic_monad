@@ -18,7 +18,7 @@ namespace Battle.Turn {
 			Direction? beforeDirection = null;
 			Direction newDirection = selectedUnit.GetDirection ();
 
-			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
+			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
 
 			while (true) {
 				if (beforeDirection != newDirection) {
@@ -56,6 +56,7 @@ namespace Battle.Turn {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = BattleData.selectedUnit;
             ActiveSkill selectedSkill = BattleData.selectedSkill;
+            LogManager logManager = LogManager.Instance;
 
             while (true) {
                 BattleData.isWaitingUserInput = true;
@@ -96,15 +97,18 @@ namespace Battle.Turn {
 					
 					if (BattleData.triggers.directionSelectedByUser.Triggered) {
 						BattleData.currentState = CurrentState.ApplySkill;
-						yield return battleManager.StartCoroutine (ApplyCasting (casting));
-					}else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
+                        logManager.Record(new CastLog(casting));
+                        ApplyCasting (casting);
+                    } else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
 						if (CheckWaitChainPossible (casting)) {
 							BattleData.currentState = CurrentState.WaitChain;
-							yield return battleManager.StartCoroutine (WaitChain (casting));
+                            logManager.Record(new ChainLog(casting));
+                            WaitChain (casting);
 						}else{
 							BattleData.currentState = CurrentState.ApplySkill;
-							yield return battleManager.StartCoroutine (ApplyCasting (casting));
-						}
+                            logManager.Record(new CastLog(casting));
+                            ApplyCasting (casting);
+                        }
 					}else if(BattleData.triggers.skillSelected.Triggered){
 						battleManager.StartCoroutine(SkillSelected());
 						yield break;
@@ -130,7 +134,7 @@ namespace Battle.Turn {
                 BattleData.currentState = CurrentState.SelectSkillApplyPoint;
                 yield return BattleManager.Instance.StartCoroutine(SelectSkillApplyPoint(BattleData.selectedUnit.GetDirection()));
             }
-		}
+        }
 		
         private static IEnumerator UpdatePointSkillMouseDirection(Direction originalDirection) {
 			Unit selectedUnit = BattleData.selectedUnit;
@@ -141,7 +145,7 @@ namespace Battle.Turn {
 			TileManager.Instance.preSelectedMouseOverTile = null;
 			Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
 
-			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
+			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
 
 			while (true) {
 				Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, originalDirection);
@@ -184,6 +188,7 @@ namespace Battle.Turn {
         public static IEnumerator SelectSkillApplyPoint (Direction originalDirection) {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = BattleData.selectedUnit;
+            LogManager logManager = LogManager.Instance;
 
             if (BattleData.currentState == CurrentState.FocusToUnit){
                 yield break;
@@ -235,25 +240,24 @@ namespace Battle.Turn {
 
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
 					BattleData.currentState = CurrentState.ApplySkill;
-					yield return BM.StartCoroutine (ApplyCasting (casting));
-				}else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
+                    logManager.Record(new CastLog(casting));
+                    ApplyCasting (casting);
+                } else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 					if (CheckWaitChainPossible (casting)) {
 						BattleData.currentState = CurrentState.WaitChain;
-						yield return BM.StartCoroutine (WaitChain (casting));
+                        logManager.Record(new ChainLog(casting));
+                        WaitChain (casting);
 					}else{
 						BattleData.currentState = CurrentState.ApplySkill;
-						yield return BM.StartCoroutine (ApplyCasting (casting));
-					}
-				}else if(BattleData.triggers.skillSelected.Triggered){
-					BM.StartCoroutine(SkillSelected());
-					//yield break;
+                        logManager.Record(new CastLog(casting));
+                        ApplyCasting (casting);
+                    }
+				}else if(BattleData.triggers.skillSelected.Triggered) {
+                    BM.StartCoroutine(SkillSelected());
+					yield break;
 				}
             }
         }
-
-
-		static Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages;
-
         static bool CheckApplyPossibleToTargetTiles(Tile targetTile, Casting casting) {
             ActiveSkill skill = casting.Skill;
             if((!(skill.GetSkillType() == SkillType.Point) || casting.FirstRange.Contains(targetTile)) && skill.SkillLogic.CheckApplyPossibleToTargetTiles(casting))
@@ -261,69 +265,78 @@ namespace Battle.Turn {
             else return false;
         }
 
+        
+        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> allCalculatedTotalDamages;
+        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> CullPreviewDamageFromEventLog(EventLog eventLog) {
+            Dictionary<Unit, List<DamageCalculator.DamageInfo>> result = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
+            foreach(var effectLog in eventLog.getEffectLogList()) {
+                DamageCalculator.DamageInfo damageInfo = null;
+                if (effectLog is HPChangeLog)               damageInfo = ((HPChangeLog)effectLog).GetDamageInfo();
+                else if (effectLog is StatusEffectLog)      damageInfo = ((StatusEffectLog)effectLog).GetDamageInfo();
+                if (damageInfo != null) {
+                    Unit unit = damageInfo.target;
+                    if (!result.ContainsKey(unit))  result.Add(unit, new List<DamageCalculator.DamageInfo>());
+                    result[unit].Add(damageInfo);
+                }
+            }
+            return result;
+        }
 		static void DisplayPreviewDamage(Casting casting){
-			//데미지 미리보기
-			allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(casting);
-			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
-				kv.Key.healthViewer.gameObject.SetActive(true);
-				if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
-				else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
+            //데미지 미리보기
+            LogManager.Instance.Record(new CastLog(casting));                   // EventLog를 남긴다.
+            ApplyCasting(casting);                                              // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
+            EventLog lastEventLog = LogManager.Instance.PopLastEventLog();      // 아까 남겼던 EventLog로 인해 생긴 로그들을 다 돌려받는다.
+			allCalculatedTotalDamages = CullPreviewDamageFromEventLog(lastEventLog);    // EventLog로부터 데미지와 연관된 부분만 추린다.
+			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+                kv.Key.healthViewer.PreviewDamageInfoList(kv.Value);
 			}
 		}
 		static void HidePreviewDamage(){
 			// 데미지 미리보기 해제.
-			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
-				if (kv.Key.GetComponentInChildren<HealthViewer> () != null) {
-					kv.Key.GetComponentInChildren<HealthViewer> ().CancelPreview ();
+			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+                Unit unit = kv.Key;
+				if (unit.GetComponentInChildren<HealthViewer> () != null) {
+					unit.GetComponentInChildren<HealthViewer> ().CancelPreview ();
 				}
-				kv.Key.CheckAndHideObjectHealth();
+				unit.CheckAndHideObjectHealth();
 			}
 		}
 
-		public static IEnumerator ApplyCasting (Casting casting) {
+		public static void ApplyCasting (Casting casting) {
             LogManager logManager = LogManager.Instance;
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-            logManager.Record(new CastLog(casting));
 			caster.UseActivityPoint (casting.RequireAP);
             if (skill.GetCooldown () > 0) {
-				caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
+				//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
                 logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
             }
-			yield return ApplyAllTriggeredChains(casting);
-
-			BattleManager.MoveCameraToUnit(caster);
-			BattleData.currentState = CurrentState.FocusToUnit;
+			ApplyAllTriggeredChains(casting);
         }
 
-		public static IEnumerator WaitChain (Casting casting) {
+		public static void WaitChain (Casting casting) {
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
 			SkillLocation location = casting.Location;
             LogManager logManager = LogManager.Instance;
             Direction direction = caster.GetDirection();
 
-            logManager.Record(new ChainLog(casting));
 			caster.SetDirection(location.Direction);
-            logManager.Record(new DirectionChangeLog(caster, direction, caster.GetDirection()));
 
 			caster.UseActivityPoint (casting.RequireAP);
             if (skill.GetCooldown() > 0) {
-                caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
+                //caster.GetUsedSkillDict().Add(skill.GetName(), skill.GetCooldown());
                 logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
             }
 
 			// 체인 목록에 추가.
-			ChainList.AddChains(casting);
+            logManager.Record(new AddChainLog(casting));
+			//ChainList.AddChains(casting);
 			BattleData.selectedSkill = null;
-			yield return new WaitForSeconds(0.5f);
-
-			BattleManager.MoveCameraToUnit(caster);
-			BattleData.currentState = CurrentState.Standby;
-			yield return BattleData.battleManager.StartCoroutine(BattleManager.Standby()); // 이후 대기.
+            logManager.Record(new WaitForSecondsLog(0.5f));
 		}
 
 		//연계'대기' 가능한 상태인가?
@@ -369,7 +382,7 @@ namespace Battle.Turn {
 				return false;
         }
 
-		public static IEnumerator ApplyAllTriggeredChains (Casting casting) {
+		public static void ApplyAllTriggeredChains (Casting casting) {
             BattleManager battleManager = BattleData.battleManager;
 			Unit caster = casting.Caster;
 
@@ -386,13 +399,10 @@ namespace Battle.Turn {
 					Tile focusedTile = chain.SecondRange [0];
 					BattleManager.MoveCameraToTile (focusedTile);
 				}
-				BattleData.currentState = CurrentState.ApplySkill;
-				chain.Caster.HideChainIcon ();
-				yield return battleManager.StartCoroutine (chain.Cast (chainCombo));
-				BattleData.uiManager.chainBonusObj.SetActive(false);
+				chain.Cast (chainCombo);
+				//BattleData.uiManager.chainBonusObj.SetActive(false);
+                LogManager.Instance.Record(new PrintBonusTextLog("Chain", 0, false));
 			}
-
-			yield return BattleData.battleManager.AtActionEnd();
         }
     }
 }

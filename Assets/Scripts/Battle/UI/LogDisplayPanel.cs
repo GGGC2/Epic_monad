@@ -22,7 +22,14 @@ public class LogDisplayPanel : MonoBehaviour {
     public void AddLogDisplay(LogDisplay logDisplay, int num) {
         logDisplay.gameObject.transform.SetParent(logs.gameObject.transform, false);
         logDisplay.name = "Log " + num;
+        logDisplay.index = num;
         logDisplay.SetText();
+    }
+    public void RemoveLogsFrom(int index) {
+        foreach(LogDisplay logDisplay in logs.gameObject.GetComponentsInChildren<LogDisplay>(true)) {
+            if(logDisplay.index >= index)
+                logDisplay.gameObject.transform.SetParent(null);
+        }
     }
     public void Initialize() {
         scrollbar.numberOfSteps = BattleData.logDisplayList.Count - maxNumDisplay + 1;

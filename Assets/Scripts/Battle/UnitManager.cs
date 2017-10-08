@@ -87,13 +87,13 @@ public class UnitManager : MonoBehaviour{
         }
     }
 
-    public IEnumerator TriggerStatusEffectsAtActionEnd(){
+    public void TriggerStatusEffectsAtActionEnd(){
         foreach(var unit in GetAllUnits()) {
             List<UnitStatusEffect> statusEffectList = unit.StatusEffectList;
             foreach (UnitStatusEffect statusEffect in statusEffectList) {
                 Skill skill = statusEffect.GetOriginSkill();
                 if (skill != null && skill.GetType() == typeof(ActiveSkill))
-                    yield return StartCoroutine(((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect));
+                    ((ActiveSkill)skill).SkillLogic.TriggerStatusEffectAtActionEnd(unit, statusEffect);
             }
         }
     }
@@ -119,7 +119,17 @@ public class UnitManager : MonoBehaviour{
             }
         }
     }
-
+    public void UpdateStatsAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            unit.UpdateStats();
+        }
+    }
+    public void UpdateHealthViewersAtActionEnd() {
+        foreach(var unit in GetAllUnits()) {
+            if(!unit.IsObject)
+                unit.UpdateHealthViewer();
+        }
+    }
     public void UpdateRealUnitPositions(int direction){
         foreach (var unit in GetAllUnits()) {
             unit.UpdateRealPosition(direction);
@@ -344,11 +354,11 @@ public class UnitManager : MonoBehaviour{
 		}
 	}
 
-	public IEnumerator DeleteDeadUnit(Unit deadUnit){
+	public void DeleteDeadUnit(Unit deadUnit){
 		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
 		foreach (var hitInfo in deadUnit.GetLatelyHitInfos()){
 			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-			yield return StartCoroutine(SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, deadUnit));
+			SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, deadUnit);
 
 			if (hitInfo.skill != null)
 				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
@@ -404,33 +414,25 @@ public class UnitManager : MonoBehaviour{
 		return enemyUnits;
 	}
 
-	public IEnumerator ApplyEachDOT() {
+	public void ApplyEachDOT() {
         List<Unit> unitList = new List<Unit>();
         units.ForEach(x => unitList.Add(x));
         foreach (var unit in unitList){
 			if (unit != null && unit.HasStatusEffect(StatusEffectType.DamageOverPhase))
-				yield return StartCoroutine(unit.ApplyDamageOverPhase());
+				unit.ApplyDamageOverPhase();
 		}
 	}
 
-    public IEnumerator ApplyEachHeal() {
+    public void ApplyEachHeal() {
         List<Unit> unitList = new List<Unit>();
         units.ForEach(x => unitList.Add(x));
         foreach (var unit in unitList) {
             if(unit != null && unit.HasStatusEffect(StatusEffectType.HealOverPhase))
-                yield return unit.ApplyHealOverPhase();
+                unit.ApplyHealOverPhase();
         }
     }
 
     public void StartPhase(int phase) {
-        if (phase == 1) {
-            LogManager.Instance.Record(new BattleStartLog());
-            foreach (var unit in units) {
-                unit.ApplyTriggerOnStart();
-            }
-        }
-
-        LogManager.Instance.Record(new PhaseStartLog(phase));
         foreach (var unit in units) {
             unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();

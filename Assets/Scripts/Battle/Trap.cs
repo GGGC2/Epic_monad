@@ -62,6 +62,7 @@ class Trap {
         foreach(var unit in unitsInRange) {
             if (!trap.GetMemorizedUnits().Contains(unit)) {
                 if (SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(unit, tile, trap)) {
+                    LogManager.Instance.Record(new TrapOperatedLog(trap));
                     OperateTrap(trap, tile);
                     return;
                 }

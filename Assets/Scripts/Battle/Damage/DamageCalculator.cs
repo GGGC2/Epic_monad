@@ -30,99 +30,17 @@ namespace Battle
 		}
 
 		public class DamageInfo{
-			public List<Unit> casters;
-			public float damage;
+            public Unit target;
+            public float damageAmount;
+            public float shieldAmount;
 
-			public DamageInfo(Unit caster, float damage){
-				this.casters = new List<Unit>();
-				casters.Add(caster);
-				this.damage = damage;
+			public DamageInfo(Unit target, float damageAmount, float shieldAmount){
+				this.target = target;
+                this.damageAmount = damageAmount;
+                this.shieldAmount = shieldAmount;
 			}
 		}
-
-		public static Dictionary<Unit, DamageInfo> CalculateAllPreviewTotalDamages(Casting casting){
-			Dictionary<Unit, DamageInfo> damageList = new Dictionary<Unit, DamageInfo>();
-
-			List<Chain> allChainTriggered = ChainList.GetAllChainTriggered (casting);
-			int chainCombo = allChainTriggered.Count;
-			foreach (var chain in allChainTriggered)
-			{
-				var damageListOfEachSkill = CalculatePreviewDamageOfEachChain(chain, chainCombo);
-				damageList = MergeDamageList(damageList, damageListOfEachSkill);
-			}
-
-			return damageList;
-		}
-
-		private static Dictionary<Unit, DamageInfo> MergeDamageList(Dictionary<Unit, DamageInfo> leftDamgeList, Dictionary<Unit, DamageInfo> rightDamageList){
-			var merged = new Dictionary<Unit, DamageInfo>();
-			foreach (var damage in leftDamgeList)
-			{
-				var target = damage.Key;
-				merged[target] = damage.Value;
-			}
-			foreach (var damage in rightDamageList)
-			{
-				var target = damage.Key;
-				if (merged.ContainsKey(target))
-				{
-					foreach (var caster in rightDamageList[target].casters)
-						merged[target].casters.Add(caster);
-					merged[target].damage += rightDamageList[target].damage;
-				}
-				else
-				{
-					merged[target] = rightDamageList[target];
-				}
-			}
-			return merged;
-		}
-
-		private static Dictionary<Unit, DamageInfo> CalculatePreviewDamageOfEachChain(Chain chain, int chainCombo){
-			var damageList = new Dictionary<Unit, DamageInfo>();
-			ActiveSkill appliedSkill = chain.Skill;
-			Unit caster = chain.Caster;			
-			List<Unit> targets = chain.CurrentTargets;
-
-			foreach (var target in targets)
-			{
-				CastingApply castingApply = new CastingApply(chain.Casting, target);
-
-				if (appliedSkill.GetSkillApplyType() == SkillApplyType.DamageHealth) {
-					CalculateAttackDamage(castingApply, chainCombo);
-
-					float damageBeforeReflection = castingApply.GetDamage().resultDamage;
-					float reflectDamage = CalculateReflectDamage(damageBeforeReflection, target, caster, caster.GetUnitClass());
-
-					float actualDamage = target.CalculateDamageByCasting (castingApply, true);
-
-					DamageInfo damageInfo = new DamageInfo(caster, actualDamage);
-					damageList.Add(target, damageInfo);
-
-					//Debug.Log(actualDamage + " damage will be applied to " + target.GetNameEng() + "\n" +
-					//	"ChainCombo : " + chainCombo);
-
-					if (reflectDamage != 0) {
-						float reflectTargetDefense = CalculateDefense(appliedSkill, caster, target);
-						float reflectTargetResistance = CalculateDefense(appliedSkill, caster, target);
-						reflectDamage = ApplyDefenseAndResistance(reflectDamage, target.GetUnitClass(), reflectTargetDefense, reflectTargetResistance);
-
-						DamageInfo reflectDamageInfo = new DamageInfo(target, reflectDamage);
-						damageList.Add(caster, reflectDamageInfo);
-						//Debug.Log(reflectDamage + " damage will be reflected from " + target.GetNameEng() + " to " + caster.GetNameEng());
-					}
-				}
-				else if (appliedSkill.GetSkillApplyType() == SkillApplyType.HealHealth) {
-					CalculateAmountOtherThanAttackDamage(castingApply);
-					float actualHealAmount = castingApply.GetDamage().resultDamage;
-					DamageInfo damageInfo = new DamageInfo(caster, -actualHealAmount);
-					damageList.Add(target, damageInfo);
-
-					//Debug.Log(actualHealAmount + " heal will be applied to " + target.GetNameEng());
-				}
-			}
-			return damageList;
-		}
+        
 
 		private static List<Unit> GetTargetUnits(List<Tile> targetTiles) {
 			var targets = new List<Unit>();

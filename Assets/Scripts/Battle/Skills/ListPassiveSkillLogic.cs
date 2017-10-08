@@ -12,11 +12,11 @@ namespace Battle.Skills
 		    this.passiveSkillLogics = passiveSkillLogics;
 	    }
 
-	    public override IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
+	    public override void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 	    {
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    yield return skillLogic.TriggerOnKill(hitInfo, deadUnit);
+			    skillLogic.TriggerOnKill(hitInfo, deadUnit);
 		    }
 	    }
 
@@ -87,9 +87,9 @@ namespace Battle.Skills
             }
         }
 
-        public override IEnumerator ActionInDamageRoutine(CastingApply castingApply) {
+        public override void ActionInDamageRoutine(CastingApply castingApply) {
             foreach(var skillLogic in passiveSkillLogics) {
-                yield return skillLogic.ActionInDamageRoutine(castingApply);
+                skillLogic.ActionInDamageRoutine(castingApply);
             }
         }
         public override float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
@@ -180,9 +180,9 @@ namespace Battle.Skills
 			    skillLogic.TriggerUsingSkill(casting, targets);
 		    }
 	    }
-        public override IEnumerator TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
+        public override void TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(Unit attacker, Unit shieldCaster, Unit target, float amount) {
             foreach(var skillLogic in passiveSkillLogics) {
-                yield return skillLogic.TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(attacker, shieldCaster, target, amount);
+                skillLogic.TriggerWhenShieldWhoseCasterIsOwnerIsAttacked(attacker, shieldCaster, target, amount);
             }
         }
         public override void TriggerOnMove(Unit caster) {
@@ -200,9 +200,9 @@ namespace Battle.Skills
             return !ignored;
         }
 
-        public override IEnumerator TriggerApplyingHeal(CastingApply castingApply) {
+        public override void TriggerApplyingHeal(CastingApply castingApply) {
             foreach (var skillLogic in passiveSkillLogics) {
-                yield return skillLogic.TriggerApplyingHeal(castingApply);
+                skillLogic.TriggerApplyingHeal(castingApply);
             }
         }
 
@@ -212,10 +212,10 @@ namespace Battle.Skills
             }
         }
 
-        public override IEnumerator TriggerOnPhaseStart(Unit caster, int phase) {		
+        public override void TriggerOnPhaseStart(Unit caster, int phase) {		
 		    foreach (var skillLogic in passiveSkillLogics)
 		    {
-			    yield return skillLogic.TriggerOnPhaseStart(caster, phase);
+			    skillLogic.TriggerOnPhaseStart(caster, phase);
 		    }
 	    }
 

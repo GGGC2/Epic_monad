@@ -8,7 +8,7 @@ using Battle.Damage;
 namespace Battle.Skills
 {
     public class Eren_7_l_SkillLogic : BasePassiveSkillLogic {
-	    public override IEnumerator TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
+	    public override void TriggerOnKill(HitInfo hitInfo, Unit deadUnit)
 		{
 			TileManager tileManager = BattleData.tileManager;
 		    Vector2 deadUnitPos = deadUnit.GetPosition();
@@ -29,7 +29,6 @@ namespace Battle.Skills
 
 		    foreach (var target in targets)
 			    StatusEffector.AttachStatusEffect(hitInfo.caster, this.passiveSkill, target);
-            yield return null;
 	    }
     }
 }

@@ -49,8 +49,8 @@ public class Chain {
 		}
 		return false;
 	}
-	public IEnumerator Cast(int chainCombo){
+	public void Cast(int chainCombo){
 		UpdateLocation();
-		yield return casting.Cast (chainCombo);
+		casting.Cast (chainCombo);
 	}
 }

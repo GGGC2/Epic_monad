@@ -1,10 +1,12 @@
 ﻿using Enums;
 using UnityEngine;
 using System.Collections.Generic;
-
+using System.Collections;
 
 public class EffectLog : Log {
-
+    public virtual bool isValid() {
+        return true;
+    }
 }
 
 public class HPChangeLog : EffectLog {
@@ -26,6 +28,22 @@ public class HPChangeLog : EffectLog {
             text += amount + " 증가";
         }
         return text;
+    }
+    public override IEnumerator Execute() {
+        int maxHealth = unit.GetMaxHealth();
+        int currentHealth = unit.GetCurrentHealth();
+        int result = currentHealth + amount;
+
+        if(result > maxHealth)  unit.currentHealth = maxHealth;
+        else if(result < 0)     unit.currentHealth = 0;
+        else                    unit.currentHealth = result;
+        yield return null;
+    }
+    public override bool isValid() {
+        return amount != 0;
+    }
+    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
+        return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
     }
 }
 
@@ -49,7 +67,42 @@ public class APChangeLog : EffectLog {
         }
         return text;
     }
+    public override IEnumerator Execute() {
+        int currentAP = unit.activityPoint;
+        int result = currentAP + amount;
+        
+        if (result < 0)     unit.activityPoint = 0;
+        else                unit.activityPoint = result;
+
+        yield return null;
+    }
+    public override bool isValid() {
+        return amount != 0;
+    }
 }
+
+/*public class StatChangeLog : EffectLog {
+    Unit unit;
+    Stat stat;
+    int beforeAmount;
+    int afterAmount;
+
+    public StatChangeLog(Unit unit, Stat stat, int beforeAmount, int afterAmount) {
+        this.unit = unit;
+        this.stat = stat;
+        this.beforeAmount = beforeAmount;
+        this.afterAmount = afterAmount;
+    }
+    public override string GetText() {
+        return "\t" + unit.GetNameKor() + stat + beforeAmount + " -> " + afterAmount; 
+    }
+
+    public override IEnumerator Execute() {
+        unit.actualStats[stat].value = afterAmount;
+        unit.updateCurrentHealthRelativeToMaxHealth();
+        yield return null;
+    }
+}*/
 
 public class CoolDownLog : EffectLog {
     Unit caster;
@@ -63,18 +116,63 @@ public class CoolDownLog : EffectLog {
     public override string GetText() {
         return "\t" + caster.GetNameKor() + " : " + skillName + " 재사용 대기 " + skillCooldown + "페이즈";
     }
+
+    public override IEnumerator Execute() {
+        caster.GetUsedSkillDict().Add(skillName, skillCooldown);
+        yield return null;
+    }
+    public override bool isValid() {
+        return skillCooldown != 0;
+    }
 }
 
 public class DestroyUnitLog : EffectLog {
     Unit unit;
-    public DestroyUnitLog(Unit unit) {
+    TrigActionType actionType;
+    public DestroyUnitLog(Unit unit, TrigActionType actionType) {
         this.unit = unit;
+        this.actionType = actionType;
     }
     public override string GetText() {
-        return "\t" + unit.GetNameKor() + " :  퇴각";
+        string text = "\t" + unit.GetNameKor() + " : ";
+        switch(actionType) {
+        case TrigActionType.Kill:
+            text += "죽음";
+            break;
+        case TrigActionType.Retreat:
+            text += "퇴각";
+            break;
+        case TrigActionType.Reach:
+            text += "목표지점 도달";
+            break;
+        }
+        return text;
+    }
+
+    public override IEnumerator Execute() {
+        BattleManager battleManager = BattleManager.Instance;
+        yield return battleManager.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
     }
 }
+public class AddChainLog : EffectLog {
+    Casting casting;
 
+    public AddChainLog(Casting casting) {
+        this.casting = casting;
+    }
+    public override string GetText() {
+        Unit caster = casting.Caster;
+        ActiveSkill skill = casting.Skill;
+        return "\t" + caster.GetNameKor() + " : " + skill.GetName() + " 연계 대기열에 추가";
+    }
+
+    public override IEnumerator Execute() {
+        Chain newChain = new Chain(casting);
+        ChainList.GetChainList().Add(newChain);
+        ChainList.SetChargeEffectToUnit(casting.Caster);
+        yield return null;
+    }
+}
 public class RemoveChainLog : EffectLog {
     Unit unit;
     public RemoveChainLog(Unit unit) {
@@ -82,6 +180,17 @@ public class RemoveChainLog : EffectLog {
     }
     public override string GetText() {
         return "\t" + unit.GetNameKor() + " : 연계 해제";
+    }
+
+    public override IEnumerator Execute() {
+        List<Chain> chainList = ChainList.GetChainList();
+        Chain chain = chainList.Find(x => x.Caster == unit);
+        if (chain != null) {
+            chainList.Remove(chain);
+            ChainList.RemoveChargeEffectOfUnit(unit);
+            unit.HideChainIcon();
+        }
+        yield return null;
     }
 }
 
@@ -132,35 +241,86 @@ public class StatusEffectLog : EffectLog {
         }
         return text;
     }
+
+    public override IEnumerator Execute() {
+        if (statusEffect is UnitStatusEffect) {
+            UnitStatusEffect unitStatusEffect = (UnitStatusEffect) statusEffect;
+            Unit owner = unitStatusEffect.GetOwner();
+            switch (type) {
+            case StatusEffectChangeType.Remove:
+                List<UnitStatusEffect> newStatusEffectList = owner.StatusEffectList.FindAll(se => se != statusEffect);
+                owner.SetStatusEffectList(newStatusEffectList);
+                break;
+            case StatusEffectChangeType.Attach:
+                owner.StatusEffectList.Add(unitStatusEffect);
+                break;
+            case StatusEffectChangeType.AmountChange:
+                statusEffect.flexibleElem.actuals[index].amount = afterAmount;
+                break;
+            case StatusEffectChangeType.RemainAmountChange:
+                statusEffect.flexibleElem.actuals[index].remainAmount = afterAmount;
+                break;
+            case StatusEffectChangeType.RemainPhaseChange:
+                statusEffect.flexibleElem.display.remainPhase = (int)afterAmount;
+                break;
+            case StatusEffectChangeType.RemainStackChange:
+                int result;
+                int maxStack = statusEffect.fixedElem.display.maxStack;
+                result = (int)afterAmount;
+                if (result > maxStack)      result = maxStack;
+                if (result < 0)             result = 0;
+                statusEffect.flexibleElem.display.remainStack = result;
+                break;
+            }
+        }
+        yield return null;
+    }
+    public override bool isValid() {
+        return !(type != StatusEffectChangeType.Attach && type != StatusEffectChangeType.Remove
+                && beforeAmount == afterAmount);
+    }
+    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
+        if (statusEffect is UnitStatusEffect && statusEffect.IsOfType(StatusEffectType.Shield)) {
+            Unit unit = ((UnitStatusEffect)statusEffect).GetOwner();
+            float amount = afterAmount - beforeAmount;
+            if (type == StatusEffectChangeType.RemainAmountChange) {
+                if(amount > 0)  return new Battle.DamageCalculator.DamageInfo(unit, 0, amount);
+                else            return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
+            }
+            else if(type == StatusEffectChangeType.Attach) 
+                return new Battle.DamageCalculator.DamageInfo(unit, 0, statusEffect.GetAmountOfType(StatusEffectType.Shield));
+            else if (type == StatusEffectChangeType.Remove)
+                return new Battle.DamageCalculator.DamageInfo(unit, statusEffect.GetAmountOfType(StatusEffectType.Shield), 0);
+        }
+        return null;
+    }
 }
 
-public class ForceMoveLog : EffectLog {
+public class PositionChangeLog : EffectLog {
     Unit unit;
     Vector2 beforePos;
     Vector2 afterPos;
 
-    public ForceMoveLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
+    public PositionChangeLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
         this.unit = unit;
         this.beforePos = beforePos;
         this.afterPos = afterPos;
     }
     public override string GetText() {
-        return "\t" + unit.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "로 강제이동";
+        return "\t" + unit.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "(으)로 위치 변경";
     }
-}
-
-public class DirectionChangeLog : EffectLog {
-    Unit unit;
-    Direction beforeDirection;
-    Direction afterDirection;
-
-    public DirectionChangeLog(Unit unit, Direction beforeDirection, Direction afterDirection) {
-        this.unit = unit;
-        this.beforeDirection = beforeDirection;
-        this.afterDirection =  afterDirection;
+    public override IEnumerator Execute() {
+        TileManager tileManager = TileManager.Instance;
+        Tile destTile = tileManager.GetTile(afterPos);
+        unit.GetTileUnderUnit().SetUnitOnTile(null);
+        unit.transform.position = destTile.transform.position + new Vector3(0, 0, -0.05f);
+        unit.SetPosition(destTile.GetTilePos());
+        destTile.SetUnitOnTile(unit);
+        unit.notMovedTurnCount = 0;
+        yield return null;
     }
-    public override string GetText() {
-        return "\t" + unit.GetNameKor() + " : " + beforeDirection + "에서 " + afterDirection + "(으)로 방향 변경";
+    public override bool isValid() {
+        return beforePos != afterPos;
     }
 }
 
@@ -173,6 +333,13 @@ public class AISetActiveLog : EffectLog {
     public override string GetText() {
         return "\t" + unit.GetNameKor() + " : 활성화";
     }
+    public override IEnumerator Execute() {
+        unit.GetComponent<AIData>().isActive = true;
+        yield return null;
+    }
+    public override bool isValid() {
+        return !unit.GetComponent<AIData>().isActive;
+    }
 }
 
 public class CameraMoveLog : EffectLog {
@@ -183,5 +350,141 @@ public class CameraMoveLog : EffectLog {
     }
     public override string GetText() {
         return "\t" + "카메라 위치 변경 : " + position;
+    }
+    public override IEnumerator Execute() {
+        BattleManager.MoveCameraToPosition(position);
+        yield return null;
+    }
+    public override bool isValid() {
+        return !(Camera.main.transform.position == new Vector3(position.x, position.y, -10));
+    }
+}
+
+public class PrintBonusTextLog : EffectLog {
+    string type;
+    float amount;
+    bool activate;
+
+    public PrintBonusTextLog(string type, float amount, bool activate) {
+        this.type = type;
+        this.amount = amount;
+        this.activate = activate;
+    }
+
+    public override string GetText() {
+        if(activate)
+            return "\t" + "추가데미지 패널 활성화 : " + type + "(x" + amount + ")";
+        else
+            return "\t" + "추가데미지 패널 비활성화 : " + type;
+    }
+
+    public override IEnumerator Execute() {
+        UIManager uiManager = UIManager.Instance;
+        switch(type) {
+        case "DirectionBack":
+            uiManager.PrintDirectionBonus(DirectionCategory.Back, amount);
+            break;
+        case "DirectionSide":
+            uiManager.PrintDirectionBonus(DirectionCategory.Back, amount);
+            break;
+        case "Celestial":
+            uiManager.PrintCelestialBonus(amount);
+            break;
+        case "Chain":
+            if(activate) uiManager.PrintChainBonus((int)amount);
+            else uiManager.chainBonusObj.SetActive(false);
+            break;
+        case "Height":
+            uiManager.PrintHeightBonus(amount);
+            break;
+        case "All":
+            if(!activate)
+                uiManager.DeactivateAllBonusText();
+            break;
+        }
+        yield return null;
+    }
+}
+
+public class SoundEffectLog : EffectLog {
+    ActiveSkill skill;
+
+    public SoundEffectLog(ActiveSkill skill) {
+        this.skill = skill;
+    }
+    public override string GetText() {
+        return "\t" + "음향 효과 : " + skill.GetName();
+    }
+    public override IEnumerator Execute() {
+        skill.ApplySoundEffect();
+        yield return null;
+    }
+}
+
+public class VisualEffectLog : EffectLog {
+    Casting casting;
+
+    public VisualEffectLog(Casting casting) {
+        this.casting = casting;
+    }
+    public override string GetText() {
+        return "\t" + "시각 효과 : " + casting.Skill.GetName();
+    }
+    public override IEnumerator Execute() {
+        yield return BattleManager.Instance.StartCoroutine(casting.Skill.ApplyVisualEffect(casting));
+    }
+}
+
+public class DisplayDamageOrHealTextLog : EffectLog {
+    public Unit unit;
+    int amount;
+    bool isHealth;
+
+    public DisplayDamageOrHealTextLog(Unit unit, int amount, bool isHealth) {
+        this.unit = unit;
+        this.amount = amount;
+        this.isHealth = isHealth;
+    }
+    public override string GetText() {
+        return "\t" + unit.GetNameKor() + " : 회복 텍스트 표시(" + amount + ")";
+    }
+    public override IEnumerator Execute() {
+        if(amount < 0)          yield return unit.DisplayDamageText(-amount, isHealth);
+        else if(amount >= 0)    yield return unit.DisplayRecoverText(amount, isHealth);
+    }
+}
+
+public class AddLatelyHitInfoLog : EffectLog {
+    Unit unit;
+    HitInfo hitInfo;
+
+    public AddLatelyHitInfoLog(Unit unit, HitInfo hitInfo) {
+        this.unit = unit;
+        this.hitInfo = hitInfo;
+    }
+    public override string GetText() {
+        return "\t" + unit.GetNameKor() + " : latelyHitInfo 추가 (" + hitInfo.caster.GetNameKor() +", " + hitInfo.skill + ", " + hitInfo.finalDamage;
+    }
+    public override IEnumerator Execute() {
+        unit.GetLatelyHitInfos().Add(hitInfo);
+        yield return null;
+    }
+    public override bool isValid() {
+        return !(hitInfo == null);
+    }
+}
+
+public class WaitForSecondsLog : EffectLog {
+    float second;
+
+    public WaitForSecondsLog(float second) {
+        this.second = second;
+    }
+    public override string GetText() {
+        return "\t" + "WaitForSeconds(" + second + ")";
+    }
+
+    public override IEnumerator Execute() {
+        yield return new WaitForSeconds(second);
     }
 }

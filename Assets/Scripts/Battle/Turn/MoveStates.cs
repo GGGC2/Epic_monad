@@ -31,15 +31,9 @@ namespace Battle.Turn{
 			}
 		}
 		
-		public static IEnumerator MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
+		public static void MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			Unit unit = BattleData.selectedUnit;
 			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
-
-			BattleData.previewAPAction = null;
-			BattleData.alreadyMoved = true;
-			BattleData.currentState = CurrentState.FocusToUnit;
-
-			yield return BattleData.battleManager.AtActionEnd();
 		}
 	}
 }

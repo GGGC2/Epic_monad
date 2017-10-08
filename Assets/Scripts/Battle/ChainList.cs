@@ -8,14 +8,14 @@ public class ChainList : MonoBehaviour {
 	public static void InitiateChainList(){
 		chainList = new List<Chain> ();
 	}
-
+    public static List<Chain> GetChainList() {
+        return chainList;
+    }
 	public static void AddChains(Casting casting)
 	{
-		Chain newChain = new Chain(casting);
-		chainList.Add(newChain);
-		SetChargeEffectToUnit(casting.Caster);
+        LogManager.Instance.Record(new AddChainLog(casting));
 	}
-	private static void SetChargeEffectToUnit(Unit unit)
+	public static void SetChargeEffectToUnit(Unit unit)
 	{
 		GameObject effect = Instantiate(Resources.Load("Effect/Waiting")) as GameObject;
 		unit.SetChargeEffect(effect);
@@ -25,12 +25,13 @@ public class ChainList : MonoBehaviour {
 	{
 		Chain myChain = chainList.Find(x => x.Caster == unit);
         if (myChain != null) {
-            chainList.Remove(myChain);
-            RemoveChargeEffectOfUnit(unit);
+            //chainList.Remove(myChain);
+            //RemoveChargeEffectOfUnit(unit);
+            //unit.HideChainIcon();
             LogManager.Instance.Record(new RemoveChainLog(unit));
         }
 	}
-	private static void RemoveChargeEffectOfUnit(Unit unit)
+	public static void RemoveChargeEffectOfUnit(Unit unit)
 	{
 		unit.RemoveChargeEffect();
 	}

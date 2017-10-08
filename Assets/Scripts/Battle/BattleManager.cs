@@ -70,8 +70,15 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if(!TurnManagerStarted){
-			StartCoroutine (InstantiateTurnManager ());
+		if(!TurnManagerStarted) {
+            LogManager logManager = LogManager.Instance;
+
+            logManager.Record(new BattleStartLog());
+            foreach (var unit in BattleData.unitManager.GetAllUnits())
+                unit.ApplyTriggerOnStart();
+            logManager.ExecuteLastEventLogAndConsequences();
+
+            StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;
 		}else {Debug.Log ("TurnManager Already Started.");}
 	}
@@ -89,7 +96,7 @@ public class BattleManager : MonoBehaviour{
 	public IEnumerator InstantiateTurnManager(){
 		if (BattleData.uiManager.startFinished) {
 			while(true){
-				yield return StartCoroutine(StartPhaseOnGameManager());
+                yield return StartCoroutine(StartPhaseOnGameManager());
 
 				if(BattleData.currentPhase == 1){
 					tutorialManager.gameObject.SetActive(true);
@@ -126,8 +133,11 @@ public class BattleManager : MonoBehaviour{
 		}
 	}
 
-	IEnumerator ActionAtTurn(Unit unit){
-		StartUnitTurn(unit);
+	IEnumerator ActionAtTurn(Unit unit) {
+        LogManager logManager = LogManager.Instance;
+        logManager.Record(new TurnStartLog(unit));
+        StartUnitTurn(unit);
+        logManager.ExecuteLastEventLogAndConsequences();
 
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
@@ -145,10 +155,7 @@ public class BattleManager : MonoBehaviour{
 	}
 	public void StartUnitTurn(Unit unit){
         LogManager logManager = LogManager.Instance;
-        logManager.Record(new TurnStartLog(unit));
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
-
-		Debug.Log(unit.GetNameKor() + "'s turn");
 
 		BattleData.SetSelectedUnit(unit);
 		BattleData.move = new BattleData.Move();
@@ -183,8 +190,6 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public static IEnumerator DestroyUnit(Unit unit, TrigActionType actionType){
-        LogManager logManager = LogManager.Instance;
-        logManager.Record(new DestroyUnitLog(unit));
 		BattleManager battleManager = BattleData.battleManager;
 
 		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
@@ -195,7 +200,7 @@ public class BattleManager : MonoBehaviour{
 		ChainList.RemoveChainOfThisUnit (unit);
 		RemoveAuraEffectFromUnit(unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
-        yield return BattleData.battleManager.StartCoroutine(BattleData.unitManager.DeleteDeadUnit(unit));
+        BattleData.unitManager.DeleteDeadUnit(unit);
 		BattleData.unitManager.DeleteRetreatUnit(unit);
 
 		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
@@ -231,16 +236,26 @@ public class BattleManager : MonoBehaviour{
 		return false;
 	}
 
-	public IEnumerator UpdateUnitsForDestroy(){
-		foreach(var unit in BattleData.unitManager.GetRetreatUnits()){
-			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Retreat));
-		}
-		foreach(var unit in BattleData.unitManager.GetDeadUnits()){
-			yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
-		}
-		if(BattleData.selectedUnit.CheckReach()){
-			yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
-		}
+	public void UpdateUnitsForDestroy() {
+        LogManager logManager = LogManager.Instance;
+        UnitManager unitManager = UnitManager.Instance;
+        foreach (var unit in unitManager.GetRetreatUnits()){
+			//yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Retreat));
+            logManager.Record(new UnitDestroyedLog(unit));
+            logManager.Record(new DestroyUnitLog(unit, TrigActionType.Retreat));
+        }
+		foreach(var unit in unitManager.GetDeadUnits()){
+            //yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
+            logManager.Record(new UnitDestroyedLog(unit));
+            logManager.Record(new DestroyUnitLog(unit, TrigActionType.Kill));
+        }
+        foreach (var unit in unitManager.GetAllUnits()) {
+            if (unit.CheckReach()) {
+                //yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
+                logManager.Record(new UnitDestroyedLog(unit));
+                logManager.Record(new DestroyUnitLog(unit, TrigActionType.Reach));
+            }
+        }
 	}
 
 	public static void MoveCameraToUnit(Unit unit){
@@ -255,10 +270,10 @@ public class BattleManager : MonoBehaviour{
 		if (obj == null)
 			return;
 		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-		MoveCameraToPosition (objPos);
-        //LogManager.Instance.Record(new CameraMoveLog(objPos));
+		//MoveCameraToPosition (objPos);
+        LogManager.Instance.Record(new CameraMoveLog(objPos));
 	}
-	private static void MoveCameraToPosition(Vector2 position)
+	public static void MoveCameraToPosition(Vector2 position)
 	{
 		Camera.main.transform.position = new Vector3(
 				position.x,
@@ -266,23 +281,11 @@ public class BattleManager : MonoBehaviour{
 				-10);	
 	}
 
-	public IEnumerator AtActionEnd(){
-		yield return StartCoroutine(UpdateUnitsForDestroy());
+	public void CheckBattleTriggers() {
 
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
-		BattleData.unitManager.ResetLatelyHitUnits();
-		BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-        BattleData.unitManager.ApplyTileBuffsAtActionEnd();
-        if (!IsSelectedUnitRetreatOrDie ()) {
-			yield return StartCoroutine (BattleData.unitManager.TriggerStatusEffectsAtActionEnd ());
-		}
-		BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
-		BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
-		/*BattleData.selectedUnit.UpdateStats();
-		FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);*/
-
-		//승리 조건이 충족되었는지 확인
-		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
+        //승리 조건이 충족되었는지 확인
+        BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		List<BattleTrigger> winTriggers = Checker.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
 		BattleTrigger.TriggerRelation winTrigRelation = Checker.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
 		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리
@@ -299,8 +302,10 @@ public class BattleManager : MonoBehaviour{
 	public UnityEvent readyCommandEvent;
 
 	public IEnumerator PrepareUnitActionAndGetCommand(){
+        LogManager logManager = LogManager.Instance;
 		while (BattleData.currentState == CurrentState.FocusToUnit){
 			Unit unit = BattleData.selectedUnit;
+            MoveCameraToPosition((Vector2)unit.gameObject.transform.position);
 
 			if (IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Destroy;
@@ -350,9 +355,8 @@ public class BattleManager : MonoBehaviour{
 
 			if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
-				BattleData.selectedUnit.ApplySnapshot();
-				yield return StartCoroutine(AtActionEnd());
-				BattleData.alreadyMoved = false;
+                logManager.Record(new MoveCancelLog(unit, BattleData.moveSnapshot));
+                BattleData.selectedUnit.ApplySnapshot();
 			}
 			// 길게 눌러서 유닛 상세정보창을 열 수 있다
 			else if (triggers.tileLongSelectedByUser.Triggered) {
@@ -377,7 +381,8 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
 				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
-				yield return StartCoroutine(MoveStates.MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count));
+                logManager.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
+                MoveStates.MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count);
 			}else if(triggers.skillSelected.Triggered){
 				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
@@ -392,12 +397,15 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
-					yield return StartCoroutine(Standby());
+                    LogManager.Instance.Record(new StandbyLog(unit));
+                    Standby(unit);
 				}else{
 					BattleData.currentState = CurrentState.RestAndRecover;
-					yield return StartCoroutine(RestAndRecover.Run());
+                    logManager.Record(new RestLog(unit));
+                    RestAndRecover.Run();
 				}
 			}
+            yield return logManager.ExecuteLastEventLogAndConsequences();
 		}
 		UIManager.Instance.HideActionButtons();
 	}
@@ -437,9 +445,8 @@ public class BattleManager : MonoBehaviour{
 
 	public void CallbackCancel() {triggers.cancelClicked.Trigger();}
 
-	public static IEnumerator Standby(){
-		BattleData.alreadyMoved = false;
-		yield return new WaitForSeconds(0.1f);
+	public static void Standby(Unit unit){
+        LogManager.Instance.Record(new WaitForSecondsLog(0.1f));
 	}
 
 	public void CallbackSkillSelect(ActiveSkill skill){
@@ -573,14 +580,16 @@ public class BattleManager : MonoBehaviour{
 
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
-
+        int phase = BattleData.currentPhase;
 		BattleTriggerManager.CheckBattleTrigger();
 		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
-		BattleData.unitManager.StartPhase(BattleData.currentPhase);
-        yield return StartCoroutine(BattleData.unitManager.ApplyEachHeal());
-		yield return StartCoroutine(BattleData.unitManager.ApplyEachDOT());
+        LogManager.Instance.Record(new PhaseStartLog(phase));
+        BattleData.unitManager.StartPhase(BattleData.currentPhase);
+        BattleData.unitManager.ApplyEachHeal();
+		BattleData.unitManager.ApplyEachDOT();
+        yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 
 		yield return new WaitForSeconds(0.5f);
 	}

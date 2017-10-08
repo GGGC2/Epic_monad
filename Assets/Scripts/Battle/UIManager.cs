@@ -113,22 +113,24 @@ public class UIManager : MonoBehaviour{
 	}
 
 	//전술 보너스 텍스트 표시
-	public void PrintDirectionBonus(Battle.DamageCalculator.AttackDamage attackDamage){
+	public void PrintDirectionBonus(DirectionCategory directionCategory, float bonus){
 		directionBonusObj.SetActive (true);
-		if (attackDamage.attackDirection == DirectionCategory.Side)
-			directionBonusObj.GetComponentInChildren<Text> ().text = "측면 공격 (x" + attackDamage.directionBonus + ")";
-		else if (attackDamage.attackDirection == DirectionCategory.Back)
-			directionBonusObj.GetComponentInChildren<Text> ().text = "후면 공격 (x" + attackDamage.directionBonus + ")";
-	}
+		if (directionCategory == DirectionCategory.Side)
+            directionBonusObj.GetComponentInChildren<Text>().text = "측면 공격 (x" + bonus + ")";
+		else if (directionCategory == DirectionCategory.Back)
+            directionBonusObj.GetComponentInChildren<Text>().text = "후면 공격 (x" + bonus + ")";
+    }
 	public void PrintCelestialBonus(float bonus){
-		celestialBonusObj.SetActive(true);
-		celestialBonusObj.GetComponentInChildren<Text>().text = "천체속성 (x" + bonus + ")";
+        celestialBonusObj.SetActive(true);
+        string text = "천체속성 (x" + bonus + ")";
+        celestialBonusObj.GetComponentInChildren<Text>().text = text;
 		// Invoke("ActiveFalseAtDelay", 0.5f);
 	}
 	public void PrintHeightBonus(float bonus){
 		heightBonusObj.SetActive(true);
-		heightBonusObj.GetComponentInChildren<Text>().text = "고저차 (x" + bonus + ")";
-	}
+        string text = "고저차 (x" + bonus + ")";
+        heightBonusObj.GetComponentInChildren<Text>().text = text;
+    }
 	public void PrintChainBonus(int chainCount){
 		float chainBonus;
 
@@ -141,14 +143,15 @@ public class UIManager : MonoBehaviour{
 		if (chainCount < 2)	return;
 
 		chainBonusObj.SetActive(true);
-		chainBonusObj.GetComponentInChildren<Text>().text = "연계" + chainCount + "단 (x" + chainBonus + ")";
-	}
+		string text = "연계" + chainCount + "단 (x" + chainBonus + ")";
+        chainBonusObj.GetComponentInChildren<Text>().text = text;
+    }
 	public void DeactivateAllBonusText(){
 		celestialBonusObj.SetActive(false);
 		chainBonusObj.SetActive(false);
 		directionBonusObj.SetActive(false);
 		heightBonusObj.SetActive(false);
-	}
+    }
 
 	public void TurnOnOnlyOneAction(int skillIndex){
 		for (int i = 0; i < 8; i++){
