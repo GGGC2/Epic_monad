@@ -90,7 +90,7 @@ public class LogManager : MonoBehaviour {
         LogDisplay lastEventLogDisplay = BattleData.logDisplayList[lastEventLogIndex];
         BattleData.logDisplayList.RemoveRange(lastEventLogIndex, numLog - lastEventLogIndex); //그 EventLog와, 그 Event로부터 발생한 모든 EffectLog를 삭제
 
-        return (EventLog)BattleData.logDisplayList[lastEventLogIndex].log;
+        return (EventLog)lastEventLogDisplay.log;
     }
     IEnumerator HandleAfterCastLog() {
         BattleData.currentState = CurrentState.FocusToUnit;

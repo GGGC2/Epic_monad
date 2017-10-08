@@ -37,6 +37,9 @@ public class HPChangeLog : EffectLog {
         else                    unit.currentHealth = result;
         yield return null;
     }
+    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
+        return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
+    } 
 }
 
 public class APChangeLog : EffectLog {
@@ -260,6 +263,21 @@ public class StatusEffectLog : EffectLog {
             }
         }
         yield return null;
+    }
+    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
+        if (statusEffect is UnitStatusEffect && statusEffect.IsOfType(StatusEffectType.Shield)) {
+            Unit unit = ((UnitStatusEffect)statusEffect).GetOwner();
+            float amount = afterAmount - beforeAmount;
+            if (type == StatusEffectChangeType.RemainAmountChange) {
+                if(amount > 0)  return new Battle.DamageCalculator.DamageInfo(unit, 0, amount);
+                else            return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
+            }
+            else if(type == StatusEffectChangeType.Attach) 
+                return new Battle.DamageCalculator.DamageInfo(unit, 0, statusEffect.GetAmountOfType(StatusEffectType.Shield));
+            else if (type == StatusEffectChangeType.Remove)
+                return new Battle.DamageCalculator.DamageInfo(unit, statusEffect.GetAmountOfType(StatusEffectType.Shield), 0);
+        }
+        return null;
     }
 }
 

@@ -18,7 +18,7 @@ namespace Battle.Turn {
 			Direction? beforeDirection = null;
 			Direction newDirection = selectedUnit.GetDirection ();
 
-			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
+			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
 
 			while (true) {
 				if (beforeDirection != newDirection) {
@@ -99,7 +99,7 @@ namespace Battle.Turn {
 						BattleData.currentState = CurrentState.ApplySkill;
                         logManager.Record(new CastLog(casting));
                         ApplyCasting (casting);
-					}else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
+                    } else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
 						if (CheckWaitChainPossible (casting)) {
 							BattleData.currentState = CurrentState.WaitChain;
                             logManager.Record(new ChainLog(casting));
@@ -108,7 +108,7 @@ namespace Battle.Turn {
 							BattleData.currentState = CurrentState.ApplySkill;
                             logManager.Record(new CastLog(casting));
                             ApplyCasting (casting);
-						}
+                        }
 					}else if(BattleData.triggers.skillSelected.Triggered){
 						battleManager.StartCoroutine(SkillSelected());
 						yield break;
@@ -145,7 +145,7 @@ namespace Battle.Turn {
 			TileManager.Instance.preSelectedMouseOverTile = null;
 			Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
 
-			allCalculatedTotalDamages = new Dictionary<Unit, DamageCalculator.DamageInfo> ();
+			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
 
 			while (true) {
 				Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, originalDirection);
@@ -242,7 +242,7 @@ namespace Battle.Turn {
 					BattleData.currentState = CurrentState.ApplySkill;
                     logManager.Record(new CastLog(casting));
                     ApplyCasting (casting);
-				}else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
+                } else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 					if (CheckWaitChainPossible (casting)) {
 						BattleData.currentState = CurrentState.WaitChain;
                         logManager.Record(new ChainLog(casting));
@@ -251,17 +251,13 @@ namespace Battle.Turn {
 						BattleData.currentState = CurrentState.ApplySkill;
                         logManager.Record(new CastLog(casting));
                         ApplyCasting (casting);
-					}
-				}else if(BattleData.triggers.skillSelected.Triggered){
-					BM.StartCoroutine(SkillSelected());
-					//yield break;
+                    }
+				}else if(BattleData.triggers.skillSelected.Triggered) {
+                    BM.StartCoroutine(SkillSelected());
+					yield break;
 				}
             }
         }
-
-
-		static Dictionary<Unit, DamageCalculator.DamageInfo> allCalculatedTotalDamages;
-
         static bool CheckApplyPossibleToTargetTiles(Tile targetTile, Casting casting) {
             ActiveSkill skill = casting.Skill;
             if((!(skill.GetSkillType() == SkillType.Point) || casting.FirstRange.Contains(targetTile)) && skill.SkillLogic.CheckApplyPossibleToTargetTiles(casting))
@@ -269,22 +265,40 @@ namespace Battle.Turn {
             else return false;
         }
 
+        
+        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> allCalculatedTotalDamages;
+        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> CullPreviewDamageFromEventLog(EventLog eventLog) {
+            Dictionary<Unit, List<DamageCalculator.DamageInfo>> result = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
+            foreach(var effectLog in eventLog.getEffectLogList()) {
+                DamageCalculator.DamageInfo damageInfo = null;
+                if (effectLog is HPChangeLog)               damageInfo = ((HPChangeLog)effectLog).GetDamageInfo();
+                else if (effectLog is StatusEffectLog)      damageInfo = ((StatusEffectLog)effectLog).GetDamageInfo();
+                if (damageInfo != null) {
+                    Unit unit = damageInfo.target;
+                    if (!result.ContainsKey(unit))  result.Add(unit, new List<DamageCalculator.DamageInfo>());
+                    result[unit].Add(damageInfo);
+                }
+            }
+            return result;
+        }
 		static void DisplayPreviewDamage(Casting casting){
-			//데미지 미리보기
-			allCalculatedTotalDamages = DamageCalculator.CalculateAllPreviewTotalDamages(casting);
-			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
-				kv.Key.healthViewer.gameObject.SetActive(true);
-				if(kv.Value.damage > 0) kv.Key.GetComponentInChildren<HealthViewer>().PreviewDamageAmount((int)kv.Value.damage);
-				else kv.Key.GetComponentInChildren<HealthViewer>().PreviewRecoverAmount((int)(-kv.Value.damage));
+            //데미지 미리보기
+            LogManager.Instance.Record(new CastLog(casting));                   // EventLog를 남긴다.
+            ApplyCasting(casting);                                              // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
+            EventLog lastEventLog = LogManager.Instance.PopLastEventLog();      // 아까 남겼던 EventLog로 인해 생긴 로그들을 다 돌려받는다.
+			allCalculatedTotalDamages = CullPreviewDamageFromEventLog(lastEventLog);    // EventLog로부터 데미지와 연관된 부분만 추린다.
+			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+                kv.Key.healthViewer.PreviewDamageInfoList(kv.Value);
 			}
 		}
 		static void HidePreviewDamage(){
 			// 데미지 미리보기 해제.
-			foreach (KeyValuePair<Unit, DamageCalculator.DamageInfo> kv in allCalculatedTotalDamages) {
-				if (kv.Key.GetComponentInChildren<HealthViewer> () != null) {
-					kv.Key.GetComponentInChildren<HealthViewer> ().CancelPreview ();
+			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+                Unit unit = kv.Key;
+				if (unit.GetComponentInChildren<HealthViewer> () != null) {
+					unit.GetComponentInChildren<HealthViewer> ().CancelPreview ();
 				}
-				kv.Key.CheckAndHideObjectHealth();
+				unit.CheckAndHideObjectHealth();
 			}
 		}
 
@@ -301,8 +315,6 @@ namespace Battle.Turn {
                 logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
             }
 			ApplyAllTriggeredChains(casting);
-            
-			BattleData.currentState = CurrentState.FocusToUnit;
         }
 
 		public static void WaitChain (Casting casting) {
@@ -387,7 +399,6 @@ namespace Battle.Turn {
 					Tile focusedTile = chain.SecondRange [0];
 					BattleManager.MoveCameraToTile (focusedTile);
 				}
-				BattleData.currentState = CurrentState.ApplySkill;
 				chain.Cast (chainCombo);
 				//BattleData.uiManager.chainBonusObj.SetActive(false);
                 LogManager.Instance.Record(new PrintBonusTextLog("Chain", 0, false));
