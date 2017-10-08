@@ -5,7 +5,9 @@ using System.Collections;
 
 namespace Battle.Skills {
     class Grenev_1_m_SkillLogic : BaseSkillLogic {
-		public override bool CheckApplyPossibleToTargetTiles(Unit caster, List<Tile> targetTiles) {
+		public override bool CheckApplyPossibleToTargetTiles(Casting casting) {
+            List<Tile> targetTiles = casting.RealEffectRange;
+            Unit caster = casting.Caster;
 			TileManager tileManager = BattleData.tileManager;
 			foreach(Tile tile in targetTiles){
 				if(tile.IsUnitOnTile()) {

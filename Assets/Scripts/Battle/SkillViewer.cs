@@ -38,7 +38,7 @@ public class SkillViewer : SkillUI{
 	public CallerType caller;
 
 	void OnDisable(){
-		Debug.Log("Why Disabled?");
+		//Debug.Log("Why Disabled?");
 	}
 	public void Initialize(){
 		viewerNameText.text = "";
@@ -127,7 +127,7 @@ public class SkillViewer : SkillUI{
 	}
 
 	void DisplaySecondRange(ActiveSkill skill){
-		Debug.Log("Show SecondRange.");
+		//Debug.Log("Show SecondRange.");
 		for (int i = cells.Count - 1; i >= 0; i--) {
 			Cell cell = cells [i];
 			cells.Remove (cell);
