@@ -132,6 +132,15 @@ public class DialogueManager : MonoBehaviour{
 		}else if(Command == DialogueData.CommandType.FI){
 			ResetPortraits();
 			StartCoroutine(sceneLoader.Fade(false));
+		}else if(Command == DialogueData.CommandType.Gray){
+			Material grayscale=Resources.Load<Material> ("Shader/grayscale");
+			GameObject.Find ("Background").GetComponent<Image> ().material = grayscale;
+			leftPortrait.material = grayscale;
+			rightPortrait.material = grayscale;
+		}else if(Command == DialogueData.CommandType.Colorful){
+			GameObject.Find ("Background").GetComponent<Image> ().material = null;
+			leftPortrait.material = null;
+			rightPortrait.material = null;
 		}else if(Command == DialogueData.CommandType.Glos){
 			SetGlossaryLevel(data);
 		}else
