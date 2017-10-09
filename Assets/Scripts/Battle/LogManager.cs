@@ -71,14 +71,17 @@ public class LogManager : MonoBehaviour {
         Log log = logDisplay.log;
         Log lastEventLog = GetLastEventLogDisplay().log;
 
-        lastEventLog.executed = true;
-        yield return lastEventLog.Execute();
+        if (!lastEventLog.executed) {
+            lastEventLog.executed = true;
+            yield return lastEventLog.Execute();
 
-        if (log is CastLog)             yield return HandleAfterCastLog();
-        else if (log is ChainLog)       HandleAfterChainLog();
-        else if (log is MoveLog)        HandleAfterMoveLog();
-        else if (log is StandbyLog)     HandleAfterStandbyLog();
-        else if (log is MoveCancelLog)  HandleAfterMoveCancelLog();
+            if (log is CastLog) yield return HandleAfterCastLog();
+            else if (log is ChainLog) HandleAfterChainLog();
+            else if (log is MoveLog) HandleAfterMoveLog();
+            else if (log is StandbyLog) HandleAfterStandbyLog();
+            else if (log is MoveCancelLog) HandleAfterMoveCancelLog();
+        }
+        yield return null;
     }
     void GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
         TileManager.Instance.CheckAllTraps();
