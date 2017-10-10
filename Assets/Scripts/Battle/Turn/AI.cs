@@ -219,8 +219,9 @@ namespace Battle.Turn{
 			}
 
 			if (!_AIData.IsActive ()) {
-				yield return battleManager.ToDoBeforeAction ();
-				state = State.SkipTurn;
+				//yield return battleManager.ToDoBeforeAction ();
+				//state = State.SkipTurn;
+				state = State.MoveToBestCasting;
 			} else if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
@@ -407,7 +408,7 @@ namespace Battle.Turn{
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby ();
 			} else {
-				TakeRest ();
+				yield return TakeRest ();
 			}
 			state = State.EndTurn;
 		}
@@ -506,17 +507,20 @@ namespace Battle.Turn{
 			yield return new WaitForSeconds (0.5f);
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
-            MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
+			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 		}
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 		}
 		IEnumerator Standby(){
 			yield return new WaitForSeconds(0.2f);
 		}
-		void TakeRest() {
+		IEnumerator TakeRest() {
             LogManager.Instance.Record(new RestLog(unit));
-            RestAndRecover.Run();
+			RestAndRecover.Run();
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 		}
 		IEnumerator SkipTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);

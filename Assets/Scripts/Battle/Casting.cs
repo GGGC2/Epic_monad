@@ -29,6 +29,16 @@ public class Casting {
 	public List<Tile> RealEffectRange{
 		get { return Skill.GetTilesInRealEffectRange (Location); }
 	}
+    public List<Unit> Targets {
+        get {
+            List<Unit> targets = new List<Unit>();
+            foreach(var tile in RealEffectRange) {
+                if(tile.IsUnitOnTile())
+                    targets.Add(tile.GetUnitOnTile());
+            }
+            return targets;
+        }
+    }
 	public int RequireAP{
 		get { return Caster.GetActualRequireSkillAP(Skill); }
 	}

@@ -75,7 +75,7 @@ public class EventTrigger: IEventTrigger{
 			foreach (var trigger in triggers){
 				if (trigger.Triggered) {
 					looping = false;
-					break;
+                    break;
 				}
 			}
 			yield return null;

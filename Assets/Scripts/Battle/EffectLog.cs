@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Collections;
 
 public class EffectLog : Log {
-    public virtual bool isValid() {
+    public EventLog parentEvent;
+    public virtual bool isMeaningless() {
         return true;
     }
 }
@@ -39,7 +40,7 @@ public class HPChangeLog : EffectLog {
         else                    unit.currentHealth = result;
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return amount != 0;
     }
     public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
@@ -76,7 +77,7 @@ public class APChangeLog : EffectLog {
 
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return amount != 0;
     }
 }
@@ -121,7 +122,7 @@ public class CoolDownLog : EffectLog {
         caster.GetUsedSkillDict().Add(skillName, skillCooldown);
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return skillCooldown != 0;
     }
 }
@@ -195,15 +196,12 @@ public class RemoveChainLog : EffectLog {
 }
 
 public class StatusEffectLog : EffectLog {
-    StatusEffect statusEffect;  //typeof 를 통해 UnitStatusEffect인지 tileStatusEffect인지 알 수 있고,
+    public StatusEffect statusEffect;  //typeof 를 통해 UnitStatusEffect인지 tileStatusEffect인지 알 수 있고,
                                 //owner(또는 ownerTile) 변수를 통해 이 statusEffect를 가진 Object를 참조할 수 있음
-    StatusEffectChangeType type;
-    int index;
-    float beforeAmount;
-    float afterAmount;
-    public void setAfterAmount(int afterAmount) {
-        this.afterAmount = afterAmount;
-    }
+    public StatusEffectChangeType type;
+    public int index;
+    public float beforeAmount;
+    public float afterAmount;
     public StatusEffectLog(StatusEffect statusEffect, StatusEffectChangeType type, int index, float beforeAmount, float afterAmount) {
         this.statusEffect = statusEffect;
         this.type = type;
@@ -236,7 +234,7 @@ public class StatusEffectLog : EffectLog {
             else if (type == StatusEffectChangeType.RemainPhaseChange)
                 text += "남은 페이즈 ";
             else if (type == StatusEffectChangeType.RemainStackChange)
-                text += name + "의 중첩 ";
+                text += " 중첩 ";
             text += beforeAmount + " -> " + afterAmount;
         }
         return text;
@@ -274,6 +272,7 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
+                    Debug.Log(owner.GetNameKor() + " " + unitStatusEffect.GetDisplayName() + " " + "부착");
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
@@ -293,10 +292,10 @@ public class StatusEffectLog : EffectLog {
         }
         yield return null;
     }
-    public override bool isValid() {
+    /*public override bool isValid() {  //statusEffect의 Validity 체크는 LogManager에서 함
         return !(type != StatusEffectChangeType.Attach && type != StatusEffectChangeType.Remove
                 && beforeAmount == afterAmount);
-    }
+    }*/
     public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
         if (statusEffect is UnitStatusEffect && statusEffect.IsOfType(StatusEffectType.Shield)) {
             Unit unit = ((UnitStatusEffect)statusEffect).GetOwner();
@@ -337,7 +336,7 @@ public class PositionChangeLog : EffectLog {
         unit.notMovedTurnCount = 0;
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return beforePos != afterPos;
     }
 }
@@ -355,7 +354,7 @@ public class AISetActiveLog : EffectLog {
         unit.GetComponent<AIData>().isActive = true;
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return !unit.GetComponent<AIData>().isActive;
     }
 }
@@ -373,7 +372,7 @@ public class CameraMoveLog : EffectLog {
         BattleManager.MoveCameraToPosition(position);
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return !(Camera.main.transform.position == new Vector3(position.x, position.y, -10));
     }
 }
@@ -487,7 +486,7 @@ public class AddLatelyHitInfoLog : EffectLog {
         unit.GetLatelyHitInfos().Add(hitInfo);
         yield return null;
     }
-    public override bool isValid() {
+    public override bool isMeaningless() {
         return !(hitInfo == null);
     }
 }
