@@ -36,11 +36,10 @@ namespace Battle.Turn {
 					SkillLocation location = new SkillLocation (unitPos, targetTile, newDirection);
 					selectedSkill.SetRealTargetTileForSkillLocation (location);
 					Casting casting = new Casting (selectedUnit, selectedSkill, location);
-					List<Tile> secondRange = casting.SecondRange;
-					BattleData.tileManager.PaintTiles(secondRange, TileColor.Blue);
 
 					List<Tile> realEffectRange = casting.RealEffectRange;
-					if (CheckApplyPossibleToTargetTiles(targetTile, casting))
+                    BattleData.tileManager.PaintTiles(realEffectRange, TileColor.Blue);
+                    if (CheckApplyPossibleToTargetTiles(targetTile, casting))
 						DisplayPreviewDamage (casting);
 				}
 				yield return null;

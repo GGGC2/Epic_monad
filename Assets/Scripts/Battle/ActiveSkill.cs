@@ -126,20 +126,17 @@ public class ActiveSkill : Skill{
 	}
 	public List<Tile> GetTilesInSecondRange(SkillLocation skillLocation)
 	{
-		List<Tile> secondRange;
+		List<Tile> secondRange = new List<Tile>();
 		if (skillLocation.TargetTile != null) {
-			secondRange = BattleData.tileManager.GetTilesInRange (secondRangeForm,
-				skillLocation.TargetPos,
-				secondMinReach,
-				secondMaxReach,
-				secondWidth,
-				skillLocation.Direction);
-			if (skillType == SkillType.Auto) {
-				secondRange.Remove (skillLocation.TargetTile);
-			}
-		}
-		else{
-			secondRange=new List<Tile>();
+            secondRange = BattleData.tileManager.GetTilesInRange(secondRangeForm,
+                skillLocation.TargetPos,
+                secondMinReach,
+                secondMaxReach,
+                secondWidth,
+                skillLocation.Direction);
+            if (skillType == SkillType.Auto) {
+                secondRange.Remove(skillLocation.TargetTile);
+            }
 		}
 		return secondRange;
 	}
