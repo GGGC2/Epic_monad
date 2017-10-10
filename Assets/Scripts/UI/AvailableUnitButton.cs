@@ -56,8 +56,8 @@ public class AvailableUnitButton : MonoBehaviour {
 		BattleReadyRightPanel.RecentButton = this;
 		BattleReadyRightPanel.unitName.text = UnitInfo.ConvertToKoreanFullName(nameString);
 		if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Party){
-			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
 			SelectUnitIfUnselected();
+			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
 		}else if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Ether){
 			ReadyPanel.SetPanelType(BattleReadyPanel.PanelType.Ether);
 		}

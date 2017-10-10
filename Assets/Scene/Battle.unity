@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -959,6 +959,26 @@ Prefab:
       propertyPath: m_Pivot.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114897608346207712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1819327919}
+    - target: {fileID: 114897608346207712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartTurnManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 114897608346207712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1897022874}
+    - target: {fileID: 114897608346207712, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: DisablePlacedUnitCheckUI
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
@@ -1031,6 +1051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f2ff02d437344a13910d89640e7e60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startFinished: 0
   unitPrefab: {fileID: 150070, guid: fa2ee4f44b516443d8f2b2288c1f8e3b, type: 2}
   units: []
 --- !u!4 &1806072435
@@ -1121,6 +1142,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6185921e0846f4b0aacdb5dcba82741d, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1819327919 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114722528710428942, guid: 6185921e0846f4b0aacdb5dcba82741d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1819327918}
+  m_Script: {fileID: 11500000, guid: 983715c2feff24b5cb0c10c6df350860, type: 3}
 --- !u!1 &1835291129
 GameObject:
   m_ObjectHideFlags: 0

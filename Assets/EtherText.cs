@@ -10,6 +10,10 @@ public class EtherText : MonoBehaviour{
 
 	public void Update(){
 		SelectedUnit unit = Manager.selectedUnits.Find(item => item.name == Manager.ReadyPanel.RightPanel.RecentButton.nameString);
-		etherText.text = "에테르 " + unit.CurrentEther + "/" + (PartyData.MaxEther);
+		if(unit == null){
+			etherText.text = "";
+		}else{
+			etherText.text = "에테르 " + unit.CurrentEther + "/" + (PartyData.MaxEther);
+		}
 	}
 }

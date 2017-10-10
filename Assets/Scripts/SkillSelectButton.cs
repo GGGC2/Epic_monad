@@ -36,12 +36,13 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
 
             var RM = FindObjectOfType<ReadyManager>();
             SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);
-            //Debug.Assert(owner != null, mySkill.korName + "'s owner is NULL!");
-            if(owner.selectedSkills.Exists(skill => skill == mySkill)){
-                selected = true;
-            }else if(owner.CurrentEther + mySkill.ether <= PartyData.MaxEther){
-                selected = false;
-            }
+            if(owner != null){
+                if(owner.selectedSkills.Exists(skill => skill == mySkill)){
+                   selected = true;
+                }else if(owner.CurrentEther + mySkill.ether <= PartyData.MaxEther){
+                    selected = false;
+                }
+            }            
         }
 		name = "SkillSelectButton(" + level + "," + row + ")";
     }

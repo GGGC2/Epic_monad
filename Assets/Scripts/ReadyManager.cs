@@ -12,10 +12,6 @@ public class SelectedUnit{
 
 	public SelectedUnit(string name){
 		this.name = name;
-		Skill unique = Skill.Find(Parser.GetSkills(), name, 0, 0);
-		if(unique != null){
-			selectedSkills.Add(unique);
-		}
 	}
 
 	public int CurrentEther{

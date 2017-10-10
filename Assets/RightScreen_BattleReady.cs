@@ -51,33 +51,43 @@ public class RightScreen_BattleReady : MonoBehaviour {
         Utility.SetElementImage(elementImage, UnitInfo.GetElement(unitEngName));
         Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(unitEngName));
 
-		SearchSkillList(unitEngName);
-		SetSkillToDetailInfoPanel();
+		//GetSelectedSkillList(unitEngName);
+		SetSkillToDetailInfoPanel(unitEngName);
 	}
 
 	List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 
-	public void SetSkillToDetailInfoPanel() {
+	public void SetSkillToDetailInfoPanel(string unitEngName) {
 		skillButtons.ForEach(button => button.gameObject.SetActive(true));
 
-		// 고유특성 (렙제 0인 특성) 은 무조건 앞으로
-		if (passiveSkillList.Any(pSkill => pSkill.requireLevel == 0)) {
-			PassiveSkill uniquePassive = passiveSkillList.Find(pSkill => pSkill.requireLevel == 0);
-			skillButtons.First().Initialize(uniquePassive);
-		}else{
-			skillButtons.First().gameObject.SetActive(false);
+		var RM = FindObjectOfType<ReadyManager>();
+        SelectedUnit unit = RM.selectedUnits.Find(selectedUnit => selectedUnit.name == unitEngName);
+		if(unit == null){
+			skillButtons.ForEach(button => button.gameObject.SetActive(false));
+			return;
 		}
-		
-		// 나머지 스킬을 액티브 -> 패시브 순서로 표시
+
+		// 고유 특성을 맨 앞으로
+		Skill uniquePassive = Parser.GetSkillByUnit(unitEngName).Find(pSkill => pSkill.requireLevel == 0);
+		skillButtons.First().Initialize(uniquePassive);
+				
+		// 나머지 스킬 표시
+		Debug.Log("selectedSkills : " + unit.selectedSkills.Count);
 		for (int i = 1; i <= 10; i++){
-            if (i <= activeSkillList.Count){
+			if(i <= unit.selectedSkills.Count){
+				skillButtons[i].Initialize(unit.selectedSkills[i-1]);
+			}else{
+				skillButtons[i].gameObject.SetActive(false);
+			}
+
+            /*if (i <= activeSkillList.Count){
                 skillButtons[i].Initialize(activeSkillList[i-1]);
             }else if(i < activeSkillList.Count + passiveSkillList.Count){
                 skillButtons[i].Initialize(passiveSkillList[i - activeSkillList.Count]);
             }else{
                 skillButtons[i].gameObject.SetActive(false);
-            }
+            }*/
         }
 
 		// 스킬 상세설명 초기화
@@ -86,8 +96,8 @@ public class RightScreen_BattleReady : MonoBehaviour {
 		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 
-	public void SearchSkillList(string nameString) {
-        int level = GameData.PartyData.level;
+	public void GetSelectedSkillList(string unitEngName) {
+        /*int level = GameData.PartyData.level;
 		if (level == 0) level = testLevel;
 
 		activeSkillList = new List<ActiveSkill>();
@@ -116,7 +126,10 @@ public class RightScreen_BattleReady : MonoBehaviour {
                 if (activeSkill.owner == "default" && activeSkill.requireLevel <= level)
                     activeSkillList.Add(activeSkill);
             }
-		}
+		}*/
+		var RM = FindObjectOfType<ReadyManager>();
+        SelectedUnit unit = RM.selectedUnits.Find(selectedUnit => selectedUnit.name == unitEngName);
+		
     }
 
 	void Awake () {
