@@ -77,7 +77,7 @@ luvericha	0	43	응급처치	3	ABCD	None	0	0	None	0	0
 curi	0	0	정제	0	공격할 때 모든 대상의 원소속성이 같으면 '<color=#ff9999ff>정제</color>(<color=red>공격력 +5%</color>, 5중첩까지 가능)' 효과를 얻고, 서로 다른 원소속성의 유닛들을 동시에 공격하면 모든 중첩이 사라집니다.	None	0	0	None	0	0
 curi	11	1	호기심	1	전투를 시작한 후 초반 5페이즈 동안 공격력이 <color=red>15%</color> 높아집니다.	None	0	0	None	0	0
 curi	9	8	신속 반응	1	불 속성 타일에 있는 동안 <color=cyan>속도</color>가 <color=cyan>20</color> 높아집니다.	None	0	0	None	0	0
-curi	7	8	가연성 부착물	2	<color=yellow>(강화 : 수상한 덩어리)</color>NLNL대상이 불 속성 타일에 있으면 <color=#ff9999ff>반경 1타일</color>에 <color=red>0.3x공격력</color>(<color=red>VALUE1</color>)의 피해를 추가로 줍니다.	Power	0.3	0	None	0	0
+curi	7	8	가연성 부착물	2	<color=yellow>(강화 : 수상한 덩어리)</color>^^대상이 불 속성 타일에 있으면 <color=#ff9999ff>반경 1타일</color>에 <color=red>0.3x공격력</color>(<color=red>VALUE1</color>)의 피해를 추가로 줍니다.	Power	0.3	0	None	0	0
 curi	0	15	동적 평형	1	ABCD	None	0	0	None	0	0
 curi	0	15	조연성 부착물	2	ABCD	None	0	0	None	0	0
 curi	0	15	환원	3	ABCD	None	0	0	None	0	0

@@ -482,4 +482,15 @@ public class Utility : MonoBehaviour {
 		}
 		return newList;
 	}
+
+	public static string ExplainTextReplace(string input){
+		return input.Replace("^", Environment.NewLine)
+					.Replace("회피", "<color=orange>회피</color>")
+					.Replace("불", "<color=red>불</color>")
+					.Replace("물", "<color=cyan>물</color>")
+					.Replace("나무", "<color=green>나무</color>")
+					.Replace("금속", "<color=gray>금속</color>")
+					.Replace("속도", "<color=cyan>속도</color>")
+					.Replace("사기", "<color=cyan>속도</color>");
+	}
 }
