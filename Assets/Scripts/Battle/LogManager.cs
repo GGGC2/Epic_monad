@@ -18,9 +18,12 @@ public class LogManager : MonoBehaviour {
         if (log is EffectLog) {
             if(!((EffectLog)log).isMeaningless())   return;
             if(log is StatusEffectLog && !CheckToOffset(((StatusEffectLog)log)))    return;
-            EventLog lastEventLog = (EventLog)GetLastEventLogDisplay().log;
-            lastEventLog.getEffectLogList().Add((EffectLog)log);
-            ((EffectLog)log).parentEvent = lastEventLog;
+            //스테이지 동작을 위해 임시로 if문 처리. 만약 이 방법이 맞으면 주석 지울 것
+            if(GetLastEventLogDisplay() != null){
+                EventLog lastEventLog = (EventLog)GetLastEventLogDisplay().log;
+                lastEventLog.getEffectLogList().Add((EffectLog)log);
+                ((EffectLog)log).parentEvent = lastEventLog;
+            }
         }
 
         LogDisplay logDisplay = Instantiate(logDisplayPrefab).GetComponent<LogDisplay>();

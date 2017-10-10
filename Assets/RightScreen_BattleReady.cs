@@ -7,8 +7,7 @@ using GameData;
 using System.Linq;
 using UnityEngine.EventSystems;
 
-public class DetailInfoPanelInBattleReady : MonoBehaviour {
-
+public class RightScreen_BattleReady : MonoBehaviour {
 	public Image unitImage;
 	public Text unitName;
 	public Text hpText;
@@ -33,25 +32,26 @@ public class DetailInfoPanelInBattleReady : MonoBehaviour {
 
 	readonly int testLevel = 30;
 		
-	public void SetCommonUnitInfoUI(string nameString){
-		unitImage.sprite = Utility.IllustOf(nameString);
-		string hpStatText = UnitInfo.GetStat(nameString, Stat.MaxHealth).ToString();
+	public void SetCommonUnitInfoUI(string unitEngName){
+		unitName.text = UnitInfo.ConvertToKoreanFullName(unitEngName);
+		unitImage.sprite = Utility.IllustOf(unitEngName);
+		string hpStatText = UnitInfo.GetStat(unitEngName, Stat.MaxHealth).ToString();
 		hpText.text = hpStatText + " / " + hpStatText;
-		int Agility = UnitInfo.GetStat(nameString, Stat.Agility);
+		int Agility = UnitInfo.GetStat(unitEngName, Stat.Agility);
 		int level = PartyData.level;
 		if (level == 0) level = testLevel; // 테스트를 위해 추가.
 		apText.text = level + 60 + (Agility / 2) + " (+" + Agility + ")";
 		
-		powerText.text = UnitInfo.GetStat(nameString, Stat.Power).ToString();
-		defenseText.text = UnitInfo.GetStat(nameString, Stat.Defense).ToString();
-		resistText.text = UnitInfo.GetStat(nameString, Stat.Resistance).ToString();
-		speedText.text = "100"; // 속도 기본값은 무조건 100
+		powerText.text = UnitInfo.GetStat(unitEngName, Stat.Power).ToString();
+		defenseText.text = UnitInfo.GetStat(unitEngName, Stat.Defense).ToString();
+		resistText.text = UnitInfo.GetStat(unitEngName, Stat.Resistance).ToString();
+		speedText.text = "100"; // 사기 기본값은 무조건 100
 
-		Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(nameString));
-        Utility.SetElementImage(elementImage, UnitInfo.GetElement(nameString));
-        Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
+		Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(unitEngName));
+        Utility.SetElementImage(elementImage, UnitInfo.GetElement(unitEngName));
+        Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(unitEngName));
 
-		SearchSkillList(nameString);
+		SearchSkillList(unitEngName);
 		SetSkillToDetailInfoPanel();
 	}
 

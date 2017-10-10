@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameData;
@@ -6,7 +7,7 @@ using GameData;
 public class BattleReadyPanel : MonoBehaviour{
 	public enum PanelType{Ether, Party, Stage}
 	public PanelType panelType;
-	public DetailInfoPanelInBattleReady RightPanel;
+	public RightScreen_BattleReady RightPanel;
 	public SkillViewer skillViewer;
 	public List<AvailableUnitButton> Buttons;
 	public GameObject UnitPart;
@@ -40,16 +41,23 @@ public class BattleReadyPanel : MonoBehaviour{
 			button.RightPanel = RightPanel;
 		});
 
-		Reset();
+		SetPanelType(PanelType.Party);
 
 		if(SceneData.stageNumber < Setting.unitSelectOpenStage){
+			transform.Find("TopButtons").Find("PartySelect").gameObject.SetActive(false);
+			transform.Find("TopButtons").Find("Ether").gameObject.SetActive(false);
 			Buttons.ForEach(button => button.SetUnitInfoToDetailPanel());
-			panelType = PanelType.Ether;
-			Reset();
+			SetPanelType(PanelType.Ether);
 		}
 	}
 
-	public void Reset(){
+	//이 함수는 TopButtons에서 사용한다.
+	public void SetPanelType(string typeName){
+		SetPanelType((PanelType)Enum.Parse(typeof(PanelType), typeName));
+	}
+
+	public void SetPanelType(PanelType type){
+		panelType = type;
 		if(panelType == PanelType.Party){
 			UnitPart.SetActive(true);
 			SkillPart.SetActive(false);

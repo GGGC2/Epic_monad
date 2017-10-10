@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using GameData;
 
 public class SkillSelectButton : SkillUI, IPointerDownHandler{
-    public DetailInfoPanelInBattleReady RightPanel;
+    public RightScreen_BattleReady RightPanel;
     public int row = 0;
     public int level = 0;
     bool selected = false;
@@ -36,6 +36,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
 
             var RM = FindObjectOfType<ReadyManager>();
             SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);
+            //Debug.Assert(owner != null, mySkill.korName + "'s owner is NULL!");
             if(owner.selectedSkills.Exists(skill => skill == mySkill)){
                 selected = true;
             }else if(owner.CurrentEther + mySkill.ether <= PartyData.MaxEther){

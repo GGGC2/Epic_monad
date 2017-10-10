@@ -14,7 +14,7 @@ public class AvailableUnitButton : MonoBehaviour {
 	public string nameString; // 영어이름: 유닛정보 찾을때 필요
 
 	public BattleReadyPanel ReadyPanel;
-	public DetailInfoPanelInBattleReady BattleReadyRightPanel; //오른쪽 절반 화면(RightScreen)을 담당
+	public RightScreen_BattleReady BattleReadyRightPanel; //오른쪽 절반 화면(RightScreen)을 담당
 	ReadyManager readyManager;
 
 	void Awake (){
@@ -59,7 +59,7 @@ public class AvailableUnitButton : MonoBehaviour {
 			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
 			SelectUnitIfUnselected();
 		}else if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Ether){
-			ReadyPanel.Reset();
+			ReadyPanel.SetPanelType(BattleReadyPanel.PanelType.Ether);
 		}
 	}
 
