@@ -56,7 +56,7 @@ namespace Battle.Turn {
             ActiveSkill selectedSkill = BattleData.selectedSkill;
             LogManager logManager = LogManager.Instance;
 
-            while (true) {
+            while (BattleData.currentState == CurrentState.SelectSkillApplyDirection) {
                 BattleData.isWaitingUserInput = true;
                 //마우스 방향을 돌릴 때마다 그에 맞춰서 빨간 범위 표시도 업데이트하고 유닛 시선방향 돌리고 데미지 프리뷰와 2차범위 표시도 업데이트
 				var updateRedArea = UpdateRangeSkillMouseDirection();
@@ -68,7 +68,6 @@ namespace Battle.Turn {
                     BattleData.triggers.rightClicked, BattleData.triggers.cancelClicked, BattleData.triggers.skillSelected,
 					BattleData.triggers.directionSelectedByUser, BattleData.triggers.directionLongSelectedByUser
                 ));
-
                 BattleData.battleManager.StopCoroutine(updateRedArea);
                 BattleData.isWaitingUserInput = false;
 
@@ -108,13 +107,8 @@ namespace Battle.Turn {
                             ApplyCasting (casting);
                         }
 					}else if(BattleData.triggers.skillSelected.Triggered){
-						battleManager.StartCoroutine(SkillSelected());
-						yield break;
+						yield return battleManager.StartCoroutine(SkillSelected());
 					}
-                }
-
-                if (BattleData.currentState != CurrentState.SelectSkillApplyDirection) {
-					yield break;
                 }
             }
         }
@@ -187,11 +181,7 @@ namespace Battle.Turn {
             Direction beforeDirection = originalDirection;
             Unit selectedUnit = BattleData.selectedUnit;
             LogManager logManager = LogManager.Instance;
-
-            if (BattleData.currentState == CurrentState.FocusToUnit){
-                yield break;
-            }
-
+            
             while (BattleData.currentState == CurrentState.SelectSkillApplyPoint) {
                 Vector2 selectedUnitPos = BattleData.selectedUnit.GetPosition();
 
@@ -251,8 +241,7 @@ namespace Battle.Turn {
                         ApplyCasting (casting);
                     }
 				}else if(BattleData.triggers.skillSelected.Triggered) {
-                    BM.StartCoroutine(SkillSelected());
-					yield break;
+                    yield return BM.StartCoroutine(SkillSelected());
 				}
             }
         }
@@ -332,7 +321,7 @@ namespace Battle.Turn {
             logManager.Record(new AddChainLog(casting));
 			//ChainList.AddChains(casting);
 			BattleData.selectedSkill = null;
-            logManager.Record(new WaitForSecondsLog(0.5f));
+            logManager.Record(new WaitForSecondsLog(0.3f));
 		}
 
 		//연계'대기' 가능한 상태인가?
@@ -387,8 +376,6 @@ namespace Battle.Turn {
 			List<Chain> allTriggeredChains = ChainList.GetAllChainTriggered (casting);
 			int chainCombo = allTriggeredChains.Count;
 
-			BattleData.uiManager.PrintChainBonus (chainCombo);
-
 			// 발동되는 모든 시전을 순서대로 실행
 			foreach (var chain in allTriggeredChains) {
 				if (chain.SecondRange.Count > 0) {
@@ -396,9 +383,10 @@ namespace Battle.Turn {
 					BattleManager.MoveCameraToTile (focusedTile);
 				}
 				chain.Cast (chainCombo);
-				//BattleData.uiManager.chainBonusObj.SetActive(false);
-                LogManager.Instance.Record(new PrintBonusTextLog("Chain", 0, false));
-			}
+                LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
+                //BattleData.uiManager.chainBonusObj.SetActive(false);
+                LogManager.Instance.Record(new PrintBonusTextLog("All", 0, false));
+            }
         }
     }
 }

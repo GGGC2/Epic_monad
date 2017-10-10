@@ -40,9 +40,9 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	//굳이 OnPointerDown을 거쳐서 오는 건 public으로 선언해서 UIManager에서도 부를 수 있기 위함
 	public IEnumerator OnClick(){
 		if(clickable){
-			if(BattleData.currentState == CurrentState.SelectSkillApplyDirection || BattleData.currentState == CurrentState.SelectSkillApplyPoint){
+			/*if(BattleData.currentState == CurrentState.SelectSkillApplyDirection || BattleData.currentState == CurrentState.SelectSkillApplyPoint){
 				BattleData.triggers.rightClicked.Trigger();
-			}
+			}*/  //????
 
 			yield return StartCoroutine(Utility.WaitForFewFrames(3));
 

@@ -375,16 +375,6 @@ public class ActiveSkill : Skill{
 							StatusEffector.AttachStatusEffect (caster, this, target, realEffectRange);
 					}
 				}
-				//BattleData.uiManager.DeactivateAllBonusText();
-                logManager.Record(new PrintBonusTextLog("All", 0, false));
-				// 사이사이에도 특성 발동 조건을 체크해준다.
-				BattleData.unitManager.TriggerPassiveSkillsAtActionEnd();
-                BattleData.unitManager.ApplyTileBuffsAtActionEnd();
-				BattleData.unitManager.TriggerStatusEffectsAtActionEnd();
-				BattleData.unitManager.UpdateStatusEffectsAtActionEnd();
-				BattleData.tileManager.UpdateTileStatusEffectsAtActionEnd();
-
-				target.UpdateHealthViewer();
 			}
 			StatusEffector.AttachStatusEffect(caster, this, tile);
 		}

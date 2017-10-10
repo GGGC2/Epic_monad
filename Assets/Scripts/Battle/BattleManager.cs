@@ -345,8 +345,8 @@ public class BattleManager : MonoBehaviour{
 				yield return StartCoroutine(EventTrigger.WaitOr(triggers.actionCommand, triggers.skillSelected,
 																triggers.tileSelectedByUser, triggers.tileLongSelectedByUser));
 			}
-
-			if(update != null){
+            
+            if (update != null){
 				StopCoroutine(update);
 			}
 
@@ -384,7 +384,6 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				yield return StartCoroutine(SkillAndChainStates.SkillSelected());
-
                 BattleData.previewAPAction = null;
                 BattleData.uiManager.UpdateApBarUI();
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
