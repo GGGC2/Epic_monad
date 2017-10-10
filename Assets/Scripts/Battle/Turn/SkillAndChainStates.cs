@@ -321,7 +321,7 @@ namespace Battle.Turn {
             logManager.Record(new AddChainLog(casting));
 			//ChainList.AddChains(casting);
 			BattleData.selectedSkill = null;
-            logManager.Record(new WaitForSecondsLog(0.5f));
+            logManager.Record(new WaitForSecondsLog(0.3f));
 		}
 
 		//연계'대기' 가능한 상태인가?
@@ -383,7 +383,7 @@ namespace Battle.Turn {
 					BattleManager.MoveCameraToTile (focusedTile);
 				}
 				chain.Cast (chainCombo);
-                LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
+                LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
                 //BattleData.uiManager.chainBonusObj.SetActive(false);
                 LogManager.Instance.Record(new PrintBonusTextLog("All", 0, false));
             }

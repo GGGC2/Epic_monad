@@ -25,13 +25,14 @@ namespace Battle.Skills {
                 }
             }
             if(targets.Count == 0) allTargetsHaveSameElement = false;
-            if (allTargetsHaveSameElement && originalStatusEffect != null && element == originalStatusEffect.GetElement()) {
+            if (allTargetsHaveSameElement && originalStatusEffect != null && element == originalStatusEffect.GetElement())
                 StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-            } else if (allTargetsHaveSameElement) {
+            else if (allTargetsHaveSameElement) {
                 if (originalStatusEffect != null)
                     caster.RemoveStatusEffect(originalStatusEffect);
-                List<UnitStatusEffect> actuallyAppliedStatusEffects =  StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-                actuallyAppliedStatusEffects.Find(se => se.GetOriginSkillName() == "정제").flexibleElem.display.element = element;
+                List<UnitStatusEffect> statusEffects = StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
+                if (statusEffects.Count >= 1)
+                    statusEffects[0].flexibleElem.display.element = element;
             } else if(originalStatusEffect != null)
                 caster.RemoveStatusEffect(originalStatusEffect);
         }

@@ -13,9 +13,7 @@ namespace Battle.Skills {
                 UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "광합성");
                 if (statusEffect != null)
                     caster.RemoveStatusEffect(statusEffect);
-            } else {
-                StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-            }
+            } else StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
     }
 }

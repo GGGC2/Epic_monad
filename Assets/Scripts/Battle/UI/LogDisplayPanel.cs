@@ -24,6 +24,7 @@ public class LogDisplayPanel : MonoBehaviour {
         logDisplay.name = "Log " + num;
         logDisplay.index = num;
         logDisplay.SetText();
+        Debug.Log(logDisplay.name + " : "+ logDisplay.log.GetText());
     }
     public void RemoveLogsFrom(int index) {
         foreach(LogDisplay logDisplay in logs.gameObject.GetComponentsInChildren<LogDisplay>(true)) {

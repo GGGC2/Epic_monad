@@ -25,4 +25,8 @@ public class CastingApply {
     }
     public Unit GetTarget() { return target; }
 	public int GetTargetCount() { return GetTargets().Count; }
+    public bool IsLast() {
+        List<Unit> targets = casting.Targets;
+        return target == targets[targets.Count - 1];
+    }
 }

@@ -13,9 +13,7 @@ namespace Battle.Skills {
                 UnitStatusEffect statusEffect = statusEffectList.Find(x => x.GetOriginSkillName() == "뿌리 내리기");
                 if (statusEffect != null)
                     caster.RemoveStatusEffect(statusEffect);
-            } else {
-                StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-            }
+            } else  StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
         }
         public override bool TriggerOnForceMove(Unit caster, Tile tileAfter) {
             if(caster.GetTileUnderUnit().GetTileElement() == Element.Plant) {

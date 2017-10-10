@@ -103,8 +103,9 @@ public static class StatusEffector{
 			);
 
 			// 동일한 효과가 있을 경우 -> 지속시간, 수치 초기화. 스택 가능할 경우 1스택 추가
-			if (alreadyAppliedSameEffect != null){
-				int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
+			if (alreadyAppliedSameEffect != null) {
+                actuallyAppliedStatusEffects.Add(alreadyAppliedSameEffect);
+                int num = alreadyAppliedSameEffect.fixedElem.actuals.Count;
 				for (int i = 0; i < num; i++) {
                     float amount = statusEffect.GetAmount(i);
 					alreadyAppliedSameEffect.SetAmount(i, amount);

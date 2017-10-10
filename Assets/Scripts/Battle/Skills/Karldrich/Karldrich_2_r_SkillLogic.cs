@@ -16,10 +16,13 @@ namespace Battle.Skills {
                 if(unit != null && unit.GetSide() == Side.Ally)
                     count++;
             }
-
-            StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
-            StatusEffect alreadyAppliedStatusEffect = caster.StatusEffectList.Find(se => se.GetOriginSkill() == passiveSkill);
-            alreadyAppliedStatusEffect.SetRemainStack(count);
+            UnitStatusEffect alreadyAppliedStatusEffect = caster.StatusEffectList.Find(se => se.GetOriginSkill() == passiveSkill);
+            if (alreadyAppliedStatusEffect == null) {
+            List<UnitStatusEffect> statusEffects = StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
+            if (statusEffects.Count >= 1) 
+                statusEffects[0].SetRemainStack(count);
+            }
+            else alreadyAppliedStatusEffect.SetRemainStack(count);
         }
     }
 }
