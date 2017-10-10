@@ -16,7 +16,7 @@ public class LogManager : MonoBehaviour {
 
     public void Record(Log log) {
         if (log is EffectLog) {
-            if(!((EffectLog)log).isMeaningless())   return;
+            if(((EffectLog)log).isMeaningless())   return;
             if(log is StatusEffectLog && !CheckToOffset(((StatusEffectLog)log)))    return;
 
             if(GetLastEventLogDisplay() != null){

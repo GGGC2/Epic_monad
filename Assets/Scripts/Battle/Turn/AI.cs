@@ -216,12 +216,12 @@ namespace Battle.Turn{
 		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
 			if (!_AIData.IsActive()) {
 				CheckActiveTrigger();
-			}
+                yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+            }
 
 			if (!_AIData.IsActive ()) {
-				//yield return battleManager.ToDoBeforeAction ();
-				//state = State.SkipTurn;
-				state = State.MoveToBestCasting;
+				yield return battleManager.ToDoBeforeAction ();
+				state = State.SkipTurn;
 			} else if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
@@ -238,12 +238,12 @@ namespace Battle.Turn{
 
 		IEnumerator FSM(){
 			while (true) {
-				if (state == State.Dead || state == State.EndTurn) {
+                if (state == State.Dead || state == State.EndTurn) {
 					yield break;
 				}
 				Debug.Log(state.ToString ());
 				yield return StartCoroutine (state.ToString ());
-			}
+            }
 		}
 
 		IEnumerator MoveToBestCasting(){
@@ -408,7 +408,7 @@ namespace Battle.Turn{
 			if (unit.IsStandbyPossible ()) {
 				yield return Standby ();
 			} else {
-				yield return TakeRest ();
+			    yield return TakeRest ();
 			}
 			state = State.EndTurn;
 		}
@@ -508,20 +508,20 @@ namespace Battle.Turn{
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
 			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
-			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
-		}
+            yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        }
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
-			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
-		}
+            yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        }
 		IEnumerator Standby(){
 			yield return new WaitForSeconds(0.2f);
 		}
 		IEnumerator TakeRest() {
             LogManager.Instance.Record(new RestLog(unit));
 			RestAndRecover.Run();
-			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
-		}
+            yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+        }
 		IEnumerator SkipTurn(){
 			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 			yield return new WaitForSeconds (0.05f);

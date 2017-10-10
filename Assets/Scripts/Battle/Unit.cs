@@ -878,8 +878,7 @@ public class Unit : MonoBehaviour{
 	// 위 - AI용 함수들
 
 	public void SetActivityPoint(int newAP) {
-        LogManager.Instance.Record(new APChangeLog(this, newAP));
-        //activityPoint = newAP;
+        activityPoint = newAP;
 	}
 	public void UseActivityPoint(int amount){
 		//activityPoint -= amount;

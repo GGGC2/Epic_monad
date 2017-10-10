@@ -6,7 +6,7 @@ using System.Collections;
 public class EffectLog : Log {
     public EventLog parentEvent;
     public virtual bool isMeaningless() {
-        return true;
+        return false;
     }
 }
 
@@ -41,7 +41,7 @@ public class HPChangeLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return amount != 0;
+        return amount == 0;
     }
     public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
         return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
@@ -79,7 +79,7 @@ public class APChangeLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return amount != 0;
+        return amount == 0;
     }
 }
 
@@ -124,7 +124,7 @@ public class CoolDownLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return skillCooldown != 0;
+        return skillCooldown == 0;
     }
 }
 
@@ -338,7 +338,7 @@ public class PositionChangeLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return beforePos != afterPos;
+        return beforePos == afterPos;
     }
 }
 
@@ -356,7 +356,7 @@ public class AISetActiveLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return !unit.GetComponent<AIData>().isActive;
+        return unit.GetComponent<AIData>().isActive;
     }
 }
 
@@ -374,7 +374,7 @@ public class CameraMoveLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return !(Camera.main.transform.position == new Vector3(position.x, position.y, -10));
+        return Camera.main.transform.position == new Vector3(position.x, position.y, -10);
     }
 }
 
@@ -488,7 +488,7 @@ public class AddLatelyHitInfoLog : EffectLog {
         yield return null;
     }
     public override bool isMeaningless() {
-        return !(hitInfo == null);
+        return hitInfo == null;
     }
 }
 
