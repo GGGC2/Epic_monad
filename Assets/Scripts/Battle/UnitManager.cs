@@ -361,25 +361,26 @@ public class UnitManager : MonoBehaviour{
 			BattleData.tileManager.DepreselectTiles(triggeredTiles);
 		}
 	}
+    public void TriggerOnUnitDestroy(Unit destroyedUnit, TrigActionType actionType) {
+        foreach (var unit in units) {
+            foreach (var passive in unit.passiveSkillList) {
+                passive.SkillLogic.TriggerOnUnitDestroy(unit, destroyedUnit, actionType);
+            }
+        }
+        if (actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat) {
+            foreach (var hitInfo in destroyedUnit.GetLatelyHitInfos()) {
+                List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
+                SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, destroyedUnit);
 
-	public void DeleteDeadUnit(Unit deadUnit){
-		// 시전자에게 대상 사망 시 발동되는 효과가 있을 경우 발동.
-		foreach (var hitInfo in deadUnit.GetLatelyHitInfos()){
-			List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-			SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, deadUnit);
-
-			if (hitInfo.skill != null)
-				SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
-		}
-
-		units.Remove(deadUnit);
-		readiedUnits.Remove(deadUnit);
-	}
-
-	public void DeleteRetreatUnit(Unit retreateUnit){
-		units.Remove(retreateUnit);
-		readiedUnits.Remove(retreateUnit);
-	}
+                if (hitInfo.skill != null)
+                    SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
+            }
+        }
+    }
+    public void DeleteDestroyedUnit(Unit destroyedUnit) {
+        units.Remove(destroyedUnit);
+        readiedUnits.Remove(destroyedUnit);
+    }
 
 	public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();

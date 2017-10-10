@@ -9,9 +9,6 @@ public class BasePassiveSkillLogic
 {
 	public PassiveSkill passiveSkill;
 
-	public virtual void TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
-	}
-
 	public virtual float GetAdditionalRelativePowerBonus(Unit caster)
 	{
 		return 1.0f;
@@ -67,8 +64,14 @@ public class BasePassiveSkillLogic
     public virtual float ApplyAdditionalRecoverHealthDuringRest(Unit caster, float baseAmount) {
         return baseAmount;
     }
+    
+    public virtual void TriggerOnKill(HitInfo hitInfo, Unit deadUnit) {
+    }
 
-	public virtual void TriggerOnEvasionEvent(Unit caster, Unit target)
+    public virtual void TriggerOnUnitDestroy(Unit unit, Unit destroyedUnit, TrigActionType actionType) {
+        
+    }
+    public virtual void TriggerOnEvasionEvent(Unit caster, Unit target)
 	{
 	}
 

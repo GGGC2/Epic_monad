@@ -189,8 +189,7 @@ public class BattleManager : MonoBehaviour{
 
 	public static IEnumerator DestroyUnit(Unit unit, TrigActionType actionType){
 		BattleManager battleManager = BattleData.battleManager;
-
-		Debug.Log("Destroy " + unit.GetNameKor() + " for " + actionType);
+        
 		if(actionType == TrigActionType.Kill){
 			unit.GetComponent<SpriteRenderer>().color = Color.red;
 		}
@@ -198,9 +197,7 @@ public class BattleManager : MonoBehaviour{
 		ChainList.RemoveChainOfThisUnit (unit);
 		RemoveAuraEffectFromUnit(unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
-        BattleData.unitManager.DeleteDeadUnit(unit);
-		BattleData.unitManager.DeleteRetreatUnit(unit);
-
+        UnitManager.Instance.DeleteDestroyedUnit(unit);
 		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
 			yield return BattleTriggerManager.CheckBattleTrigger(unit, actionType);
 			yield return BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
@@ -208,8 +205,7 @@ public class BattleManager : MonoBehaviour{
 		}else{
 			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
 		}
-
-		Destroy(unit.gameObject);
+        Destroy(unit.gameObject);
 	}
 
     public static void RemoveAuraEffectFromUnit(Unit unit) {
@@ -241,17 +237,20 @@ public class BattleManager : MonoBehaviour{
 			//yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Retreat));
             logManager.Record(new UnitDestroyedLog(unit));
             logManager.Record(new DestroyUnitLog(unit, TrigActionType.Retreat));
+            UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Retreat);
         }
 		foreach(var unit in unitManager.GetDeadUnits()){
             //yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
             logManager.Record(new UnitDestroyedLog(unit));
             logManager.Record(new DestroyUnitLog(unit, TrigActionType.Kill));
+            UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Kill);
         }
         foreach (var unit in unitManager.GetAllUnits()) {
             if (unit.CheckReach()) {
                 //yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
                 logManager.Record(new UnitDestroyedLog(unit));
                 logManager.Record(new DestroyUnitLog(unit, TrigActionType.Reach));
+                UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Kill);
             }
         }
 	}

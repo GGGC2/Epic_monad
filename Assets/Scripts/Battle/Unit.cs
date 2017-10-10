@@ -166,6 +166,8 @@ public class Unit : MonoBehaviour{
 	public string GetNameKor() { return myInfo.nameKor; }
 	public Side GetSide() { return myInfo.side; }
 	public bool IsAlly(Unit unit) { return myInfo.side == unit.GetSide (); }
+    public bool IsEnemy(Unit unit) { return (myInfo.side == Side.Ally && unit.GetSide() == Side.Enemy) ||
+                                            (myInfo.side == Side.Enemy && unit.GetSide() == Side.Ally); }
 	public bool IsSeenAsEnemyToThisAIUnit(Unit unit) { return Battle.Turn.AIUtil.IsSecondUnitEnemyToFirstUnit (unit, this); } //은신 상태에선 적으로 인식되지 않음
 	public void SetAsAI() { isAI = true; }
 	public void SetAI(Battle.Turn.AI _AI) { this._AI = _AI; }
@@ -662,7 +664,8 @@ public class Unit : MonoBehaviour{
 			//else
 			//	  activityPoint = 0;
             logManager.Record(new APChangeLog(this, -damage));
-		}
+            logManager.Record(new DisplayDamageOrHealTextLog(this, -damage, true));
+        }
 	}
 
 	public IEnumerator DisplayDamageText(int damage, bool isHealth){
@@ -874,9 +877,9 @@ public class Unit : MonoBehaviour{
 
 	// 위 - AI용 함수들
 
-	public void SetActivityPoint(int newAP){
-		activityPoint = newAP;
-		unitManager.UpdateUnitOrder();
+	public void SetActivityPoint(int newAP) {
+        LogManager.Instance.Record(new APChangeLog(this, newAP));
+        //activityPoint = newAP;
 	}
 	public void UseActivityPoint(int amount){
 		//activityPoint -= amount;

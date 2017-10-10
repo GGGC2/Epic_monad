@@ -75,6 +75,7 @@ public class APChangeLog : EffectLog {
         if (result < 0)     unit.activityPoint = 0;
         else                unit.activityPoint = result;
 
+        UnitManager.Instance.UpdateUnitOrder();
         yield return null;
     }
     public override bool isMeaningless() {

@@ -376,6 +376,9 @@ public static class SkillLogicFactory
             break;
 
             //루키어스
+            case "정의로운 신념":
+            passiveSkillLogic = new Lucius_0_1_SkillLogic();
+            break;
             case "검사의 직감":
             passiveSkillLogic = new Lucius_1_m_SkillLogic();
             break;
