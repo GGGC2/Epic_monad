@@ -153,7 +153,8 @@ public class BattleManager : MonoBehaviour{
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		BattleData.SetSelectedUnit(unit);
-		BattleData.move = new BattleData.Move();
+        MoveCameraToUnit(unit);
+        BattleData.move = new BattleData.Move();
 		BattleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
 		ChainList.RemoveChainOfThisUnit(BattleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 
@@ -302,7 +303,7 @@ public class BattleManager : MonoBehaviour{
         LogManager logManager = LogManager.Instance;
 		while (BattleData.currentState == CurrentState.FocusToUnit){
 			Unit unit = BattleData.selectedUnit;
-            MoveCameraToPosition((Vector2)unit.gameObject.transform.position);
+            MoveCameraToUnit(unit);
 
 			if (IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Destroy;

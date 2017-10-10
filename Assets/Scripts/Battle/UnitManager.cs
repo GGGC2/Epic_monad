@@ -290,8 +290,11 @@ public class UnitManager : MonoBehaviour{
 
 			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
 			BattleData.tileManager.PreselectTiles(selectableTileList);
-
-			BattleManager.MoveCameraToTile(selectableTileList.Last());
+            
+            Vector2 position = selectableTileList.Last().realPosition;
+            //event log가 나타나기 전이므로 로그를 남기지 않고 수동으로 조작
+            Camera.main.transform.position = new Vector3(position.x, position.y, -10); 
+            //BattleManager.MoveCameraToTile(selectableTileList.Last());
 		}
 
 		yield return StartCoroutine(GenerateUnitsByManual(unitInfoList, selectablePlaceList));
