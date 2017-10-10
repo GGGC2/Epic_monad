@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 07f0d2b2baa17f140bda35da02ac1d23
-timeCreated: 1506743591
+guid: fa2dbc4fcb9dd408eb540cbc2a1ae502
+timeCreated: 1503345196
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: stage6_wall_0
-    21300002: stage6_wall_1
-    21300004: stage6_wall_2
-    21300006: stage6_wall_3
+    21300000: stage4_wall_0
+    21300002: stage4_wall_1
+    21300004: stage4_wall_2
+    21300006: stage4_wall_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,11 +70,27 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: stage6_wall_0
+      name: stage4_wall_0
       rect:
         serializedVersion: 2
         x: 0
@@ -87,7 +103,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: stage6_wall_1
+      name: stage4_wall_1
       rect:
         serializedVersion: 2
         x: 250
@@ -100,7 +116,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: stage6_wall_2
+      name: stage4_wall_2
       rect:
         serializedVersion: 2
         x: 500
@@ -113,7 +129,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: stage6_wall_3
+      name: stage4_wall_3
       rect:
         serializedVersion: 2
         x: 750
@@ -126,7 +142,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     outline: []
-  spritePackingTag: 4
+  spritePackingTag: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 
