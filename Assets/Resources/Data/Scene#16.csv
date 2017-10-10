@@ -1,6 +1,6 @@
 Script#16				
 *	BG	RockMountain		
-*	BGM	Script_Tense		
+*	BGM	Script_Pintos		
 *	SE	ControllerGrawl		
 lenien	-	리니안	떨어져요!	
 *	Glos	Etc	11	1
@@ -16,14 +16,13 @@ blank	-	-	연습용 표적이 아닌 실제 생물에게 쓰는 건 꽤 용기�
 reina	-	레이나	이 정도 에테르면 충분합니다. 이제 돌아가죠.	
 *	FO			
 *	BG	LibraryCrystal		
-*	BGM	Script_Prelude		
 *	FI			
 blank	-	-	마법진의 꼭지점에 있는 빈 칸에 새로운 에테르 수정을 끼웠다.^통신기는 빛을 발하며 작동했다.	
 blank	-	-	레이나 핀토스는 길게, 짧게를 조합하여 한 글자씩 신호를 입력했다.	
 reina	-	레이나	기사들에게는 이 지점 근처에서 만나자고 보내뒀어요.	
 reina	-	레이나	신호를 받을 수 있는 상태인지, 받은 후 실제로 여기까지 올지는 또 별개의 이야기지만.	
 lenien	-	리니안	그러면 무작정 기다리는 건가요?	
-reina	-	레이나	아뇨. 그 동안 모나폴리에 있는 핀토스 저택에 다녀오도록 하죠.	
+reina	-	레이나	아뇨. 그동안 모나폴리에 있는 핀토스 저택에 다녀오도록 하죠.	
 lenien	-	리니안	위험할 것 같은데.	
 reina	-	레이나	꼭 확인해야 할 게 있거든요.	
 reina	-	레이나	싫다면 따라오지 않아도 좋아요.	
