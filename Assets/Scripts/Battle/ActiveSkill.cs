@@ -602,13 +602,12 @@ public class ActiveSkill : Skill{
 		List<Tile> firstRange = casting.FirstRange;
 
         BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
-        yield return new WaitForSeconds (0.4f);
+        yield return new WaitForSeconds (0.3f);
         BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
 
 		caster.UseActivityPoint (casting.RequireAP);
 
         if (skill.GetCooldown () > 0) {
-			//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
             logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
 		}
 

@@ -121,8 +121,6 @@ namespace Battle.Turn{
 			float maxReward = 0;
 
 			foreach (ActiveSkill skill in skills) {
-				Debug.Log (skill.GetName ());
-
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
 				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -141,8 +139,6 @@ namespace Battle.Turn{
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
-
-						Debug.Log (reward);
 
 						if (reward > maxReward) {
 							maxReward = reward;
@@ -246,7 +242,7 @@ namespace Battle.Turn{
                 if (state == State.Dead || state == State.EndTurn) {
 					yield break;
 				}
-				Debug.Log(state.ToString ());
+				Debug.Log("AI state : " + state.ToString ());
 				yield return StartCoroutine (state.ToString ());
             }
 		}
@@ -513,6 +509,7 @@ namespace Battle.Turn{
 			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
 			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
+			LogManager.Instance.Record (new CameraMoveLog (unit));
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator UseSkill(Casting casting){

@@ -45,7 +45,7 @@ public static class PathFinder {
 			}
 		}
 
-		Debug.Log ("AI pathfinding ended");
+		//Debug.Log ("AI pathfinding ended");
 
 		return tilesWithPath;
 	}

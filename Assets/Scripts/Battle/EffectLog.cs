@@ -361,20 +361,28 @@ public class AISetActiveLog : EffectLog {
 }
 
 public class CameraMoveLog : EffectLog {
-    Vector2 position;
+	MonoBehaviour obj;
 
-    public CameraMoveLog(Vector2 position) {
-        this.position = position;
-    }
+	public CameraMoveLog(MonoBehaviour obj) {
+		this.obj = obj;
+	}
     public override string GetText() {
-        return "\t" + "카메라 위치 변경 : " + position;
+		return "\t" + "카메라 위치 변경 : " + obj.name;
     }
     public override IEnumerator Execute() {
-        BattleManager.MoveCameraToPosition(position);
-        yield return null;
-    }
-    public override bool isMeaningless() {
-        return Camera.main.transform.position == new Vector3(position.x, position.y, -10);
+		if (!isMeaningless ()) {
+			Vector2 objPos = (Vector2)obj.gameObject.transform.position;
+			yield return BattleManager.SlideCameraToPosition (objPos);
+			yield return null;
+		}
+	}
+	public override bool isMeaningless() {
+		if (obj == null) {
+			return true;
+		}
+		Vector2 cameraPos = (Vector2)Camera.main.transform.position;
+		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
+		return cameraPos.x == objPos.x && cameraPos.y == objPos.y;
     }
 }
 
