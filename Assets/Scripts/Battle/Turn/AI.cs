@@ -195,6 +195,14 @@ namespace Battle.Turn{
 		State state;
 
 		public IEnumerator UnitTurn() {
+			if (!_AIData.IsActive ()) {
+				yield return Activate ();
+			}
+			if (!_AIData.IsActive ()) {
+				ReduceAPToSkipTurn ();
+				yield break;
+			}
+
             LogManager.Instance.Record(new TurnStartLog(unit));
             yield return battleManager.StartUnitTurn (unit);
 
@@ -205,7 +213,7 @@ namespace Battle.Turn{
 					yield return ActByScenario (TutorialManager.Instance.GetNextAIScenario ());
 				}
 			} else {
-				yield return CheckUnitIsActiveAndDecideActionAndAct ();
+				yield return DecideActionAndAct ();
 			}
 
 			if (state != State.Dead) {
@@ -213,16 +221,13 @@ namespace Battle.Turn{
 			}
 		}
 
-		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
-			if (!_AIData.IsActive()) {
-				CheckActiveTrigger();
-                yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
-            }
+		IEnumerator Activate(){
+			CheckActiveTrigger();
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+		}
 
-			if (!_AIData.IsActive ()) {
-				yield return battleManager.ToDoBeforeAction ();
-				state = State.SkipTurn;
-			} else if (unit.GetNameEng ().Equals ("triana")) {
+		IEnumerator DecideActionAndAct(){
+			if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
@@ -523,9 +528,12 @@ namespace Battle.Turn{
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator SkipTurn(){
-			unit.SetActivityPoint (unit.GetStandardAP () - 1);
-			yield return new WaitForSeconds (0.05f);
+			ReduceAPToSkipTurn ();
 			state = State.EndTurn;
+			yield return null;
+		}
+		void ReduceAPToSkipTurn(){
+			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 		}
 
 		IEnumerator ActByScenario(AIScenario scenario){
