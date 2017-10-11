@@ -217,7 +217,7 @@ namespace Battle.Turn{
 			}
 
 			if (state != State.Dead) {
-				battleManager.EndUnitTurn (unit);
+				yield return battleManager.EndUnitTurn (unit);
 			}
 		}
 

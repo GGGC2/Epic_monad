@@ -138,7 +138,7 @@ public class BattleManager : MonoBehaviour{
 
 		if (BattleData.currentState != CurrentState.Destroy) {
             LogManager.Instance.Record(new TurnEndLog(unit));
-            EndUnitTurn (unit);
+			yield return EndUnitTurn (unit);
 		}
 	}
 
@@ -163,13 +163,13 @@ public class BattleManager : MonoBehaviour{
         unit.TriggerTileStatusEffectAtTurnStart();
 
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
-		BattleData.selectedUnit.SetActive();
+		BattleData.selectedUnit.ShowArrow();
         yield return logManager.ExecuteLastEventLogAndConsequences();
     }
 	public IEnumerator EndUnitTurn(Unit unit) {
         BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		BattleData.selectedUnit.SetInactive();
+		BattleData.selectedUnit.HideArrow();
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){

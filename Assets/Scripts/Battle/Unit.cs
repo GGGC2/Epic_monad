@@ -115,8 +115,8 @@ public class Unit : MonoBehaviour{
         return evasionChance;
     }
     public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
-    public void SetActive() { activeArrowIcon.SetActive(true); }
-	public void SetInactive() { activeArrowIcon.SetActive(false); }
+    public void ShowArrow() { activeArrowIcon.SetActive(true); }
+	public void HideArrow() { activeArrowIcon.SetActive(false); }
 	public bool IsAlreadyBehavedObject(){ return isAlreadyBehavedObject; }
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
