@@ -111,6 +111,7 @@ public class BattleManager : MonoBehaviour{
 				BattleData.uiManager.UpdateApBarUI();
 
 				if (BattleData.selectedUnit.IsAI){
+					BattleData.currentState = CurrentState.AITurn;
 					yield return BattleData.selectedUnit.GetAI().UnitTurn ();
 				}else{
 					yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
@@ -136,9 +137,9 @@ public class BattleManager : MonoBehaviour{
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
-		if (BattleData.currentState != CurrentState.Destroy) {
+		if (BattleData.currentState != CurrentState.Destroyed) {
             LogManager.Instance.Record(new TurnEndLog(unit));
-            EndUnitTurn (unit);
+			yield return EndUnitTurn (unit);
 		}
 	}
 
@@ -163,13 +164,13 @@ public class BattleManager : MonoBehaviour{
         unit.TriggerTileStatusEffectAtTurnStart();
 
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
-		BattleData.selectedUnit.SetActive();
+		BattleData.selectedUnit.ShowArrow();
         yield return logManager.ExecuteLastEventLogAndConsequences();
     }
 	public IEnumerator EndUnitTurn(Unit unit) {
         BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		BattleData.selectedUnit.SetInactive();
+		BattleData.selectedUnit.HideArrow();
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
@@ -266,16 +267,29 @@ public class BattleManager : MonoBehaviour{
 	{
 		if (obj == null)
 			return;
-		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-		//MoveCameraToPosition (objPos);
-        LogManager.Instance.Record(new CameraMoveLog(objPos));
+        LogManager.Instance.Record(new CameraMoveLog(obj));
+	}
+	public static IEnumerator SlideCameraToPosition(Vector2 position)
+	{
+		float time = 0;
+		const float MOVINGTIME = 0.1f;
+		Vector3 destPos = new Vector3 (position.x, position.y, -10);
+		Vector3 currentPos = Camera.main.transform.position;
+		Vector3 direction = (destPos - currentPos);
+		while (true) {
+			time += Time.deltaTime;
+			if (time > MOVINGTIME) {
+				break;
+			}
+			Camera.main.transform.position += direction * Time.deltaTime / MOVINGTIME;
+			yield return null;
+		}
+		Camera.main.transform.position = destPos;
 	}
 	public static void MoveCameraToPosition(Vector2 position)
 	{
-		Camera.main.transform.position = new Vector3(
-				position.x,
-				position.y,
-				-10);	
+		Vector3 destPos = new Vector3 (position.x, position.y, -10);
+		Camera.main.transform.position = destPos;
 	}
 
 	public void CheckBattleTriggers() {
@@ -305,7 +319,7 @@ public class BattleManager : MonoBehaviour{
             MoveCameraToUnit(unit);
 
 			if (IsSelectedUnitRetreatOrDie()) {
-				BattleData.currentState = CurrentState.Destroy;
+				BattleData.currentState = CurrentState.Destroyed;
 				Debug.Log ("Current PC Destroyed.");
 				yield break;
 			}
@@ -528,7 +542,7 @@ public class BattleManager : MonoBehaviour{
         CameraMover cm = FindObjectOfType<CameraMover>();
         cm.SetFixedPosition(BattleData.selectedUnit.realPosition);
         cm.CalculateBoundary();
-        MoveCameraToPosition(cm.fixedPosition);
+		MoveCameraToPosition(cm.fixedPosition);
     }
 
 	public bool EnemyUnitSelected()

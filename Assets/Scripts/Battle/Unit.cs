@@ -115,8 +115,8 @@ public class Unit : MonoBehaviour{
         return evasionChance;
     }
     public int GetRegenerationAmount() { return GetStat(Stat.Agility); }
-    public void SetActive() { activeArrowIcon.SetActive(true); }
-	public void SetInactive() { activeArrowIcon.SetActive(false); }
+    public void ShowArrow() { activeArrowIcon.SetActive(true); }
+	public void HideArrow() { activeArrowIcon.SetActive(false); }
 	public bool IsAlreadyBehavedObject(){ return isAlreadyBehavedObject; }
 	public void SetNotAlreadyBehavedObject() { isAlreadyBehavedObject = false; }
 	public void SetAlreadyBehavedObject() { isAlreadyBehavedObject = true; }
@@ -724,13 +724,13 @@ public class Unit : MonoBehaviour{
 		if (this.HasStatusEffect(StatusEffectType.HealOverPhase)){
 			foreach (var statusEffect in statusEffectList){
 				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase)){
-                    BattleManager.MoveCameraToUnit(this);
                     totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
 				}
 			}
 		}
-        if(totalAmount != 0)
-		    RecoverHealth(totalAmount);
+		if (totalAmount > 0) {
+			RecoverHealth (totalAmount);
+		}
 	}
 
 	public void RecoverHealth(float amount)
@@ -744,11 +744,14 @@ public class Unit : MonoBehaviour{
 		if (currentHealth + actualAmount > maxHealth){
 			  actualAmount = maxHealth - currentHealth;
 		}
-		//currentHealth += actualAmount;
-        LogManager.Instance.Record(new HPChangeLog(this, actualAmount));
 
-		// DisplayRecoverText (actualAmount, true);
-        LogManager.Instance.Record(new DisplayDamageOrHealTextLog(this, actualAmount, true));
+		if (actualAmount > 0) {
+			BattleManager.MoveCameraToUnit(this);
+			//currentHealth += actualAmount;
+			LogManager.Instance.Record (new HPChangeLog (this, actualAmount));
+			// DisplayRecoverText (actualAmount, true);
+			LogManager.Instance.Record (new DisplayDamageOrHealTextLog (this, actualAmount, true));
+		}
 	}
 
 	public void RecoverActionPoint(int amount)

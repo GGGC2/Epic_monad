@@ -121,8 +121,6 @@ namespace Battle.Turn{
 			float maxReward = 0;
 
 			foreach (ActiveSkill skill in skills) {
-				Debug.Log (skill.GetName ());
-
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(caster, skill);
 
 				int skillRequireAP = caster.GetActualRequireSkillAP (skill);
@@ -141,8 +139,6 @@ namespace Battle.Turn{
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
-
-						Debug.Log (reward);
 
 						if (reward > maxReward) {
 							maxReward = reward;
@@ -195,6 +191,14 @@ namespace Battle.Turn{
 		State state;
 
 		public IEnumerator UnitTurn() {
+			if (!_AIData.IsActive ()) {
+				yield return Activate ();
+			}
+			if (!_AIData.IsActive ()) {
+				ReduceAPToSkipTurn ();
+				yield break;
+			}
+
             LogManager.Instance.Record(new TurnStartLog(unit));
             yield return battleManager.StartUnitTurn (unit);
 
@@ -205,24 +209,21 @@ namespace Battle.Turn{
 					yield return ActByScenario (TutorialManager.Instance.GetNextAIScenario ());
 				}
 			} else {
-				yield return CheckUnitIsActiveAndDecideActionAndAct ();
+				yield return DecideActionAndAct ();
 			}
 
 			if (state != State.Dead) {
-				battleManager.EndUnitTurn (unit);
+				yield return battleManager.EndUnitTurn (unit);
 			}
 		}
 
-		IEnumerator CheckUnitIsActiveAndDecideActionAndAct(){
-			if (!_AIData.IsActive()) {
-				CheckActiveTrigger();
-                yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
-            }
+		IEnumerator Activate(){
+			CheckActiveTrigger();
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+		}
 
-			if (!_AIData.IsActive ()) {
-				yield return battleManager.ToDoBeforeAction ();
-				state = State.SkipTurn;
-			} else if (unit.GetNameEng ().Equals ("triana")) {
+		IEnumerator DecideActionAndAct(){
+			if (unit.GetNameEng ().Equals ("triana")) {
 				state = State.StandbyOrRest;
 			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
@@ -241,7 +242,7 @@ namespace Battle.Turn{
                 if (state == State.Dead || state == State.EndTurn) {
 					yield break;
 				}
-				Debug.Log(state.ToString ());
+				Debug.Log("AI state : " + state.ToString ());
 				yield return StartCoroutine (state.ToString ());
             }
 		}
@@ -340,7 +341,7 @@ namespace Battle.Turn{
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath) {
 				movableTiles.Add (movableTileWithPath.Value.tile);
 			}
-			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			LogManager.Instance.Record (new PaintTilesLog (movableTiles, TileColor.Blue));
 		}
 
 		IEnumerator Approach(){
@@ -504,18 +505,18 @@ namespace Battle.Turn{
 
 		IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			PaintMovableTiles ();
-			yield return new WaitForSeconds (0.5f);
-			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
+			LogManager.Instance.Record (new WaitForSecondsLog (0.3f));
+			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
 			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
+			LogManager.Instance.Record (new CameraMoveLog (unit));
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
-            yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator Standby(){
-			yield return new WaitForSeconds(0.2f);
+			yield return null;
 		}
 		IEnumerator TakeRest() {
             LogManager.Instance.Record(new RestLog(unit));
@@ -523,9 +524,12 @@ namespace Battle.Turn{
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator SkipTurn(){
-			unit.SetActivityPoint (unit.GetStandardAP () - 1);
-			yield return new WaitForSeconds (0.05f);
+			ReduceAPToSkipTurn ();
 			state = State.EndTurn;
+			yield return null;
+		}
+		void ReduceAPToSkipTurn(){
+			unit.SetActivityPoint (unit.GetStandardAP () - 1);
 		}
 
 		IEnumerator ActByScenario(AIScenario scenario){

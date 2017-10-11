@@ -1,8 +1,9 @@
 Script#16				
 *	BG	RockMountain		
-*	BGM	Script_Pintos		
+*	BGM	Script_Tense		
 *	SE	ControllerGrawl		
 lenien	-	리니안	떨어져요!	
+*	BGM	Script_Normal		
 *	Glos	Etc	12	1
 reina	-	레이나	오, 처음 보는 마법인데 빠르고 효율적이네요.^<color=red>범용 주문</color>이 아닌가 보죠?	
 lenien	-	리니안	어…… 뭐어, 그렇죠.	
@@ -16,6 +17,7 @@ blank	-	-	연습용 표적이 아닌 실제 생물에게 쓰는 건 꽤 용기�
 reina	-	레이나	이 정도 에테르면 충분합니다. 이제 돌아가죠.	
 *	FO			
 *	BG	LibraryCrystal		
+*	BGM	Script_Pintos		
 *	FI			
 blank	-	-	마법진의 꼭지점에 있는 빈 칸에 새로운 에테르 수정을 끼웠다.^통신기는 빛을 발하며 작동했다.	
 blank	-	-	레이나 핀토스는 길게, 짧게를 조합하여 한 글자씩 신호를 입력했다.	

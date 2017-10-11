@@ -519,6 +519,12 @@ public class ActiveSkill : Skill{
 		if (visualEffectName == "-") {
 			yield break;
 		}
+
+		float EFFECTTIME = 0.5f;
+		if (BattleData.currentState == CurrentState.AITurn) {
+			EFFECTTIME = 0.25f;
+		}
+
 		if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.Move)) {
 			// 투사체, 범위형 이펙트.
 			Vector3 startPos = unit.realPosition;
@@ -530,12 +536,12 @@ public class ActiveSkill : Skill{
 
 			GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
 			particle.transform.position = startPos - new Vector3(0, -0.5f, 0.01f);
-			yield return new WaitForSeconds(0.2f);
+			yield return new WaitForSeconds (0.4f * EFFECTTIME);
 			// 타일 축 -> 유닛 축으로 옮기기 위해 z축으로 5만큼 앞으로 빼준다.
 			// 유닛의 중앙 부분을 공격하기 위하여 y축으고 0.5 올린다.
 			iTween.MoveTo(particle, endPos - new Vector3(0, 0, 0.01f) - new Vector3(0, -0.5f, 5f), 0.5f);
-			yield return new WaitForSeconds(0.3f);
-			GameObject.Destroy(particle, 0.5f);
+			yield return new WaitForSeconds (0.6f * EFFECTTIME);
+			GameObject.Destroy(particle, EFFECTTIME);
 			yield return null;
 		} else if ((effectVisualType == EffectVisualType.Area) && (effectMoveType == EffectMoveType.NonMove)) {
 			// 고정형, 범위형 이펙트.
@@ -552,8 +558,8 @@ public class ActiveSkill : Skill{
 			}
 			GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;
 			particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
-			yield return new WaitForSeconds(0.5f);
-			GameObject.Destroy(particle, 0.5f);
+			yield return new WaitForSeconds(EFFECTTIME);
+			GameObject.Destroy(particle, EFFECTTIME);
 			yield return null;
 		} else if ((effectVisualType == EffectVisualType.Individual) && (effectMoveType == EffectMoveType.NonMove)) {
 			// 고정형, 개별 대상 이펙트.
@@ -568,7 +574,7 @@ public class ActiveSkill : Skill{
 			foreach (var targetPos in targetPosList) {
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
 				particle.transform.position = targetPos - new Vector3(0, -0.5f, 0.01f);
-				GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
+				GameObject.Destroy(particle, EFFECTTIME + 0.6f * EFFECTTIME); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 			}
 
 			if (targetPosList.Count == 0) // 대상이 없을 경우. 일단 가운데 이펙트를 띄운다.
@@ -581,9 +587,9 @@ public class ActiveSkill : Skill{
 
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
 				particle.transform.position = midPos - new Vector3(0, -0.5f, 0.01f);
-				GameObject.Destroy(particle, 0.5f + 0.3f); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
+				GameObject.Destroy (particle, EFFECTTIME + 0.6f * EFFECTTIME); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 			}
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(EFFECTTIME);
         }
     }
 
@@ -601,23 +607,23 @@ public class ActiveSkill : Skill{
 
 		List<Tile> firstRange = casting.FirstRange;
 
-        BattleData.tileManager.PaintTiles(firstRange, TileColor.Red);
-        yield return new WaitForSeconds (0.4f);
-        BattleData.tileManager.DepaintTiles(firstRange, TileColor.Red);
+		logManager.Record (new PaintTilesLog (firstRange, TileColor.Red));
+		logManager.Record (new WaitForSecondsLog (0.3f));
+		logManager.Record (new DepaintTilesLog (TileColor.Red));
 
 		caster.UseActivityPoint (casting.RequireAP);
 
         if (skill.GetCooldown () > 0) {
-			//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
             logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
 		}
 
 		List<Tile> secondRange = casting.SecondRange;
-		BattleData.tileManager.PaintTiles (secondRange, TileColor.Red);
+		logManager.Record (new PaintTilesLog (secondRange, TileColor.Red));
 		Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
-		BattleData.tileManager.DepaintTiles(secondRange, TileColor.Red);
+		logManager.Record (new DepaintTilesLog (TileColor.Red));
 
-        HideSkillNamePanelUI ();
+		yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
+		HideSkillNamePanelUI ();
 	}
 
 	public void SetSkillNamePanelUI(){

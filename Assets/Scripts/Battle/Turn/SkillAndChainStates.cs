@@ -379,6 +379,7 @@ namespace Battle.Turn {
 			foreach (var chain in allTriggeredChains) {
 				if (chain.SecondRange.Count > 0) {
 					Tile focusedTile = chain.SecondRange [0];
+					LogManager.Instance.Record (new CameraMoveLog (focusedTile));
 					BattleManager.MoveCameraToTile (focusedTile);
 				}
 				chain.Cast (chainCombo);
