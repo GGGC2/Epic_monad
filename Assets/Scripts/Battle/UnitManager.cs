@@ -442,8 +442,8 @@ public class UnitManager : MonoBehaviour{
     }
 
     public IEnumerator StartPhase(int phase) {
-        ApplyEachHeal();
-        ApplyEachDOT();
+		ApplyEachHeal();
+		ApplyEachDOT();
         foreach (var unit in units) {
             unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
