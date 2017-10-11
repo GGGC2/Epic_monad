@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Enums;
 
 public enum CurrentState{
-	None, Destroy, FocusToUnit, CheckDestination,
+	None, AITurn, Destroyed, FocusToUnit, CheckDestination,
 	SelectSkillApplyPoint, SelectSkillApplyDirection,
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }

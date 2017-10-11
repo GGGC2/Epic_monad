@@ -341,7 +341,7 @@ namespace Battle.Turn{
 			foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath) {
 				movableTiles.Add (movableTileWithPath.Value.tile);
 			}
-			TileManager.Instance.PaintTiles (movableTiles, TileColor.Blue);
+			LogManager.Instance.Record (new PaintTilesLog (movableTiles, TileColor.Blue));
 		}
 
 		IEnumerator Approach(){
@@ -505,8 +505,8 @@ namespace Battle.Turn{
 
 		IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
 			PaintMovableTiles ();
-			yield return new WaitForSeconds (0.5f);
-			TileManager.Instance.DepaintAllTiles (TileColor.Blue);
+			LogManager.Instance.Record (new WaitForSecondsLog (0.3f));
+			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
 			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
 			LogManager.Instance.Record (new CameraMoveLog (unit));
@@ -514,10 +514,9 @@ namespace Battle.Turn{
         }
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
-            yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator Standby(){
-			yield return new WaitForSeconds(0.2f);
+			yield return null;
 		}
 		IEnumerator TakeRest() {
             LogManager.Instance.Record(new RestLog(unit));

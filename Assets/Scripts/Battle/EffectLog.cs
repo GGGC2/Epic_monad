@@ -341,6 +341,36 @@ public class PositionChangeLog : EffectLog {
         return beforePos == afterPos;
     }
 }
+	
+public class PaintTilesLog : EffectLog {
+	List<Tile> tiles;
+	TileColor color;
+	public PaintTilesLog(List<Tile> tiles, TileColor color) {
+		this.tiles = tiles;
+		this.color = color;
+	}
+	public override IEnumerator Execute() {
+		BattleData.tileManager.PaintTiles(tiles, color);
+		yield return null;
+	}
+	public override bool isMeaningless() {
+		return tiles == null || tiles.Count == 0;
+	}
+}	
+
+public class DepaintTilesLog : EffectLog {
+	TileColor color;
+	public DepaintTilesLog(TileColor color) {
+		this.color = color;
+	}
+	public override IEnumerator Execute() {
+		BattleData.tileManager.DepaintAllTiles(color);
+		yield return null;
+	}
+	public override bool isMeaningless() {
+		return false;
+	}
+}
 
 public class AISetActiveLog : EffectLog {
     Unit unit;

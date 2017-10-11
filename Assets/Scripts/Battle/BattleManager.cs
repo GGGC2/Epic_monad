@@ -111,6 +111,7 @@ public class BattleManager : MonoBehaviour{
 				BattleData.uiManager.UpdateApBarUI();
 
 				if (BattleData.selectedUnit.IsAI){
+					BattleData.currentState = CurrentState.AITurn;
 					yield return BattleData.selectedUnit.GetAI().UnitTurn ();
 				}else{
 					yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
@@ -136,7 +137,7 @@ public class BattleManager : MonoBehaviour{
 		BattleData.currentState = CurrentState.FocusToUnit;
 		yield return StartCoroutine(PrepareUnitActionAndGetCommand());
 
-		if (BattleData.currentState != CurrentState.Destroy) {
+		if (BattleData.currentState != CurrentState.Destroyed) {
             LogManager.Instance.Record(new TurnEndLog(unit));
 			yield return EndUnitTurn (unit);
 		}
@@ -318,7 +319,7 @@ public class BattleManager : MonoBehaviour{
             MoveCameraToUnit(unit);
 
 			if (IsSelectedUnitRetreatOrDie()) {
-				BattleData.currentState = CurrentState.Destroy;
+				BattleData.currentState = CurrentState.Destroyed;
 				Debug.Log ("Current PC Destroyed.");
 				yield break;
 			}
