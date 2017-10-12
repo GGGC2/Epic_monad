@@ -140,10 +140,15 @@ public class HealthViewer : MonoBehaviour {
 	void Awake () {
 		currentHealthBar = transform.Find("currentHealthBar").gameObject;
         shieldBar = transform.Find("ShieldBar").gameObject;
-        recoverBar = transform.Find("recoverBar").gameObject;
-        damageBar = transform.Find("damageBar").gameObject;
-        shieldDamageBar = transform.Find("ShieldDamageBar").gameObject;
-        shieldRecoverBar = transform.Find("ShieldRecoverBar").gameObject;
+		shieldBar.GetComponent<SpriteRenderer> ().color = new Color (0.8f, 0.8f, 0.8f);
+		recoverBar = transform.Find("recoverBar").gameObject;
+		recoverBar.GetComponent<SpriteRenderer> ().color = new Color (0f, 1.0f, 0.25f);
+		damageBar = transform.Find("damageBar").gameObject;
+		damageBar.GetComponent<SpriteRenderer> ().color = new Color (0.7f, 0f, 0f);
+		shieldDamageBar = transform.Find("ShieldDamageBar").gameObject;
+		shieldDamageBar.GetComponent<SpriteRenderer> ().color = new Color (0.9f, 0.3f, 0.3f);
+		shieldRecoverBar = transform.Find("ShieldRecoverBar").gameObject;
+		shieldRecoverBar.GetComponent<SpriteRenderer> ().color = new Color (0.2f, 0.8f, 0.45f);
 		retreatIcon = transform.Find("Retreat").gameObject;
 		killIcon = transform.Find("Kill").gameObject;
 	}
