@@ -120,7 +120,7 @@ public class DialogueManager : MonoBehaviour{
 			}else {Debug.LogError("Undefined effectSubType : " + subType);}
 		}else if(Command == DialogueData.CommandType.BGM){
 			string bgmName = dialogueDataList [line].GetCommandSubType ();
-			SoundManager.Instance.PlayBGM(bgmName);
+			StartCoroutine (SoundManager.Instance.PlayBGM (bgmName));
 		}else if(Command == DialogueData.CommandType.BG){
 			Sprite bgSprite = Resources.Load<Sprite>("Background/" + subType);
 			GameObject.Find("Background").GetComponent<Image>().sprite = bgSprite;

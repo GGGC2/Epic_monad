@@ -12,11 +12,33 @@ public class SoundManager : MonoBehaviour {
 	static Dictionary<string, AudioClip> BGMs;
 	static Dictionary<string, AudioClip> SEs;
 
-	public void PlayBGM(string name){
+	public IEnumerator PlayBGM(string name){
+		if (audioSource.clip == null) {
+			audioSource.clip = BGMs [name];
+			audioSource.volume = Configuration.BGMVolume;
+			audioSource.Play ();
+			yield break;
+		}
+		if (audioSource.clip.name == name) {
+			yield break;
+		}
+
+		float time = 0;
+		const float FADETIME = 0.2f;
+
+		float initialVolume = audioSource.volume;
+		while (true) {
+			time += Time.deltaTime;
+			if (time > FADETIME) {
+				break;
+			}
+			audioSource.volume -= initialVolume * Time.deltaTime / FADETIME;
+			yield return null;
+		}
 		audioSource.clip = BGMs [name];
-        audioSource.volume = Configuration.BGMVolume;
-		if(!audioSource.isPlaying)
-			audioSource.Play();
+		audioSource.volume = Configuration.BGMVolume;
+		//if(!audioSource.isPlaying)
+		audioSource.Play ();
 	}
 	public void PlaySE(string name){
 		audioSource.PlayOneShot (SEs[name], Configuration.soundEffectVolume);
