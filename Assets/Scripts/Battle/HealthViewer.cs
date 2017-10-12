@@ -110,7 +110,7 @@ public class HealthViewer : MonoBehaviour {
         retreatIcon.SetActive(false);
     }
 
-    public void SetInitHealth(int maxHealth, Side side){
+	public void SetInitHealth(int maxHealth, Side side, bool isAI){
 		this.currentHealth = maxHealth;
 		this.maxHealth = maxHealth;
 		
@@ -120,13 +120,21 @@ public class HealthViewer : MonoBehaviour {
 		damageBar.transform.localScale = initHealthScale;
         shieldBar.transform.localScale = initHealthScale;
         shieldDamageBar.transform.localScale = initHealthScale;
-		currentHealthBar.GetComponent<SpriteRenderer>().color = SideToHealthColor(side);
+		currentHealthBar.GetComponent<SpriteRenderer>().color = SideToHealthColor(side, isAI);
 	}
 
-    public static Color SideToHealthColor(Side side){
-        if (side == Side.Ally) {return Color.cyan;}
-		else if (side == Side.Neutral) {return Color.gray;}
-		else {return Color.yellow;}
+	public static Color SideToHealthColor(Side side, bool isAI){
+		if (side == Side.Ally) {
+			if (isAI) {
+				return new Color (100f/255f, 160f/255f, 1);
+			} else {
+				return new Color (20f/255f, 20f/255f, 200f/255f);
+			}
+		} else if (side == Side.Neutral) {
+			return Color.gray;
+		} else {
+			return Color.yellow;
+		}
     }
 
 	void Awake () {

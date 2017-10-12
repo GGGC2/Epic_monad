@@ -101,7 +101,7 @@ namespace BattleUI{
         }
 
         public void UpdateHpBar(Unit unit){
-            HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide());
+			HpBar.color = HealthViewer.SideToHealthColor(unit.GetSide(), unit.IsAI);
             HpBar.fillAmount = unit.GetHpRatio();
         }
 
