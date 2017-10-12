@@ -55,8 +55,13 @@ public class DetailInfoPanel : UnitInfoUI{
 
 		// 스킬 상세설명 초기화
 		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
-		skillButton.GetComponent<SkillInfoButton>().SetViewer();
-		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
+		if (skillButton != null) {
+			skillButton.GetComponent<SkillInfoButton>().SetViewer();
+			EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
+		}
+		else {
+			FindObjectOfType<SkillViewer>().Initialize();
+		}
 	}
 }
 

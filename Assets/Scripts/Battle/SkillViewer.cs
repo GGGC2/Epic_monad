@@ -19,6 +19,7 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	public void SetViewer(){
 		if(mySkill != null && viewer != null){
 			viewer.UpdateSkillViewer(mySkill);
+			EventSystem.current.SetSelectedGameObject(gameObject);
 		}
 	}
 }
@@ -47,6 +48,7 @@ public class SkillViewer : SkillUI{
 		rangeType.sprite = Resources.Load<Sprite>("transparent");
 		rangeText.text = "";
 		explainText.text = "";
+		HideSecondRange ();
 	}
 
 	public void UpdateSkillViewer(Skill skill){
@@ -81,6 +83,7 @@ public class SkillViewer : SkillUI{
 			rangeType.sprite = Resources.Load<Sprite>("Icon/Empty");
 			rangeText.text = "";
 			HideSecondRange ();
+			explainText.text = "";
 		}
 
 		SetNameText();
