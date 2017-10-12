@@ -515,6 +515,9 @@ public class UnitManager : MonoBehaviour{
         }
         ReadTileBuffInfos();
         GetEnemyUnits();
+		foreach (var unit in GetAllUnits()) {
+			unit.healthViewer.SetInitHealth(unit.GetMaxHealth(), unit.myInfo.side, unit.IsAI);
+		}
 	}
 
 	public void UpdateUnitOrder (){

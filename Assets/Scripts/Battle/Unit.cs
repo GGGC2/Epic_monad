@@ -1074,8 +1074,6 @@ public class Unit : MonoBehaviour{
 
 		statusEffectList = new List<UnitStatusEffect>();
 		latelyHitInfos = new List<HitInfo>();
-
-		healthViewer.SetInitHealth(GetMaxHealth(), myInfo.side);
 	}
 
 	void LoadSprite(){
@@ -1104,10 +1102,6 @@ public class Unit : MonoBehaviour{
 		ApplyStats();
 		LoadSprite();
 		Initialize();
-
-		if(isAI){
-			GetComponent<Battle.Turn.AI>().CheckActiveTrigger();
-		}
 		CheckAndHideObjectHealth();
 	}
 
