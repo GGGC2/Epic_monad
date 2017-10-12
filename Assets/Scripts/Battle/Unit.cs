@@ -1135,8 +1135,8 @@ public class Unit : MonoBehaviour{
 	}
 
 	public void CheckAndHideObjectHealth(){
-		if(IsObject && GetSide() == Side.Neutral){
-			healthViewer.gameObject.SetActive(false);
+		if (IsObject && GetSide () == Side.Neutral && GetCurrentHealth () >= GetMaxHealth ()) {
+			healthViewer.gameObject.SetActive (false);
 		}
 	}
 
