@@ -13,24 +13,37 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	public bool onOffLock = false;
 	public UnityEvent clicked = new UnityEvent();
 
+	Image frameImage;
+	Material grayscale;
+
 	void Awake(){
 		icon = GetComponent<Image>();
+		frameImage = transform.Find(name+"Frame").GetComponent<Image>();
 	}
 
 	public void Initialize(ActiveSkill newSkill){
 		skill = newSkill;
 		icon.sprite = skill.icon;
+		frameImage.enabled = true;
+	}
+
+	public void Inactive() {
+		skill = null;
+		icon.sprite = Resources.Load<Sprite> ("transparent");
+		frameImage.enabled = false;
 	}
 
 	public void Activate(bool isActive){
 		if (UIManager.Instance.ActionButtonOnOffLock)
 			return;
 		clickable = isActive;
-		if(isActive){
-			icon.color = Color.white;
-		}else{
-			icon.color = new Color (0.3f, 0.3f, 0.3f);
+		if (isActive) {
+			icon.material = null;
 		}
+		else {
+			icon.material = grayscale;
+		}
+		frameImage.enabled = true;
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
@@ -67,6 +80,8 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
 	void Start(){
+		grayscale = Resources.Load<Material> ("Shader/grayscale");
+
 		if(viewer.gameObject.activeSelf){
 			viewer.gameObject.SetActive(false);
 		}

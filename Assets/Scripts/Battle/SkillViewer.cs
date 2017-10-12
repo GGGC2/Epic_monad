@@ -41,6 +41,7 @@ public class SkillViewer : SkillUI{
 	void OnDisable(){
 		//Debug.Log("Why Disabled?");
 	}
+
 	public void Initialize(){
 		viewerNameText.text = "";
 		costText.text = "";

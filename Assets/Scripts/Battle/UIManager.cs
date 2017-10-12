@@ -355,8 +355,9 @@ public class UIManager : MonoBehaviour{
 		skillViewer.gameObject.SetActive(false);
 		Unit unit = BattleData.selectedUnit;
 		for (int i = 0; i < 8; i++) {
-			actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
-			actionButtons [i].skill = null;
+			// actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
+			actionButtons [i].Inactive();
+			// actionButtons [i].skill = null;
 			if (i < unit.activeSkillList.Count) {
 				actionButtons [i].Initialize (unit.activeSkillList [i]);
 				actionButtons [i].Activate (unit.IsThisSkillUsable (unit.activeSkillList [i]));
@@ -372,6 +373,6 @@ public class UIManager : MonoBehaviour{
 	}
 
 	public void HideActionButtons(){
-		actionButtons.ForEach(button => button.icon.sprite = Resources.Load<Sprite>("transparent"));
+		actionButtons.ForEach(button => button.Inactive());
 	}
 }
