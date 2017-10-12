@@ -128,7 +128,7 @@ public class HealthViewer : MonoBehaviour {
 			if (isAI) {
 				return new Color (100f/255f, 160f/255f, 1);
 			} else {
-				return new Color (20f/255f, 20f/255f, 200f/255f);
+				return new Color (45f/255f, 80f/255f, 200f/255f);
 			}
 		} else if (side == Side.Neutral) {
 			return Color.gray;
