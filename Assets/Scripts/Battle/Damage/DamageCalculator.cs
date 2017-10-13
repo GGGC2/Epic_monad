@@ -29,19 +29,6 @@ namespace Battle
             }
 		}
 
-		public class DamageInfo{
-            public Unit target;
-            public float damageAmount;
-            public float shieldAmount;
-
-			public DamageInfo(Unit target, float damageAmount, float shieldAmount){
-				this.target = target;
-                this.damageAmount = damageAmount;
-                this.shieldAmount = shieldAmount;
-			}
-		}
-        
-
 		private static List<Unit> GetTargetUnits(List<Tile> targetTiles) {
 			var targets = new List<Unit>();
 			foreach (var tile in targetTiles)

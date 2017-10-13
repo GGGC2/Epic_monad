@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Enums;
 using GameData;
+using Battle.Turn;
 
 public class HealthViewer : MonoBehaviour {
     /*height order : 
@@ -26,31 +27,20 @@ public class HealthViewer : MonoBehaviour {
 	int maxHealth;
     int shieldAmount;
 
-    public void PreviewDamageInfoList(List<Battle.DamageCalculator.DamageInfo> damageInfoList) {
-        int currentHealth = this.currentHealth;
-        int shieldAmount  = this.shieldAmount;
-        foreach(var damageInfo in damageInfoList) {
-            int damageAmount = (int)damageInfo.damageAmount;
-            if (damageAmount > 0) {
-                currentHealth += Math.Min(shieldAmount - damageAmount, 0);
-                currentHealth = Math.Max(currentHealth, 0);
-                shieldAmount = Math.Max(shieldAmount - damageAmount, 0);
-            } else currentHealth = Math.Min(currentHealth - damageAmount, maxHealth);
-            if(damageInfo.shieldAmount > 0)    shieldAmount += (int)damageInfo.shieldAmount;
-        }
+    public void Preview(float health, float shield) {
         List<GameObject> barsToBeHealthScale = new List<GameObject> { recoverBar };
         List<GameObject> barsToBeShieldScale = new List<GameObject> { shieldRecoverBar };
-        if (currentHealth < this.currentHealth) {
+        if (health < this.currentHealth) {
             barsToBeHealthScale.Add(currentHealthBar);
             barsToBeShieldScale.Add(shieldBar);
         }
         else barsToBeShieldScale.Add(shieldBar);
-        if(shieldAmount  <= this.shieldAmount )  barsToBeShieldScale.Add(shieldBar);
+        if(shield  <= this.shieldAmount )  barsToBeShieldScale.Add(shieldBar);
         else {
             barsToBeHealthScale.Add(currentHealthBar);
             barsToBeHealthScale.Add(damageBar);
         }
-        AdjustBarScales(currentHealth, shieldAmount, barsToBeHealthScale, barsToBeShieldScale);
+        AdjustBarScales(health, shield, barsToBeHealthScale, barsToBeShieldScale);
     }
 
 	/*public void PreviewDamageAmount(int damageAmount) {

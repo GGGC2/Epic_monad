@@ -18,7 +18,7 @@ namespace Battle.Turn {
 			Direction? beforeDirection = null;
 			Direction newDirection = selectedUnit.GetDirection ();
 
-			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
+			unitPreviewDict = new Dictionary<Unit, PreviewState>();
 
 			while (true) {
 				if (beforeDirection != newDirection) {
@@ -136,7 +136,7 @@ namespace Battle.Turn {
 			TileManager.Instance.preSelectedMouseOverTile = null;
 			Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
 
-			allCalculatedTotalDamages = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
+			unitPreviewDict = new Dictionary<Unit, PreviewState>();
 
 			while (true) {
 				Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, originalDirection);
@@ -251,37 +251,77 @@ namespace Battle.Turn {
             else return false;
         }
 
+
+        public class PreviewState {
+            public Unit target;
+            public float health;
+            public float shield;
+            public Vector2 position;
+            public Direction direction;
+            public PreviewState(Unit target) {
+                this.target = target;
+                position = target.GetPosition();
+                direction = target.GetDirection();
+                health = target.currentHealth;
+                shield = target.GetRemainShield();
+            }
+            public void ApplyEffectLog(EffectLog log) {
+                float damageAmount = 0;
+                float shieldAmount = 0;
+                if (log is HPChangeLog)     damageAmount  = -((HPChangeLog)log).amount;
+                if (log is StatusEffectLog) shieldAmount = ((StatusEffectLog)log).GetShieldChangeAmount();
+                if (log is PositionChangeLog)  position = ((PositionChangeLog)log).afterPos;
+                if (shieldAmount < 0) {
+                    damageAmount = -shieldAmount;
+                    shieldAmount = 0;
+                }
+                Debug.Log(target.GetNameEng() + " " + health +" " + shield);
+                if (damageAmount > 0) {
+                    health += Math.Min(shield - damageAmount, 0);
+                    health = Math.Max(health, 0);
+                    shield = Math.Max(shield - damageAmount, 0);
+                } else health = Math.Min(health - damageAmount, target.GetMaxHealth());
+                if (shieldAmount > 0) shield += shieldAmount;
+                Debug.Log(target.GetNameEng() + " " + health + " " + shield);
+            }
+        }
         
-        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> allCalculatedTotalDamages;
-        static Dictionary<Unit, List<DamageCalculator.DamageInfo>> CullPreviewDamageFromEventLog(EventLog eventLog) {
-            Dictionary<Unit, List<DamageCalculator.DamageInfo>> result = new Dictionary<Unit, List<DamageCalculator.DamageInfo>>();
+        static Dictionary<Unit, PreviewState> unitPreviewDict;
+        static Dictionary<Unit, PreviewState> CullPreviewFromEventLog(EventLog eventLog) {
+            Dictionary<Unit, PreviewState> result = new Dictionary<Unit, PreviewState>();
             foreach(var effectLog in eventLog.getEffectLogList()) {
-                DamageCalculator.DamageInfo damageInfo = null;
-                if (effectLog is HPChangeLog)               damageInfo = ((HPChangeLog)effectLog).GetDamageInfo();
-                else if (effectLog is StatusEffectLog)      damageInfo = ((StatusEffectLog)effectLog).GetDamageInfo();
-                if (damageInfo != null) {
-                    Unit unit = damageInfo.target;
-                    if (!result.ContainsKey(unit))  result.Add(unit, new List<DamageCalculator.DamageInfo>());
-                    result[unit].Add(damageInfo);
+                Unit unit = null;
+                Vector2 position = new Vector2(0, 0);
+                if (effectLog is HPChangeLog || effectLog is StatusEffectLog || effectLog is PositionChangeLog) {
+                    if (effectLog is HPChangeLog)       unit = ((HPChangeLog)effectLog).unit;
+                    if(effectLog is StatusEffectLog)    unit = ((StatusEffectLog)effectLog).GetOwner();
+                    if(effectLog is PositionChangeLog)  unit = ((PositionChangeLog)effectLog).unit;
+                    if (!result.ContainsKey(unit)) result.Add(unit, new PreviewState(unit));
+                    result[unit].ApplyEffectLog(effectLog);
                 }
             }
             return result;
         }
+        
 		static void DisplayPreviewDamage(Casting casting){
             //데미지 미리보기
             LogManager.Instance.Record(new CastLog(casting));                   // EventLog를 남긴다.
             ApplyCasting(casting);                                              // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
             EventLog lastEventLog = LogManager.Instance.PopLastEventLog();      // 아까 남겼던 EventLog로 인해 생긴 로그들을 다 돌려받는다.
-			allCalculatedTotalDamages = CullPreviewDamageFromEventLog(lastEventLog);    // EventLog로부터 데미지와 연관된 부분만 추린다.
-			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages)
-                kv.Key.healthViewer.PreviewDamageInfoList(kv.Value);
+			unitPreviewDict = CullPreviewFromEventLog(lastEventLog);            // EventLog로부터 데미지와 연관된 부분만 추린다.
+            foreach (KeyValuePair<Unit, PreviewState> kv in unitPreviewDict) {
+                kv.Key.healthViewer.Preview(kv.Value.health, kv.Value.shield);
+                kv.Key.SetAfterImageAt(kv.Value.position, kv.Value.direction);
+            }
 		}
 		static void HidePreviewDamage(){
 			// 데미지 미리보기 해제.
-			foreach (KeyValuePair<Unit, List<DamageCalculator.DamageInfo>> kv in allCalculatedTotalDamages) {
+			foreach (KeyValuePair<Unit, PreviewState> kv in unitPreviewDict) {
                 Unit unit = kv.Key;
-				if (unit.GetComponentInChildren<HealthViewer> () != null)
-					unit.GetComponentInChildren<HealthViewer> ().CancelPreview ();
+                if (unit.GetComponentInChildren<HealthViewer>() != null) {
+                    unit.GetComponentInChildren<HealthViewer>().CancelPreview();
+                    unit.HideAfterImage();
+                }
 				unit.CheckAndHideObjectHealth();
 			}
 		}

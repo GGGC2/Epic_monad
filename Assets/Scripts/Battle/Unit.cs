@@ -27,6 +27,7 @@ public class Unit : MonoBehaviour{
 	public GameObject damageTextObject;
 	GameObject recoverTextObject;
 	GameObject activeArrowIcon;
+    GameObject afterimage;
 	public HealthViewer healthViewer;
 	GameObject chainAttackerIcon;
 	List<HitInfo> latelyHitInfos;
@@ -952,7 +953,22 @@ public class Unit : MonoBehaviour{
             }
         }
     }
-
+    public void SetAfterImageAt(Vector2 pos, Direction direction) {
+        SpriteRenderer afterimageRenderer = afterimage.GetComponent<SpriteRenderer>();
+        afterimageRenderer.enabled = true;
+        afterimage.transform.position = TileManager.Instance.GetTile(pos).transform.position + new Vector3(0, 0, -0.05f);
+        Direction faceDirection = (Direction)(((int)direction + (int)BattleData.aspect + 4) % 4);
+        if (faceDirection == Direction.LeftUp)      afterimageRenderer.sprite = spriteLeftUp;
+        if (faceDirection == Direction.LeftDown)    afterimageRenderer.sprite = spriteLeftDown;
+        if (faceDirection == Direction.RightUp)     afterimageRenderer.sprite = spriteRightUp;
+        if (faceDirection == Direction.RightDown)   afterimageRenderer.sprite = spriteRightDown;
+        Color color = afterimageRenderer.color;
+        color.a = 0.5f;
+        afterimageRenderer.color = color;
+    }
+    public void HideAfterImage() {
+        afterimage.GetComponent<SpriteRenderer>().enabled = false;
+    }
 	public void UpdateSpriteByDirection()
 	{
 		Direction faceDirection = (Direction)(((int)direction + (int)BattleData.aspect + 4) % 4);
@@ -1054,6 +1070,7 @@ public class Unit : MonoBehaviour{
 		startPositionOfPhase = position;
 		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();
+        HideAfterImage();
 		currentHealth = GetMaxHealth();
 		unitManager = FindObjectOfType<UnitManager>();
 		activityPoint = (int)Math.Round(GetStat(Stat.Agility) * 0.5f) + unitManager.GetStandardActivityPoint();
@@ -1097,6 +1114,7 @@ public class Unit : MonoBehaviour{
 		activeArrowIcon = transform.Find("ActiveArrowIcon").gameObject;
 		chainAttackerIcon = transform.Find("icons/chain").gameObject;
 		healthViewer = transform.Find("HealthBar").GetComponent<HealthViewer>();
+        afterimage = transform.Find("Afterimage").gameObject;
 	}
 
 	void Start(){
