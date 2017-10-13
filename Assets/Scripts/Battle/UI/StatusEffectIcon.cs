@@ -34,13 +34,17 @@ namespace BattleUI {
 
         public void UpdateSprite() {
             string fileName = "";
-            if(statusEffect.GetOriginSkill() != null)    fileName = GetSkillColumnRow(statusEffect.GetOriginSkill());
-            string fileDirectory = "Icon/Skill/" + statusEffect.GetCaster().GetNameEng() + "/" + fileName;
-            try {
-                image.sprite = Resources.Load<Sprite>(fileDirectory);
-            }
-            catch(UnityException e) {
-                image.sprite = Resources.Load<Sprite>("Icon/Empty");
+            if (statusEffect.GetOwnerOfSkill() == "tile" && statusEffect is UnitStatusEffect)
+                Utility.SetElementImage(image, ((UnitStatusEffect)statusEffect).GetOwner().GetElement());
+            else {
+                if (statusEffect.GetOriginSkill() != null) fileName = GetSkillColumnRow(statusEffect.GetOriginSkill());
+                string fileDirectory = "Icon/Skill/" + statusEffect.GetCaster().GetNameEng() + "/" + fileName;
+                try {
+                    image.sprite = Resources.Load<Sprite>(fileDirectory);
+                }
+                catch (UnityException e) {
+                    image.sprite = Resources.Load<Sprite>("Icon/Empty");
+                }
             }
             image.rectTransform.sizeDelta = new Vector2(WIDTH, HEIGHT);
         }
