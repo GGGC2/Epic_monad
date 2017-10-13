@@ -41,7 +41,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator Start(){
-        SoundManager.Instance.PlayBGM("Script_Tense");
+		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
 
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
@@ -58,7 +58,7 @@ public class BattleManager : MonoBehaviour{
 			else yield return null;
 		}
 
-		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
+		yield return StartCoroutine (BattleData.unitManager.GenerateUnits ());
 	}
 
 	public void BattleModeInitialize(){

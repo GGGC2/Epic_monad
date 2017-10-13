@@ -1,6 +1,6 @@
 Script#9			
 *	BG	City	
-*	BGM	Script_Prelude	
+*	BGM	Script_Normal	
 bianca	-	비앙카	(이번엔 반드시……!)
 blank	-	-	나는 출장에서 돌아오자마자, 휴식도 마다하고 다음 날 새로운 임무에 나섰다.
 blank	-	-	러브레이스 가문.^국내 정세를 아는 사람이라면 모를 수가 없는 이름이다.^중소 귀족일 뿐이었지만 몇십 년새 탁월한 사업 능력으로 떠올랐다.
@@ -43,7 +43,7 @@ bianca	-	비앙카	두고 봐! 넌 이미 수배됐어!^꼭 찾아낼 거야! �
 *	FO		
 *	BG	City	
 *	Colorful		
-*	BGM	Script_Prelude	
+*	BGM	Epic_Monarch	
 *	FI		
 blank	-	-	레이나 핀토스의 헛소리가 마음에 걸렸지만, 반역자의 말이니 분명 틀렸을 것이다.
 sepia	-	세피아	이번 임무는 목표물이 도망치지 못하게 하는 게 중요합니다.^비앙카의 덫이 필수겠군요.
