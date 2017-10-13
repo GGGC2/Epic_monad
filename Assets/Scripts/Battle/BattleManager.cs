@@ -378,12 +378,9 @@ public class BattleManager : MonoBehaviour{
 				}
 			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
 				BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
-				Tile destTile = BattleData.tileManager.GetTile(BattleData.move.selectedTilePosition);
-				List<Tile> destPath = movableTilesWithPath[BattleData.move.selectedTilePosition].path;
 				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
 				Vector2 distanceVector = BattleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
-				int totalUseActivityPoint = movableTilesWithPath[BattleData.move.selectedTilePosition].requireActivityPoint;
 
 				BattleData.move.moveCount += distance;
 
@@ -391,9 +388,9 @@ public class BattleManager : MonoBehaviour{
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
-				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, destPath, BattleData.selectedUnit.GetDirection ());
-                logManager.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
-                MoveStates.MoveToTile(destTile, finalDirection, totalUseActivityPoint, destPath.Count);
+                Vector2 destPos = BattleData.move.selectedTilePosition;
+                logManager.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
+                MoveStates.MoveToTile(destPos, movableTilesWithPath);
 			}else if(triggers.skillSelected.Triggered){
 				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
 				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);

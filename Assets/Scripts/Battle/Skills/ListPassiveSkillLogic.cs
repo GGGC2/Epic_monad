@@ -256,10 +256,10 @@ namespace Battle.Skills
                 skillLogic.TriggerStatusEffectsOnMove(target, statusEffect);
             }
         }
-        public override bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+        public override bool TriggerOnSteppingTrap(Unit caster, TileStatusEffect trap) {
             bool ignored = false;
             foreach (var skillLogic in passiveSkillLogics) {
-                if (!skillLogic.TriggerOnSteppingTrap(caster, tile, trap)) {
+                if (!skillLogic.TriggerOnSteppingTrap(caster, trap)) {
                     ignored = true;
                 }
             }

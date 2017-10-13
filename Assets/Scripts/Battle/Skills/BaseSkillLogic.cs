@@ -83,7 +83,7 @@ public class BaseSkillLogic
     public virtual bool TriggerStatusEffectWhenStatusEffectApplied(Unit target, UnitStatusEffect statusEffect, UnitStatusEffect appliedStatusEffect) {
         return true;    //false를 리턴할 경우 appliedStatusEffect를 무시한다.
     }
-    public virtual bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect, Unit caster, Tile targetTile) {
+    public virtual bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect) {
         return true;
     }
     public virtual void TriggerTileStatusEffectAtActionEnd(Tile tile, TileStatusEffect tileStatusEffect) {
@@ -100,7 +100,9 @@ public class BaseSkillLogic
     public virtual bool TriggerTileStatusEffectWhenStatusEffectAppliedToUnit(CastingApply castingApply, Tile tile, TileStatusEffect tileStatusEffect) {
         return true;    //false를 리턴할 경우 해당 타일 위의 유닛에게 적용되는 statusEffect는 무시된다.
     }
-    public virtual void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, Tile tile, TileStatusEffect tileStatusEffect) {
+    public virtual void TriggerTileStatusEffectAtPhaseStart(TileStatusEffect tileStatusEffect) {
+    }
+    public virtual void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, TileStatusEffect tileStatusEffect) {
     }
     public virtual void TriggerTileStatusEffectAtTurnEnd(Unit turnEnder, Tile tile, TileStatusEffect tileStatusEffect) {
     }

@@ -149,6 +149,7 @@ namespace Enums {
 		AllImmune,  // 모든 피해 면역
         Aura,       //오오라
         Trap,
+        InactiveTrap,   // 활성화 대기 중인 덫
         Etc // 위 분류에 해당하지 않는 효과
 	}
 

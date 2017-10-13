@@ -936,7 +936,7 @@ public class Unit : MonoBehaviour{
             foreach (var tileStatusEffect in tile.GetStatusEffectList()) {
                 Skill originSkill = tileStatusEffect.GetOriginSkill();
                 if (originSkill is ActiveSkill) {
-                    ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnStart(this, tile, tileStatusEffect);
+                    ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtTurnStart(this, tileStatusEffect);
                 }
             }
         }

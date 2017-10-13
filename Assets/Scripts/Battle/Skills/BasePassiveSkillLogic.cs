@@ -142,7 +142,7 @@ public class BasePassiveSkillLogic
     }
     public virtual void TriggerStatusEffectsOnMove(Unit target, UnitStatusEffect statusEffect) {
     }
-    public virtual bool TriggerOnSteppingTrap(Unit caster, Tile tile, TileStatusEffect trap) {
+    public virtual bool TriggerOnSteppingTrap(Unit caster, TileStatusEffect trap) {
         return true;
     }
 }

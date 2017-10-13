@@ -327,11 +327,8 @@ namespace Battle.Turn{
 		public IEnumerator MoveToTheTileAndChangeDirection(Tile destTile){
 			Vector2 destPos = destTile.GetTilePos ();
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
-			List<Tile> path = movableTilesWithPath [destPos].path;
-			int requireAP = movableTilesWithPath [destPos].requireActivityPoint;
-			if (path.Count > 0) {
-				Direction finalDirection = Utility.GetFinalDirectionOfPath (destTile, path, unit.GetDirection ());
-				yield return Move (destTile, finalDirection, requireAP, path.Count + 1);
+			if (movableTilesWithPath[destPos].path.Count > 0) {
+				yield return Move (destPos, movableTilesWithPath);
 			}
 		}
 
@@ -503,12 +500,12 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		IEnumerator Move(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
+		IEnumerator Move(Vector2 destPos, Dictionary<Vector2, TileWithPath> path){
 			PaintMovableTiles ();
 			LogManager.Instance.Record (new WaitForSecondsLog (0.3f));
 			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
-            LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), unit.GetDirection(), destTile.GetTilePos(), finalDirection));
-			MoveStates.MoveToTile (destTile, finalDirection, totalAPCost, tileCount);
+            LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
+			MoveStates.MoveToTile (destPos, path);
 			LogManager.Instance.Record (new CameraMoveLog (unit));
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }

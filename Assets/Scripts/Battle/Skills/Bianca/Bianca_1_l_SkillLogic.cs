@@ -11,17 +11,14 @@ namespace Battle.Skills {
             if(targetTiles.Count == 1)  return false;
             return true;
         }
-        public override bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect, Unit caster, Tile targetTile) {
-            return Trap.TriggerOnApplied(tileStatusEffect, targetTile);
+        public override bool TriggerTileStatusEffectApplied(TileStatusEffect tileStatusEffect) {
+            return Trap.TriggerOnApplied(tileStatusEffect);
         }
-        public override bool TriggerTileStatusEffectRemoved(Tile tile, TileStatusEffect tileStatusEffect) {
-            if(!tileStatusEffect.IsOfType(StatusEffectType.Trap)) {   //활성화 대기 중이었던 tileStatusEffect가 사라지면
-                Trap.ActivateTrap(tileStatusEffect, tile);
-            }
-            return true;
+        public override void TriggerTileStatusEffectAtPhaseStart(TileStatusEffect tileStatusEffect) {
+            Trap.ActivateTrap(tileStatusEffect);
         }
-        public override void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, Tile tile, TileStatusEffect tileStatusEffect) {
-            Trap.TriggerAtTurnStart(tileStatusEffect, tile, turnStarter);
+        public override void TriggerTileStatusEffectAtTurnStart(Unit turnStarter, TileStatusEffect tileStatusEffect) {
+            Trap.TriggerAtTurnStart(tileStatusEffect, turnStarter);
         }
     }
 }

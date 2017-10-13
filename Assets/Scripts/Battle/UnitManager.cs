@@ -449,6 +449,7 @@ public class UnitManager : MonoBehaviour{
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
         }
+        TileManager.Instance.TriggerTileStatusEffectsAtPhaseStart();
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
     }
 

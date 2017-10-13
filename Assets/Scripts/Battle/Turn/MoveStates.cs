@@ -31,9 +31,26 @@ namespace Battle.Turn{
 			}
 		}
 		
-		public static void MoveToTile(Tile destTile, Direction finalDirection, int totalAPCost, int tileCount){
-			Unit unit = BattleData.selectedUnit;
-			unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
+		public static void MoveToTile(Vector2 destPos, Dictionary<Vector2, TileWithPath> path) {
+            List<Tile> destPath = path[destPos].path;
+            Tile destTile = BattleData.tileManager.GetTile(destPos);
+
+            int tileCount = 0;
+            bool trapOperated = false;
+            foreach(var tile in destPath) {
+                tileCount++;
+                List<TileStatusEffect> traps = TileManager.Instance.FindTrapsWhoseRangeContains(tile);
+                foreach(var trap in traps) {
+                    Trap.OperateTrap(trap);
+                    destTile = tile;
+                    trapOperated = true;
+                }
+                if(trapOperated)    break;
+            }
+            Direction finalDirection = Utility.GetFinalDirectionOfPath(destTile, destPath, BattleData.selectedUnit.GetDirection());
+            int totalAPCost = path[destTile.GetTilePos()].requireActivityPoint;
+
+            BattleData.selectedUnit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);
 		}
 	}
 }

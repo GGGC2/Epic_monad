@@ -12,7 +12,8 @@ public class EventLog : Log {
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
                 effectLog.executed = true;
-                if(this is CastLog && effectLog is DisplayDamageOrHealTextLog && !((CastLog)this).isLastTarget((DisplayDamageOrHealTextLog)effectLog)) {
+                if(this is CastLog && effectLog is DisplayDamageOrHealTextLog && 
+                        !((CastLog)this).isLastTarget((DisplayDamageOrHealTextLog)effectLog)) {
                     BattleManager.Instance.StartCoroutine(effectLog.Execute());
                     yield return null;
                 }
@@ -32,16 +33,12 @@ public class BattleStartLog : EventLog {
 public class MoveLog : EventLog {
     Unit unit;
     Vector2 beforePos;
-    Direction beforeDirection;
     Vector2 afterPos;
-    Direction afterDirection;
 
-    public MoveLog(Unit unit, Vector2 beforePos, Direction beforeDirection,Vector2 afterPos,  Direction afterDirection) {
+    public MoveLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
         this.unit = unit;
         this.beforePos = beforePos;
-        this.beforeDirection = beforeDirection;
         this.afterPos = afterPos;
-        this.afterDirection = afterDirection;
     }
     public override string GetText() {
         return unit.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "(으)로 이동";

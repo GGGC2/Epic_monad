@@ -176,8 +176,28 @@ public class TileManager : MonoBehaviour {
         foreach (var tile in GetAllTiles().Values) {
             foreach (var statusEffect in tile.GetStatusEffectList()) {
                 if (statusEffect.IsOfType(StatusEffectType.Trap)) {
-                    Trap.Update(statusEffect, tile);
+                    Trap.Update(statusEffect);
                 }
+            }
+        }
+    }
+    public List<TileStatusEffect> FindTrapsWhoseRangeContains(Tile tile) {  // 이 타일을 범위 안에 포함하는 트랩들을 찾는다
+        List<TileStatusEffect> traps = new List<TileStatusEffect>();
+        foreach(var otherTile in GetTilesInRange(RangeForm.Square, tile.GetTilePos(), 0, 1, 0, Direction.Down)) {
+            // 트랩의 발동 범위는 사각 1이라고 가정. 후에 더 넓거나 좁은 트랩이 있다면 바꿔야 함
+            foreach(var statusEffect in otherTile.StatusEffectList) {
+                if(statusEffect.IsOfType(StatusEffectType.Trap))
+                    traps.Add(statusEffect);
+            }
+        }
+        return traps;
+    }
+    public void TriggerTileStatusEffectsAtPhaseStart() {
+        foreach(var tile in GetAllTiles().Values) {
+            foreach(var statusEffect in tile.StatusEffectList) {
+                Skill originSkill = statusEffect.GetOriginSkill();
+                if(originSkill is ActiveSkill)
+                    ((ActiveSkill)originSkill).SkillLogic.TriggerTileStatusEffectAtPhaseStart(statusEffect);
             }
         }
     }

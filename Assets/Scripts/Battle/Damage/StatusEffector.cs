@@ -134,7 +134,7 @@ public static class StatusEffector{
         List<TileStatusEffect> newStatusEffects = new List<TileStatusEffect>();
         foreach (var statusEffect in statusEffects) {
             bool ignoreStatusEffect = false;
-            if (SkillLogicFactory.Get(appliedSkill).TriggerTileStatusEffectApplied(statusEffect, caster, targetTile) == false) {
+            if (SkillLogicFactory.Get(appliedSkill).TriggerTileStatusEffectApplied(statusEffect) == false) {
                 ignoreStatusEffect = true;
                 Debug.Log(statusEffect.GetDisplayName() + " ignored by " + statusEffect.GetOriginSkillName());
             }
