@@ -41,7 +41,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator Start(){
-		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
+        SoundManager.Instance.PlayBGM("Script_Tense");
 
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
@@ -71,6 +71,7 @@ public class BattleManager : MonoBehaviour{
 
 	public void StartTurnManager(){
 		if(!TurnManagerStarted) {
+            BattleData.logDisplayList = new List<LogDisplay>();
             LogManager.Instance.Record(new BattleStartLog());
             StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;
