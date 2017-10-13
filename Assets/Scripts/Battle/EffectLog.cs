@@ -505,8 +505,8 @@ public class DisplayDamageOrHealTextLog : EffectLog {
         return "\t" + unit.GetNameKor() + " : 회복 텍스트 표시(" + amount + ")";
     }
     public override IEnumerator Execute() {
-        if(amount < 0)          yield return unit.DisplayDamageText(-amount, isHealth);
-        else if(amount >= 0)    yield return unit.DisplayRecoverText(amount, isHealth);
+        if(amount <= 0)          yield return unit.DisplayDamageText(-amount, isHealth);
+        else if(amount > 0)    yield return unit.DisplayRecoverText(amount, isHealth);
     }
 }
 

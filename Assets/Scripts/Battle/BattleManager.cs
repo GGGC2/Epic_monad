@@ -41,7 +41,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator Start(){
-        SoundManager.Instance.PlayBGM("Script_Tense");
+		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
 
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
