@@ -270,7 +270,6 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
-                    Debug.Log(owner.GetNameKor() + " " + unitStatusEffect.GetDisplayName() + " " + "부착");
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
@@ -390,29 +389,15 @@ public class AISetActiveLog : EffectLog {
 }
 
 public class CameraMoveLog : EffectLog {
-	MonoBehaviour obj;
+	public Vector2 pos;
 
-	public CameraMoveLog(MonoBehaviour obj) {
-		this.obj = obj;
+	public CameraMoveLog(Vector2 pos) {
+		this.pos = pos;
 	}
-    public override string GetText() {
-		return "\t" + "카메라 위치 변경 : " + obj.name;
-    }
     public override IEnumerator Execute() {
-		if (!isMeaningless ()) {
-			Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-			yield return BattleManager.SlideCameraToPosition (objPos);
-			yield return null;
-		}
+        yield return BattleManager.SlideCameraToPosition (pos);
+		yield return null;
 	}
-	public override bool isMeaningless() {
-		if (obj == null) {
-			return true;
-		}
-		Vector2 cameraPos = (Vector2)Camera.main.transform.position;
-		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-		return cameraPos.x == objPos.x && cameraPos.y == objPos.y;
-    }
 }
 
 public class PrintBonusTextLog : EffectLog {

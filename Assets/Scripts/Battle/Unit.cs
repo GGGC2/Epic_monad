@@ -724,13 +724,13 @@ public class Unit : MonoBehaviour{
 
 		if (this.HasStatusEffect(StatusEffectType.HealOverPhase)){
 			foreach (var statusEffect in statusEffectList){
-				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase)){
+				if (statusEffect.IsOfType(StatusEffectType.HealOverPhase)) {
                     totalAmount += statusEffect.GetAmountOfType(StatusEffectType.HealOverPhase);
 				}
 			}
 		}
 		if (totalAmount > 0) {
-			RecoverHealth (totalAmount);
+            RecoverHealth (totalAmount);
 		}
 	}
 
@@ -748,9 +748,9 @@ public class Unit : MonoBehaviour{
 		}
 
 		if (actualAmount > 0) {
-			BattleManager.MoveCameraToUnit(this);
-			//currentHealth += actualAmount;
-			LogManager.Instance.Record (new HPChangeLog (this, actualAmount));
+            //currentHealth += actualAmount;
+            BattleManager.MoveCameraToUnit(this);
+            LogManager.Instance.Record (new HPChangeLog (this, actualAmount));
 			// DisplayRecoverText (actualAmount, true);
 			LogManager.Instance.Record (new DisplayDamageOrHealTextLog (this, actualAmount, true));
 		}

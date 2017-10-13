@@ -275,14 +275,12 @@ namespace Battle.Turn {
                     damageAmount = -shieldAmount;
                     shieldAmount = 0;
                 }
-                Debug.Log(target.GetNameEng() + " " + health +" " + shield);
                 if (damageAmount > 0) {
                     health += Math.Min(shield - damageAmount, 0);
                     health = Math.Max(health, 0);
                     shield = Math.Max(shield - damageAmount, 0);
                 } else health = Math.Min(health - damageAmount, target.GetMaxHealth());
                 if (shieldAmount > 0) shield += shieldAmount;
-                Debug.Log(target.GetNameEng() + " " + health + " " + shield);
             }
         }
         
@@ -417,10 +415,10 @@ namespace Battle.Turn {
 
 			// 발동되는 모든 시전을 순서대로 실행
 			foreach (var chain in allTriggeredChains) {
+                BattleManager.MoveCameraToUnit(chain.Caster);
 				if (chain.SecondRange.Count > 0) {
 					Tile focusedTile = chain.SecondRange [0];
-					LogManager.Instance.Record (new CameraMoveLog (focusedTile));
-					BattleManager.MoveCameraToTile (focusedTile);
+					//BattleManager.MoveCameraToTile (focusedTile);
 				}
 				chain.Cast (chainCombo);
                 LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
