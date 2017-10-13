@@ -8,7 +8,7 @@ public class LogDisplayPanel : MonoBehaviour {
     public GameObject scrollView;
     public Scrollbar scrollbar;
     public VerticalLayoutGroup logs;
-    public readonly int displayHeight = 52;
+    public readonly int displayHeight = 40;
     int maxNumDisplay;
 
     public void Awake() {

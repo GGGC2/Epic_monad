@@ -138,7 +138,8 @@ public class LogManager : MonoBehaviour {
     }
     bool DisplayThisLog(Log log) {
         if(log is CameraMoveLog || log is PrintBonusTextLog || log is SoundEffectLog || log is VisualEffectLog
-            || log is DisplayDamageOrHealTextLog || log is AddLatelyHitInfoLog || log is WaitForSecondsLog)   return false;
+            || log is DisplayDamageOrHealTextLog || log is AddLatelyHitInfoLog || log is WaitForSecondsLog
+            || log is PaintTilesLog || log is DepaintTilesLog)   return false;
         return true;
     }
     void RemoveLog(Log log) {
