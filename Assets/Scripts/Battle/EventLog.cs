@@ -115,7 +115,7 @@ public class UnitDestroyedLog : EventLog {
         this.unit = unit;
     }
     public override string GetText() {
-        return unit + "파괴";
+        return unit.GetNameKor() + "파괴";
     }
 }
 

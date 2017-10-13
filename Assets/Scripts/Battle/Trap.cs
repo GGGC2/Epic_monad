@@ -51,18 +51,20 @@ class Trap {
 			tile.RemoveStatusEffect (trap);
 		SoundManager.Instance.PlaySE ("OperateTrap");
     }
-    public static void Update(TileStatusEffect trap) {
+    public static EventLog Update(TileStatusEffect trap) {
         Unit caster = trap.GetCaster();
         List<Unit> unitsInRange = GetUnitsInRange(trap);
         foreach(var unit in unitsInRange) {
             if (!trap.GetMemorizedUnits().Contains(unit)) {
                 if (SkillLogicFactory.Get(unit.GetLearnedPassiveSkillList()).TriggerOnSteppingTrap(unit, trap)) {
-                    LogManager.Instance.Record(new TrapOperatedLog(trap));
+                    EventLog trapOperatedLog = new TrapOperatedLog(trap);
+                    LogManager.Instance.Record(trapOperatedLog);
                     OperateTrap(trap);
-                    return;
+                    return trapOperatedLog;
                 }
             }
         }
+        return null;
     }
     public static void TriggerAtTurnStart(TileStatusEffect trap, Unit turnStarter) {
         if (trap.IsOfType(StatusEffectType.Trap))

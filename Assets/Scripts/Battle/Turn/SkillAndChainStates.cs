@@ -290,10 +290,10 @@ namespace Battle.Turn {
             foreach(var effectLog in eventLog.getEffectLogList()) {
                 Unit unit = null;
                 Vector2 position = new Vector2(0, 0);
-                if (effectLog is HPChangeLog || effectLog is StatusEffectLog || effectLog is PositionChangeLog) {
-                    if (effectLog is HPChangeLog)       unit = ((HPChangeLog)effectLog).unit;
-                    if(effectLog is StatusEffectLog)    unit = ((StatusEffectLog)effectLog).GetOwner();
-                    if(effectLog is PositionChangeLog)  unit = ((PositionChangeLog)effectLog).unit;
+                if (effectLog is HPChangeLog)       unit = ((HPChangeLog)effectLog).unit;
+                if(effectLog is StatusEffectLog)    unit = ((StatusEffectLog)effectLog).GetOwner();
+                if(effectLog is PositionChangeLog)  unit = ((PositionChangeLog)effectLog).unit;
+                if (unit != null) {
                     if (!result.ContainsKey(unit)) result.Add(unit, new PreviewState(unit));
                     result[unit].ApplyEffectLog(effectLog);
                 }
@@ -328,7 +328,7 @@ namespace Battle.Turn {
             LogManager logManager = LogManager.Instance;
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
-			BattleManager.MoveCameraToTile(casting.Location.TargetTile);
+			//BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
 			caster.UseActivityPoint (casting.RequireAP);

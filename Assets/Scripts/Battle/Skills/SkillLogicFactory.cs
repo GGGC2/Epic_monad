@@ -481,7 +481,7 @@ public static class SkillLogicFactory
 			break;
 
 			// 에렌
-			case "흡수":
+			case "에테르 지배":
 			passiveSkillLogic = new Eren_0_1_SkillLogic();
 			break;
 			case "흑화":

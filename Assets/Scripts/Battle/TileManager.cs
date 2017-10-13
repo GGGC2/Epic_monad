@@ -172,11 +172,13 @@ public class TileManager : MonoBehaviour {
 	public void DepaintAllTiles(TileColor color){
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}
-    public void CheckAllTraps() {
+    public IEnumerable<EventLog> CheckAllTraps() {
         foreach (var tile in GetAllTiles().Values) {
             foreach (var statusEffect in tile.GetStatusEffectList()) {
                 if (statusEffect.IsOfType(StatusEffectType.Trap)) {
-                    Trap.Update(statusEffect);
+                    EventLog trapOperatedLog = Trap.Update(statusEffect);
+                    if(trapOperatedLog != null)
+                        yield return trapOperatedLog;
                 }
             }
         }

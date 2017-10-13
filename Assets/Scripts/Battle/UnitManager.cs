@@ -54,8 +54,6 @@ public class UnitManager : MonoBehaviour{
 	List<Unit> deadUnits = new List<Unit>();
 	List<Unit> retreatUnits = new List<Unit>();
     List<Unit> enemyUnits = new List<Unit>();
-	List<DeadUnitInfo> deadUnitsInfo = new List<DeadUnitInfo>();
-	List<RetreatUnitInfo> retreatUnitsInfo = new List<RetreatUnitInfo>();
     
 	public List<Unit> GetAllUnits(){
 		return units;
@@ -138,7 +136,7 @@ public class UnitManager : MonoBehaviour{
         }
     }
 
-    public List<Unit> GetRetreatUnits(){
+    /*public List<Unit> GetRetreatUnits(){
 		retreatUnits.Clear();
 		
 		if(SceneData.stageNumber < Setting.retreatOpenStage)
@@ -156,18 +154,7 @@ public class UnitManager : MonoBehaviour{
 
 		return retreatUnits;
 	}
-
-	public void	MakeRetreatUnitInfo(){
-		foreach (var retreatUnit in retreatUnits){
-			RetreatUnitInfo retreatUnitInfo = new RetreatUnitInfo(retreatUnit);
-			retreatUnitsInfo.Add(retreatUnitInfo);
-		}
-	}
-
-	public List<RetreatUnitInfo> GetRetreatUnitsInfo(){
-		return retreatUnitsInfo;
-	}
-
+    
 	public List<Unit> GetDeadUnits(){
 		// 죽은 유닛들을 체크.
 		deadUnits.Clear();
@@ -175,23 +162,64 @@ public class UnitManager : MonoBehaviour{
 			if ((unit.GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
 				deadUnits.Add(unit);
 		}
-
 		return deadUnits;
-	}
+	}*/
+    public IEnumerable<EventLog> CheckDestroyedUnits() {
+        LogManager logManager = LogManager.Instance;
+        UnitManager unitManager = UnitManager.Instance;
+        List<Unit> allUnits = new List<Unit>();
+        foreach(var unit in unitManager.GetAllUnits())
+            allUnits.Add(unit);
+        foreach (var unit in allUnits) {
+            TrigActionType? type = null;
+            UnitDestroyedLog unitDestroyedLog = null;
+            float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
+            if ((percentHealth <= Setting.retreatHpPercent) && (unit.GetCurrentHealth() > 0)) {
+                if (SceneData.stageNumber >= Setting.retreatOpenStage && !unit.IsObject) {
+                    unitDestroyedLog = new UnitDestroyedLog(unit);
+                    type = TrigActionType.Retreat;
+                }
+            }
+            else if (unit.GetCurrentHealth() <= 0) {
+                unitDestroyedLog = new UnitDestroyedLog(unit);
+                type = TrigActionType.Kill;
+            }
+            else if (unit.CheckReach()) {
+                unitDestroyedLog = new UnitDestroyedLog(unit);
+                type = TrigActionType.Reach;
+            }
+            if (unitDestroyedLog != null) {
+                logManager.Record(unitDestroyedLog);
+                logManager.Record(new DestroyUnitLog(unit, (TrigActionType)type));
+                UnitManager.Instance.TriggerOnUnitDestroy(unit, (TrigActionType)type);
+                yield return unitDestroyedLog;
+            }
+        }
+    }
 
-	void MakeDeadUnitInfo(){
-		foreach (var deadUnit in deadUnits){
-			DeadUnitInfo deadUnitInfo = new DeadUnitInfo(deadUnit);
-			deadUnitsInfo.Add(deadUnitInfo);
-		}
-	}
+    public void TriggerOnUnitDestroy(Unit destroyedUnit, TrigActionType actionType) {
+        foreach (var unit in units) {
+            foreach (var passive in unit.passiveSkillList) {
+                passive.SkillLogic.TriggerOnUnitDestroy(unit, destroyedUnit, actionType);
+            }
+        }
+        if (actionType == TrigActionType.Kill) {
+            foreach (var hitInfo in destroyedUnit.GetLatelyHitInfos()) {
+                List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
+                SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, destroyedUnit);
 
-	public List<DeadUnitInfo> GetDeadUnitsInfo(){
-		MakeDeadUnitInfo();
-		return deadUnitsInfo;
-	}
+                if (hitInfo.skill != null)
+                    SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
+            }
+        }
+    }
+    public void DeleteDestroyedUnit(Unit destroyedUnit) {
+        units.Remove(destroyedUnit);
+        readiedUnits.Remove(destroyedUnit);
+    }
 
-	public int GetStandardActivityPoint(){
+
+    public int GetStandardActivityPoint(){
 		return standardActivityPoint;
 	}
 
@@ -361,26 +389,6 @@ public class UnitManager : MonoBehaviour{
 			BattleData.tileManager.DepreselectTiles(triggeredTiles);
 		}
 	}
-    public void TriggerOnUnitDestroy(Unit destroyedUnit, TrigActionType actionType) {
-        foreach (var unit in units) {
-            foreach (var passive in unit.passiveSkillList) {
-                passive.SkillLogic.TriggerOnUnitDestroy(unit, destroyedUnit, actionType);
-            }
-        }
-        if (actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat) {
-            foreach (var hitInfo in destroyedUnit.GetLatelyHitInfos()) {
-                List<PassiveSkill> passiveSkills = hitInfo.caster.GetLearnedPassiveSkillList();
-                SkillLogicFactory.Get(passiveSkills).TriggerOnKill(hitInfo, destroyedUnit);
-
-                if (hitInfo.skill != null)
-                    SkillLogicFactory.Get(hitInfo.skill).OnKill(hitInfo);
-            }
-        }
-    }
-    public void DeleteDestroyedUnit(Unit destroyedUnit) {
-        units.Remove(destroyedUnit);
-        readiedUnits.Remove(destroyedUnit);
-    }
 
 	public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();

@@ -86,7 +86,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public static IEnumerator CheckBattleTrigger(Unit unit, TrigActionType actionType){
+	public static void CheckBattleTrigger(Unit unit, TrigActionType actionType){
 		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
@@ -98,7 +98,6 @@ public class BattleTriggerManager : MonoBehaviour {
 				}
 			}
 		}
-		return null;
 	}
 
 	public static void CheckBattleTrigger(){

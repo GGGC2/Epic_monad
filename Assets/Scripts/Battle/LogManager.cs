@@ -36,16 +36,23 @@ public class LogManager : MonoBehaviour {
         if(DisplayThisLog(log)) logDisplayPanel.AddLogDisplay(logDisplay, numLog + 1);
     }
     public IEnumerator ExecuteLastEventLogAndConsequences() {   // 마지막 Event와 그로 인해 발생하는 모든 새로운 Effect와 Event를 실행한다.
-        do {
-            do {
-                yield return ExecuteLastEventLog();         // 마지막 Event와 그로 인해 발생했던 Effect들을 실행한다.
-                GenerateConsequentEffectLogs();             // 이 Event로 인해 발생한 Effect들이 더 있는지 확인한다.
-                RemoveInvalidEffectLogs();                  // 무의미한 Effect들을 없앤다. (Attach한 후 Stack을 0으로 한다던가)
-            } while(ThereIsNewEffect());                    // 유의미한 Effect가 있다면 있다면 다시 실행한다.
-            yield return ExecuteLastEventLog();             
-            GenerateConsequentEventLogs();                  // 새로 발생한 Event가 있는지 확인한다.
-        } while (ThereIsNewEvent());                        // 있다면 그 Event를 실행한다.
+        yield return ExecuteLastEventLog();
+        yield return ExecuteConsequentEventLogs();
         BattleManager.Instance.CheckBattleTriggers();
+        BattleData.unitManager.ResetLatelyHitUnits();
+    }
+    IEnumerator ExecuteConsequentEventLogs() {
+        foreach (var eventLog in GenerateConsequentEventLogs()) {
+            if (eventLog == null) yield break;
+            yield return ExecuteLastEventLog();
+        }
+    }
+    IEnumerable<EventLog> GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
+        //Debug.Log("Generating ConsequentEventLogs");
+        foreach (var eventLog in TileManager.Instance.CheckAllTraps())
+            yield return eventLog;
+        foreach (var eventLog in UnitManager.Instance.CheckDestroyedUnits())
+            yield return eventLog;
     }
     public EventLog PopLastEventLog() {                     // 마지막 Event를 실행하지 않고 없앤 후 리턴한다(Preview에 쓰임)
         int numLog = BattleData.logDisplayList.Count;
@@ -72,24 +79,20 @@ public class LogManager : MonoBehaviour {
             FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);
     }
     IEnumerator ExecuteLastEventLog() {
-        LogDisplay logDisplay = GetLastEventLogDisplay();
-        Log log = logDisplay.log;
-        Log lastEventLog = GetLastEventLogDisplay().log;
+        do {
+            LogDisplay logDisplay = GetLastEventLogDisplay();
+            Log log = logDisplay.log;
 
-        lastEventLog.executed = true;
-        yield return lastEventLog.Execute();
-        if (log is CastLog) yield return HandleAfterCastLog();
-        else if (log is ChainLog) HandleAfterChainLog();
-        else if (log is MoveLog) HandleAfterMoveLog();
-        else if (log is StandbyLog) HandleAfterStandbyLog();
-        else if (log is MoveCancelLog) HandleAfterMoveCancelLog();
-        yield return null;
-    }
-    void GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
-        //Debug.Log("Generating ConsequentEventLogs");
-        TileManager.Instance.CheckAllTraps();
-        BattleManager.Instance.UpdateUnitsForDestroy();
-        BattleData.unitManager.ResetLatelyHitUnits();
+            log.executed = true;
+            yield return log.Execute();
+            if (log is CastLog) yield return HandleAfterCastLog();
+            else if (log is ChainLog) HandleAfterChainLog();
+            else if (log is MoveLog) HandleAfterMoveLog();
+            else if (log is StandbyLog) HandleAfterStandbyLog();
+            else if (log is MoveCancelLog) HandleAfterMoveCancelLog();
+            GenerateConsequentEffectLogs();             // 이 Event로 인해 발생한 Effect들이 더 있는지 확인한다.
+            RemoveInvalidEffectLogs();                  // 무의미한 Effect들을 없앤다. (Attach한 후 Stack을 0으로 한다던가)
+        } while (ThereIsNewEffect());                    // 유의미한 Effect가 있다면 있다면 다시 실행한다.
     }
     bool ThereIsNewEvent() {
         return !GetLastEventLogDisplay().log.executed;

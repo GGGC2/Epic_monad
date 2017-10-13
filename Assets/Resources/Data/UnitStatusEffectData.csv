@@ -24,7 +24,7 @@ curi	36	FALSE	유독성 촉매	강타	TRUE	TRUE	FALSE	TRUE	9999	1	FALSE	FALSE	TR
 curi	43	FALSE	에테르 폭탄	침묵	FALSE	FALSE	FALSE	FALSE	1	1	FALSE	FALSE	TRUE	None	None	None	1	Silence	X	X	X	FALSE	NONE													기술을 사용할 수 없습니다.
 curi	43	FALSE	제한 구역	공격력 상승	TRUE	TRUE	FALSE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	4	0	TRUE	TRUE													공격력이 <color=green>AMOUNT0</color> 증가합니다.
 curi	50	FALSE	초강산 혼합물	초강산 혼합물	FALSE	FALSE	FALSE	FALSE	3	1	TRUE	FALSE	TRUE	None	None	None	3	DefenseChange	Level	-1.7	-132	FALSE	FALSE	ResistanceChange	Level	-1.7	-132	FALSE	FALSE	DamageOverPhase	O	0.08	0	FALSE	NONE	방어력과 저항력이 <color=red>-AMOUNT0</color> 감소하고 페이즈가 시작될 때마다 <color=red>AMOUNT2</color>의 피해를 받습니다.
-eren	0	FALSE	흡수	흡수	TRUE	FALSE	TRUE	FALSE	3	99	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
+eren	0	FALSE	에테르 지배	흡수	TRUE	FALSE	TRUE	FALSE	3	99	FALSE	FALSE	TRUE	None	None	None	1	Etc	X	X	X	FALSE	NONE													
 eren	1	FALSE	광휘	강타	TRUE	FALSE	FALSE	TRUE	1	1	TRUE	FALSE	TRUE	None	None	None	1	Smite	O	0.1	0.6	FALSE	FALSE													다음 공격 시 <color=red>AMOUNT0</color>의 추가 피해를 줍니다.
 eren	29	FALSE	배척받는 자	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	2	0	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.
 eren	29	FALSE	영겁의 지식	공격력 상승	TRUE	TRUE	TRUE	FALSE	9999	99	TRUE	FALSE	FALSE	None	None	None	1	PowerChange	Stack	7	0	TRUE	TRUE													공격력이 <color=red>AMOUNT0</color> 증가합니다.

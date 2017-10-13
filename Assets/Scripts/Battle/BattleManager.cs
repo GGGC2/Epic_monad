@@ -200,9 +200,9 @@ public class BattleManager : MonoBehaviour{
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
         UnitManager.Instance.DeleteDestroyedUnit(unit);
 		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
-			yield return BattleTriggerManager.CheckBattleTrigger(unit, actionType);
-			yield return BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
-			yield return BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.UnderCount);
+			BattleTriggerManager.CheckBattleTrigger(unit, actionType);
+			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
+			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.UnderCount);
 		}else{
 			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
 		}
@@ -229,31 +229,6 @@ public class BattleManager : MonoBehaviour{
 		}
 
 		return false;
-	}
-
-	public void UpdateUnitsForDestroy() {
-        LogManager logManager = LogManager.Instance;
-        UnitManager unitManager = UnitManager.Instance;
-        foreach (var unit in unitManager.GetRetreatUnits()){
-			//yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Retreat));
-            logManager.Record(new UnitDestroyedLog(unit));
-            logManager.Record(new DestroyUnitLog(unit, TrigActionType.Retreat));
-            UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Retreat);
-        }
-		foreach(var unit in unitManager.GetDeadUnits()){
-            //yield return StartCoroutine(DestroyUnit(unit, TrigActionType.Kill));
-            logManager.Record(new UnitDestroyedLog(unit));
-            logManager.Record(new DestroyUnitLog(unit, TrigActionType.Kill));
-            UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Kill);
-        }
-        foreach (var unit in unitManager.GetAllUnits()) {
-            if (unit.CheckReach()) {
-                //yield return StartCoroutine(DestroyUnit(BattleData.selectedUnit, TrigActionType.Reach));
-                logManager.Record(new UnitDestroyedLog(unit));
-                logManager.Record(new DestroyUnitLog(unit, TrigActionType.Reach));
-                UnitManager.Instance.TriggerOnUnitDestroy(unit, TrigActionType.Kill);
-            }
-        }
 	}
 
 	public static void MoveCameraToUnit(Unit unit){
