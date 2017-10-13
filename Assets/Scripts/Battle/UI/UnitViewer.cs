@@ -34,6 +34,7 @@ namespace BattleUI{
             UpdateHpBar(unit);
             UpdateApBar(unit);
             UpdateEffect(unit);
+            UIManager.Instance.DisableStatusEffectDisplayPanel();
             SetCommonUnitInfoUI();
         }
 

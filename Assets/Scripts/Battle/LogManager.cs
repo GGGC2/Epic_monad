@@ -149,8 +149,6 @@ public class LogManager : MonoBehaviour {
         if(log is EffectLog && ((EffectLog)log).parentEvent != null)
             ((EffectLog)log).parentEvent.getEffectLogList().Remove((EffectLog)log); 
     }
-
-
     Dictionary<StatusEffect, StatusEffectChange> SEChangeDict = new Dictionary<StatusEffect, StatusEffectChange>();
     // 매 event의 발생마다, 변하는 statusEffect들의 change를 기억한다. 
     

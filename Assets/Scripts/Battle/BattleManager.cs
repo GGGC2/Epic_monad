@@ -58,7 +58,7 @@ public class BattleManager : MonoBehaviour{
 			else yield return null;
 		}
 
-		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
+		yield return StartCoroutine (BattleData.unitManager.GenerateUnits ());
 	}
 
 	public void BattleModeInitialize(){
@@ -71,6 +71,7 @@ public class BattleManager : MonoBehaviour{
 
 	public void StartTurnManager(){
 		if(!TurnManagerStarted) {
+            BattleData.logDisplayList = new List<LogDisplay>();
             LogManager.Instance.Record(new BattleStartLog());
             StartCoroutine (InstantiateTurnManager ());
 			TurnManagerStarted = true;
@@ -154,7 +155,6 @@ public class BattleManager : MonoBehaviour{
 		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (unit);
 
 		BattleData.SetSelectedUnit(unit);
-        MoveCameraToUnit(unit);
         BattleData.move = new BattleData.Move();
 		BattleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
 		ChainList.RemoveChainOfThisUnit(BattleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
@@ -267,7 +267,7 @@ public class BattleManager : MonoBehaviour{
 	{
 		if (obj == null)
 			return;
-        LogManager.Instance.Record(new CameraMoveLog(obj));
+        LogManager.Instance.Record(new CameraMoveLog(obj.gameObject.transform.position));
 	}
 	public static IEnumerator SlideCameraToPosition(Vector2 position)
 	{
@@ -316,9 +316,9 @@ public class BattleManager : MonoBehaviour{
         LogManager logManager = LogManager.Instance;
 		while (BattleData.currentState == CurrentState.FocusToUnit){
 			Unit unit = BattleData.selectedUnit;
-            MoveCameraToUnit(unit);
+            yield return SlideCameraToPosition(unit.transform.position);
 
-			if (IsSelectedUnitRetreatOrDie()) {
+            if (IsSelectedUnitRetreatOrDie()) {
 				BattleData.currentState = CurrentState.Destroyed;
 				Debug.Log ("Current PC Destroyed.");
 				yield break;
@@ -417,8 +417,7 @@ public class BattleManager : MonoBehaviour{
 		UIManager.Instance.HideActionButtons();
 	}
 
-	public void MoveCameraToUnitAndDisplayUnitInfoViewer(Unit unit){
-		MoveCameraToUnit(unit);
+	public void MoveCameraToUnitAndDisplayUnitInfoViewer(Unit unit) {
 		BattleData.uiManager.SetMovedUICanvasOnUnitAsCenter(unit);
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}

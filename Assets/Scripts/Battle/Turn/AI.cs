@@ -239,6 +239,7 @@ namespace Battle.Turn{
 
 		IEnumerator FSM(){
 			while (true) {
+                yield return BattleManager.SlideCameraToPosition(unit.transform.position);
                 if (state == State.Dead || state == State.EndTurn) {
 					yield break;
 				}
@@ -506,7 +507,6 @@ namespace Battle.Turn{
 			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
 			MoveStates.MoveToTile (destPos, path);
-			LogManager.Instance.Record (new CameraMoveLog (unit));
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator UseSkill(Casting casting){

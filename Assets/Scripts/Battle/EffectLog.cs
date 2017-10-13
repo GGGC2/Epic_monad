@@ -11,8 +11,8 @@ public class EffectLog : Log {
 }
 
 public class HPChangeLog : EffectLog {
-    Unit unit;
-    int amount;
+    public Unit unit;
+    public int amount;
     public void setAmount(int amount) {
         this.amount = amount;
     }
@@ -42,9 +42,6 @@ public class HPChangeLog : EffectLog {
     }
     public override bool isMeaningless() {
         return amount == 0;
-    }
-    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
-        return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
     }
 }
 
@@ -273,7 +270,6 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
-                    Debug.Log(owner.GetNameKor() + " " + unitStatusEffect.GetDisplayName() + " " + "부착");
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
@@ -297,27 +293,29 @@ public class StatusEffectLog : EffectLog {
         return !(type != StatusEffectChangeType.Attach && type != StatusEffectChangeType.Remove
                 && beforeAmount == afterAmount);
     }*/
-    public Battle.DamageCalculator.DamageInfo GetDamageInfo() {
+    public Unit GetOwner() {
+        if(statusEffect is UnitStatusEffect)   return ((UnitStatusEffect)statusEffect).GetOwner();
+        return null;
+    }
+    public float GetShieldChangeAmount() {
         if (statusEffect is UnitStatusEffect && statusEffect.IsOfType(StatusEffectType.Shield)) {
             Unit unit = ((UnitStatusEffect)statusEffect).GetOwner();
             float amount = afterAmount - beforeAmount;
             if (type == StatusEffectChangeType.RemainAmountChange) {
-                if(amount > 0)  return new Battle.DamageCalculator.DamageInfo(unit, 0, amount);
-                else            return new Battle.DamageCalculator.DamageInfo(unit, -amount, 0);
-            }
-            else if(type == StatusEffectChangeType.Attach) 
-                return new Battle.DamageCalculator.DamageInfo(unit, 0, statusEffect.GetAmountOfType(StatusEffectType.Shield));
+                return amount;
+            } else if (type == StatusEffectChangeType.Attach)
+                return statusEffect.GetAmountOfType(StatusEffectType.Shield);
             else if (type == StatusEffectChangeType.Remove)
-                return new Battle.DamageCalculator.DamageInfo(unit, statusEffect.GetAmountOfType(StatusEffectType.Shield), 0);
+                return -statusEffect.GetRemainAmountOfType(StatusEffectType.Shield);
         }
-        return null;
+        return 0;
     }
 }
 
 public class PositionChangeLog : EffectLog {
-    Unit unit;
+    public Unit unit;
     Vector2 beforePos;
-    Vector2 afterPos;
+    public Vector2 afterPos;
 
     public PositionChangeLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
         this.unit = unit;
@@ -391,29 +389,15 @@ public class AISetActiveLog : EffectLog {
 }
 
 public class CameraMoveLog : EffectLog {
-	MonoBehaviour obj;
+	public Vector2 pos;
 
-	public CameraMoveLog(MonoBehaviour obj) {
-		this.obj = obj;
+	public CameraMoveLog(Vector2 pos) {
+		this.pos = pos;
 	}
-    public override string GetText() {
-		return "\t" + "카메라 위치 변경 : " + obj.name;
-    }
     public override IEnumerator Execute() {
-		if (!isMeaningless ()) {
-			Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-			yield return BattleManager.SlideCameraToPosition (objPos);
-			yield return null;
-		}
+        yield return BattleManager.SlideCameraToPosition (pos);
+		yield return null;
 	}
-	public override bool isMeaningless() {
-		if (obj == null) {
-			return true;
-		}
-		Vector2 cameraPos = (Vector2)Camera.main.transform.position;
-		Vector2 objPos = (Vector2)obj.gameObject.transform.position;
-		return cameraPos.x == objPos.x && cameraPos.y == objPos.y;
-    }
 }
 
 public class PrintBonusTextLog : EffectLog {
