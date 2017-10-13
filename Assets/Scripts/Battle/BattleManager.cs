@@ -41,8 +41,6 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public IEnumerator Start(){
-        SoundManager.Instance.PlayBGM("Script_Tense");
-
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
 		ChainList.InitiateChainList ();
@@ -58,7 +56,9 @@ public class BattleManager : MonoBehaviour{
 			else yield return null;
 		}
 
-		yield return StartCoroutine(BattleData.unitManager.GenerateUnits());
+		yield return StartCoroutine (BattleData.unitManager.GenerateUnits ());
+
+		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
 	}
 
 	public void BattleModeInitialize(){
