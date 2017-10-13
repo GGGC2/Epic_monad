@@ -70,13 +70,13 @@ public class RightScreen_BattleReady : MonoBehaviour {
 
 		// 고유 특성을 맨 앞으로
 		Skill uniquePassive = Parser.GetSkillByUnit(unitEngName).Find(pSkill => pSkill.requireLevel == 0);
-		skillButtons.First().Initialize(uniquePassive);
+		skillButtons.First ().Initialize (uniquePassive, null);
 				
 		// 나머지 스킬 표시
 		Debug.Log("selectedSkills : " + unit.selectedSkills.Count);
 		for (int i = 1; i <= 10; i++){
 			if(i <= unit.selectedSkills.Count){
-				skillButtons[i].Initialize(unit.selectedSkills[i-1]);
+				skillButtons [i].Initialize (unit.selectedSkills [i - 1], null);
 			}else{
 				skillButtons[i].gameObject.SetActive(false);
 			}
@@ -92,7 +92,7 @@ public class RightScreen_BattleReady : MonoBehaviour {
 
 		// 스킬 상세설명 초기화
 		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
-		skillButton.GetComponent<SkillInfoButton>().SetViewer();
+		skillButton.GetComponent<SkillInfoButton> ().SetViewer (null);
 		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 

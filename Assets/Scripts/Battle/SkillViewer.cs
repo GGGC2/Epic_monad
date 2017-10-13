@@ -11,14 +11,15 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	public Image iconSlot;
 	public Skill mySkill;
 	public SkillViewer viewer;
+	public Unit owner;
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
-		SetViewer();
+		SetViewer (owner);
 	}
 
-	public void SetViewer(){
+	public void SetViewer(Unit owner){
 		if(mySkill != null && viewer != null){
-			viewer.UpdateSkillViewer(mySkill);
+			viewer.UpdateSkillViewer (mySkill, owner);
 			EventSystem.current.SetSelectedGameObject(gameObject);
 		}
 	}
@@ -52,12 +53,26 @@ public class SkillViewer : SkillUI{
 		HideSecondRange ();
 	}
 
-	public void UpdateSkillViewer(Skill skill){
+	public void UpdateSkillViewer(Skill skill, Unit owner){
 		mySkill = skill;
 		if(mySkill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
-			costText.text = "<color=cyan>행동력 " + activeSkill.GetRequireAP() + "</color>";
+			costText.text = "<color=cyan>행동력 </color>";
+			int originalCost = activeSkill.GetRequireAP ();
+			if (owner != null) {
+				int currentCost = owner.GetActualRequireSkillAP (activeSkill);
+				if (currentCost < originalCost) {
+					costText.text += "<color=#00FF00>" + currentCost + "</color>";
+				} else if (currentCost > originalCost) {
+					costText.text += "<color=red>" + currentCost + "</color>";
+				} else {
+					costText.text += "<color=cyan>" + currentCost + "</color>";
+				}
+			} else {
+				costText.text += "<color=cyan>" + originalCost + "</color>";
+			}
+					
 			int cooldown = activeSkill.GetCooldown();
 			if(cooldown > 0){
 				cooldownText.text = "재사용 대기 " + cooldown.ToString() + "페이즈";

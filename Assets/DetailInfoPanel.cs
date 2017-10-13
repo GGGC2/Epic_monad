@@ -36,7 +36,7 @@ public class DetailInfoPanel : UnitInfoUI{
 		// 고유특성 (렙제 0인 특성) 은 무조건 앞으로
 		if (unit.passiveSkillList.Any(pSkill => pSkill.requireLevel == 0)) {
 			PassiveSkill uniquePassive = unit.passiveSkillList.Find(pSkill => pSkill.requireLevel == 0);
-			skillButtons.First().Initialize(uniquePassive);
+			skillButtons.First ().Initialize (uniquePassive, unit);
 		}
 		else {
 			skillButtons.First().gameObject.SetActive(false);
@@ -45,9 +45,9 @@ public class DetailInfoPanel : UnitInfoUI{
 		// 나머지 스킬을 액티브 -> 패시브 순서로 표시
 		for (int i = 1; i <= 10; i++){
             if (i <= unit.activeSkillList.Count){
-                skillButtons[i].Initialize(unit.activeSkillList[i-1]);
+				skillButtons [i].Initialize (unit.activeSkillList [i - 1], unit);
             }else if(i < unit.activeSkillList.Count + unit.passiveSkillList.Count){
-                skillButtons[i].Initialize(unit.passiveSkillList[i - unit.activeSkillList.Count]);
+				skillButtons [i].Initialize (unit.passiveSkillList [i - unit.activeSkillList.Count], unit);
             }else{
                 skillButtons[i].gameObject.SetActive(false);
             }
@@ -56,7 +56,7 @@ public class DetailInfoPanel : UnitInfoUI{
 		// 스킬 상세설명 초기화
 		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
 		if (skillButton != null) {
-			skillButton.GetComponent<SkillInfoButton>().SetViewer();
+			skillButton.GetComponent<SkillInfoButton> ().SetViewer (unit);
 			EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 		}
 		else {

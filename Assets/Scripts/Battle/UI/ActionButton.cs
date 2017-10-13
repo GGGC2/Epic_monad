@@ -71,7 +71,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(skill != null){
 			viewer.gameObject.SetActive(true);
-			viewer.UpdateSkillViewer(skill);
+			viewer.UpdateSkillViewer (skill, BattleData.selectedUnit);
 			return;
 		}
 		if(icon.sprite != Resources.Load<Sprite>("transparent")){

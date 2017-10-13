@@ -18,7 +18,7 @@ public class SkillInfoButton : SkillUI{
 		}
 	}
 
-	public void Initialize(Skill newSkill){
+	public void Initialize(Skill newSkill, Unit owner){
 		mySkill = newSkill;
 		if(newSkill == null){
 			gameObject.SetActive(false);
@@ -28,5 +28,6 @@ public class SkillInfoButton : SkillUI{
 				iconSlot.sprite = mySkill.icon;
 			}
 		}
+		this.owner = owner;
 	}
 }
