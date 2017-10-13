@@ -735,6 +735,7 @@ public class Unit : MonoBehaviour{
 
 	public void RecoverHealth(float amount)
 	{
+        if(IsObject)    return;
         int maxHealth = GetMaxHealth();
 		// 회복량 증감 효과 적용
 		amount = CalculateActualAmount(amount, StatusEffectType.TakenHealChange);
