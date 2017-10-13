@@ -41,6 +41,7 @@ namespace BattleUI {
 
             SetElementImage(tile.GetTileElement());
             UpdateEffect(tile);
+            UIManager.Instance.DisableStatusEffectDisplayPanel();
         }
 
         void UpdateEffect(Tile tile) {
