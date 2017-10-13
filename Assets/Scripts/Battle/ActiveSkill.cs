@@ -335,8 +335,13 @@ public class ActiveSkill : Skill{
 				//공격/약화계 스킬이면 회피 체크를 하고 아니라면 무조건 효과를 가한다
 				if (!IsChainable() || !CheckEvasion(caster, target)) {
 					CastingApply castingApply = new CastingApply(casting, target);
-					// 데미지 적용
-					if (SkillLogic.MayDisPlayDamageCoroutine(castingApply)) {
+
+                    // 효과 외의 부가 액션 (AP 감소 등)
+                    SkillLogic.ActionInDamageRoutine(castingApply);
+                    passiveSkillLogicsOfCaster.ActionInDamageRoutine(castingApply);
+
+                    // 데미지 적용
+                    if (SkillLogic.MayDisPlayDamageCoroutine(castingApply)) {
 						if (skillApplyType == SkillApplyType.DamageHealth) {
 							ApplyDamage(castingApply, chainCombo, target == targets.Last());
 						} else {
@@ -353,10 +358,6 @@ public class ActiveSkill : Skill{
 							}
 						}
 					}
-
-					// 효과 외의 부가 액션 (AP 감소 등)
-					SkillLogic.ActionInDamageRoutine(castingApply);
-					passiveSkillLogicsOfCaster.ActionInDamageRoutine(castingApply);
 
 					// 기술의 상태이상은 기술이 적용된 후에 붙인다.
 					if (unitStatusEffectList.Count > 0) {

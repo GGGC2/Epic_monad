@@ -283,7 +283,7 @@ public class Unit : MonoBehaviour{
     public void ForceMove(Tile destTile) { //강제이동
 		if (!IsObject && SkillLogicFactory.Get(passiveSkillList).TriggerOnForceMove(this, destTile)) {
 			ChangePosition (destTile);
-            LogManager.Instance.Record(new WaitForSecondsLog(0.2f));
+            //LogManager.Instance.Record(new WaitForSecondsLog(0.2f));
         }
     }
     
