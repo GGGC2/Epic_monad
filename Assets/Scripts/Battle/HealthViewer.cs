@@ -133,7 +133,8 @@ public class HealthViewer : MonoBehaviour {
 		} else if (side == Side.Neutral) {
 			return Color.gray;
 		} else {
-			return Color.yellow;
+			return new Color (1, 200f/255f, 50f/255f);
+			//return new Color (255f/255f, 130f/255f, 0f/255f); // boss orange(for test)
 		}
     }
 
