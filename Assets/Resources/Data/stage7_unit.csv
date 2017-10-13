@@ -1,23 +1,23 @@
-Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
-1	아스터 기병	asterCavalry01	Ally	13	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-2	아스터 기병	asterCavalry01	Ally	14	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-3	아스터 기병	asterCavalry01	Ally	15	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-4	아스터 기병	asterCavalry01	Ally	16	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	0
-5	아스터 궁수	asterArcher02	Ally	13	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
-6	아스터 궁수	asterArcher02	Ally	14	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
-7	아스터 궁수	asterArcher02	Ally	15	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	0
-8	요정 병사	elvenSoldier01	Enemy	12	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	0
-9	요정 병사	elvenSoldier01	Enemy	13	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	0
-10	요정 병사	elvenSoldier01	Enemy	14	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	0
-11	요정 병사	elvenSoldier01	Enemy	15	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	0
-12	요정 병사	elvenSoldier01	Enemy	16	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	0
-13	요정 궁수	elvenArcher01	Enemy	11	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	0
-14	요정 궁수	elvenArcher01	Enemy	12	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	0
-15	요정 궁수	elvenArcher01	Enemy	13	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	0
-16	요정 궁수	elvenArcher01	Enemy	14	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	0
-17	요정 궁수	elvenArcher01	Enemy	14	2	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	0
-18	요정 사제	elvenPriest01	Enemy	12	2	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	0
-19	요정 사제	elvenPriest01	Enemy	13	1	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	0
-20	요정 사제	elvenPriest01	Enemy	14	1	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	0
-21	PCjson	json	Ally	11	16	LeftDown	0	0	0	0	0	None	None	None	false	0
-22	PCtriana	triana	Ally	12	16	LeftDown	0	0	0	0	0	None	None	None	false	0
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	
+1	아스터 기병	asterCavalry01	Ally	13	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	false	0
+2	아스터 기병	asterCavalry01	Ally	14	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	false	0
+3	아스터 기병	asterCavalry01	Ally	15	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	false	0
+4	아스터 기병	asterCavalry01	Ally	16	13	LeftDown	405	50	50	32	55	Melee	Plant	Sun	false	false	0
+5	아스터 궁수	asterArcher02	Ally	13	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	false	0
+6	아스터 궁수	asterArcher02	Ally	14	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	false	0
+7	아스터 궁수	asterArcher02	Ally	15	14	LeftDown	311	46	32	13	47	Melee	Plant	Moon	false	false	0
+8	요정 병사	elvenSoldier01	Enemy	12	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	false	0
+9	요정 병사	elvenSoldier01	Enemy	13	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	false	0
+10	요정 병사	elvenSoldier01	Enemy	14	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	false	0
+11	요정 병사	elvenSoldier01	Enemy	15	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	false	0
+12	요정 병사	elvenSoldier01	Enemy	16	5	RightUp	433	46	50	69	58	Melee	Plant	Earth	false	false	0
+13	요정 궁수	elvenArcher01	Enemy	11	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	false	0
+14	요정 궁수	elvenArcher01	Enemy	12	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	false	0
+15	요정 궁수	elvenArcher01	Enemy	13	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	false	0
+16	요정 궁수	elvenArcher01	Enemy	14	3	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	false	0
+17	요정 궁수	elvenArcher01	Enemy	14	2	RightUp	311	78	13	50	55	Melee	Plant	Earth	false	false	0
+18	요정 사제	elvenPriest01	Enemy	12	2	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	false	0
+19	요정 사제	elvenPriest01	Enemy	13	1	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	false	0
+20	요정 사제	elvenPriest01	Enemy	14	1	RightUp	254	73	-6	50	55	Magic	Plant	Earth	false	false	0
+21	PCjson	json	Ally	11	16	LeftDown	0	0	0	0	0	None	None	None	false	false	0
+22	PCtriana	triana	Ally	12	16	LeftDown	0	0	0	0	0	None	None	None	false	false	0

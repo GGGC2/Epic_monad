@@ -1,6 +1,6 @@
-﻿Index	NameKor	NameEng	Side	InitPosX	InitPosY	InitDir	Health	Power	Defense	Resistance	Agility	Class	Element	Celestial	IsObject
-1	제국군 병사	soldier01	Enemy	9	4	LeftUp	184	60	0	0	47	Melee	None	None	false	0
-2	제국군 병사	soldier01	Enemy	9	5	LeftUp	184	60	0	0	47	Melee	None	None	false	0
-3	제국군 병사	soldier01	Enemy	6	4	LeftUp	184	60	0	0	47	Melee	None	None	false	0
-4	PClucius	lucius	Ally	2	4	RightDown	0	0	0	0	0	Melee	None	None	false	1	CurrentAP	4
-5	PCreina	reina	Ally	2	3	RightDown	0	0	0	0	0	Magic	None	None	false	0
+Index	NameKor	NameEng	Side	InitPosX	InitPosY	InitDir	Health	Power	Defense	Resistance	Agility	Class	Element	Celestial	IsObject	IsNamed			
+1	제국군 병사	soldier01	Enemy	9	4	LeftUp	184	60	0	0	47	Melee	None	None	false	false	0		
+2	제국군 병사	soldier01	Enemy	9	5	LeftUp	184	60	0	0	47	Melee	None	None	false	false	0		
+3	제국군 병사	soldier01	Enemy	6	4	LeftUp	184	60	0	0	47	Melee	None	None	false	false	0		
+4	PClucius	lucius	Ally	2	4	RightDown	0	0	0	0	0	Melee	None	None	false	false	1	CurrentAP	4
+5	PCreina	reina	Ally	2	3	RightDown	0	0	0	0	0	Magic	None	None	false	false	0		

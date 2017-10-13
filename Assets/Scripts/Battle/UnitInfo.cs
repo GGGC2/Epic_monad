@@ -16,6 +16,7 @@ public class UnitInfo{
 	public Element element;
 	public Celestial celestial;
 	public bool isObject;
+	public bool isNamed;
 	public Dictionary<Stat, int> baseStats = new Dictionary<Stat, int>();
 	public Dictionary<Stat, int> InitStatChanges = new Dictionary<Stat, int>();
 
@@ -48,6 +49,7 @@ public class UnitInfo{
 				celestial = Celestial.None;
 			}
 			isObject = commaParser.ConsumeBool();
+			isNamed = commaParser.ConsumeBool();
 			int StatChangeCount = commaParser.ConsumeInt();
 			for(int i = 0; i < StatChangeCount; i++){
 				InitStatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());
@@ -224,5 +226,7 @@ public class UnitInfo{
 			element = UnitInfo.GetElement (PCName);
 		if (SceneData.stageNumber >= Setting.celestialOpenStage)
 			celestial = UnitInfo.GetCelestial (PCName);
+
+		isNamed = true;
 	}
 }
