@@ -338,6 +338,7 @@ public class BattleManager : MonoBehaviour{
             if (update != null){
 				StopCoroutine(update);
 			}
+            unit.HideAfterImage();
 
 			if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
@@ -685,9 +686,12 @@ public class BattleManager : MonoBehaviour{
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString ();
 					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
-					foreach (Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path) {
+                    List<Tile> path = movableTilesWithPath[tileUnderMouse.GetTilePos()].path;
+					foreach (Tile tile in path) {
 						tile.PaintTile (TileColor.Red);
 					}
+                    BattleData.selectedUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
+                        Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.selectedUnit.GetDirection()));
 				}
 			}
 			BattleData.uiManager.UpdateApBarUI ();
