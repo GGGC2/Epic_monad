@@ -425,7 +425,7 @@ public class PrintBonusTextLog : EffectLog {
             uiManager.PrintDirectionBonus(DirectionCategory.Back, amount);
             break;
         case "DirectionSide":
-            uiManager.PrintDirectionBonus(DirectionCategory.Back, amount);
+            uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
             break;
         case "Celestial":
             uiManager.PrintCelestialBonus(amount);
