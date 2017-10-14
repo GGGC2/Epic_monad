@@ -8,7 +8,11 @@ using Enums;
 using GameData;
 
 public class BattleTriggerManager : MonoBehaviour {
-	UnitManager unitManager;
+    private static BattleTriggerManager instance;
+    public static BattleTriggerManager Instance {
+        get { return instance; }
+    }
+    UnitManager unitManager;
 	public SceneLoader sceneLoader;
 	ResultPanel resultPanel;
 
@@ -68,6 +72,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	void Awake(){
+        instance = this;
 		if (!SceneData.isTestMode && !SceneData.isStageMode){
             GameDataManager.Load();
 		}
@@ -77,9 +82,11 @@ public class BattleTriggerManager : MonoBehaviour {
 
 		triggers = Parser.GetParsedData<BattleTrigger>();
 		nextScriptName = triggers.Find(x => x.resultType == TrigResultType.End).nextSceneIndex;
-		
-		if(FindObjectOfType<ConditionPanel>() != null)
-			FindObjectOfType<ConditionPanel>().Initialize(triggers);
+
+        if (FindObjectOfType<ConditionPanel>() != null) {
+            FindObjectOfType<CameraMover>().SetMovable(false);
+            FindObjectOfType<ConditionPanel>().Initialize(triggers);
+        }
 	}
 	void Start () {
 		unitManager = BattleData.unitManager;

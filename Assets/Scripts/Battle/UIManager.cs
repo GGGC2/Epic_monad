@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour{
     GameObject statusEffectDisplayPanel;
     Vector3 originalStatusEffectDisplayPanelPosition;
     GameObject logDisplayPanel;
+    GameObject conditionPanel;
     GameObject configurationPanel;
 
 	public GameObject chainBonusObj;
@@ -48,6 +49,7 @@ public class UIManager : MonoBehaviour{
 		}
 		unitViewerUI                            = GameObject.Find("UnitViewerPanel");
         statusEffectDisplayPanel                = GameObject.Find("StatusEffectDisplayPanel");
+        conditionPanel                          = GameObject.Find("ConditionPanel");
         logDisplayPanel                         = GameObject.Find("LogDisplayPanel");
         configurationPanel                      = GameObject.Find("ConfigurationPanel");
         selectedUnitViewerUI                    = GameObject.Find("SelectedUnitViewerPanel");
@@ -252,6 +254,11 @@ public class UIManager : MonoBehaviour{
     public void DisableStatusEffectDisplayPanel() {
         statusEffectDisplayPanel.transform.position = originalStatusEffectDisplayPanelPosition;
         statusEffectDisplayPanel.SetActive(false);
+    }
+
+    public void ActivateConditionPanel() {
+        conditionPanel.GetComponent<ConditionPanel>().Initialize(BattleTriggerManager.Instance.triggers);
+        conditionPanel.SetActive(true);
     }
 
     public void ActivateLogDisplayPanel() {

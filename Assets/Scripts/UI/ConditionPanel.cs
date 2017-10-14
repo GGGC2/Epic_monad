@@ -9,11 +9,7 @@ public class ConditionPanel : MonoBehaviour{
 	public Text Lose;
 	public TutorialManager tutorial;
 
-	CameraMover cm;
-
 	public void Initialize(List<BattleTrigger> triggers){
-		cm = FindObjectOfType<CameraMover>();
-		cm.SetMovable(false);
 
 		Win.text = "";
 		Lose.text = "";
@@ -26,10 +22,19 @@ public class ConditionPanel : MonoBehaviour{
 		}
 
 		foreach(BattleTrigger trigger in triggers){
-			if(trigger.resultType == TrigResultType.Win)
-				Win.text += "- " + trigger.korName + "\n";
-			else if(trigger.resultType == TrigResultType.Lose)
-				Lose.text += "- " + trigger.korName + "\n";
+            Text text = Win;
+            if (trigger.resultType == TrigResultType.Win)
+                text = Win;
+            else if (trigger.resultType == TrigResultType.Lose)
+                text = Lose;
+            text.text += "- " + trigger.korName;
+            if (trigger.reqCount > 0) {
+                text.text += "(";
+                if(trigger.count < trigger.reqCount)    text.text += "<color=red>" + trigger.count + "</color>";
+                else text.text = "<color=green>" + trigger.count + "</color>"; 
+                text.text += "/" + trigger.reqCount + ")";
+            }
+            text.text += "\n";
 		}
 	}
 
@@ -44,7 +49,7 @@ public class ConditionPanel : MonoBehaviour{
 	}
 
 	public void OnClicked(){
-		cm.SetMovable(true);
+		FindObjectOfType<CameraMover>().SetMovable(true);
 		gameObject.SetActive(false);
 
 		if (FindObjectOfType<ReadyManager>() == null) {

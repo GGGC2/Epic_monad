@@ -497,6 +497,12 @@ GameObject:
   m_PrefabParentObject: {fileID: 1448048055539306, guid: 4b39f95afa3dd460e9610c859bd55188,
     type: 2}
   m_PrefabInternal: {fileID: 1706915302}
+--- !u!114 &1626505107 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11411640, guid: 750256399ab32466f94897aae008d915,
+    type: 2}
+  m_PrefabInternal: {fileID: 1897022873}
+  m_Script: {fileID: 11500000, guid: 070a334ea70414203b29e80f4cae8ab5, type: 3}
 --- !u!1001 &1706915302
 Prefab:
   m_ObjectHideFlags: 0
@@ -1042,6 +1048,21 @@ Prefab:
     - target: {fileID: 114840211320253806, guid: 4b39f95afa3dd460e9610c859bd55188,
         type: 2}
       propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114525948269560374, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1626505107}
+    - target: {fileID: 114525948269560374, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActivateConditionPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 114525948269560374, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
