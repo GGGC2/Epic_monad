@@ -622,11 +622,10 @@ public class ActiveSkill : Skill{
 		}
 
 		List<Tile> secondRange = casting.SecondRange;
-		logManager.Record (new PaintTilesLog (secondRange, TileColor.Red));
-		Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
-		logManager.Record (new DepaintTilesLog (TileColor.Red));
+        TileManager.Instance.PaintTiles(secondRange, TileColor.Red);
+		yield return Battle.Turn.SkillAndChainStates.ApplyAllTriggeredChains (casting);
+        TileManager.Instance.DepaintAllTiles(TileColor.Red);
 
-		yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 		HideSkillNamePanelUI ();
 	}
 

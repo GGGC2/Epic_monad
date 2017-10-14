@@ -94,7 +94,7 @@ namespace Battle.Turn {
 					if (BattleData.triggers.directionSelectedByUser.Triggered) {
 						BattleData.currentState = CurrentState.ApplySkill;
                         logManager.Record(new CastLog(casting));
-                        ApplyCasting (casting);
+                        yield return ApplyCasting (casting);
                     } else if (BattleData.triggers.directionLongSelectedByUser.Triggered) {
 						if (CheckWaitChainPossible (casting)) {
 							BattleData.currentState = CurrentState.WaitChain;
@@ -103,7 +103,7 @@ namespace Battle.Turn {
 						}else{
 							BattleData.currentState = CurrentState.ApplySkill;
                             logManager.Record(new CastLog(casting));
-                            ApplyCasting (casting);
+                            yield return ApplyCasting (casting);
                         }
 					}else if(BattleData.triggers.skillSelected.Triggered){
 						yield return battleManager.StartCoroutine(SkillSelected());
@@ -228,7 +228,7 @@ namespace Battle.Turn {
 				if (BattleData.triggers.tileSelectedByUser.Triggered) {
 					BattleData.currentState = CurrentState.ApplySkill;
                     logManager.Record(new CastLog(casting));
-                    ApplyCasting (casting);
+                    yield return ApplyCasting (casting);
                 } else if (BattleData.triggers.tileLongSelectedByUser.Triggered) {
 					if (CheckWaitChainPossible (casting)) {
 						BattleData.currentState = CurrentState.WaitChain;
@@ -237,7 +237,7 @@ namespace Battle.Turn {
 					}else{
 						BattleData.currentState = CurrentState.ApplySkill;
                         logManager.Record(new CastLog(casting));
-                        ApplyCasting (casting);
+                        yield return ApplyCasting (casting);
                     }
 				}else if(BattleData.triggers.skillSelected.Triggered) {
                     yield return BM.StartCoroutine(SkillSelected());
@@ -304,7 +304,7 @@ namespace Battle.Turn {
 		static void DisplayPreviewDamage(Casting casting){
             //데미지 미리보기
             LogManager.Instance.Record(new CastLog(casting));                   // EventLog를 남긴다.
-            ApplyCasting(casting);                                              // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
+            casting.Cast(1);                                                    // ApplyCasting한다. 로그만 남기므로 실제로 전투에 영향을 미치지 않는다.
             EventLog lastEventLog = LogManager.Instance.PopLastEventLog();      // 아까 남겼던 EventLog로 인해 생긴 로그들을 다 돌려받는다.
 			unitPreviewDict = CullPreviewFromEventLog(lastEventLog);            // EventLog로부터 데미지와 연관된 부분만 추린다.
             foreach (KeyValuePair<Unit, PreviewState> kv in unitPreviewDict) {
@@ -324,7 +324,7 @@ namespace Battle.Turn {
 			}
 		}
 
-		public static void ApplyCasting (Casting casting) {
+		public static IEnumerator ApplyCasting (Casting casting) {
             LogManager logManager = LogManager.Instance;
 			Unit caster = casting.Caster;
 			ActiveSkill skill = casting.Skill;
@@ -336,7 +336,7 @@ namespace Battle.Turn {
 				//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
                 logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));
             }
-			ApplyAllTriggeredChains(casting);
+			yield return ApplyAllTriggeredChains(casting);
         }
 
 		public static void WaitChain (Casting casting) {
@@ -404,7 +404,8 @@ namespace Battle.Turn {
 				return false;
         }
 
-		public static void ApplyAllTriggeredChains (Casting casting) {
+		public static IEnumerator ApplyAllTriggeredChains (Casting casting) {
+            LogManager logManager = LogManager.Instance;
             BattleManager battleManager = BattleData.battleManager;
 			Unit caster = casting.Caster;
 
@@ -422,9 +423,10 @@ namespace Battle.Turn {
 				}
 				chain.Cast (chainCombo);
                 if(chain != allTriggeredChains.Last())
-                    LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
+                    logManager.Record(new WaitForSecondsLog(0.3f));
                 //BattleData.uiManager.chainBonusObj.SetActive(false);
-                LogManager.Instance.Record(new PrintBonusTextLog("All", 0, false));
+                logManager.Record(new PrintBonusTextLog("All", 0, false));
+                yield return logManager.ExecuteLastEventLogAndConsequences();
             }
         }
     }

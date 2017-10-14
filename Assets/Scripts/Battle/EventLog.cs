@@ -58,7 +58,7 @@ public class MoveCancelLog : EventLog {
     }
 }
 
-public class ChainLog : EventLog {
+public class ChainLog : EventLog {  // 연계 대기
     Casting casting;
     public ChainLog(Casting casting) {
         this.casting = casting;
@@ -70,7 +70,7 @@ public class ChainLog : EventLog {
     }
 }
 
-public class CastLog : EventLog {
+public class CastLog : EventLog {   // 스킬 사용
     Casting casting;
     public CastLog(Casting casting) {
         this.casting = casting;
@@ -84,6 +84,24 @@ public class CastLog : EventLog {
         List<Tile> realEffectRange = casting.RealEffectRange;
         List<Unit> targets = TileManager.GetUnitsOnTiles(realEffectRange);
         if(targets.Count == 0)  return false;
+        return log.unit == targets.Last();
+    }
+}
+
+public class CastByChainLog : EventLog {    // 연계 발동
+    Casting casting;
+    public CastByChainLog(Casting casting) {
+        this.casting = casting;
+    }
+    public override string GetText() {
+        Unit caster = casting.Caster;
+        ActiveSkill activeSkill = casting.Skill;
+        return caster.GetNameKor() + " : " + activeSkill.GetName() + " 연계 발동";
+    }
+    public bool isLastTarget(DisplayDamageOrHealTextLog log) {
+        List<Tile> realEffectRange = casting.RealEffectRange;
+        List<Unit> targets = TileManager.GetUnitsOnTiles(realEffectRange);
+        if (targets.Count == 0) return false;
         return log.unit == targets.Last();
     }
 }
