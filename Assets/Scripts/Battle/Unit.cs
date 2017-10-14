@@ -1046,6 +1046,7 @@ public class Unit : MonoBehaviour{
 		if(SceneData.stageNumber >= Setting.passiveOpenStage){
 			foreach (var passiveSkill in passiveSkills) {
         	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
+                    Debug.Log(this.GetNameKor() + " " + passiveSkill.GetName());
 					AddPassiveSkill(passiveSkill, statusEffectInfoList);
             	    //passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
 	                //passiveSkillList.Add(passiveSkill);

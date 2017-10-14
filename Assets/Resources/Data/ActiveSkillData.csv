@@ -11,9 +11,10 @@ asterArcher02	0	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0
 child	0	1	가만히	1	10	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	팝콘이나 가져와라, 애야.	None	0	0	None	0	0
 childHolder	0	1	사격	1	35	0	Power	0.9	Point	Diamond	1	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Barrage	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 burglar	0	1	칼춤	1	38	0	Power	0.8	Auto	Sector	1	2	0	Sector	1	2	0	DamageHealth	MeleeArea	Area	NonMove	Slash	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.8	0	None	0	0
-elvenSoldier01	0	1	근접 공격	1	30	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
-elvenArcher01	0	1	화살 발사	1	40	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
-elvenPriest01	0	1	하급 치유	1	30	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	-	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
+elvenSoldier01	0	1	근접 공격	1	40	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
+elvenSoldier01	0	1	계절풍	1	35	0	Power	0.8	Route	Straight	1	3	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	SeasonWind	대상을 자신 앞으로 당겨온 후 <color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+elvenArcher01	0	1	화살 발사	1	35	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
+elvenPriest01	0	1	하급 치유	1	35	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	-	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
 controller	0	1	침입자 제거	1	0	1	Power	1	Auto	Global	0	0	0	Global	0	0	0	DamageHealth	-	Individual	NonMove	-	모든 적군에게 최대 체력 15%의 피해를 줍니다.	None	0	0	None	0	0
 kashasty_Escape	0	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 triana_Rest	0	1	광폭화	1	1	10	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	ControllerGrawl	10페이즈 동안 자신의 공격력과 방어력과 저항력을 2배로 높입니다.	None	0	0	None	0	0

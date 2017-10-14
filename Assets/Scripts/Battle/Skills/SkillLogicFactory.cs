@@ -269,6 +269,10 @@ public static class SkillLogicFactory
 	public static BasePassiveSkillLogic Get(PassiveSkill passiveSkill){
 		BasePassiveSkillLogic passiveSkillLogic = null;
 		switch (passiveSkill.GetName()){
+            // AI
+            case "생명의 갑옷":
+            passiveSkillLogic = new Stage_7_0_SkillLogic();
+            break;
             // 그레네브
             case "타고난 저격수":
             passiveSkillLogic = new Grenev_0_1_SkillLogic();
