@@ -210,6 +210,7 @@ public class UnitManager : MonoBehaviour{
     }
 
     public void TriggerOnUnitDestroy(Unit destroyedUnit, TrigActionType actionType) {
+        ChainList.RemoveChainOfThisUnit(destroyedUnit);
         foreach (var unit in units) {
             foreach (var passive in unit.passiveSkillList) {
                 passive.SkillLogic.TriggerOnUnitDestroy(unit, destroyedUnit, actionType);

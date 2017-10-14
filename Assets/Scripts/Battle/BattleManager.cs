@@ -195,7 +195,6 @@ public class BattleManager : MonoBehaviour{
 			unit.GetComponent<SpriteRenderer>().color = Color.red;
 		}
 
-		ChainList.RemoveChainOfThisUnit (unit);
 		RemoveAuraEffectFromUnit(unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
         UnitManager.Instance.DeleteDestroyedUnit(unit);
