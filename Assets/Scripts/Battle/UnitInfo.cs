@@ -17,6 +17,7 @@ public class UnitInfo{
 	public Celestial celestial;
 	public bool isObject;
 	public bool isNamed;
+	public bool isKillable;
 	public Dictionary<Stat, int> baseStats = new Dictionary<Stat, int>();
 	public Dictionary<Stat, int> InitStatChanges = new Dictionary<Stat, int>();
 
@@ -50,6 +51,7 @@ public class UnitInfo{
 			}
 			isObject = commaParser.ConsumeBool();
 			isNamed = commaParser.ConsumeBool();
+			isKillable = commaParser.ConsumeBool();
 			int StatChangeCount = commaParser.ConsumeInt();
 			for(int i = 0; i < StatChangeCount; i++){
 				InitStatChanges.Add(commaParser.ConsumeEnum<Stat>(), commaParser.ConsumeInt());

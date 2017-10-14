@@ -177,6 +177,7 @@ public class Unit : MonoBehaviour{
 	public bool IsPC { get { return (!isAI) && (!myInfo.isObject); } }
 	public bool IsObject { get { return myInfo.isObject; } }
 	public bool IsNamed { get { return myInfo.isNamed; } }
+	public bool IsKillable { get { return myInfo.isKillable; } }
     public Vector2 GetPosition() {return position;}
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {

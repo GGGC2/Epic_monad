@@ -176,7 +176,11 @@ public class UnitManager : MonoBehaviour{
 			if (unit.IsObject || unit.IsNamed) {
 				if (unit.GetCurrentHealth () <= 0) {
 					unitDestroyedLog = new UnitDestroyedLog (unit);
-					type = TrigActionType.Retreat;
+					if (unit.IsObject || !unit.IsKillable) {
+						type = TrigActionType.Retreat;
+					} else {
+						type = TrigActionType.Kill;
+					}
 				} else if (unit.CheckReach ()) {
 					unitDestroyedLog = new UnitDestroyedLog (unit);
 					type = TrigActionType.Reach;
