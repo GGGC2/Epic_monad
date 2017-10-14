@@ -176,6 +176,8 @@ public class Unit : MonoBehaviour{
 	public bool IsAI { get { return isAI; } }
 	public bool IsPC { get { return (!isAI) && (!myInfo.isObject); } }
 	public bool IsObject { get { return myInfo.isObject; } }
+	public bool IsNamed { get { return myInfo.isNamed; } }
+	public bool IsKillable { get { return myInfo.isKillable; } }
     public Vector2 GetPosition() {return position;}
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {
@@ -841,8 +843,9 @@ public class Unit : MonoBehaviour{
 		int damage = CalculateDamageByCasting(castingApply, true);	
 
 		int remainHP = GetCurrentHealth () + GetRemainShield();
-		if (!IsObject && SceneData.stageNumber >= Setting.retreatOpenStage) {
-			remainHP -= GetStat (Stat.MaxHealth) * Setting.retreatHpPercent / 100;
+		if (SceneData.stageNumber >= Setting.retreatOpenStage && !IsObject && !IsNamed) {
+			int retreatHP = (int)(GetMaxHealth () * Setting.retreatHPFloat);
+			remainHP -= retreatHP;
 		}
 		
 		damage = Math.Min (damage, remainHP);

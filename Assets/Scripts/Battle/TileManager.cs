@@ -169,6 +169,11 @@ public class TileManager : MonoBehaviour {
 		}
 	}
 
+	public void DepaintAllTiles(){
+		foreach (var tile in GetTilesInGlobalRange()) {
+			tile.DepaintTile ();
+		}
+	}
 	public void DepaintAllTiles(TileColor color){
 		DepaintTiles(GetTilesInGlobalRange(), color);
 	}

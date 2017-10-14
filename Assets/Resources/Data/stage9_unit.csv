@@ -1,5 +1,5 @@
-Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	
-1	레이나	reina	Enemy	1	2	RightUp	601	148	75	115	57	Magic	Fire	Sun	false	true	0
-2	리니안	lenien	Enemy	1	3	RightUp	694	135	36	36	54	Magic	Metal	Moon	false	true	0
-3	PCarcadia	PCarcadia	Ally	11	16	LeftDown	0	0	0	0	0	Melee	Fire	Sun	false	false	0
-4	PCsepia	PCsepia	Ally	12	16	LeftDown	0	0	0	0	0	Magic	Plant	Earth	false	false	0
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	레이나	reina	Enemy	1	2	RightUp	601	148	75	115	57	Magic	Fire	Sun	false	true	false	0
+2	리니안	lenien	Enemy	1	3	RightUp	694	135	36	36	54	Magic	Metal	Moon	false	true	false	0
+3	PCarcadia	PCarcadia	Ally	11	16	LeftDown	0	0	0	0	0	Melee	Fire	Sun	false	false	false	0
+4	PCsepia	PCsepia	Ally	12	16	LeftDown	0	0	0	0	0	Magic	Plant	Earth	false	false	false	0

@@ -18,8 +18,7 @@ public class Setting{
 	public static bool shortcutEnable = true;
 
 	//변수 통제
-	public static int retreatHpPercent = 10;
-	public static float retreatHpFloat = 0.1f;
+	public static float retreatHPFloat = 0.2f;
 	public static float fadeInWaitingTime = 0.3f;
 	public static float tileImageHeight = 0.5f;
 	public static float tileImageWidth = 1.0f;

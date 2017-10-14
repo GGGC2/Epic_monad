@@ -173,21 +173,33 @@ public class UnitManager : MonoBehaviour{
         foreach (var unit in allUnits) {
             TrigActionType? type = null;
             UnitDestroyedLog unitDestroyedLog = null;
-            float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
-            if ((percentHealth <= Setting.retreatHpPercent) && (unit.GetCurrentHealth() > 0)) {
-                if (SceneData.stageNumber >= Setting.retreatOpenStage && !unit.IsObject) {
-                    unitDestroyedLog = new UnitDestroyedLog(unit);
-                    type = TrigActionType.Retreat;
-                }
-            }
-            else if (unit.GetCurrentHealth() <= 0) {
-                unitDestroyedLog = new UnitDestroyedLog(unit);
-                type = TrigActionType.Kill;
-            }
-            else if (unit.CheckReach()) {
-                unitDestroyedLog = new UnitDestroyedLog(unit);
-                type = TrigActionType.Reach;
-            }
+			if (unit.IsObject || unit.IsNamed) {
+				if (unit.GetCurrentHealth () <= 0) {
+					unitDestroyedLog = new UnitDestroyedLog (unit);
+					if (unit.IsObject || !unit.IsKillable) {
+						type = TrigActionType.Retreat;
+					} else {
+						type = TrigActionType.Kill;
+					}
+				} else if (unit.CheckReach ()) {
+					unitDestroyedLog = new UnitDestroyedLog (unit);
+					type = TrigActionType.Reach;
+				}
+			} else {
+				int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
+				if (unit.GetCurrentHealth () <= 0) {
+					unitDestroyedLog = new UnitDestroyedLog (unit);
+					type = TrigActionType.Kill;
+				} else if ((unit.GetCurrentHealth () <= retreatHP) && (unit.GetCurrentHealth () > 0)) {
+					if (SceneData.stageNumber >= Setting.retreatOpenStage && !unit.IsObject && !unit.IsNamed) {
+						unitDestroyedLog = new UnitDestroyedLog (unit);
+						type = TrigActionType.Retreat;
+					}
+				} else if (unit.CheckReach ()) {
+					unitDestroyedLog = new UnitDestroyedLog (unit);
+					type = TrigActionType.Reach;
+				}
+			}
             if (unitDestroyedLog != null) {
                 logManager.Record(unitDestroyedLog);
                 logManager.Record(new DestroyUnitLog(unit, (TrigActionType)type));
