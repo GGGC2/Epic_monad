@@ -339,8 +339,10 @@ public class BattleManager : MonoBehaviour{
 				StopCoroutine(update);
 			}
             unit.HideAfterImage();
+            BattleData.tileManager.DepaintAllTiles(TileColor.Red);
+            BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 
-			if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
+            if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
                 logManager.Record(new MoveCancelLog(unit, BattleData.moveSnapshot));
                 BattleData.selectedUnit.ApplySnapshot();
@@ -360,24 +362,18 @@ public class BattleManager : MonoBehaviour{
 
 				BattleData.move.moveCount += distance;
 
-				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
-				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				BattleData.tileManager.DepreselectAllTiles ();
 				BattleData.currentState = CurrentState.CheckDestination;
                 Vector2 destPos = BattleData.move.selectedTilePosition;
                 logManager.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
                 MoveStates.MoveToTile(destPos, movableTilesWithPath);
 			}else if(triggers.skillSelected.Triggered){
-				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
-				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				yield return StartCoroutine(SkillAndChainStates.SkillSelected());
                 BattleData.previewAPAction = null;
                 BattleData.uiManager.UpdateApBarUI();
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
 			}
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
-				BattleData.tileManager.DepaintAllTiles (TileColor.Red);
-				BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
                     logManager.Record(new StandbyLog(unit));
