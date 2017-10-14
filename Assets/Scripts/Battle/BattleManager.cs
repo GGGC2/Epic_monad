@@ -554,6 +554,7 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
         int phase = BattleData.currentPhase;
+        BattleTriggerManager.CheckBattleTrigger();
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);
@@ -564,7 +565,6 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator StartPhaseOnGameManager(){
 		BattleData.currentPhase++;
         int phase = BattleData.currentPhase;
-		BattleTriggerManager.CheckBattleTrigger();
 		HighlightBattleTriggerTiles();
 
 		yield return StartCoroutine(BattleData.uiManager.MovePhaseUI(BattleData.currentPhase));
