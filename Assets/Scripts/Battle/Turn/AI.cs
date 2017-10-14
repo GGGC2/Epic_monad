@@ -501,11 +501,11 @@ namespace Battle.Turn{
 			yield return null;
 		}
 
-		IEnumerator Move(Vector2 destPos, Dictionary<Vector2, TileWithPath> path){
-			PaintMovableTiles ();
+		IEnumerator Move(Vector2 destPos, Dictionary<Vector2, TileWithPath> path) {
+            LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
+            PaintMovableTiles ();
 			LogManager.Instance.Record (new WaitForSecondsLog (0.3f));
 			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
-            LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
 			MoveStates.MoveToTile (destPos, path);
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }

@@ -421,7 +421,8 @@ namespace Battle.Turn {
 					//BattleManager.MoveCameraToTile (focusedTile);
 				}
 				chain.Cast (chainCombo);
-                LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
+                if(chain != allTriggeredChains.Last())
+                    LogManager.Instance.Record(new WaitForSecondsLog(0.3f));
                 //BattleData.uiManager.chainBonusObj.SetActive(false);
                 LogManager.Instance.Record(new PrintBonusTextLog("All", 0, false));
             }
