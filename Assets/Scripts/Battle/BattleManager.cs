@@ -315,7 +315,7 @@ public class BattleManager : MonoBehaviour{
 					movableTiles.Add(movableTileWithPath.Value.tile);
 				}
 				BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
-				update = UpdatePreviewPathAndAP(movableTilesWithPath);
+				update = UpdatePreviewPathAndAP(movableTiles, movableTilesWithPath);
 				StartCoroutine(update);
 			}//이동 가능한 범위 표시 끝
 
@@ -339,8 +339,7 @@ public class BattleManager : MonoBehaviour{
 				StopCoroutine(update);
 			}
             unit.HideAfterImage();
-            BattleData.tileManager.DepaintAllTiles(TileColor.Red);
-            BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
+			BattleData.tileManager.DepaintAllTiles ();
 
             if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
@@ -657,7 +656,7 @@ public class BattleManager : MonoBehaviour{
         }
 	}
 
-	private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
+	private static IEnumerator UpdatePreviewPathAndAP(List<Tile> movableTiles, Dictionary<Vector2, TileWithPath> movableTilesWithPath){
 		BattleData.mouseOverTilePosition = null;
 		BattleUI.UnitViewer viewer = GameObject.Find ("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer> ();
 		Vector2? previousFrameDest = null;
@@ -670,11 +669,14 @@ public class BattleManager : MonoBehaviour{
 			}
 
 			BattleData.tileManager.DepaintAllTiles (TileColor.Red);
-			if (BattleData.mouseOverTilePosition.HasValue == false) {
+			BattleData.tileManager.PaintTiles(movableTiles, TileColor.Blue);
+			Vector2? mouseOverTilePos = BattleData.mouseOverTilePosition;
+			if (mouseOverTilePos.HasValue == false || !movableTilesWithPath.ContainsKey (mouseOverTilePos.Value)) {
 				viewer.OffPreviewAp ();
 				BattleData.previewAPAction = null;
+				BattleData.selectedUnit.HideAfterImage();
 			}else{
-				var preSelectedTile = BattleData.mouseOverTilePosition.Value;
+				var preSelectedTile = mouseOverTilePos.Value;
 				if (movableTilesWithPath.ContainsKey (preSelectedTile)){
 					//movableTilesWithPath[preSelectedTile].tile.transform.position += new Vector3(0, 0, -0.5f);
 					int requiredAP = movableTilesWithPath [preSelectedTile].requireActivityPoint;
@@ -682,12 +684,14 @@ public class BattleManager : MonoBehaviour{
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString ();
 					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
-                    List<Tile> path = movableTilesWithPath[tileUnderMouse.GetTilePos()].path;
+					List<Tile> path = movableTilesWithPath[tileUnderMouse.GetTilePos()].path;
+					BattleData.selectedUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
+						Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.selectedUnit.GetDirection()));
+					path.Add (tileUnderMouse);
 					foreach (Tile tile in path) {
+						tile.DepaintTile ();
 						tile.PaintTile (TileColor.Red);
 					}
-                    BattleData.selectedUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
-                        Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.selectedUnit.GetDirection()));
 				}
 			}
 			BattleData.uiManager.UpdateApBarUI ();

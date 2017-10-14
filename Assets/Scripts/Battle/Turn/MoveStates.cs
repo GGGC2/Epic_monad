@@ -6,31 +6,6 @@ using Enums;
 
 namespace Battle.Turn{
 	public class MoveStates{
-		private static IEnumerator UpdatePreviewPathAndAP(Dictionary<Vector2, TileWithPath> movableTilesWithPath){
-			BattleData.mouseOverTilePosition = null;
-			while (true){
-				BattleUI.UnitViewer viewer = GameObject.Find("SelectedUnitViewerPanel").GetComponent<BattleUI.UnitViewer>();
-				BattleData.tileManager.DepaintAllTiles(TileColor.Red);
-				viewer.OffPreviewAp();
-				if (BattleData.mouseOverTilePosition.HasValue == false){
-					BattleData.previewAPAction = null;
-				}
-				else{
-					var preSelectedTile = BattleData.mouseOverTilePosition.Value;
-					int requiredAP = movableTilesWithPath[preSelectedTile].requireActivityPoint;
-					BattleData.previewAPAction = new APAction(APAction.Action.Move, requiredAP);
-					Tile tileUnderMouse = TileManager.Instance.preSelectedMouseOverTile;
-					tileUnderMouse.CostAP.text = requiredAP.ToString();
-					viewer.PreviewAp(BattleData.selectedUnit, requiredAP);
-					foreach(Tile tile in movableTilesWithPath[tileUnderMouse.GetTilePos()].path){
-						tile.PaintTile(TileColor.Red);
-					}
-				}
-				BattleData.uiManager.UpdateApBarUI();
-				yield return null;
-			}
-		}
-		
 		public static void MoveToTile(Vector2 destPos, Dictionary<Vector2, TileWithPath> path) {
             List<Tile> destPath = path[destPos].path;
             Tile destTile = BattleData.tileManager.GetTile(destPos);

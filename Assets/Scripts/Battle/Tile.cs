@@ -242,6 +242,10 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 		colors.Add(color);
 		RenewColor ();
 	}
+	public void DepaintTile(){
+		colors = new List<Color> ();
+		RenewColor ();
+	}
 	public void DepaintTile(TileColor tileColor){
 		Color color = TileColorToColor(tileColor);
 		DepaintTile(color);
