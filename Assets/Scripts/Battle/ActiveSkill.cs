@@ -608,9 +608,11 @@ public class ActiveSkill : Skill{
 
 		List<Tile> firstRange = casting.FirstRange;
 
-		logManager.Record (new PaintTilesLog (firstRange, TileColor.Red));
-		logManager.Record (new WaitForSecondsLog (0.3f));
-		logManager.Record (new DepaintTilesLog (TileColor.Red));
+        if (Configuration.NPCBehaviourDuration >= 0.05f) {
+            logManager.Record(new PaintTilesLog(firstRange, TileColor.Red));
+            logManager.Record(new WaitForSecondsLog(Configuration.NPCBehaviourDuration));
+            logManager.Record(new DepaintTilesLog(TileColor.Red));
+        }
 
 		caster.UseActivityPoint (casting.RequireAP);
 

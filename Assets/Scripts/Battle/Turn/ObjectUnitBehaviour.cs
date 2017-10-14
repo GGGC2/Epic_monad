@@ -58,8 +58,7 @@ namespace Battle.Turn
 			BattleManager.MoveCameraToUnit(objectUnit);
 			GameObject effect = MonoBehaviour.Instantiate(Resources.Load("Effect/ControllerActive")) as GameObject;
 			effect.transform.position = objectUnit.realPosition - new Vector3(0, 0, 0.01f);
-			//yield return new WaitForSeconds(0.5f);
-            LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
+            LogManager.Instance.Record(new WaitForSecondsLog(Configuration.NPCBehaviourDuration));
 
 			UnitManager unitManager = BattleData.unitManager;
 			List<Unit> targets = unitManager.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally);

@@ -503,9 +503,11 @@ namespace Battle.Turn{
 
 		IEnumerator Move(Vector2 destPos, Dictionary<Vector2, TileWithPath> path) {
             LogManager.Instance.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
-            PaintMovableTiles ();
-			LogManager.Instance.Record (new WaitForSecondsLog (0.3f));
-			LogManager.Instance.Record (new DepaintTilesLog (TileColor.Blue));
+            if (Configuration.NPCBehaviourDuration >= 0.05f) {
+                PaintMovableTiles();
+                LogManager.Instance.Record(new WaitForSecondsLog(Configuration.NPCBehaviourDuration));
+                LogManager.Instance.Record(new DepaintTilesLog(TileColor.Blue));
+            }
 			MoveStates.MoveToTile (destPos, path);
             yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
