@@ -364,9 +364,11 @@ public class UIManager : MonoBehaviour{
 			} else if (i == unit.activeSkillList.Count) {
 				if (unit.IsStandbyPossible ()) {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Standby");
+                    actionButtons [i].isStandBy = true;
 				} else {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Rest");
-				}
+                    actionButtons[i].isStandBy = false;
+                }
 				actionButtons [i].Activate (true);
 			}
 		}

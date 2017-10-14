@@ -46,8 +46,8 @@ public class HPChangeLog : EffectLog {
 }
 
 public class APChangeLog : EffectLog {
-    Unit unit;
-    int amount;
+    public Unit unit;
+    public int amount;
     public void setAmount(int amount) {
         this.amount = amount;
     }
