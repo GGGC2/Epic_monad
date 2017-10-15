@@ -38,7 +38,7 @@ public class UnitStatusEffect : StatusEffect {
         }
     }
     public new class FlexibleElement : StatusEffect.FlexibleElement {
-
+        public bool ownerHadTurnSinceAttached = false;  // '조작을 제한하는 상태이상은, 효과가 생긴 페이즈에 한 번도 턴이 되지 않았다면 지속을 차감하지 않는다.
         public new class DisplayElement : StatusEffect.FlexibleElement.DisplayElement {
             public Unit owner;
 
@@ -60,6 +60,7 @@ public class UnitStatusEffect : StatusEffect {
             }
         }
     }
+    public bool GetOwnerHadTurnSinceAttached() { return ((UnitStatusEffect.FlexibleElement)flexibleElem).ownerHadTurnSinceAttached; }
     public bool GetIsBuff() { return ((FixedElement.DisplayElement)fixedElem.display).isBuff; }
     public Unit GetOwner() { return ((UnitStatusEffect.FlexibleElement.DisplayElement)flexibleElem.display).owner; }
     protected override float GetStatusEffectVar(int i) {
@@ -72,5 +73,9 @@ public class UnitStatusEffect : StatusEffect {
                 statusEffectVar = ((PassiveSkill)GetOriginSkill()).SkillLogic.GetStatusEffectVar(this, i, GetCaster(), GetOwner());
         }
         return statusEffectVar;
+    }
+    public bool IsCrowdControl() {
+        return IsOfType(StatusEffectType.Faint) || IsOfType(StatusEffectType.Silence) || IsOfType(StatusEffectType.Bind)
+                || IsOfType(StatusEffectType.SpeedChange) || IsOfType(StatusEffectType.Taunt);
     }
 }

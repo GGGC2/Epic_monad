@@ -1,6 +1,6 @@
 Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	
 1	에테르 수정	manastone	Enemy	8	8	LeftDown	70	0	20	20	0	Melee	Plant	Earth	true	false	false	0
-2	달케니르	darkenir	Ally	3	1	RightUp	1000	200	0	0	100	Magic	Fire	Sun	false	true	false	0
+2	리니안	lenien	Ally	3	1	RightUp	1000	200	0	0	100	Magic	Fire	Sun	false	true	false	0
 3	비앙카	bianca	Ally	3	5	LeftDown	1000	200	0	0	100	Magic	Fire	Sun	false	true	false	0
 4	노엘	noel	Ally	2	5	LeftDown	1000	200	0	0	100	Magic	Fire	Sun	false	true	false	0
 5	레이나	reina	Ally	4	5	LeftDown	1000	100	0	0	0	Magic	Fire	Sun	false	true	false	0

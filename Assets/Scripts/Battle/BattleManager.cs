@@ -162,6 +162,7 @@ public class BattleManager : MonoBehaviour{
 		BattleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
         yield return logManager.ExecuteLastEventLogAndConsequences();   // 트랩이 발동하여 새로운 Event가 생길 수도 있으니 실행시켜놓는다.
         unit.TriggerTileStatusEffectAtTurnStart();
+        unit.UpdateStatusEffectAtTurnStart();
 
 		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
 		BattleData.selectedUnit.ShowArrow();

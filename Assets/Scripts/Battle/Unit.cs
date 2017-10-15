@@ -536,8 +536,12 @@ public class Unit : MonoBehaviour{
 	{
 		foreach (var statusEffect in statusEffectList)
 		{
-			if (!statusEffect.GetIsInfinite())
-                statusEffect.flexibleElem.display.remainPhase--;
+            if (!statusEffect.GetIsInfinite()) {
+                if (!(statusEffect.IsCrowdControl() && !statusEffect.GetOwnerHadTurnSinceAttached())){
+                    // '조작을 제한하는 상태이상은, 효과가 생긴 페이즈에 한 번도 턴이 되지 않았다면 지속을 차감하지 않는다.
+                    statusEffect.flexibleElem.display.remainPhase--;
+                }
+            }
             if (statusEffect.GetRemainPhase() <= 0)
 				RemoveStatusEffect(statusEffect);
 		}
@@ -933,6 +937,12 @@ public class Unit : MonoBehaviour{
             List<UnitStatusEffect> newStatusEffectList = new List<UnitStatusEffect>();
             newStatusEffectList.Add(newStatusEffect);
             StatusEffector.AttachStatusEffect(this, newStatusEffectList, this);
+        }
+    }
+
+    public void UpdateStatusEffectAtTurnStart() {
+        foreach(var statusEffect in StatusEffectList) {
+            ((UnitStatusEffect.FlexibleElement)statusEffect.flexibleElem).ownerHadTurnSinceAttached = true;
         }
     }
 
