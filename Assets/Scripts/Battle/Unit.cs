@@ -420,6 +420,7 @@ public class Unit : MonoBehaviour{
 	}
 
     public void RemoveStatusEffect(UnitStatusEffect statusEffect) {
+        if(statusEffect == null)    return;
         bool toBeRemoved = true;
 
         toBeRemoved = SkillLogicFactory.Get(passiveSkillList).TriggerStatusEffectRemoved(statusEffect, this);

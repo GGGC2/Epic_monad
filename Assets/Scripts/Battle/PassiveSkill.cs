@@ -37,7 +37,6 @@ public class PassiveSkill : Skill{
                 if (statusEffectInfo.GetOriginSkillName().Equals(korName) &&
                     !unitStatusEffectList.Contains(statusEffectToAdd)) {    // 같은 패시브를 가진 유닛이 여러 개일 때 중복으로 들어가는 것 방지
                     unitStatusEffectList.Add(statusEffectToAdd);
-                    Debug.Log(this.GetName() + " " + statusEffectToAdd.display.displayName);
                 }
             }
             previousStatusEffect = statusEffectToAdd;

@@ -250,8 +250,7 @@ public class StatusEffect {
     
     public bool IsSameStatusEffect(StatusEffect anotherStatusEffect) {
         return (GetOriginSkillName().Equals(anotherStatusEffect.GetOriginSkillName()) &&
-                    GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()) &&
-                    GetCaster().Equals(anotherStatusEffect.GetCaster()));
+                    GetDisplayName().Equals(anotherStatusEffect.GetDisplayName()));
     }
     public string GetExplanation() {
         string text = "";
