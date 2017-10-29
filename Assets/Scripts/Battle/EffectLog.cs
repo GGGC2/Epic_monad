@@ -456,7 +456,7 @@ public class SoundEffectLog : EffectLog {
         return "\t" + "음향 효과 : " + skill.GetName();
     }
     public override IEnumerator Execute() {
-        skill.ApplySoundEffect();
+        EffectPlayer.ApplySoundEffect(skill);
         yield return null;
     }
 }
@@ -471,7 +471,7 @@ public class VisualEffectLog : EffectLog {
         return "\t" + "시각 효과 : " + casting.Skill.GetName();
     }
     public override IEnumerator Execute() {
-        yield return BattleManager.Instance.StartCoroutine(casting.Skill.ApplyVisualEffect(casting));
+        yield return BattleManager.Instance.StartCoroutine(EffectPlayer.ApplyVisualEffect(casting));
     }
 }
 
