@@ -32,6 +32,7 @@ public class UIManager : MonoBehaviour{
     GameObject logDisplayPanel;
     GameObject conditionPanel;
     GameObject configurationPanel;
+    GameObject menuPanel;
 
 	public GameObject chainBonusObj;
 	public GameObject celestialBonusObj;
@@ -61,6 +62,7 @@ public class UIManager : MonoBehaviour{
 		detailInfoUI                            = FindObjectOfType<DetailInfoPanel>();
 		placedUnitCheckUI                       = GameObject.Find("PlacedUnitCheckPanel");
 		notImplementedDebugPanel                = GameObject.Find("NotImplementedDebugPanel");
+        menuPanel                               = GameObject.Find("MenuPanel");
         selectDirectionUI.Initialize();
         TutorialScenario.selectDirectionUI = selectDirectionUI;
 	}
@@ -77,6 +79,7 @@ public class UIManager : MonoBehaviour{
 		detailInfoUI.gameObject.SetActive(false);
 		placedUnitCheckUI.SetActive(false);
 		apBarUI.MoveOverScreen(false);
+        menuPanel.SetActive(false);
 
         originalStatusEffectDisplayPanelPosition = statusEffectDisplayPanel.transform.position;
 		startFinished = true;
@@ -268,6 +271,10 @@ public class UIManager : MonoBehaviour{
 
     public void InActiveLogDisplayPanel() {
         logDisplayPanel.SetActive(false);
+    }
+
+    public void ToggleMenuPanelActive() {
+        menuPanel.SetActive(!menuPanel.activeSelf);
     }
 
 	public void SetTileViewer(Tile tile)

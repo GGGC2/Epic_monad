@@ -1015,6 +1015,30 @@ Prefab:
       propertyPath: m_Text
       value: "\uD134 \uAE30\uC900\uAC12 : 120"
       objectReference: {fileID: 0}
+    - target: {fileID: 114305638854235772, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114305638854235772, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1626505107}
+    - target: {fileID: 114305638854235772, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleMenuPanelActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 114305638854235772, guid: 4b39f95afa3dd460e9610c859bd55188,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1068733729523518, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b39f95afa3dd460e9610c859bd55188, type: 2}
   m_IsPrefabParent: 0
