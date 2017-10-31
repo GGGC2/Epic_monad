@@ -57,7 +57,8 @@ public class TutorialManager : MonoBehaviour {
 	}
     public void RemoveSpriteAndMark() {
         image.sprite = Resources.Load<Sprite>("transparent");
-        if (scenarioList.Find(data => data.index == index).mouseMarkPos != Vector3.zero && mark != null) {
+        TutorialScenario lastScenario = scenarioList.Find(data => data.index == index);
+        if (lastScenario != null && lastScenario.mouseMarkPos != Vector3.zero && mark != null) {
             Destroy(mark.gameObject);
         }
     }
