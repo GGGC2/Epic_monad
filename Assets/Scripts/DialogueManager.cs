@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour{
 	
     public GameObject dialogueUI;
     public GameObject adventureUI;
+    public GameObject menuPanel;
 
 	public Image leftPortrait;
 	public Image rightPortrait; 
@@ -278,6 +279,10 @@ public class DialogueManager : MonoBehaviour{
 			isWaitingMouseInput = false;
 		}
 	}
+    
+    void Awake() {
+        menuPanel = GameObject.Find("MenuPanel");
+    }
 
 	void Start(){
 		Initialize();
@@ -286,6 +291,7 @@ public class DialogueManager : MonoBehaviour{
 		if(dialogueData.name == "Scene#1"){
 			StartCoroutine(BlinkClickIcon());
 		}
+        menuPanel.SetActive(false);
 	}
 
 	IEnumerator BlinkClickIcon(){		
@@ -296,17 +302,23 @@ public class DialogueManager : MonoBehaviour{
 			yield return new WaitForSeconds(1.0f);
 		}
 	}
+    public void ToggleMenuPanelActive() {
+        menuPanel.SetActive(!menuPanel.activeSelf);
+    }
 
 	int frameWait = 0;
-	void Update(){
-		if(Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf){
-			skipQuestionUI.SetActive(false);
-		}else if(Input.GetKey(KeyCode.LeftControl)){
-			frameWait += 1;
-			if(frameWait == Setting.fastDialogueFrameLag){
-				frameWait = 0;
-				OnClickDialogue();
-			}
-		}
-	}
+    void Update() {
+        if (Input.GetMouseButtonDown(1) && skipQuestionUI.activeSelf) {
+            skipQuestionUI.SetActive(false);
+        } else if (Input.GetKey(KeyCode.LeftControl)) {
+            frameWait += 1;
+            if (frameWait == Setting.fastDialogueFrameLag) {
+                frameWait = 0;
+                OnClickDialogue();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            ToggleMenuPanelActive();
+        }
+    }
 }

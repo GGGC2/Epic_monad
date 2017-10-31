@@ -27,14 +27,18 @@ public class ConditionPanel : MonoBehaviour{
                 text = Win;
             else if (trigger.resultType == TrigResultType.Lose)
                 text = Lose;
-            text.text += "- " + trigger.korName;
-            if (trigger.reqCount > 0) {
-                text.text += "(";
-                if(trigger.count < trigger.reqCount)    text.text += "<color=red>" + trigger.count + "</color>";
-                else text.text = "<color=green>" + trigger.count + "</color>"; 
-                text.text += "/" + trigger.reqCount + ")";
-            }
-            text.text += "\n";
+			if (trigger.korName != null) {
+				text.text += "- " + trigger.korName;
+				if (trigger.reqCount > 0) {
+					text.text += "(";
+					if (trigger.count < trigger.reqCount)
+						text.text += "<color=red>" + trigger.count + "</color>";
+					else
+						text.text = "<color=green>" + trigger.count + "</color>"; 
+					text.text += "/" + trigger.reqCount + ")";
+				}
+				text.text += "\n";
+			}
 		}
 	}
 

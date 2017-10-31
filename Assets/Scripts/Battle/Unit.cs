@@ -879,6 +879,22 @@ public class Unit : MonoBehaviour{
 		float healNeedCount = recoverableHP / healAmount;
 		return healNeedCount;
 	}
+		
+	public Casting GetBestCasting(Tile casterTile){
+		Casting bestCasting = null;
+		float maxReward = 0;
+		foreach (ActiveSkill skill in activeSkillList) {
+			Casting casting = skill.GetBestCasting (this, casterTile);
+			if (casting != null) {
+				float reward = skill.GetRewardByCasting (casting);
+				if (reward > maxReward) {
+					maxReward = reward;
+					bestCasting = casting;
+				}
+			}
+		}
+		return bestCasting;
+	}
 
 	// 1턴 내 공격 못하는 적에 대해 '예상' 가치 구한다(지금은 안 쓰는데 나중에 쓸지도)
 	public float CalculatePredictReward(Unit caster, ActiveSkill skill){

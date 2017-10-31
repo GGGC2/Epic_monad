@@ -495,6 +495,9 @@ public class BattleManager : MonoBehaviour{
             ChangeAspect(1);
         if(Input.GetKeyDown(KeyCode.D))
             ChangeAspect(-1);
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            UIManager.Instance.ToggleMenuPanelActive();
+        }
 	}
 
     public void ChangeAspect(int direction) { // direction = 1 : 반시계 방향, direction = -1 : 시계방향
@@ -687,7 +690,7 @@ public class BattleManager : MonoBehaviour{
 					List<Tile> path = movableTilesWithPath[tileUnderMouse.GetTilePos()].path;
 					BattleData.selectedUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
 						Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.selectedUnit.GetDirection()));
-					path.Add (tileUnderMouse);
+					// path.Add (tileUnderMouse);
 					foreach (Tile tile in path) {
 						tile.DepaintTile ();
 						tile.PaintTile (TileColor.Red);

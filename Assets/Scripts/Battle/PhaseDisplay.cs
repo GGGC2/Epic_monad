@@ -17,7 +17,7 @@ public class PhaseDisplay : MonoBehaviour {
 	}
 
 	void Update () {
-		phaseText.text = "Phase " + battleManager.GetCurrentPhase();
+		phaseText.text = "페이즈 " + battleManager.GetCurrentPhase();
 		// standardAPText.text = "Standard AP : " + unitManager.GetStandardActivityPoint() + "";
 	}
 }
