@@ -172,6 +172,7 @@ public class BattleManager : MonoBehaviour{
         BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
 		BattleData.selectedUnit.HideArrow();
+        TutorialManager.Instance.RemoveSpriteAndMark();
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){

@@ -55,11 +55,17 @@ public class TutorialManager : MonoBehaviour {
 		BattleData.onTutorial = false;
 		gameObject.SetActive(false);
 	}
-
+    public void RemoveSpriteAndMark() {
+        image.sprite = Resources.Load<Sprite>("transparent");
+        if (scenarioList.Find(data => data.index == index).mouseMarkPos != Vector3.zero && mark != null) {
+            Destroy(mark.gameObject);
+        }
+    }
 	void TryNewSprite(){
-		if(SearchSprite() != null) {image.sprite = SearchSprite();}
-		else {image.sprite = Resources.Load<Sprite>("transparent");}
-	}
+        Sprite sprite = SearchSprite();
+		if(sprite != null) {image.sprite = sprite;}
+		else image.sprite = Resources.Load<Sprite>("transparent");
+    }
 
 	public void ToNextStep(){
 		TutorialScenario previousScenario = scenarioList.Find (data => data.index == index);
