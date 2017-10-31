@@ -176,7 +176,11 @@ public class ActiveSkill : Skill{
 		return rangeColors;
 	}
 
-	public Casting GetBestAttack(Unit caster, Tile casterTile){
+	public Casting GetBestCasting(Unit caster, Tile casterTile){
+		if (!caster.IsThisSkillUsable (this)) {
+			return null;
+		}
+
 		// just default values
 		Tile targetTile = casterTile;
 		Direction direction = caster.GetDirection ();

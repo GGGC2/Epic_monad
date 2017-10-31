@@ -49,7 +49,7 @@ namespace Battle.Turn{
 						Tile tile = tileWithPath.tile;
 						int requireAP = pair.Value.requireActivityPoint;
 
-						Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+						Casting bestCastingOnThisTile = skill.GetBestCasting (caster, tile);
 
 						if (bestCastingOnThisTile != null) {
 							float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
@@ -58,7 +58,7 @@ namespace Battle.Turn{
 							if (reward > maxFinalReward) {
 								maxFinalReward = reward;
 								bestFinalTileWithPath = tileWithPath;
-								BattleData.selectedSkill = skill;
+								AI.selectedSkill = skill;
 							}
 						}
 					}
@@ -85,7 +85,7 @@ namespace Battle.Turn{
 					TileWithPath bestFinalTileWithPathForThisSkill = GetMinRequireAPTileWithPath (allGoalPaths);
 					if (bestFinalTileWithPath.requireActivityPoint == 0 || bestFinalTileWithPathForThisSkill.requireActivityPoint < bestFinalTileWithPath.requireActivityPoint) {
 						bestFinalTileWithPath = bestFinalTileWithPathForThisSkill;
-						BattleData.selectedSkill = skill;
+						AI.selectedSkill = skill;
 					}
 
 					if(unit.GetCurrentActivityPoint() >= bestFinalTileWithPath.requireActivityPoint){
@@ -98,7 +98,7 @@ namespace Battle.Turn{
 			List<Tile> path = bestFinalTileWithPath.path;
 			path.Add (bestFinalTileWithPath.tile);
 
-			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(unit, BattleData.selectedSkill);
+			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePathsForAI(unit, AI.selectedSkill);
 
 			foreach (Tile tile in path) {
 				Vector2 tilePos = tile.GetTilePos ();
@@ -135,7 +135,7 @@ namespace Battle.Turn{
 						continue;
 
 					float reward = 0;
-					Casting bestCastingOnThisTile = skill.GetBestAttack (caster, tile);
+					Casting bestCastingOnThisTile = skill.GetBestCasting (caster, tile);
 					if (bestCastingOnThisTile != null) {
 						float singleCastingReward = skill.GetRewardByCasting (bestCastingOnThisTile);
 						reward = singleCastingReward * possibleSkillUseCount;
@@ -143,7 +143,7 @@ namespace Battle.Turn{
 						if (reward > maxReward) {
 							maxReward = reward;
 							bestTile = tile;
-							BattleData.selectedSkill = skill;
+							AI.selectedSkill = skill;
 						}
 					}
 				}
@@ -181,6 +181,7 @@ namespace Battle.Turn{
 
 		Unit unit;
 		AIData _AIData;
+		public static ActiveSkill selectedSkill; // 미리 선택한 스킬 기억용
 		public void Initialize(Unit unit, AIData _AIData){
 			this.unit = unit;
 			this._AIData = _AIData;
@@ -212,7 +213,9 @@ namespace Battle.Turn{
 				yield return DecideActionAndAct ();
 			}
 
-			if (state != State.Dead) {
+			selectedSkill = null;
+
+			if (BattleData.currentState != CurrentState.Destroyed) {
 				yield return battleManager.EndUnitTurn (unit);
 			}
 		}
@@ -249,6 +252,10 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator MoveToBestCasting(){
+			if (!unit.IsSkillUsePossibleState()) {
+				state = State.Approach;
+				yield break;
+			}
 			if (!unit.IsMovePossibleState()) {
 				state = State.CastingLoop;
 				yield break;
@@ -264,17 +271,15 @@ namespace Battle.Turn{
 			Tile destTile = AIUtil.GetBestMovableTile (unit, unit.GetSkillList(), 0, minRewardWorthAttack);
 
 			if (destTile != null) {
-				ActiveSkill skill = BattleData.selectedSkill;
-				yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
-				BattleData.selectedSkill = skill;
+				yield return MoveWithDestroyRoutine (destTile);
 				state = State.CastingLoop;
 			} else {
 				state = State.Approach;
-				yield break;
 			}
 		}
 
-		IEnumerator MoveWithDestroyRoutine(ActiveSkill skill, Tile destTile){
+		IEnumerator MoveWithDestroyRoutine(Tile destTile){
+			ActiveSkill skill = AI.selectedSkill;
 			Tile startTile = unit.GetTileUnderUnit ();
 			Dictionary<Vector2, TileWithPath> movableTilesWithPathWithDestroying = PathFinder.CalculateMovablePathsForAI (unit, skill);
 
@@ -352,56 +357,40 @@ namespace Battle.Turn{
 
 			Tile destTile = AIUtil.GetBestApproachWorthTile (unit, unit.GetSkillList(), _AIData.goalArea);
 
-			yield return MoveWithDestroyRoutine (BattleData.selectedSkill, destTile);
+			yield return MoveWithDestroyRoutine (destTile);
 			state = State.StandbyOrRest;
 			if (BattleData.selectedUnit.CheckReach ()) {
 				state = State.Dead;
+				BattleData.currentState = CurrentState.Destroyed;
 			}
 		}
 
 		IEnumerator CastingLoop(){
-			bool flag = false;
-			ActiveSkill skill = BattleData.selectedSkill;
-			if(skill == null){
-				skill = BattleData.selectedUnit.GetSkillList()[0];
+			Tile currTile = unit.GetTileUnderUnit ();
+			Casting casting = unit.GetBestCasting (currTile);
+
+			if (casting == null) {
+				if (!unit.IsMovePossibleState() || unit.GetNameEng() == "childHolder") {
+					state = State.StandbyOrRest;
+					yield break;
+				} else {
+					state = State.MoveToBestCasting;
+					yield break;
+				}
 			}
 
-			while(true){
-				if (BattleManager.IsSelectedUnitRetreatOrDie()) {
-					state = State.Dead;
-					Debug.Log ("Current AI unit died");
-					yield break;
-				}
+			yield return battleManager.ToDoBeforeAction ();
+			yield return UseSkill(casting);
 
-				if (!unit.IsSkillUsePossibleState()) {
-					state = State.StandbyOrRest;
-					yield break;
-				}
-
-				yield return battleManager.ToDoBeforeAction ();
-
-				if (!unit.IsThisSkillUsable (skill)) {
-					state = State.StandbyOrRest;
-					yield break;
-				}
-
-				Tile currTile = unit.GetTileUnderUnit ();
-				Casting casting = skill.GetBestAttack (unit, currTile);
-
-				if (casting == null) {
-					if (flag && unit.GetNameEng() != "childHolder") {
-						state = State.MoveToBestCasting;
-						yield break;
-					} else {
-						state = State.StandbyOrRest;
-						yield break;
-					}
-				}
-
-				flag = true;
-				yield return UseSkill(casting);
+			if (BattleManager.IsSelectedUnitRetreatOrDie ()) {
+				state = State.Dead;
+				BattleData.currentState = CurrentState.Destroyed;
+				Debug.Log ("Current AI unit died");
+			} else {
+				state = State.MoveToBestCasting;
 			}
 		}
+
 		IEnumerator StandbyOrRest(){
 			yield return battleManager.ToDoBeforeAction ();
 			if (unit.IsStandbyPossible ()) {
@@ -421,16 +410,12 @@ namespace Battle.Turn{
 				}
 				state = State.StandbyOrRest;
 			} else {
-				ActiveSkill skill1 = unit.GetSkillList () [0];
-				ActiveSkill skill2 = unit.GetSkillList () [1];
+				ActiveSkill skill1 = unit.GetSkillList () [0]; // 광폭화
 				if (unit.IsThisSkillUsable (skill1)) {
-					BattleData.selectedSkill = skill1;
 					Casting casting = new Casting (unit, skill1, new SkillLocation (unit.GetTileUnderUnit (), unit.GetTileUnderUnit (), unit.GetDirection ()));
 					yield return UseSkill (casting);
-				} else if (unit.IsThisSkillUsable (skill2)) {
-					state = State.MoveToBestCasting;
 				} else {
-					state = State.StandbyOrRest;
+					state = State.MoveToBestCasting;
 				}
 			}
 			yield return null;
@@ -470,7 +455,6 @@ namespace Battle.Turn{
 					if (destTile != null) {
 						yield return MoveToTheTileAndChangeDirection (destTile);
 					}
-					BattleData.selectedSkill = unit.GetSkillList () [0];
 					state = State.CastingLoop;
 
 				}
