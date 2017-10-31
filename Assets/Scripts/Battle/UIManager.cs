@@ -365,6 +365,10 @@ public class UIManager : MonoBehaviour{
 		debugPanel.Append(text);
 	}
 
+    public Vector2 GetActionButtonPosition(int i) {
+        return actionButtons[i].transform.position;
+    }
+
 	public void SetActionButtons(){
 		skillViewer.gameObject.SetActive(false);
 		Unit unit = BattleData.selectedUnit;
