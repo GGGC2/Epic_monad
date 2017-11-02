@@ -192,7 +192,8 @@ namespace Battle.Turn{
 		State state;
 
 		public IEnumerator UnitTurn() {
-			if (!_AIData.IsActive ()) {
+            TutorialManager.Instance.RemoveSpriteAndMark();
+            if (!_AIData.IsActive ()) {
 				yield return Activate ();
 			}
 			if (!_AIData.IsActive ()) {
