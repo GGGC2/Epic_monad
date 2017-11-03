@@ -300,12 +300,12 @@ namespace Battle.Turn{
 			Tile prevTile = unit.GetTileUnderUnit ();
 			foreach (Tile tile in mustCheckEmptinessTiles) {
 				if (tile.IsUnitOnTile ()) {
-					yield return MoveToTheTileAndChangeDirection (prevTile);
+					yield return MoveToThePositionAndChangeDirection (prevTile.GetTilePos ());
 					yield return DestroyObstacle (skill, tile);
 				}
 				prevTile = tile;
 			}
-			yield return MoveToTheTileAndChangeDirection (destTile);
+			yield return MoveToThePositionAndChangeDirection (destTile.GetTilePos ());
 		}
 
 		IEnumerator DestroyObstacle(ActiveSkill skill, Tile obstacleTile){
@@ -330,8 +330,7 @@ namespace Battle.Turn{
 			}
 		}
 
-		public IEnumerator MoveToTheTileAndChangeDirection(Tile destTile){
-			Vector2 destPos = destTile.GetTilePos ();
+		public IEnumerator MoveToThePositionAndChangeDirection(Vector2 destPos){
 			Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
 			if (movableTilesWithPath[destPos].path.Count > 0) {
 				yield return Move (destPos, movableTilesWithPath);
@@ -406,7 +405,7 @@ namespace Battle.Turn{
 				Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths (unit);
 				Tile tileNearYeong = Utility.GetNearestTileToUnit (BattleData.tileManager.GetAllTiles ().Keys.ToList(), movableTilesWithPath, "yeong");
 				if (tileNearYeong != null) {
-					yield return MoveToTheTileAndChangeDirection (tileNearYeong);
+					yield return MoveToThePositionAndChangeDirection (tileNearYeong.GetTilePos ());
 				}
 				state = State.StandbyOrRest;
 			} else {
@@ -453,7 +452,7 @@ namespace Battle.Turn{
 					Tile destTile = Utility.GetFarthestTileToUnit (range, movableTilesWithPath, "eren");
 
 					if (destTile != null) {
-						yield return MoveToTheTileAndChangeDirection (destTile);
+						yield return MoveToThePositionAndChangeDirection (destTile.GetTilePos ());
 					}
 					state = State.CastingLoop;
 
@@ -516,11 +515,12 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator ActByScenario(AIScenario scenario){
-			if (scenario.functionName == "UseSkill") {
-				Casting casting = new Casting (unit, unit.GetSkillList () [scenario.skillIndex], scenario.skillLocation);
+			if (scenario.act == AIScenario.ScenarioAct.UseSkill) {
+				SkillLocation location = new SkillLocation (unit.GetPosition (), unit.GetPosition () + scenario.targetPos, scenario.direction);
+				Casting casting = new Casting (unit, unit.GetSkillList () [scenario.skillIndex], location);
 				yield return StartCoroutine (scenario.functionName, casting);
-			} else if (scenario.parameter != null) {
-				yield return StartCoroutine (scenario.functionName, scenario.parameter);
+			} else if (scenario.act==AIScenario.ScenarioAct.Move) {
+				yield return StartCoroutine (scenario.functionName, scenario.targetPos);
 			} else {
 				yield return StartCoroutine (scenario.functionName);
 			}
