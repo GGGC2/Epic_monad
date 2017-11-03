@@ -516,11 +516,11 @@ namespace Battle.Turn{
 
 		IEnumerator ActByScenario(AIScenario scenario){
 			if (scenario.act == AIScenario.ScenarioAct.UseSkill) {
-				SkillLocation location = new SkillLocation (unit.GetPosition (), unit.GetPosition () + scenario.targetPos, scenario.direction);
+				SkillLocation location = new SkillLocation (unit.GetPosition (), unit.GetPosition () + scenario.relativeTargetPos, scenario.direction);
 				Casting casting = new Casting (unit, unit.GetSkillList () [scenario.skillIndex], location);
 				yield return StartCoroutine (scenario.functionName, casting);
 			} else if (scenario.act==AIScenario.ScenarioAct.Move) {
-				yield return StartCoroutine (scenario.functionName, scenario.targetPos);
+				yield return StartCoroutine (scenario.functionName, unit.GetPosition () + scenario.relativeTargetPos);
 			} else {
 				yield return StartCoroutine (scenario.functionName);
 			}

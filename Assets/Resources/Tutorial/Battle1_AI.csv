@@ -1,13 +1,13 @@
 Action	Etc			
-Move	6	4		
+Move	-3	0		
 UseSkill	0	0	1	RightUp
 StandbyOrRest 				
-Move	8	5		
+Move	-1	0		
 UseSkill	0	-2	0	LeftUp
 StandbyOrRest 				
-Move	5	5		
+Move	-3	0		
 UseSkill	0	1	0	RightDown
 StandbyOrRest 				
-Move	6	3		
+Move	0	-1		
 UseSkill	0	0	2	RightUp
 StandbyOrRest				

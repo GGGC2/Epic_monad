@@ -11,7 +11,7 @@ public class AIScenario{
 	public ScenarioAct act;
 	public string functionName;
 	public int skillIndex;
-	public Vector2 targetPos;
+	public Vector2 relativeTargetPos;
 	public Direction direction;
 
 	public AIScenario(string data){
@@ -22,11 +22,11 @@ public class AIScenario{
 		TileManager TM = BattleData.tileManager;
 
 		if (act == ScenarioAct.Move) {
-			targetPos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
+			relativeTargetPos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
 			functionName = "MoveToThePositionAndChangeDirection";
 		} else if (act == ScenarioAct.UseSkill) {
 			skillIndex = parser.ConsumeInt ();
-			targetPos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
+			relativeTargetPos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
 			direction = parser.ConsumeEnum<Direction> ();
 			functionName = "UseSkill";
 		} else if (act == ScenarioAct.StandbyOrRest) {
