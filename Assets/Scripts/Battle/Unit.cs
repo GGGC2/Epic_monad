@@ -81,7 +81,8 @@ public class Unit : MonoBehaviour{
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
-	public SpriteRenderer bindIcon;
+	public SpriteRenderer statusEffectIcon;
+	List<StatusEffectType> specialStatusEffectList;
 
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
@@ -1121,6 +1122,7 @@ public class Unit : MonoBehaviour{
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<UnitStatusEffect>();
+		specialStatusEffectList = new List<StatusEffectType>();
 		latelyHitInfos = new List<HitInfo>();
 	}
 
@@ -1175,12 +1177,36 @@ public class Unit : MonoBehaviour{
 		}
 
 		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
-		else if (bindIcon.enabled == false && HasStatusEffect(StatusEffectType.Bind)){
-			bindIcon.enabled = true;
+		else {
+			CheckSpecialStatusEffect();
+			if (specialStatusEffectList.Count == 0) {
+				statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
+			}
+			else
+			{
+				// 일단 첫번째껏만 띄움
+				StatusEffectType specialSE = specialStatusEffectList.First();
+				if (specialSE == StatusEffectType.Bind) {
+					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_bind");
+				}
+				else if (specialSE == StatusEffectType.Silence) {
+					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_silence");
+				}
+				else if (specialSE == StatusEffectType.Faint) {
+					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_faint");
+				}
+			}
 		}
-		else if (bindIcon.enabled == true && !HasStatusEffect(StatusEffectType.Bind)){
-			bindIcon.enabled = false;
-		}
+	}
+
+	void CheckSpecialStatusEffect() {
+		specialStatusEffectList.Clear();
+		if (HasStatusEffect(StatusEffectType.Bind))
+			specialStatusEffectList.Add(StatusEffectType.Bind);
+		if (HasStatusEffect(StatusEffectType.Silence))
+			specialStatusEffectList.Add(StatusEffectType.Silence);
+		if (HasStatusEffect(StatusEffectType.Faint))
+			specialStatusEffectList.Add(StatusEffectType.Faint);
 	}
 
 	public void CheckAndHideObjectHealth(){

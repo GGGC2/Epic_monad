@@ -507,7 +507,7 @@ MonoBehaviour:
   notMovedTurnCount: 0
   currentHealth: 0
   activityPoint: 0
-  bindIcon: {fileID: 212843240715341936}
+  statusEffectIcon: {fileID: 212843240715341936}
 --- !u!212 &21201284
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -548,6 +548,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21213288
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -588,6 +589,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21253108
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -628,6 +630,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21258944
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -668,6 +671,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21272088
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -708,6 +712,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21280136
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -748,6 +753,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &21285538
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -788,6 +794,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!222 &22272118
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1090,12 +1097,12 @@ GameObject:
   - component: {fileID: 4052911719377824}
   - component: {fileID: 212843240715341936}
   m_Layer: 0
-  m_Name: bind
+  m_Name: statusBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1670055521477590
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,8 +1159,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1635118096944584}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.219, y: 0.859, z: -0.005}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalPosition: {x: 0.274, y: 0.783, z: -0.005}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 22440280}
   m_RootOrder: 7
@@ -1325,6 +1332,7 @@ SpriteRenderer:
   m_Size: {x: 1.77, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212139763672885416
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1365,6 +1373,7 @@ SpriteRenderer:
   m_Size: {x: 1.77, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212165848666732040
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1405,6 +1414,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212265947819992384
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1445,6 +1455,7 @@ SpriteRenderer:
   m_Size: {x: 1.06, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212476942290256146
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1485,6 +1496,7 @@ SpriteRenderer:
   m_Size: {x: 1.77, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212535727131796374
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1525,6 +1537,7 @@ SpriteRenderer:
   m_Size: {x: 1.06, y: 2.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!212 &212843240715341936
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1557,7 +1570,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: df6b4d5ba88ea4f928cbe32b04f8aa36, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3373c79ee81354e64b614ef455ba7c9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1565,6 +1578,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
 --- !u!223 &223106134144349266
 Canvas:
   m_ObjectHideFlags: 1

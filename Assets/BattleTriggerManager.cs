@@ -58,7 +58,8 @@ public class BattleTriggerManager : MonoBehaviour {
 				BattleData.rewardPoint += trigger.reward;
 			else if (trigger.resultType == TrigResultType.Lose) {
 				Debug.Log ("Mission FAIL : " + trigger.korName);
-				sceneLoader.LoadNextDialogueScene ("Title");
+				sceneLoader.LoadNextDialogueScene ("Scene_Lose" + SceneData.stageNumber);
+				//sceneLoader.LoadNextDialogueScene ("Title");
 			}
 		}else{
 			Debug.Log("This trigger is already Acquired.");
