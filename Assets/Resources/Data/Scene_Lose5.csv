@@ -1,5 +1,10 @@
-﻿stage1 패배
-*	BG	RockMountain
-*	BGM	Script_Tense
-blank	-	-	게임 오버
-*	Script	Title
+stage5 패배			
+*	BG	MeetingRoom	
+*	BGM	Script_Tense	
+bianca	-	비앙카	아아아악! 도망쳐버리다니!
+grenev	-	그레네브	네가 덫만 계속 제대로 깔았어도 독 안에 든 쥐 꼴이었을텐데!
+bianca	-	비앙카	언니는 몇 방만에 쓰러져버린 주제에 왜 내 탓을 하는 거야?
+darkenir	-	달케니르	카샤스티 러브레이스의 탄환이 나갈 수 있는 범위는 한정적이다.^덫에 걸린 상태에선 우리가 위치만 제대로 잡으면 공격받을 염려도 없었겠지.
+sepia	-	세피아	비앙카, 전략 없는 전투는 필패란 걸 이제야 알았습니까?
+bianca	-	비앙카	다들 시끄러워! 이런 패배는 인정 못해!
+*	Script	Title	
