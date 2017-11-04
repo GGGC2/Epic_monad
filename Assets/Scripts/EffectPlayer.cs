@@ -73,25 +73,33 @@ public static class EffectPlayer {
 			GameObject.Destroy(particle, EFFECTTIME);
 		} 
 		else if (effectVisualType == EffectVisualType.Individual) {
-			// 고정형, 개별 대상 이펙트.
-			List<Vector3> targetPosList = new List<Vector3>();
+			// 개별 대상 이펙트.
+			Vector3 startPos = unit.realPosition + Vector3.back * 0.01f;
+			List<Vector3> endPosList = new List<Vector3>();
 			foreach (var tileObject in secondRange) {
 				Tile tile = tileObject;
 				if (tile.IsUnitOnTile()) {
-					targetPosList.Add(tile.GetUnitOnTile().realPosition + Vector3.back * 0.1f);
+					endPosList.Add(tile.GetUnitOnTile().realPosition + Vector3.back * 0.1f);
 				}
 			}
 
-			foreach (var targetPos in targetPosList) {
+			foreach (var endPos in endPosList) {
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
-				particle.transform.position = targetPos;
+
+				if (effectMoveType == EffectMoveType.Move) {
+					// 이동형 이펙트.
+					particle.transform.position = startPos;
+				}
+				else /* if (effectVisualType == EffectVisualType.Area) */{
+					// 고정형 이펙트.
+					particle.transform.position = endPos;
+				}	
+				Tween tw = particle.transform.DOMove(endPos, 0.6f * EFFECTTIME);
 				GameObject.Destroy(particle, EFFECTTIME + 0.6f * EFFECTTIME); // 아랫줄에서의 지연시간을 고려한 값이어야 함.
 			}
 
-			if (targetPosList.Count == 0) // 대상이 없을 경우 이펙트 출력 안함.
-			{
-
-			}
+			// 대상이 없을 경우 이펙트 출력 안함.
+			
 			yield return new WaitForSeconds(EFFECTTIME);
         }
     }
