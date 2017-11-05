@@ -1178,14 +1178,14 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void UpdateStatusEffectIcon() {
+	public void UpdateStatusEffectIcon() {Debug.Log("UpdateStatusEffectIcon");
 		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
 		else {
 			if (statusEffectIconCoroutine != null) {
 				StopCoroutine(statusEffectIconCoroutine);
 				statusEffectIconCoroutine = null;
 			}
-			CheckSpecialStatusEffect();
+			CheckSpecialStatusEffect(); Debug.Log("Silence SE : " + HasStatusEffect(StatusEffectType.Silence));
 			if (specialStatusEffectList.Count == 0) {
 				statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
 			}
@@ -1231,12 +1231,15 @@ public class Unit : MonoBehaviour{
 	}
 	void CheckSpecialStatusEffect() {
 		specialStatusEffectList.Clear();
-		if (HasStatusEffect(StatusEffectType.Bind))
-			specialStatusEffectList.Add(StatusEffectType.Bind);
-		if (HasStatusEffect(StatusEffectType.Silence))
-			specialStatusEffectList.Add(StatusEffectType.Silence);
-		if (HasStatusEffect(StatusEffectType.Faint))
-			specialStatusEffectList.Add(StatusEffectType.Faint);
+		if (HasStatusEffect(StatusEffectType.Bind)) {
+			specialStatusEffectList.Add(StatusEffectType.Bind); Debug.Log("Bind");
+		}
+		if (HasStatusEffect(StatusEffectType.Silence)) {
+			specialStatusEffectList.Add(StatusEffectType.Silence); Debug.Log("Silence");
+		}
+		if (HasStatusEffect(StatusEffectType.Faint)) {
+			specialStatusEffectList.Add(StatusEffectType.Faint); Debug.Log("Faint");
+		}
 	}
 
 	public void CheckAndHideObjectHealth(){
