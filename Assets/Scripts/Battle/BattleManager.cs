@@ -487,6 +487,10 @@ public class BattleManager : MonoBehaviour{
 			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 			Checker.InitializeResultPanel ();
 		}
+		if (Input.GetKeyDown(KeyCode.Delete)){
+			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
+			Checker.LoadLoseScene ();
+		}
 
 		if(Input.GetKeyDown(KeyCode.B))
 			SceneManager.LoadScene("BattleReady");
