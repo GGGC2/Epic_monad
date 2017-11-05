@@ -58,7 +58,7 @@ public class BattleTriggerManager : MonoBehaviour {
 				BattleData.rewardPoint += trigger.reward;
 			else if (trigger.resultType == TrigResultType.Lose) {
 				Debug.Log ("Mission FAIL : " + trigger.korName);
-				sceneLoader.LoadNextDialogueScene ("Scene_Lose" + SceneData.stageNumber);
+				LoadLoseScene ();
 				//sceneLoader.LoadNextDialogueScene ("Title");
 			}
 		}else{
@@ -70,6 +70,9 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.gameObject.SetActive(true);
 		resultPanel.Activate();
 		resultPanel.UpdatePanel(0);
+	}
+	public void LoadLoseScene(){
+		sceneLoader.LoadNextDialogueScene ("Scene_Lose" + SceneData.stageNumber);
 	}
 
 	void Awake(){

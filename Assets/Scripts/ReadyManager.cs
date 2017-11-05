@@ -33,6 +33,7 @@ public class ReadyManager : MonoBehaviour{
 	public List<SelectedUnit> selectedUnits = new List<SelectedUnit>();
 	public List<UnitPanel> selected = new List<UnitPanel>();
 	public string currentUnitName;
+    public GameObject CharacterButtons;
 
 	List<GameObject> availableUnitButtons = new List<GameObject>();
 
@@ -64,7 +65,7 @@ public class ReadyManager : MonoBehaviour{
 		selectableUnitCounter = FindObjectOfType<SelectableUnitCounter>();
 		selectableUnitCounter.SetMaxSelectableUnitNumber(numberOfSelectableUnit);
 
-		unitButtons = Utility.ArrayToList<AvailableUnitButton>(GameObject.Find("CharacterButtons").transform.GetComponentsInChildren<AvailableUnitButton>());
+		unitButtons = Utility.ArrayToList<AvailableUnitButton>(CharacterButtons.transform.GetComponentsInChildren<AvailableUnitButton>());
 		for(int i = 0; i < unitButtons.Count; i++){
 			if (i < numberOfAvailableUnit){
 				//이쪽 실행 전에 AvailableUnitButton.Awake의 UI 참조가 완료돼야 함
