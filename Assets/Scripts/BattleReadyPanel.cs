@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using GameData;
 
 public class BattleReadyPanel : MonoBehaviour{
@@ -14,11 +15,12 @@ public class BattleReadyPanel : MonoBehaviour{
 	public GameObject SkillPart;
 	List<SkillSelectButton> skillButtonList = new List<SkillSelectButton>();
 	public SkillSelectButton SkillButtonPrefab;
+    public Scrollbar scrollbar;
 	int buttonDist = 90;
 
 	//ReadyManager.Start()가 끝난 직후 넘어온다
 	public void Initialize(){
-		Buttons = Utility.ArrayToList(transform.Find("CharacterButtonMask").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
+		Buttons = Utility.ArrayToList(transform.Find("scrollView").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
 
 		var firstButton = Instantiate(SkillButtonPrefab);
 		skillButtonList.Add(firstButton);
@@ -49,7 +51,11 @@ public class BattleReadyPanel : MonoBehaviour{
 			Buttons.ForEach(button => button.SetUnitInfoToDetailPanel());
 			SetPanelType(PanelType.Ether);
 		}
+        SetScrollbarValues();
 	}
+    public void Update() {
+        SetScrollbarValues();
+    }
 
 	//이 함수는 TopButtons에서 사용한다.
 	public void SetPanelType(string typeName){
@@ -73,4 +79,8 @@ public class BattleReadyPanel : MonoBehaviour{
 			});
 		}
 	}
+    public void SetScrollbarValues() {
+        scrollbar.size = 0.1f;
+        scrollbar.numberOfSteps = 11;
+    }
 }
