@@ -1,5 +1,13 @@
-﻿stage1 패배
-*	BG	RockMountain
-*	BGM	Script_Tense
-blank	-	-	게임 오버
-*	Script	Title
+stage7 패배			
+*	BG	Forest	
+*	BGM	Script_Sad	
+*	SE	Smite	
+json	-	제이선	으……으윽…….
+agent	-	아스터 요원	집행관님, 괜찮으십니까!
+blank	-	-	치명상을 입었다. 살아서 빠져나가긴 그른 것 같군.
+triana	-	트리아나	…….
+blank	-	-	내 죽음에 관심조차 보이지 않는 포로의 한심한 눈빛.
+json	-	제이선	(이런 허무한 죽음이라니.)
+json	-	제이선	(친구가 별로 없어서인지, 생각나는 건 증오하던 가족들 뿐이다.)
+json	-	제이선	(형은 제 한 몸도 지키지 못한 형편없는 녀석이라고 비웃겠지…….)
+*	Script	Title	

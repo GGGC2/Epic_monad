@@ -1,5 +1,8 @@
-﻿stage1 패배
-*	BG	RockMountain
-*	BGM	Script_Tense
-blank	-	-	게임 오버
-*	Script	Title
+stage6 패배			
+*	BG	InCamp	
+*	BGM	Script_Tense	
+child	-	아이	죽고 싶지 않아요……. 아악!
+luvericha	-	루베리카	안돼!
+eren	-	에렌	(…….)
+blank	-	-	죽은 아이에게서 흡수한 생명력은, 내 분노와 만나 암흑의 힘으로 배를 폭발시켰다.
+*	Script	Title	
