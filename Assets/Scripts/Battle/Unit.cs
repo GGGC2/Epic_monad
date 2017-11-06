@@ -1209,7 +1209,7 @@ public class Unit : MonoBehaviour{
 	}
 
 	IEnumerator ChangeStatusEffectIcon(List<Sprite> icons) {
-		float delay = 2.0f;
+		float delay = 1.0f;
 		while (true) {
 			for (int i = 0; i < icons.Count; i++) {
 				statusEffectIcon.sprite = icons[i];
