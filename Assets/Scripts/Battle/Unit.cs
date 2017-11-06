@@ -83,6 +83,7 @@ public class Unit : MonoBehaviour{
 
 	public SpriteRenderer statusEffectIcon;
 	List<StatusEffectType> specialStatusEffectList;
+	IEnumerator statusEffectIconCoroutine;
 
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
@@ -1175,38 +1176,70 @@ public class Unit : MonoBehaviour{
 			}
 			Debug.LogError(passiveLog);
 		}
+	}
 
+	public void UpdateStatusEffectIcon() {Debug.Log("UpdateStatusEffectIcon");
 		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
 		else {
-			CheckSpecialStatusEffect();
+			if (statusEffectIconCoroutine != null) {
+				StopCoroutine(statusEffectIconCoroutine);
+				statusEffectIconCoroutine = null;
+			}
+			CheckSpecialStatusEffect(); Debug.Log("Silence SE : " + HasStatusEffect(StatusEffectType.Silence));
 			if (specialStatusEffectList.Count == 0) {
 				statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
 			}
 			else
 			{
 				// 일단 첫번째껏만 띄움
-				StatusEffectType specialSE = specialStatusEffectList.First();
-				if (specialSE == StatusEffectType.Bind) {
-					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_bind");
+				// StatusEffectType specialSE = specialStatusEffectList.First();
+				// if (specialSE == StatusEffectType.Bind) {
+				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_bind");
+				// }
+				// else if (specialSE == StatusEffectType.Silence) {
+				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_silence");
+				// }
+				// else if (specialSE == StatusEffectType.Faint) {
+				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_faint");
+				// }
+
+				List<Sprite> icons = new List<Sprite>();
+				if (specialStatusEffectList.Contains(StatusEffectType.Bind)) {
+					icons.Add(Resources.Load<Sprite>("Icon/Status/status_bind"));
 				}
-				else if (specialSE == StatusEffectType.Silence) {
-					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_silence");
+				if (specialStatusEffectList.Contains(StatusEffectType.Silence)) {
+					icons.Add(Resources.Load<Sprite>("Icon/Status/status_silence"));
 				}
-				else if (specialSE == StatusEffectType.Faint) {
-					statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_faint");
+				if (specialStatusEffectList.Contains(StatusEffectType.Faint)) {
+					icons.Add(Resources.Load<Sprite>("Icon/Status/status_faint"));
 				}
+
+				statusEffectIconCoroutine = ChangeStatusEffectIcon(icons);
+				StartCoroutine(statusEffectIconCoroutine);
 			}
 		}
 	}
 
+	IEnumerator ChangeStatusEffectIcon(List<Sprite> icons) {
+		float delay = 2.0f;
+		while (true) {
+			for (int i = 0; i < icons.Count; i++) {
+				statusEffectIcon.sprite = icons[i];
+				yield return new WaitForSeconds(delay);
+			}
+		}
+	}
 	void CheckSpecialStatusEffect() {
 		specialStatusEffectList.Clear();
-		if (HasStatusEffect(StatusEffectType.Bind))
-			specialStatusEffectList.Add(StatusEffectType.Bind);
-		if (HasStatusEffect(StatusEffectType.Silence))
-			specialStatusEffectList.Add(StatusEffectType.Silence);
-		if (HasStatusEffect(StatusEffectType.Faint))
-			specialStatusEffectList.Add(StatusEffectType.Faint);
+		if (HasStatusEffect(StatusEffectType.Bind)) {
+			specialStatusEffectList.Add(StatusEffectType.Bind); Debug.Log("Bind");
+		}
+		if (HasStatusEffect(StatusEffectType.Silence)) {
+			specialStatusEffectList.Add(StatusEffectType.Silence); Debug.Log("Silence");
+		}
+		if (HasStatusEffect(StatusEffectType.Faint)) {
+			specialStatusEffectList.Add(StatusEffectType.Faint); Debug.Log("Faint");
+		}
 	}
 
 	public void CheckAndHideObjectHealth(){

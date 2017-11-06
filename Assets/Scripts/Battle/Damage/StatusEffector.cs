@@ -122,6 +122,10 @@ public static class StatusEffector{
                 //target.UpdateStats(statusEffect, true, false);
             }
 		}
+
+        // 특수 상태이상(기절, 속박, 침묵)이 갱신되었는지 체크
+        target.UpdateStatusEffectIcon();
+
         return actuallyAppliedStatusEffects;
 	}
 

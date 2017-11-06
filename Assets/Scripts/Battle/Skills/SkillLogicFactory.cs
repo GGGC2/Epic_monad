@@ -122,7 +122,7 @@ public static class SkillLogicFactory
             case "반달베기":
 				skillLogic = new Sepia_1_r_SkillLogic();
             break;
-            case "???":
+            case "무아베기":
                 skillLogic = new Sepia_2_l_SkillLogic();
             break;
 
