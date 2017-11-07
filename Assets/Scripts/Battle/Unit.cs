@@ -1178,31 +1178,19 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void UpdateStatusEffectIcon() {Debug.Log("UpdateStatusEffectIcon");
+	public void UpdateStatusEffectIcon() {
 		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
 		else {
 			if (statusEffectIconCoroutine != null) {
 				StopCoroutine(statusEffectIconCoroutine);
 				statusEffectIconCoroutine = null;
 			}
-			CheckSpecialStatusEffect(); Debug.Log("Silence SE : " + HasStatusEffect(StatusEffectType.Silence));
+			CheckSpecialStatusEffect();
 			if (specialStatusEffectList.Count == 0) {
 				statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
 			}
 			else
 			{
-				// 일단 첫번째껏만 띄움
-				// StatusEffectType specialSE = specialStatusEffectList.First();
-				// if (specialSE == StatusEffectType.Bind) {
-				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_bind");
-				// }
-				// else if (specialSE == StatusEffectType.Silence) {
-				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_silence");
-				// }
-				// else if (specialSE == StatusEffectType.Faint) {
-				// 	statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Status/status_faint");
-				// }
-
 				List<Sprite> icons = new List<Sprite>();
 				if (specialStatusEffectList.Contains(StatusEffectType.Bind)) {
 					icons.Add(Resources.Load<Sprite>("Icon/Status/status_bind"));
@@ -1221,7 +1209,7 @@ public class Unit : MonoBehaviour{
 	}
 
 	IEnumerator ChangeStatusEffectIcon(List<Sprite> icons) {
-		float delay = 2.0f;
+		float delay = 1.0f;
 		while (true) {
 			for (int i = 0; i < icons.Count; i++) {
 				statusEffectIcon.sprite = icons[i];
@@ -1232,13 +1220,13 @@ public class Unit : MonoBehaviour{
 	void CheckSpecialStatusEffect() {
 		specialStatusEffectList.Clear();
 		if (HasStatusEffect(StatusEffectType.Bind)) {
-			specialStatusEffectList.Add(StatusEffectType.Bind); Debug.Log("Bind");
+			specialStatusEffectList.Add(StatusEffectType.Bind);
 		}
 		if (HasStatusEffect(StatusEffectType.Silence)) {
-			specialStatusEffectList.Add(StatusEffectType.Silence); Debug.Log("Silence");
+			specialStatusEffectList.Add(StatusEffectType.Silence);
 		}
 		if (HasStatusEffect(StatusEffectType.Faint)) {
-			specialStatusEffectList.Add(StatusEffectType.Faint); Debug.Log("Faint");
+			specialStatusEffectList.Add(StatusEffectType.Faint);
 		}
 	}
 
