@@ -15,6 +15,7 @@ namespace BattleUI{
         GameObject elementBuffIcon;
 
         // FIXME : 버프/디버프 표시 임시로 텍스트로.
+        public Image ccIcon;
         public GameObject statusEffectIconPrefab;
         Vector3 statusEffectIconBarPosition;
         List<StatusEffectIcon> statusEffectIcons;
@@ -91,6 +92,69 @@ namespace BattleUI{
                 statusEffectIcon.UpdatePosition(statusEffectIconBarPosition, i);
                 statusEffectIcons.Add(statusEffectIcon);
             }
+
+            UpdateCCIcon(unit);
+        }
+
+        IEnumerator ccIconCoroutine;
+
+        public void UpdateCCIcon(Unit unit) {
+            if (unit.IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
+            else {
+                List<StatusEffectType> ccList = new List<StatusEffectType>();
+                ccList = CheckCC(unit);
+
+                if (ccIconCoroutine != null) {
+                    StopCoroutine(ccIconCoroutine);
+                    ccIconCoroutine = null;
+                }
+
+                if (ccList.Count == 0) {
+                    ccIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
+                }
+                else
+                {
+                    List<Sprite> icons = new List<Sprite>();
+                    if (ccList.Contains(StatusEffectType.Bind)) {
+                        icons.Add(Resources.Load<Sprite>("Icon/Status/status_bind"));
+                    }
+                    if (ccList.Contains(StatusEffectType.Silence)) {
+                        icons.Add(Resources.Load<Sprite>("Icon/Status/status_silence"));
+                    }
+                    if (ccList.Contains(StatusEffectType.Faint)) {
+                        icons.Add(Resources.Load<Sprite>("Icon/Status/status_faint"));
+                    }
+
+                    ccIconCoroutine = ChangeCCIcon(icons);
+                    if (gameObject.activeInHierarchy)
+                        StartCoroutine(ccIconCoroutine);
+                }
+            }
+        }
+
+        IEnumerator ChangeCCIcon(List<Sprite> icons) {
+            float delay = 1.0f;
+            while (true) {
+                for (int i = 0; i < icons.Count; i++) {
+                    ccIcon.sprite = icons[i];
+                    yield return new WaitForSeconds(delay);
+                }
+            }
+        }
+
+        List<StatusEffectType> CheckCC(Unit unit) {
+            List<StatusEffectType> newCCList = new List<StatusEffectType>();
+            if (unit.HasStatusEffect(StatusEffectType.Bind)) {
+                newCCList.Add(StatusEffectType.Bind);
+            }
+            if (unit.HasStatusEffect(StatusEffectType.Silence)) {
+                newCCList.Add(StatusEffectType.Silence);
+            }
+            if (unit.HasStatusEffect(StatusEffectType.Faint)) {
+                newCCList.Add(StatusEffectType.Faint);
+            }
+
+            return newCCList;
         }
 
         void CheckElementBuff(Unit unit) {
