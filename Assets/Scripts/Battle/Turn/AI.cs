@@ -329,6 +329,7 @@ namespace Battle.Turn{
 				yield return battleManager.ToDoBeforeAction ();
 				yield return UseSkill (casting);
 			}
+			Debug.Log ("destroyed obstacle on the tile "+obstaclePos.x+" : "+obstaclePos.y);
 		}
 
 		public IEnumerator MoveToThePositionAndChangeDirection(Vector2 destPos){
@@ -497,6 +498,7 @@ namespace Battle.Turn{
         }
 		IEnumerator UseSkill(Casting casting){
 			yield return casting.Skill.AIUseSkill (casting);
+			yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         }
 		IEnumerator Standby(){
 			yield return null;
