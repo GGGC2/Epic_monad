@@ -81,9 +81,9 @@ public class Unit : MonoBehaviour{
 	Sprite spriteRightUp;
 	Sprite spriteRightDown;
 
-	public SpriteRenderer statusEffectIcon;
-	List<StatusEffectType> specialStatusEffectList;
-	IEnumerator statusEffectIconCoroutine;
+	public SpriteRenderer ccIcon;
+	List<StatusEffectType> ccList;
+	IEnumerator ccIconCoroutine;
 
     public List<HitInfo> GetLatelyHitInfos() { return latelyHitInfos; }
 	public Sprite GetCurrentSprite() { return GetComponent<SpriteRenderer>().sprite; }
@@ -1123,7 +1123,7 @@ public class Unit : MonoBehaviour{
 		// skillList = SkillLoader.MakeSkillList();
 
 		statusEffectList = new List<UnitStatusEffect>();
-		specialStatusEffectList = new List<StatusEffectType>();
+		ccList = new List<StatusEffectType>();
 		latelyHitInfos = new List<HitInfo>();
 	}
 
@@ -1178,55 +1178,55 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void UpdateStatusEffectIcon() {
+	public void UpdateCCIcon() {
 		if (IsObject) return; // 연산을 최소화하기 위해 오브젝트는 건너뛰고 구현
 		else {
-			if (statusEffectIconCoroutine != null) {
-				StopCoroutine(statusEffectIconCoroutine);
-				statusEffectIconCoroutine = null;
+			if (ccIconCoroutine != null) {
+				StopCoroutine(ccIconCoroutine);
+				ccIconCoroutine = null;
 			}
-			CheckSpecialStatusEffect();
-			if (specialStatusEffectList.Count == 0) {
-				statusEffectIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
+			CheckCC();
+			if (ccList.Count == 0) {
+				ccIcon.sprite = Resources.Load<Sprite>("Icon/Empty");
 			}
 			else
 			{
 				List<Sprite> icons = new List<Sprite>();
-				if (specialStatusEffectList.Contains(StatusEffectType.Bind)) {
+				if (ccList.Contains(StatusEffectType.Bind)) {
 					icons.Add(Resources.Load<Sprite>("Icon/Status/status_bind"));
 				}
-				if (specialStatusEffectList.Contains(StatusEffectType.Silence)) {
+				if (ccList.Contains(StatusEffectType.Silence)) {
 					icons.Add(Resources.Load<Sprite>("Icon/Status/status_silence"));
 				}
-				if (specialStatusEffectList.Contains(StatusEffectType.Faint)) {
+				if (ccList.Contains(StatusEffectType.Faint)) {
 					icons.Add(Resources.Load<Sprite>("Icon/Status/status_faint"));
 				}
 
-				statusEffectIconCoroutine = ChangeStatusEffectIcon(icons);
-				StartCoroutine(statusEffectIconCoroutine);
+				ccIconCoroutine = ChangeCCIcon(icons);
+				StartCoroutine(ccIconCoroutine);
 			}
 		}
 	}
 
-	IEnumerator ChangeStatusEffectIcon(List<Sprite> icons) {
+	IEnumerator ChangeCCIcon(List<Sprite> icons) {
 		float delay = 1.0f;
 		while (true) {
 			for (int i = 0; i < icons.Count; i++) {
-				statusEffectIcon.sprite = icons[i];
+				ccIcon.sprite = icons[i];
 				yield return new WaitForSeconds(delay);
 			}
 		}
 	}
-	void CheckSpecialStatusEffect() {
-		specialStatusEffectList.Clear();
+	void CheckCC() {
+		ccList.Clear();
 		if (HasStatusEffect(StatusEffectType.Bind)) {
-			specialStatusEffectList.Add(StatusEffectType.Bind);
+			ccList.Add(StatusEffectType.Bind);
 		}
 		if (HasStatusEffect(StatusEffectType.Silence)) {
-			specialStatusEffectList.Add(StatusEffectType.Silence);
+			ccList.Add(StatusEffectType.Silence);
 		}
 		if (HasStatusEffect(StatusEffectType.Faint)) {
-			specialStatusEffectList.Add(StatusEffectType.Faint);
+			ccList.Add(StatusEffectType.Faint);
 		}
 	}
 
