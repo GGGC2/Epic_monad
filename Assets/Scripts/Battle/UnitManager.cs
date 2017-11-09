@@ -120,7 +120,7 @@ public class UnitManager : MonoBehaviour{
         }
 
 		// 특수 상태이상(기절, 속박, 침묵)이 갱신되었는지 체크
-        GetAllUnits().ForEach(unit => unit.UpdateStatusEffectIcon());
+        GetAllUnits().ForEach(unit => unit.UpdateCCIcon());
     }
     public void UpdateStatsAtActionEnd() {
         foreach(var unit in GetAllUnits()) {
