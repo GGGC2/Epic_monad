@@ -1,4 +1,4 @@
-﻿owner	ether	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
+owner	ether	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
 manastone	0	1	가만히	1	9999	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
 soldier01	0	1	근접 공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 asterCavalry01	0	1	돌진	1	45	0	Power	0.9	Route	Straight	1	4	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
@@ -14,19 +14,19 @@ burglar	0	1	칼춤	1	38	0	Power	0.8	Auto	Sector	1	2	0	Sector	1	2	0	DamageHealth	
 elvenSoldier01	0	1	근접 공격	1	40	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 elvenSoldier01	0	1	계절풍	1	35	0	Power	0.8	Route	Straight	1	3	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	SeasonWind	대상을 자신 앞으로 당겨온 후 <color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 elvenArcher01	0	1	화살 발사	1	35	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
-elvenPriest01	0	1	하급 치유	1	35	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	-	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
+elvenPriest01	0	1	하급 치유	1	35	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	Heal	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
 controller	0	1	침입자 제거	1	0	1	Power	1	Auto	Global	0	0	0	Global	0	0	0	DamageHealth	-	Individual	NonMove	-	모든 적군에게 최대 체력 15%의 피해를 줍니다.	None	0	0	None	0	0
 kashasty_Escape	0	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 triana_Rest	0	1	광폭화	1	1	10	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	ControllerGrawl	10페이즈 동안 자신의 공격력과 방어력과 저항력을 2배로 높입니다.	None	0	0	None	0	0
 triana_Rest	0	1	근접 공격	2	30	0	Power	1.2	Auto	Front	1	1	3	Front	1	1	3	DamageHealth	MeleeArea	Area	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 asterAgent	0	1	섹션스킬	1	50	0	Power	1	Auto	Sector	1	1	0	Sector	1	3	0	DamageHealth	-	Individual	NonMove	-	--	None	0	0	None	0	0
-monster01	0	1	박치기	1	35	0	Power	1.6	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	<color=red>1.6x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고, 대상의 방어력을 1페이즈 동안 <color=green>50</color> 감소시킵니다.	Power	1.6	0	None	0	0
+monster01	0	1	박치기	1	35	0	Power	1.6	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Smite	<color=red>1.6x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고, 대상의 방어력을 1페이즈 동안 <color=green>50</color> 감소시킵니다.	Power	1.6	0	None	0	0
 orchid	0	1	약공격	1	55	0	Power	1	Auto	Diamond	0	0	0	Diamond	1	2	0	DamageHealth	-	Area	NonMove	-	--	None	0	0	None	0	0
 orchid	0	1	중공격	1	42	0	Power	1.5	Point	Diamond	1	3	0	Diamond	0	1	0	DamageHealth	-	Area	NonMove	-	--	None	0	0	None	0	0
 orchid	0	1	강공격	1	60	0	Power	2	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	-	Area	NonMove	-	--	None	0	0	None	0	0
 orchid	0	1	밀어내기	1	70	0	None	0	Auto	Diamond	0	0	0	Sector	1	7	0	Debuff	-	Area	NonMove	-	--	None	0	0	None	0	0
 lucius	10	1	가로베기	1	28	0	Power	1	Auto	Front	1	1	3	Front	1	1	3	DamageHealth	Melee	Individual	NonMove	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1	0	None	0	0
-lucius	9	8	푸른 쇄도	3	38	0	Power	1.2	Route	Straight	1	5	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	돌진하여 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
+lucius	9	8	푸른 쇄도	3	38	0	Power	1.2	Route	Straight	1	5	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Slash	돌진하여 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 reina	6	1	화염 폭발	1	33	0	Power	1	Auto	AllDirection	1	2	0	AllDirection	1	2	0	DamageHealth	RedBlast	Area	Move	Fire	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1	0	None	0	0
 reina	7	1	화염구	2	31	0	Power	1.2	Route	Straight	1	5	0	Square	0	1	0	DamageHealth	RedBlast	Area	Move	Fire	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 reina	0	22	화염낙진	1	48	5	Power	2.1	Auto	Diamond	1	3	0	Diamond	1	3	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
@@ -34,8 +34,8 @@ reina	0	22	지옥불꽃	2	81	6	Power	3.4	Route	Straight	1	5	0	Diamond	0	1	0	Dama
 reina	0	29	에테르 과부하	3	0	5	Agility	0.2	Self	Diamond	0	0	0	Diamond	0	0	0	HealAP	-	Area	Move	-	--	None	0	0	None	0	0
 reina	0	50	대재앙	1	65	6	Power	2.3	Auto	Diamond	1	4	0	Diamond	1	4	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
 reina	0	50	최후의 불꽃	2	110	7	Power	4.5	Route	Straight	1	5	0	Diamond	0	1	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
-lenien	11	1	전자기 충격	2	29	0	Power	0.8	Point	Diamond	1	5	0	Diamond	0	3	0	DamageHealth	YellowBlast	Area	Move	-	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.8	0	None	0	0
-lenien	5	8	하전 파동	2	28	0	Power	0.5	Route	Straight	1	4	0	Sector	0	2	0	DamageHealth	YellowBlast	Area	Move	-	<color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>기절</color>시킵니다.	Power	0.5	0	None	0	0
+lenien	11	1	전자기 충격	2	29	0	Power	0.8	Point	Diamond	1	5	0	Diamond	0	3	0	DamageHealth	YellowBlast	Area	Move	ElectricBuzz	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.8	0	None	0	0
+lenien	5	8	하전 파동	2	28	0	Power	0.5	Route	Straight	1	4	0	Sector	0	2	0	DamageHealth	YellowBlast	Area	Move	ElectricBuzz	<color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 주고 가장 바깥쪽 범위에서 맞은 경우 <color=#ff9999ff>1페이즈</color> 동안 <color=#b2ff66ff>기절</color>시킵니다.	Power	0.5	0	None	0	0
 lenien	0	22	벼락	2	62	5	Power	1.6	Point	Diamond	1	4	0	Diamond	0	2	0	DamageHealth	-	Area	Move	-	?	None	0	0	None	0	0
 lenien	0	43	축전	1	46	3	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
 lenien	0	50	낙뢰 폭격	2	84	6	Power	2.4	Point	Diamond	1	4	0	Diamond	0	2	0	DamageHealth	-	Area	Move	-	--	None	0	0	None	0	0
