@@ -507,7 +507,7 @@ MonoBehaviour:
   notMovedTurnCount: 0
   currentHealth: 0
   activityPoint: 0
-  statusEffectIcon: {fileID: 212843240715341936}
+  ccIcon: {fileID: 212843240715341936}
 --- !u!212 &21201284
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1097,7 +1097,7 @@ GameObject:
   - component: {fileID: 4052911719377824}
   - component: {fileID: 212843240715341936}
   m_Layer: 0
-  m_Name: statusBubble
+  m_Name: ccIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
