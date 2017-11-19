@@ -1,0 +1,116 @@
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	연금술 수습생	alchemyApprentice01	Enemy	13	8	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+2	연금술 수습생	alchemyApprentice01	Enemy	16	8	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+3	연금술 수습생	alchemyApprentice01	Enemy	20	8	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+4	연금술 수습생	alchemyApprentice01	Enemy	18	9	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+5	연금술 수습생	alchemyApprentice01	Enemy	14	10	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+6	연금술 수습생	alchemyApprentice01	Enemy	3	18	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+7	연금술 수습생	alchemyApprentice01	Enemy	3	21	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+8	연금술 수습생	alchemyApprentice01	Enemy	4	19	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+9	연금술 수습생	alchemyApprentice01	Enemy	5	20	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+10	연금술 수습생	alchemyApprentice01	Enemy	6	20	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+11	연금술 수습생	alchemyApprentice01	Enemy	7	19	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+12	연금술 수습생	alchemyApprentice01	Enemy	25	19	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+13	연금술 수습생	alchemyApprentice01	Enemy	26	20	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+14	연금술 수습생	alchemyApprentice01	Enemy	27	20	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+15	연금술 수습생	alchemyApprentice01	Enemy	28	19	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+16	연금술 수습생	alchemyApprentice01	Enemy	29	18	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+17	연금술 수습생	alchemyApprentice01	Enemy	29	21	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+18	연금술 수습생	alchemyApprentice01	Enemy	13	31	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+19	연금술 수습생	alchemyApprentice01	Enemy	14	31	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+20	연금술 수습생	alchemyApprentice01	Enemy	15	29	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+21	연금술 수습생	alchemyApprentice01	Enemy	16	29	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+22	연금술 수습생	alchemyApprentice01	Enemy	17	29	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+23	연금술 수습생	alchemyApprentice01	Enemy	18	31	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+24	연금술 수습생	alchemyApprentice01	Enemy	19	31	LeftDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+25	연금술 수습생	alchemyApprentice01	Enemy	14	20	LeftUp	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+26	연금술 수습생	alchemyApprentice01	Enemy	15	22	RightUp	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+27	연금술 수습생	alchemyApprentice01	Enemy	17	22	RightUp	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+28	연금술 수습생	alchemyApprentice01	Enemy	18	20	RightDown	298	115	5	48	55	Magic	Fire	Moon	false	false	true	0
+29	제국군 병사	soldier01	Enemy	4	15	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+30	제국군 병사	soldier01	Enemy	6	16	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+31	제국군 병사	soldier01	Enemy	8	17	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+32	제국군 병사	soldier01	Enemy	24	17	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+33	제국군 병사	soldier01	Enemy	26	16	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+34	제국군 병사	soldier01	Enemy	28	15	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+35	제국군 병사	soldier01	Enemy	6	24	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+36	제국군 병사	soldier01	Enemy	8	24	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+37	제국군 병사	soldier01	Enemy	24	24	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+38	제국군 병사	soldier01	Enemy	26	24	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+39	제국군 병사	soldier01	Enemy	13	17	LeftUp	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+40	제국군 병사	soldier01	Enemy	13	21	LeftUp	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+41	제국군 병사	soldier01	Enemy	14	16	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+42	제국군 병사	soldier01	Enemy	14	22	RightUp	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+43	제국군 병사	soldier01	Enemy	18	16	LeftDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+44	제국군 병사	soldier01	Enemy	18	22	RightUp	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+45	제국군 병사	soldier01	Enemy	19	17	RightDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+46	제국군 병사	soldier01	Enemy	19	21	RightDown	343	97	48	48	51	Melee	Plant	Earth	false	false	true	0
+47	기둥	pillar	Neutral	6	9	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+48	기둥	pillar	Neutral	6	10	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+59	기둥	pillar	Neutral	7	9	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+50	기둥	pillar	Neutral	7	10	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+51	기둥	pillar	Neutral	25	9	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+52	기둥	pillar	Neutral	25	10	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+53	기둥	pillar	Neutral	26	9	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+54	기둥	pillar	Neutral	26	10	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+55	기둥	pillar	Neutral	10	13	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+56	기둥	pillar	Neutral	10	14	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+57	기둥	pillar	Neutral	11	13	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+58	기둥	pillar	Neutral	11	14	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+59	기둥	pillar	Neutral	21	13	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+60	기둥	pillar	Neutral	21	14	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+61	기둥	pillar	Neutral	22	13	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+62	기둥	pillar	Neutral	22	14	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+63	기둥	pillar	Neutral	6	28	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+64	기둥	pillar	Neutral	6	28	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+65	기둥	pillar	Neutral	7	29	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+66	기둥	pillar	Neutral	7	29	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+67	기둥	pillar	Neutral	10	24	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+68	기둥	pillar	Neutral	10	25	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+69	기둥	pillar	Neutral	11	24	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+70	기둥	pillar	Neutral	11	25	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+71	기둥	pillar	Neutral	21	24	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+72	기둥	pillar	Neutral	21	25	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+73	기둥	pillar	Neutral	22	24	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+74	기둥	pillar	Neutral	22	25	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+75	기둥	pillar	Neutral	25	28	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+76	기둥	pillar	Neutral	25	29	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+77	기둥	pillar	Neutral	26	28	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+78	기둥	pillar	Neutral	26	29	LeftDown	10000	0	100	0	0	None	None	None	true	false	false	0
+79	문	door	Neutral	10	18	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+80	문	door	Neutral	10	19	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+81	문	door	Neutral	10	20	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+82	문	door	Neutral	22	18	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+83	문	door	Neutral	22	19	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+84	문	door	Neutral	22	20	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+85	문	door	Neutral	15	25	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+86	문	door	Neutral	16	25	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+87	문	door	Neutral	17	25	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+88	문	door	Neutral	15	13	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+89	문	door	Neutral	16	13	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+90	문	door	Neutral	17	13	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+91	문	door	Neutral	3	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+92	문	door	Neutral	4	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+93	문	door	Neutral	5	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+94	문	door	Neutral	6	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+95	문	door	Neutral	7	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+96	문	door	Neutral	8	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+97	문	door	Neutral	9	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+98	문	door	Neutral	23	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+99	문	door	Neutral	24	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+100	문	door	Neutral	25	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+101	문	door	Neutral	26	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+102	문	door	Neutral	27	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+103	문	door	Neutral	28	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+104	문	door	Neutral	29	22	LeftDown	3000	0	100	0	0	None	None	None	true	false	false	0
+105	상자	box	Neutral	5	19	LeftDown	1000	0	100	0	0	None	None	None	true	false	false	0
+106	상자	box	Neutral	27	19	LeftDown	1000	0	100	0	0	None	None	None	true	false	false	0
+107	상자	box	Neutral	16	30	LeftDown	1000	0	100	0	0	None	None	None	true	false	false	0
+108	상자	box	Neutral	16	20	LeftDown	1000	0	100	0	0	None	None	None	true	false	false	0
+109	기록	record	Neutral	16	19	LeftDown	600	0	100	100	0	None	None	None	true	false	false	0
+110	현자	sage01	Neutral	16	21	LeftDown	700	141	113	156	65	Magic	Metal	Moon	false	true	true	0
+111	unselected	unselected	Ally	16	4	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
+112	unselected	unselected	Ally	17	3	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
+113	unselected	unselected	Ally	15	3	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
+114	unselected	unselected	Ally	17	2	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
+115	unselected	unselected	Ally	16	2	RightUp	0	0	0	0	0	None	None	None	false	false	false	0

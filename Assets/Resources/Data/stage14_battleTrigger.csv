@@ -1,0 +1,4 @@
+ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+Win	중앙에 있는 기록을 회수	Target	Neutralize	1	false	400	1	record
+Lose	아군 전원 무력화	PC	Neutralize	0	false	0
+End	Scene#28	One	One

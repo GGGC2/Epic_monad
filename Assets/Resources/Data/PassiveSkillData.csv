@@ -3,6 +3,7 @@ elvenSoldier01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</c
 elvenPriest01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 elvenArcher01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 monster01	0	0	완강한 복족류	0	속도가 30 감소하며, 방어력과 저항력이 <color=green>80</color> 증가합니다. 조작 제한 상태일 때 이 효과는 무효화됩니다.	None	0	0	None	0	0
+sage01	0	0	화합물 정제	0	주변의 문이 열리기 전까지, 3페이즈마다 공격력이 <color=red>20%</color> 증가합니다.	None	0	0	None	0	0
 lucius	0	0	정의로운 신념	0	적 유닛을 이탈시킬 때마다 아군의 행동력이 20 회복되고, 적 유닛을 처치할 때마다 아군의 행동력이 20 감소합니다.	None	0	0	None	0	0
 lucius	7	1	검사의 직감	2	바로 옆 타일의 유닛이 시전한 공격의 피해를 받지 않습니다.	None	0	0	None	0	0
 lucius	8	8	정면 승부	1	전술 보정치가 없는 공격의 피해량이 20% 높아집니다.	None	0	0	None	0	0
