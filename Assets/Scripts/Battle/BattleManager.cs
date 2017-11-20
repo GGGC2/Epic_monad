@@ -463,24 +463,25 @@ public class BattleManager : MonoBehaviour{
 
 	void Update(){
 		if (Input.GetMouseButtonDown(1)){
-			BattleData.enemyUnitSelected = false;
-			BattleData.tileSelected = false;
+			BattleData.unitInUnitViewer = null;
+			BattleData.tileInTileViewer = null;
 			if(!BattleData.rightClickLock){
 				CallbackRightClick();
 			}
 		}
 
 		if (BattleData.currentState != CurrentState.FocusToUnit){
-            BattleData.tileSelected = false;
-			BattleData.enemyUnitSelected = false; // 행동을 선택하면 홀드가 자동으로 풀림.
+            BattleData.tileInTileViewer = null;
+			BattleData.unitInUnitViewer = null; // 행동을 선택하면 홀드가 자동으로 풀림.
 		}
 
         if (Input.GetMouseButtonDown(0)) {
             // 유닛 뷰어가 뜬 상태에서 좌클릭하면, 유닛 뷰어가 고정된다. 단, 행동 선택 상태(FocusToUnit)에서만 가능.
-            if ((BattleData.currentState == CurrentState.FocusToUnit) && (BattleData.uiManager.IsUnitViewerShowing()))
-                BattleData.enemyUnitSelected = true;
+            if ((BattleData.currentState == CurrentState.FocusToUnit) && (BattleData.uiManager.IsUnitViewerShowing())) {
+                BattleData.unitInUnitViewer = BattleData.uiManager.GetUnitInUnitViewer();
+            }
             if ((BattleData.currentState == CurrentState.FocusToUnit) && (BattleData.uiManager.IsTileViewerShowing()))
-                BattleData.tileSelected = true;
+                BattleData.tileInTileViewer = BattleData.uiManager.GetTileInTileViewer();
         }
 
 		if (Input.GetKeyDown(KeyCode.CapsLock)){
@@ -491,6 +492,13 @@ public class BattleManager : MonoBehaviour{
 			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 			Checker.LoadLoseScene ();
 		}
+        if(Input.GetKeyDown(KeyCode.X)) {
+            Unit unit = BattleData.unitInUnitViewer;
+            if (unit != null) {
+                LogManager.Instance.Record(new UnitDestroyedLog(new List<Unit>{ unit }));
+                LogManager.Instance.Record(new DestroyUnitLog(unit, TrigActionType.Kill));
+            }
+        }
 
 		if(Input.GetKeyDown(KeyCode.B))
 			SceneManager.LoadScene("BattleReady");
@@ -521,10 +529,10 @@ public class BattleManager : MonoBehaviour{
 
 	public bool EnemyUnitSelected()
 	{
-		return BattleData.enemyUnitSelected;
+		return BattleData.unitInUnitViewer != null;
 	}
     public bool TileSelected() {
-        return BattleData.tileSelected;
+        return BattleData.tileInTileViewer != null;
     }
 
 	public void OnMouseEnterHandlerFromTile(Vector2 position){

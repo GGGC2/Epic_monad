@@ -171,8 +171,8 @@ public static class BattleData{
 	public static ActiveSkill selectedSkill;
 	public static int rewardPoint;
 	public static bool isWaitingUserInput = false;
-	public static bool enemyUnitSelected = false;
-    public static bool tileSelected = false;
+    public static Unit unitInUnitViewer = null;
+    public static Tile tileInTileViewer = null;
     public static Aspect aspect = Aspect.North;
     public static List<LogDisplay>   logDisplayList = new List<LogDisplay>();
 
@@ -235,8 +235,8 @@ public static class BattleData{
 
 		rewardPoint = 0;
 		isWaitingUserInput = false;
-		enemyUnitSelected = false;
-		tileSelected = false;
+		unitInUnitViewer = null;
+		tileInTileViewer = null;
 		aspect = Aspect.North;
 
 		skillApplyCommand = SkillApplyCommand.Waiting;

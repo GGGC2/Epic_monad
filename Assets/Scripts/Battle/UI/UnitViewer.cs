@@ -216,5 +216,6 @@ namespace BattleUI{
         void Start() {
             elementBuffIcon.SetActive(false);
         }
+        public Unit GetUnit() { return unit; }
     }
 }
