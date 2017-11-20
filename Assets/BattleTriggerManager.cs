@@ -32,7 +32,10 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public void CountBattleTrigger(BattleTrigger trigger){
+	public void CountBattleTrigger(BattleTrigger trigger) {
+        if (trigger.resultType == TrigResultType.Trigger) {
+            trigger.Trigger();
+        }
 		if(trigger.actionType == TrigActionType.UnderCount){
 			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
 				AcquireTrigger(trigger);
@@ -52,15 +55,15 @@ public class BattleTriggerManager : MonoBehaviour {
 		if(!trigger.acquired){
 			trigger.acquired = true;
 			Debug.Log ("Trigger acquired : " + trigger.korName);
-			if (trigger.resultType == TrigResultType.Bonus)
-				BattleData.rewardPoint += trigger.reward;
-			else if (trigger.resultType == TrigResultType.Win)
-				BattleData.rewardPoint += trigger.reward;
-			else if (trigger.resultType == TrigResultType.Lose) {
-				Debug.Log ("Mission FAIL : " + trigger.korName);
-				LoadLoseScene ();
-				//sceneLoader.LoadNextDialogueScene ("Title");
-			}
+            if (trigger.resultType == TrigResultType.Bonus)
+                BattleData.rewardPoint += trigger.reward;
+            else if (trigger.resultType == TrigResultType.Win)
+                BattleData.rewardPoint += trigger.reward;
+            else if (trigger.resultType == TrigResultType.Lose) {
+                Debug.Log("Mission FAIL : " + trigger.korName);
+                LoadLoseScene();
+                //sceneLoader.LoadNextDialogueScene ("Title");
+            }
 		}else{
 			Debug.Log("This trigger is already Acquired.");
 		}
@@ -105,6 +108,7 @@ public class BattleTriggerManager : MonoBehaviour {
 				continue;
 			}else{
 				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType)){
+                    trigger.units.Add(unit);
 					Checker.CountBattleTrigger(trigger);
 				}
 			}
@@ -124,6 +128,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
 		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
 			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Checker.CheckUnitType(trigger, unit)){
+                trigger.units.Add(unit);
 				Checker.CountBattleTrigger(trigger);
 			}
 		}
