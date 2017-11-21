@@ -383,20 +383,26 @@ public class UIManager : MonoBehaviour{
 			actionButtons [i].Inactive();
 			// actionButtons [i].skill = null;
 			if (i < unit.activeSkillList.Count) {
-				actionButtons [i].Initialize (unit.activeSkillList [i]);
+				actionButtons [i].InitializeWithSkill (unit.activeSkillList [i]);
 				actionButtons [i].Activate (unit.IsThisSkillUsable (unit.activeSkillList [i]));
 			} else if (i == unit.activeSkillList.Count) {
 				if (unit.IsStandbyPossible ()) {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Standby");
-                    actionButtons [i].isStandBy = true;
+                    actionButtons [i].type = ActionButtonType.Standby;
 				} else {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Rest");
-                    actionButtons[i].isStandBy = false;
+                    actionButtons[i].type = ActionButtonType.Rest;
                 }
 				actionButtons [i].Activate (true);
 			}
 		}
 	}
+    public void AddCollectableActionButton() {
+        Unit unit = BattleData.selectedUnit;
+        ActionButton button = actionButtons[unit.activeSkillList.Count + 1];
+        button.type = ActionButtonType.Collect;
+        button.Activate(true);
+    }
 
 	public void HideActionButtons(){
 		actionButtons.ForEach(button => button.Inactive());

@@ -126,6 +126,18 @@ public class StandbyLog : EventLog {
     }
 }
 
+public class CollectStartLog : EventLog {
+    Unit collector;
+    Unit collectible;
+    public CollectStartLog(Unit collector, Unit collectible) {
+        this.collector = collector;
+        this.collectible = collectible;
+    }
+    public override string GetText() {
+        return collector.GetNameKor() + " : " + collectible.GetNameKor() + " 수집 시작";
+    }
+}
+
 public class UnitDestroyedLog : EventLog {
     List<Unit> units;
     TrigActionType actionType;

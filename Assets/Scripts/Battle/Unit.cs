@@ -38,6 +38,7 @@ public class Unit : MonoBehaviour{
 	Battle.Turn.AI _AI;
 	public UnitInfo myInfo;
     public Element element;
+    public bool collectable = false;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -545,8 +546,12 @@ public class Unit : MonoBehaviour{
                     statusEffect.flexibleElem.display.remainPhase--;
                 }
             }
-            if (statusEffect.GetRemainPhase() <= 0)
-				RemoveStatusEffect(statusEffect);
+            if (statusEffect.GetRemainPhase() <= 0) {
+                if(statusEffect.GetOwnerOfSkill() == "collecting") {
+                    LogManager.Instance.Record(new DestroyUnitLog(statusEffect.GetMemorizedUnits()[0], TrigActionType.Kill));
+                }
+                RemoveStatusEffect(statusEffect);
+            }
 		}
 	}
 
@@ -652,6 +657,7 @@ public class Unit : MonoBehaviour{
                 HitInfo hitInfo = new HitInfo(caster, null, damageAfterShieldApply);
                 //latelyHitInfos.Add(hitInfo);
                 logManager.Record(new AddLatelyHitInfoLog(this, hitInfo));
+                BreakCollecting();
 
 				// 데미지를 받을 때 발동하는 피격자 특성
 				SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, damageAfterShieldApply, caster);
@@ -918,6 +924,19 @@ public class Unit : MonoBehaviour{
         //unitManager.UpdateUnitOrder();
 		//UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
+
+    public void CollectNearestCollectible() {
+        UnitStatusEffect collecting = new UnitStatusEffect(BattleData.collectingStatusEffectInfo, this, this, null);
+        collecting.SetRemainPhase(BattleData.nearestCollectible.phase);
+        collecting.GetMemorizedUnits().Add(BattleData.nearestCollectible.unit);
+        StatusEffector.AttachStatusEffect(this, new List<UnitStatusEffect> { collecting }, this);
+    }
+
+    public void BreakCollecting() {
+        UnitStatusEffect collecting = statusEffectList.Find(se => se.GetOwnerOfSkill() == "collecting");
+        if(collecting != null)
+            RemoveStatusEffect(collecting);
+    }
 
 	public void ApplyTriggerOnPhaseStart(int phase){
 		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
