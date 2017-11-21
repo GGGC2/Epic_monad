@@ -127,13 +127,18 @@ public class StandbyLog : EventLog {
 }
 
 public class UnitDestroyedLog : EventLog {
-    Unit unit;
+    List<Unit> units;
     TrigActionType actionType;
-    public UnitDestroyedLog(Unit unit) {
-        this.unit = unit;
+    public UnitDestroyedLog(List<Unit> units) {
+        this.units = units;
     }
     public override string GetText() {
-        return unit.GetNameKor() + "파괴";
+        string text = "";
+        for(int i = 0; i < units.Count; i++) {
+            text += units[i].GetNameKor();
+            if(i != units.Count - 1)    text += ", ";
+        }
+        return text + "파괴";
     }
 }
 

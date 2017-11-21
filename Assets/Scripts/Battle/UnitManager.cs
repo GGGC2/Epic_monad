@@ -178,29 +178,29 @@ public class UnitManager : MonoBehaviour{
             UnitDestroyedLog unitDestroyedLog = null;
 			if (unit.IsObject || unit.IsNamed) {
 				if (unit.GetCurrentHealth () <= 0) {
-					unitDestroyedLog = new UnitDestroyedLog (unit);
+					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
 					if (unit.IsObject || !unit.IsKillable) {
 						type = TrigActionType.Retreat;
 					} else {
 						type = TrigActionType.Kill;
 					}
 				} else if (unit.CheckReach ()) {
-					unitDestroyedLog = new UnitDestroyedLog (unit);
+					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
 					type = TrigActionType.Reach;
 				}
 			} else {
 				int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
 				if (unit.GetCurrentHealth () <= 0) {
-					unitDestroyedLog = new UnitDestroyedLog (unit);
-					type = TrigActionType.Kill;
+					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                    type = TrigActionType.Kill;
 				} else if ((unit.GetCurrentHealth () <= retreatHP) && (unit.GetCurrentHealth () > 0)) {
 					if (SceneData.stageNumber >= Setting.retreatOpenStage && !unit.IsObject && !unit.IsNamed) {
-						unitDestroyedLog = new UnitDestroyedLog (unit);
-						type = TrigActionType.Retreat;
+						unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                        type = TrigActionType.Retreat;
 					}
 				} else if (unit.CheckReach ()) {
-					unitDestroyedLog = new UnitDestroyedLog (unit);
-					type = TrigActionType.Reach;
+					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                    type = TrigActionType.Reach;
 				}
 			}
             if (unitDestroyedLog != null) {

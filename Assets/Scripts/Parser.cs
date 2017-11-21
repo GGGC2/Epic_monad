@@ -63,7 +63,7 @@ public class Parser : MonoBehaviour{
 			object data = new PassiveSkill(rowData);
 			return (T)data;
 		}else if(typeof(T) == typeof(BattleTrigger)){
-			object data = new BattleTrigger(rowData);
+			object data = BattleTriggerFactory.Get(rowData);
 			return (T)data;
 		}else if(typeof(T) == typeof(AIInfo)){
 			object data = new AIInfo(rowData);

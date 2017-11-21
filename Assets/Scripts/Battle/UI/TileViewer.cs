@@ -6,7 +6,7 @@ using Enums;
 
 namespace BattleUI {
     public class TileViewer : MonoBehaviour {
-
+        Tile tile;
         Image tileImage;
         Text nameText;
         Text apText;
@@ -25,6 +25,7 @@ namespace BattleUI {
         }
 
         public void UpdateTileViewer(Tile tile) {
+            this.tile = tile;
             if (tileImage == null) {
 
                 Debug.LogError("TileImage is not exist : " + gameObject.GetInstanceID());
@@ -83,5 +84,6 @@ namespace BattleUI {
                 statusEffectIcons = new List<StatusEffectIcon>();
             }
         }
+        public Tile GetTile() { return tile; }
     }
 }

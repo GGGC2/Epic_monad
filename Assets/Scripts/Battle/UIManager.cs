@@ -214,8 +214,14 @@ public class UIManager : MonoBehaviour{
 	public bool IsUnitViewerShowing() {
 		return unitViewerUI.activeInHierarchy;
 	}
+    public Unit GetUnitInUnitViewer() {
+        return unitViewerUI.GetComponent<UnitViewer>().GetUnit();
+    }
     public bool IsTileViewerShowing() {
         return tileViewerUI.activeInHierarchy;
+    }
+    public Tile GetTileInTileViewer() {
+        return tileViewerUI.GetComponent<TileViewer>().GetTile();
     }
 	public void DisableUnitViewer() {
         unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList(); ;

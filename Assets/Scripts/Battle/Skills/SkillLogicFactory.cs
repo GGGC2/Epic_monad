@@ -276,6 +276,9 @@ public static class SkillLogicFactory
             case "완강한 복족류":
             passiveSkillLogic = new Stage_8_0_SkillLogic();
             break;
+            case "화합물 정제":
+            passiveSkillLogic = new Stage_14_0_SkillLogic();
+            break;
             // 그레네브
             case "타고난 저격수":
             passiveSkillLogic = new Grenev_0_1_SkillLogic();

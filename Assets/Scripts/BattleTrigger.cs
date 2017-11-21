@@ -8,7 +8,6 @@ public class BattleTrigger{
 	public bool repeatable;
 	public TrigResultType resultType;
 	public TrigUnitType unitType;
-	public string unitName;
 	public TrigActionType actionType;
 	public int reward;
 	public int count;
@@ -24,10 +23,10 @@ public class BattleTrigger{
 	public TriggerRelation winTriggerRelation;
 	public TriggerRelation loseTriggerRelation;
 
-	public BattleTrigger(string data){
-		StringParser commaParser = new StringParser(data, '\t');
+    public List<Unit> units = new List<Unit>(); // 이 trigger를 count시킨 유닛들
 
-		resultType = commaParser.ConsumeEnum<TrigResultType>();
+	public BattleTrigger(string data, TrigResultType resultType, StringParser commaParser){
+        // BattleTriggerFactory에서 commaParser를 이용해 ResultType은 파싱해놓은 상태
 		if(resultType == TrigResultType.End) {
 			nextSceneIndex = commaParser.Consume();
 			winTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
@@ -61,5 +60,30 @@ public class BattleTrigger{
 				}
 			}
 		}
-	}	
+	}
+    public virtual void Trigger() {
+
+    }
+}
+
+class BattleTriggerFactory {
+    public static BattleTrigger Get(string data) {
+        StringParser commaParser = new StringParser(data, '\t');
+        TrigResultType resultType = commaParser.ConsumeEnum<TrigResultType>();
+        BattleTrigger trigger = null;
+        if(resultType != TrigResultType.Trigger) {
+            trigger = new BattleTrigger(data, resultType, commaParser);
+        }
+        else {
+            string triggerName = commaParser.Consume();
+            switch(triggerName) {
+            case "14-0":
+                trigger = new Stage_14_0_BattleTrigger(data, resultType, commaParser);
+                break;
+            }
+        }
+        if(trigger != null)
+            trigger.resultType = resultType;
+        return trigger;
+    }
 }
