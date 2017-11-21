@@ -40,9 +40,9 @@ namespace Enums {
 	// 지정형, 경로형, 자동형, 재귀형
 	public enum SkillType{ Point, Route, Auto, Self }
 	//트리거 관련
-	public enum TrigResultType{Win, Lose, Bonus, Trigger, End}
+	public enum TrigResultType{Win, Lose, Bonus, Trigger, Info}
 	public enum TrigUnitType{Target, Ally, Enemy, NeutralChar, None, PC}
-	public enum TrigActionType{Neutralize, Reach, Phase, UnderPhase, Kill, Retreat, UnderCount}
+	public enum TrigActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount}
     public enum ActionButtonType { Skill, Standby, Rest, Collect, Inactive };
     public enum Stat
     {

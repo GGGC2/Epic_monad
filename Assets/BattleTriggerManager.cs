@@ -53,34 +53,25 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	void AcquireTrigger(BattleTrigger trigger){
-		if(!trigger.acquired){
-			trigger.acquired = true;
-			Debug.Log ("Trigger acquired : " + trigger.korName);
-            if (trigger.resultType == TrigResultType.Bonus)
-                BattleData.rewardPoint += trigger.reward;
-            else if (trigger.resultType == TrigResultType.Win)
-                BattleData.rewardPoint += trigger.reward;
-            else if (trigger.resultType == TrigResultType.Lose) {
+		Debug.Log ("Trigger Applied : " + trigger.korName);
+		if(trigger.acquired == trigger.negative){
+			trigger.acquired = !trigger.negative;
+            if (trigger.resultType == TrigResultType.Lose) {
                 Debug.Log("Mission FAIL : " + trigger.korName);
                 LoadLoseScene();
-                //sceneLoader.LoadNextDialogueScene ("Title");
             }
 		}else{
-			Debug.Log("This trigger is already Acquired.");
+			Debug.Log("This trigger is already Applied.");
 		}
 	}
 
 	public void WinGame(){
-		CheckTriggerOnEndGame();
+		List<BattleTrigger> scoreTriggers = triggers.FindAll(trig =>
+			(trig.resultType == TrigResultType.Win || trig.resultType == TrigResultType.Bonus) && trig.acquired);
+		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
+		
+		scoreTriggers.ForEach(trig => BattleData.rewardPoint += trig.reward);
 		InitializeResultPanel();
-	}
-
-	public static void CheckTriggerOnEndGame(){
-		foreach(BattleTrigger trigger in Instance.triggers){
-			if(trigger.actionType == TrigActionType.UnderPhase && BattleData.currentPhase <= trigger.reqCount){
-				Instance.AcquireTrigger(trigger);
-			}
-		}
 	}
 
 	public void InitializeResultPanel(){
@@ -102,7 +93,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.gameObject.SetActive(false);
 
 		triggers = Parser.GetParsedData<BattleTrigger>();
-		nextScriptName = triggers.Find(x => x.resultType == TrigResultType.End).nextSceneIndex;
+		nextScriptName = triggers.Find(x => x.resultType == TrigResultType.Info).nextSceneIndex;
 
         if (FindObjectOfType<ConditionPanel>() != null) {
             FindObjectOfType<CameraMover>().SetMovable(false);
@@ -112,6 +103,13 @@ public class BattleTriggerManager : MonoBehaviour {
 	void Start () {
 		unitManager = BattleData.unitManager;
 		sceneLoader = FindObjectOfType<SceneLoader>();
+	}
+
+	public static void CheckPhaseTriggers(){
+		List<BattleTrigger> trigger = Instance.ActiveTriggers.FindAll(trig => trig.actionType == TrigActionType.Phase);
+		trigger.ForEach(trig => {
+			Instance.CountBattleTrigger(trig);
+		});
 	}
 
 	public static void CheckBattleTrigger(Unit unit, TrigActionType actionType){
@@ -128,16 +126,6 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public static void CheckBattleTrigger(TrigActionType actionType){
-		Debug.Log("actionType : " + actionType + ", phase : " + BattleData.currentPhase);
-		BattleTrigger trigger = Instance.ActiveTriggers.Find(trig => trig.actionType == actionType);
-		if(trigger != null && actionType == TrigActionType.Phase){
-			Instance.CountBattleTrigger(trigger);
-		}/*else if(actionType == TrigActionType.UnderPhase && BattleData.currentPhase <= trigger.reqCount){
-			Instance.CountBattleTrigger(trigger);
-		}*/
-	}
-
 	public static void CheckBattleTrigger(Unit unit, Tile destination){
 		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
 			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Instance.CheckUnitType(trigger, unit)){
@@ -149,7 +137,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	//트리거가 현재 활성화되어있는지 여부를 확인. relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
 	public bool isTriggerActive(BattleTrigger trigger){
-		if(trigger.resultType == TrigResultType.End){
+		if(trigger.resultType == TrigResultType.Info){
 			return false;
 		}else if(trigger.resultType == TrigResultType.Bonus){
 			return true;
@@ -158,10 +146,10 @@ public class BattleTriggerManager : MonoBehaviour {
 			BattleTrigger.TriggerRelation relation;
 			if(trigger.resultType == TrigResultType.Win){
 				checkList = triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
-				relation = triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
+				relation = triggers.Find(trig => trig.resultType == TrigResultType.Info).winTriggerRelation;
 			}else{
 				checkList = triggers.FindAll(trig => trig.resultType == TrigResultType.Lose);
-				relation = triggers.Find(trig => trig.resultType == TrigResultType.End).loseTriggerRelation;
+				relation = triggers.Find(trig => trig.resultType == TrigResultType.Info).loseTriggerRelation;
 			}
 
 			if(relation == BattleTrigger.TriggerRelation.Sequence){

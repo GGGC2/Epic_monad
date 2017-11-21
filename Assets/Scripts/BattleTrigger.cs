@@ -5,13 +5,16 @@ using Enums;
 
 public class BattleTrigger{
 	public bool acquired;
-	public bool repeatable;
 	public TrigResultType resultType;
 	public TrigUnitType unitType;
 	public TrigActionType actionType;
 	public int reward;
 	public int count;
 	public int reqCount;
+
+	
+	public bool negative; //일반적인 경우와 반대로, 달성된 상태로 시작해서 조건부로 해제되는 것들. 예) n페이즈 이내 승리
+	public bool repeatable;
 
 	public List<string> targetUnitNames;
 	public List<Vector2> targetTiles = new List<Vector2>();
@@ -27,17 +30,15 @@ public class BattleTrigger{
 
 	public BattleTrigger(string data, TrigResultType resultType, StringParser commaParser){
         // BattleTriggerFactory에서 commaParser를 이용해 ResultType은 파싱해놓은 상태
-		if(resultType == TrigResultType.End) {
+		if(resultType == TrigResultType.Info) {
 			nextSceneIndex = commaParser.Consume();
 			winTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
 			loseTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
 		}else{
 			korName = commaParser.Consume();
 			unitType = commaParser.ConsumeEnum<TrigUnitType>();
-		
 			actionType = commaParser.ConsumeEnum<TrigActionType>();
 			reqCount = commaParser.ConsumeInt();
-			repeatable = commaParser.ConsumeBool();
 			reward = commaParser.ConsumeInt();
 
 			if(unitType == TrigUnitType.Target){
@@ -57,6 +58,20 @@ public class BattleTrigger{
 					int y = commaParser.ConsumeInt();
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
+				}
+			}
+
+			//Debug.Log("index : " + commaParser.index + " / length : " + commaParser.origin.Length);
+			while(commaParser.index < commaParser.origin.Length){
+				string code = commaParser.Consume();
+				if(code == "Default"){
+					//Debug.Log(korName + " is Default trigger.");
+					negative = true;
+					acquired = true;
+				}else if(code == "Repeat"){
+					repeatable = true;
+				}else{
+					Debug.LogError("Invalid parsing : index " + commaParser.index + " / " + code);
 				}
 			}
 		}
