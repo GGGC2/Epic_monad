@@ -1,4 +1,5 @@
-ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
+﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
 Win	모든 적 무력화	Enemy	Neutralize	0	false	100
 Lose	동료 유닛의 무력화	PC	Neutralize	1	false	0
+Bonus	3페이즈 이내에 승리	None	UnderPhase	3	false	20
 End	Scene#2	One	One
