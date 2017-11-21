@@ -270,7 +270,7 @@ public class BattleManager : MonoBehaviour{
 	public void CheckBattleTriggers() {
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
         //승리 조건이 충족되었는지 확인
-        BattleTriggerManager TrigManager = FindObjectOfType<BattleTriggerManager>();
+        BattleTriggerManager TrigManager = BattleTriggerManager.Instance;
 		List<BattleTrigger> winTriggers = TrigManager.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
 		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
 		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리

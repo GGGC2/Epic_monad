@@ -69,6 +69,15 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
+	public void WinGame(){
+		CheckTriggerOnEndGame();
+		InitializeResultPanel();
+	}
+
+	public static void CheckTriggerOnEndGame(){
+		CheckBattleTrigger(TrigActionType.UnderPhase);
+	}
+
 	public void InitializeResultPanel(){
 		resultPanel.gameObject.SetActive(true);
 		resultPanel.Activate();
@@ -102,34 +111,35 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public static void CheckBattleTrigger(Unit unit, TrigActionType actionType){
 		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
-		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
+		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
 			if(actionType == TrigActionType.Kill && unit.IsObject){
 				continue;
 			}else{
-				if(Checker.CheckUnitType(trigger, unit) && Checker.CheckActionType(trigger, actionType)){
+				if(Instance.CheckUnitType(trigger, unit) && Instance.CheckActionType(trigger, actionType)){
                     trigger.units.Add(unit);
-					Checker.CountBattleTrigger(trigger);
+					Instance.CountBattleTrigger(trigger);
 				}
 			}
 		}
 	}
 
-	public static void CheckBattleTrigger(){
+	public static void CheckBattleTrigger(TrigActionType actionType){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
+		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
 			if(trigger.actionType == TrigActionType.Phase){
-				Checker.CountBattleTrigger(trigger);
-			}
+				Instance.CountBattleTrigger(trigger);
+			}else if(trigger.actionType == actionType && BattleData.currentPhase <= trigger.reqCount){
+				Instance.CountBattleTrigger(trigger);
+ 			}
 		}
 	}
 
 	public static void CheckBattleTrigger(Unit unit, Tile destination){
 		BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		foreach(BattleTrigger trigger in Checker.ActiveTriggers){
-			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Checker.CheckUnitType(trigger, unit)){
+		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
+			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Instance.CheckUnitType(trigger, unit)){
                 trigger.units.Add(unit);
-				Checker.CountBattleTrigger(trigger);
+				Instance.CountBattleTrigger(trigger);
 			}
 		}
 	}
