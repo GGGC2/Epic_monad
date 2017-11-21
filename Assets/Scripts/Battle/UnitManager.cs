@@ -310,6 +310,8 @@ public class UnitManager : MonoBehaviour{
             units.Add(unit);
             ApplyAIInfo(unit, index);
             unit.healthViewer.SetInitHealth(unit.myInfo.baseStats[Stat.MaxHealth], unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
+            LogManager.Instance.Record(new CameraMoveLog(respawnPos));
+            LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
         }
     }
 
