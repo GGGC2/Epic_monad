@@ -80,6 +80,9 @@ class BattleTriggerFactory {
             case "14-0":
                 trigger = new Stage_14_0_BattleTrigger(data, resultType, commaParser);
                 break;
+            case "14-1":
+                trigger = new Stage_14_1_BattleTrigger(data, resultType, commaParser);
+                break;
             }
         }
         if(trigger != null)

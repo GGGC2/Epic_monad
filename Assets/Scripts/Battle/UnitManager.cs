@@ -48,7 +48,7 @@ public class UnitManager : MonoBehaviour{
     List<UnitStatusEffectInfo> statusEffectInfoList = new List<UnitStatusEffectInfo>();
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
-	public GameObject unitPrefab;
+    public GameObject unitPrefab;
 	public List<Unit> units = new List<Unit>();
 	List<Unit> readiedUnits = new List<Unit>();
 	List<Unit> deadUnits = new List<Unit>();
@@ -266,7 +266,7 @@ public class UnitManager : MonoBehaviour{
 			int index = aiInfo.index;
 			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
 			if(targetUnit == null){
-				Debug.Log("Unit Number " + index + " is null");
+				return;
 			}
 			AIData _AIData = targetUnit.gameObject.GetComponent<AIData>();
 			_AIData.SetAIInfo(aiInfo);
@@ -278,12 +278,47 @@ public class UnitManager : MonoBehaviour{
 		});
 	}
 
+    public void ApplyAIInfo(Unit unit, int index) {
+        AIInfo aiInfo = Parser.GetParsedData<AIInfo>(index);
+        AIData _AIData = unit.gameObject.GetComponent<AIData>();
+        _AIData.SetAIInfo(aiInfo);
+        _AIData.SetGoalArea(unit);
+        Battle.Turn.AI _AI = unit.gameObject.AddComponent<Battle.Turn.AI>();
+        _AI.Initialize(unit, _AIData);
+        unit.SetAI(_AI);
+        unit.SetAsAI();
+    }
+
+    public void GenerateUnitsAtPosition(int index, List<Vector2> positions, List<Direction> directions) {
+        //info의 index가 index인 유닛을 positions에, directions의 방향으로 생성
+        for(int i = 0; i < positions.Count; i++) {
+            UnitInfo unitInfo = Parser.GetParsedData<UnitInfo>(index);
+            unitInfo.initPosition = positions[i];
+            unitInfo.initDirection = directions[i];
+
+            Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+            unit.myInfo = unitInfo;
+            unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
+
+            Vector2 initPosition = unit.GetInitPosition();
+            Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
+            respawnPos -= new Vector3(0, 0, 0.05f);
+            unit.transform.position = respawnPos;
+
+            Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+            tileUnderUnit.SetUnitOnTile(unit);
+            units.Add(unit);
+            ApplyAIInfo(unit, index);
+            unit.healthViewer.SetInitHealth(unit.myInfo.baseStats[Stat.MaxHealth], unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
+        }
+    }
+
 	public IEnumerator GenerateUnits(){
-		List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 		int generatedPC = 0;
 		int enemyCount = 0;
+        List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 
-		ReadyManager RM = FindObjectOfType<ReadyManager>();
+        ReadyManager RM = FindObjectOfType<ReadyManager>();
 		List<string> controllableUnitNameList = new List<string>();
 		//UnitInfo들을 받아와서 그것이 unselected이면 선택된 PC 정보로 대체한다
 		foreach (var unitInfo in unitInfoList){
@@ -366,6 +401,8 @@ public class UnitManager : MonoBehaviour{
         ReadyManager RM = FindObjectOfType<ReadyManager>();
         // 유닛 배치 (자동)
         foreach (var unitInfo in unitInfoList) {
+            if(unitInfo.index < 0)  continue;
+
             if (unitInfo.nameEng == "unselected") continue;
 
             if (RM != null && RM.selectedUnits.Any(selectedUnit => selectedUnit.name == unitInfo.nameEng)) continue;

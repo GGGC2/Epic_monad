@@ -582,10 +582,10 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
         int phase = BattleData.currentPhase;
-        BattleTriggerManager.CheckBattleTrigger(TrigActionType.Phase);
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);
+        BattleTriggerManager.CheckBattleTrigger(TrigActionType.Phase);
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         yield return new WaitForSeconds(0.5f);
 	}

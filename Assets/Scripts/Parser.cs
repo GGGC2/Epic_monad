@@ -40,6 +40,25 @@ public class Parser : MonoBehaviour{
 		return DataList;
 	}
 
+    public static T GetParsedData<T>(int index) {
+        TextAsset textAsset = GetDataAddress<T>();
+        string[] rowDataList = textAsset.text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        for(int i = 1; i < rowDataList.Length; i++) {
+            StringParser commaParser = new StringParser(rowDataList[i], ',');
+            String parseIndexString = commaParser.Consume();
+            int parseIndex;
+            try { 
+                parseIndex = Int32.Parse(parseIndexString);
+            }
+            catch {
+                parseIndex = new StringParser(rowDataList[i], '\t').ConsumeInt();
+            }
+            if(parseIndex == index)
+                return CreateParsedObject<T>(rowDataList[i]);
+        }
+        return default(T);
+    }
+
 	public static T CreateParsedObject<T>(string rowData){
 		if(typeof(T) == typeof(GlossaryData)){
 			object data = new GlossaryData(rowData);
