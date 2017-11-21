@@ -268,19 +268,18 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void CheckBattleTriggers() {
-
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
         //승리 조건이 충족되었는지 확인
-        BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-		List<BattleTrigger> winTriggers = Checker.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
-		BattleTrigger.TriggerRelation winTrigRelation = Checker.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
+        BattleTriggerManager TrigManager = FindObjectOfType<BattleTriggerManager>();
+		List<BattleTrigger> winTriggers = TrigManager.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
+		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
 		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리
 		if(winTrigRelation == BattleTrigger.TriggerRelation.All || winTrigRelation == BattleTrigger.TriggerRelation.Sequence){
 			if(winTriggers.All(trig => trig.acquired)){
-				Checker.InitializeResultPanel();	
+				TrigManager.WinGame();
 			}
 		}else if(winTriggers.Any(trig => trig.acquired)){
-			Checker.InitializeResultPanel();
+			TrigManager.WinGame();
 		}
         FindObjectOfType<CameraMover>().CalculateBoundary();
     }
@@ -484,12 +483,10 @@ public class BattleManager : MonoBehaviour{
         }
 
 		if (Input.GetKeyDown(KeyCode.CapsLock)){
-			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-			Checker.InitializeResultPanel ();
+			BattleTriggerManager.Instance.WinGame ();
 		}
 		if (Input.GetKeyDown(KeyCode.Delete)){
-			BattleTriggerManager Checker = FindObjectOfType<BattleTriggerManager>();
-			Checker.LoadLoseScene ();
+			BattleTriggerManager.Instance.LoadLoseScene ();
 		}
 
 		if(Input.GetKeyDown(KeyCode.B))
@@ -557,7 +554,7 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
         int phase = BattleData.currentPhase;
-        BattleTriggerManager.CheckBattleTrigger();
+        BattleTriggerManager.CheckBattleTrigger(TrigActionType.Phase);
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);

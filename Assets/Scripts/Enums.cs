@@ -42,7 +42,7 @@ namespace Enums {
 	//트리거 관련
 	public enum TrigResultType{Win, Lose, Bonus, End}
 	public enum TrigUnitType{Target, Ally, Enemy, NeutralChar, None, PC}
-	public enum TrigActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount}
+	public enum TrigActionType{Neutralize, Reach, Phase, UnderPhase, Kill, Retreat, UnderCount}
     public enum Stat
     {
         MaxHealth = 1,
