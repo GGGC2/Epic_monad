@@ -43,6 +43,29 @@ public class BattleManager : MonoBehaviour{
 	public IEnumerator Start(){
 		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
 
+
+		string bgName = "Garden";
+		if(SceneData.stageNumber==2)
+			bgName = "PartyRoom";
+		else if(SceneData.stageNumber==3)
+			bgName = "Forest";
+		else if(SceneData.stageNumber==4)
+			bgName = "Village";
+		else if(SceneData.stageNumber==5)
+			bgName = "PartyRoom";
+		else if(SceneData.stageNumber==6)
+			bgName = "InCamp";
+		else if(SceneData.stageNumber==7)
+			bgName = "Forest";
+		else if(SceneData.stageNumber==8)
+			bgName = "RockMountain";
+		else if(SceneData.stageNumber==9)
+			bgName = "City";
+		else if(SceneData.stageNumber==10)
+			bgName = "RockMountain";
+		Sprite bgSprite = Resources.Load<Sprite>("Background/" + bgName);
+		GameObject.Find ("BattleBackground").GetComponent<SpriteRenderer>().sprite = bgSprite;
+
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
 		ChainList.InitiateChainList ();
