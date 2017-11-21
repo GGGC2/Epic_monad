@@ -559,12 +559,14 @@ public class UnitManager : MonoBehaviour{
     void ReadCollectableObjects() {
         TextAsset csvFile = Resources.Load<TextAsset>("Data/CollectableObjects");
         string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
-        
-        int num = Int32.Parse(stageData[1]);
 
-        for (int i = 0; i < num; i++) {
-            collectibles.Add(new Collectible(new List<string> { stageData[3 * i + 2], stageData[3 * i + 3], stageData[3 * i + 4] }));
-        }
+		if(stageData != null){
+			int num = Int32.Parse(stageData[1]);
+
+        	for (int i = 0; i < num; i++) {
+            	collectibles.Add(new Collectible(new List<string> { stageData[3 * i + 2], stageData[3 * i + 3], stageData[3 * i + 4] }));
+        	}
+		}
     }
 
     void Start() {

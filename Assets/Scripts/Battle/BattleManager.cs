@@ -281,7 +281,7 @@ public class BattleManager : MonoBehaviour{
         //승리 조건이 충족되었는지 확인
         BattleTriggerManager TrigManager = BattleTriggerManager.Instance;
 		List<BattleTrigger> winTriggers = TrigManager.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
-		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.resultType == TrigResultType.End).winTriggerRelation;
+		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.resultType == TrigResultType.Info).winTriggerRelation;
 		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리
 		if(winTrigRelation == BattleTrigger.TriggerRelation.All || winTrigRelation == BattleTrigger.TriggerRelation.Sequence){
 			if(winTriggers.All(trig => trig.acquired)){
@@ -582,7 +582,7 @@ public class BattleManager : MonoBehaviour{
 	IEnumerator EndPhaseOnGameManager(){
 		Debug.Log("Phase End.");
         int phase = BattleData.currentPhase;
-        BattleTriggerManager.CheckBattleTrigger(TrigActionType.Phase);
+        BattleTriggerManager.CheckPhaseTriggers();
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);
