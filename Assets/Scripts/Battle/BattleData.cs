@@ -10,7 +10,7 @@ public enum CurrentState{
 	ApplySkill, WaitChain, RestAndRecover, Standby
 }
 
-public enum ActionCommand {Waiting, Move, Skill, Rest, Standby, Cancel}
+public enum ActionCommand {Waiting, Move, Skill, Rest, Standby, Collect, Cancel}
 public enum SkillApplyCommand {Waiting, Apply, Chain}
 
 public interface IEventTrigger{
@@ -177,7 +177,8 @@ public static class BattleData{
     public static List<LogDisplay>   logDisplayList = new List<LogDisplay>();
 
     public static Dictionary<Element, UnitStatusEffect.FixedElement> tileBuffInfos = new Dictionary<Element, UnitStatusEffect.FixedElement>();
-	public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
+	public static UnitStatusEffect.FixedElement collectingStatusEffectInfo = null;
+    public static SkillApplyCommand skillApplyCommand = SkillApplyCommand.Waiting;
 
 	public class Move {
 		public int moveCount = 0;
@@ -209,6 +210,7 @@ public static class BattleData{
 	public static MoveSnapshot moveSnapshot; // 이동을 취소하기 위해서 필요
 
 	public static Unit selectedUnit; // 현재 턴의 유닛
+    public static Collectible nearestCollectible = null;  // selectedUnit으로부터 가장 가까운 collectible(수집 가능한 오브젝트)
 	public static List<Unit> readiedUnits = new List<Unit>();
 	public static List<Unit> deadUnits = new List<Unit> ();
 	public static List<Unit> retreatUnits = new List<Unit> ();

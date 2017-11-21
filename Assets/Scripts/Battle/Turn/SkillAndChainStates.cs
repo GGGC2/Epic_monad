@@ -331,7 +331,8 @@ namespace Battle.Turn {
 			//BattleManager.MoveCameraToTile(casting.Location.TargetTile);
 
 			BattleData.skillApplyCommand = SkillApplyCommand.Waiting;
-			caster.UseActivityPoint (casting.RequireAP);
+            caster.BreakCollecting();
+            caster.UseActivityPoint (casting.RequireAP);
             if (skill.GetCooldown () > 0) {
 				//caster.GetUsedSkillDict ().Add (skill.GetName (), skill.GetCooldown ());
                 logManager.Record(new CoolDownLog(caster, skill.GetName(), skill.GetCooldown()));

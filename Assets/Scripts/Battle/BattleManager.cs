@@ -206,6 +206,15 @@ public class BattleManager : MonoBehaviour{
 		}else{
 			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
 		}
+
+        List<Collectible> collectibles = UnitManager.Instance.GetCollectibles();
+        Collectible collectibleToRemove = null;
+        foreach (var collectible in collectibles)
+            if(collectible.unit == unit)
+                collectibleToRemove = collectible;
+        if(collectibleToRemove != null)
+            collectibles.Remove(collectibleToRemove);
+
         Destroy(unit.gameObject);
 	}
 
@@ -322,6 +331,7 @@ public class BattleManager : MonoBehaviour{
 			//기술 Viewer 끄고(디폴트) 아이콘 불러오기
 			UIManager.Instance.skillViewer.gameObject.SetActive(false);
 			UIManager.Instance.SetActionButtons();
+            UnitManager.Instance.CheckCollectableObjects();
 
 			// (지금은) 튜토리얼용인데 나중에 더 용도를 찾을 수도 있다
 			readyCommandEvent.Invoke ();
@@ -366,12 +376,13 @@ public class BattleManager : MonoBehaviour{
                 Vector2 destPos = BattleData.move.selectedTilePosition;
                 logManager.Record(new MoveLog(unit, unit.GetTileUnderUnit().GetTilePos(), destPos));
                 MoveStates.MoveToTile(destPos, movableTilesWithPath);
+                unit.BreakCollecting();
 			}else if(triggers.skillSelected.Triggered){
 				yield return StartCoroutine(SkillAndChainStates.SkillSelected());
                 BattleData.previewAPAction = null;
                 BattleData.uiManager.UpdateApBarUI();
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
-			}
+            }
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
 				if(BattleData.selectedUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
@@ -383,6 +394,11 @@ public class BattleManager : MonoBehaviour{
                     RestAndRecover.Run();
 				}
 			}
+            else if (triggers.actionCommand.Data == ActionCommand.Collect) {
+                BattleData.currentState = CurrentState.Standby;
+                logManager.Record(new CollectStartLog(unit, BattleData.nearestCollectible.unit));
+                BattleData.selectedUnit.CollectNearestCollectible();
+            }
             yield return logManager.ExecuteLastEventLogAndConsequences();
 		}
 		UIManager.Instance.HideActionButtons();
@@ -409,6 +425,10 @@ public class BattleManager : MonoBehaviour{
 	public void CallbackStandbyCommand(){
 		triggers.actionCommand.Trigger(ActionCommand.Standby);
 	}
+
+    public void CallbackCollectCommand() {
+        triggers.actionCommand.Trigger(ActionCommand.Collect);
+    }
 
 	public void CallbackOnPointerEnterRestCommand(){
 		BattleData.previewAPAction = new APAction(APAction.Action.Rest, RestAndRecover.GetRestCostAP());
