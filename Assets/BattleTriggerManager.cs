@@ -131,7 +131,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	public static void CheckBattleTrigger(TrigActionType actionType){
 		Debug.Log("actionType : " + actionType + ", phase : " + BattleData.currentPhase);
 		BattleTrigger trigger = Instance.ActiveTriggers.Find(trig => trig.actionType == actionType);
-		if(actionType == TrigActionType.Phase){
+		if(trigger != null && actionType == TrigActionType.Phase){
 			Instance.CountBattleTrigger(trigger);
 		}/*else if(actionType == TrigActionType.UnderPhase && BattleData.currentPhase <= trigger.reqCount){
 			Instance.CountBattleTrigger(trigger);
