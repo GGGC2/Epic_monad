@@ -1,0 +1,18 @@
+﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	수인족 전사	furryWarrior	Enemy	7	11	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+2	수인족 전사	furryWarrior	Enemy	6	12	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+3	수인족 전사	furryWarrior	Enemy	8	12	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+4	수인족 전사	furryWarrior	Enemy	4	13	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+5	수인족 전사	furryWarrior	Enemy	10	13	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+6	수인족 전사	furryWarrior	Enemy	2	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+7	수인족 전사	furryWarrior	Enemy	5	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+8	수인족 전사	furryWarrior	Enemy	9	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+9	수인족 전사	furryWarrior	Enemy	13	16	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+10	수인족 전사	furryWarrior	Enemy	11	17	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+11	수인족 전사	furryWarrior	Enemy	3	18	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+12	수인족 전사	furryWarrior	Enemy	7	20	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+13	수인족 장로	furryElder	Enemy	7	14	RightUp	405	50	50	32	55	Magic	Plant	Sun	false	true	false	0
+14	unselected	unselected	Ally	4	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+15	unselected	unselected	Ally	5	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+16	unselected	unselected	Ally	9	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+17	unselected	unselected	Ally	10	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
