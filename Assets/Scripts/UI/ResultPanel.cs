@@ -81,9 +81,6 @@ public class ResultPanel : MonoBehaviour{
 
 		PartyData.level += 1;
 
-		//다 출력된 후 클릭을 해야 넘어감
-		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
-
 		Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
 	}
 

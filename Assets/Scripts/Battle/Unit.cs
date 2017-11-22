@@ -37,7 +37,6 @@ public class Unit : MonoBehaviour{
 	int movedTileCount;
 	Battle.Turn.AI _AI;
 	public UnitInfo myInfo;
-    public Element element;
     public bool collectable = false;
 
 	// 스킬리스트
@@ -161,7 +160,7 @@ public class Unit : MonoBehaviour{
 	}
 	public int GetCurrentActivityPoint() {return activityPoint;}
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
-	public Element GetElement() {return element;}
+	public Element GetElement() {return myInfo.element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
@@ -648,7 +647,7 @@ public class Unit : MonoBehaviour{
 			//currentHealth -= damageAfterShieldApply;
 			//if (currentHealth < 0)
 			//    currentHealth = 0;
-            logManager.Record(new HPChangeLog(this, -damageAfterShieldApply));
+            logManager.Record(new HPChangeLog(caster, this, -damageAfterShieldApply));
 
             // DisplayDamageText(damageAfterShieldApply, true);
             logManager.Record(new DisplayDamageOrHealTextLog(this, -damageAfterShieldApply, true));
@@ -749,8 +748,7 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void RecoverHealth(float amount)
-	{
+	public void RecoverHealth(float amount){
         if(IsObject)    return;
         int maxHealth = GetMaxHealth();
 		// 회복량 증감 효과 적용
@@ -765,7 +763,8 @@ public class Unit : MonoBehaviour{
 		if (actualAmount > 0) {
             //currentHealth += actualAmount;
             BattleManager.MoveCameraToUnit(this);
-            LogManager.Instance.Record (new HPChangeLog (this, actualAmount));
+			//일단 caster는 Damage일 경우에만 참조하며, 컴파일 에러를 막기 위해 여기서는 null로 입력
+            LogManager.Instance.Record (new HPChangeLog (null, this, actualAmount));
 			// DisplayRecoverText (actualAmount, true);
 			LogManager.Instance.Record (new DisplayDamageOrHealTextLog (this, actualAmount, true));
 		}
@@ -1117,7 +1116,6 @@ public class Unit : MonoBehaviour{
 	void Initialize(){
 		gameObject.name = myInfo.nameEng;
 		position = myInfo.initPosition;
-        element = myInfo.element;
 		startPositionOfPhase = position;
 		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();
