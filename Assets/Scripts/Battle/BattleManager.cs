@@ -43,28 +43,7 @@ public class BattleManager : MonoBehaviour{
 	public IEnumerator Start(){
 		StartCoroutine (SoundManager.Instance.PlayBGM ("Script_Tense"));
 
-
-		string bgName = "Garden";
-		if(SceneData.stageNumber==2)
-			bgName = "PartyRoom";
-		else if(SceneData.stageNumber==3)
-			bgName = "Forest";
-		else if(SceneData.stageNumber==4)
-			bgName = "Village";
-		else if(SceneData.stageNumber==5)
-			bgName = "PartyRoom";
-		else if(SceneData.stageNumber==6)
-			bgName = "InCamp";
-		else if(SceneData.stageNumber==7)
-			bgName = "Forest";
-		else if(SceneData.stageNumber==8)
-			bgName = "RockMountain";
-		else if(SceneData.stageNumber==9)
-			bgName = "City";
-		else if(SceneData.stageNumber==10)
-			bgName = "RockMountain";
-		Sprite bgSprite = Resources.Load<Sprite>("Background/" + bgName);
-		GameObject.Find ("BattleBackground").GetComponent<SpriteRenderer>().sprite = bgSprite;
+		LoadBackgroundImage ();
 
 		readyCommandEvent = new UnityEvent ();
 		AI.SetBattleManager (this);
@@ -631,6 +610,22 @@ public class BattleManager : MonoBehaviour{
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
 		});
+	}
+
+	void LoadBackgroundImage(){
+		string bgImageName = "Dark";
+		TextAsset csvFile = Resources.Load("Data/StageBackgrounds") as TextAsset;
+		string csvText = csvFile.text;
+		string[] unparsedTileInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+		for (int i = 1; i < unparsedTileInfoStrings.Length; i++) {
+			StringParser commaParser = new StringParser (unparsedTileInfoStrings [i], ',');
+			int stageNum = commaParser.ConsumeInt ();
+			if (stageNum == SceneData.stageNumber) {
+				bgImageName = commaParser.Consume ();
+			}
+		}
+		Sprite bgSprite = Resources.Load<Sprite>("Background/" + bgImageName);
+		GameObject.Find ("BattleBackground").GetComponent<SpriteRenderer>().sprite = bgSprite;
 	}
 
 	//이하는 StageManager의 Load기능 통합
