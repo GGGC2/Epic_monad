@@ -1,4 +1,4 @@
-﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	적 전원 무력화	Enemy	Neutralize	0	false	100
-Lose	아군 전원 무력화	PC	Neutralize	0	false	0
+﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
+Win	적 전원 무력화	Enemy	Neutralize	0	100
+Lose	아군 전원 무력화	PC	Neutralize	0	0
 End	Scene#25	One	One

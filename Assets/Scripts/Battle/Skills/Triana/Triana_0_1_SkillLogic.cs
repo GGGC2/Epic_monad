@@ -5,7 +5,7 @@ namespace Battle.Skills {
         public override void TriggerOnActionEnd(Unit caster) {
             Tile currentTile = caster.GetTileUnderUnit();
             Element elementOfTile = currentTile.GetTileElement();
-            caster.element = elementOfTile;
+            caster.myInfo.element = elementOfTile;
         }
     }
 }

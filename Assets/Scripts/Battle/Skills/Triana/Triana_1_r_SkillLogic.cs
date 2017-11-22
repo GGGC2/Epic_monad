@@ -10,7 +10,7 @@ namespace Battle.Skills {
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
             int reach = castingApply.GetSkill().GetFirstMaxReach();
-            if (caster.element == Element.Plant) {
+            if (caster.myInfo.element == Element.Plant) {
                 Tile resultTile = Utility.GetGrabResultTile(caster, target);
                 if (TileManager.Instance.isTilePassable(resultTile))
                     target.ForceMove(resultTile);

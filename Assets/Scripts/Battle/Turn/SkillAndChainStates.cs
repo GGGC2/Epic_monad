@@ -290,7 +290,7 @@ namespace Battle.Turn {
             foreach(var effectLog in eventLog.getEffectLogList()) {
                 Unit unit = null;
                 Vector2 position = new Vector2(0, 0);
-                if (effectLog is HPChangeLog)       unit = ((HPChangeLog)effectLog).unit;
+                if (effectLog is HPChangeLog)       unit = ((HPChangeLog)effectLog).target;
                 if(effectLog is StatusEffectLog)    unit = ((StatusEffectLog)effectLog).GetOwner();
                 if(effectLog is PositionChangeLog)  unit = ((PositionChangeLog)effectLog).unit;
                 if (unit != null) {

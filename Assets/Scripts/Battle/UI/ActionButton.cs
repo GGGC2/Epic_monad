@@ -103,7 +103,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
                 if (apChangeLog.unit == unit) predictedUsingAP = -apChangeLog.amount;
             } else if (effectLog is HPChangeLog) {
                 HPChangeLog hpChangeLog = (HPChangeLog)effectLog;
-                if (hpChangeLog.unit == unit) predictedRecoveringHP = hpChangeLog.amount;
+                if (hpChangeLog.target == unit) predictedRecoveringHP = hpChangeLog.amount;
             }
         }
         return "<color=cyan>" + predictedUsingAP + "</color>" + "의 행동력을 소모하여 " + "\n" +

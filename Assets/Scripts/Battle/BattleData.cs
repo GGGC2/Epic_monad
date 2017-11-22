@@ -174,7 +174,7 @@ public static class BattleData{
     public static Unit unitInUnitViewer = null;
     public static Tile tileInTileViewer = null;
     public static Aspect aspect = Aspect.North;
-    public static List<LogDisplay>   logDisplayList = new List<LogDisplay>();
+    public static List<LogDisplay> logDisplayList = new List<LogDisplay>();
 
     public static Dictionary<Element, UnitStatusEffect.FixedElement> tileBuffInfos = new Dictionary<Element, UnitStatusEffect.FixedElement>();
 	public static UnitStatusEffect.FixedElement collectingStatusEffectInfo = null;

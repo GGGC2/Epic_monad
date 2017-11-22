@@ -21,7 +21,7 @@ namespace Battle.Skills {
             List<Tile> tiles = castingApply.GetRealEffectRange();
             Unit caster = castingApply.GetCaster();
             Unit target = castingApply.GetTarget();
-            if (caster.element == Element.Fire) {
+            if (caster.myInfo.element == Element.Fire) {
                 Tile backTile = GetBackTile(caster, target);
                 if (TileManager.Instance.isTilePassable(backTile))
                     target.ForceMove(backTile);

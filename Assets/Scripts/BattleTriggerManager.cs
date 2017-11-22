@@ -66,12 +66,34 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public void WinGame(){
+		CheckExtraTriggersAtWinGame();
+
 		List<BattleTrigger> scoreTriggers = triggers.FindAll(trig =>
 			(trig.resultType == TrigResultType.Win || trig.resultType == TrigResultType.Bonus) && trig.acquired);
 		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
 		
 		scoreTriggers.ForEach(trig => BattleData.rewardPoint += trig.reward);
 		InitializeResultPanel();
+	}
+
+	//게임 종료시에 한꺼번에 체크해야 하는 트리거.
+	public void CheckExtraTriggersAtWinGame(){
+		List<BattleTrigger> exTrigs = triggers.FindAll(trig => trig.extra);
+		if(exTrigs.Count != 0){
+			if(SceneData.stageNumber == 1){
+				List<HPChangeLog> HpLogList = new List<HPChangeLog>();
+				BattleData.logDisplayList.ForEach(dsp => {
+					if(dsp.log is HPChangeLog){
+						HpLogList.Add(dsp.log as HPChangeLog);
+					}
+				});
+				List<HPChangeLog> TargetLogs = HpLogList.FindAll(log =>
+					(log.target.GetNameEng() == "reina" || log.target.GetNameEng() == "lucius") && log.amount < 0);
+				if(!TargetLogs.Any(log => log.target.GetNameEng() == "lucius") || !TargetLogs.Any(log => log.target.GetNameEng() == "reina")){
+					exTrigs[0].acquired = true; //한 명이라도 피해를 입지 않았으면 발동
+				}
+			}
+		}
 	}
 
 	public void InitializeResultPanel(){

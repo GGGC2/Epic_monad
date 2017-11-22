@@ -10,7 +10,6 @@ public class ConditionPanel : MonoBehaviour{
 	public TutorialManager tutorial;
 
 	public void Initialize(List<BattleTrigger> triggers){
-
 		Win.text = "";
 		Lose.text = "";
 
@@ -27,6 +26,10 @@ public class ConditionPanel : MonoBehaviour{
                 text = Win;
             else if (trigger.resultType == TrigResultType.Lose)
                 text = Lose;
+			else{
+				continue;
+			}
+
 			if (trigger.korName != null) {
 				text.text += "- " + trigger.korName;
 				if (trigger.reqCount > 0) {
