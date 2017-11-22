@@ -30,8 +30,8 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		frameImage.enabled = true;
 	}
 
-	public void Inactive() {
-        type = ActionButtonType.Inactive;
+	public void Absent() {
+		type = ActionButtonType.Absent;
 		skill = null;
         clickable = false;
         standByOrRestExplanation.SetActive(false);
@@ -40,7 +40,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
 	public void Activate(bool isActive){
-		if (UIManager.Instance.ActionButtonOnOffLock)
+		if (UIManager.Instance.ActionButtonOnOffLock || type == ActionButtonType.Absent)
 			return;
 		clickable = isActive;
 		if (isActive) {

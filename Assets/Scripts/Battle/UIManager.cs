@@ -160,7 +160,7 @@ public class UIManager : MonoBehaviour{
 
 	public void TurnOnOnlyOneAction(int skillIndex){
 		for (int i = 0; i < 8; i++){
-			actionButtons[i].Activate(i == skillIndex);
+			actionButtons [i].Activate (i == skillIndex);
 		}
 	}
 	public void TurnOffAllActions(){
@@ -380,7 +380,7 @@ public class UIManager : MonoBehaviour{
 		Unit unit = BattleData.selectedUnit;
 		for (int i = 0; i < 8; i++) {
 			// actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
-			actionButtons [i].Inactive();
+			actionButtons [i].Absent();
 			// actionButtons [i].skill = null;
 			if (i < unit.activeSkillList.Count) {
 				actionButtons [i].InitializeWithSkill (unit.activeSkillList [i]);
@@ -405,6 +405,6 @@ public class UIManager : MonoBehaviour{
     }
 
 	public void HideActionButtons(){
-		actionButtons.ForEach(button => button.Inactive());
+		actionButtons.ForEach(button => button.Absent());
 	}
 }

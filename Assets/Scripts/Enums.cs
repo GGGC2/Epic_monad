@@ -43,7 +43,7 @@ namespace Enums {
 	public enum TrigResultType{Win, Lose, Bonus, Trigger, Info}
 	public enum TrigUnitType{Target, Ally, Enemy, NeutralChar, None, PC}
 	public enum TrigActionType{Neutralize, Reach, Phase, Kill, Retreat, UnderCount, Rest, FriendShot, Cast, None}
-    public enum ActionButtonType { Skill, Standby, Rest, Collect, Inactive };
+    public enum ActionButtonType { Skill, Standby, Rest, Collect, Absent };
     public enum Stat
     {
         MaxHealth = 1,
