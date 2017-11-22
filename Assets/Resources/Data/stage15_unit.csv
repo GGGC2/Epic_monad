@@ -1,18 +1,39 @@
 ﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
-1	수인족 전사	furryWarrior	Enemy	7	11	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-2	수인족 전사	furryWarrior	Enemy	6	12	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-3	수인족 전사	furryWarrior	Enemy	8	12	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-4	수인족 전사	furryWarrior	Enemy	4	13	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-5	수인족 전사	furryWarrior	Enemy	10	13	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-6	수인족 전사	furryWarrior	Enemy	2	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-7	수인족 전사	furryWarrior	Enemy	5	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-8	수인족 전사	furryWarrior	Enemy	9	15	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-9	수인족 전사	furryWarrior	Enemy	13	16	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-10	수인족 전사	furryWarrior	Enemy	11	17	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-11	수인족 전사	furryWarrior	Enemy	3	18	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-12	수인족 전사	furryWarrior	Enemy	7	20	RightUp	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-13	수인족 장로	furryElder	Enemy	7	14	RightUp	405	50	50	32	55	Magic	Plant	Sun	false	true	false	0
-14	unselected	unselected	Ally	4	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
-15	unselected	unselected	Ally	5	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
-16	unselected	unselected	Ally	9	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
-17	unselected	unselected	Ally	10	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+1	수인족 전사	furryWarrior	Enemy	7	11	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+2	수인족 전사	furryWarrior	Enemy	6	12	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+3	수인족 전사	furryWarrior	Enemy	8	12	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+4	수인족 전사	furryWarrior	Enemy	4	13	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+5	수인족 전사	furryWarrior	Enemy	10	13	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+6	수인족 전사	furryWarrior	Enemy	2	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+7	수인족 전사	furryWarrior	Enemy	5	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+8	수인족 전사	furryWarrior	Enemy	9	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+9	수인족 전사	furryWarrior	Enemy	13	16	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+10	수인족 전사	furryWarrior	Enemy	11	17	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+11	수인족 전사	furryWarrior	Enemy	3	18	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+12	수인족 전사	furryWarrior	Enemy	7	20	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
+13	수인족 장로	furryElder	Enemy	7	14	RightUp	415	50	50	40	55	Magic	Plant	Sun	false	true	false	0
+14	바위	boulder	Neutral	3	27	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+15	바위	boulder	Neutral	9	26	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+16	바위	boulder	Neutral	4	25	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+17	바위	boulder	Neutral	5	25	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+18	바위	boulder	Neutral	6	24	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+19	바위	boulder	Neutral	3	23	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+20	바위	boulder	Neutral	10	23	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+21	바위	boulder	Neutral	12	22	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+22	바위	boulder	Neutral	3	20	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+23	바위	boulder	Neutral	12	20	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+24	불길	flame	Neutral	1	13	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+25	불길	flame	Neutral	2	12	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+26	불길	flame	Neutral	3	11	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+27	불길	flame	Neutral	4	11	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+28	불길	flame	Neutral	5	10	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+29	불길	flame	Neutral	6	9	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+30	불길	flame	Neutral	7	8	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+31	불길	flame	Neutral	8	8	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+32	불길	flame	Neutral	9	9	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+33	불길	flame	Neutral	12	11	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+34	불길	flame	Neutral	13	12	RightUp	3000	0	0	0	0	None	Fire	None	true	false	false	0
+35	unselected	unselected	Ally	4	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+36	unselected	unselected	Ally	5	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+37	unselected	unselected	Ally	9	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+38	unselected	unselected	Ally	10	28	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
