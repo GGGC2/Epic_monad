@@ -1,4 +1,4 @@
 ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	¸ðµç Àû ¹«·ÂÈ­	Enemy	Neutralize	0	false	100
-Lose	µ¿·á À¯´ÖÀÇ ¹«·ÂÈ­	PC	Neutralize	3	false	0
-End	Scene#2	One	One
+Win	ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­	Enemy	Neutralize	0	false	100
+Lose	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­	PC	Neutralize	3	false	0
+Info	Scene#2	One	One
