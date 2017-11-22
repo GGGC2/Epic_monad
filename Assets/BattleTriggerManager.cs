@@ -54,8 +54,8 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	void AcquireTrigger(BattleTrigger trigger){
 		Debug.Log ("Trigger Applied : " + trigger.korName);
-		if(trigger.acquired == trigger.negative){
-			trigger.acquired = !trigger.negative;
+		if(trigger.acquired == trigger.reverse){
+			trigger.acquired = !trigger.reverse;
             if (trigger.resultType == TrigResultType.Lose) {
                 Debug.Log("Mission FAIL : " + trigger.korName);
                 LoadLoseScene();
