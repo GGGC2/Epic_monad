@@ -42,7 +42,7 @@ public class HPChangeLog : EffectLog {
         else                    target.currentHealth = result;
 
         //같은 편을 공격
-        if(caster.myInfo.side == target.myInfo.side && amount < 0){
+		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
             BattleTriggerManager.CheckBattleTrigger(caster, TrigActionType.FriendShot);
         }
 

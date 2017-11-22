@@ -444,7 +444,7 @@ namespace Battle.Turn{
 
 				if (eren != null) {
 					Vector2 childPos = nearChild.GetPosition ();
-					Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths(unit);
+					Dictionary<Vector2, TileWithPath> movableTilesWithPath = PathFinder.CalculateMovablePaths (unit);
 
 					List<Vector2> range = new List<Vector2> ();
 					foreach (Direction direction in EnumUtil.directions) {
@@ -458,6 +458,8 @@ namespace Battle.Turn{
 					}
 					state = State.CastingLoop;
 
+				} else {
+					state = State.MoveToBestCasting;
 				}
 
 			}
