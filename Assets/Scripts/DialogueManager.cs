@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour{
 			return true;
 		}
 		else if (Data.Command == DialogueData.CommandType.Battle){
-			Debug.Log(Data.GetCommandSubType());
+			Debug.Log("Loading Battle : Stage " + Data.GetCommandSubType());
 			GameData.SceneData.stageNumber = int.Parse(Data.GetCommandSubType());
 			sceneLoader.LoadNextBattleScene();
 			return true;

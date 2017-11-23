@@ -39,23 +39,23 @@ public class BattleTriggerManager : MonoBehaviour {
 
 		if(trigger.actionType == TrigActionType.UnderCount){
 			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
-				AcquireTrigger(trigger);
+				ActivateTrigger(trigger);
 			}
 		}else{
 			trigger.count += 1;
 			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count + " / " + trigger.reqCount);
 			if (trigger.count == trigger.reqCount) {
-				AcquireTrigger(trigger);
+				ActivateTrigger(trigger);
 			} else if (trigger.repeatable && trigger.acquired){
 				BattleData.rewardPoint += trigger.reward;
 			}
 		}
 	}
 
-	void AcquireTrigger(BattleTrigger trigger){
-		Debug.Log ("Trigger Applied : " + trigger.korName);
+	void ActivateTrigger(BattleTrigger trigger){
 		if(trigger.acquired == trigger.reverse){
 			trigger.acquired = !trigger.reverse;
+			Debug.Log ("Trigger Activated : " + trigger.korName + " / " + trigger.acquired);
             if (trigger.resultType == TrigResultType.Lose) {
                 Debug.Log("Mission FAIL : " + trigger.korName);
                 LoadLoseScene();
@@ -67,13 +67,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	public void WinGame(){
 		CheckExtraTriggersAtWinGame();
-
-		List<BattleTrigger> scoreTriggers = triggers.FindAll(trig =>
-			(trig.resultType == TrigResultType.Win || trig.resultType == TrigResultType.Bonus) && trig.acquired);
-		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
-		
-		scoreTriggers.ForEach(trig => BattleData.rewardPoint += trig.reward);
-		InitializeResultPanel();
+		StartResultPanel();
 	}
 
 	//게임 종료시에 한꺼번에 체크해야 하는 트리거.
@@ -96,10 +90,11 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public void InitializeResultPanel(){
-		resultPanel.gameObject.SetActive(true);
-		resultPanel.Activate();
-		resultPanel.UpdatePanel(0);
+	public void StartResultPanel(){
+		if(!resultPanel.gameObject.activeSelf){
+			resultPanel.gameObject.SetActive(true);
+			resultPanel.Initialize();
+		}
 	}
 	public void LoadLoseScene(){
 		sceneLoader.LoadNextDialogueScene ("Scene_Lose" + SceneData.stageNumber);
