@@ -293,7 +293,20 @@ public class UnitManager : MonoBehaviour{
         //info의 index가 index인 유닛을 positions에, directions의 방향으로 생성
         for(int i = 0; i < positions.Count; i++) {
             UnitInfo unitInfo = Parser.GetParsedData<UnitInfo>(index);
-            unitInfo.initPosition = positions[i];
+
+            int range = 0;
+            Vector2? position = null;
+            do {
+                foreach(var tile in TileManager.Instance.GetTilesInRange(RangeForm.Diamond, positions[i], 0, range, 0, Direction.Down)) {
+                    if(!tile.IsUnitOnTile()) {
+                        position = tile.GetTilePos();
+                        break;
+                    }
+                }
+                range++;
+            }while(position == null);
+
+            unitInfo.initPosition = (Vector2)position;
             unitInfo.initDirection = directions[i];
 
             Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
