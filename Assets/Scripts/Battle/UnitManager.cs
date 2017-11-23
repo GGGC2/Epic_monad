@@ -260,26 +260,10 @@ public class UnitManager : MonoBehaviour{
 		standardActivityPoint = GameData.PartyData.level + 60;
 	}
 
-	public void ApplyAIInfo(){
-		List<AIInfo> aiInfoList = Parser.GetParsedData<AIInfo>();
-		aiInfoList.ForEach(aiInfo => {
-			int index = aiInfo.index;
-			Unit targetUnit = GetAllUnits().Find(unit => unit.GetIndex() == index);
-			if(targetUnit == null){
-				return;
-			}
-			AIData _AIData = targetUnit.gameObject.GetComponent<AIData>();
-			_AIData.SetAIInfo(aiInfo);
-			_AIData.SetGoalArea(targetUnit);
-			Battle.Turn.AI _AI = targetUnit.gameObject.AddComponent<Battle.Turn.AI>();
-			_AI.Initialize(targetUnit, _AIData);
-			targetUnit.SetAI(_AI);
-			targetUnit.SetAsAI();
-		});
-	}
-
     public void ApplyAIInfo(Unit unit, int index) {
         AIInfo aiInfo = Parser.GetParsedData<AIInfo>(index);
+        if (aiInfo == null)
+            return;
         AIData _AIData = unit.gameObject.GetComponent<AIData>();
         _AIData.SetAIInfo(aiInfo);
         _AIData.SetGoalArea(unit);
@@ -287,45 +271,6 @@ public class UnitManager : MonoBehaviour{
         _AI.Initialize(unit, _AIData);
         unit.SetAI(_AI);
         unit.SetAsAI();
-    }
-
-    public void GenerateUnitsAtPosition(int index, List<Vector2> positions, List<Direction> directions) {
-        //info의 index가 index인 유닛을 positions에, directions의 방향으로 생성
-        for(int i = 0; i < positions.Count; i++) {
-            UnitInfo unitInfo = Parser.GetParsedData<UnitInfo>(index);
-
-            int range = 0;
-            Vector2? position = null;
-            do {
-                foreach(var tile in TileManager.Instance.GetTilesInRange(RangeForm.Diamond, positions[i], 0, range, 0, Direction.Down)) {
-                    if(!tile.IsUnitOnTile()) {
-                        position = tile.GetTilePos();
-                        break;
-                    }
-                }
-                range++;
-            }while(position == null);
-
-            unitInfo.initPosition = (Vector2)position;
-            unitInfo.initDirection = directions[i];
-
-            Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-            unit.myInfo = unitInfo;
-            unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
-
-            Vector2 initPosition = unit.GetInitPosition();
-            Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-            respawnPos -= new Vector3(0, 0, 0.05f);
-            unit.transform.position = respawnPos;
-
-            Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-            tileUnderUnit.SetUnitOnTile(unit);
-            units.Add(unit);
-            ApplyAIInfo(unit, index);
-            unit.healthViewer.SetInitHealth(unit.myInfo.baseStats[Stat.MaxHealth], unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
-            LogManager.Instance.Record(new CameraMoveLog(respawnPos));
-            LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
-        }
     }
 
 	public IEnumerator GenerateUnits(){
@@ -422,18 +367,7 @@ public class UnitManager : MonoBehaviour{
 
             if (RM != null && RM.selectedUnits.Any(selectedUnit => selectedUnit.name == unitInfo.nameEng)) continue;
 
-            Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-            unit.myInfo = unitInfo;
-            unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
-
-            Vector2 initPosition = unit.GetInitPosition();
-            Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-            respawnPos -= new Vector3(0, 0, 0.05f);
-            unit.transform.position = respawnPos;
-
-            Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-            tileUnderUnit.SetUnitOnTile(unit);
-            units.Add(unit);
+            GenerateUnitWith(unitInfo, false);
         }
     }
 
@@ -454,33 +388,75 @@ public class UnitManager : MonoBehaviour{
 		
 			Vector2 triggeredPos = BattleData.move.selectedTilePosition; 
 			Tile triggeredTile = BattleData.tileManager.GetTile(triggeredPos);
+            unitInfo.initPosition = triggeredPos;
 
-			Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
-			unit.myInfo = unitInfo;
-			unit.ApplySkillList(RM.selectedUnits, statusEffectInfoList, tileStatusEffectInfoList);
-			//unit.ApplySkillList(activeSkillList, statusEffectInfoList, tileStatusEffectInfoList, passiveSkillList);
-
-			Vector2 initPosition = triggeredTile.GetTilePos();
-			Vector3 respawnPos = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y));
-			respawnPos -= new Vector3(0, 0, 0.05f);
-			unit.transform.position = respawnPos;
-
-			Direction triggerDirection = selectablePlaceList.Find(sp => sp.position == triggeredPos).direction;
-			unit.SetDirection(triggerDirection);
-
-			Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
-			tileUnderUnit.SetUnitOnTile(unit);
-			units.Add(unit);
-            Debug.Log(unit.GetNameKor() + "Added");
+			GenerateUnitWith(unitInfo, true);
 
 			List<Tile> triggeredTiles = new List<Tile>();
 			triggeredTiles.Add(triggeredTile);
 			BattleData.tileManager.DepaintTiles(triggeredTiles, TileColor.Blue);
 			BattleData.tileManager.DepreselectTiles(triggeredTiles);
 		}
-	}
+    }
 
-	public List<Unit> GetUpdatedReadiedUnits(){
+    public void GenerateUnitsAtPosition(int index, List<Vector2> positions, List<Direction> directions) {
+        //info의 index가 index인 유닛을 positions에, directions의 방향으로 생성
+        for (int i = 0; i < positions.Count; i++) {
+            UnitInfo unitInfo = Parser.GetParsedData<UnitInfo>(index);
+
+            int range = 0;
+            Vector2? position = null;
+            do {
+                foreach (var tile in TileManager.Instance.GetTilesInRange(RangeForm.Diamond, positions[i], 0, range, 0, Direction.Down)) {
+                    if (!tile.IsUnitOnTile()) {
+                        position = tile.GetTilePos();
+                        break;
+                    }
+                }
+                range++;
+            } while (position == null);
+
+            unitInfo.initPosition = (Vector2)position;
+            unitInfo.initDirection = directions[i];
+
+            Unit unit = GenerateUnitWith(unitInfo, false);
+            
+            LogManager.Instance.Record(new CameraMoveLog(unit.transform.position));
+            LogManager.Instance.Record(new WaitForSecondsLog(0.5f));
+        }
+    }
+
+    public Unit GenerateUnitWith(UnitInfo unitInfo, bool isSelectedFromReadyScene) {
+        Unit unit = Instantiate(unitPrefab).GetComponent<Unit>();
+        unit.myInfo = unitInfo;
+        List<Skill> skills = new List<Skill>();
+        List<PassiveSkill> passiveSkills = new List<PassiveSkill>();
+        if (!isSelectedFromReadyScene) {
+            skills = activeSkillList.FindAll(skill => skill.owner == unitInfo.nameEng && skill.requireLevel <= PartyData.level).
+                            Cast<Skill>().ToList();
+            if (SceneData.stageNumber >= Setting.passiveOpenStage) {
+                skills.AddRange(passiveSkillList.FindAll(skill => skill.owner == unitInfo.nameEng && skill.requireLevel <= PartyData.level).
+                            Cast<Skill>());
+            }
+        }
+        else {
+            ReadyManager RM = FindObjectOfType<ReadyManager>();
+            skills = RM.selectedUnits.Find(info => info.name == unitInfo.nameEng).selectedSkills;
+        }
+        unit.ApplySkillList(skills, statusEffectInfoList, tileStatusEffectInfoList);
+
+        Vector2 initPosition = unit.GetInitPosition();
+        unit.transform.position = FindObjectOfType<TileManager>().GetTilePos(new Vector2(initPosition.x, initPosition.y)) - new Vector3(0, 0, 0.05f);
+
+        Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
+        tileUnderUnit.SetUnitOnTile(unit);
+        units.Add(unit);
+        ApplyAIInfo(unit, unitInfo.index);
+        unit.healthViewer.SetInitHealth(unit.myInfo.baseStats[Stat.MaxHealth], unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
+        return unit;
+    }
+
+    public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();
 		// check each unit and add all readied units.
 		foreach (var unit in units){
@@ -630,16 +606,10 @@ public class UnitManager : MonoBehaviour{
 	}
 
 	public void StartByBattleManager() {
-		if (!GameData.SceneData.isTestMode) {
-            ApplyAIInfo();
-        }
         ReadTileBuffInfos();
         ReadOtherStatusEffectInfos();
         ReadCollectableObjects();
         GetEnemyUnits();
-		foreach (var unit in GetAllUnits()) {
-			unit.healthViewer.SetInitHealth(unit.GetMaxHealth(), unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
-		}
 	}
 
 	public void UpdateUnitOrder (){
