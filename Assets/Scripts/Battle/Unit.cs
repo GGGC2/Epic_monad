@@ -1080,35 +1080,25 @@ public class Unit : MonoBehaviour{
 			}
 		});
 	}
-    public void ApplySkillList(List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
+    public void ApplySkillList(List<Skill> skills, List<UnitStatusEffectInfo> statusEffectInfoList, List<TileStatusEffectInfo> tileStatusEffectInfoList){
         int partyLevel = GameData.PartyData.level;
 
-        foreach (var activeSkill in activeSkills) {
-            if (activeSkill.owner == myInfo.nameEng && activeSkill.requireLevel <= partyLevel){
-				AddActiveSkill(activeSkill, statusEffectInfoList, tileStatusEffectInfoList);
-                /*activeSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-                activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                activeSkillList.Add(activeSkill);*/
-			}
+        foreach (var skill in skills) {
+            if (skill.owner == myInfo.nameEng && skill.requireLevel <= partyLevel) {
+                if (skill is ActiveSkill) {
+                    AddActiveSkill((ActiveSkill)skill, statusEffectInfoList, tileStatusEffectInfoList);
+                }
+                else if(skill is PassiveSkill && SceneData.stageNumber >= Setting.passiveOpenStage) {
+                    AddPassiveSkill((PassiveSkill)skill, statusEffectInfoList);
+                }
+            }
         }
 
-		if(SceneData.stageNumber >= Setting.passiveOpenStage){
-			foreach (var passiveSkill in passiveSkills) {
-        	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
-					AddPassiveSkill(passiveSkill, statusEffectInfoList);
-            	    //passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-	                //passiveSkillList.Add(passiveSkill);
-    	        }
-        	}
-		}
-		
-
         // 비어있으면 디폴트 스킬로 채우도록.
-        if (activeSkills.Count() == 0) {
-            foreach (var activeSkill in activeSkills) {
-                if (activeSkill.owner == "default" && activeSkill.requireLevel <= partyLevel)
-                    activeSkillList.Add(activeSkill);
+        if (skills.Count() == 0) {
+            foreach (var skill in skills) {
+                if (skill.owner == "default" && skill.requireLevel <= partyLevel)
+                    activeSkillList.Add((ActiveSkill)skill);
             }
 		}
     }
