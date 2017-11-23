@@ -65,7 +65,9 @@ public class BattleTrigger{
 			//Debug.Log("index : " + commaParser.index + " / length : " + commaParser.origin.Length);
 			while(commaParser.index < commaParser.origin.Length){
 				string code = commaParser.Consume();
-				if(code == "Reverse"){
+				if(code == ""){
+					break;
+				}else if(code == "Reverse"){
 					//Debug.Log(korName + " is Default trigger.");
 					reverse = true;
 					acquired = true;
