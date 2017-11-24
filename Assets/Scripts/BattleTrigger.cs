@@ -8,7 +8,7 @@ public class BattleTrigger{
 	public TrigResultType resultType;
 	public TrigUnitType unitType;
 	public TrigActionType actionType;
-	public string subType;
+	public string subType = "";
 	public int reward;
 	public int count;
 	public int reqCount;
@@ -28,6 +28,7 @@ public class BattleTrigger{
 	public TriggerRelation loseTriggerRelation;
 
     public List<Unit> units = new List<Unit>(); // 이 trigger를 count시킨 유닛들
+	public List<Log> logs = new List<Log>(); // 이 trigger를 count시킨 로그들
 
 	public BattleTrigger(string data, TrigResultType resultType, StringParser commaParser){
         // BattleTriggerFactory에서 commaParser를 이용해 ResultType은 파싱해놓은 상태
@@ -60,9 +61,7 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
-			}
-
-			if(actionType == TrigActionType.Effect){
+			}else if(actionType == TrigActionType.Effect || actionType == TrigActionType.MultiShot){
 				subType = commaParser.Consume();
 			}
 

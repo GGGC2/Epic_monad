@@ -41,7 +41,8 @@ public class BattleTriggerManager : MonoBehaviour {
 			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
 				ActivateTrigger(trigger);
 			}
-		}else{
+		}
+		else{
 			trigger.count += 1;
 			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count + " / " + trigger.reqCount);
 			if (trigger.count == trigger.reqCount) {
@@ -136,51 +137,26 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	/*public static void CountPhaseTriggers(){
-		List<BattleTrigger> trigger = Instance.ActiveTriggers.FindAll(trig => trig.actionType == TrigActionType.Phase);
-		trigger.ForEach(trig => {
-			Instance.CountBattleTrigger(trig);
-		});
-	}*/
+	public void CountTriggers(TrigActionType actionType, Unit unit = null, Tile dest = null, string subType = "", Log log = null){
+		List<BattleTrigger> availableTriggers = ActiveTriggers.FindAll(trig => 
+			CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
+		); //UnitType, ActionType이 일치하고 이미 같은 log로 기록되지 않은 경우
 
-	public void CountTriggers(TrigActionType actionType, Unit unit = null, Tile dest = null, string subType = ""){
 		List<BattleTrigger> targetTriggers;
 		if(dest != null){
-			targetTriggers = ActiveTriggers.FindAll(
-				trig => CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && dest.IsReachPoint
-			);
+			targetTriggers = availableTriggers.FindAll(trig => dest.IsReachPoint);
 		}else{
-			targetTriggers = ActiveTriggers.FindAll(
-				trig => CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && CheckSubType(trig, subType)
-			);
-		}
+			targetTriggers = availableTriggers.FindAll(trig => CheckSubType(trig, subType));
+		} //Reach의 경우를 예외 처리.
 		
 		targetTriggers.ForEach(trig => {
 			trig.units.Add(unit);
+			if(log != null){
+				trig.logs.Add(log);
+			}
 			CountBattleTrigger(trig);
 		});
 	}
-	/*public static void CheckBattleTrigger(Unit unit, TrigActionType actionType, string subtype = ""){
-		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
-			if(actionType == TrigActionType.Kill && unit.IsObject){
-				continue;
-			}else{
-				if(Instance.CheckUnitType(trigger, unit) && Instance.CheckActionType(trigger, actionType)){
-                    trigger.units.Add(unit);
-					Instance.CountBattleTrigger(trigger);
-				}
-			}
-		}
-	}
-
-	public static void CheckMoveTrigger(Unit unit, Tile destination){
-		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
-			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Instance.CheckUnitType(trigger, unit)){
-                trigger.units.Add(unit);
-				Instance.CountBattleTrigger(trigger);
-			}
-		}
-	}*/
 
 	//트리거가 현재 활성화되어있는지 여부를 확인.
 	//relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
@@ -246,17 +222,14 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	bool CheckActionType(BattleTrigger trigger, TrigActionType actionType){
-		if(trigger.actionType == actionType)
-			return true;
-		else
-			return false;
+		return trigger.actionType == actionType;
 	}
 
 	bool CheckSubType(BattleTrigger trigger, string subType){
-		if(trigger.subType == subType){
-			return true;
+		if(trigger.actionType == TrigActionType.MultiShot){
+			return int.Parse(subType) >= int.Parse(trigger.subType);
 		}else{
-			return false;
+			return trigger.subType == subType;
 		}
 	}
 }
