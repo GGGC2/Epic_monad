@@ -43,7 +43,7 @@ public class HPChangeLog : EffectLog {
 
         //같은 편을 공격
 		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
-            BattleTriggerManager.CheckBattleTrigger(caster, TrigActionType.FriendShot);
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendShot, caster);
         }
 
         yield return null;
@@ -157,8 +157,12 @@ public class DestroyUnitLog : EffectLog {
     }
 
     public override IEnumerator Execute() {
-        BattleManager battleManager = BattleManager.Instance;
-        yield return battleManager.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+        BattleManager BM = BattleManager.Instance;
+        yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+
+        BattleTriggerManager.Instance.CountTriggers(actionType, unit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }
 public class AddChainLog : EffectLog {
@@ -278,6 +282,7 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Effect, owner, subType: unitStatusEffect.GetDisplayName());
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }

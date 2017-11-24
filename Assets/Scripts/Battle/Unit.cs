@@ -282,7 +282,6 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill is PassiveSkill)
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CheckBattleTrigger(this, destTile);
     }
 
     public void ForceMove(Tile destTile) { //강제이동
