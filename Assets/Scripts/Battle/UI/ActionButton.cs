@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler{
 	public ActiveSkill skill;
 	public Image icon;
-    public bool isStandBy = false;
+    public ActionButtonType type;
     public GameObject standByOrRestExplanation;
 	public SkillViewer viewer;
 	public bool clickable;
@@ -23,13 +23,15 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		frameImage = transform.Find(name+"Frame").GetComponent<Image>();
 	}
 
-	public void Initialize(ActiveSkill newSkill){
+	public void InitializeWithSkill(ActiveSkill newSkill){
+        type = ActionButtonType.Skill;
 		skill = newSkill;
 		icon.sprite = skill.icon;
 		frameImage.enabled = true;
 	}
 
-	public void Inactive() {
+	public void Absent() {
+		type = ActionButtonType.Absent;
 		skill = null;
         clickable = false;
         standByOrRestExplanation.SetActive(false);
@@ -38,7 +40,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
 	public void Activate(bool isActive){
-		if (UIManager.Instance.ActionButtonOnOffLock)
+		if (UIManager.Instance.ActionButtonOnOffLock || type == ActionButtonType.Absent)
 			return;
 		clickable = isActive;
 		if (isActive) {
@@ -59,9 +61,11 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 		if(clickable){
 			yield return StartCoroutine(Utility.WaitForFewFrames(3));
 
-			if(skill != null){
+			if(type == ActionButtonType.Skill){
 				BattleManager.Instance.CallbackSkillSelect(skill);
-			}else if(icon.sprite != Resources.Load<Sprite>("transparent")){
+			}else if(type == ActionButtonType.Collect) {
+                BattleManager.Instance.CallbackCollectCommand();
+            }else if(icon.sprite != Resources.Load<Sprite>("transparent")){
 				BattleManager.Instance.CallbackStandbyCommand();
 			}		
 			clicked.Invoke();
@@ -77,8 +81,9 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
         else if(clickable){
             standByOrRestExplanation.SetActive(true);
             Text text = standByOrRestExplanation.GetComponentInChildren<Text>();
-            if (isStandBy) text.text = "턴을 종료합니다.";
-            else text.text = GetRestExplanationText();
+            if (type == ActionButtonType.Standby) text.text = "턴을 종료합니다.";
+            else if(type == ActionButtonType.Rest) text.text = GetRestExplanationText();
+            else if(type == ActionButtonType.Collect)   text.text = "오브젝트를 수집합니다.";
         }
 		if(icon.sprite != Resources.Load<Sprite>("transparent")){
 			viewer.gameObject.SetActive(false);
@@ -98,7 +103,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
                 if (apChangeLog.unit == unit) predictedUsingAP = -apChangeLog.amount;
             } else if (effectLog is HPChangeLog) {
                 HPChangeLog hpChangeLog = (HPChangeLog)effectLog;
-                if (hpChangeLog.unit == unit) predictedRecoveringHP = hpChangeLog.amount;
+                if (hpChangeLog.target == unit) predictedRecoveringHP = hpChangeLog.amount;
             }
         }
         return "<color=cyan>" + predictedUsingAP + "</color>" + "의 행동력을 소모하여 " + "\n" +

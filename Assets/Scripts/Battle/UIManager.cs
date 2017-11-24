@@ -160,7 +160,7 @@ public class UIManager : MonoBehaviour{
 
 	public void TurnOnOnlyOneAction(int skillIndex){
 		for (int i = 0; i < 8; i++){
-			actionButtons[i].Activate(i == skillIndex);
+			actionButtons [i].Activate (i == skillIndex);
 		}
 	}
 	public void TurnOffAllActions(){
@@ -214,8 +214,14 @@ public class UIManager : MonoBehaviour{
 	public bool IsUnitViewerShowing() {
 		return unitViewerUI.activeInHierarchy;
 	}
+    public Unit GetUnitInUnitViewer() {
+        return unitViewerUI.GetComponent<UnitViewer>().GetUnit();
+    }
     public bool IsTileViewerShowing() {
         return tileViewerUI.activeInHierarchy;
+    }
+    public Tile GetTileInTileViewer() {
+        return tileViewerUI.GetComponent<TileViewer>().GetTile();
     }
 	public void DisableUnitViewer() {
         unitViewerUI.GetComponent<UnitViewer>().RefreshStatusEffectIconList(); ;
@@ -374,25 +380,31 @@ public class UIManager : MonoBehaviour{
 		Unit unit = BattleData.selectedUnit;
 		for (int i = 0; i < 8; i++) {
 			// actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
-			actionButtons [i].Inactive();
+			actionButtons [i].Absent();
 			// actionButtons [i].skill = null;
 			if (i < unit.activeSkillList.Count) {
-				actionButtons [i].Initialize (unit.activeSkillList [i]);
+				actionButtons [i].InitializeWithSkill (unit.activeSkillList [i]);
 				actionButtons [i].Activate (unit.IsThisSkillUsable (unit.activeSkillList [i]));
 			} else if (i == unit.activeSkillList.Count) {
 				if (unit.IsStandbyPossible ()) {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Standby");
-                    actionButtons [i].isStandBy = true;
+                    actionButtons [i].type = ActionButtonType.Standby;
 				} else {
 					actionButtons [i].icon.sprite = Resources.Load<Sprite> ("Icon/Rest");
-                    actionButtons[i].isStandBy = false;
+                    actionButtons[i].type = ActionButtonType.Rest;
                 }
 				actionButtons [i].Activate (true);
 			}
 		}
 	}
+    public void AddCollectableActionButton() {
+        Unit unit = BattleData.selectedUnit;
+        ActionButton button = actionButtons[unit.activeSkillList.Count + 1];
+        button.type = ActionButtonType.Collect;
+        button.Activate(true);
+    }
 
 	public void HideActionButtons(){
-		actionButtons.ForEach(button => button.Inactive());
+		actionButtons.ForEach(button => button.Absent());
 	}
 }

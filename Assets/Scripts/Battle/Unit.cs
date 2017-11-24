@@ -37,7 +37,7 @@ public class Unit : MonoBehaviour{
 	int movedTileCount;
 	Battle.Turn.AI _AI;
 	public UnitInfo myInfo;
-    public Element element;
+    public bool collectable = false;
 
 	// 스킬리스트
 	public List<ActiveSkill> activeSkillList = new List<ActiveSkill>();
@@ -160,7 +160,7 @@ public class Unit : MonoBehaviour{
 	}
 	public int GetCurrentActivityPoint() {return activityPoint;}
 	public UnitClass GetUnitClass() {return myInfo.unitClass;}
-	public Element GetElement() {return element;}
+	public Element GetElement() {return myInfo.element;}
 	public Celestial GetCelestial() {return myInfo.celestial;}
     public Tile GetTileUnderUnit() { return TileManager.Instance.GetTile(position); }
 	public int GetHeight() { return GetTileUnderUnit().GetHeight(); }
@@ -282,7 +282,6 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill is PassiveSkill)
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CheckBattleTrigger(this, destTile);
     }
 
     public void ForceMove(Tile destTile) { //강제이동
@@ -545,8 +544,12 @@ public class Unit : MonoBehaviour{
                     statusEffect.flexibleElem.display.remainPhase--;
                 }
             }
-            if (statusEffect.GetRemainPhase() <= 0)
-				RemoveStatusEffect(statusEffect);
+            if (statusEffect.GetRemainPhase() <= 0) {
+                if(statusEffect.GetOwnerOfSkill() == "collecting") {
+                    LogManager.Instance.Record(new DestroyUnitLog(statusEffect.GetMemorizedUnits()[0], TrigActionType.Kill));
+                }
+                RemoveStatusEffect(statusEffect);
+            }
 		}
 	}
 
@@ -643,7 +646,7 @@ public class Unit : MonoBehaviour{
 			//currentHealth -= damageAfterShieldApply;
 			//if (currentHealth < 0)
 			//    currentHealth = 0;
-            logManager.Record(new HPChangeLog(this, -damageAfterShieldApply));
+            logManager.Record(new HPChangeLog(caster, this, -damageAfterShieldApply));
 
             // DisplayDamageText(damageAfterShieldApply, true);
             logManager.Record(new DisplayDamageOrHealTextLog(this, -damageAfterShieldApply, true));
@@ -652,6 +655,7 @@ public class Unit : MonoBehaviour{
                 HitInfo hitInfo = new HitInfo(caster, null, damageAfterShieldApply);
                 //latelyHitInfos.Add(hitInfo);
                 logManager.Record(new AddLatelyHitInfoLog(this, hitInfo));
+                BreakCollecting();
 
 				// 데미지를 받을 때 발동하는 피격자 특성
 				SkillLogicFactory.Get(passiveSkillList).TriggerAfterDamaged(this, damageAfterShieldApply, caster);
@@ -743,8 +747,7 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public void RecoverHealth(float amount)
-	{
+	public void RecoverHealth(float amount){
         if(IsObject)    return;
         int maxHealth = GetMaxHealth();
 		// 회복량 증감 효과 적용
@@ -759,7 +762,8 @@ public class Unit : MonoBehaviour{
 		if (actualAmount > 0) {
             //currentHealth += actualAmount;
             BattleManager.MoveCameraToUnit(this);
-            LogManager.Instance.Record (new HPChangeLog (this, actualAmount));
+			//일단 caster는 Damage일 경우에만 참조하며, 컴파일 에러를 막기 위해 여기서는 null로 입력
+            LogManager.Instance.Record (new HPChangeLog (null, this, actualAmount));
 			// DisplayRecoverText (actualAmount, true);
 			LogManager.Instance.Record (new DisplayDamageOrHealTextLog (this, actualAmount, true));
 		}
@@ -919,6 +923,19 @@ public class Unit : MonoBehaviour{
 		//UIManager.Instance.UpdateSelectedUnitViewerUI (this);
 	}
 
+    public void CollectNearestCollectible() {
+        UnitStatusEffect collecting = new UnitStatusEffect(BattleData.collectingStatusEffectInfo, this, this, null);
+        collecting.SetRemainPhase(BattleData.nearestCollectible.phase);
+        collecting.GetMemorizedUnits().Add(BattleData.nearestCollectible.unit);
+        StatusEffector.AttachStatusEffect(this, new List<UnitStatusEffect> { collecting }, this);
+    }
+
+    public void BreakCollecting() {
+        UnitStatusEffect collecting = statusEffectList.Find(se => se.GetOwnerOfSkill() == "collecting");
+        if(collecting != null)
+            RemoveStatusEffect(collecting);
+    }
+
 	public void ApplyTriggerOnPhaseStart(int phase){
 		SkillLogicFactory.Get(passiveSkillList).TriggerOnPhaseStart(this, phase);
         foreach (var statusEffect in statusEffectList) {
@@ -1062,35 +1079,25 @@ public class Unit : MonoBehaviour{
 			}
 		});
 	}
-    public void ApplySkillList(List<ActiveSkill> activeSkills, List<UnitStatusEffectInfo> statusEffectInfoList,
-                               List<TileStatusEffectInfo> tileStatusEffectInfoList, List<PassiveSkill> passiveSkills){
+    public void ApplySkillList(List<Skill> skills, List<UnitStatusEffectInfo> statusEffectInfoList, List<TileStatusEffectInfo> tileStatusEffectInfoList){
         int partyLevel = GameData.PartyData.level;
 
-        foreach (var activeSkill in activeSkills) {
-            if (activeSkill.owner == myInfo.nameEng && activeSkill.requireLevel <= partyLevel){
-				AddActiveSkill(activeSkill, statusEffectInfoList, tileStatusEffectInfoList);
-                /*activeSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-                activeSkill.ApplyTileStatusEffectList(tileStatusEffectInfoList, partyLevel);
-                activeSkillList.Add(activeSkill);*/
-			}
+        foreach (var skill in skills) {
+            if (skill.owner == myInfo.nameEng && skill.requireLevel <= partyLevel) {
+                if (skill is ActiveSkill) {
+                    AddActiveSkill((ActiveSkill)skill, statusEffectInfoList, tileStatusEffectInfoList);
+                }
+                else if(skill is PassiveSkill && SceneData.stageNumber >= Setting.passiveOpenStage) {
+                    AddPassiveSkill((PassiveSkill)skill, statusEffectInfoList);
+                }
+            }
         }
 
-		if(SceneData.stageNumber >= Setting.passiveOpenStage){
-			foreach (var passiveSkill in passiveSkills) {
-        	    if (passiveSkill.owner == myInfo.nameEng && passiveSkill.requireLevel <= partyLevel){
-					AddPassiveSkill(passiveSkill, statusEffectInfoList);
-            	    //passiveSkill.ApplyUnitStatusEffectList(statusEffectInfoList, partyLevel);
-	                //passiveSkillList.Add(passiveSkill);
-    	        }
-        	}
-		}
-		
-
         // 비어있으면 디폴트 스킬로 채우도록.
-        if (activeSkills.Count() == 0) {
-            foreach (var activeSkill in activeSkills) {
-                if (activeSkill.owner == "default" && activeSkill.requireLevel <= partyLevel)
-                    activeSkillList.Add(activeSkill);
+        if (skills.Count() == 0) {
+            foreach (var skill in skills) {
+                if (skill.owner == "default" && skill.requireLevel <= partyLevel)
+                    activeSkillList.Add((ActiveSkill)skill);
             }
 		}
     }
@@ -1098,7 +1105,6 @@ public class Unit : MonoBehaviour{
 	void Initialize(){
 		gameObject.name = myInfo.nameEng;
 		position = myInfo.initPosition;
-        element = myInfo.element;
 		startPositionOfPhase = position;
 		direction = myInfo.initDirection;
 		UpdateSpriteByDirection();

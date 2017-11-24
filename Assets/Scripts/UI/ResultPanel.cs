@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GameData;
+using Enums;
 
 public class ResultPanel : MonoBehaviour{
 	public Text LevelText;
@@ -16,46 +17,37 @@ public class ResultPanel : MonoBehaviour{
 	public BattleTriggerManager Checker;
 	public int runningFrame;
 
-	public void Clicked(){
-		if (!alreadyClicked) {
-			alreadyClicked = true;
-			StartCoroutine (IClicked ());
-		}
-	}
-
-	public void Activate(){
-		Initialize();
-		UpdatePanel(0);
-		PrintResult();
-	}
-
-	void Initialize(){
+	public void Initialize(){
 		LevelUpText.enabled = false;
 		LevelText.text = "" + PartyData.level;
 		ReqExpText.text = "Next " + PartyData.reqExp;
 
 		TriggerIndex.text = ""; // initialized
 		ScoreText.text = "";
+
+		StartCoroutine(PrintResult());
 	}
 
-	void PrintResult(){
-		StartCoroutine (IClicked ());
-	}
+	public IEnumerator PrintResult(){
+		List<BattleTrigger> scoreTriggers = BattleTriggerManager.Instance.triggers.FindAll(trig =>
+			(trig.resultType == TrigResultType.Win || trig.resultType == TrigResultType.Bonus) && trig.acquired && trig.reward != 0);
+		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
+		
+		foreach(var trig in scoreTriggers){
+			Debug.Log("Writing trigger info : " + trig.korName + "...");
+			BattleData.rewardPoint += trig.reward;
+			TriggerIndex.text += trig.korName + " " + MultiplierText(trig) + "\n";
 
-	public IEnumerator IClicked(){
-		foreach(BattleTrigger trigger in Checker.triggers){
-			//Debug.Log("TriggerName : " + trigger.korName + ", acquired : " + trigger.acquired);
-			if(trigger.acquired){
-				TriggerIndex.text += trigger.korName + " " + MultiplierText(trigger);
-				TriggerIndex.text += "\n";
-				yield return new WaitForSeconds(0.1f);
-				if (!trigger.repeatable || trigger.count == 1)
-					ScoreText.text += trigger.reward;
-				else
-					ScoreText.text += trigger.reward * trigger.count;
-				ScoreText.text += "\n";
-				yield return new WaitForSeconds(0.4f);
+			yield return new WaitForSeconds(0.1f);
+			
+			if (!trig.repeatable || trig.count == 1){
+				ScoreText.text += trig.reward;
+			}else{
+				ScoreText.text += trig.reward * trig.count;
 			}
+				
+			ScoreText.text += "\n";
+			yield return new WaitForSeconds(0.4f);
 		}
 
 		TotalExpText.text = "획득 경험치 : " + BattleData.rewardPoint;
@@ -63,32 +55,12 @@ public class ResultPanel : MonoBehaviour{
 		//다 출력된 후 클릭을 해야 넘어감
 		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
 
-		/*int expTick = BattleData.rewardPoint/runningFrame;
-		int levelInPrevFrame = PartyData.level;
-		while(BattleData.rewardPoint > 0){
-			if(expTick == 0)
-				UpdateExp(1);
-			else if(BattleData.rewardPoint >= expTick)
-				UpdateExp(expTick);
-			else
-				UpdateExp(BattleData.rewardPoint);
-			yield return null;
-
-			if (levelInPrevFrame != PartyData.level)
-				yield return StartCoroutine(ShowLevelUpText());
-			levelInPrevFrame = PartyData.level;
-		}*/
-
 		PartyData.level += 1;
-
-		//다 출력된 후 클릭을 해야 넘어감
-		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
 
 		Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
 	}
 
-	IEnumerator ShowLevelUpText()
-	{
+	IEnumerator ShowLevelUpText(){
 		LevelUpText.enabled = true;
 		yield return new WaitForSeconds(0.5f);
 	}
@@ -100,7 +72,7 @@ public class ResultPanel : MonoBehaviour{
 			return " x"+trigger.count;
 	}
 
-	void UpdateExp(int point){
+	/*void UpdateExp(int point){
 		PartyData.AddExp(point);
 		BattleData.rewardPoint -= point;
 		UpdatePanel(BattleData.rewardPoint);
@@ -112,5 +84,5 @@ public class ResultPanel : MonoBehaviour{
 		LevelText.text = "" + PartyData.level;
 		ReqExpText.text = "Next " + (PartyData.reqExp - PartyData.exp);
 		ExpBar.fillAmount = (float)PartyData.exp / (float)PartyData.reqExp;
-	}
+	}*/
 }

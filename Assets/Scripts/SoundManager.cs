@@ -14,9 +14,7 @@ public class SoundManager : MonoBehaviour {
 
 	public IEnumerator PlayBGM(string name){
 		if (audioSource.clip == null) {
-			audioSource.clip = BGMs [name];
-			audioSource.volume = Configuration.BGMVolume;
-			audioSource.Play ();
+			PlayNewBGM (name);
 			yield break;
 		}
 		if (audioSource.clip.name == name) {
@@ -35,10 +33,16 @@ public class SoundManager : MonoBehaviour {
 			audioSource.volume -= initialVolume * Time.deltaTime / FADETIME;
 			yield return null;
 		}
-		audioSource.clip = BGMs [name];
-		audioSource.volume = Configuration.BGMVolume;
-		//if(!audioSource.isPlaying)
-		audioSource.Play ();
+		PlayNewBGM (name);
+	}
+	void PlayNewBGM(string name){
+		if (name == "None") {
+			audioSource.clip = null;
+		} else {
+			audioSource.clip = BGMs [name];
+			audioSource.volume = Configuration.BGMVolume;
+			audioSource.Play ();
+		}
 	}
 	public void PlaySE(string name){
 		audioSource.PlayOneShot (SEs[name], Configuration.soundEffectVolume);

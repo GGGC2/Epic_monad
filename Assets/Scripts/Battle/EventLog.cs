@@ -5,10 +5,20 @@ using System.Linq;
 using UnityEngine;
 
 public class EventLog : Log {
+    public Unit actor;
     List<EffectLog> effectLogList = new List<EffectLog>();  // 이 Event로부터 발생한 Effect들
     public List<EffectLog> getEffectLogList() { return effectLogList; }
 
     public override IEnumerator Execute() {
+        BattleTriggerManager TM = BattleTriggerManager.Instance;
+        if(this is RestLog){
+            TM.CountTriggers(TrigActionType.Rest, actor);
+        }else if(this is CastLog){
+            TM.CountTriggers(TrigActionType.Cast, actor);
+        }else if(this is MoveLog){
+            MoveLog log = (MoveLog)this;
+            TM.CountTriggers(TrigActionType.Reach, actor, TileManager.Instance.GetTile(log.afterPos));
+        }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
                 effectLog.executed = true;
@@ -31,30 +41,29 @@ public class BattleStartLog : EventLog {
 }
 
 public class MoveLog : EventLog {
-    Unit unit;
     Vector2 beforePos;
-    Vector2 afterPos;
+    public Vector2 afterPos;
 
     public MoveLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
-        this.unit = unit;
+        this.actor = unit;
         this.beforePos = beforePos;
         this.afterPos = afterPos;
     }
+
     public override string GetText() {
-        return unit.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "(으)로 이동";
+        return actor.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "(으)로 이동";
     }
 }
 
 public class MoveCancelLog : EventLog {
-    Unit unit;
     BattleData.MoveSnapshot snapshot;
 
     public MoveCancelLog(Unit unit, BattleData.MoveSnapshot snapshot) {
-        this.unit = unit;
+        this.actor = unit;
         this.snapshot = snapshot;
     }
     public override string GetText() {
-        return unit.GetNameKor() + " : 이동 취소";
+        return actor.GetNameKor() + " : 이동 취소";
     }
 }
 
@@ -71,8 +80,9 @@ public class ChainLog : EventLog {  // 연계 대기
 }
 
 public class CastLog : EventLog {   // 스킬 사용
-    Casting casting;
+    public Casting casting;
     public CastLog(Casting casting) {
+        this.actor = casting.Caster;
         this.casting = casting;
     }
     public override string GetText() {
@@ -107,12 +117,11 @@ public class CastByChainLog : EventLog {    // 연계 발동
 }
 
 public class RestLog : EventLog {
-    Unit rester;
     public RestLog(Unit rester) {
-        this.rester = rester;
+        this.actor = rester;
     }
     public override string GetText() {
-        return rester.GetNameKor() + " 휴식";
+        return actor.GetNameKor() + " 휴식";
     }
 }
 
@@ -126,14 +135,31 @@ public class StandbyLog : EventLog {
     }
 }
 
-public class UnitDestroyedLog : EventLog {
-    Unit unit;
-    TrigActionType actionType;
-    public UnitDestroyedLog(Unit unit) {
-        this.unit = unit;
+public class CollectStartLog : EventLog {
+    Unit collector;
+    Unit collectible;
+    public CollectStartLog(Unit collector, Unit collectible) {
+        this.collector = collector;
+        this.collectible = collectible;
     }
     public override string GetText() {
-        return unit.GetNameKor() + "파괴";
+        return collector.GetNameKor() + " : " + collectible.GetNameKor() + " 수집 시작";
+    }
+}
+
+public class UnitDestroyedLog : EventLog {
+    List<Unit> units;
+    TrigActionType actionType;
+    public UnitDestroyedLog(List<Unit> units) {
+        this.units = units;
+    }
+    public override string GetText() {
+        string text = "";
+        for(int i = 0; i < units.Count; i++) {
+            text += units[i].GetNameKor();
+            if(i != units.Count - 1)    text += ", ";
+        }
+        return text + "파괴";
     }
 }
 

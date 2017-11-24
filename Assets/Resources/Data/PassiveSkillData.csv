@@ -1,10 +1,11 @@
-﻿owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
+owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
 elvenSoldier01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 elvenPriest01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 elvenArcher01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 monster01	0	0	완강한 복족류	0	속도가 30 감소하며, 방어력과 저항력이 <color=green>80</color> 증가합니다. 조작 제한 상태일 때 이 효과는 무효화됩니다.	None	0	0	None	0	0
-lucius	0	0	정의로운 신념	0	적 유닛을 이탈시킬 때마다 아군의 행동력이 20 회복되고, 적 유닛을 처치할 때마다 아군의 행동력이 20 감소합니다.	None	0	0	None	0	0
-lucius	7	1	검사의 직감	2	바로 옆 타일의 유닛이 시전한 공격의 피해를 받지 않습니다.	None	0	0	None	0	0
+sage01	0	0	화합물 정제	0	주변의 문이 열리기 전까지, 3페이즈마다 공격력이 <color=red>20%</color> 증가합니다.	None	0	0	None	0	0
+lucius	0	0	정의로운 신념	0	적 유닛을 이탈시킬 때마다 아군의 행동력이 10 회복되고, 적 유닛을 처치할 때마다 아군의 행동력이 10 감소합니다.	None	0	0	None	0	0
+lucius	7	1	검사의 직감	2	루키어스는 바로 옆 타일의 유닛이 시전한 공격의 피해를 받지 않습니다.	None	0	0	None	0	0
 lucius	8	8	정면 승부	1	전술 보정치가 없는 공격의 피해량이 20% 높아집니다.	None	0	0	None	0	0
 lucius	10	8	배수진	2	자신이 위치한 타일을 기준으로 움직일 수 없는 방향 하나당 방어력이 33(+레벨당 0.4)(<color=green>VALUE1</color>) 높아집니다.	Level	0.4	33	None	0	0
 reina	0	0	핀토스의 긍지	0	다른 유닛에게 받은 강화 하나당 공격력이 5% 높아집니다.	None	0	0	None	0	0
@@ -99,23 +100,23 @@ eugene	0	36	야영 전문가	3	ABCD	None	0	0	None	0	0
 eugene	0	43	청명수의 은총	1	ABCD	None	0	0	None	0	0
 eugene	0	43	백색 파문	2	ABCD	None	0	0	None	0	0
 eugene	0	43	길잡이	3	ABCD	None	0	0	None	0	0
-json	0	0	표식	0	제이선의 공격은 적에게 표식을 남깁니다. 표식을 4스택 쌓은 상태에서 공격하면 표식이 모두 사라지며 이 공격으로 가한 데미지의 n%만큼 제이선의 체력이 회복됩니다	None	0	0	None	0	0
+json	0	0	표식	0	제이선의 공격은 적에게 표식을 남깁니다. 표식을 4스택 쌓은 상태에서 공격하면 표식이 모두 사라지며  다음 1회의 기술을 무조건 회피합니다. 이 효과는 페이즈 종료 시 사라집니다.	None	0	0	None	0	0
 json	10	8	바람 가르기	1	이동하고 나면 바로 다음 공격에 필요한 행동력이 (이동한 타일*10%) 줄어듭니다.	None	0	0	None	0	0
 karldrich	0	0	모두에게 평등한 죽창	1	공격할 때 대상의 방어력을 무시합니다.	None	0	0	None	0	0
 karldrich	10	1	행동하는 혁명가	3	사기가 <color=cyan>10</color> 높아집니다.	None	0	0	None	0	0
 karldrich	7	8	노조결성	3	반경 2타일 이내의 동료 1명당 자신의 공격력이 <color=red>5%</color>씩 높아집니다.	None	0	0	None	0	0
 sepia	9	1	신뢰의 끈	2	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
-darkenir	0	0	흐름 동화	0	자신에게 효과를 건 대상도 절반의 해당 효과를 받는다. 보스 유닛의 경우 무효화되거나 효과가 감소한다. 이 특성으로 얻은 효과는 원래의 효과와 중첩되지 않는다.	None	0	0	None	0	0
+darkenir	0	0	흐름 동화	0	자신에게 효과를 건 대상도 절반의 해당 효과를 받습니다.	None	0	0	None	0	0
 noel	0	0	심판의 빛	0	자신이 사용한 보호막이 피해를 흡수할 때 흡수한 만큼 공격자에게 마법 피해를 줍니다.	None	0	0	None	0	0
 arcadia	11	8	뿌리 내리기	1	나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.	Level	0.8	63	None	0	0
 arcadia	0	15	광합성	2	ABCD	None	0	0	None	0	0
-bianca	0	0	사뿐사뿐	0	비앙카는 자신의 덫을 발동시키지 않으며 덫에 의한 피해를 받지 않는다.	None	0	0	None	0	0
+bianca	0	0	사뿐사뿐	0	자신의 덫을 스스로 발동시키지 않으며 덫에 의한 피해를 받지 않습니다.	None	0	0	None	0	0
 grenev	0	0	타고난 저격수	0	이동할 때 행동력 소모가 <color=red>30%</color> 높아지지만 공격할 때 대상과의 거리 1타일당 위력이 <color=red>2%</color> 높아집니다.	None	0	0	None	0	0
 grenev	10	1	살의	3	6페이즈 이후부터 사기가 25 높아집니다.	None	0	0	None	0	0
-grenev	8	8	살육의 희열	3	그레네브가 1명 처치할 때마다 공격력이 <color=red>5%</color>(<color=red>VALUE1</color>) 영구적으로(스테이지 끝날 때까지 유지) 증가합니다.(중첩 가능)	Power	0.05	0	None	0	0
-grenev	0	15	약자멸시	3	자신보다 공격력이 작은 상대에게 주는 피해량에 <color=red>20%</color> 보너스가 주어집니다.	None	0	0	None	0	0
-grenev	0	29	전망	1	본인이 대상보다 높이 3 이상 높은 타일에 있을시 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.	None	0	0	None	0	0
-grenev	0	36	암살	2	은신 상태에서 적에게 공격을 할 경우 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.	None	0	0	None	0	0
-grenev	0	36	전쟁광	3	그레네브의 최대체력을 <color=green>15%</color> 감소시키고 공격력을 <color=red>15%</color> 상승시킵니다.	None	0	0	None	0	0
-grenev	0	43	인내심	2	같은 타일에서 3번째로 페이즈를 시작할 때 공격력이 <color=red>20%</color>(<color=red>VALUE1</color>) (지속)올라갑니다. 다른 타일로 이동시 해제됩니다.	Power	0.2	0	None	0	0
-grenev	0	43	연쇄살인	3	그레네브가 1명 처치할 때마다 본인의 행동력이 <color=blue>0.6x민첩성</color>(<color=blue>VALUE1</color>)만큼 회복됩니다.	Agility	0.6	0	None	0	0
+grenev	8	8	살육의 희열	3	자신이 1명 처치할 때마다 전투가 끝날 때까지 공격력이 <color=red>5%</color>(<color=red>VALUE1</color>) 증가합니다.	Power	0.05	0	None	0	0
+grenev	0	15	약자멸시	3	자신보다 공격력이 낮은 대상을 공격할 때, 피해량이 <color=red>20%</color> 높아집니다.	None	0	0	None	0	0
+grenev	0	29	전망	1	자신보다 높이 3 이상 낮은 타일의 대상을 공격할 때, 피해량이 <color=red>50%</color> 높아집니다.	None	0	0	None	0	0
+grenev	0	36	암살	2	은신 상태에서 공격할 때, 피해량이 <color=red>50%</color> 높아집니다.	None	0	0	None	0	0
+grenev	0	36	전쟁광	3	자신의 최대체력을 <color=green>15%</color> 감소시키고 공격력을 <color=red>15%</color> 상승시킵니다.	None	0	0	None	0	0
+grenev	0	43	인내심	2	같은 타일에서 3번째로 페이즈를 시작할 때 공격력이 <color=red>20%</color>(<color=red>VALUE1</color>) 높아집니다. 다른 타일로 이동시 해제됩니다.	Power	0.2	0	None	0	0
+grenev	0	43	연쇄살인	3	자신이 1명 처치할 때마다 자신의 행동력이 <color=blue>0.6x민첩성</color>(<color=blue>VALUE1</color>)만큼 회복됩니다.	Agility	0.6	0	None	0	0

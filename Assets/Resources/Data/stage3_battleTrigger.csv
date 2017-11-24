@@ -1,5 +1,5 @@
-﻿ResultType	UnitType	ActionType	targetCount	Repeatable	Reward	etc
-Win	적 4명을 무력화	Enemy	Neutralize	4	false	50
-Win	영이 탈출 지점으로 이동	Target	Reach	1	false	50	1	yeong	4	5	2	6	2	5	3	6	3
-Lose	영의 무력화	Target	Neutralize	1	false	0	1	yeong
-End	Scene#6	Sequence	One
+﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
+Win	적 4명을 무력화	Enemy	Neutralize	4	50
+Win	영이 탈출 지점으로 이동	Target	Reach	1	50	1	yeong	4	5	2	6	2	5	3	6	3
+Lose	영의 무력화	Target	Neutralize	1	0	1	yeong
+Info	Scene#6	Sequence	One

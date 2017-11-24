@@ -2,12 +2,11 @@ using UnityEngine;
 using System;
 
 public class StringParser{
-	string[] origin = null;
-	int index = 0;
+	public string[] origin = null;
+	public int index = 0;
 
 	public StringParser(string line, char separator){
 		origin = line.Split(separator);
-		index = 0;
 	}
 
 	public void ResetIndex(){
@@ -27,12 +26,9 @@ public class StringParser{
 
 	public bool ConsumeBool(){
 		string strValue = Consume();
-		try
-		{
+		try{
 			return bool.Parse(strValue);
-		}
-		catch (FormatException e)
-		{
+		}catch (FormatException e){
 			Debug.LogError("Cannot parse boolean value " + strValue);
 			return false;
 		}

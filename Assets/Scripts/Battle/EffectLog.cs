@@ -11,18 +11,20 @@ public class EffectLog : Log {
 }
 
 public class HPChangeLog : EffectLog {
-    public Unit unit;
+    public Unit caster;
+    public Unit target;
     public int amount;
     public void setAmount(int amount) {
         this.amount = amount;
     }
-    public HPChangeLog(Unit unit, int amount) {
-        this.unit = unit;
+    public HPChangeLog(Unit caster, Unit target, int amount) {
+        this.caster = caster;
+        this.target = target;
         this.amount = amount;
     }
     public override string GetText() {
         string text;
-        text = "\t" + unit.GetNameKor() + " : 체력 ";
+        text = "\t" + target.GetNameKor() + " : 체력 ";
         if (amount < 0) {
             text += -amount + " 감소";
         } else {
@@ -31,13 +33,19 @@ public class HPChangeLog : EffectLog {
         return text;
     }
     public override IEnumerator Execute() {
-        int maxHealth = unit.GetMaxHealth();
-        int currentHealth = unit.GetCurrentHealth();
+        int maxHealth = target.GetMaxHealth();
+        int currentHealth = target.GetCurrentHealth();
         int result = currentHealth + amount;
 
-        if(result > maxHealth)  unit.currentHealth = maxHealth;
-        else if(result < 0)     unit.currentHealth = 0;
-        else                    unit.currentHealth = result;
+        if(result > maxHealth)  target.currentHealth = maxHealth;
+        else if(result < 0)     target.currentHealth = 0;
+        else                    target.currentHealth = result;
+
+        //같은 편을 공격
+		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendShot, caster);
+        }
+
         yield return null;
     }
     public override bool isMeaningless() {
@@ -149,8 +157,12 @@ public class DestroyUnitLog : EffectLog {
     }
 
     public override IEnumerator Execute() {
-        BattleManager battleManager = BattleManager.Instance;
-        yield return battleManager.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+        BattleManager BM = BattleManager.Instance;
+        yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+
+        BattleTriggerManager.Instance.CountTriggers(actionType, unit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }
 public class AddChainLog : EffectLog {
@@ -270,6 +282,7 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Effect, owner, subType: unitStatusEffect.GetDisplayName());
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
