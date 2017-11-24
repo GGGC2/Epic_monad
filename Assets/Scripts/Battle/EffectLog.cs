@@ -439,6 +439,15 @@ public class PrintBonusTextLog : EffectLog {
             break;
         case "DirectionSide":
             uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
+            Unit actor = BattleData.selectedUnit;
+            if(actor.GetSide() == Side.Ally && !actor.IsAI){
+                if(amount == Setting.sideAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.SideAttack, actor);
+                }else if(amount == Setting.backAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.BackAttack, actor);
+                }
+            }
+            
             break;
         case "Celestial":
             uiManager.PrintCelestialBonus(amount);

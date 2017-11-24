@@ -177,9 +177,9 @@ namespace Battle
 		private static DirectionCategory AttackDirection(Unit caster, Unit target)
 		{
 			float directionBonus = Utility.GetDirectionBonus(caster, target);
-			if (directionBonus == 1.1f)
+			if (directionBonus == Setting.sideAttackBonus)
 				return DirectionCategory.Side;
-			else if (directionBonus == 1.25f)
+			else if (directionBonus == Setting.backAttackBonus)
 				return DirectionCategory.Back;
 			else
 				return DirectionCategory.Front; 

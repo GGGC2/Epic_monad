@@ -12,7 +12,6 @@ public class BattleTrigger{
 	public int reward;
 	public int count;
 	public int reqCount;
-
 	
 	public bool reverse; //일반적인 경우와 반대로, 달성된 상태로 시작해서 조건부로 해제되는 것들. 예) n페이즈 이내 승리
 	public bool repeatable;
@@ -73,7 +72,6 @@ public class BattleTrigger{
 				if(code == ""){
 					break;
 				}else if(code == "Reverse"){
-					//Debug.Log(korName + " is Default trigger.");
 					reverse = true;
 					acquired = true;
 				}else if(code == "Repeat"){
