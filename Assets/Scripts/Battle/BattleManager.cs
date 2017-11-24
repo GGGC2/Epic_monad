@@ -342,8 +342,12 @@ public class BattleManager : MonoBehaviour{
             if (update != null){
 				StopCoroutine(update);
 			}
-            unit.HideAfterImage();
+			unit.HideAfterImage ();
 			BattleData.tileManager.DepaintAllTiles ();
+			Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
+			if (tileUnderMouse != null) {
+				tileUnderMouse.CostAP.text = "";
+			}
 
             if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
