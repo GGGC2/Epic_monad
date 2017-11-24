@@ -15,7 +15,7 @@ elvenSoldier01	0	1	근접 공격	1	40	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	
 elvenSoldier01	0	1	계절풍	1	35	0	Power	0.8	Route	Straight	1	3	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	SeasonWind	대상을 자신 앞으로 당겨온 후 <color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 elvenArcher01	0	1	화살 발사	1	35	0	Power	0.9	Point	Diamond	0	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Bow	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 elvenPriest01	0	1	하급 치유	1	35	0	Power	0.9	Point	Diamond	0	4	0	Diamond	0	0	0	HealHealth	-	Individual	NonMove	Heal	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 체력을 회복시킵니다.	Power	0.8	0	None	0	0
-controller	0	1	침입자 제거	1	0	1	Power	1	Auto	Global	0	0	0	Global	0	0	0	DamageHealth	-	Individual	NonMove	-	모든 적군에게 최대 체력 15%의 피해를 줍니다.	None	0	0	None	0	0
+controller	0	1	침입자 제거	1	0	1	Power	1	Auto	Global	0	0	0	Global	0	0	0	DamageHealth	-	Individual	NonMove	-	모든 적에게 최대 체력 15%의 피해를 줍니다.	None	0	0	None	0	0
 kashasty_Escape	0	1	더블 샷	1	27	0	Power	1.2	Route	Straight	1	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	투사체를 쏘아 <color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 triana_Rest	0	1	광폭화	1	1	10	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	ControllerGrawl	10페이즈 동안 자신의 공격력과 방어력과 저항력을 2배로 높입니다.	None	0	0	None	0	0
 triana_Rest	0	1	근접 공격	2	30	0	Power	1.2	Auto	Front	1	1	3	Front	1	1	3	DamageHealth	MeleeArea	Area	NonMove	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
@@ -100,11 +100,11 @@ arcadia	10	1	생명의 요람	2	35	6	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Bu
 arcadia	10	1	계절풍	3	28	0	Power	0.9	Route	Straight	1	6	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	SeasonWind	대상을 자신 앞으로 당겨온 후 <color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 arcadia	10	8	갈고리 씨앗	3	24	0	Power	0	Auto	Sector	1	3	0	Sector	1	3	0	Debuff	-	Individual	NonMove	ElectricBuzz	<color=#ff9999ff>2페이즈</color> 동안 <color=red>0.6x공격력</color>(<color=red>VALUE1</color>)의 <color=red>지속 피해</color>를 줍니다.	Power	0.6	0	None	0	0
 bianca	10	1	잘근잘근 덫	1	32	0	Power	0	Point	Diamond	0	2	0	Diamond	0	0	0	Debuff	-	Individual	NonMove	SetTrap	덫을 설치합니다. 발동될 때, 범위 내의 모든 유닛을 <color=#ff9999ff>1페이즈</color> 동안 속박시키고 <color=#ff9999ff>3페이즈</color> 동안 <color=red>0.5x공격력</color>(<color=red>VALUE1</color>)의 지속 피해를 줍니다.	Power	0.5	0	None	0	0
-bianca	6	1	떠밀기	3	5	0	Power	0	Auto	Straight	1	1	0	Straight	1	1	0	DamageHealth	-	Individual	NonMove	Push	대상에게 아무 피해도 주지 않고 한 칸 뒤로 밉니다.	None	0	0	None	0	0
+bianca	6	1	떠밀기	3	5	0	Power	0	Auto	Straight	1	1	0	Straight	1	1	0	DamageHealth	-	Individual	NonMove	Push	대상을 한 칸 뒤로 밉니다.	None	0	0	None	0	0
 grenev	10	1	저격	1	29	0	Power	0.8	Point	Diamond	0	11	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	Gun	<color=red>0.8x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.8	0	None	0	0
 grenev	10	1	단검술	2	35	0	Power	1.5	Route	Straight	1	2	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Smite	<color=yellow>제한 : 후면 공격으로만 사용할 수 있습니다.</color>^^방어력과 보호막을 무시하고 <color=red>1.5x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.5	0	None	0	0
 grenev	4	8	집중	1	30	0	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	-	<color=#ff9999ff>4페이즈</color>간 자신의 공격력이 <color=red>25%</color>(<color=red>VALUE1</color>) 높아집니다.	Power	0.25	0	None	0	0
-grenev	0	15	암살표식	2	25	0	Power	0.3	Point	Diamond	0	9	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	대상에 <color=red>0.3x공격력</color>(<color=red>VALUE1</color>)만큼 피해를 준 후 표식을 붙입니다. 자신은 표식이 붙은 대상에게 주는 피해량에 <color=red>50%</color> 보너스가 주어집니다.	Power	0.3	0	None	0	0
+grenev	0	15	암살표식	2	25	0	Power	0.3	Point	Diamond	0	9	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	-	대상에게 <color=red>0.3x공격력</color>(<color=red>VALUE1</color>)의 피해를 준 후 표식을 붙입니다. 자신이 표식이 붙은 대상을 공격할 때, 피해량이 <color=red>50%</color> 높아집니다.	Power	0.3	0	None	0	0
 grenev	0	22	회심의 일격	1	40	3	Power	2	Point	Diamond	0	8	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	Gun	대상의 방어력을 50% 무시하고 <color=red>2.0x공격력</color>(<color=red>VALUE1</color>)만큼 피해를 줍니다.	Power	2	0	None	0	0
 grenev	0	29	은신	2	30	7	Power	0	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Individual	NonMove	-	<color=#ff9999ff>4페이즈</color>간 은신 상태가 됩니다. 은신 상태일 때는 AI 유닛에게 공격 대상으로 인식되지 않습니다.	None	0	0	None	0	0
 grenev	0	43	연사	1	40	0	Power	2	Point	Diamond	0	9	0	Cross	0	1	0	DamageHealth	-	Individual	NonMove	Barrage	대상 중심으로 십자 범위(5칸)에 <color=red>2.0x공격력</color>(<color=red>VALUE1</color>)만큼 피해를 줍니다.	Power	2	0	None	0	0
