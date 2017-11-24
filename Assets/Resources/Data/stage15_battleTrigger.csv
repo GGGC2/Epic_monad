@@ -2,5 +2,5 @@
 Win	7명 이상의 수인족 전사를 무력화	Enemy	Neutralize	7	300
 Win	5페이즈 경과	None	Phase	5	300
 Lose	모든 동료가 무력화	PC	Neutralize	0	0
-Lose	3명 이상의 수인족 전사가 탈출	Enemy	Reach	7	0	3	6	28	7	28	8	28
+Lose	3명 이상의 수인족 전사가 탈출	Enemy	ReachPosition	7	0	3	6	28	7	28	8	28
 Info	Scene#30	One	One

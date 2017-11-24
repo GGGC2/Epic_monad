@@ -1,4 +1,4 @@
 ﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
 Win	적 6명 무력화	Enemy	Neutralize	6	100
-Lose	적 7명 탈출	Enemy	Reach	7	0	4	2	1	16	1	8	18	10	18
+Lose	적 7명 탈출	Enemy	ReachPosition	7	0	4	2	1	16	1	8	18	10	18
 Info	Scene#22	One	One
