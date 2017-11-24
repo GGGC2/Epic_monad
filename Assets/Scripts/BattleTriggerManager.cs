@@ -71,23 +71,37 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	//게임 종료시에 한꺼번에 체크해야 하는 트리거.
-	public void CheckExtraTriggersAtWinGame(){
+	void CheckExtraTriggersAtWinGame(){
 		List<BattleTrigger> exTrigs = triggers.FindAll(trig => trig.extra);
 		if(exTrigs.Count != 0){
 			if(SceneData.stageNumber == 1){
-				List<HPChangeLog> HpLogList = new List<HPChangeLog>();
-				BattleData.logDisplayList.ForEach(dsp => {
-					if(dsp.log is HPChangeLog){
-						HpLogList.Add(dsp.log as HPChangeLog);
-					}
-				});
-				List<HPChangeLog> TargetLogs = HpLogList.FindAll(log =>
+				List<HPChangeLog> TargetLogs = LogsOfType<HPChangeLog>().FindAll(log =>
 					(log.target.GetNameEng() == "reina" || log.target.GetNameEng() == "lucius") && log.amount < 0);
 				if(!TargetLogs.Any(log => log.target.GetNameEng() == "lucius") || !TargetLogs.Any(log => log.target.GetNameEng() == "reina")){
 					exTrigs[0].acquired = true; //한 명이라도 피해를 입지 않았으면 발동
 				}
+			}else if(SceneData.stageNumber == 2){
+				List<ActiveSkill> usedSkills = new List<ActiveSkill>();
+				LogsOfType<CastLog>().ForEach(log => {
+					if(!usedSkills.Any(skill => skill == log.casting.Skill)){
+						usedSkills.Add(log.casting.Skill);
+					}
+				});
+				if(usedSkills.Count >= 7){
+					exTrigs[0].acquired = true; //7가지 이상 기술을 사용했으면 발동
+				}
 			}
 		}
+	}
+
+	List<T> LogsOfType<T>(){
+		List<T> result = new List<T>();
+		BattleData.logDisplayList.ForEach(dsp => {
+			if(dsp.log is T){
+				result.Add((T)Convert.ChangeType(dsp.log, typeof(T)));
+			}
+		});
+		return result;
 	}
 
 	public void StartResultPanel(){
@@ -122,15 +136,31 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public static void CheckPhaseTriggers(){
+	/*public static void CountPhaseTriggers(){
 		List<BattleTrigger> trigger = Instance.ActiveTriggers.FindAll(trig => trig.actionType == TrigActionType.Phase);
 		trigger.ForEach(trig => {
 			Instance.CountBattleTrigger(trig);
 		});
-	}
+	}*/
 
-	public static void CheckBattleTrigger(Unit unit, TrigActionType actionType){
-		Debug.Log("Count BattleTrigger : " + unit.name + "'s " + actionType);
+	public void CountTriggers(TrigActionType actionType, Unit unit = null, Tile dest = null, string subType = ""){
+		List<BattleTrigger> targetTriggers;
+		if(dest != null){
+			targetTriggers = ActiveTriggers.FindAll(
+				trig => CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && dest.IsReachPoint
+			);
+		}else{
+			targetTriggers = ActiveTriggers.FindAll(
+				trig => CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && CheckSubType(trig, subType)
+			);
+		}
+		
+		targetTriggers.ForEach(trig => {
+			trig.units.Add(unit);
+			CountBattleTrigger(trig);
+		});
+	}
+	/*public static void CheckBattleTrigger(Unit unit, TrigActionType actionType, string subtype = ""){
 		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
 			if(actionType == TrigActionType.Kill && unit.IsObject){
 				continue;
@@ -143,16 +173,17 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 	}
 
-	public static void CheckBattleTrigger(Unit unit, Tile destination){
+	public static void CheckMoveTrigger(Unit unit, Tile destination){
 		foreach(BattleTrigger trigger in Instance.ActiveTriggers){
 			if(trigger.actionType == TrigActionType.Reach && destination.IsReachPoint && Instance.CheckUnitType(trigger, unit)){
                 trigger.units.Add(unit);
 				Instance.CountBattleTrigger(trigger);
 			}
 		}
-	}
+	}*/
 
-	//트리거가 현재 활성화되어있는지 여부를 확인. relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
+	//트리거가 현재 활성화되어있는지 여부를 확인.
+	//relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
 	public bool isTriggerActive(BattleTrigger trigger){
 		if(trigger.resultType == TrigResultType.Info){
 			return false;
@@ -196,8 +227,11 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 		return result;
 	}
+
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
-		if (trigger.unitType == TrigUnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameEng())))
+		if(unit == null){ //TrigActionType.Phase 등 명시적인 행위주체가 없는 경우
+			return true;
+		}else if (trigger.unitType == TrigUnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameEng())))
 			return true;
 		else if(trigger.unitType == TrigUnitType.Ally && unit.GetSide() == Side.Ally)
 			return true;
@@ -211,10 +245,18 @@ public class BattleTriggerManager : MonoBehaviour {
 			return false;
 	}
 
-	public bool CheckActionType(BattleTrigger trigger, TrigActionType actionType){
+	bool CheckActionType(BattleTrigger trigger, TrigActionType actionType){
 		if(trigger.actionType == actionType)
 			return true;
 		else
 			return false;
+	}
+
+	bool CheckSubType(BattleTrigger trigger, string subType){
+		if(trigger.subType == subType){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

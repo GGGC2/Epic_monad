@@ -8,6 +8,7 @@ public class BattleTrigger{
 	public TrigResultType resultType;
 	public TrigUnitType unitType;
 	public TrigActionType actionType;
+	public string subType;
 	public int reward;
 	public int count;
 	public int reqCount;
@@ -60,6 +61,10 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
+			}
+
+			if(actionType == TrigActionType.Effect){
+				subType = commaParser.Consume();
 			}
 
 			//Debug.Log("index : " + commaParser.index + " / length : " + commaParser.origin.Length);

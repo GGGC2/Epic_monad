@@ -201,13 +201,6 @@ public class BattleManager : MonoBehaviour{
 		RemoveAuraEffectFromUnit(unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
         UnitManager.Instance.DeleteDestroyedUnit(unit);
-		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
-			BattleTriggerManager.CheckBattleTrigger(unit, actionType);
-			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
-			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.UnderCount);
-		}else{
-			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
-		}
 
         List<Collectible> collectibles = UnitManager.Instance.GetCollectibles();
         Collectible collectibleToRemove = null;
@@ -278,7 +271,7 @@ public class BattleManager : MonoBehaviour{
 		Camera.main.transform.position = destPos;
 	}
 
-	public void CheckBattleTriggers() {
+	public void CheckTriggers() {
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
         //승리 조건이 충족되었는지 확인
         BattleTriggerManager TrigManager = BattleTriggerManager.Instance;
@@ -591,7 +584,7 @@ public class BattleManager : MonoBehaviour{
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);
-        BattleTriggerManager.CheckPhaseTriggers();
+        BattleTriggerManager.Instance.CountTriggers(TrigActionType.Phase);
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         yield return new WaitForSeconds(0.5f);
 	}

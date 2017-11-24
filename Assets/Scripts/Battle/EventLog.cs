@@ -10,10 +10,14 @@ public class EventLog : Log {
     public List<EffectLog> getEffectLogList() { return effectLogList; }
 
     public override IEnumerator Execute() {
+        BattleTriggerManager TM = BattleTriggerManager.Instance;
         if(this is RestLog){
-            BattleTriggerManager.CheckBattleTrigger(actor, TrigActionType.Rest);
+            TM.CountTriggers(TrigActionType.Rest, actor);
         }else if(this is CastLog){
-            BattleTriggerManager.CheckBattleTrigger(actor, TrigActionType.Cast);
+            TM.CountTriggers(TrigActionType.Cast, actor);
+        }else if(this is MoveLog){
+            MoveLog log = (MoveLog)this;
+            TM.CountTriggers(TrigActionType.Reach, actor, TileManager.Instance.GetTile(log.afterPos));
         }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
@@ -38,13 +42,14 @@ public class BattleStartLog : EventLog {
 
 public class MoveLog : EventLog {
     Vector2 beforePos;
-    Vector2 afterPos;
+    public Vector2 afterPos;
 
     public MoveLog(Unit unit, Vector2 beforePos, Vector2 afterPos) {
         this.actor = unit;
         this.beforePos = beforePos;
         this.afterPos = afterPos;
     }
+
     public override string GetText() {
         return actor.GetNameKor() + " : " + beforePos + "에서 " + afterPos + "(으)로 이동";
     }
@@ -75,7 +80,7 @@ public class ChainLog : EventLog {  // 연계 대기
 }
 
 public class CastLog : EventLog {   // 스킬 사용
-    Casting casting;
+    public Casting casting;
     public CastLog(Casting casting) {
         this.actor = casting.Caster;
         this.casting = casting;
