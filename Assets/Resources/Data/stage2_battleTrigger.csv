@@ -8,5 +8,5 @@ Bonus	동료가 무력화되지 않음	PC	Neutralize	1	12	Reverse
 Bonus	4페이즈 이내에 승리	None	Phase	4	12	Reverse
 Bonus	측면 공격	PC	SideAttack	1	2	Repeat
 Bonus	후면 공격	PC	BackAttack	1	2	Repeat
-Bonus	한번에 2명 이상을 공격	PC	MultiShot	1	5	2	Repeat
+Bonus	한번에 2명 이상을 공격	PC	MultiAttack	1	5	2	Repeat
 Info	Scene#4	One	One			

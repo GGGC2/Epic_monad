@@ -203,7 +203,7 @@ public class UnitManager : MonoBehaviour{
 					}
 				} else if (unit.CheckReach ()) {
 					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-					type = TrigActionType.Reach;
+					type = TrigActionType.ReachPosition;
 				}
 			} else {
 				int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
@@ -217,7 +217,7 @@ public class UnitManager : MonoBehaviour{
 					}
 				} else if (unit.CheckReach ()) {
 					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-                    type = TrigActionType.Reach;
+                    type = TrigActionType.ReachPosition;
 				}
 			}
             if (unitDestroyedLog != null) {

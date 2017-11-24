@@ -19,11 +19,12 @@ public class EventLog : Log {
             //(다른 진영 && 지형지물 아님)인 Target의 수
             int enemyTargetCount = log.casting.Targets.FindAll(unit => unit.GetSide() != actor.GetSide() && !unit.IsObject).Count;
             if(log.casting.Skill.IsChainable() && enemyTargetCount >= 2){
-                TM.CountTriggers(TrigActionType.MultiShot, actor, subType: enemyTargetCount.ToString(), log: log);
+                TM.CountTriggers(TrigActionType.MultiAttack, actor, enemyTargetCount.ToString(), log);
             }
         }else if(this is MoveLog){
             MoveLog log = (MoveLog)this;
-            TM.CountTriggers(TrigActionType.Reach, actor, TileManager.Instance.GetTile(log.afterPos));
+            TM.CountTriggers(TrigActionType.ReachPosition, actor, dest: TileManager.Instance.GetTile(log.afterPos));
+            TM.CountTriggers(TrigActionType.ReachTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log);
         }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {

@@ -1243,6 +1243,8 @@ public class Unit : MonoBehaviour{
 	}
 
 	public bool CheckReach(){
-		return GetTileUnderUnit().IsReachPoint && FindObjectOfType<BattleTriggerManager>().ActiveTriggers.Any(trig => trig.actionType == TrigActionType.Reach);
+		return GetTileUnderUnit().IsReachPosition && BattleTriggerManager.Instance.ActiveTriggers.Any(
+			trig => trig.actionType == TrigActionType.ReachPosition || trig.actionType == TrigActionType.ReachTile
+		);
 	}
 }

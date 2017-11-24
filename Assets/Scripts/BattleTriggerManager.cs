@@ -137,17 +137,17 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public void CountTriggers(TrigActionType actionType, Unit unit = null, Tile dest = null, string subType = "", Log log = null){
+	public void CountTriggers(TrigActionType actionType, Unit unit = null, string subType = "", Log log = null, Tile dest = null){
 		List<BattleTrigger> availableTriggers = ActiveTriggers.FindAll(trig => 
 			CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
 		); //UnitType, ActionType이 일치하고 이미 같은 log로 기록되지 않은 경우
 
 		List<BattleTrigger> targetTriggers;
 		if(dest != null){
-			targetTriggers = availableTriggers.FindAll(trig => dest.IsReachPoint);
+			targetTriggers = availableTriggers.FindAll(trig => dest.IsReachPosition);
 		}else{
 			targetTriggers = availableTriggers.FindAll(trig => CheckSubType(trig, subType));
-		} //Reach의 경우를 예외 처리.
+		} //ReachPosition의 경우를 예외 처리.
 		
 		targetTriggers.ForEach(trig => {
 			trig.units.Add(unit);
@@ -226,7 +226,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	bool CheckSubType(BattleTrigger trigger, string subType){
-		if(trigger.actionType == TrigActionType.MultiShot){
+		if(trigger.actionType == TrigActionType.MultiAttack){
 			return int.Parse(subType) >= int.Parse(trigger.subType);
 		}else{
 			return trigger.subType == subType;

@@ -52,7 +52,7 @@ public class BattleTrigger{
 				}
 			}
 
-			if(actionType == TrigActionType.Reach){
+			if(actionType == TrigActionType.ReachPosition){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
 				for (int i = 0; i < numberOfTiles; i++){
@@ -61,7 +61,7 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
-			}else if(actionType == TrigActionType.Effect || actionType == TrigActionType.MultiShot){
+			}else if(actionType == TrigActionType.Effect || actionType == TrigActionType.MultiAttack || actionType == TrigActionType.ReachTile){
 				subType = commaParser.Consume();
 			}
 
@@ -78,7 +78,7 @@ public class BattleTrigger{
 				}else if(code == "Extra"){
 					extra = true;
 				}else{
-					Debug.LogError("Invalid parsing : index " + commaParser.index + " / " + code);
+					Debug.LogError("Invalid subType : index " + commaParser.index + " / " + code);
 				}
 			}
 		}

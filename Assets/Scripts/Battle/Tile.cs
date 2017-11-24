@@ -13,7 +13,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	public Element element;
 	public int APAtStandardHeight;
 	public int height;
-	string displayName;
+	public string displayName;
 	public Vector2 position;
 	public Vector3 realPosition {
 		get { return transform.position; }
@@ -21,7 +21,7 @@ public class Tile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 	Unit unitOnTile = null;
 	public SpriteRenderer sprite;
 	public GameObject highlightWall;
-	public bool IsReachPoint{
+	public bool IsReachPosition{
 		get{
 			return highlightWall.activeSelf && BattleData.tutorialManager == null;
 		}

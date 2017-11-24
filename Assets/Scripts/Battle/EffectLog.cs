@@ -43,7 +43,7 @@ public class HPChangeLog : EffectLog {
 
         //같은 편을 공격
 		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
-            BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendShot, caster);
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendAttack, caster);
         }
 
         yield return null;
@@ -149,7 +149,7 @@ public class DestroyUnitLog : EffectLog {
         case TrigActionType.Retreat:
             text += "퇴각";
             break;
-        case TrigActionType.Reach:
+        case TrigActionType.ReachPosition:
             text += "목표지점 도달";
             break;
         }
