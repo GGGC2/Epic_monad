@@ -9,5 +9,5 @@ Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	
 8	결계석	controller	Enemy	15	7	LeftUp	249	0	3	71	1	Magic	None	None	true	false	false	0		
 9	PCgrenev	grenev	Ally	2	6	RightDown	0	0	0	0	0	None	None	None	false	false	false	0		
 10	PCarcadia	arcadia	Ally	1	7	RightDown	0	0	0	0	0	None	None	None	false	false	false	0		
-11	PCnoel	noel	Ally	2	8	RightDown	0	0	0	0	0	None	None	None	false	false	false	1	CurrentAP	50
+11	PCnoel	noel	Ally	2	8	RightDown	0	0	0	0	0	None	None	None	false	false	false	0
 12	PCdarkenir	darkenir	Ally	2	7	RightDown	0	0	0	0	0	None	None	None	false	false	false	1	CurrentAP	5
