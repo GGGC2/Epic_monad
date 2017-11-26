@@ -19,11 +19,13 @@ public class Casting {
 		Tile pivotTile = new Tile();
 		RangeForm rangeForm = skill.GetSecondRangeForm();
 
-		// if (rangeForm == RangeForm.Sector) {
-		// 	pivotTile = location.TargetTile;
-		// }
-
-		pivotTile = location.TargetTile;
+		if (rangeForm == RangeForm.Sector && skill.GetSecondMinReach() > 0) {
+			Vector2 pos = location.TargetPos + Utility.ToVector2 (location.Direction);
+			pivotTile = BattleData.tileManager.GetTile(pos);
+		}
+		else {
+			pivotTile = location.TargetTile;
+		}
 
 		return pivotTile;
 	}
