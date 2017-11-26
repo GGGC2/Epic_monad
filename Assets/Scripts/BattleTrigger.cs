@@ -8,11 +8,10 @@ public class BattleTrigger{
 	public TrigResultType resultType;
 	public TrigUnitType unitType;
 	public TrigActionType actionType;
-	public string subType;
+	public string subType = "";
 	public int reward;
 	public int count;
 	public int reqCount;
-
 	
 	public bool reverse; //일반적인 경우와 반대로, 달성된 상태로 시작해서 조건부로 해제되는 것들. 예) n페이즈 이내 승리
 	public bool repeatable;
@@ -29,6 +28,7 @@ public class BattleTrigger{
 	public TriggerRelation loseTriggerRelation;
 
     public List<Unit> units = new List<Unit>(); // 이 trigger를 count시킨 유닛들
+	public List<Log> logs = new List<Log>(); // 이 trigger를 count시킨 로그들
 
 	public BattleTrigger(string data, TrigResultType resultType, StringParser commaParser){
         // BattleTriggerFactory에서 commaParser를 이용해 ResultType은 파싱해놓은 상태
@@ -52,7 +52,7 @@ public class BattleTrigger{
 				}
 			}
 
-			if(actionType == TrigActionType.Reach){
+			if(actionType == TrigActionType.ReachPosition){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
 				for (int i = 0; i < numberOfTiles; i++){
@@ -61,9 +61,7 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
-			}
-
-			if(actionType == TrigActionType.Effect){
+			}else if(actionType == TrigActionType.Effect || actionType == TrigActionType.MultiAttack || actionType == TrigActionType.ReachTile){
 				subType = commaParser.Consume();
 			}
 
@@ -73,7 +71,6 @@ public class BattleTrigger{
 				if(code == ""){
 					break;
 				}else if(code == "Reverse"){
-					//Debug.Log(korName + " is Default trigger.");
 					reverse = true;
 					acquired = true;
 				}else if(code == "Repeat"){
@@ -81,7 +78,7 @@ public class BattleTrigger{
 				}else if(code == "Extra"){
 					extra = true;
 				}else{
-					Debug.LogError("Invalid parsing : index " + commaParser.index + " / " + code);
+					Debug.LogError("Invalid subType : index " + commaParser.index + " / " + code);
 				}
 			}
 		}

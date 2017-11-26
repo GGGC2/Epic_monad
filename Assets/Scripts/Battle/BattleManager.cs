@@ -603,7 +603,11 @@ public class BattleManager : MonoBehaviour{
 
 	// 승/패 조건과 관련된 타일을 하이라이트 처리
 	void HighlightBattleTriggerTiles(){
-		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().triggers.FindAll(bt => bt.actionType == TrigActionType.Reach);
+		List<BattleTrigger> tileTriggers = BattleTriggerManager.Instance.triggers.FindAll(
+			bt => (bt.actionType == TrigActionType.ReachPosition || bt.actionType == TrigActionType.ReachTile)
+			&& (bt.resultType == TrigResultType.Win || bt.resultType == TrigResultType.Lose)
+		);
+
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
 		});

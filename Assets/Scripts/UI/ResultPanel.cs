@@ -34,7 +34,6 @@ public class ResultPanel : MonoBehaviour{
 		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
 		
 		foreach(var trig in scoreTriggers){
-			Debug.Log("Writing trigger info : " + trig.korName + "...");
 			BattleData.rewardPoint += trig.reward;
 			TriggerIndex.text += trig.korName + " " + MultiplierText(trig) + "\n";
 

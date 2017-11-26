@@ -121,8 +121,8 @@ public class Utility : MonoBehaviour {
 		if (target == null || target.IsObject) return 1.0f;
 		
 		float deltaDegreeAtAttack = GetDegreeAtAttack(unit, target);
-		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return 1.25f;
-		else if ((deltaDegreeAtAttack < 135) || (deltaDegreeAtAttack > 225)) return 1.1f;
+		if ((deltaDegreeAtAttack < 45) || (deltaDegreeAtAttack > 315)) return Setting.backAttackBonus;
+		else if ((deltaDegreeAtAttack < 135) || (deltaDegreeAtAttack > 225)) return Setting.sideAttackBonus;
 		else return 1.0f;
 	}
 	

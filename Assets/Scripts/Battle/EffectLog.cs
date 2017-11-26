@@ -41,9 +41,12 @@ public class HPChangeLog : EffectLog {
         else if(result < 0)     target.currentHealth = 0;
         else                    target.currentHealth = result;
 
-        //같은 편을 공격
-		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
-            BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendShot, caster);
+        if(amount < 0){
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damaged, target);
+            //같은 편을 공격하는 경우
+            if(caster != null && caster.myInfo.side == target.myInfo.side){
+                BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendAttack, caster);
+            }
         }
 
         yield return null;
@@ -149,7 +152,7 @@ public class DestroyUnitLog : EffectLog {
         case TrigActionType.Retreat:
             text += "퇴각";
             break;
-        case TrigActionType.Reach:
+        case TrigActionType.ReachPosition:
             text += "목표지점 도달";
             break;
         }
@@ -439,6 +442,15 @@ public class PrintBonusTextLog : EffectLog {
             break;
         case "DirectionSide":
             uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
+            Unit actor = BattleData.selectedUnit;
+            if(actor.GetSide() == Side.Ally && !actor.IsAI){
+                if(amount == Setting.sideAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.SideAttack, actor);
+                }else if(amount == Setting.backAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.BackAttack, actor);
+                }
+            }
+            
             break;
         case "Celestial":
             uiManager.PrintCelestialBonus(amount);

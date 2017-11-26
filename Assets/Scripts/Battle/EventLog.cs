@@ -15,9 +15,16 @@ public class EventLog : Log {
             TM.CountTriggers(TrigActionType.Rest, actor);
         }else if(this is CastLog){
             TM.CountTriggers(TrigActionType.Cast, actor);
+            CastLog log = (CastLog)this;
+            //(다른 진영 && 지형지물 아님)인 Target의 수
+            int enemyTargetCount = log.casting.Targets.FindAll(unit => unit.GetSide() != actor.GetSide() && !unit.IsObject).Count;
+            if(log.casting.Skill.IsChainable() && enemyTargetCount >= 2){
+                TM.CountTriggers(TrigActionType.MultiAttack, actor, enemyTargetCount.ToString(), log);
+            }
         }else if(this is MoveLog){
             MoveLog log = (MoveLog)this;
-            TM.CountTriggers(TrigActionType.Reach, actor, TileManager.Instance.GetTile(log.afterPos));
+            TM.CountTriggers(TrigActionType.ReachPosition, actor, dest: TileManager.Instance.GetTile(log.afterPos));
+            TM.CountTriggers(TrigActionType.ReachTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log);
         }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
@@ -86,9 +93,8 @@ public class CastLog : EventLog {   // 스킬 사용
         this.casting = casting;
     }
     public override string GetText() {
-        Unit caster = casting.Caster;
         ActiveSkill activeSkill = casting.Skill;
-        return caster.GetNameKor() + " : " + activeSkill.GetName() + " 사용";
+        return actor.GetNameKor() + " : " + activeSkill.GetName() + " 사용";
     }
     public bool isLastTarget(DisplayDamageOrHealTextLog log) {
         List<Tile> realEffectRange = casting.RealEffectRange;
