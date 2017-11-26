@@ -1,21 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enums;
 
 public class Casting {
 	Unit caster;
 	ActiveSkill skill;
 	SkillLocation location;
+	Tile pivotPos;
+
 	public Casting(Unit caster, ActiveSkill skill, SkillLocation location){
 		this.caster = caster;
 		this.skill = skill;
 		this.location = location;
+		this.pivotPos = GetPivotPos(skill, location);
+	}
+	public Tile GetPivotPos(ActiveSkill skill, SkillLocation location) {
+		Tile pivotTile = new Tile();
+		RangeForm rangeForm = skill.GetSecondRangeForm();
+
+		// if (rangeForm == RangeForm.Sector) {
+		// 	pivotTile = location.TargetTile;
+		// }
+
+		pivotTile = location.TargetTile;
+
+		return pivotTile;
 	}
 	public Unit Caster{
 		get { return caster; }
 	}
 	public ActiveSkill Skill{
 		get { return skill; }
+	}
+	public Vector3 PivotPos{
+		get { return pivotPos.realPosition; }
 	}
 	public SkillLocation Location{
 		get { return location; }

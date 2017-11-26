@@ -34,6 +34,7 @@ public class ActiveSkill : Skill{
 	public string visualEffectName;
 	public EffectVisualType effectVisualType;
 	public EffectMoveType effectMoveType;
+	public bool effectDirectionality;
 
 	// 효과음
 	public string soundEffectName;
@@ -72,6 +73,7 @@ public class ActiveSkill : Skill{
 		visualEffectName = commaParser.Consume();
 		effectVisualType = commaParser.ConsumeEnum<EffectVisualType>();
 		effectMoveType = commaParser.ConsumeEnum<EffectMoveType>();
+		effectDirectionality = commaParser.ConsumeBool();
 
 		soundEffectName = commaParser.Consume ();
 
