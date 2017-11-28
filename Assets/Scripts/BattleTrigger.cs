@@ -6,8 +6,10 @@ using Enums;
 public class BattleTrigger{
 	public bool acquired;
 	public TrigResultType result;
-	public TrigUnitType unitType;
-	public TrigActionType actionType;
+	public TrigActionType action;
+	public TrigUnitType target;
+	public TrigUnitType actor;
+
 	public string subType = "";
 	public int reward;
 	public int count;
@@ -16,14 +18,8 @@ public class BattleTrigger{
 	public bool reverse; //일반적인 경우와 반대로, 달성된 상태로 시작해서 조건부로 해제되는 것들. 예) n페이즈 이내 승리
 	public bool repeatable;
 
-	//범용 코드로 다룰 수 없는 트리거. 달성 여부는 게임에서 승리할 때 확인한다.
-	public bool extra{ 
-		get{
-			return actionType == TrigActionType.None && unitType == TrigUnitType.None;
-		}
-	}
-
-	public List<string> targetUnitNames;
+	public List<string> targetUnitNames = new List<string>();
+	public List<string> actorUnitNames = new List<string>();
 	public List<Vector2> targetTiles = new List<Vector2>();
 	public string nextSceneIndex;
 	public string korName;
@@ -43,22 +39,13 @@ public class BattleTrigger{
 			winTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
 			loseTriggerRelation = commaParser.ConsumeEnum<TriggerRelation>();
 		}else{
-			korName = commaParser.Consume();
-			unitType = commaParser.ConsumeEnum<TrigUnitType>();
-			actionType = commaParser.ConsumeEnum<TrigActionType>();
 			reqCount = commaParser.ConsumeInt();
 			reward = commaParser.ConsumeInt();
+			korName = commaParser.Consume();
+			action = commaParser.ConsumeEnum<TrigActionType>();
+			//여기까지는 Info를 제외한 모든 트리거에 필요한 정보
 
-			if(unitType == TrigUnitType.Target){
-				int targetCount = commaParser.ConsumeInt();
-				targetUnitNames = new List<string>();
-				for (int i = 0; i < targetCount; i++){
-					string targetUnitName = commaParser.Consume();
-					targetUnitNames.Add(targetUnitName);
-				}
-			}
-
-			if(actionType == TrigActionType.ReachPosition){
+			if(action == TrigActionType.ReachPosition){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
 				for (int i = 0; i < numberOfTiles; i++){
@@ -67,8 +54,22 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
-			}else if(actionType == TrigActionType.Effect || actionType == TrigActionType.MultiAttack || actionType == TrigActionType.ReachTile){
+			}else if(action == TrigActionType.Effect || action == TrigActionType.MultiAttack || action == TrigActionType.ReachTile){
 				subType = commaParser.Consume();
+			}
+
+			if(action != TrigActionType.Extra){
+				target = commaParser.ConsumeEnum<TrigUnitType>();
+				if(target == TrigUnitType.Name){
+					targetUnitNames = GetNameList(commaParser);
+				}
+
+				if(action == TrigActionType.Neutralize || action == TrigActionType.Kill || action == TrigActionType.Retreat){
+					actor = commaParser.ConsumeEnum<TrigUnitType>();
+					if(actor == TrigUnitType.Name){
+						actorUnitNames = GetNameList(commaParser);
+					}		
+				}
 			}
 
 			//Debug.Log("index : " + commaParser.index + " / length : " + commaParser.origin.Length);
@@ -87,6 +88,18 @@ public class BattleTrigger{
 			}
 		}
 	}
+
+	List<string> GetNameList(StringParser commaParser){
+		int targetCount = commaParser.ConsumeInt();
+		List<string> result = new List<string>();
+		for (int i = 0; i < targetCount; i++){
+			string unitName = commaParser.Consume();
+			result.Add(unitName);
+		}
+
+		return result;
+	}
+
     public virtual void Trigger() {
 
     }

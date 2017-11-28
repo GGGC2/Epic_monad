@@ -163,9 +163,8 @@ public class DestroyUnitLog : EffectLog {
         BattleManager BM = BattleManager.Instance;
         yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
 
-        BattleTriggerManager.Instance.CountTriggers(actionType, unit);
-		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit);
-        BattleTriggerManager.Instance.CountTriggers(TrigActionType.NeutralizedBy, unit, BattleData.turnUnit.GetNameEng());
+        BattleTriggerManager.Instance.CountTriggers(actionType, unit, actor: BattleData.turnUnit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit, actor: BattleData.turnUnit);
 		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }

@@ -37,7 +37,7 @@ public class BattleTriggerManager : MonoBehaviour {
             trigger.Trigger();
         }
 
-		if(trigger.actionType == TrigActionType.UnderCount){
+		if(trigger.action == TrigActionType.UnderCount){
 			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
 				ActivateTrigger(trigger);
 			}
@@ -73,7 +73,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	//게임 종료시에 한꺼번에 체크해야 하는 트리거.
 	void CheckExtraTriggersAtWinGame(){
-		List<BattleTrigger> exTrigs = triggers.FindAll(trig => trig.extra);
+		List<BattleTrigger> exTrigs = triggers.FindAll(trig => trig.action == TrigActionType.Extra);
 		if(exTrigs.Count != 0){
 			if(SceneData.stageNumber == 1){
 				List<HPChangeLog> TargetLogs = LogsOfType<HPChangeLog>().FindAll(log =>
@@ -152,10 +152,10 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public void CountTriggers(TrigActionType actionType, Unit unit = null, string subType = "", Log log = null, Tile dest = null){
+	public void CountTriggers(TrigActionType actionType, Unit target = null, string subType = "", Unit actor = null, Log log = null, Tile dest = null){
 		List<BattleTrigger> availableTriggers = ActiveTriggers.FindAll(trig => 
-			CheckUnitType(trig, unit) && CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
-		); //UnitType, ActionType이 일치하고 이미 같은 log로 기록되지 않은 경우
+			CheckUnitType(trig, target) && CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
+		); //UnitType, ActionType이 일치하고 && 아직 해당 log에 의해 기록되지 않은 경우
 
 		List<BattleTrigger> targetTriggers;
 		if(dest != null){
@@ -165,7 +165,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		} //ReachPosition의 경우를 예외 처리.
 		
 		targetTriggers.ForEach(trig => {
-			trig.units.Add(unit);
+			trig.units.Add(target);
 			if(log != null){
 				trig.logs.Add(log);
 			}
@@ -219,31 +219,32 @@ public class BattleTriggerManager : MonoBehaviour {
 		return result;
 	}
 
-	public bool CheckUnitType(BattleTrigger trigger, Unit unit){
-		if(unit == null){ //TrigActionType.Phase 등 명시적인 행위주체가 없는 경우
-			return true;
-		}else if (trigger.unitType == TrigUnitType.Target && trigger.targetUnitNames.Any (x => x.Equals(unit.GetNameEng())))
-			return true;
-		else if(trigger.unitType == TrigUnitType.Ally && unit.GetSide() == Side.Ally)
-			return true;
-		else if(trigger.unitType == TrigUnitType.Enemy && unit.GetSide() == Side.Enemy)
-			return true;
-		else if(trigger.unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
-			return true;
-		else if(trigger.unitType == TrigUnitType.NeutralChar && unit.IsObject == false && unit.GetSide() == Side.Neutral)
-			return true;
-		else if(trigger.unitType == TrigUnitType.AllyNPC && unit.IsAllyNPC)
-			return true;
-		else
-			return false;
+	public bool CheckUnitType(BattleTrigger trigger, Unit unit, bool actor = false){
+		/*if(trigger.target == TrigUnitType.Name){
+			Debug.Log(trigger.korName + "'s nameList.Count : " + trigger.targetUnitNames.Count);
+		}*/
+		TrigUnitType unitType = trigger.target;
+		List<string> names = trigger.targetUnitNames;
+		if(actor){
+			unitType = trigger.actor;
+			names = trigger.actorUnitNames;
+		}
+
+		return (unit == null || unitType == TrigUnitType.Any) //TrigActionType.Phase 등 명시적인 행위주체가 없는 경우
+			|| (unitType == TrigUnitType.Name && names.Any (x => x.Equals(unit.GetNameEng())))
+			|| (unitType == TrigUnitType.Ally && unit.GetSide() == Side.Ally)
+			|| (unitType == TrigUnitType.Enemy && unit.GetSide() == Side.Enemy)
+			|| (unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
+			|| (unitType == TrigUnitType.NeutralChar && unit.IsObject == false && unit.GetSide() == Side.Neutral)
+			|| (unitType == TrigUnitType.AllyNPC && unit.IsAllyNPC);
 	}
 
 	bool CheckActionType(BattleTrigger trigger, TrigActionType actionType){
-		return trigger.actionType == actionType;
+		return trigger.action == actionType;
 	}
 
 	bool CheckSubType(BattleTrigger trigger, string subType){
-		if(trigger.actionType == TrigActionType.MultiAttack){
+		if(trigger.action == TrigActionType.MultiAttack){
 			return int.Parse(subType) >= int.Parse(trigger.subType);
 		}else{
 			return trigger.subType == subType;

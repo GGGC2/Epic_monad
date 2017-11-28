@@ -1245,7 +1245,7 @@ public class Unit : MonoBehaviour{
 
 	public bool CheckReach(){
 		return GetTileUnderUnit().IsReachPosition && BattleTriggerManager.Instance.ActiveTriggers.Any(
-			trig => trig.actionType == TrigActionType.ReachPosition || trig.actionType == TrigActionType.ReachTile
+			trig => trig.action == TrigActionType.ReachPosition || trig.action == TrigActionType.ReachTile
 		);
 	}
 }
