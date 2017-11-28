@@ -38,7 +38,7 @@ public class BaseSkillLogic
 	}
 
 	public virtual int CalculateAP(List<Tile> selectedTiles){
-		int requireAP = BattleData.selectedUnit.GetActualRequireSkillAP(BattleData.selectedSkill);
+		int requireAP = BattleData.turnUnit.GetActualRequireSkillAP(BattleData.selectedSkill);
 		return requireAP;
 	}
 

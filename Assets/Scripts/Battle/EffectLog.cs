@@ -165,6 +165,7 @@ public class DestroyUnitLog : EffectLog {
 
         BattleTriggerManager.Instance.CountTriggers(actionType, unit);
 		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit);
+        BattleTriggerManager.Instance.CountTriggers(TrigActionType.NeutralizedBy, unit, BattleData.turnUnit.GetNameEng());
 		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }
@@ -442,7 +443,7 @@ public class PrintBonusTextLog : EffectLog {
             break;
         case "DirectionSide":
             uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
-            Unit actor = BattleData.selectedUnit;
+            Unit actor = BattleData.turnUnit;
             if(actor.GetSide() == Side.Ally && !actor.IsAI){
                 if(amount == Setting.sideAttackBonus){
                     BattleTriggerManager.Instance.CountTriggers(TrigActionType.SideAttack, actor);

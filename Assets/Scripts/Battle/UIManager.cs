@@ -105,7 +105,7 @@ public class UIManager : MonoBehaviour{
 			}if(Input.GetKeyDown(KeyCode.Alpha8)){
 				StartCoroutine(actionButtons[7].OnClick());
 			}if(Input.GetKeyDown(KeyCode.Q)){
-				StartCoroutine(actionButtons[BattleData.selectedUnit.activeSkillList.Count].OnClick());
+				StartCoroutine(actionButtons[BattleData.turnUnit.activeSkillList.Count].OnClick());
 			}
 		}
 	}
@@ -377,7 +377,7 @@ public class UIManager : MonoBehaviour{
 
 	public void SetActionButtons(){
 		skillViewer.gameObject.SetActive(false);
-		Unit unit = BattleData.selectedUnit;
+		Unit unit = BattleData.turnUnit;
 		for (int i = 0; i < 8; i++) {
 			// actionButtons [i].icon.sprite = Resources.Load<Sprite> ("transparent");
 			actionButtons [i].Absent();
@@ -398,7 +398,7 @@ public class UIManager : MonoBehaviour{
 		}
 	}
     public void AddCollectableActionButton() {
-        Unit unit = BattleData.selectedUnit;
+        Unit unit = BattleData.turnUnit;
         ActionButton button = actionButtons[unit.activeSkillList.Count + 1];
         button.type = ActionButtonType.Collect;
         button.Activate(true);

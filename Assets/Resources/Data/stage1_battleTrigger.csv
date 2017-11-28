@@ -3,7 +3,7 @@ Win	모든 적 무력화	Enemy	Neutralize	0	30
 Lose	동료 유닛의 무력화	PC	Neutralize	1	0
 Bonus	3페이즈 이내에 승리	None	Phase	3	20	Reverse
 Bonus	2페이즈 이내에 승리	None	Phase	2	10	Reverse
-Bonus	동료 1명 이상이 피해를 입지 않음	None	None	0	20	Extra
+Bonus	동료 1명 이상이 피해를 입지 않음	None	None	1	20
 Bonus	루키어스가 휴식	Target	Rest	1	3	1	lucius
 Bonus	동료끼리 피해를 주지 않음	PC	FriendShot	1	7	Reverse
 Bonus	레이나만 스킬을 사용	Target	Cast	1	7	1	lucius	Reverse

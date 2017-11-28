@@ -41,8 +41,8 @@ namespace Enums {
 	public enum SkillType{ Point, Route, Auto, Self }
 	//트리거 관련
 	public enum TrigResultType{Win, Lose, Bonus, Trigger, Info}
-	public enum TrigUnitType{Target, Ally, Enemy, NeutralChar, None, PC}
-	public enum TrigActionType{Neutralize, ReachPosition, ReachTile, Phase, Kill, Retreat, UnderCount, Rest,
+	public enum TrigUnitType{Target, Ally, AllyNPC, Enemy, NeutralChar, None, PC}
+	public enum TrigActionType{Neutralize, NeutralizedBy, ReachPosition, ReachTile, Phase, Kill, Retreat, UnderCount, Rest,
 	FriendAttack, Cast, Effect, SideAttack, BackAttack, MultiAttack, Damaged, None}
     public enum ActionButtonType { Skill, Standby, Rest, Collect, Absent };
     public enum Stat

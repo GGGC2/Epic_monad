@@ -75,8 +75,8 @@ public class LogManager : MonoBehaviour {
         unitManager.UpdateStatsAtActionEnd();
         unitManager.UpdateHealthViewersAtActionEnd();
         UnitManager.Instance.UpdateUnitOrder();
-        if (BattleData.selectedUnit != null)
-            FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);
+        if (BattleData.turnUnit != null)
+            FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.turnUnit);
     }
     IEnumerator ExecuteLastEventLog() {
         do {

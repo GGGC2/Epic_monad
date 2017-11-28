@@ -360,7 +360,7 @@ namespace Battle.Turn{
 
 			yield return MoveWithDestroyRoutine (destTile);
 			state = State.StandbyOrRest;
-			if (BattleData.selectedUnit.CheckReach ()) {
+			if (BattleData.turnUnit.CheckReach ()) {
 				state = State.Dead;
 				BattleData.currentState = CurrentState.Destroyed;
 			}

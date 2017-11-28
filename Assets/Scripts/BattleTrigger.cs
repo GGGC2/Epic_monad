@@ -5,7 +5,7 @@ using Enums;
 
 public class BattleTrigger{
 	public bool acquired;
-	public TrigResultType resultType;
+	public TrigResultType result;
 	public TrigUnitType unitType;
 	public TrigActionType actionType;
 	public string subType = "";
@@ -15,7 +15,13 @@ public class BattleTrigger{
 	
 	public bool reverse; //일반적인 경우와 반대로, 달성된 상태로 시작해서 조건부로 해제되는 것들. 예) n페이즈 이내 승리
 	public bool repeatable;
-	public bool extra; //구조상 따로 확인하지 않다가 게임이 종료될 때 한꺼번에 체크해야 하는 것들.
+
+	//범용 코드로 다룰 수 없는 트리거. 달성 여부는 게임에서 승리할 때 확인한다.
+	public bool extra{ 
+		get{
+			return actionType == TrigActionType.None && unitType == TrigUnitType.None;
+		}
+	}
 
 	public List<string> targetUnitNames;
 	public List<Vector2> targetTiles = new List<Vector2>();
@@ -75,8 +81,6 @@ public class BattleTrigger{
 					acquired = true;
 				}else if(code == "Repeat"){
 					repeatable = true;
-				}else if(code == "Extra"){
-					extra = true;
 				}else{
 					Debug.LogError("Invalid subType : index " + commaParser.index + " / " + code);
 				}
@@ -108,7 +112,7 @@ class BattleTriggerFactory {
             }
         }
         if(trigger != null)
-            trigger.resultType = resultType;
+            trigger.result = resultType;
         return trigger;
     }
 }

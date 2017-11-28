@@ -10,7 +10,7 @@ using Battle.Damage;
 namespace Battle.Turn {
     public class SkillAndChainStates {
         private static IEnumerator UpdateRangeSkillMouseDirection() {
-            Unit selectedUnit = BattleData.selectedUnit;
+            Unit selectedUnit = BattleData.turnUnit;
 			Tile targetTile = selectedUnit.GetTileUnderUnit ();
 			Vector2 unitPos = selectedUnit.GetPosition ();
             ActiveSkill selectedSkill = BattleData.selectedSkill;
@@ -28,7 +28,7 @@ namespace Battle.Turn {
 					BattleData.tileManager.DepaintAllTiles (TileColor.Blue);
 					HidePreviewDamage();
 
-					BattleData.selectedUnit.SetDirection(newDirection);
+					BattleData.turnUnit.SetDirection(newDirection);
 
 					var selectedTilesByNewDirection = selectedSkill.GetTilesInFirstRange (unitPos, newDirection);
 					BattleData.tileManager.PaintTiles(selectedTilesByNewDirection, TileColor.Red);
@@ -43,15 +43,15 @@ namespace Battle.Turn {
 						DisplayPreviewDamage (casting);
 				}
 				yield return null;
-				if(BattleData.selectedUnit != null){
-					newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, selectedUnit.GetDirection());
+				if(BattleData.turnUnit != null){
+					newDirection = Utility.GetMouseDirectionByUnit (BattleData.turnUnit, selectedUnit.GetDirection());
 				}
             }
         }
 
         public static IEnumerator SelectSkillApplyDirection(Direction originalDirection) {
             Direction beforeDirection = originalDirection;
-            Unit selectedUnit = BattleData.selectedUnit;
+            Unit selectedUnit = BattleData.turnUnit;
             ActiveSkill selectedSkill = BattleData.selectedSkill;
             LogManager logManager = LogManager.Instance;
 
@@ -114,35 +114,35 @@ namespace Battle.Turn {
 
 		public static IEnumerator SkillSelected(){
 			ActiveSkill selectedSkill = BattleData.selectedSkill;
-			UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.selectedUnit, selectedSkill.GetRequireAP());
+			UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().PreviewAp(BattleData.turnUnit, selectedSkill.GetRequireAP());
             SkillType skillTypeOfSelectedSkill = selectedSkill.GetSkillType();
             if (skillTypeOfSelectedSkill == SkillType.Auto ||
                 skillTypeOfSelectedSkill == SkillType.Self ||
                 skillTypeOfSelectedSkill == SkillType.Route) {
                 BattleData.currentState = CurrentState.SelectSkillApplyDirection;
-                yield return BattleManager.Instance.StartCoroutine(SelectSkillApplyDirection(BattleData.selectedUnit.GetDirection()));
+                yield return BattleManager.Instance.StartCoroutine(SelectSkillApplyDirection(BattleData.turnUnit.GetDirection()));
             }else{
                 BattleData.currentState = CurrentState.SelectSkillApplyPoint;
-                yield return BattleManager.Instance.StartCoroutine(SelectSkillApplyPoint(BattleData.selectedUnit.GetDirection()));
+                yield return BattleManager.Instance.StartCoroutine(SelectSkillApplyPoint(BattleData.turnUnit.GetDirection()));
             }
         }
 		
         private static IEnumerator UpdatePointSkillMouseDirection(Direction originalDirection) {
-			Unit selectedUnit = BattleData.selectedUnit;
+			Unit selectedUnit = BattleData.turnUnit;
 			ActiveSkill selectedSkill = BattleData.selectedSkill;
 			Vector2 unitPos = selectedUnit.GetPosition ();
 
 			Tile previousTargetTile = null;
 			TileManager.Instance.preSelectedMouseOverTile = null;
-			Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.selectedUnit, originalDirection);
+			Direction beforeDirection = Utility.GetMouseDirectionByUnit(BattleData.turnUnit, originalDirection);
 
 			unitPreviewDict = new Dictionary<Unit, PreviewState>();
 
 			while (true) {
-				Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.selectedUnit, originalDirection);
+				Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.turnUnit, originalDirection);
 				if (beforeDirection != newDirection) {
 					beforeDirection = newDirection;
-					BattleData.selectedUnit.SetDirection (newDirection);
+					BattleData.turnUnit.SetDirection (newDirection);
 				}
 
 				Tile newTargetTile = TileManager.Instance.preSelectedMouseOverTile;
@@ -178,11 +178,11 @@ namespace Battle.Turn {
 
         public static IEnumerator SelectSkillApplyPoint (Direction originalDirection) {
             Direction beforeDirection = originalDirection;
-            Unit selectedUnit = BattleData.selectedUnit;
+            Unit selectedUnit = BattleData.turnUnit;
             LogManager logManager = LogManager.Instance;
             
             while (BattleData.currentState == CurrentState.SelectSkillApplyPoint) {
-                Vector2 selectedUnitPos = BattleData.selectedUnit.GetPosition();
+                Vector2 selectedUnitPos = BattleData.turnUnit.GetPosition();
 
                 List<Tile> activeRange = new List<Tile>();
                 ActiveSkill selectedSkill = BattleData.selectedSkill;

@@ -157,6 +157,7 @@ public class UnitDestroyedLog : EventLog {
     List<Unit> units;
     TrigActionType actionType;
     public UnitDestroyedLog(List<Unit> units) {
+        actor = BattleData.turnUnit;
         this.units = units;
     }
     public override string GetText() {

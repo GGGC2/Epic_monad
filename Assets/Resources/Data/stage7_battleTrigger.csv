@@ -1,4 +1,6 @@
 ﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
 Win	적을 2명 이하로 만들기	Enemy	UnderCount	2	300
 Lose	제이선과 트리아나가 무력화	Target	Neutralize	2	0	2	json	triana
+Bonus	병사 생존	None	None	1	5	Repeat
+Bonus	병사가 적을 무력화	Enemy	NeutralizedBy	1	5	Repeat
 Info	Scene#14	One	One

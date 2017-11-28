@@ -33,7 +33,7 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public void CountBattleTrigger(BattleTrigger trigger) {
-        if (trigger.resultType == TrigResultType.Trigger) {
+        if (trigger.result == TrigResultType.Trigger) {
             trigger.Trigger();
         }
 
@@ -57,7 +57,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		if(trigger.acquired == trigger.reverse){
 			trigger.acquired = !trigger.reverse;
 			Debug.Log ("Trigger Activated : " + trigger.korName + " / " + trigger.acquired);
-            if (trigger.resultType == TrigResultType.Lose) {
+            if (trigger.result == TrigResultType.Lose) {
                 Debug.Log("Mission FAIL : " + trigger.korName);
                 LoadLoseScene();
             }
@@ -77,9 +77,10 @@ public class BattleTriggerManager : MonoBehaviour {
 		if(exTrigs.Count != 0){
 			if(SceneData.stageNumber == 1){
 				List<HPChangeLog> TargetLogs = LogsOfType<HPChangeLog>().FindAll(log =>
-					(log.target.GetNameEng() == "reina" || log.target.GetNameEng() == "lucius") && log.amount < 0);
+					(log.target.GetNameEng() == "reina" || log.target.GetNameEng() == "lucius") && log.amount < 0
+				);
 				if(!TargetLogs.Any(log => log.target.GetNameEng() == "lucius") || !TargetLogs.Any(log => log.target.GetNameEng() == "reina")){
-					exTrigs[0].acquired = true; //한 명이라도 피해를 입지 않았으면 발동
+					CountBattleTrigger(exTrigs[0]); //한 명이라도 피해를 입지 않았으면 발동
 				}
 			}else if(SceneData.stageNumber == 2){
 				List<ActiveSkill> usedSkills = new List<ActiveSkill>();
@@ -89,8 +90,22 @@ public class BattleTriggerManager : MonoBehaviour {
 					}
 				});
 				if(usedSkills.Count >= 7){
-					exTrigs[0].acquired = true; //7가지 이상 기술을 사용했으면 발동
+					CountBattleTrigger(exTrigs[0]); //7가지 이상 기술을 사용했으면 발동
 				}
+			}else if(SceneData.stageNumber == 5){
+				List<Unit> DamagedPC = new List<Unit>();
+				LogsOfType<HPChangeLog>().ForEach(log => {
+					if(log.target.IsPC && !DamagedPC.Any(unit => unit == log.target)){
+						DamagedPC.Add(log.target);
+					}
+				}); //피해를 입은 PC 명단(List)
+				if(DamagedPC.Count <= 1){ //1명 이하일 때 발동
+					CountBattleTrigger(exTrigs[0]);
+				}
+			}else if(SceneData.stageNumber == 7){
+				UnitManager.Instance.GetAllUnits().FindAll(unit => unit.GetSide() == Side.Ally && unit.IsAI).ForEach(unit => {
+					CountBattleTrigger(exTrigs[0]);
+				}); //남은 유닛 중 동료 NPC 1명마다 적용
 			}
 		}
 	}
@@ -125,7 +140,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		resultPanel.gameObject.SetActive(false);
 
 		triggers = Parser.GetParsedData<BattleTrigger>();
-		nextScriptName = triggers.Find(x => x.resultType == TrigResultType.Info).nextSceneIndex;
+		nextScriptName = triggers.Find(x => x.result == TrigResultType.Info).nextSceneIndex;
 
         if (FindObjectOfType<ConditionPanel>() != null) {
             FindObjectOfType<CameraMover>().SetMovable(false);
@@ -161,19 +176,19 @@ public class BattleTriggerManager : MonoBehaviour {
 	//트리거가 현재 활성화되어있는지 여부를 확인.
 	//relation == Sequence이고 앞번째 트리거가 달성되지 않은 경우만 false, 그 외에 전부 true.
 	public bool isTriggerActive(BattleTrigger trigger){
-		if(trigger.resultType == TrigResultType.Info){
+		if(trigger.result == TrigResultType.Info){
 			return false;
-		}else if(trigger.resultType == TrigResultType.Bonus){
+		}else if(trigger.result == TrigResultType.Bonus){
 			return true;
 		}else{
 			List<BattleTrigger> checkList;
 			BattleTrigger.TriggerRelation relation;
-			if(trigger.resultType == TrigResultType.Win){
-				checkList = triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
-				relation = triggers.Find(trig => trig.resultType == TrigResultType.Info).winTriggerRelation;
+			if(trigger.result == TrigResultType.Win){
+				checkList = triggers.FindAll(trig => trig.result == TrigResultType.Win);
+				relation = triggers.Find(trig => trig.result == TrigResultType.Info).winTriggerRelation;
 			}else{
-				checkList = triggers.FindAll(trig => trig.resultType == TrigResultType.Lose);
-				relation = triggers.Find(trig => trig.resultType == TrigResultType.Info).loseTriggerRelation;
+				checkList = triggers.FindAll(trig => trig.result == TrigResultType.Lose);
+				relation = triggers.Find(trig => trig.result == TrigResultType.Info).loseTriggerRelation;
 			}
 
 			if(relation == BattleTrigger.TriggerRelation.Sequence){
@@ -196,7 +211,7 @@ public class BattleTriggerManager : MonoBehaviour {
 
 	int CountUnitOfCondition(BattleTrigger trigger){
 		int result = 0;
-		foreach(var unit in unitManager.units){
+		foreach(var unit in unitManager.allUnits){
 			if(CheckUnitType(trigger, unit)){
 				result += 1;
 			}
@@ -216,6 +231,8 @@ public class BattleTriggerManager : MonoBehaviour {
 		else if(trigger.unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
 			return true;
 		else if(trigger.unitType == TrigUnitType.NeutralChar && unit.IsObject == false && unit.GetSide() == Side.Neutral)
+			return true;
+		else if(trigger.unitType == TrigUnitType.AllyNPC && unit.IsAllyNPC)
 			return true;
 		else
 			return false;
