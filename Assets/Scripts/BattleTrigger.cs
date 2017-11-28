@@ -45,6 +45,7 @@ public class BattleTrigger{
 			action = commaParser.ConsumeEnum<TrigActionType>();
 			//여기까지는 Info를 제외한 모든 트리거에 필요한 정보
 
+			//action의 번호의 의미에 대해서는 TrigActionType을 정의한 부분에서 각주 참고.
 			if(action == TrigActionType.ReachPosition){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
@@ -54,22 +55,22 @@ public class BattleTrigger{
 					Vector2 position = new Vector2(x, y);
 					targetTiles.Add(position);
 				}
-			}else if(action == TrigActionType.Effect || action == TrigActionType.MultiAttack || action == TrigActionType.ReachTile){
+			}else if((int)action >= 11 && (int)action <= 13){
 				subType = commaParser.Consume();
 			}
 
-			if(action != TrigActionType.Extra){
-				target = commaParser.ConsumeEnum<TrigUnitType>();
-				if(target == TrigUnitType.Name){
-					targetUnitNames = GetNameList(commaParser);
+			if((int)action > 10){
+				actor = commaParser.ConsumeEnum<TrigUnitType>();
+				if(actor == TrigUnitType.Name){
+					actorUnitNames = GetNameList(commaParser);
 				}
 
-				if(action == TrigActionType.Neutralize || action == TrigActionType.Kill || action == TrigActionType.Retreat){
-					actor = commaParser.ConsumeEnum<TrigUnitType>();
-					if(actor == TrigUnitType.Name){
-						actorUnitNames = GetNameList(commaParser);
-					}		
-				}
+				if((int)action > 20){
+					target = commaParser.ConsumeEnum<TrigUnitType>();
+					if(target == TrigUnitType.Name){
+						targetUnitNames = GetNameList(commaParser);
+					}
+				}	
 			}
 
 			//Debug.Log("index : " + commaParser.index + " / length : " + commaParser.origin.Length);
@@ -83,7 +84,7 @@ public class BattleTrigger{
 				}else if(code == "Repeat"){
 					repeatable = true;
 				}else{
-					Debug.LogError("Invalid subType : index " + commaParser.index + " / " + code);
+					Debug.LogError("잘못된 트리거 속성 이름 : index " + commaParser.index + " / " + code);
 				}
 			}
 		}
@@ -111,7 +112,7 @@ class BattleTriggerFactory {
         TrigResultType resultType = commaParser.ConsumeEnum<TrigResultType>();
         BattleTrigger trigger = null;
         if(resultType != TrigResultType.Trigger) {
-            trigger = new BattleTrigger(data, resultType, commaParser);
+			trigger = new BattleTrigger(data, resultType, commaParser);
         }
         else {
             string triggerName = commaParser.Consume();

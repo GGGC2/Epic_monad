@@ -1,6 +1,6 @@
-﻿Result	reqCount	Reward	Name	Action	Target/Actor/Etc
-Win	2	30	적을 2명 이하로 만들기	UnderCount	Enemy
+ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc				
+Win	2	30	적을 2명 이하로 만들기	UnderCount	Enemy				
 Lose	2	0	제이선과 트리아나가 무력화	Neutralize	Name	2	json	triana	Any
-Bonus	1	5	병사 생존	Extra	Repeat
-Bonus	1	5	병사가 적을 무력화	Neutralize	Enemy	AllyNPC	Repeat
-Info	Scene#14	One	One
+Bonus	1	5	병사 생존	Extra	Repeat				
+Bonus	1	5	병사가 적을 무력화	Neutralize	AllyNPC	Enemy	Repeat		
+Info	Scene#14	One	One						

@@ -42,11 +42,7 @@ public class HPChangeLog : EffectLog {
         else                    target.currentHealth = result;
 
         if(amount < 0){
-            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damaged, target);
-            //같은 편을 공격하는 경우
-            if(caster != null && caster.myInfo.side == target.myInfo.side){
-                BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendAttack, caster);
-            }
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damage, target, actor: caster);
         }
 
         yield return null;
