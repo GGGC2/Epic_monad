@@ -16,7 +16,7 @@ public class Casting {
 		this.pivotPos = GetPivotPos(skill, location);
 	}
 	public Tile GetPivotPos(ActiveSkill skill, SkillLocation location) {
-		Tile pivotTile = new Tile();
+		Tile pivotTile;
 		RangeForm rangeForm = skill.GetSecondRangeForm();
 
 		if (rangeForm == RangeForm.Sector && skill.GetSecondMinReach() > 0) {
