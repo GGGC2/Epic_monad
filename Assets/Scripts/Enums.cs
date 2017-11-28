@@ -48,7 +48,7 @@ namespace Enums {
 	public enum TrigActionType{Neutralize = 21, Kill = 22, Retreat = 23, Damage = 24, 
 	MultiAttack = 11, ReachTile = 12, Effect = 13, Rest = 14, UnderCount = 15,  Cast = 16, SideAttack = 17,
 	BackAttack = 18, ReachPosition = 19, Phase = 1, Extra = 2}
-	public enum TrigUnitType{Any, Name, Ally, AllyNPC, Enemy, NeutralChar, PC}
+	public enum TrigUnitType{Any, Name, Ally, AllyNPC, Enemy, NeutralChar, EnemyChar, PC}
     public enum ActionButtonType { Skill, Standby, Rest, Collect, Absent };
     public enum Stat{
         MaxHealth = 1,

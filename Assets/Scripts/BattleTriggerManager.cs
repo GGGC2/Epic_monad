@@ -235,7 +235,8 @@ public class BattleTriggerManager : MonoBehaviour {
 			|| (unitType == TrigUnitType.Ally && unit.GetSide() == Side.Ally)
 			|| (unitType == TrigUnitType.Enemy && unit.GetSide() == Side.Enemy)
 			|| (unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
-			|| (unitType == TrigUnitType.NeutralChar && unit.IsObject == false && unit.GetSide() == Side.Neutral)
+			|| (unitType == TrigUnitType.NeutralChar && !unit.IsObject  && unit.GetSide() == Side.Neutral)
+			|| (unitType == TrigUnitType.EnemyChar && !unit.IsObject && unit.GetSide() == Side.Enemy)
 			|| (unitType == TrigUnitType.AllyNPC && unit.IsAllyNPC);
 	}
 
