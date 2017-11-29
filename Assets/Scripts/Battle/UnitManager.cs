@@ -88,7 +88,9 @@ public class UnitManager : MonoBehaviour{
 
     public void CheckCollectableObjects() {
         foreach(var collectible in collectibles) {
-            if(Utility.GetDistance(BattleData.turnUnit.GetPosition(), collectible.unit.GetPosition()) <= collectible.range) {
+            if (collectible.unit == null) continue; // 유닛 정보가 없는 collectible에 접근하는 경우가 있음
+            int distance = Utility.GetDistance(BattleData.turnUnit.GetPosition(), collectible.unit.GetPosition());
+            if(distance <= collectible.range) {
                 Debug.Log(BattleData.turnUnit.GetNameEng() + " " + collectible.unit.GetNameEng() + "수집 중");
                 UIManager.Instance.AddCollectableActionButton();
                 BattleData.nearestCollectible = collectible;
