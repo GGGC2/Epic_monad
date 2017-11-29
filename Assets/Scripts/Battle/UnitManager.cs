@@ -49,7 +49,7 @@ public class UnitManager : MonoBehaviour{
     List<TileStatusEffectInfo> tileStatusEffectInfoList = new List<TileStatusEffectInfo>();
 
     public GameObject unitPrefab;
-	public List<Unit> units = new List<Unit>();
+	public List<Unit> allUnits = new List<Unit>();
 	List<Unit> readiedUnits = new List<Unit>();
 	List<Unit> deadUnits = new List<Unit>();
 	List<Unit> retreatUnits = new List<Unit>();
@@ -57,7 +57,7 @@ public class UnitManager : MonoBehaviour{
     List<Collectible> collectibles = new List<Collectible>();
     
 	public List<Unit> GetAllUnits(){
-		return units;
+		return allUnits;
 	}    
 
     public List<Collectible> GetCollectibles() {
@@ -88,8 +88,8 @@ public class UnitManager : MonoBehaviour{
 
     public void CheckCollectableObjects() {
         foreach(var collectible in collectibles) {
-            if(Utility.GetDistance(BattleData.selectedUnit.GetPosition(), collectible.unit.GetPosition()) <= collectible.range) {
-                Debug.Log(BattleData.selectedUnit.GetNameEng() + " " + collectible.unit.GetNameEng() + "수집 중");
+            if(Utility.GetDistance(BattleData.turnUnit.GetPosition(), collectible.unit.GetPosition()) <= collectible.range) {
+                Debug.Log(BattleData.turnUnit.GetNameEng() + " " + collectible.unit.GetNameEng() + "수집 중");
                 UIManager.Instance.AddCollectableActionButton();
                 BattleData.nearestCollectible = collectible;
                 return;
@@ -231,7 +231,7 @@ public class UnitManager : MonoBehaviour{
 
     public void TriggerOnUnitDestroy(Unit destroyedUnit, TrigActionType actionType) {
         ChainList.RemoveChainOfThisUnit(destroyedUnit);
-        foreach (var unit in units) {
+        foreach (var unit in allUnits) {
             foreach (var passive in unit.passiveSkillList) {
                 passive.SkillLogic.TriggerOnUnitDestroy(unit, destroyedUnit, actionType);
             }
@@ -247,7 +247,7 @@ public class UnitManager : MonoBehaviour{
         }
     }
     public void DeleteDestroyedUnit(Unit destroyedUnit) {
-        units.Remove(destroyedUnit);
+        allUnits.Remove(destroyedUnit);
         readiedUnits.Remove(destroyedUnit);
     }
 
@@ -309,9 +309,9 @@ public class UnitManager : MonoBehaviour{
 		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
 		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
 		Debug.Log("Triggers Count : " + allTriggers.Count);
-		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.PC && trig.reqCount == 0);
+		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.target == TrigUnitType.PC && trig.reqCount == 0);
 		triggersOfAllPC.ForEach(trig => trig.reqCount = generatedPC);
-		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.unitType == TrigUnitType.Enemy && trig.reqCount == 0);
+		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.target == TrigUnitType.Enemy && trig.reqCount == 0);
 		triggersOfAllEnemy.ForEach(trig => trig.reqCount = enemyCount);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
@@ -346,7 +346,7 @@ public class UnitManager : MonoBehaviour{
 
 		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 			
-		units.ForEach(unit => {
+		allUnits.ForEach(unit => {
 			if (controllableUnitNameList.Contains(unit.GetNameEng())){
 				Destroy(unit.GetComponent<AIData>());
 			}
@@ -450,7 +450,7 @@ public class UnitManager : MonoBehaviour{
 
         Tile tileUnderUnit = FindObjectOfType<TileManager>().GetTile((int)initPosition.x, (int)initPosition.y);
         tileUnderUnit.SetUnitOnTile(unit);
-        units.Add(unit);
+        allUnits.Add(unit);
         ApplyAIInfo(unit, unitInfo.index);
         unit.healthViewer.SetInitHealth(unit.myInfo.baseStats[Stat.MaxHealth], unit.myInfo.side, unit.IsAI, unit.myInfo.isNamed);
         return unit;
@@ -459,7 +459,7 @@ public class UnitManager : MonoBehaviour{
     public List<Unit> GetUpdatedReadiedUnits(){
 		readiedUnits.Clear();
 		// check each unit and add all readied units.
-		foreach (var unit in units){
+		foreach (var unit in allUnits){
 			// 오브젝트의 턴은 돌아오지 않는다
 			if (unit.IsObject) continue;
 
@@ -480,7 +480,7 @@ public class UnitManager : MonoBehaviour{
 
 	public List<Unit> GetEnemyUnits(){
 		List<Unit> enemyUnits = new List<Unit> ();
-        foreach (var unit in units){
+        foreach (var unit in allUnits){
             if (unit.GetSide() == Side.Enemy){
                 enemyUnits.Add(unit);
             }
@@ -490,7 +490,7 @@ public class UnitManager : MonoBehaviour{
 
 	public List<Unit> GetEnemyUnitsToThisAIUnit(Unit AIUnit){
 		List<Unit> enemyUnits = new List<Unit> ();
-		foreach (var unit in units){
+		foreach (var unit in allUnits){
 			if (unit.IsSeenAsEnemyToThisAIUnit(AIUnit))
 				enemyUnits.Add(unit);
 		}
@@ -499,7 +499,7 @@ public class UnitManager : MonoBehaviour{
 
 	public void ApplyEachDOT() {
         List<Unit> unitList = new List<Unit>();
-        units.ForEach(x => unitList.Add(x));
+        allUnits.ForEach(x => unitList.Add(x));
         foreach (var unit in unitList){
 			if (unit != null && unit.HasStatusEffect(StatusEffectType.DamageOverPhase))
 				unit.ApplyDamageOverPhase();
@@ -508,7 +508,7 @@ public class UnitManager : MonoBehaviour{
 
     public void ApplyEachHeal() {
         List<Unit> unitList = new List<Unit>();
-        units.ForEach(x => unitList.Add(x));
+        allUnits.ForEach(x => unitList.Add(x));
         foreach (var unit in unitList) {
             if(unit != null && unit.HasStatusEffect(StatusEffectType.HealOverPhase))
                 unit.ApplyHealOverPhase();
@@ -518,7 +518,7 @@ public class UnitManager : MonoBehaviour{
     public IEnumerator StartPhase(int phase) {
 		ApplyEachHeal();
 		ApplyEachDOT();
-        foreach (var unit in units) {
+        foreach (var unit in allUnits) {
             unit.ResetMovedTileCount();
 			unit.UpdateStartPosition();
 			unit.ApplyTriggerOnPhaseStart(phase);
@@ -529,16 +529,16 @@ public class UnitManager : MonoBehaviour{
 
 	public void EndPhase(int phase){
 		// Decrease each buff & debuff phase
-		foreach (var unit in units){
+		foreach (var unit in allUnits){
 			unit.UpdateRemainPhaseAtPhaseEnd();
 			unit.UpdateSkillCooldown();
 		}
 
-		foreach (var unit in units) {unit.RegenerateActionPoint();}
+		foreach (var unit in allUnits) {unit.RegenerateActionPoint();}
 		//행동력 회복시킨 후 순서 정렬하는 역할
 		UpdateUnitOrder();
 
-		foreach (var unit in units) {unit.ApplyTriggerOnPhaseEnd();}
+		foreach (var unit in allUnits) {unit.ApplyTriggerOnPhaseEnd();}
 	}
 
     void LoadUnitStatusEffects(){
@@ -615,9 +615,9 @@ public class UnitManager : MonoBehaviour{
 	public void UpdateUnitOrder (){
 		int standardActivityPoint = GetStandardActivityPoint();
 		List<Unit> currentPhaseUnits =
-			units.FindAll(go => go.GetCurrentActivityPoint() >= standardActivityPoint);
+			allUnits.FindAll(go => go.GetCurrentActivityPoint() >= standardActivityPoint);
 		List<Unit> nextPhaseUnits =
-			units.FindAll(go => go.GetCurrentActivityPoint() < standardActivityPoint);
+			allUnits.FindAll(go => go.GetCurrentActivityPoint() < standardActivityPoint);
 
 		currentPhaseUnits.Sort(SortHelper.Chain(new List<Comparison<Unit>>{
 			SortHelper.CompareBy<Unit>(go => go.GetCurrentActivityPoint()),
@@ -637,8 +637,8 @@ public class UnitManager : MonoBehaviour{
 		}, reverse:true));
 
 	   // 유닛 전체에 대해서도 소팅. 변경점이 있을때마다 반영된다.
-		units.Clear();
-		units.AddRange(currentPhaseUnits);
-		units.AddRange(nextPhaseUnits);
+		allUnits.Clear();
+		allUnits.AddRange(currentPhaseUnits);
+		allUnits.AddRange(nextPhaseUnits);
 	}
 }

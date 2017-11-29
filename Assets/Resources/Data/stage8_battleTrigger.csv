@@ -1,4 +1,4 @@
-﻿ResultType	UnitType	ActionType	reqCount	Reward	etc
-Win	4개의 마력석을 모두 채굴하기	Target	Neutralize	4	250	4	manastone01	manastone02	manastone03	manastone04
-Lose	레이나 또는 리니안이 무력화	Ally	Neutralize	1	0	2	reina	lenien
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	4	250	4개의 마력석을 모두 채굴하기	Neutralize	Any	Name	4	manastone01	manastone02	manastone03	manastone04
+Lose	1	0	출전 캐릭터가 무력화	Neutralize	Any	PC
 Info	Scene#16	One	One

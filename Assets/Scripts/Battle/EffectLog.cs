@@ -42,11 +42,7 @@ public class HPChangeLog : EffectLog {
         else                    target.currentHealth = result;
 
         if(amount < 0){
-            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damaged, target);
-            //같은 편을 공격하는 경우
-            if(caster != null && caster.myInfo.side == target.myInfo.side){
-                BattleTriggerManager.Instance.CountTriggers(TrigActionType.FriendAttack, caster);
-            }
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damage, target, actor: caster);
         }
 
         yield return null;
@@ -163,8 +159,8 @@ public class DestroyUnitLog : EffectLog {
         BattleManager BM = BattleManager.Instance;
         yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
 
-        BattleTriggerManager.Instance.CountTriggers(actionType, unit);
-		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit);
+        BattleTriggerManager.Instance.CountTriggers(actionType, unit, actor: BattleData.turnUnit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit, actor: BattleData.turnUnit);
 		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }
@@ -442,7 +438,7 @@ public class PrintBonusTextLog : EffectLog {
             break;
         case "DirectionSide":
             uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
-            Unit actor = BattleData.selectedUnit;
+            Unit actor = BattleData.turnUnit;
             if(actor.GetSide() == Side.Ally && !actor.IsAI){
                 if(amount == Setting.sideAttackBonus){
                     BattleTriggerManager.Instance.CountTriggers(TrigActionType.SideAttack, actor);

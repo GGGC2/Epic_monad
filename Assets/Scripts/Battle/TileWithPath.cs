@@ -32,7 +32,7 @@ public class TileWithPath {
 		if(dest.GetHeight() > prev.GetHeight()) {
 			climbMultiplier = 3;
 		}
-		int requireAP = dest.GetBaseMoveCost () * climbMultiplier + (prevCount + BattleData.selectedUnit.GetMovedTileCount ()) * Setting.moveCostAcc;
+		int requireAP = dest.GetBaseMoveCost () * climbMultiplier + (prevCount + BattleData.turnUnit.GetMovedTileCount ()) * Setting.moveCostAcc;
 
 		float speed = movingUnit.GetSpeed ();
 		requireAP = (int)(requireAP * (100f / speed));

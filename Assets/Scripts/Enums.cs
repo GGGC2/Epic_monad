@@ -41,12 +41,16 @@ namespace Enums {
 	public enum SkillType{ Point, Route, Auto, Self }
 	//트리거 관련
 	public enum TrigResultType{Win, Lose, Bonus, Trigger, Info}
-	public enum TrigUnitType{Target, Ally, Enemy, NeutralChar, None, PC}
-	public enum TrigActionType{Neutralize, ReachPosition, ReachTile, Phase, Kill, Retreat, UnderCount, Rest,
-	FriendAttack, Cast, Effect, SideAttack, BackAttack, MultiAttack, Damaged, None}
+	/*enum 번호는 BattleTrigger 생성자에서 사용됨.
+	코드번호 1~9 : Actor/Target 모두 생략됨
+	코드번호 11~19 : Actor/Target 중 하나만 입력 *11~13번은 subType 필요
+	코드번호 21~29 : Actor/Target 모두 입력*/
+	public enum TrigActionType{Neutralize = 21, Kill = 22, Retreat = 23, Damage = 24, 
+	MultiAttack = 11, ReachTile = 12, Effect = 13, Rest = 14, UnderCount = 15,  Cast = 16, SideAttack = 17,
+	BackAttack = 18, ReachPosition = 19, Phase = 1, Extra = 2}
+	public enum TrigUnitType{Any, Name, Ally, AllyNPC, Enemy, NeutralChar, EnemyChar, PC}
     public enum ActionButtonType { Skill, Standby, Rest, Collect, Absent };
-    public enum Stat
-    {
+    public enum Stat{
         MaxHealth = 1,
         Power = 2,
         Defense = 3,

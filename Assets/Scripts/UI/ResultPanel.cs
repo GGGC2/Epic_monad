@@ -30,7 +30,7 @@ public class ResultPanel : MonoBehaviour{
 
 	public IEnumerator PrintResult(){
 		List<BattleTrigger> scoreTriggers = BattleTriggerManager.Instance.triggers.FindAll(trig =>
-			(trig.resultType == TrigResultType.Win || trig.resultType == TrigResultType.Bonus) && trig.acquired && trig.reward != 0);
+			(trig.result == TrigResultType.Win || trig.result == TrigResultType.Bonus) && trig.acquired && trig.reward != 0);
 		Debug.Log("count of scoreTriggers : " + scoreTriggers.Count);
 		
 		foreach(var trig in scoreTriggers){

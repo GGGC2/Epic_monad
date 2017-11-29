@@ -1,6 +1,6 @@
-﻿ResultType	UnitType	ActionType	targetCount	Reward	etc		
-Win	7명 이상의 수인족 전사를 무력화	Enemy	Neutralize	7	300		
-Win	수인족 장로를 무력화	Target	Neutralize	1	300	1	furryElder
-Lose	모든 동료가 무력화	PC	Neutralize	0	0		
-Lose	10페이즈 경과	None	Phase	10	0		
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	7	300	7명 이상의 수인족 전사를 무력화	Neutralize	Any	Enemy
+Win	1	300	수인족 장로를 무력화	Neutralize	Any	Name	1	furryElder
+Lose	0	0	모든 동료가 무력화	Neutralize	Any	PC
+Lose	10	0	10페이즈 경과	Phase
 Info	Scene#20	One	One					

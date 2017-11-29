@@ -52,7 +52,7 @@ namespace BattleUI{
 
 			Clear();
 
-			Unit selectedUnit = BattleData.selectedUnit;
+			Unit selectedUnit = BattleData.turnUnit;
 
 			if (selectedUnit == null){
 				Debug.LogWarning("There is no selected unit");
