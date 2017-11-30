@@ -1,0 +1,103 @@
+﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	제국군 병사	soldier	Enemy	1	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+2	제국군 병사	soldier	Enemy	1	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+3	제국군 병사	soldier	Enemy	1	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+4	제국군 병사	soldier	Enemy	2	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+5	제국군 병사	soldier	Enemy	2	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+6	제국군 병사	soldier	Enemy	2	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+7	제국군 병사	soldier	Enemy	3	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+8	제국군 병사	soldier	Enemy	3	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+9	제국군 병사	soldier	Enemy	3	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+10	제국군 병사	soldier	Enemy	16	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+11	제국군 병사	soldier	Enemy	16	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+12	제국군 병사	soldier	Enemy	16	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+13	제국군 병사	soldier	Enemy	17	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+14	제국군 병사	soldier	Enemy	17	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+15	제국군 병사	soldier	Enemy	17	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+16	제국군 병사	soldier	Enemy	18	10	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+17	제국군 병사	soldier	Enemy	18	9	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+18	제국군 병사	soldier	Enemy	18	8	RightDown	376	104	52	52	53	Melee	Plant	Earth	false	false	true	0
+19	아스터 중보병	asterHeavyarm	Enemy	7	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+20	아스터 중보병	asterHeavyarm	Enemy	7	16	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+21	아스터 중보병	asterHeavyarm	Enemy	8	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+22	아스터 중보병	asterHeavyarm	Enemy	8	16	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+23	아스터 중보병	asterHeavyarm	Enemy	9	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+24	아스터 중보병	asterHeavyarm	Enemy	10	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+25	아스터 중보병	asterHeavyarm	Enemy	11	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+26	아스터 중보병	asterHeavyarm	Enemy	11	16	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+27	아스터 중보병	asterHeavyarm	Enemy	12	15	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+28	아스터 중보병	asterHeavyarm	Enemy	12	16	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+29	아스터 중보병	asterHeavyarm	Enemy	8	2	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+30	아스터 중보병	asterHeavyarm	Enemy	8	3	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+31	아스터 중보병	asterHeavyarm	Enemy	9	4	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+32	아스터 중보병	asterHeavyarm	Enemy	10	4	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+33	아스터 중보병	asterHeavyarm	Enemy	11	2	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+34	아스터 중보병	asterHeavyarm	Enemy	11	3	LeftDown	775	154	97	97	46	Melee	Plant	Sun	false	false	true	0
+35	노엘	noel	Enemy	10	3	RightUp	918	141	97	209	67	Magic	Water	Earth	false	false	true	0
+36	세피아	sepia	Enemy	9	3	RightUp	1155	173	187	120	63	Melee	Fire	Sun	false	false	true	0
+37	그레네브	grenev	Enemy	9	1	RightUp	731	266	52	52	67	Melee	Plant	Moon	false	false	true	0
+38	아르카디아	arcadia	Enemy	10	2	RightUp	1069	156	164	164	56	Magic	Plant	Earth	false	false	true	0
+39	달케니르	darkenir	Enemy	10	1	RightUp	851	238	52	187	56	Magic	Water	Moon	false	false	true	0
+40	비앙카	bianca	Enemy	9	2	RightUp	851	193	120	142	77	Magic	Metal	Sun	false	false	true	0
+41	디아즈 경비병	GuardDiaz	Ally	7	13	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+42	디아즈 경비병	GuardDiaz	Ally	12	13	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+43	디아즈 경비병	GuardDiaz	Ally	7	5	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+44	디아즈 경비병	GuardDiaz	Ally	12	5	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+45	메이드	maid	Ally	6	8	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
+46	메이드	maid	Ally	7	10	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
+47	메이드	maid	Ally	12	10	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
+48	메이드	maid	Ally	13	8	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
+49	슈미트	schmidt	Ally	9	8	LeftDown	834	138	120	75	60	Melee	Fire	Moon	false	false	true	0
+50	진열대	rackSword	Neutral	4	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+51	진열대	rackSword	Neutral	5	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+52	진열대	rackSword	Neutral	14	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+53	진열대	rackSword	Neutral	15	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+54	진열대	rackSword	Neutral	8	6	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+55	진열대	rackSword	Neutral	9	6	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+56	진열대	rackSword	Neutral	10	6	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+57	진열대	rackSword	Neutral	11	6	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+58	진열대	rackSword	Neutral	9	5	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+59	진열대	rackSword	Neutral	10	5	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+60	갑옷	armorSchmidt	Neutral	6	13	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+61	갑옷	armorSchmidt	Neutral	13	13	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+62	갑옷	armorSchmidt	Neutral	5	4	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+63	갑옷	armorSchmidt	Neutral	14	4	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+64	갑옷	armorSchmidt	Neutral	2	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+65	갑옷	armorSchmidt	Neutral	17	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
+66	벽난로	fireplace	Neutral	9	13	LeftDown	99999	0	0	0	0	None	None	None	true	false	false	0
+67	벽난로	fireplace	Neutral	10	13	LeftDown	99999	0	0	0	0	None	None	None	true	false	false	0
+68	소파	sofaSchmidt	Neutral	9	12	LeftDown	300	0	0	0	0	None	None	None	true	false	true	0
+69	소파	sofaSchmidt	Neutral	10	12	LeftDown	300	0	0	0	0	None	None	None	true	false	true	0
+70	책장	bookshelf	Neutral	4	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+71	책장	bookshelf	Neutral	6	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+72	책장	bookshelf	Neutral	7	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+73	책장	bookshelf	Neutral	12	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+74	책장	bookshelf	Neutral	13	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+75	책장	bookshelf	Neutral	15	11	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+76	책장	bookshelf	Neutral	4	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+77	책장	bookshelf	Neutral	15	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+78	덤불	bush	Neutral	2	11	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+79	덤불	bush	Neutral	3	11	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+80	덤불	bush	Neutral	16	11	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+81	덤불	bush	Neutral	17	11	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+82	덤불	bush	Neutral	2	7	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+83	덤불	bush	Neutral	3	7	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+84	덤불	bush	Neutral	16	7	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+85	덤불	bush	Neutral	17	7	LeftDown	800	0	0	0	0	None	None	None	true	false	false	0
+86	벽	stage16_wall	Neutral	4	8	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+87	벽	stage16_wall	Neutral	4	9	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+88	벽	stage16_wall	Neutral	4	10	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+89	벽	stage16_wall	Neutral	15	8	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+90	벽	stage16_wall	Neutral	15	9	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+91	벽	stage16_wall	Neutral	15	10	RightDown	1000	0	0	0	0	None	None	None	true	false	true	0
+92	식탁	tableScmidt	Neutral	6	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0	
+93	식탁	tableScmidt	Neutral	7	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+94	식탁	tableScmidt	Neutral	12	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+95	식탁	tableScmidt	Neutral	13	7	LeftDown	500	0	0	0	0	None	None	None	true	false	true	0
+96	큰 방패	shieldSchmidt	Neutral	9	9	LeftDown	99999	0	0	0	0	None	None	None	true	false	false	0
+97	큰 검	swordSchmidt	Neutral	10	9	LeftDown	99999	0	0	0	0	None	None	None	true	false	false	0
+98	unselected	unselected	Ally	8	9	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+99	unselected	unselected	Ally	9	10	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+100	unselected	unselected	Ally	10	10	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+101	unselected	unselected	Ally	11	9	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
+102	unselected	unselected	Ally	10	8	LeftDown	0	0	0	0	0	None	None	None	false	false	false	0
