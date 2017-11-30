@@ -38,7 +38,7 @@ public class LogManager : MonoBehaviour {
     public IEnumerator ExecuteLastEventLogAndConsequences() {   // 마지막 Event와 그로 인해 발생하는 모든 새로운 Effect와 Event를 실행한다.
         yield return ExecuteLastEventLog();
         yield return ExecuteConsequentEventLogs();
-        BattleManager.Instance.CheckBattleTriggers();
+        BattleManager.Instance.CheckTriggers();
         BattleData.unitManager.ResetLatelyHitUnits();
     }
     IEnumerator ExecuteConsequentEventLogs() {
@@ -75,8 +75,8 @@ public class LogManager : MonoBehaviour {
         unitManager.UpdateStatsAtActionEnd();
         unitManager.UpdateHealthViewersAtActionEnd();
         UnitManager.Instance.UpdateUnitOrder();
-        if (BattleData.selectedUnit != null)
-            FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.selectedUnit);
+        if (BattleData.turnUnit != null)
+            FindObjectOfType<UIManager>().UpdateSelectedUnitViewerUI(BattleData.turnUnit);
     }
     IEnumerator ExecuteLastEventLog() {
         do {

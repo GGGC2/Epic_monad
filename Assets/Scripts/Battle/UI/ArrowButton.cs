@@ -35,7 +35,7 @@ public class ArrowButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	public void CheckAndHighlightImage(){
 		Vector3 mousePositionScreen = Input.mousePosition;
 		Vector3 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePositionScreen);
-		Unit unit = BattleData.selectedUnit;
+		Unit unit = BattleData.turnUnit;
 
 		Direction selectedDirection = Utility.GetMouseDirectionByUnit (unit, unit.GetDirection ());
 

@@ -7,12 +7,12 @@ using Battle.Skills;
 public class RestAndRecover {
 	public static int GetRestCostAP()
 	{
-		return (int)(BattleData.selectedUnit.GetCurrentActivityPoint() * 0.5f);
+		return (int)(BattleData.turnUnit.GetCurrentActivityPoint() * 0.5f);
 	}
 
 	public static void Run()
 	{
-        Unit unit = BattleData.selectedUnit;
+        Unit unit = BattleData.turnUnit;
         List<PassiveSkill> passiveSkillList = unit.GetLearnedPassiveSkillList();
         int usingActivityPointToRest = GetRestCostAP();
 		int maxHealthOfUnit = unit.GetStat(Stat.MaxHealth);

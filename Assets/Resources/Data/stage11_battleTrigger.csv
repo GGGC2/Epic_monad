@@ -1,4 +1,4 @@
-﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
-Win	적 6명 무력화	Enemy	Neutralize	6	100
-Lose	적 7명 탈출	Enemy	Reach	7	0	4	2	1	16	1	8	18	10	18
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	6	100	적 6명 무력화	Neutralize	Any	Enemy
+Lose	7	0	적 7명 탈출	ReachPosition	4	2	1	16	1	8	18	10	18	Enemy
 Info	Scene#22	One	One

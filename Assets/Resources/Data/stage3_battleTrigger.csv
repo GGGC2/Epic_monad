@@ -1,5 +1,11 @@
-﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
-Win	적 4명을 무력화	Enemy	Neutralize	4	50
-Win	영이 탈출 지점으로 이동	Target	Reach	1	50	1	yeong	4	5	2	6	2	5	3	6	3
-Lose	영의 무력화	Target	Neutralize	1	0	1	yeong
-Info	Scene#6	Sequence	One
+ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc											
+Win	4	0	적 4명을 무력화	Neutralize	Any	Enemy										
+Win	1	30	영이 탈출 지점으로 이동	ReachPosition	4	5	2	6	2	5	3	6	3	Name	1	yeong
+Lose	1	0	영 무력화	Neutralize	Any	Name	1	yeong								
+Bonus	1	3	적 무력화	Neutralize	Any	Enemy	Repeat									
+Bonus	1	10	트리아나 생존	Neutralize	Any	Name	1	triana	Reverse							
+Bonus	1	10	트리아나 광폭화	Effect	광폭화	Name	1	triana								
+Bonus	9	10	9페이즈 이내에 승리	Phase	Reverse											
+Bonus	6	15	6페이즈 이내에 승리	Phase	Reverse											
+Bonus	1	15	영이 수풀을 밟지 않음	ReachTile	수풀	Name	1	yeong	Reverse							
+Info	Scene#6	Sequence	One													

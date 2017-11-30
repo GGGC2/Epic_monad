@@ -1,5 +1,5 @@
-﻿ResultType	UnitType	ActionType	targetCount	Reward	etc
-Win	적 2명 무력화	Enemy	Neutralize	2	100
-Win	6페이즈 경과	None	Phase	6	100
-Lose	아군 전원 무력화	PC	Neutralize	0	0
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	2	100	적 2명 무력화	Neutralize	Any	Enemy
+Win	6	100	6페이즈 경과	Phase
+Lose	0	0	아군 전원 무력화	Neutralize	Any	PC
 Info	Scene#26	One	One

@@ -75,7 +75,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData){
 		if(skill != null){
 			viewer.gameObject.SetActive(true);
-			viewer.UpdateSkillViewer (skill, BattleData.selectedUnit);
+			viewer.UpdateSkillViewer (skill, BattleData.turnUnit);
 			return;
 		}
         else if(clickable){
@@ -91,7 +91,7 @@ public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerEnterHan
 	}
 
     string GetRestExplanationText() {
-        Unit unit = BattleData.selectedUnit;
+        Unit unit = BattleData.turnUnit;
         LogManager.Instance.Record(new RestLog(unit));
         RestAndRecover.Run();
         EventLog log = LogManager.Instance.PopLastEventLog();

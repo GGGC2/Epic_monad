@@ -85,7 +85,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public Unit GetSelectedUnit(){
-		return BattleData.selectedUnit;
+		return BattleData.turnUnit;
 	}
 
 	void InitCameraPosition(){ Camera.main.transform.position = new Vector3(0, 0, -10); }
@@ -113,11 +113,11 @@ public class BattleManager : MonoBehaviour{
 				BattleData.SetSelectedUnit(BattleData.readiedUnits[0]);
 				BattleData.uiManager.UpdateApBarUI();
 
-				if (BattleData.selectedUnit.IsAI){
+				if (BattleData.turnUnit.IsAI){
 					BattleData.currentState = CurrentState.AITurn;
-					yield return BattleData.selectedUnit.GetAI().UnitTurn ();
+					yield return BattleData.turnUnit.GetAI().UnitTurn ();
 				}else{
-					yield return StartCoroutine (ActionAtTurn (BattleData.selectedUnit));
+					yield return StartCoroutine (ActionAtTurn (BattleData.turnUnit));
 				}
 
 				BattleData.SetSelectedUnit(null);
@@ -159,21 +159,21 @@ public class BattleManager : MonoBehaviour{
 		BattleData.SetSelectedUnit(unit);
         BattleData.move = new BattleData.Move();
 		BattleData.alreadyMoved = false; // 연속 이동 불가를 위한 변수.
-		ChainList.RemoveChainOfThisUnit(BattleData.selectedUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
+		ChainList.RemoveChainOfThisUnit(BattleData.turnUnit); // 턴이 돌아오면 자신이 건 체인 삭제.
 
 		BattleData.battleManager.AllPassiveSkillsTriggerOnTurnStart(unit);
         yield return logManager.ExecuteLastEventLogAndConsequences();   // 트랩이 발동하여 새로운 Event가 생길 수도 있으니 실행시켜놓는다.
         unit.TriggerTileStatusEffectAtTurnStart();
         unit.UpdateStatusEffectAtTurnStart();
 
-		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.selectedUnit);
-		BattleData.selectedUnit.ShowArrow();
+		BattleData.uiManager.SetSelectedUnitViewerUI(BattleData.turnUnit);
+		BattleData.turnUnit.ShowArrow();
         yield return logManager.ExecuteLastEventLogAndConsequences();
     }
 	public IEnumerator EndUnitTurn(Unit unit) {
-        BattleData.selectedUnit.TriggerTileStatusEffectAtTurnEnd();
+        BattleData.turnUnit.TriggerTileStatusEffectAtTurnEnd();
 		BattleData.uiManager.DisableSelectedUnitViewerUI();
-		BattleData.selectedUnit.HideArrow();
+		BattleData.turnUnit.HideArrow();
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
 	}
 	public void AllPassiveSkillsTriggerOnTurnStart(Unit turnStarter){
@@ -201,13 +201,6 @@ public class BattleManager : MonoBehaviour{
 		RemoveAuraEffectFromUnit(unit);
 		yield return BattleData.battleManager.StartCoroutine(FadeOutEffect(unit));
         UnitManager.Instance.DeleteDestroyedUnit(unit);
-		if(actionType == TrigActionType.Kill || actionType == TrigActionType.Retreat){
-			BattleTriggerManager.CheckBattleTrigger(unit, actionType);
-			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.Neutralize);
-			BattleTriggerManager.CheckBattleTrigger(unit, TrigActionType.UnderCount);
-		}else{
-			Debug.Assert(actionType == TrigActionType.Reach, "Invalid actionType!");
-		}
 
         List<Collectible> collectibles = UnitManager.Instance.GetCollectibles();
         Collectible collectibleToRemove = null;
@@ -229,13 +222,13 @@ public class BattleManager : MonoBehaviour{
     }
 
 	public static bool IsSelectedUnitRetreatOrDie(){
-		if (BattleData.retreatUnits.Contains(BattleData.selectedUnit))
+		if (BattleData.retreatUnits.Contains(BattleData.turnUnit))
 			return true;
 
-		if (BattleData.deadUnits.Contains(BattleData.selectedUnit))
+		if (BattleData.deadUnits.Contains(BattleData.turnUnit))
 			return true;
 
-		if(BattleData.selectedUnit.CheckReach()){
+		if(BattleData.turnUnit.CheckReach()){
 			return true;
 		}
 
@@ -278,12 +271,12 @@ public class BattleManager : MonoBehaviour{
 		Camera.main.transform.position = destPos;
 	}
 
-	public void CheckBattleTriggers() {
+	public void CheckTriggers() {
 		// 매 액션이 끝날때마다 갱신하는 특성 조건들
         //승리 조건이 충족되었는지 확인
         BattleTriggerManager TrigManager = BattleTriggerManager.Instance;
-		List<BattleTrigger> winTriggers = TrigManager.triggers.FindAll(trig => trig.resultType == TrigResultType.Win);
-		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.resultType == TrigResultType.Info).winTriggerRelation;
+		List<BattleTrigger> winTriggers = TrigManager.triggers.FindAll(trig => trig.result == TrigResultType.Win);
+		BattleTrigger.TriggerRelation winTrigRelation = TrigManager.triggers.Find(trig => trig.result == TrigResultType.Info).winTriggerRelation;
 		//All이나 Sequence이면 전부 달성했을 때, One이면 하나라도 달성했을 때 승리
 		if(winTrigRelation == BattleTrigger.TriggerRelation.All || winTrigRelation == BattleTrigger.TriggerRelation.Sequence){
 			if(winTriggers.All(trig => trig.acquired)){
@@ -300,7 +293,7 @@ public class BattleManager : MonoBehaviour{
 	public IEnumerator PrepareUnitActionAndGetCommand(){
         LogManager logManager = LogManager.Instance;
 		while (BattleData.currentState == CurrentState.FocusToUnit){
-			Unit unit = BattleData.selectedUnit;
+			Unit unit = BattleData.turnUnit;
             yield return SlideCameraToPosition(unit.transform.position);
 
             if (IsSelectedUnitRetreatOrDie()) {
@@ -318,8 +311,8 @@ public class BattleManager : MonoBehaviour{
 			List<Tile> movableTiles = new List<Tile>();
 			IEnumerator update = null;
 			//이동 가능한 범위 표시
-			if(BattleData.selectedUnit.IsMovePossibleState()){
-				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.selectedUnit);
+			if(BattleData.turnUnit.IsMovePossibleState()){
+				movableTilesWithPath = PathFinder.CalculateMovablePaths(BattleData.turnUnit);
 				movableTilesWithPath.Remove (unit.GetPosition ());
 				foreach (KeyValuePair<Vector2, TileWithPath> movableTileWithPath in movableTilesWithPath){
 					movableTiles.Add(movableTileWithPath.Value.tile);
@@ -349,13 +342,17 @@ public class BattleManager : MonoBehaviour{
             if (update != null){
 				StopCoroutine(update);
 			}
-            unit.HideAfterImage();
+			unit.HideAfterImage ();
 			BattleData.tileManager.DepaintAllTiles ();
+			Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
+			if (tileUnderMouse != null) {
+				tileUnderMouse.CostAP.text = "";
+			}
 
             if (BattleData.alreadyMoved && triggers.rightClicked.Triggered){
 				Debug.Log("Apply MoveSnapShot");
                 logManager.Record(new MoveCancelLog(unit, BattleData.moveSnapshot));
-                BattleData.selectedUnit.ApplySnapshot();
+                BattleData.turnUnit.ApplySnapshot();
 			}
 			// 길게 눌러서 유닛 상세정보창을 열 수 있다
 			else if (triggers.tileLongSelectedByUser.Triggered) {
@@ -366,7 +363,7 @@ public class BattleManager : MonoBehaviour{
 				}
 			}else if(triggers.tileSelectedByUser.Triggered && movableTiles.Contains(BattleData.SelectedTile)){
 				BattleData.moveSnapshot = new BattleData.MoveSnapshot(unit);
-				Vector2 currentTilePos = BattleData.selectedUnit.GetPosition();
+				Vector2 currentTilePos = BattleData.turnUnit.GetPosition();
 				Vector2 distanceVector = BattleData.move.selectedTilePosition - currentTilePos;
 				int distance = (int)Mathf.Abs(distanceVector.x) + (int)Mathf.Abs(distanceVector.y);
 
@@ -385,7 +382,7 @@ public class BattleManager : MonoBehaviour{
 				UIManager.Instance.selectedUnitViewerUI.GetComponent<BattleUI.UnitViewer>().OffPreviewAp();
             }
 			else if (triggers.actionCommand.Data == ActionCommand.Standby){
-				if(BattleData.selectedUnit.IsStandbyPossible()){
+				if(BattleData.turnUnit.IsStandbyPossible()){
 					BattleData.currentState = CurrentState.Standby;
                     logManager.Record(new StandbyLog(unit));
                     Standby(unit);
@@ -398,7 +395,7 @@ public class BattleManager : MonoBehaviour{
             else if (triggers.actionCommand.Data == ActionCommand.Collect) {
                 BattleData.currentState = CurrentState.Standby;
                 logManager.Record(new CollectStartLog(unit, BattleData.nearestCollectible.unit));
-                BattleData.selectedUnit.CollectNearestCollectible();
+                BattleData.turnUnit.CollectNearestCollectible();
             }
             yield return logManager.ExecuteLastEventLogAndConsequences();
 		}
@@ -410,8 +407,8 @@ public class BattleManager : MonoBehaviour{
 		BattleData.uiManager.SetSelectedUnitViewerUI(unit);
 	}
 	public IEnumerator ToDoBeforeAction(){
-		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.selectedUnit);
-		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.selectedUnit);
+		MoveCameraToUnitAndDisplayUnitInfoViewer(BattleData.turnUnit);
+		BattleData.battleManager.UpdateAPBarAndMoveCameraToSelectedUnit (BattleData.turnUnit);
 		yield return null;
 	}
 
@@ -541,7 +538,7 @@ public class BattleManager : MonoBehaviour{
         unitManager.UpdateRealUnitPositions(direction);
 
         CameraMover cm = FindObjectOfType<CameraMover>();
-        cm.SetFixedPosition(BattleData.selectedUnit.realPosition);
+        cm.SetFixedPosition(BattleData.turnUnit.realPosition);
         cm.CalculateBoundary();
 		MoveCameraToPosition(cm.fixedPosition);
     }
@@ -587,7 +584,7 @@ public class BattleManager : MonoBehaviour{
         LogManager.Instance.Record(new PhaseEndLog(phase));
         BattleData.unitManager.EndPhase(phase);
         BattleData.tileManager.EndPhase(phase);
-        BattleTriggerManager.CheckPhaseTriggers();
+        BattleTriggerManager.Instance.CountTriggers(TrigActionType.Phase);
         yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();
         yield return new WaitForSeconds(0.5f);
 	}
@@ -606,7 +603,11 @@ public class BattleManager : MonoBehaviour{
 
 	// 승/패 조건과 관련된 타일을 하이라이트 처리
 	void HighlightBattleTriggerTiles(){
-		List<BattleTrigger> tileTriggers = FindObjectOfType<BattleTriggerManager>().triggers.FindAll(bt => bt.actionType == TrigActionType.Reach);
+		List<BattleTrigger> tileTriggers = BattleTriggerManager.Instance.triggers.FindAll(
+			bt => (bt.action == TrigActionType.ReachPosition || bt.action == TrigActionType.ReachTile)
+			&& (bt.result == TrigResultType.Win || bt.result == TrigResultType.Lose)
+		);
+
 		tileTriggers.ForEach(trigger => {
 			trigger.targetTiles.ForEach(tilePos => BattleData.tileManager.GetTile(tilePos).SetHighlight(true));
 		});
@@ -724,7 +725,7 @@ public class BattleManager : MonoBehaviour{
 			if (mouseOverTilePos.HasValue == false || !movableTilesWithPath.ContainsKey (mouseOverTilePos.Value)) {
 				viewer.OffPreviewAp ();
 				BattleData.previewAPAction = null;
-				BattleData.selectedUnit.HideAfterImage();
+				BattleData.turnUnit.HideAfterImage();
 			}else{
 				var preSelectedTile = mouseOverTilePos.Value;
 				if (movableTilesWithPath.ContainsKey (preSelectedTile)){
@@ -733,10 +734,10 @@ public class BattleManager : MonoBehaviour{
 					BattleData.previewAPAction = new APAction (APAction.Action.Move, requiredAP);
 					Tile tileUnderMouse = BattleData.tileManager.preSelectedMouseOverTile;
 					tileUnderMouse.CostAP.text = requiredAP.ToString ();
-					viewer.PreviewAp (BattleData.selectedUnit, requiredAP);
+					viewer.PreviewAp (BattleData.turnUnit, requiredAP);
 					List<Tile> path = movableTilesWithPath[tileUnderMouse.GetTilePos()].path;
-					BattleData.selectedUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
-						Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.selectedUnit.GetDirection()));
+					BattleData.turnUnit.SetAfterImageAt(tileUnderMouse.GetTilePos(), 
+						Utility.GetFinalDirectionOfPath(tileUnderMouse, path, BattleData.turnUnit.GetDirection()));
 					// path.Add (tileUnderMouse);
 					foreach (Tile tile in path) {
 						tile.DepaintTile ();

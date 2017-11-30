@@ -8,7 +8,7 @@ using Battle.Skills;
 namespace Battle.Turn{
 	public class MoveStates{
 		public static void MoveToTile(Vector2 destPos, Dictionary<Vector2, TileWithPath> path) {
-            Unit unit = BattleData.selectedUnit;
+            Unit unit = BattleData.turnUnit;
             List<Tile> destPath = path[destPos].path;
             Tile destTile = BattleData.tileManager.GetTile(destPos);
 
@@ -26,7 +26,7 @@ namespace Battle.Turn{
                 }
                 if (trapOperated) break;
             }
-            Direction finalDirection = Utility.GetFinalDirectionOfPath(destTile, destPath, BattleData.selectedUnit.GetDirection());
+            Direction finalDirection = Utility.GetFinalDirectionOfPath(destTile, destPath, BattleData.turnUnit.GetDirection());
             int totalAPCost = path[destTile.GetTilePos()].requireActivityPoint;
 
             unit.ApplyMove(destTile, finalDirection, totalAPCost, tileCount);

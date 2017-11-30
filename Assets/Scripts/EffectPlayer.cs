@@ -5,6 +5,7 @@ using Battle;
 using Battle.Skills;
 using Enums;
 using DG.Tweening;
+using System.Linq;
 
 public static class EffectPlayer {
 
@@ -30,6 +31,7 @@ public static class EffectPlayer {
 		string visualEffectName = casting.Skill.visualEffectName;
 		EffectVisualType effectVisualType = casting.Skill.effectVisualType;
 		EffectMoveType effectMoveType = casting.Skill.effectMoveType;
+		bool effectDirectionality = casting.Skill.effectDirectionality;
 
 		if (secondRange.Count == 0) {
 			yield break;
@@ -53,11 +55,13 @@ public static class EffectPlayer {
 			if (effectMoveType == EffectMoveType.Move) {
 				// 이동형, 범위형 이펙트.
 				startPos = unit.realPosition + Vector3.back * 0.01f;
-				endPos = GetCenterPosOfTiles(secondRange) + Vector3.back * 0.1f;
+				// endPos = GetCenterPosOfTiles(secondRange) + Vector3.back * 0.1f;
+				endPos = (Vector3)casting.PivotPos + Vector3.back * 0.1f;
 			} 
 			else /* if (effectVisualType == EffectVisualType.Area) */{
 				// 고정형, 범위형 이펙트.
-				startPos = GetCenterPosOfTiles(secondRange) + Vector3.back * 0.1f;
+				// startPos = GetCenterPosOfTiles(secondRange) + Vector3.back * 0.1f;
+				startPos = (Vector3)casting.PivotPos + Vector3.back * 5f;
 				endPos = startPos;
 			}
 
@@ -66,7 +70,34 @@ public static class EffectPlayer {
 				Debug.LogError("Cannot load particle " + visualEffectName);
 			}
 			GameObject particle = GameObject.Instantiate(particlePrefab) as GameObject;			
-			particle.transform.position = startPos;
+
+			// 방향 설정 (방향성 가진 이펙트 한정)
+			if (effectDirectionality) {
+				List<ParticleSystem> subParticles = particle.GetComponentsInChildren<ParticleSystem>().ToList();
+				if (casting.Location.Direction == Direction.LeftUp) {
+					subParticles.ForEach(p => {
+						var main = p.main;
+						main.startRotationZ = 180f * 180f / 10313.24f;
+					});
+				}
+				else if (casting.Location.Direction == Direction.LeftDown) {
+					subParticles.ForEach(p => {
+						var main = p.main;
+						main.startRotationY = 180f * 180f / 10313.24f;
+					});
+				}
+				else if (casting.Location.Direction == Direction.RightUp) {
+					subParticles.ForEach(p => {
+						var main = p.main;
+						main.startRotationX = 180f * 180f / 10313.24f;
+					});
+				}
+				else /*(casting.Location.Direction == Direction.RightDown)*/ {
+					// subParticles.ForEach(p => p.startRotation3D = new Vector3(0,0,0));
+				}
+			}
+
+			particle.transform.position = startPos; Debug.Log(particle.transform.position);
 			yield return new WaitForSeconds (0.4f * EFFECTTIME);
 			Tween tw = particle.transform.DOMove(endPos, 0.6f * EFFECTTIME);
 			yield return tw.WaitForCompletion();
@@ -85,6 +116,32 @@ public static class EffectPlayer {
 
 			foreach (var endPos in endPosList) {
 				GameObject particle = GameObject.Instantiate(Resources.Load("Particle/" + visualEffectName)) as GameObject;
+
+				// 방향 설정
+				if (effectDirectionality) {
+					List<ParticleSystem> subParticles = particle.GetComponentsInChildren<ParticleSystem>().ToList();
+					if (casting.Location.Direction == Direction.LeftUp) {
+					subParticles.ForEach(p => {
+						var main = p.main;
+						main.startRotationZ = 180f * 180f / 10313.24f;
+					});
+					}
+					else if (casting.Location.Direction == Direction.LeftDown) {
+						subParticles.ForEach(p => {
+							var main = p.main;
+							main.startRotationY = 180f * 180f / 10313.24f;
+						});
+					}
+					else if (casting.Location.Direction == Direction.RightUp) {
+						subParticles.ForEach(p => {
+							var main = p.main;
+							main.startRotationX = 180f * 180f / 10313.24f;
+						});
+					}
+					else /*(casting.Location.Direction == Direction.RightDown)*/ {
+						// subParticles.ForEach(p => p.startRotation3D = new Vector3(0,0,0));
+					}
+				}
 
 				if (effectMoveType == EffectMoveType.Move) {
 					// 이동형 이펙트.

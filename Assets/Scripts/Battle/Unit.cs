@@ -177,6 +177,7 @@ public class Unit : MonoBehaviour{
 	public Battle.Turn.AI GetAI() { return _AI; }
 	public bool IsAI { get { return isAI; } }
 	public bool IsPC { get { return (!isAI) && (!myInfo.isObject); } }
+	public bool IsAllyNPC{ get { return GetSide() == Side.Ally && !IsAI; } }
 	public bool IsObject { get { return myInfo.isObject; } }
 	public bool IsNamed { get { return myInfo.isNamed; } }
 	public bool IsKillable { get { return myInfo.isKillable; } }
@@ -282,7 +283,6 @@ public class Unit : MonoBehaviour{
             if (originPassiveSkill is PassiveSkill)
                 ((PassiveSkill)originPassiveSkill).SkillLogic.TriggerStatusEffectsOnMove(this, statusEffect);
         }
-        BattleTriggerManager.CheckBattleTrigger(this, destTile);
     }
 
     public void ForceMove(Tile destTile) { //강제이동
@@ -1244,6 +1244,8 @@ public class Unit : MonoBehaviour{
 	}
 
 	public bool CheckReach(){
-		return GetTileUnderUnit().IsReachPoint && FindObjectOfType<BattleTriggerManager>().ActiveTriggers.Any(trig => trig.actionType == TrigActionType.Reach);
+		return GetTileUnderUnit().IsReachPosition && BattleTriggerManager.Instance.ActiveTriggers.Any(
+			trig => trig.action == TrigActionType.ReachPosition || trig.action == TrigActionType.ReachTile
+		);
 	}
 }

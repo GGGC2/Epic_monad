@@ -41,9 +41,8 @@ public class HPChangeLog : EffectLog {
         else if(result < 0)     target.currentHealth = 0;
         else                    target.currentHealth = result;
 
-        //같은 편을 공격
-		if(caster != null && caster.myInfo.side == target.myInfo.side && amount < 0){
-            BattleTriggerManager.CheckBattleTrigger(caster, TrigActionType.FriendShot);
+        if(amount < 0){
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damage, target, actor: caster);
         }
 
         yield return null;
@@ -149,7 +148,7 @@ public class DestroyUnitLog : EffectLog {
         case TrigActionType.Retreat:
             text += "퇴각";
             break;
-        case TrigActionType.Reach:
+        case TrigActionType.ReachPosition:
             text += "목표지점 도달";
             break;
         }
@@ -157,8 +156,12 @@ public class DestroyUnitLog : EffectLog {
     }
 
     public override IEnumerator Execute() {
-        BattleManager battleManager = BattleManager.Instance;
-        yield return battleManager.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+        BattleManager BM = BattleManager.Instance;
+        yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+
+        BattleTriggerManager.Instance.CountTriggers(actionType, unit, actor: BattleData.turnUnit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit, actor: BattleData.turnUnit);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
     }
 }
 public class AddChainLog : EffectLog {
@@ -278,6 +281,7 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Effect, owner, subType: unitStatusEffect.GetDisplayName());
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
@@ -434,6 +438,15 @@ public class PrintBonusTextLog : EffectLog {
             break;
         case "DirectionSide":
             uiManager.PrintDirectionBonus(DirectionCategory.Side, amount);
+            Unit actor = BattleData.turnUnit;
+            if(actor.GetSide() == Side.Ally && !actor.IsAI){
+                if(amount == Setting.sideAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.SideAttack, actor);
+                }else if(amount == Setting.backAttackBonus){
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.BackAttack, actor);
+                }
+            }
+            
             break;
         case "Celestial":
             uiManager.PrintCelestialBonus(amount);

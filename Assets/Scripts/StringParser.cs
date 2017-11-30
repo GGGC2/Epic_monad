@@ -86,7 +86,9 @@ public class StringParser{
 			else if (beforeParsed == "-") return (T)Enum.Parse(typeof(T), "Once");
 			else return (T)Enum.Parse(typeof(T), beforeParsed);
 		}catch (ArgumentException e){
-			Debug.LogError("Invalid enum value " + beforeParsed + " : " + typeof(T).FullName);
+			if(beforeParsed == "") {beforeParsed = "(empty)";}
+			Debug.LogError("잘못된 Enum Parsing " + beforeParsed + " : " + typeof(T).FullName + " / " + 
+				origin[0] + ", " + origin[1] + ", " + origin[2] + "... / " + index + "번째");
 			return default(T); // null
 		}
 	}

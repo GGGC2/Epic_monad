@@ -87,7 +87,7 @@ public class TutorialScenario{
 			};
 		} else if (mission == Mission.Standby){
             SetMissionCondition = () => {
-                int standbyButtonIndex = BattleData.selectedUnit.activeSkillList.Count;
+                int standbyButtonIndex = BattleData.turnUnit.activeSkillList.Count;
                 if (parser.ConsumeBool()) {
                     mouseMarkPos = UIManager.Instance.GetActionButtonPosition(standbyButtonIndex);
                 }

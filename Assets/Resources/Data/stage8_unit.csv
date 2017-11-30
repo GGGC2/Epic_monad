@@ -1,8 +1,8 @@
 Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
 1	마력석	manastone01	Neutral	5	17	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-2	마력석	manastone02	Neutral	12	14	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-3	마력석	manastone03	Neutral	14	4	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-4	마력석	manastone04	Neutral	21	6	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+2	마력석	manastone01	Neutral	12	14	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+3	마력석	manastone01	Neutral	14	4	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+4	마력석	manastone01	Neutral	21	6	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
 5	몬스터	monster01	Enemy	12	6	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 6	몬스터	monster01	Enemy	13	7	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 7	몬스터	monster01	Enemy	15	5	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0

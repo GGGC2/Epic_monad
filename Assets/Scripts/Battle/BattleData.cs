@@ -209,8 +209,8 @@ public static class BattleData{
 	public static bool alreadyMoved;
 	public static MoveSnapshot moveSnapshot; // 이동을 취소하기 위해서 필요
 
-	public static Unit selectedUnit; // 현재 턴의 유닛
-    public static Collectible nearestCollectible = null;  // selectedUnit으로부터 가장 가까운 collectible(수집 가능한 오브젝트)
+	public static Unit turnUnit; // 현재 턴의 유닛
+    public static Collectible nearestCollectible = null;  // turnUnit으로부터 가장 가까운 collectible(수집 가능한 오브젝트)
 	public static List<Unit> readiedUnits = new List<Unit>();
 	public static List<Unit> deadUnits = new List<Unit> ();
 	public static List<Unit> retreatUnits = new List<Unit> ();
@@ -246,7 +246,7 @@ public static class BattleData{
 		move = new Move();
 		alreadyMoved = false;
 
-		selectedUnit = null;
+		turnUnit = null;
 		readiedUnits = new List<Unit>();
 		deadUnits = new List<Unit>();
 		retreatUnits = new List<Unit>();
@@ -257,14 +257,14 @@ public static class BattleData{
 	}
 
 	public static void SetSelectedUnit(Unit unit){
-		selectedUnit = unit;
+		turnUnit = unit;
 	}
 
 	public static Tile SelectedTile{
 		get { return tileManager.GetTile(move.selectedTilePosition); }
 	}
 	public static Tile SelectedUnitTile{
-		get{ return selectedUnit.GetTileUnderUnit (); }
+		get{ return turnUnit.GetTileUnderUnit (); }
 	}
 	public static List<Unit> GetObjectUnitsList(){
 		return unitManager.GetAllUnits ().FindAll (unit => unit.IsObject == true);

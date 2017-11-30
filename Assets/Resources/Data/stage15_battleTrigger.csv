@@ -1,6 +1,6 @@
-﻿ResultType	UnitType	ActionType	reqCount	Reward	etc		
-Win	7명 이상의 수인족 전사를 무력화	Enemy	Neutralize	7	300
-Win	5페이즈 경과	None	Phase	5	300
-Lose	모든 동료가 무력화	PC	Neutralize	0	0
-Lose	3명 이상의 수인족 전사가 탈출	Enemy	Reach	7	0	3	6	28	7	28	8	28
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	7	300	7명 이상의 수인족 전사를 무력화	Neutralize	Any	Enemy
+Win	5	300	5페이즈 경과	Phase
+Lose	0	0	모든 동료가 무력화	Neutralize	Any	PC
+Lose	3	0	3명 이상의 수인족 전사가 탈출	ReachPosition	3	6	28	7	28	8	28	Enemy
 Info	Scene#30	One	One

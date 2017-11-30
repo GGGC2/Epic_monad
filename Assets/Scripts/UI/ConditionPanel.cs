@@ -13,18 +13,18 @@ public class ConditionPanel : MonoBehaviour{
 		Win.text = "";
 		Lose.text = "";
 
-		if(triggers.FindAll(trigger => trigger.resultType == TrigResultType.Win).Count > 1){
+		if(triggers.FindAll(trigger => trigger.result == TrigResultType.Win).Count > 1){
 			SetAllOrOneTrigger(Win, triggers[triggers.Count-1].winTriggerRelation);
 		}
-		if(triggers.FindAll(trigger => trigger.resultType == TrigResultType.Lose).Count > 1){
+		if(triggers.FindAll(trigger => trigger.result == TrigResultType.Lose).Count > 1){
 			SetAllOrOneTrigger(Lose, triggers[triggers.Count-1].loseTriggerRelation);
 		}
 
 		foreach(BattleTrigger trigger in triggers){
             Text text = Win;
-            if (trigger.resultType == TrigResultType.Win)
+            if (trigger.result == TrigResultType.Win)
                 text = Win;
-            else if (trigger.resultType == TrigResultType.Lose)
+            else if (trigger.result == TrigResultType.Lose)
                 text = Lose;
 			else{
 				continue;
