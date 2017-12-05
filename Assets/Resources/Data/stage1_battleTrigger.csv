@@ -1,10 +1,10 @@
-ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
 Win	0	30	모든 적 무력화	Neutralize	Any	Enemy		
 Lose	1	0	동료 유닛의 무력화	Neutralize	Any	PC		
 Bonus	3	20	3페이즈 이내에 승리	Phase	Reverse			
 Bonus	2	10	2페이즈 이내에 승리	Phase	Reverse			
 Bonus	1	20	동료 1명 이상이 피해를 입지 않음	Extra				
-Bonus	1	3	루키어스가 휴식	Rest	Name	1	lucius	
+Bonus	1	3	1회 이상 휴식	Rest	Ally	1	
 Bonus	1	7	동료끼리 피해를 주지 않음	Damage	PC	PC	Reverse	
-Bonus	1	7	레이나만 스킬을 사용	Cast	Name	1	lucius	Reverse
+Bonus	1	7	한 캐릭터만 스킬을 사용	Cast	Ally	2
 Info	Scene#2	One	One					
