@@ -41,8 +41,7 @@ public class BattleTriggerManager : MonoBehaviour {
 			if(CountUnitOfCondition(trigger) <= trigger.reqCount){
 				ActivateTrigger(trigger);
 			}
-		}
-		else{
+		}else{
 			trigger.count += 1;
 			Debug.Log("Trigger counting : " + trigger.korName + ", " + trigger.count + " / " + trigger.reqCount);
 			if (trigger.count == trigger.reqCount) {
@@ -152,10 +151,11 @@ public class BattleTriggerManager : MonoBehaviour {
 		sceneLoader = FindObjectOfType<SceneLoader>();
 	}
 
-	public void CountTriggers(TrigActionType actionType, Unit target = null, string subType = "", Unit actor = null, Log log = null, Tile dest = null){
+	public void CountTriggers(TrigActionType actionType, Unit actor = null, string subType = "", Unit target = null, Log log = null, Tile dest = null){
 		List<BattleTrigger> availableTriggers = ActiveTriggers.FindAll(trig => 
-			CheckUnitType(trig, target) && CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
-		); //UnitType, ActionType이 일치하고 && 아직 해당 log에 의해 기록되지 않은 경우
+			CheckUnitType(trig, actor, true) && CheckUnitType(trig, target)
+			&& CheckActionType(trig, actionType) && !trig.logs.Any(item => item == log)
+		); //Actor, Target, Action이 모두 일치하고 && 아직 해당 log에 의해 기록되지 않은 경우
 
 		List<BattleTrigger> targetTriggers;
 		if(dest != null){
@@ -165,7 +165,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		} //ReachPosition의 경우를 예외 처리.
 		
 		targetTriggers.ForEach(trig => {
-			trig.units.Add(target);
+			trig.units.Add(actor);
 			if(log != null){
 				trig.logs.Add(log);
 			}

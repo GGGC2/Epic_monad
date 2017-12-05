@@ -42,7 +42,7 @@ public class HPChangeLog : EffectLog {
         else                    target.currentHealth = result;
 
         if(amount < 0){
-            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damage, target, actor: caster);
+            BattleTriggerManager.Instance.CountTriggers(TrigActionType.Damage, caster, target: target);
         }
 
         yield return null;
@@ -133,14 +133,14 @@ public class CoolDownLog : EffectLog {
 }
 
 public class DestroyUnitLog : EffectLog {
-    Unit unit;
+    Unit target;
     TrigActionType actionType;
     public DestroyUnitLog(Unit unit, TrigActionType actionType) {
-        this.unit = unit;
+        this.target = unit;
         this.actionType = actionType;
     }
     public override string GetText() {
-        string text = "\t" + unit.GetNameKor() + " : ";
+        string text = "\t" + target.GetNameKor() + " : ";
         switch(actionType) {
         case TrigActionType.Kill:
             text += "죽음";
@@ -157,11 +157,11 @@ public class DestroyUnitLog : EffectLog {
 
     public override IEnumerator Execute() {
         BattleManager BM = BattleManager.Instance;
-        yield return BM.StartCoroutine(BattleManager.DestroyUnit(unit, actionType));
+        yield return BM.StartCoroutine(BattleManager.DestroyUnit(target, actionType));
 
-        BattleTriggerManager.Instance.CountTriggers(actionType, unit, actor: BattleData.turnUnit);
-		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, unit, actor: BattleData.turnUnit);
-		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, unit);
+        BattleTriggerManager.Instance.CountTriggers(actionType, BattleData.turnUnit, target: target);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, BattleData.turnUnit, target: target);
+		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, target);
     }
 }
 public class AddChainLog : EffectLog {
@@ -281,7 +281,7 @@ public class StatusEffectLog : EffectLog {
                     owner.SetStatusEffectList(newStatusEffectList);
                     break;
                 case StatusEffectChangeType.Attach:
-                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Effect, owner, subType: unitStatusEffect.GetDisplayName());
+                    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Effect, subType: unitStatusEffect.GetDisplayName(), target: owner);
                     owner.StatusEffectList.Add(unitStatusEffect);
                     break;
                 }
