@@ -1,17 +1,17 @@
 ﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
-1	수인족 전사	furryWarrior	Enemy	7	11	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-2	수인족 전사	furryWarrior	Enemy	6	12	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-3	수인족 전사	furryWarrior	Enemy	8	12	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-4	수인족 전사	furryWarrior	Enemy	4	13	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-5	수인족 전사	furryWarrior	Enemy	10	13	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-6	수인족 전사	furryWarrior	Enemy	2	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-7	수인족 전사	furryWarrior	Enemy	5	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-8	수인족 전사	furryWarrior	Enemy	9	15	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-9	수인족 전사	furryWarrior	Enemy	13	16	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-10	수인족 전사	furryWarrior	Enemy	11	17	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-11	수인족 전사	furryWarrior	Enemy	3	18	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-12	수인족 전사	furryWarrior	Enemy	7	20	RightUp	415	50	50	40	55	Melee	Plant	Moon	false	false	true	0
-13	수인족 장로	furryElder	Enemy	7	14	RightUp	415	50	50	40	55	Magic	Plant	Sun	false	true	false	0
+1	수인족 전사	furryWarrior	Enemy	7	11	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+2	수인족 전사	furryWarrior	Enemy	6	12	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+3	수인족 전사	furryWarrior	Enemy	8	12	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+4	수인족 전사	furryWarrior	Enemy	4	13	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+5	수인족 전사	furryWarrior	Enemy	10	13	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+6	수인족 전사	furryWarrior	Enemy	2	15	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+7	수인족 전사	furryWarrior	Enemy	5	15	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+8	수인족 전사	furryWarrior	Enemy	9	15	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+9	수인족 전사	furryWarrior	Enemy	13	16	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+10	수인족 전사	furryWarrior	Enemy	11	17	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+11	수인족 전사	furryWarrior	Enemy	3	18	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+12	수인족 전사	furryWarrior	Enemy	7	20	RightUp	553	100	28	28	49	Melee	Plant	Moon	false	false	true	0
+13	수인족 장로	furryElder	Enemy	7	14	RightUp	515	92	72	72	52	Magic	Plant	Sun	false	true	false	0
 14	바위	boulder	Neutral	3	27	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
 15	바위	boulder	Neutral	9	26	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
 16	바위	boulder	Neutral	4	25	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
