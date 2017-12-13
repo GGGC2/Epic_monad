@@ -1,6 +1,9 @@
 owner	ether	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	effectDirectionality	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
 manastone	0	1	가만히	1	9999	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	FALSE	-	--	None	0	0	None	0	0
+asterSpearman01	0	1	찌르기	1	42	0	Power	1.2	Route	Straight	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	WeakSmite	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 soldier01	0	1	근접 공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
+maidMelee	0	1	베기	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1	0	None	0	0
+maidRange	0	1	사격	1	40	0	Power	0.9	Point	Diamond	1	5	0	Diamond	0	0	0	DamageHealth	Shot	Individual	NonMove	FALSE	Barrage	<color=red>0.9x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	0.9	0	None	0	0
 asterCavalry01	0	1	돌진	1	45	0	Power	0.9	Route	Straight	1	4	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 asterCavalry01	0	1	근접 공격	1	30	0	Power	1	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 chaser	0	1	근접 공격	1	40	0	Power	1	Point	Diamond	1	1	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.0x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1	0	None	0	0
