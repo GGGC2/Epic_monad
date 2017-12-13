@@ -1,0 +1,4 @@
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	6	300	6페이즈 동안 PC 전원 생존	Phase
+Lose	1	0	아군 PC의 무력화	Neutralize	Ally	PC
+Info	Scene#32	One	One

@@ -157,35 +157,7 @@ public class UnitManager : MonoBehaviour{
             unit.UpdateRealPosition(direction);
         }
     }
-
-    /*public List<Unit> GetRetreatUnits(){
-		retreatUnits.Clear();
-		
-		if(SceneData.stageNumber < Setting.retreatOpenStage)
-			return retreatUnits;
-
-		foreach (var unit in GetAllUnits()){
-			// 오브젝트는 이탈하지 않는다
-			if (unit.IsObject) continue;
-
-			float percentHealth = 100f * (float)unit.GetCurrentHealth() / (float)unit.GetMaxHealth();
-			if (((percentHealth <= Setting.retreatHpPercent) && (unit.GetCurrentHealth() > 0)) ||
-				(retreatUnits.Contains(unit)))
-				retreatUnits.Add(unit);
-		}
-
-		return retreatUnits;
-	}
     
-	public List<Unit> GetDeadUnits(){
-		// 죽은 유닛들을 체크.
-		deadUnits.Clear();
-		foreach (var unit in units){
-			if ((unit.GetCurrentHealth() <= 0) || (deadUnits.Contains(unit)))
-				deadUnits.Add(unit);
-		}
-		return deadUnits;
-	}*/
     public IEnumerable<EventLog> CheckDestroyedUnits() {
         LogManager logManager = LogManager.Instance;
         UnitManager unitManager = UnitManager.Instance;

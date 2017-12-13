@@ -18,7 +18,7 @@ public class StringParser{
 		try{
 			return origin[index - 1];
 		}catch{
-			Debug.LogError((index-1) + "번째 항목을 읽을 수 없습니다!");
+			Debug.LogError(index + "번째 항목을 읽을 수 없습니다!");
 			Debug.LogError("행의 맨 앞 항목 : " + origin[0] + " / 마지막 항목 : " + origin[index-2]);
 			return "";
 		}
