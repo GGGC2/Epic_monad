@@ -1,0 +1,5 @@
+﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
+Win	1	300	트리아나 무력화	Neutralize	Ally	Name	1	triana_stage17
+Lose	3	0	아군 무력화	Neutralize	Any	Ally
+Lose	1	0	칸티움 시민 무력화	Neutralize	Any	NeutralChar
+Info	Scene#34	One	One

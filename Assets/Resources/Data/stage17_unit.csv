@@ -1,0 +1,16 @@
+﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	폭주한 트리아나	triana_stage17	Enemy	10	9	LeftDown	1018	196	123	146	64	Melee	Metal	Earth	false	false	true	0
+2	불의 정령	fireSpirit	Enemy	9	8	LefttUp	703	178	305	32	67	Magic	Fire	Moon	false	false	true	0
+3	불의 정령	fireSpirit	Enemy	11	10	RightDown	703	178	305	32	67	Magic	Fire	Moon	false	false	true	0
+4	석상	statue	Neutral	18	13	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+5	석상	statue	Neutral	8	7	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+6	석상	statue	Neutral	10	1	LeftDown	500	0	0	0	0	None	None	None	true	false	false	0
+7	화물	freight	Neutral	4	9	LeftDown	400	0	0	0	0	None	None	None	true	false	false	0
+8	화물	freight	Neutral	3	3	LeftDown	400	0	0	0	0	None	None	None	true	false	false	0
+9	화물	freight	Neutral	3	2	LeftDown	400	0	0	0	0	None	None	None	true	false	false	0
+10	unselected	unselected	Ally	8	10	RightDown	0	0	0	0	0	None	None	None	false	false	false	0
+11	unselected	unselected	Ally	7	9	RightDown	0	0	0	0	0	None	None	None	false	false	false	0
+12	unselected	unselected	Ally	7	8	RightDown	0	0	0	0	0	None	None	None	false	false	false	0
+13	unselected	unselected	Ally	13	9	LeftUp	0	0	0	0	0	None	None	None	false	false	false	0
+14	unselected	unselected	Ally	13	8	LeftUp	0	0	0	0	0	None	None	None	false	false	false	0
+15	unselected	unselected	Ally	12	7	LeftUp	0	0	0	0	0	None	None	None	false	false	false	0
