@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: a9f6fff031f4b4f5a9ee14bf86fba03d
-timeCreated: 1513203228
+guid: 10f26178d6abaea4ba7d6191405a28f3
+timeCreated: 1513430020
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: aster_swordman_0
-    21300002: aster_swordman_1
-    21300004: aster_swordman_2
-    21300006: aster_swordman_3
+    21300000: triana_stage17_0
+    21300002: triana_stage17_1
+    21300004: triana_stage17_2
+    21300006: triana_stage17_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,27 +70,11 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-  - buildTarget: iPhone
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-  - buildTarget: Android
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: aster_swordman_0
+      name: triana_stage17_0
       rect:
         serializedVersion: 2
         x: 0
@@ -103,7 +87,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_swordman_1
+      name: triana_stage17_1
       rect:
         serializedVersion: 2
         x: 250
@@ -116,7 +100,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_swordman_2
+      name: triana_stage17_2
       rect:
         serializedVersion: 2
         x: 500
@@ -129,7 +113,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_swordman_3
+      name: triana_stage17_3
       rect:
         serializedVersion: 2
         x: 750
