@@ -1,6 +1,10 @@
 ﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
-Win	7	300	7명 이상의 수인족 전사를 무력화	Neutralize	Any	Enemy
-Win	1	300	수인족 장로를 무력화	Neutralize	Any	Name	1	furryElder
+Win	7	30	7명 이상의 수인족 전사를 무력화	Neutralize	Any	Enemy
+Win	1	30	수인족 장로를 무력화	Neutralize	Any	Name	1	furryElder
 Lose	0	0	모든 동료가 무력화	Neutralize	Any	PC
 Lose	10	0	10페이즈 경과	Phase
+Bonus	1	10	아군 전원 생존	Neutralize	Any	PC	Reverse
+Bonus	1	20	아군이 피해를 입지 않음	Damage	Any	PC	Reverse
+Bonus	1	-6	적 처치	Kill	PC	Enemy	Repeat
+Bonus	1	5	범위 공격	MultiAttack	2	PC	Repeat
 Info	Scene#20	One	One					
