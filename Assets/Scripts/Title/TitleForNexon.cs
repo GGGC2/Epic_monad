@@ -15,15 +15,12 @@ public class TitleForNexon : MonoBehaviour{
 	public List<Button> titleButtons;
 	public List<DOTweenAnimation> buttonAnimations;
 
-	public List<Button> worldMapButtons;
 	public List<DOTweenAnimation> worldMapButtonAnimations;
     public void Start() {
         GameDataManager.Load();
 		StartCoroutine (SoundManager.Instance.PlayBGM ("Monad_Title"));
     }
 	public void Awake(){
-		foreach (var button in worldMapButtons)
-			button.enabled = false;
 	}
 
 	public void NewGame(){
@@ -68,10 +65,6 @@ public class TitleForNexon : MonoBehaviour{
 		foreach (var animation in worldMapButtonAnimations)
 		{
 			animation.DOPlay();
-		}
-		foreach (var button in worldMapButtons)
-		{
-			button.enabled = true;
 		}
 
 		GetComponent<WorldMapManager>().enabled = true;
