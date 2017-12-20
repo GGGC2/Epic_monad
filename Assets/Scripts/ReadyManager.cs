@@ -55,8 +55,10 @@ public class ReadyManager : MonoBehaviour{
 		button.ActiveHighlight(false);;
 	}
 
-	void Start(){
+	void Awake(){
 		Instance = this;
+	}
+	void Start(){
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
 		string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
 

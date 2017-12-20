@@ -10,7 +10,7 @@ public class BattleReadyPanel : MonoBehaviour{
 	public PanelType panelType;
 	public RightScreen_BattleReady RightPanel;
 	public SkillViewer skillViewer;
-	public List<AvailableUnitButton> Buttons;
+	List<AvailableUnitButton> UnitButtons;
 	public GameObject UnitPart;
 	public GameObject SkillPart;
 	public List<SkillSelectButton> skillButtonList = new List<SkillSelectButton>();
@@ -20,7 +20,7 @@ public class BattleReadyPanel : MonoBehaviour{
 
 	//ReadyManager.Start()가 끝난 직후 넘어온다
 	public void Initialize(){
-		Buttons = Utility.ArrayToList(transform.Find("UnitList").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
+		UnitButtons = Utility.ArrayToList(transform.Find("UnitList").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
 
 		var firstButton = Instantiate(SkillButtonPrefab);
 		skillButtonList.Add(firstButton);
@@ -46,7 +46,7 @@ public class BattleReadyPanel : MonoBehaviour{
 		SetPanelType(PanelType.Party);
 
 		if(SceneData.stageNumber < Setting.unitSelectOpenStage){
-			Buttons.ForEach(button => button.OnClicked());
+			UnitButtons.ForEach(button => button.OnClicked());
 			transform.Find("TopButtons").Find("PartySelect").gameObject.SetActive(false);
 			transform.Find("TopButtons").Find("Ether").gameObject.SetActive(false);
 			SetPanelType(PanelType.Ether);
@@ -68,17 +68,29 @@ public class BattleReadyPanel : MonoBehaviour{
 			UnitPart.SetActive(true);
 			SkillPart.SetActive(false);
 			RightPanel.SetCommonUnitInfoUI(ReadyManager.Instance.RecentUnitButton.nameString);
-		}
-		if(panelType == PanelType.Ether){
+			UnitButtons.ForEach(button => {
+				button.ActivatePropertyIcon();
+				button.NameText.text = UnitInfo.ConvertToKoreanName(button.nameString);
+			});
+		}else if(panelType == PanelType.Ether){
 			UnitPart.SetActive(false);
 			SkillPart.SetActive(true);
-
-			skillButtonList.ForEach(button => {
-				button.gameObject.SetActive(true);
-				button.Initialize();
+			UnitButtons.ForEach(button => {
+				button.ActivatePropertyIcon(false);
+				button.NameText.text = UnitInfo.ConvertToKoreanName(button.nameString);
 			});
+
+			SetAllSkillSelectButtons();
 		}
 	}
+
+	public void SetAllSkillSelectButtons(){
+		skillButtonList.ForEach(button => {
+			button.gameObject.SetActive(true);
+			button.Initialize();
+		});
+	}
+
     public void SetScrollbarValues() {
         scrollbar.size = 0.1f;
         scrollbar.numberOfSteps = 11;

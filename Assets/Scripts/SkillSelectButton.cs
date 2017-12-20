@@ -8,6 +8,7 @@ using GameData;
 
 public class SkillSelectButton : SkillUI, IPointerDownHandler{
     public RightScreen_BattleReady RightPanel;
+    ReadyManager RM;
     public int row = 0;
     public int level = 0;
     public bool selected = false;
@@ -25,7 +26,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
     }
 
     public void Initialize(){
-        var RM = FindObjectOfType<ReadyManager>();
+        RM = ReadyManager.Instance;
         mySkill = Skill.Find(RightPanel.allSkillList, RM.RecentUnitButton.nameString, level, row);
         if(mySkill == null){
             gameObject.SetActive(false);
@@ -44,7 +45,6 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
     }
 
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
-        var RM = FindObjectOfType<ReadyManager>();
         SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);
         if(mySkill.requireLevel > PartyData.level || owner == null)  {return;}
         else if(mySkill.requireLevel == 0){ //고유 특성을 누르면 초기화
@@ -57,6 +57,10 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
         }else if(owner.CurrentEther + mySkill.ether <= PartyData.MaxEther){
             Select(owner);
         }
+
+        string newEtherText = UnitInfo.ConvertToKoreanName(RM.RecentUnitButton.nameString)
+            + "\n" + owner.CurrentEther + " / " + PartyData.MaxEther;
+        RM.RecentUnitButton.NameText.GetComponent<Text>().text = newEtherText;
     }
 
     void Select(SelectedUnit owner){

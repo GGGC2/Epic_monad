@@ -8,7 +8,7 @@ using Enums;
 public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 	public Image highlightImage;
 	Image standingImage;
-	Text unitName;
+	public Text NameText;
 	Image classImage;
 	Image celestialImage;
 	Image elementImage;
@@ -22,17 +22,19 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 		ActiveHighlight(false);
 
 		standingImage = transform.Find("CharacterImageMask").Find("CharacterImage").GetComponent<Image>();
-		unitName = transform.Find("NameText").GetComponent<Text>();
+		NameText = transform.Find("NameText").GetComponent<Text>();
 		classImage = transform.Find("ClassImageMask").Find("ClassImage").GetComponent<Image>();
 		celestialImage = transform.Find("CelestialImageMask").Find("CelestialImage").GetComponent<Image>();
 		elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
+	}
 
-		RM = FindObjectOfType<ReadyManager>();
+	void Start(){
+		RM = ReadyManager.Instance;
 	}
 
 	public void SetNameAndSprite(string nameString) {
 		this.nameString = nameString;
-		unitName.text = UnitInfo.ConvertToKoreanName(nameString);
+		NameText.text = UnitInfo.ConvertToKoreanName(nameString);
 
 		if(nameString == "unselected")
 			standingImage.sprite = Resources.Load<Sprite>("transparent");
@@ -42,6 +44,12 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 		Utility.SetClassImage(classImage, UnitInfo.GetUnitClass(nameString));
 		Utility.SetElementImage(elementImage, UnitInfo.GetElement(nameString));
 		Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
+	}
+
+	public void ActivatePropertyIcon(bool onoff = true){
+		classImage.enabled = onoff;
+		celestialImage.enabled = onoff;
+		elementImage.enabled = onoff;
 	}
 
 	public void ActiveHighlight(bool onoff = true) {
@@ -59,7 +67,7 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 		if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Party){
 			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
 		}else if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Ether){
-			ReadyPanel.SetPanelType(BattleReadyPanel.PanelType.Ether);
+			ReadyPanel.SetAllSkillSelectButtons();
 		}
 	}
 
