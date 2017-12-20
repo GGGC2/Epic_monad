@@ -67,7 +67,7 @@ public class BattleReadyPanel : MonoBehaviour{
 		if(panelType == PanelType.Party){
 			UnitPart.SetActive(true);
 			SkillPart.SetActive(false);
-			RightPanel.SetCommonUnitInfoUI(Buttons[0].nameString);
+			RightPanel.SetCommonUnitInfoUI(ReadyManager.Instance.RecentUnitButton.nameString);
 		}
 		if(panelType == PanelType.Ether){
 			UnitPart.SetActive(false);

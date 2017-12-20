@@ -10,7 +10,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
     public RightScreen_BattleReady RightPanel;
     public int row = 0;
     public int level = 0;
-    bool selected = false;
+    public bool selected = false;
 
     void Awake(){
         iconSlot = GetComponent<Image>();
@@ -46,7 +46,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
         var RM = FindObjectOfType<ReadyManager>();
         SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);
-        if(mySkill.requireLevel > PartyData.level)  {return;}
+        if(mySkill.requireLevel > PartyData.level || owner == null)  {return;}
         else if(mySkill.requireLevel == 0){ //고유 특성을 누르면 초기화
             FindObjectOfType<BattleReadyPanel>().skillButtonList.ForEach(button => button.selected = false);
             owner.selectedSkills.Clear();

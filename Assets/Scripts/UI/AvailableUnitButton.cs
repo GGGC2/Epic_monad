@@ -16,10 +16,10 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 
 	public BattleReadyPanel ReadyPanel;
 	public RightScreen_BattleReady BattleReadyRightPanel; //오른쪽 절반 화면(RightScreen)을 담당
-	ReadyManager readyManager;
+	ReadyManager RM;
 
 	void Awake (){
-		InactiveHighlight();
+		ActiveHighlight(false);
 
 		standingImage = transform.Find("CharacterImageMask").Find("CharacterImage").GetComponent<Image>();
 		unitName = transform.Find("NameText").GetComponent<Text>();
@@ -27,7 +27,7 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 		celestialImage = transform.Find("CelestialImageMask").Find("CelestialImage").GetComponent<Image>();
 		elementImage = transform.Find("ElementImageMask").Find("ElementImage").GetComponent<Image>();
 
-		readyManager = FindObjectOfType<ReadyManager>();
+		RM = FindObjectOfType<ReadyManager>();
 	}
 
 	public void SetNameAndSprite(string nameString) {
@@ -44,12 +44,8 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 		Utility.SetCelestialImage(celestialImage, UnitInfo.GetCelestial(nameString));
 	}
 
-	public void ActiveHighlight() {
-		highlightImage.enabled = true;
-	}
-
-	public void InactiveHighlight() {
-		highlightImage.enabled = false;
+	public void ActiveHighlight(bool onoff = true) {
+		highlightImage.enabled = onoff;
 	}
 
 	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
@@ -57,10 +53,10 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 	}
 
 	public void OnClicked() {
-		readyManager.RecentUnitButton = this;
+		SelectUnitIfUnselected();
 		BattleReadyRightPanel.unitName.text = UnitInfo.ConvertToKoreanFullName(nameString);
+		RM.RecentUnitButton = this;
 		if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Party){
-			SelectUnitIfUnselected();
 			BattleReadyRightPanel.SetCommonUnitInfoUI(nameString);
 		}else if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Ether){
 			ReadyPanel.SetPanelType(BattleReadyPanel.PanelType.Ether);
@@ -69,16 +65,16 @@ public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 
 	void SelectUnitIfUnselected() {
 		// 출전중이 아니라면
-		if (!readyManager.IsAlreadySelected(nameString)) {
+		if (!RM.IsAlreadySelected(nameString)) {
 			// 풀팟이면
-			if (readyManager.selectableUnitCounter.IsPartyFull()) return;
+			if (RM.selectableUnitCounter.IsPartyFull()) return;
 			else {
-				readyManager.AddUnitToSelectedUnitList(this);
+				RM.AddUnitToSelectedUnitList(this);
 			}
 		}
-		// 출전중일때 누르면 빠짐
-		else {
-			readyManager.SubUnitToSelectedUnitList(this);
+		// 출전중일때 누르면 빠짐(파티 화면 한정)
+		else if(RM.RecentUnitButton == this){
+			RM.SubUnitToSelectedUnitList(this);
 		}
 	}
 }

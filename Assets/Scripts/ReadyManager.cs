@@ -27,6 +27,7 @@ public class SelectedUnit{
 }
 
 public class ReadyManager : MonoBehaviour{
+	public static ReadyManager Instance;
 	TextAsset csvFile;
 	public SelectableUnitCounter selectableUnitCounter;
 	public BattleReadyPanel ReadyPanel;
@@ -34,6 +35,7 @@ public class ReadyManager : MonoBehaviour{
 	List<AvailableUnitButton> UnitButtons;
 	public List<SelectedUnit> selectedUnits = new List<SelectedUnit>();
     public GameObject CharacterButtons;
+	public GameObject WarningPanel;
 
 	List<GameObject> availableUnitButtons = new List<GameObject>();
 
@@ -45,17 +47,16 @@ public class ReadyManager : MonoBehaviour{
 
 	public void AddUnitToSelectedUnitList(AvailableUnitButton button) {
 		selectedUnits.Add(new SelectedUnit(button.nameString));
-		selectableUnitCounter.PartyNumberChange(1);
 		button.ActiveHighlight();
 	}
 
 	public void SubUnitToSelectedUnitList(AvailableUnitButton button) {
 		selectedUnits.Remove(selectedUnits.Find(unit => unit.name == button.nameString)); 
-		selectableUnitCounter.PartyNumberChange(-1);
-		button.InactiveHighlight();
+		button.ActiveHighlight(false);;
 	}
 
 	void Start(){
+		Instance = this;
 		csvFile = Resources.Load<TextAsset>("Data/StageAvailablePC");
 		string[] stageData = Parser.FindRowDataOf(csvFile.text, SceneData.stageNumber.ToString());
 
@@ -76,6 +77,7 @@ public class ReadyManager : MonoBehaviour{
 		}
 
 		DontDestroyOnLoad(gameObject);
+		RecentUnitButton = UnitButtons.First();
 		ReadyPanel.Initialize();
 	}
 
@@ -98,7 +100,34 @@ public class ReadyManager : MonoBehaviour{
 		return selectedUnits.Count > 0;
 	}
 
-	public void ReadyButtonDown(){
-		GameObject.Find("SceneLoader").GetComponent<SceneLoader>().LoadNextBattleScene();
+	//UI 버튼으로 구현.
+	public void StartBattle(){
+		//기존 능력을 포기하지 않고 추가로 가져갈 수 있는 능력이 있을 경우
+		bool isEfficient = selectedUnits.All(unit => {
+			int leastEther = 100;
+			var unselectedList = new List<Skill>();
+			ReadyPanel.skillButtonList.FindAll(button => !button.selected && button.mySkill != null).ForEach(button => {
+				unselectedList.Add(button.mySkill);
+			});
+
+			unselectedList.ForEach(skill => {
+				if(PartyData.level >= skill.requireLevel && skill.ether < leastEther){
+					leastEther = skill.ether;
+				}
+			});
+
+			//남은 에테르가 가장 저렴한 능력의 에테르보다 적은지(추가 선택 불가) 여부. true이면 효율적.
+			return PartyData.MaxEther - unit.CurrentEther < leastEther;
+		});
+
+		if(selectedUnits.Count < selectableUnitCounter.maxSelectableUnitNumber){
+			WarningPanel.SetActive(true);
+			WarningPanel.transform.Find("Text").GetComponent<Text>().text = "캐릭터를 더 선택할 수 있습니다.\n\n정말 시작하시겠습니까?";
+		}else if(!isEfficient){
+			WarningPanel.SetActive(true);
+			WarningPanel.transform.Find("Text").GetComponent<Text>().text = "능력을 더 선택할 수 있습니다.\n\n정말 시작하시겠습니까?";
+		}else{
+			FindObjectOfType<SceneLoader>().LoadNextBattleScene();
+		}
 	}
 }
