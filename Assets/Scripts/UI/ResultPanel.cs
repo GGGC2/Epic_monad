@@ -59,8 +59,13 @@ public class ResultPanel : MonoBehaviour{
 		//시연회용으로 씬 연결 바꿔놓음
 		if(SceneData.stageNumber == 1){
 			Checker.SceneLoader.LoadNextBattleScene(2);
-		}else if(SceneData.stageNumber == 2 || SceneData.stageNumber == 5){
+		}else if(SceneData.stageNumber == 2){
+			Checker.SceneLoader.LoadNextBattleScene(3);
+		}else if(SceneData.stageNumber == 3){
 			Checker.SceneLoader.GoToTitle();
+		}else if(SceneData.stageNumber == 5){
+			Checker.SceneLoader.LoadNextBattleScene(10);
+			//Checker.SceneLoader.GoToTitle();
 		}
 		else{
 			Checker.SceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
