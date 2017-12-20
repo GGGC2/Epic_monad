@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 94a3f1f8dd1504bef98c540b6e03c429
-timeCreated: 1513203220
+guid: 2b446d03de5d0134eb4eb8ac71136d15
+timeCreated: 1513430090
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: aster_spearman2_0
-    21300002: aster_spearman2_1
-    21300004: aster_spearman2_2
-    21300006: aster_spearman2_3
+    21300000: reina_13_0
+    21300002: reina_13_1
+    21300004: reina_13_2
+    21300006: reina_13_3
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -70,27 +70,11 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
-  - buildTarget: iPhone
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-  - buildTarget: Android
-    maxTextureSize: 2048
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: aster_spearman2_0
+      name: reina_13_0
       rect:
         serializedVersion: 2
         x: 0
@@ -103,7 +87,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_spearman2_1
+      name: reina_13_1
       rect:
         serializedVersion: 2
         x: 250
@@ -116,7 +100,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_spearman2_2
+      name: reina_13_2
       rect:
         serializedVersion: 2
         x: 500
@@ -129,7 +113,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: aster_spearman2_3
+      name: reina_13_3
       rect:
         serializedVersion: 2
         x: 750

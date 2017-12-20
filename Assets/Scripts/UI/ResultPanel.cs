@@ -54,9 +54,17 @@ public class ResultPanel : MonoBehaviour{
 		//다 출력된 후 클릭을 해야 넘어감
 		yield return new WaitUntil (() => Input.GetMouseButtonDown(0));
 
-		PartyData.level += 1;
+		PartyData.SetLevel(1, true);
 
-		Checker.sceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+		//시연회용으로 씬 연결 바꿔놓음
+		if(SceneData.stageNumber == 1){
+			Checker.SceneLoader.LoadNextBattleScene(2);
+		}else if(SceneData.stageNumber == 2 || SceneData.stageNumber == 5){
+			Checker.SceneLoader.GoToTitle();
+		}
+		else{
+			Checker.SceneLoader.LoadNextDialogueScene(Checker.nextScriptName);
+		}
 	}
 
 	IEnumerator ShowLevelUpText(){

@@ -12,7 +12,7 @@ public class SkillInfoButton : SkillUI{
 		iconSlot = transform.Find("SkillImage").GetComponent<Image>();
 	}
 
-	public void Start(){ 
+	public void Start(){
 		if(gameObject.name == "SkillPrevButton0"){
 			viewer.Initialize();
 		}

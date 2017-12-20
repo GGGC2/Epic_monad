@@ -67,7 +67,7 @@ public class UnitManager : MonoBehaviour{
 	public Unit GetAnUnit(string engName){
 		Unit wantedUnit = null;
 		foreach(Unit unit in GetAllUnits()){
-			if (unit.GetNameEng () == engName) {
+			if (unit.EngName == engName) {
 				wantedUnit = unit;
 			}
 		}
@@ -91,7 +91,7 @@ public class UnitManager : MonoBehaviour{
             if (collectible.unit == null) continue; // 유닛 정보가 없는 collectible에 접근하는 경우가 있음
             int distance = Utility.GetDistance(BattleData.turnUnit.GetPosition(), collectible.unit.GetPosition());
             if(distance <= collectible.range) {
-                Debug.Log(BattleData.turnUnit.GetNameEng() + " " + collectible.unit.GetNameEng() + "수집 중");
+                Debug.Log(BattleData.turnUnit.EngName + " " + collectible.unit.EngName + "수집 중");
                 UIManager.Instance.AddCollectableActionButton();
                 BattleData.nearestCollectible = collectible;
                 return;
@@ -321,7 +321,7 @@ public class UnitManager : MonoBehaviour{
 		BattleData.tileManager.DepaintAllTiles(TileColor.Blue);
 			
 		allUnits.ForEach(unit => {
-			if (controllableUnitNameList.Contains(unit.GetNameEng())){
+			if (controllableUnitNameList.Contains(unit.EngName)){
 				Destroy(unit.GetComponent<AIData>());
 			}
 		});

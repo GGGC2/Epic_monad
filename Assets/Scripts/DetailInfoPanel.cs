@@ -20,7 +20,7 @@ public class DetailInfoPanel : UnitInfoUI{
     }
 
 	public void Initialize(){
-		Sprite sprite = Utility.IllustOf(unit.GetNameEng());
+		Sprite sprite = Utility.IllustOf(unit.EngName);
 		if(sprite != null){
 			illust.sprite = sprite;
 		}else{

@@ -1,13 +1,13 @@
 Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable			
-1	궁수	archer01	Enemy	8	2	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
-2	궁수	archer01	Enemy	8	12	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
-3	궁수	archer01	Enemy	4	7	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
-4	메이드	soldier01	Enemy	5	4	RightDown	162	61	20	37	43	Melee	None	None	false	false	true	0		
-5	메이드	soldier01	Enemy	5	10	RightDown	139	61	20	37	43	Melee	None	None	false	false	true	0		
-6	메이드	soldier01	Enemy	15	4	LeftUp	162	61	20	37	43	Melee	None	None	false	false	true	0		
-7	메이드	soldier01	Enemy	15	10	LeftUp	162	61	20	37	43	Melee	None	None	false	false	true	0		
+1	총을 든 메이드 인형	maidRange	Enemy	8	2	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
+2	총을 든 메이드 인형	maidRange	Enemy	8	12	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
+3	총을 든 메이드 인형	maidRange	Enemy	4	7	LeftUp	152	57	20	20	41	Melee	None	None	false	false	true	0		
+4	검을 든 메이드 인형	maidMelee	Enemy	5	4	RightDown	162	61	20	37	43	Melee	None	None	false	false	true	0		
+5	검을 든 메이드 인형	maidMelee	Enemy	5	10	RightDown	139	61	20	37	43	Melee	None	None	false	false	true	0		
+6	검을 든 메이드 인형	maidMelee	Enemy	15	4	LeftUp	162	61	20	37	43	Melee	None	None	false	false	true	0		
+7	검을 든 메이드 인형	maidMelee	Enemy	15	10	LeftUp	162	61	20	37	43	Melee	None	None	false	false	true	0		
 8	결계석	controller	Enemy	15	7	LeftUp	249	0	3	71	1	Magic	None	None	true	false	false	0		
 9	PCgrenev	grenev	Ally	2	6	RightDown	0	0	0	0	0	None	None	None	false	false	false	0		
 10	PCarcadia	arcadia	Ally	1	7	RightDown	0	0	0	0	0	None	None	None	false	false	false	0		
-11	PCnoel	noel	Ally	2	8	RightDown	0	0	0	0	0	None	None	None	false	false	false	0
+11	PCnoel	noel	Ally	2	8	RightDown	0	0	0	0	0	None	None	None	false	false	false	0		
 12	PCdarkenir	darkenir	Ally	2	7	RightDown	0	0	0	0	0	None	None	None	false	false	false	1	CurrentAP	5

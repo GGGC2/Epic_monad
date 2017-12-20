@@ -15,8 +15,11 @@ public class SceneLoader : MonoBehaviour{
 		StartCoroutine(FadeoutAndLoadDialogueScene("Title"));
 	}
 
-	public void LoadNextBattleScene(){
+	public void LoadNextBattleScene(int stage = 0){
 		//FindAndOffAdvUI ();
+		if(stage != 0){
+			SceneData.stageNumber = stage;
+		}
 		StartCoroutine(FadeoutAndLoadBattleScene());
 	}
 

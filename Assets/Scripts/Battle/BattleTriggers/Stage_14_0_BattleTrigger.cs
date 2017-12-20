@@ -12,22 +12,22 @@ class Stage_14_0_BattleTrigger : BattleTrigger {
         LogManager logManager = LogManager.Instance;
         List<Unit> doors = new List<Unit>();
         List<Unit> allUnits = UnitManager.Instance.GetAllUnits();
-        switch(box.GetNameEng()) {
+        switch(box.EngName) {
         case "box01":
-            doors = allUnits.FindAll(unit => unit.GetNameEng() == "door05");
+            doors = allUnits.FindAll(unit => unit.EngName == "door05");
             break;
         case "box02":
-            doors = allUnits.FindAll(unit => unit.GetNameEng() == "door06");
+            doors = allUnits.FindAll(unit => unit.EngName == "door06");
             break;
         }
         bool threeBoxesDestroyed = true;
         for(int i = 1; i <= 3; i++) {
-            if(!units.Any(unit => unit.GetNameEng() == "box0" + i)) {
+            if(!units.Any(unit => unit.EngName == "box0" + i)) {
                 threeBoxesDestroyed = false;
             }
         }
         if(threeBoxesDestroyed) {
-            doors = allUnits.FindAll(unit => unit.GetNameEng().Contains("door0"));
+            doors = allUnits.FindAll(unit => unit.EngName.Contains("door0"));
         }
         logManager.Record(new UnitDestroyedLog(doors));
         foreach(var door in doors) {

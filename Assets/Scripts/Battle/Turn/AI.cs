@@ -227,13 +227,13 @@ namespace Battle.Turn{
 		}
 
 		IEnumerator DecideActionAndAct(){
-			if (unit.GetNameEng ().Equals ("triana")) {
+			if (unit.EngName.Equals ("triana")) {
 				state = State.StandbyOrRest;
-			} else if (unit.GetNameEng ().Equals ("triana_Rest")) {
+			} else if (unit.EngName.Equals ("triana_Rest")) {
 				state = State.Triana_Rest;
-			} else if (unit.GetNameEng ().Equals ("child")) {
+			} else if (unit.EngName.Equals ("child")) {
 				state = State.Child;
-			} else if (unit.GetNameEng ().Equals ("childHolder")) {
+			} else if (unit.EngName.Equals ("childHolder")) {
 				state = State.ChildHolder;
 			} else {
 				state = State.MoveToBestCasting;
@@ -265,7 +265,7 @@ namespace Battle.Turn{
 			yield return battleManager.ToDoBeforeAction ();
 
 			int minRewardWorthAttack = 0;
-			if (unit.GetNameEng () == "kashasty_Escape") {
+			if (unit.EngName == "kashasty_Escape") {
 				minRewardWorthAttack = 400;
 			}
 
@@ -371,7 +371,7 @@ namespace Battle.Turn{
 			Casting casting = unit.GetBestCasting (currTile);
 
 			if (casting == null) {
-				if (!unit.IsMovePossibleState() || unit.GetNameEng() == "childHolder") {
+				if (!unit.IsMovePossibleState() || unit.EngName == "childHolder") {
 					state = State.StandbyOrRest;
 					yield break;
 				} else {
@@ -430,7 +430,7 @@ namespace Battle.Turn{
 				if (tileNearHolder != null) {
 					if (tileNearHolder.IsUnitOnTile ()) {
 						Unit nearUnit = tileNearHolder.GetUnitOnTile ();
-						if (nearUnit.GetNameEng () == "child") {
+						if (nearUnit.EngName == "child") {
 							nearChild = nearUnit;
 						}
 					}

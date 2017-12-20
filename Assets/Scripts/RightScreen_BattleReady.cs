@@ -27,8 +27,7 @@ public class RightScreen_BattleReady : MonoBehaviour {
 	List<UnitStatusEffectInfo> allStatusEffectInfoList;
 	List<TileStatusEffectInfo> allTileStatusEffectInfoList;
 
-	List<SkillInfoButton> skillButtons = new List<SkillInfoButton>();
-	public AvailableUnitButton RecentButton;
+	List<SkillInfoButton> skillInfoButtons = new List<SkillInfoButton>();
 
 	readonly int testLevel = 30;
 		
@@ -59,26 +58,21 @@ public class RightScreen_BattleReady : MonoBehaviour {
 	List<PassiveSkill> passiveSkillList = new List<PassiveSkill>();
 
 	public void SetSkillToDetailInfoPanel(string unitEngName) {
-		skillButtons.ForEach(button => button.gameObject.SetActive(true));
+		skillInfoButtons.ForEach(button => button.gameObject.SetActive(true));
 
 		var RM = FindObjectOfType<ReadyManager>();
         SelectedUnit unit = RM.selectedUnits.Find(selectedUnit => selectedUnit.name == unitEngName);
 		if(unit == null){
-			skillButtons.ForEach(button => button.gameObject.SetActive(false));
+			skillInfoButtons.ForEach(button => button.gameObject.SetActive(false));
 			return;
 		}
 
-		// 고유 특성을 맨 앞으로
-		Skill uniquePassive = Parser.GetSkillByUnit(unitEngName).Find(pSkill => pSkill.requireLevel == 0);
-		skillButtons.First ().Initialize (uniquePassive, null);
-				
-		// 나머지 스킬 표시
 		Debug.Log("selectedSkills : " + unit.selectedSkills.Count);
-		for (int i = 1; i <= 10; i++){
-			if(i <= unit.selectedSkills.Count){
-				skillButtons [i].Initialize (unit.selectedSkills [i - 1], null);
+		for (int i = 0; i <= 10; i++){
+			if(i < unit.selectedSkills.Count){
+				skillInfoButtons [i].Initialize (unit.selectedSkills[i], null);
 			}else{
-				skillButtons[i].gameObject.SetActive(false);
+				skillInfoButtons[i].gameObject.SetActive(false);
 			}
 
             /*if (i <= activeSkillList.Count){
@@ -91,7 +85,7 @@ public class RightScreen_BattleReady : MonoBehaviour {
         }
 
 		// 스킬 상세설명 초기화
-		SkillInfoButton skillButton = skillButtons.Find(button => button.isActiveAndEnabled);
+		SkillInfoButton skillButton = skillInfoButtons.Find(button => button.isActiveAndEnabled);
 		skillButton.GetComponent<SkillInfoButton> ().SetViewer (null);
 		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
@@ -141,7 +135,7 @@ public class RightScreen_BattleReady : MonoBehaviour {
 
 		//0번이 고유 특성 자리
         for(int i = 0; i <= 10; i++){
-            skillButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
+            skillInfoButtons.Add(GameObject.Find("SkillPrevButton"+i).GetComponent<SkillInfoButton>());
         }
 	}
 }

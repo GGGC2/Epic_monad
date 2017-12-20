@@ -43,10 +43,10 @@
 42	디아즈 경비병	GuardDiaz	Ally	12	13	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
 43	디아즈 경비병	GuardDiaz	Ally	7	5	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
 44	디아즈 경비병	GuardDiaz	Ally	12	5	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
-45	메이드	maid	Ally	6	8	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
-46	메이드	maid	Ally	7	10	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
-47	메이드	maid	Ally	12	10	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
-48	메이드	maid	Ally	13	8	LeftDown	349	115	52	75	53	Melee	Water	Earth	false	false	true	0
+45	디아즈 경비병	GuardDiaz	Ally	6	8	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+46	디아즈 경비병	GuardDiaz	Ally	7	10	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+47	디아즈 경비병	GuardDiaz	Ally	12	10	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
+48	디아즈 경비병	GuardDiaz	Ally	13	8	LeftDown	433	125	120	52	49	Melee	Fire	Moon	false	false	true	0
 49	슈미트	schmidt	Ally	9	8	LeftDown	834	138	120	75	60	Melee	Fire	Moon	false	false	true	0
 50	진열대	rackSword	Neutral	4	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0
 51	진열대	rackSword	Neutral	5	16	LeftDown	1000	0	100	100	0	None	None	None	true	false	true	0

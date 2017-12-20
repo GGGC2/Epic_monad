@@ -38,7 +38,7 @@ namespace BattleUI {
                 Utility.SetElementImage(image, ((UnitStatusEffect)statusEffect).GetOwner().GetElement());
             else {
                 if (statusEffect.GetOriginSkill() != null) fileName = GetSkillColumnRow(statusEffect.GetOriginSkill());
-                string fileDirectory = "Icon/Skill/" + statusEffect.GetCaster().GetNameEng() + "/" + fileName;
+                string fileDirectory = "Icon/Skill/" + statusEffect.GetCaster().EngName + "/" + fileName;
                 try {
                     image.sprite = Resources.Load<Sprite>(fileDirectory);
                 }

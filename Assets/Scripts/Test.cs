@@ -29,7 +29,7 @@ public class Test : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Return) && panel.activeSelf) {
             string partyLevel = levelInputField.text;
-            if(partyLevel == "") PartyData.level = 1;
+            if(partyLevel == "") PartyData.SetLevel(1);
             else PartyData.level = Convert.ToInt32(partyLevel);
 
             string stageNumber = stageInputField.text;

@@ -7,7 +7,7 @@ using WorldMap;
 using GameData;
 using UnityEngine.SceneManagement;
 
-public class TitleForNexon : MonoBehaviour{
+public class TitleScript : MonoBehaviour{
     public GameDataManager gameDataManager;
 	public DOTweenAnimation titlePath;
 	public DOTweenAnimation titleAnimation;
@@ -15,21 +15,18 @@ public class TitleForNexon : MonoBehaviour{
 	public List<Button> titleButtons;
 	public List<DOTweenAnimation> buttonAnimations;
 
-	public List<Button> worldMapButtons;
 	public List<DOTweenAnimation> worldMapButtonAnimations;
     public void Start() {
         GameDataManager.Load();
 		StartCoroutine (SoundManager.Instance.PlayBGM ("Monad_Title"));
     }
 	public void Awake(){
-		foreach (var button in worldMapButtons)
-			button.enabled = false;
 	}
 
 	public void NewGame(){
         GameDataManager.Reset();
-
-		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
+		FindObjectOfType<SceneLoader>().LoadNextBattleScene();
+		//FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
     public void LoadGame() {
         SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
@@ -48,7 +45,9 @@ public class TitleForNexon : MonoBehaviour{
 	}
 
 	public void ToTestScene(){
-		SceneManager.LoadScene("Test");
+		//시연회용으로 씬 연결 바꿔놓음
+		//SceneManager.LoadScene("Test");
+		FindObjectOfType<SceneLoader>().LoadNextBattleScene(5);
 	}
 
     private void ShowWorldMap(){
@@ -68,10 +67,6 @@ public class TitleForNexon : MonoBehaviour{
 		foreach (var animation in worldMapButtonAnimations)
 		{
 			animation.DOPlay();
-		}
-		foreach (var button in worldMapButtons)
-		{
-			button.enabled = true;
 		}
 
 		GetComponent<WorldMapManager>().enabled = true;
