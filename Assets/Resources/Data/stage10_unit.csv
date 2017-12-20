@@ -1,12 +1,12 @@
-﻿Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
-1	수인족 전사	furryWarrior	Enemy	7	14	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-2	수인족 전사	furryWarrior	Enemy	6	15	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-3	수인족 전사	furryWarrior	Enemy	8	15	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-4	수인족 전사	furryWarrior	Enemy	4	16	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-5	수인족 전사	furryWarrior	Enemy	10	16	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-6	수인족 전사	furryWarrior	Enemy	5	18	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-7	수인족 전사	furryWarrior	Enemy	9	18	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
-8	수인족 장로	furryElder	Enemy	7	17	LeftDown	405	50	50	32	55	Magic	Plant	Sun	false	true	false	0
+Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
+1	수인족 전사	stel_normal	Enemy	7	14	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+2	수인족 전사	stel_normal	Enemy	6	15	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+3	수인족 전사	stel_normal	Enemy	8	15	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+4	수인족 전사	stel_normal	Enemy	4	16	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+5	수인족 전사	stel_normal	Enemy	10	16	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+6	수인족 전사	stel_normal	Enemy	5	18	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+7	수인족 전사	stel_normal	Enemy	9	18	LeftDown	405	50	50	32	55	Melee	Plant	Moon	false	false	true	0
+8	수인족 장로	stel_elder	Enemy	7	17	LeftDown	405	50	50	32	55	Magic	Plant	Sun	false	true	false	0
 9	PCcuri	curi	Ally	8	3	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
 10	PCkarldrich	karldrich	Ally	6	3	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
 11	PClucius	lucius	Ally	7	4	RightUp	0	0	0	0	0	None	None	None	false	false	false	0
