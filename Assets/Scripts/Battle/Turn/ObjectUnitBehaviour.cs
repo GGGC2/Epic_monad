@@ -42,7 +42,7 @@ namespace Battle.Turn
 
 		private static IEnumerator AnObjectUnitBehave(Unit objectUnit){
 			BattleData.turnUnit = objectUnit;
-			if (objectUnit.GetNameEng () == "controller") {
+			if (objectUnit.EngName == "controller") {
 				yield return BattleData.battleManager.ToDoBeforeAction ();
 				yield return ControllerAttack (objectUnit);
 				yield return LogManager.Instance.ExecuteLastEventLogAndConsequences();

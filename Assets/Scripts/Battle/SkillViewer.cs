@@ -129,7 +129,7 @@ public class SkillViewer : SkillUI{
             return ((int)(GameData.PartyData.level * coef + baseValue)).ToString();
         }
         else if(SceneManager.GetActiveScene().name == "Battle"){
-            Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.GetNameEng() == mySkill.owner);
+            Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.EngName == mySkill.owner);
             return ((int)(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
         else return ((int)((float)UnitInfo.GetStat(mySkill.owner, statType)*coef + baseValue)).ToString();

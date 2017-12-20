@@ -6,7 +6,7 @@ namespace Battle.Skills {
         public override void TriggerOnPhaseStart(Unit caster, int phase) {
             UnitManager unitManager = UnitManager.Instance;
             
-            if (unitManager.GetAllUnits().Any(unit => unit.GetNameEng().Contains("door0"))) {
+            if (unitManager.GetAllUnits().Any(unit => unit.EngName.Contains("door0"))) {
                 if ((phase - 1) % 3 == 0 && phase != 1) {
                     StatusEffector.AttachStatusEffect(caster, passiveSkill, caster);
                 }

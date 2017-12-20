@@ -230,7 +230,7 @@ namespace BattleUI{
 
 		private Sprite FindUnitProfileImage(Unit unit)
 		{
-			string imagePath = "UnitImage/portrait_" + unit.GetNameEng().ToString();
+			string imagePath = "UnitImage/portrait_" + unit.EngName.ToString();
 
 			Sprite sprite = Resources.Load(imagePath, typeof(Sprite)) as Sprite;
 			if (sprite == null)

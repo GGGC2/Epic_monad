@@ -10,7 +10,7 @@ public class Collectible {
     public int range;
 
     public Collectible(List<string> data) {
-        unit = UnitManager.Instance.allUnits.Find(_unit => _unit.GetNameEng() == data[0]);
+        unit = UnitManager.Instance.allUnits.Find(_unit => _unit.EngName == data[0]);
         phase = Int32.Parse(data[1]);
         range = Int32.Parse(data[2]);
     }

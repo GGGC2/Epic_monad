@@ -14,7 +14,7 @@ class Stage_14_1_BattleTrigger : BattleTrigger {
         UnitManager unitManager = UnitManager.Instance;
         TileManager tileManager = TileManager.Instance;
         List<Unit> units = unitManager.GetAllUnits();
-        bool allDoorsOpen = !units.Any(unit => unit.GetNameEng().Contains("door"));
+        bool allDoorsOpen = !units.Any(unit => unit.EngName.Contains("door"));
 
         Dictionary<Direction, List<Vector2>> generatePositionDict = new Dictionary<Direction, List<Vector2>>();
         generatePositionDict.Add(Direction.Left, new List<Vector2>());

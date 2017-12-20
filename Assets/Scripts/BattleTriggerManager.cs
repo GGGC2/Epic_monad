@@ -75,11 +75,18 @@ public class BattleTriggerManager : MonoBehaviour {
 		List<BattleTrigger> exTrigs = triggers.FindAll(trig => trig.action == TrigActionType.Extra);
 		if(exTrigs.Count != 0){
 			if(SceneData.stageNumber == 1){
-				List<HPChangeLog> TargetLogs = LogsOfType<HPChangeLog>().FindAll(log =>
-					(log.target.GetNameEng() == "reina" || log.target.GetNameEng() == "lucius") && log.amount < 0
+				List<HPChangeLog> Target0Logs = LogsOfType<HPChangeLog>().FindAll(log =>
+					(log.target.EngName == "reina" || log.target.EngName == "lucius") && log.amount < 0
 				);
-				if(!TargetLogs.Any(log => log.target.GetNameEng() == "lucius") || !TargetLogs.Any(log => log.target.GetNameEng() == "reina")){
+				if(!Target0Logs.Any(log => log.target.EngName == "lucius") || !Target0Logs.Any(log => log.target.EngName == "reina")){
 					CountBattleTrigger(exTrigs[0]); //한 명이라도 피해를 입지 않았으면 발동
+				}
+
+				List<CastLog> Target1Logs = LogsOfType<CastLog>().FindAll(log => 
+					log.actor.EngName == "lucius" || log.actor.EngName == "reina"
+				);
+				if(Target1Logs.All(log => log.actor.EngName == "lucius") || Target1Logs.All(log => log.actor.EngName == "reina")){
+					CountBattleTrigger(exTrigs[1]);
 				}
 			}else if(SceneData.stageNumber == 2){
 				List<ActiveSkill> usedSkills = new List<ActiveSkill>();
@@ -231,7 +238,7 @@ public class BattleTriggerManager : MonoBehaviour {
 		}
 
 		return (unit == null || unitType == TrigUnitType.Any) //TrigActionType.Phase 등 명시적인 행위주체가 없는 경우
-			|| (unitType == TrigUnitType.Name && names.Any (x => x.Equals(unit.GetNameEng())))
+			|| (unitType == TrigUnitType.Name && names.Any (x => x.Equals(unit.EngName)))
 			|| (unitType == TrigUnitType.Ally && unit.GetSide() == Side.Ally)
 			|| (unitType == TrigUnitType.Enemy && unit.GetSide() == Side.Enemy)
 			|| (unitType == TrigUnitType.PC && unit.IsPC == true && unit.GetSide() == Side.Ally)
