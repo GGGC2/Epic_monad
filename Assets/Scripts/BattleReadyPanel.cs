@@ -13,14 +13,14 @@ public class BattleReadyPanel : MonoBehaviour{
 	public List<AvailableUnitButton> Buttons;
 	public GameObject UnitPart;
 	public GameObject SkillPart;
-	List<SkillSelectButton> skillButtonList = new List<SkillSelectButton>();
+	public List<SkillSelectButton> skillButtonList = new List<SkillSelectButton>();
 	public SkillSelectButton SkillButtonPrefab;
     public Scrollbar scrollbar;
 	int buttonDist = 90;
 
 	//ReadyManager.Start()가 끝난 직후 넘어온다
 	public void Initialize(){
-		Buttons = Utility.ArrayToList(transform.Find("scrollView").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
+		Buttons = Utility.ArrayToList(transform.Find("UnitList").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
 
 		var firstButton = Instantiate(SkillButtonPrefab);
 		skillButtonList.Add(firstButton);
@@ -46,9 +46,9 @@ public class BattleReadyPanel : MonoBehaviour{
 		SetPanelType(PanelType.Party);
 
 		if(SceneData.stageNumber < Setting.unitSelectOpenStage){
+			Buttons.ForEach(button => button.OnClicked());
 			transform.Find("TopButtons").Find("PartySelect").gameObject.SetActive(false);
 			transform.Find("TopButtons").Find("Ether").gameObject.SetActive(false);
-			Buttons.ForEach(button => button.SetUnitInfoToDetailPanel());
 			SetPanelType(PanelType.Ether);
 		}
         SetScrollbarValues();

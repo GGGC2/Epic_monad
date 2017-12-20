@@ -56,7 +56,7 @@ public class SkillDB
 		}
 
 		List<string> skillNames = new List<string>();
-		List<Skill> allUnitSkills = Parser.GetSkillByUnit(unitName);
+		List<Skill> allUnitSkills = Parser.GetSkillsByUnit(unitName);
 		foreach (SkillSaveData skillSaveData in skillSaveDatas){
 			Skill skill = Parser.GetSkillByName(skillSaveData.skillName);
 			if (skill == null)

@@ -160,7 +160,7 @@ public class Parser : MonoBehaviour{
 	}
 
 	private static Dictionary<string, List<Skill>> skillByUnit;
-	public static List<Skill> GetSkillByUnit(string unitName){
+	public static List<Skill> GetSkillsByUnit(string unitName){
 		if (skillByUnit == null){
 			skillByUnit = new Dictionary<string, List<Skill>>();
 

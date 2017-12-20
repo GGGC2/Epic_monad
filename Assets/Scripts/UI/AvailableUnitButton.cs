@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Enums;
 
-public class AvailableUnitButton : MonoBehaviour {
+public class AvailableUnitButton : MonoBehaviour, IPointerDownHandler{
 	public Image highlightImage;
 	Image standingImage;
 	Text unitName;
@@ -51,9 +52,12 @@ public class AvailableUnitButton : MonoBehaviour {
 		highlightImage.enabled = false;
 	}
 
-	//유니티 에디터상 OnClick으로도 작동
-	public void SetUnitInfoToDetailPanel() {
-		BattleReadyRightPanel.RecentButton = this;
+	void IPointerDownHandler.OnPointerDown(PointerEventData eventData){
+		OnClicked();
+	}
+
+	public void OnClicked() {
+		readyManager.RecentUnitButton = this;
 		BattleReadyRightPanel.unitName.text = UnitInfo.ConvertToKoreanFullName(nameString);
 		if(ReadyPanel.panelType == BattleReadyPanel.PanelType.Party){
 			SelectUnitIfUnselected();

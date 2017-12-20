@@ -9,7 +9,7 @@ public class EtherText : MonoBehaviour{
 	public Text etherText;
 
 	public void Update(){
-		SelectedUnit unit = Manager.selectedUnits.Find(item => item.name == Manager.ReadyPanel.RightPanel.RecentButton.nameString);
+		SelectedUnit unit = Manager.selectedUnits.Find(item => item.name == Manager.RecentUnitButton.nameString);
 		if(unit == null){
 			etherText.text = "";
 		}else{

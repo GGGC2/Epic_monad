@@ -28,7 +28,6 @@ public class RightScreen_BattleReady : MonoBehaviour {
 	List<TileStatusEffectInfo> allTileStatusEffectInfoList;
 
 	List<SkillInfoButton> skillButtons = new List<SkillInfoButton>();
-	public AvailableUnitButton RecentButton;
 
 	readonly int testLevel = 30;
 		
@@ -69,7 +68,7 @@ public class RightScreen_BattleReady : MonoBehaviour {
 		}
 
 		// 고유 특성을 맨 앞으로
-		Skill uniquePassive = Parser.GetSkillByUnit(unitEngName).Find(pSkill => pSkill.requireLevel == 0);
+		Skill uniquePassive = Parser.GetSkillsByUnit(unitEngName).Find(pSkill => pSkill.requireLevel == 0);
 		skillButtons.First ().Initialize (uniquePassive, null);
 				
 		// 나머지 스킬 표시

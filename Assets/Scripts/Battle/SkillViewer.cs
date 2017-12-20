@@ -55,6 +55,12 @@ public class SkillViewer : SkillUI{
 
 	public void UpdateSkillViewer(Skill skill, Unit owner){
 		mySkill = skill;
+
+		if(skill.requireLevel > GameData.PartyData.level){
+			Initialize();
+			explainText.text = "???";
+			return;
+		}
 		if(mySkill is ActiveSkill){
 			ActiveSkill activeSkill = (ActiveSkill)mySkill;
 
@@ -127,12 +133,12 @@ public class SkillViewer : SkillUI{
 	string GetSkillValueText(Stat statType, float coef, float baseValue){
         if(statType == Stat.Level) {
             return ((int)(GameData.PartyData.level * coef + baseValue)).ToString();
-        }
-        else if(SceneManager.GetActiveScene().name == "Battle"){
+        }else if(SceneManager.GetActiveScene().name == "Battle"){
             Unit unit = MonoBehaviour.FindObjectOfType<UnitManager>().GetAllUnits().Find(u => u.EngName == mySkill.owner);
             return ((int)(unit.GetStat(statType) * coef + baseValue)).ToString();
         }
-        else return ((int)((float)UnitInfo.GetStat(mySkill.owner, statType)*coef + baseValue)).ToString();
+		//BattleReady씬에서 보는 경우, Unit이 생성되지 않았으므로 string인 owner를 통해 테이블에서 찾는다
+		else return ((int)((float)UnitInfo.GetStat(mySkill.owner, statType)*coef + baseValue)).ToString();
 	}
 
 	void DisplaySecondRange(ActiveSkill skill){

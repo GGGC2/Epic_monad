@@ -12,6 +12,7 @@ public class SelectedUnit{
 
 	public SelectedUnit(string name){
 		this.name = name;
+		selectedSkills.Add(Parser.GetSkillsByUnit(name).Find(skill => skill.requireLevel == 0));
 	}
 
 	public int CurrentEther{
@@ -29,10 +30,9 @@ public class ReadyManager : MonoBehaviour{
 	TextAsset csvFile;
 	public SelectableUnitCounter selectableUnitCounter;
 	public BattleReadyPanel ReadyPanel;
-	public List<AvailableUnitButton> unitButtons;
+	public AvailableUnitButton RecentUnitButton;
+	List<AvailableUnitButton> UnitButtons;
 	public List<SelectedUnit> selectedUnits = new List<SelectedUnit>();
-	public List<UnitPanel> selected = new List<UnitPanel>();
-	public string currentUnitName;
     public GameObject CharacterButtons;
 
 	List<GameObject> availableUnitButtons = new List<GameObject>();
@@ -65,13 +65,13 @@ public class ReadyManager : MonoBehaviour{
 		selectableUnitCounter = FindObjectOfType<SelectableUnitCounter>();
 		selectableUnitCounter.SetMaxSelectableUnitNumber(numberOfSelectableUnit);
 
-		unitButtons = Utility.ArrayToList<AvailableUnitButton>(CharacterButtons.transform.GetComponentsInChildren<AvailableUnitButton>());
-		for(int i = 0; i < unitButtons.Count; i++){
+		UnitButtons = Utility.ArrayToList<AvailableUnitButton>(CharacterButtons.transform.GetComponentsInChildren<AvailableUnitButton>());
+		for(int i = 0; i < UnitButtons.Count; i++){
 			if (i < numberOfAvailableUnit){
 				//이쪽 실행 전에 AvailableUnitButton.Awake의 UI 참조가 완료돼야 함
-				unitButtons[i].GetComponent<AvailableUnitButton>().SetNameAndSprite(stageData[i+3]);
+				UnitButtons[i].GetComponent<AvailableUnitButton>().SetNameAndSprite(stageData[i+3]);
 			}else{
-				unitButtons[i].gameObject.SetActive(false);
+				UnitButtons[i].gameObject.SetActive(false);
 			}
 		}
 
