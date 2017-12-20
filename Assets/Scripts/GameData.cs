@@ -8,6 +8,11 @@ namespace GameData{
 		public static int exp;
 		public static int reqExp;
 
+		public static void SetLevel(int number, bool plus = false){
+			if(plus) {level += number;}
+			else {level = number;}
+		}
+
 		public static void SetReqExp(){ reqExp = (int)(Mathf.Pow((0.117f*level)+0.883f, 3)*100); }
 
 		public static void CheckLevelData(){
@@ -24,7 +29,7 @@ namespace GameData{
 		public static void AddExp(int point){
 			exp += point;
 			if(exp >= reqExp){
-				level += 1;
+				SetLevel(1, true);
 				exp -= reqExp;
 				SetReqExp();
 			}

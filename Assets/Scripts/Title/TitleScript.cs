@@ -7,7 +7,7 @@ using WorldMap;
 using GameData;
 using UnityEngine.SceneManagement;
 
-public class TitleForNexon : MonoBehaviour{
+public class TitleScript : MonoBehaviour{
     public GameDataManager gameDataManager;
 	public DOTweenAnimation titlePath;
 	public DOTweenAnimation titleAnimation;
@@ -25,8 +25,8 @@ public class TitleForNexon : MonoBehaviour{
 
 	public void NewGame(){
         GameDataManager.Reset();
-
-		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
+		FindObjectOfType<SceneLoader>().LoadNextBattleScene();
+		//FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
     public void LoadGame() {
         SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
@@ -45,7 +45,9 @@ public class TitleForNexon : MonoBehaviour{
 	}
 
 	public void ToTestScene(){
-		SceneManager.LoadScene("Test");
+		//시연회용으로 씬 연결 바꿔놓음
+		//SceneManager.LoadScene("Test");
+		FindObjectOfType<SceneLoader>().LoadNextBattleScene(5);
 	}
 
     private void ShowWorldMap(){

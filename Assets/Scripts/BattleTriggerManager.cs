@@ -13,7 +13,7 @@ public class BattleTriggerManager : MonoBehaviour {
         get { return instance; }
     }
     UnitManager unitManager;
-	public SceneLoader sceneLoader;
+	SceneLoader sceneLoader;
 	ResultPanel resultPanel;
 
 	public List<BattleTrigger> triggers = new List<BattleTrigger>();
