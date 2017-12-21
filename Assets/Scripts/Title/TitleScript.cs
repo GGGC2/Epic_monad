@@ -47,6 +47,7 @@ public class TitleScript : MonoBehaviour{
 	public void ToTestScene(){
 		//시연회용으로 씬 연결 바꿔놓음
 		//SceneManager.LoadScene("Test");
+		PartyData.SetLevel(5, false);
 		FindObjectOfType<SceneLoader>().LoadNextBattleScene(5);
 	}
 
