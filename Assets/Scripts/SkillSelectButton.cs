@@ -12,6 +12,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
     public int row = 0;
     public int level = 0;
     public bool selected = false;
+    public CustomUIText EtherText;
 
     void Awake(){
         iconSlot = GetComponent<Image>();
@@ -32,7 +33,9 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
             gameObject.SetActive(false);
         }else if(mySkill.requireLevel > PartyData.level){
             iconSlot.sprite = Resources.Load<Sprite>("Icon/Standby");
+            EtherText.text = "";
         }else{
+            EtherText.text = mySkill.ether + "";
             iconSlot.sprite = mySkill.icon;
 
             SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);

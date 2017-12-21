@@ -25,8 +25,7 @@ public class TitleScript : MonoBehaviour{
 
 	public void NewGame(){
         GameDataManager.Reset();
-		FindObjectOfType<SceneLoader>().LoadNextBattleScene();
-		//FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
+		FindObjectOfType<SceneLoader>().LoadNextDialogueScene(SceneData.dialogueName);
 	}
     public void LoadGame() {
         SceneLoader sceneLoader = FindObjectOfType<SceneLoader>();
@@ -44,10 +43,7 @@ public class TitleScript : MonoBehaviour{
 	}
 
 	public void ToTestScene(){
-		//시연회용으로 씬 연결 바꿔놓음
 		SceneManager.LoadScene("Test");
-		//PartyData.SetLevel(5, false);
-		//FindObjectOfType<SceneLoader>().LoadNextBattleScene(5);
 	}
 
     private void ShowWorldMap(){
