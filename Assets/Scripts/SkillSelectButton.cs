@@ -37,7 +37,6 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
 
             SelectedUnit owner = RM.selectedUnits.Find(unit => unit.name == mySkill.owner);
             if(owner != null){
-                //Debug.Log(owner.selectedSkills[0].korName);
                 selected = owner.selectedSkills.Any(skill => skill.korName == mySkill.korName);
             }
         }

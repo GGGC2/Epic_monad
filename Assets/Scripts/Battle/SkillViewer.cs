@@ -39,10 +39,6 @@ public class SkillViewer : SkillUI{
 	public enum CallerType{DetailInfo, ActionButton, EtherPanel}
 	public CallerType caller;
 
-	void OnDisable(){
-		//Debug.Log("Why Disabled?");
-	}
-
 	public void Initialize(){
 		viewerNameText.text = "";
 		costText.text = "";

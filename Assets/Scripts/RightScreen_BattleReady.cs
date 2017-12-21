@@ -85,9 +85,8 @@ public class RightScreen_BattleReady : MonoBehaviour {
         }
 
 		// 스킬 상세설명 초기화
-		SkillInfoButton skillButton = skillInfoButtons.Find(button => button.isActiveAndEnabled);
-		skillButton.GetComponent<SkillInfoButton> ().SetViewer (null);
-		EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
+		FindObjectOfType<SkillViewer>().Initialize();
+		//EventSystem.current.SetSelectedGameObject(skillButton.gameObject);
 	}
 
 	public void GetSelectedSkillList(string unitEngName) {
