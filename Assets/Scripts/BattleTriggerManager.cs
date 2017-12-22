@@ -167,9 +167,10 @@ public class BattleTriggerManager : MonoBehaviour {
 		List<BattleTrigger> targetTriggers;
 		if(dest != null){
 			targetTriggers = availableTriggers.FindAll(trig => dest.IsReachPosition);
+			Debug.Log("탈출?" + availableTriggers.Count + " / " + targetTriggers.Count);
 		}else{
 			targetTriggers = availableTriggers.FindAll(trig => CheckSubType(trig, subType));
-		} //ReachPosition의 경우를 예외 처리.
+		} //Escape의 경우를 예외 처리.
 		
 		targetTriggers.ForEach(trig => {
 			trig.units.Add(actor);
@@ -227,9 +228,6 @@ public class BattleTriggerManager : MonoBehaviour {
 	}
 
 	public bool CheckUnitType(BattleTrigger trigger, Unit unit, bool actor = false){
-		/*if(trigger.target == TrigUnitType.Name){
-			Debug.Log(trigger.korName + "'s nameList.Count : " + trigger.targetUnitNames.Count);
-		}*/
 		TrigUnitType unitType = trigger.target;
 		List<string> names = trigger.targetUnitNames;
 		if(actor){

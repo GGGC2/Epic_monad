@@ -148,8 +148,8 @@ public class DestroyUnitLog : EffectLog {
         case TrigActionType.Retreat:
             text += "퇴각";
             break;
-        case TrigActionType.ReachPosition:
-            text += "목표지점 도달";
+        case TrigActionType.Escape:
+            text += "탈출";
             break;
         }
         return text;
@@ -159,8 +159,10 @@ public class DestroyUnitLog : EffectLog {
         BattleManager BM = BattleManager.Instance;
         yield return BM.StartCoroutine(BattleManager.DestroyUnit(target, actionType));
 
-        BattleTriggerManager.Instance.CountTriggers(actionType, BattleData.turnUnit, target: target);
-		BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, BattleData.turnUnit, target: target);
+        if(actionType != TrigActionType.Escape){
+            BattleTriggerManager.Instance.CountTriggers(actionType, BattleData.turnUnit, target: target);
+		    BattleTriggerManager.Instance.CountTriggers(TrigActionType.Neutralize, BattleData.turnUnit, target: target);
+        }
 		BattleTriggerManager.Instance.CountTriggers(TrigActionType.UnderCount, target);
     }
 }

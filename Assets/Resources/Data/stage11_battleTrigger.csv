@@ -1,4 +1,4 @@
 ﻿ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc			
 Win	6	100	적 6명 무력화	Neutralize	Any	Enemy
-Lose	7	0	적 7명 탈출	ReachPosition	4	2	1	16	1	8	18	10	18	Enemy
+Lose	7	0	적 7명 탈출	Escape	4	2	1	16	1	8	18	10	18	Enemy
 Info	Scene#22	One	One

@@ -182,7 +182,7 @@ public class Unit : MonoBehaviour{
 	public bool IsAllyNPC{ get { return GetSide() == Side.Ally && !IsAI; } }
 	public bool IsObject { get { return myInfo.isObject; } }
 	public bool IsNamed { get { return myInfo.isNamed; } }
-	public bool IsKillable { get { return myInfo.isKillable; } }
+	public bool IsKillable { get { return myInfo.isKillable && !myInfo.isObject; } }
     public Vector2 GetPosition() {return position;}
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {
@@ -1245,9 +1245,9 @@ public class Unit : MonoBehaviour{
 		}
 	}
 
-	public bool CheckReach(){
+	public bool CheckEscape(){
 		return GetTileUnderUnit().IsReachPosition && BattleTriggerManager.Instance.ActiveTriggers.Any(
-			trig => trig.action == TrigActionType.ReachPosition || trig.action == TrigActionType.ReachTile
+			trig => trig.action == TrigActionType.Escape && BattleTriggerManager.Instance.CheckUnitType(trig, this, true)
 		);
 	}
 }

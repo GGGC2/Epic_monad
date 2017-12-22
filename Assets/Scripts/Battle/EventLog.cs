@@ -23,8 +23,8 @@ public class EventLog : Log {
             }
         }else if(this is MoveLog){
             MoveLog log = (MoveLog)this;
-            TM.CountTriggers(TrigActionType.ReachPosition, actor, dest: TileManager.Instance.GetTile(log.afterPos));
-            TM.CountTriggers(TrigActionType.ReachTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log: log);
+            TM.CountTriggers(TrigActionType.Escape, actor, dest: TileManager.Instance.GetTile(log.afterPos));
+            TM.CountTriggers(TrigActionType.StepOnTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log: log);
         }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {

@@ -46,8 +46,8 @@ namespace Enums {
 	코드번호 11~19 : Actor/Target 중 하나만 입력 *11~13번은 subType 필요
 	코드번호 21~29 : Actor/Target 모두 입력*/
 	public enum TrigActionType{Neutralize = 21, Kill = 22, Retreat = 23, Damage = 24, 
-	MultiAttack = 11, ReachTile = 12, Effect = 13, Rest = 14, UnderCount = 15,  Cast = 16, SideAttack = 17,
-	BackAttack = 18, ReachPosition = 19, Phase = 1, Extra = 2}
+	MultiAttack = 11, StepOnTile = 12, Effect = 13, Rest = 14, UnderCount = 15,  Cast = 16, SideAttack = 17,
+	BackAttack = 18, Escape = 19, Phase = 1, Extra = 2}
 	public enum TrigUnitType{Any, Name, Ally, AllyNPC, Enemy, NeutralChar, EnemyChar, PC}
     public enum ActionButtonType { Skill, Standby, Rest, Collect, Absent };
     public enum Stat{

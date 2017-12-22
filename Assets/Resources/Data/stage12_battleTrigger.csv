@@ -4,7 +4,7 @@ Lose	0	0	모든 동료 무력화	Neutralize	Any	PC
 Bonus	1	-10	아군 무력화	Neutralize	Any	PC	Repeat
 Bonus	1	-1	아군이 피해를 입음	Damage	Any	PC	Repeat
 Bonus	1	2	막사 파괴	Neutralize	PC	Name	1	asterTent	Repeat
-Bonus	1	6	잔디 타일을 밟음	ReachTile	잔디	PC
-Bonus	1	6	얕은 물 타일을 밟음	ReachTile	얕은 물	PC
-Bonus	1	6	나무 바닥 타일을 밟음	ReachTile	나무 바닥	PC
+Bonus	1	6	잔디 타일을 밟음	StepOnTile	잔디	PC
+Bonus	1	6	얕은 물 타일을 밟음	StepOnTile	얕은 물	PC
+Bonus	1	6	나무 바닥 타일을 밟음	StepOnTile	나무 바닥	PC
 Info	Scene#25	One	One

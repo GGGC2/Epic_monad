@@ -228,7 +228,7 @@ public class BattleManager : MonoBehaviour{
 		if (BattleData.deadUnits.Contains(BattleData.turnUnit))
 			return true;
 
-		if(BattleData.turnUnit.CheckReach()){
+		if(BattleData.turnUnit.CheckEscape()){
 			return true;
 		}
 
@@ -604,7 +604,7 @@ public class BattleManager : MonoBehaviour{
 	// 승/패 조건과 관련된 타일을 하이라이트 처리
 	void HighlightBattleTriggerTiles(){
 		List<BattleTrigger> tileTriggers = BattleTriggerManager.Instance.triggers.FindAll(
-			bt => (bt.action == TrigActionType.ReachPosition || bt.action == TrigActionType.ReachTile)
+			bt => (bt.action == TrigActionType.Escape || bt.action == TrigActionType.StepOnTile)
 			&& (bt.result == TrigResultType.Win || bt.result == TrigResultType.Lose)
 		);
 

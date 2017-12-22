@@ -187,7 +187,7 @@ namespace Battle.Turn{
 			this._AIData = _AIData;
 		}
 
-		enum State{ Dead, TurnStart, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
+		enum State{ UnitDestroyed, TurnStart, SkipTurn, EndTurn, MoveToBestCasting, CastingLoop, Approach, StandbyOrRest, Triana_Rest, ChildHolder, Burglar, Child }
 
 		State state;
 
@@ -244,7 +244,7 @@ namespace Battle.Turn{
 		IEnumerator FSM(){
 			while (true) {
                 yield return BattleManager.SlideCameraToPosition(unit.transform.position);
-                if (state == State.Dead || state == State.EndTurn) {
+                if (state == State.UnitDestroyed || state == State.EndTurn) {
 					yield break;
 				}
 				Debug.Log("AI state : " + state.ToString ());
@@ -360,8 +360,8 @@ namespace Battle.Turn{
 
 			yield return MoveWithDestroyRoutine (destTile);
 			state = State.StandbyOrRest;
-			if (BattleData.turnUnit.CheckReach ()) {
-				state = State.Dead;
+			if (BattleData.turnUnit.CheckEscape ()) {
+				state = State.UnitDestroyed;
 				BattleData.currentState = CurrentState.Destroyed;
 			}
 		}
@@ -384,7 +384,7 @@ namespace Battle.Turn{
 			yield return UseSkill(casting);
 
 			if (BattleManager.IsSelectedUnitRetreatOrDie ()) {
-				state = State.Dead;
+				state = State.UnitDestroyed;
 				BattleData.currentState = CurrentState.Destroyed;
 				Debug.Log ("Current AI unit died");
 			} else {

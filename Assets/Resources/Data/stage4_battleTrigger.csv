@@ -1,5 +1,5 @@
 ResultType	reqCount	Reward	Name	Action	Actor/Target/Etc																			
-Win	0	30	모든 동료가 탈출	ReachPosition	9	1	10	1	9	1	8	11	1	12	1	13	1	23	10	23	9	23	8	PC
+Win	0	30	모든 동료가 탈출	Escape	9	1	10	1	9	1	8	11	1	12	1	13	1	23	10	23	9	23	8	PC
 Lose	1	0	동료의 무력화	Neutralize	Any	PC																		
 Lose	10	0	10페이즈 경과	Phase																				
 Bonus	1	10	적을 처치하지 않음	Kill	Any	Enemy	Reverse																	

@@ -46,7 +46,7 @@ public class BattleTrigger{
 			//여기까지는 Info를 제외한 모든 트리거에 필요한 정보
 
 			//action의 번호의 의미에 대해서는 TrigActionType을 정의한 부분에서 각주 참고.
-			if(action == TrigActionType.ReachPosition){
+			if(action == TrigActionType.Escape){
 				targetTiles = new List<Vector2>();
 				int numberOfTiles = commaParser.ConsumeInt();
 				for (int i = 0; i < numberOfTiles; i++){

@@ -161,39 +161,28 @@ public class UnitManager : MonoBehaviour{
     public IEnumerable<EventLog> CheckDestroyedUnits() {
         LogManager logManager = LogManager.Instance;
         UnitManager unitManager = UnitManager.Instance;
-        List<Unit> allUnits = new List<Unit>();
+        List<Unit> allUnits_Clone = new List<Unit>();
         foreach(var unit in unitManager.GetAllUnits())
-            allUnits.Add(unit);
-        foreach (var unit in allUnits) {
+            allUnits_Clone.Add(unit);
+
+        foreach(var unit in allUnits_Clone) {
             TrigActionType? type = null;
             UnitDestroyedLog unitDestroyedLog = null;
-			if (unit.IsObject || unit.IsNamed) {
-				if (unit.GetCurrentHealth () <= 0) {
-					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-					if (unit.IsObject || !unit.IsKillable) {
-						type = TrigActionType.Retreat;
-					} else {
-						type = TrigActionType.Kill;
-					}
-				} else if (unit.CheckReach ()) {
-					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-					type = TrigActionType.ReachPosition;
-				}
-			} else {
-				int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
-				if (unit.GetCurrentHealth () <= 0) {
-					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-                    type = TrigActionType.Kill;
-				} else if ((unit.GetCurrentHealth () <= retreatHP) && (unit.GetCurrentHealth () > 0)) {
-					if (SceneData.stageNumber >= Setting.retreatOpenStage && !unit.IsObject && !unit.IsNamed) {
-						unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-                        type = TrigActionType.Retreat;
-					}
-				} else if (unit.CheckReach ()) {
-					unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
-                    type = TrigActionType.ReachPosition;
-				}
-			}
+            int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
+            if(unit.CheckEscape()){
+                unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                type = TrigActionType.Escape;
+            }else if(unit.GetCurrentHealth() <= 0){
+                unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                if(unit.IsKillable) {type = TrigActionType.Kill;}
+                else {type = TrigActionType.Retreat;}
+            }else if(unit.GetCurrentHealth() <= retreatHP){
+                if(!unit.IsNamed){
+                    unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
+                    type = TrigActionType.Retreat;
+                }
+            }
+            
             if (unitDestroyedLog != null) {
                 logManager.Record(unitDestroyedLog);
                 logManager.Record(new DestroyUnitLog(unit, (TrigActionType)type));
