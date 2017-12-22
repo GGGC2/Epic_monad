@@ -1,16 +1,16 @@
 Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	IsNamed	IsKillable	
-1	마력석	manastone01	Neutral	5	17	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-2	마력석	manastone01	Neutral	12	14	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+1	마력석	manastone01	Neutral	7	14	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+2	마력석	manastone01	Neutral	12	12	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
 3	마력석	manastone01	Neutral	14	4	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-4	마력석	manastone01	Neutral	21	6	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
-5	몬스터	monster01	Enemy	12	6	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-6	몬스터	monster01	Enemy	13	7	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-7	몬스터	monster01	Enemy	15	5	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-8	몬스터	monster01	Enemy	19	7	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+4	마력석	manastone01	Neutral	18	5	LeftDown	600	0	0	100	0	None	None	None	true	false	false	0
+5	몬스터	monster01	Enemy	16	6	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+6	몬스터	monster01	Enemy	16	2	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+7	몬스터	monster01	Enemy	16	5	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+8	몬스터	monster01	Enemy	20	7	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 9	몬스터	monster01	Enemy	20	4	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 10	몬스터	monster01	Enemy	20	5	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-11	몬스터	monster01	Enemy	21	5	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-12	몬스터	monster01	Enemy	6	14	RightDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+11	몬스터	monster01	Enemy	20	3	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
+12	몬스터	monster01	Enemy	4	16	RightDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 13	몬스터	monster01	Enemy	5	16	RightDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 14	몬스터	monster01	Enemy	7	16	RightDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 15	몬스터	monster01	Enemy	8	15	RightDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
@@ -20,5 +20,5 @@ Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	
 19	몬스터	monster01	Enemy	13	16	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 20	몬스터	monster01	Enemy	4	19	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
 21	몬스터	monster01	Enemy	7	19	LeftDown	695	96	111	92	44	Melee	Plant	Earth	false	false	true	0
-22	PCreina	reina	Ally	5	5	RightUp	0	0	0	0	0	Magic	Fire	Sun	false	false	false	0
-23	PClenien	lenien	Ally	7	4	RightUp	0	0	0	0	0	Magic	Metal	Moon	false	false	false	0
+22	PCreina	reina	Ally	5	5	RightDown	0	0	0	0	0	Magic	Fire	Sun	false	false	false	0
+23	PClenien	lenien	Ally	7	4	RightDown	0	0	0	0	0	Magic	Metal	Moon	false	false	false	0

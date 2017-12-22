@@ -9,8 +9,8 @@ namespace BattleUI {
     class StatusEffectIcon : MonoBehaviour {
         public StatusEffect statusEffect;
         public Image image;
-        public static readonly float WIDTH = 20;
-        public static readonly float HEIGHT = 20;
+        public static readonly float WIDTH = 40;
+        public static readonly float HEIGHT = 40;
         static readonly float MARGIN = 5;
 
         string GetSkillColumnRow(Skill skill) {
