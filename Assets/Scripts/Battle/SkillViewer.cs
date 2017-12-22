@@ -105,7 +105,7 @@ public class SkillViewer : SkillUI{
 		}
 
 		SetNameText();
-		explainText.text = Utility.ExplainTextReplace(
+		explainText.text = Utility.ReplaceExplainText(
 			mySkill.skillDataText.Replace("VALUE1", GetSkillValueText(mySkill.firstTextValueType, mySkill.firstTextValueCoef, mySkill.firstTextValueBase)).
 								  Replace("VALUE2", GetSkillValueText(mySkill.secondTextValueType, mySkill.secondTextValueCoef, mySkill.secondTextValueBase)));
 
