@@ -2214,7 +2214,7 @@ GameObject:
   - component: {fileID: 114036022590826940}
   - component: {fileID: 114676372313760556}
   m_Layer: 5
-  m_Name: UnitList
+  m_Name: UnitListPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6107,6 +6107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114441248928842544}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -6563,12 +6564,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114060595148113730
 MonoBehaviour:
@@ -6843,12 +6844,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114087792659460244
 MonoBehaviour:
@@ -6955,6 +6956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114841949340960816}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -7333,12 +7335,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114123167852880682
 MonoBehaviour:
@@ -7442,7 +7444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114130439657741858
 MonoBehaviour:
@@ -7524,12 +7526,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114131411060214478
 MonoBehaviour:
@@ -7543,6 +7545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114243454541936516}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -7626,12 +7629,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114136318731012382
 MonoBehaviour:
@@ -7696,6 +7699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114626980906338582}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -7771,6 +7775,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114376869732884428}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -7867,6 +7872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114954906573531256}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -7936,7 +7942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114162236393863700
 MonoBehaviour:
@@ -8004,6 +8010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114490231508003202}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -8223,12 +8230,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114181456053655492
 MonoBehaviour:
@@ -8256,12 +8263,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114182883334991276
 MonoBehaviour:
@@ -9051,7 +9058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114254256537041258
 MonoBehaviour:
@@ -9257,12 +9264,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114264755567323544
 MonoBehaviour:
@@ -9593,12 +9600,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114302949877063316
 MonoBehaviour:
@@ -9882,6 +9889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114731989513206014}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -10028,6 +10036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114996390634749756}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -10289,6 +10298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114547797387323340}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -10811,6 +10821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114296641612837656}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -10919,6 +10930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114152473312048928}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -11242,12 +11254,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114459643639917800
 MonoBehaviour:
@@ -11275,12 +11287,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114461045986448766
 MonoBehaviour:
@@ -11335,12 +11347,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114462704222519088
 MonoBehaviour:
@@ -11408,7 +11420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114468495905116998
 MonoBehaviour:
@@ -11530,6 +11542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114158242311934832}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -11845,12 +11858,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114505971999675834
 MonoBehaviour:
@@ -12206,6 +12219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114233431784492442}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -12673,9 +12687,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelType: 1
-  RightPanel: {fileID: 114115654819921212}
+  rightPanel: {fileID: 114115654819921212}
   skillViewer: {fileID: 114663213740279768}
-  Buttons: []
   UnitPart: {fileID: 1799340153438246}
   SkillPart: {fileID: 1861207255842770}
   skillButtonList: []
@@ -13048,6 +13061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114158368077902276}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -13370,12 +13384,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114663213740279768
 MonoBehaviour:
@@ -13389,7 +13403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
   viewerNameText: {fileID: 114105822407463306}
   costText: {fileID: 114771804242434714}
@@ -13592,7 +13606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114688547109691970
 MonoBehaviour:
@@ -13606,6 +13620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114022367687579650}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -13692,12 +13707,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114701517933279446
 MonoBehaviour:
@@ -14016,12 +14031,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114718353857652534
 MonoBehaviour:
@@ -14074,7 +14089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114724450509811204
 MonoBehaviour:
@@ -14140,6 +14155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114813373468548452}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -14223,12 +14239,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114731689992608792
 MonoBehaviour:
@@ -14347,7 +14363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114745245064471370
 MonoBehaviour:
@@ -14375,12 +14391,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114746008405741368
 MonoBehaviour:
@@ -14489,12 +14505,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114764298663730640
 MonoBehaviour:
@@ -14535,6 +14551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114907720437630386}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -14550,7 +14567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114768707215518980
 MonoBehaviour:
@@ -15287,6 +15304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114019422405434910}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -15512,7 +15530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114838562275589300
 MonoBehaviour:
@@ -15715,6 +15733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlightImage: {fileID: 114979722189803338}
+  NameText: {fileID: 0}
   nameString: 
   ReadyPanel: {fileID: 114581483256985312}
   BattleReadyRightPanel: {fileID: 114115654819921212}
@@ -15967,7 +15986,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114867128749425558
 MonoBehaviour:
@@ -16061,12 +16080,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 1.3
   m_Text: "\uD504\uB808\uC138\uB9B0"
 --- !u!114 &114877860096943050
 MonoBehaviour:
@@ -17027,7 +17046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 114663213740279768}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
 --- !u!114 &114948866509016792
 MonoBehaviour:
@@ -19809,8 +19828,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224052130869397706
 RectTransform:
@@ -20294,8 +20313,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224106213274232402
 RectTransform:
@@ -22135,8 +22154,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224403024602936878
 RectTransform:
@@ -22209,8 +22228,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224410471007111222
 RectTransform:
@@ -22398,8 +22417,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224440881135843954
 RectTransform:
@@ -22725,8 +22744,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224488340617254388
 RectTransform:
@@ -22743,8 +22762,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224488864569531594
 RectTransform:
@@ -23266,8 +23285,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224581008700229936
 RectTransform:
@@ -23302,8 +23321,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224589206368307794
 RectTransform:
@@ -23383,7 +23402,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 15, y: 0}
+  m_AnchoredPosition: {x: 15, y: -547}
   m_SizeDelta: {x: -30, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224600871581488898
@@ -23462,8 +23481,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224607480041718666
 RectTransform:
@@ -23663,8 +23682,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224638032854129518
 RectTransform:
@@ -23793,8 +23812,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224651444592516850
 RectTransform:
@@ -24014,8 +24033,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224676175221618446
 RectTransform:
@@ -24273,8 +24292,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224712651919078760
 RectTransform:
@@ -24291,8 +24310,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224714061198978540
 RectTransform:
@@ -24771,8 +24790,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224773276379315760
 RectTransform:
@@ -25381,8 +25400,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224880088621223978
 RectTransform:
@@ -25454,8 +25473,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224883144170373656
 RectTransform:
@@ -25665,8 +25684,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224905935182812486
 RectTransform:
@@ -25892,8 +25911,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.5, y: 15.800003}
-  m_SizeDelta: {x: 137.7, y: 30}
+  m_AnchoredPosition: {x: 90, y: 0}
+  m_SizeDelta: {x: 137.7, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224958644941066600
 RectTransform:

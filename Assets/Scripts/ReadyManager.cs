@@ -78,9 +78,10 @@ public class ReadyManager : MonoBehaviour{
 			}
 		}
 
+		UnitButtons = UnitButtons.FindAll(button => button.gameObject.activeSelf);
 		DontDestroyOnLoad(gameObject);
 		RecentUnitButton = UnitButtons.First();
-		ReadyPanel.Initialize();
+		ReadyPanel.Initialize(UnitButtons);
 	}
 
 	void Update(){

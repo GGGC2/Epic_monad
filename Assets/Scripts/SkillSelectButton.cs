@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using GameData;
 
 public class SkillSelectButton : SkillUI, IPointerDownHandler{
-    public RightScreen_BattleReady RightPanel;
+    public RightScreen_BattleReady rightPanel;
     ReadyManager RM;
     public int row = 0;
     public int level = 0;
@@ -28,7 +28,7 @@ public class SkillSelectButton : SkillUI, IPointerDownHandler{
 
     public void Initialize(){
         RM = ReadyManager.Instance;
-        mySkill = Skill.Find(RightPanel.allSkillList, RM.RecentUnitButton.nameString, level, row);
+        mySkill = Skill.Find(rightPanel.allSkillList, RM.RecentUnitButton.nameString, level, row);
         if(mySkill == null){
             gameObject.SetActive(false);
         }else if(mySkill.requireLevel > PartyData.level){

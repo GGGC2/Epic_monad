@@ -12,12 +12,6 @@ public class SkillInfoButton : SkillUI{
 		iconSlot = transform.Find("SkillImage").GetComponent<Image>();
 	}
 
-	public void Start(){
-		if(gameObject.name == "SkillPrevButton0"){
-			viewer.Initialize();
-		}
-	}
-
 	public void Initialize(Skill newSkill, Unit owner){
 		mySkill = newSkill;
 		if(newSkill == null){

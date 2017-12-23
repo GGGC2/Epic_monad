@@ -8,9 +8,9 @@ using GameData;
 public class BattleReadyPanel : MonoBehaviour{
 	public enum PanelType{Ether, Party, Stage}
 	public PanelType panelType;
-	public RightScreen_BattleReady RightPanel;
+	public RightScreen_BattleReady rightPanel;
 	public SkillViewer skillViewer;
-	List<AvailableUnitButton> UnitButtons;
+	List<AvailableUnitButton> unitButtons;
 	public GameObject UnitPart;
 	public GameObject SkillPart;
 	public List<SkillSelectButton> skillButtonList = new List<SkillSelectButton>();
@@ -19,8 +19,8 @@ public class BattleReadyPanel : MonoBehaviour{
 	int buttonDist = 90;
 
 	//ReadyManager.Start()가 끝난 직후 넘어온다
-	public void Initialize(){
-		UnitButtons = Utility.ArrayToList(transform.Find("UnitList").Find("CharacterButtons").GetComponentsInChildren<AvailableUnitButton>());
+	public void Initialize(List<AvailableUnitButton> unitButtons){
+		this.unitButtons = unitButtons; //캐릭터 버튼 20개(중 활성화 상태인 것들)
 
 		var firstButton = Instantiate(SkillButtonPrefab);
 		skillButtonList.Add(firstButton);
@@ -39,14 +39,15 @@ public class BattleReadyPanel : MonoBehaviour{
 		}
 
 		skillButtonList.ForEach(button => {
-			button.viewer = skillViewer;
-			button.RightPanel = RightPanel;
+			button.skillViewer = skillViewer;
+			button.rightPanel = rightPanel;
 		});
+		skillButtonList[0].skillViewer.Initialize();
 
 		SetPanelType(PanelType.Party);
 
 		if(SceneData.stageNumber < Setting.unitSelectOpenStage){
-			UnitButtons.ForEach(button => button.OnClicked());
+			this.unitButtons.ForEach(button => button.OnClicked());
 			transform.Find("TopButtons").Find("PartySelect").gameObject.SetActive(false);
 			transform.Find("TopButtons").Find("Ether").gameObject.SetActive(false);
 			SetPanelType(PanelType.Ether);
@@ -67,15 +68,15 @@ public class BattleReadyPanel : MonoBehaviour{
 		if(panelType == PanelType.Party){
 			UnitPart.SetActive(true);
 			SkillPart.SetActive(false);
-			RightPanel.SetCommonUnitInfoUI(ReadyManager.Instance.RecentUnitButton.nameString);
-			UnitButtons.ForEach(button => {
+			rightPanel.SetCommonUnitInfoUI(ReadyManager.Instance.RecentUnitButton.nameString);
+			unitButtons.ForEach(button => {
 				button.ActivatePropertyIcon();
 				button.NameText.text = UnitInfo.ConvertToKoreanName(button.nameString);
 			});
 		}else if(panelType == PanelType.Ether){
 			UnitPart.SetActive(false);
 			SkillPart.SetActive(true);
-			UnitButtons.ForEach(button => {
+			unitButtons.ForEach(button => {
 				button.ActivatePropertyIcon(false);
 				button.NameText.text = UnitInfo.ConvertToKoreanName(button.nameString);
 			});

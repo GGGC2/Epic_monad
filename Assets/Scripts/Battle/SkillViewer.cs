@@ -10,7 +10,7 @@ using Enums;
 public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	public Image iconSlot;
 	public Skill mySkill;
-	public SkillViewer viewer;
+	public SkillViewer skillViewer;
 	public Unit owner;
 
 	void IPointerEnterHandler.OnPointerEnter(PointerEventData pointerData){
@@ -18,8 +18,8 @@ public class SkillUI : MonoBehaviour, IPointerEnterHandler{
 	}
 
 	public void SetViewer(Unit owner){
-		if(mySkill != null && viewer != null){
-			viewer.UpdateSkillViewer (mySkill, owner);
+		if(mySkill != null && skillViewer != null){
+			skillViewer.UpdateSkillViewer (mySkill, owner);
 			EventSystem.current.SetSelectedGameObject(gameObject);
 		}
 	}
