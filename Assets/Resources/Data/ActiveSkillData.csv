@@ -1,4 +1,4 @@
-owner	ether	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	effectDirectionality	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
+﻿owner	ether	requireLevel	name	column	requireAP	cooldown	statType	powerFactor	skillType	firstRangeForm	firstMinReach	firstMaxReach	firstWidth	secondRangeForm	secondMinReach	secondMaxReach	secondWidth	skillApplyType	effectName	effectVisualType	effectMoveType	effectDirectionality	soundEffectName	skillDataText	Value1Type	Value1Coef	Value1Base	Value2Type	Value2Coef	Value2Base
 manastone	0	1	가만히	1	9999	0	Power	0	Point	Cross	1	1	0	Diamond	0	0	0	DamageHealth	-	Individual	NonMove	FALSE	-	--	None	0	0	None	0	0
 unitySpearman01	0	1	찌르기	1	42	0	Power	1.2	Route	Straight	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Smite(D)	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
 soldier01	0	1	근접 공격	1	42	0	Power	1.2	Point	Cross	1	2	0	Diamond	0	0	0	DamageHealth	Melee	Individual	NonMove	FALSE	Slash	<color=red>1.2x공격력</color>(<color=red>VALUE1</color>)의 피해를 줍니다.	Power	1.2	0	None	0	0
@@ -54,8 +54,8 @@ eren	0	22	순간 재충전	3	25	5	Power	0	Point	Diamond	0	9	0	Diamond	0	0	0	Buff
 eren	0	36	치유의 빛	3	56	5	Power	0.6	Point	Diamond	0	8	0	Diamond	0	0	0	HealHealth	-	Area	Move	FALSE	-	?	None	0	0	None	0	0
 eren	0	50	영혼 소각	1	97	5	Power	2.7	Auto	Sector	1	4	0	Sector	1	4	0	DamageHealth	-	Area	Move	FALSE	-	?	None	0	0	None	0	0
 eren	0	50	운명의 개척자	3	90	5	Agility	0.3	Point	Diamond	0	9	0	Diamond	0	0	0	HealAP	-	Area	Move	FALSE	-	--	None	0	0	None	0	0
-luvericha	10	1	교향곡 : 운명	1	41	1	Power	0	Auto	Sector	1	5	0	Sector	1	5	0	DamageHealth	-	Area	NonMove	FALSE	Destiny	대상 <color=green>현재 체력의 20%</color>의 피해를 줍니다. 특별한 적에게는 효과가 없습니다.	None	0	0	None	0	0
-luvericha	9	1	사랑의 기쁨	3	39	1	Power	0.7	Auto	Diamond	1	4	0	Diamond	1	4	0	HealHealth	-	Area	Move	FALSE	Love	대상의 체력을 <color=red>0.7x공격력</color>(<color=red>VALUE1</color>) 회복합니다.	Power	0.7	0	None	0	0
+luvericha	12	1	교향곡 : 운명	1	49	0	Power	0	Auto	Sector	1	5	0	Sector	1	5	0	DamageHealth	-	Area	NonMove	FALSE	Destiny	대상 <color=green>현재 체력의 20%</color>의 피해를 줍니다. 특별한 적에게는 효과가 없습니다.	None	0	0	None	0	0
+luvericha	11	1	사랑의 기쁨	3	39	0	Power	0.7	Auto	Diamond	1	4	0	Diamond	1	4	0	HealHealth	-	Area	Move	FALSE	Love	대상의 체력을 <color=red>0.7x공격력</color>(<color=red>VALUE1</color>) 회복합니다.	Power	0.7	0	None	0	0
 luvericha	0	22	에튀드 : 겨울바람	1	56	4	Power	0	Auto	Front	1	5	5	Front	1	5	5	DamageAP	-	Area	NonMove	FALSE	-	--	None	0	0	None	0	0
 luvericha	0	22	에튀드 : 햇빛	3	68	4	Power	0	Auto	Square	1	2	0	Square	1	2	0	Buff	-	Area	NonMove	FALSE	-	--	None	0	0	None	0	0
 luvericha	0	29	소녀의 기도	2	52	0	Power	1.5	Self	Diamond	0	0	0	Diamond	0	0	0	Buff	-	Area	NonMove	FALSE	-	--	None	0	0	None	0	0

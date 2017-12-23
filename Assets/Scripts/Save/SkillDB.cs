@@ -41,7 +41,7 @@ public class SkillDB
 		List<SkillSaveData> skillSaveDatas = SaveDataCenter.GetSaveData().skills;
 
 		var allLearnedSkillsForUnit = skillSaveDatas.FindAll(skillSaveData => {
-			Skill skill = Parser.GetSkillByName(skillSaveData.skillName);
+			Skill skill = Parser.GetSkillsByName(skillSaveData.skillName);
 			// 테스트 중에는 스킬 이름이 자주 바뀔 수 있어서 세이브된 데이터가 테이블에 없을 수 있음.
 			return skill != null && skill.owner == unitName;
         });
@@ -58,7 +58,7 @@ public class SkillDB
 		List<string> skillNames = new List<string>();
 		List<Skill> allUnitSkills = Parser.GetSkillsByUnit(unitName);
 		foreach (SkillSaveData skillSaveData in skillSaveDatas){
-			Skill skill = Parser.GetSkillByName(skillSaveData.skillName);
+			Skill skill = Parser.GetSkillsByName(skillSaveData.skillName);
 			if (skill == null)
 			{
 				Debug.LogError("There is no skill info in save data " + skillSaveData.skillName);

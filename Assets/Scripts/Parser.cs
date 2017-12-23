@@ -141,7 +141,7 @@ public class Parser : MonoBehaviour{
 	}
 
 	private static Dictionary<string, Skill> skillByName;
-	public static Skill GetSkillByName(string skillName){
+	public static Skill GetSkillsByName(string skillName){
 		if (skillByName == null){
 			skillByName = new Dictionary<string, Skill>();
 

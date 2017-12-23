@@ -1143,6 +1143,7 @@ public class Unit : MonoBehaviour{
 			if (myInfo.side == Side.Ally) {sprites = Resources.LoadAll("UnitImage/notFound");}
 			else {sprites = Resources.LoadAll("UnitImage/notFound_enemy");}
 		}
+
 		spriteLeftUp = sprites[1] as Sprite;
 		spriteLeftDown = sprites[3] as Sprite;
 		spriteRightUp = sprites[4] as Sprite;

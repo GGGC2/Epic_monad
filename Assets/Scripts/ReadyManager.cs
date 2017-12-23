@@ -106,13 +106,15 @@ public class ReadyManager : MonoBehaviour{
 	public void StartBattle(){
 		//기존 능력을 포기하지 않고 추가로 가져갈 수 있는 능력이 있을 경우
 		bool isEfficient = selectedUnits.All(unit => {
-			int leastEther = 100;
-			var unselectedList = new List<Skill>();
-			ReadyPanel.skillButtonList.FindAll(button => !button.selected && button.mySkill != null).ForEach(button => {
-				unselectedList.Add(button.mySkill);
+			var availableSkills = Parser.GetSkillsByUnit(unit.name).FindAll(skill => PartyData.level >= skill.requireLevel);
+			Debug.Log(unit.name + "'s availableSkillCount : " + availableSkills.Count);
+			unit.selectedSkills.ForEach(skill => {
+				Skill selected = availableSkills.Find(availableSkill => availableSkill.korName == skill.korName);
+				availableSkills.Remove(selected);
 			});
 
-			unselectedList.ForEach(skill => {
+			int leastEther = 100;
+			availableSkills.ForEach(skill => {
 				if(PartyData.level >= skill.requireLevel && skill.ether < leastEther){
 					leastEther = skill.ether;
 				}

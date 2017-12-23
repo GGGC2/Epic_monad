@@ -1,4 +1,4 @@
-owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
+﻿owner	ether	requireLevel	name	column	Text	Type1	Coef1	Base1	Type2	Coef2	Base2
 elvenSoldier01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 elvenPriest01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
 elvenArcher01	0	0	생명의 갑옷	0	목속성 저항력이 <color=green>15%</color> 증가하고, 화속성 저항력이 <color=green>15%</color> 감소합니다.	None	0	0	None	0	0
@@ -105,9 +105,11 @@ json	10	8	바람 가르기	1	이동하고 나면 바로 다음 공격에 필요�
 karldrich	0	0	모두에게 평등한 죽창	1	공격할 때 대상의 방어력을 무시합니다.	None	0	0	None	0	0
 karldrich	10	1	행동하는 혁명가	3	사기가 <color=cyan>10</color> 높아집니다.	None	0	0	None	0	0
 karldrich	7	8	노조결성	3	반경 2타일 이내의 동료 1명당 자신의 공격력이 <color=red>5%</color>씩 높아집니다.	None	0	0	None	0	0
+sepia	0	0	세피아 임시	0	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
 sepia	9	1	신뢰의 끈	2	자신으로부터 2타일 이내의 후면에 동료가 있으면 <color=green>방어력</color>이 <color=green>51+레벨당 0.7</color>(<color=green>VALUE1</color>) 높아집니다.	Level	0.7	51	None	0	0
 darkenir	0	0	흐름 동화	0	자신에게 효과를 건 대상도 절반의 해당 효과를 받습니다.	None	0	0	None	0	0
 noel	0	0	심판의 빛	0	자신이 사용한 보호막이 피해를 흡수할 때 흡수한 만큼 공격자에게 마법 피해를 줍니다.	None	0	0	None	0	0
+arcadia	0	0	알카 임시	0	나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.	Level	0.8	63	None	0	0
 arcadia	11	8	뿌리 내리기	1	나무 속성 타일 위에 있는 동안 방어력과 저항력이 <color=green>63(+레벨당 0.8)</color>(<color=green>VALUE1</color>)만큼 높아지며 스스로 이동하지 않는 한 위치가 바뀌지 않습니다.	Level	0.8	63	None	0	0
 arcadia	0	15	광합성	2	ABCD	None	0	0	None	0	0
 bianca	0	0	사뿐사뿐	0	자신의 덫을 스스로 발동시키지 않으며 덫에 의한 피해를 받지 않습니다.	None	0	0	None	0	0
