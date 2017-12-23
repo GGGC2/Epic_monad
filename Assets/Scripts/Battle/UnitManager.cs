@@ -238,7 +238,6 @@ public class UnitManager : MonoBehaviour{
 
 	public IEnumerator GenerateUnits(){
 		int generatedPC = 0;
-		int enemyCount = 0;
         List<UnitInfo> unitInfoList = Parser.GetParsedData<UnitInfo>();
 
         ReadyManager RM = FindObjectOfType<ReadyManager>();
@@ -249,8 +248,7 @@ public class UnitManager : MonoBehaviour{
 			if (unitInfo.nameKor == "unselected") {
 				if (generatedPC >= RM.selectedUnits.Count) continue;
 				PCName = RM.selectedUnits [generatedPC].name;
-			}
-			else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
+			}else if (unitInfo.nameKor.Length >= 2 && unitInfo.nameKor.Substring(0,2) == "PC") {
 				PCName = unitInfo.nameKor.Substring(2, unitInfo.nameKor.Length-2);
 			}
 			
@@ -263,19 +261,15 @@ public class UnitManager : MonoBehaviour{
 					generatedPC += 1;
 				}
 			}
-
-			if(unitInfo.side == Side.Enemy){
-				enemyCount += 1;
-			}
 		}
 
-		//조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
+		//target 조건이 PC(또는 적)이고 목표카운트가 0인 트리거를 생성된 '모든' PC(또는 적)의 숫자로 맞춰준다
 		List<BattleTrigger> allTriggers = FindObjectOfType<BattleTriggerManager>().triggers;
 		Debug.Log("Triggers Count : " + allTriggers.Count);
 		List<BattleTrigger> triggersOfAllPC = allTriggers.FindAll (trig => trig.target == TrigUnitType.PC && trig.reqCount == 0);
 		triggersOfAllPC.ForEach(trig => trig.reqCount = generatedPC);
 		List<BattleTrigger> triggersOfAllEnemy = allTriggers.FindAll (trig => trig.target == TrigUnitType.Enemy && trig.reqCount == 0);
-		triggersOfAllEnemy.ForEach(trig => trig.reqCount = enemyCount);
+		triggersOfAllEnemy.ForEach(trig => trig.reqCount = unitInfoList.FindAll(info => info.side == Side.Enemy).Count);
 
 		unitInfoList = unitInfoList.FindAll(info => info.nameKor != "Empty");
         
@@ -294,7 +288,7 @@ public class UnitManager : MonoBehaviour{
             
             Vector2 position = selectableTileList.Last().realPosition;
             //event log가 나타나기 전이므로 로그를 남기지 않고 수동으로 조작
-            Camera.main.transform.position = new Vector3(position.x, position.y, -10); 
+            Camera.main.transform.position = new Vector3(position.x, position.y, -10);
             //BattleManager.MoveCameraToTile(selectableTileList.Last());
 		}
 
@@ -314,6 +308,15 @@ public class UnitManager : MonoBehaviour{
 				Destroy(unit.GetComponent<AIData>());
 			}
 		});
+        
+        var Allies = allUnits.FindAll(unit => unit.GetSide() == Side.Ally);
+        Vector2 averagePositionPC = new Vector2(0, 0);
+        Allies.ForEach(ally => {
+            averagePositionPC.x += ally.transform.position.x;
+            averagePositionPC.y += ally.transform.position.y;
+        });
+        averagePositionPC /= generatedPC;
+        Camera.main.transform.position = new Vector3(averagePositionPC.x, averagePositionPC.y, -10);
 
 		if(RM != null) {Destroy(RM.gameObject);}
 		yield return null;

@@ -14,11 +14,11 @@ public class Parser : MonoBehaviour{
 	}
 	
 	//각 행 중에 첫번째 항목 searchigWord로 시작하는 행을 찾아서 return
-	public static string[] FindRowDataOf(string text, string searchingWord){
+	public static string[] FindRowDataOf(string text, string searchingWord, char splitChar = '\t'){
 		string[] RowDataStrings = text.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach(string row in RowDataStrings){
-			string[] tempRowData = row.Split('\t');
+			string[] tempRowData = row.Split(splitChar);
 			if(tempRowData[0] == searchingWord){
 				return tempRowData;
 			}

@@ -6,7 +6,6 @@ using Enums;
 using GameData;
 
 public class CameraMover : MonoBehaviour {
-
 	public bool Movable;
     Dictionary<Direction, float> boundary = new Dictionary<Direction, float>();
     const float MARGIN = 1;

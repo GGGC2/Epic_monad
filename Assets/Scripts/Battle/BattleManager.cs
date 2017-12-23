@@ -614,17 +614,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	void LoadBackgroundImage(){
-		string bgImageName = "Dark";
-		TextAsset csvFile = Resources.Load("Data/StageBackgrounds") as TextAsset;
-		string csvText = csvFile.text;
-		string[] unparsedTileInfoStrings = csvText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-		for (int i = 1; i < unparsedTileInfoStrings.Length; i++) {
-			StringParser commaParser = new StringParser (unparsedTileInfoStrings [i], ',');
-			int stageNum = commaParser.ConsumeInt ();
-			if (stageNum == SceneData.stageNumber) {
-				bgImageName = commaParser.Consume ();
-			}
-		}
+		string bgImageName = Parser.FindRowDataOf(Resources.Load<TextAsset>("Data/StageBackgrounds").text, SceneData.stageNumber.ToString(), ',')[1];
 		Sprite bgSprite = Resources.Load<Sprite>("Background/" + bgImageName);
 		GameObject.Find ("BattleBackground").GetComponent<SpriteRenderer>().sprite = bgSprite;
 	}
