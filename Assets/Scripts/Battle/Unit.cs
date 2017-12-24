@@ -549,7 +549,7 @@ public class Unit : MonoBehaviour{
             }
             if (statusEffect.GetRemainPhase() <= 0) {
                 if(statusEffect.GetOwnerOfSkill() == "collecting") {
-                    LogManager.Instance.Record(new DestroyUnitLog(statusEffect.GetMemorizedUnits()[0], TrigActionType.Kill));
+                    LogManager.Instance.Record(new UnitDestroyLog(statusEffect.GetMemorizedUnits()[0], TrigActionType.Kill));
                 }
                 RemoveStatusEffect(statusEffect);
             }

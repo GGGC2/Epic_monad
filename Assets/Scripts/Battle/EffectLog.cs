@@ -132,11 +132,11 @@ public class CoolDownLog : EffectLog {
     }
 }
 
-public class DestroyUnitLog : EffectLog {
+public class UnitDestroyLog : EffectLog {
     Unit target;
     TrigActionType actionType;
     
-    public DestroyUnitLog(Unit unit, TrigActionType actionType) {
+    public UnitDestroyLog(Unit unit, TrigActionType actionType) {
         this.target = unit;
         this.actionType = actionType;
     }

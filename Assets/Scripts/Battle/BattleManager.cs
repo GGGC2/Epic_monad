@@ -511,8 +511,7 @@ public class BattleManager : MonoBehaviour{
         if(Input.GetKeyDown(KeyCode.X)) {
             Unit unit = BattleData.unitInUnitViewer;
             if (unit != null) {
-                LogManager.Instance.Record(new UnitDestroyedLog(new List<Unit>{ unit }));
-                LogManager.Instance.Record(new DestroyUnitLog(unit, TrigActionType.Kill));
+                LogManager.Instance.Record(new UnitDestroyLog(unit, TrigActionType.Kill));
             }
         }
 

@@ -29,9 +29,8 @@ class Stage_14_0_BattleTrigger : BattleTrigger {
         if(threeBoxesDestroyed) {
             doors = allUnits.FindAll(unit => unit.EngName.Contains("door0"));
         }
-        logManager.Record(new UnitDestroyedLog(doors));
         foreach(var door in doors) {
-            logManager.Record(new DestroyUnitLog(door, TrigActionType.Kill));
+            logManager.Record(new UnitDestroyLog(door, TrigActionType.Kill));
         }
     }
 }

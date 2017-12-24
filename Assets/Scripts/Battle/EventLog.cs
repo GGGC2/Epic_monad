@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+//EffectLog와 달리 어떤 일이 발생했다는 사실만 기록.
 public class EventLog : Log {
     public Unit actor;
     List<EffectLog> effectLogList = new List<EffectLog>();  // 이 Event로부터 발생한 Effect들
@@ -25,9 +26,8 @@ public class EventLog : Log {
             MoveLog log = (MoveLog)this;
             TM.CountTriggers(TrigActionType.Escape, actor, dest: TileManager.Instance.GetTile(log.afterPos));
             TM.CountTriggers(TrigActionType.StepOnTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log: log);
-        }else if(this is UnitDestroyedLog){
-            
         }
+
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
                 effectLog.executed = true;
@@ -42,25 +42,7 @@ public class EventLog : Log {
     }
 }
 
-public class UnitDestroyedLog : EventLog {
-    List<Unit> units;
-    TrigActionType actionType;
-    public UnitDestroyedLog(List<Unit> units) {
-        actor = BattleData.turnUnit;
-        this.units = units;
-    }
-    public override string GetText() {
-        string text = "";
-        for(int i = 0; i < units.Count; i++) {
-            text += units[i].GetNameKor();
-            if(i != units.Count - 1)    text += ", ";
-        }
-        return text + "파괴";
-    }
-}
-
 public class BattleStartLog : EventLog {
-
     public override string GetText() {
         return "전투 시작";
     }

@@ -47,12 +47,12 @@ public class LogManager : MonoBehaviour {
             yield return ExecuteLastEventLog();
         }
     }
-    IEnumerable<EventLog> GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
+    IEnumerable<Log> GenerateConsequentEventLogs() {   // 새로운 Event를 발생시킴
         //Debug.Log("Generating ConsequentEventLogs");
         foreach (var eventLog in TileManager.Instance.CheckAllTraps())
             yield return eventLog;
-        foreach (var eventLog in UnitManager.Instance.CheckDestroyedUnits())
-            yield return eventLog;
+        foreach (var effectLog in UnitManager.Instance.CheckDestroyedUnits())
+            yield return effectLog;
     }
     public EventLog PopLastEventLog() {                     // 마지막 Event를 실행하지 않고 없앤 후 리턴한다(Preview에 쓰임)
         int numLog = BattleData.logDisplayList.Count;

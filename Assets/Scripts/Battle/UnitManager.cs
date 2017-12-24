@@ -158,7 +158,7 @@ public class UnitManager : MonoBehaviour{
         }
     }
     
-    public IEnumerable<EventLog> CheckDestroyedUnits() {
+    public IEnumerable<EffectLog> CheckDestroyedUnits() {
         LogManager logManager = LogManager.Instance;
         UnitManager unitManager = UnitManager.Instance;
         List<Unit> allUnits_Clone = new List<Unit>();
@@ -167,25 +167,21 @@ public class UnitManager : MonoBehaviour{
 
         foreach(var unit in allUnits_Clone) {
             TrigActionType? type = null;
-            UnitDestroyedLog unitDestroyedLog = null;
             int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
             if(unit.CheckEscape()){
-                unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
                 type = TrigActionType.Escape;
             }else if(unit.GetCurrentHealth() <= 0){
-                unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
                 if(unit.IsKillable) {type = TrigActionType.Kill;}
                 else {type = TrigActionType.Retreat;}
             }else if(unit.GetCurrentHealth() <= retreatHP && unit.CanRetreatBefore0HP){
-                unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
                 type = TrigActionType.Retreat;
             }
             
-            if (unitDestroyedLog != null) {
-                logManager.Record(unitDestroyedLog);
-                logManager.Record(new DestroyUnitLog(unit, (TrigActionType)type));
+            if (type != null) {
+                EffectLog newLog = new UnitDestroyLog(unit, (TrigActionType)type);
                 UnitManager.Instance.TriggerOnUnitDestroy(unit, (TrigActionType)type);
-                yield return unitDestroyedLog;
+                logManager.Record(newLog);
+                yield return newLog;
             }
         }
     }
