@@ -11,7 +11,7 @@ public class TutorialScenario{
 	public static SelectDirectionUI selectDirectionUI;
 
 	public int index;
-	enum Mission{ MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, OpenDetailInfo, CloseDetailInfo, End }
+	enum Mission{ MoveCommand, SkillCommand, Standby, Rest, SelectTile, SelectDirection, SelectAnyDirection, SelectSkill, OpenDetailInfo, CloseDetailInfo, CancelMoveOrSkill, End }
 	Mission mission;
 	//public bool isMarker;
 	public Vector3 mouseMarkPos;
@@ -101,21 +101,49 @@ public class TutorialScenario{
 				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.OpenDetailInfo) {
+			Vector2 missionTilePos = new Vector2 (parser.ConsumeInt (), parser.ConsumeInt ());
+			Tile missionTile = TM.GetTile (missionTilePos);
+			List<Tile> clickableTiles = new List<Tile> ();
+			clickableTiles.Add (missionTile);
 			SetMissionCondition = () => {
 				UIManager.Instance.TurnOffAllActions();
 				UIManager.Instance.ActionButtonOnOffLock = true;
-				TM.DepreselectAllTiles();
+				TM.DepreselectAllTiles ();
+				TM.PreselectTiles (clickableTiles);
+				TM.SetPreselectLock (true);
+				TM.SetHighlightTiles (clickableTiles, true);
 				BattleData.uiManager.activateDetailInfoEvent.AddListener (ToNextStep);
 			};
 			ResetMissionCondition = () => {
 				BattleData.uiManager.activateDetailInfoEvent.RemoveListener (ToNextStep);
+				TM.SetHighlightTiles (TM.GetTilesInGlobalRange (), false);
+				TM.SetPreselectLock (false);
+				TM.DepreselectAllTiles ();
+				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		} else if (mission == Mission.CloseDetailInfo) {
 			SetMissionCondition = () => {
 				BattleData.uiManager.deactivateDetailInfoEvent.AddListener (ToNextStep);
+				BattleData.rightClickLock = false;
 			};
 			ResetMissionCondition = () => {
+				BattleData.rightClickLock = true;
 				BattleData.uiManager.deactivateDetailInfoEvent.RemoveListener (ToNextStep);
+			};
+		} else if(mission==Mission.CancelMoveOrSkill) {
+			SetMissionCondition = () => {
+				UIManager.Instance.TurnOffAllActions();
+				UIManager.Instance.ActionButtonOnOffLock = true;
+				TM.DepreselectAllTiles ();
+				TM.SetPreselectLock (true);
+				BM.readyCommandEvent.AddListener (ToNextStep);
+				BattleData.rightClickLock = false;
+			};
+			ResetMissionCondition = () => {
+				BattleData.rightClickLock = true;
+				BM.readyCommandEvent.RemoveListener (ToNextStep);
+				TM.SetPreselectLock (false);
+				UIManager.Instance.ActionButtonOnOffLock = false;
 			};
 		}
 
