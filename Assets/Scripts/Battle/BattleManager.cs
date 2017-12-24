@@ -502,7 +502,7 @@ public class BattleManager : MonoBehaviour{
                 BattleData.tileInTileViewer = BattleData.uiManager.GetTileInTileViewer();
         }
 
-		if (Input.GetKeyDown(KeyCode.CapsLock)){
+		if (Input.GetKeyDown(KeyCode.Tab)){
 			BattleTriggerManager.Instance.WinGame ();
 		}
 		if (Input.GetKeyDown(KeyCode.Delete)){

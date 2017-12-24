@@ -176,7 +176,7 @@ public class UnitManager : MonoBehaviour{
                 unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
                 if(unit.IsKillable) {type = TrigActionType.Kill;}
                 else {type = TrigActionType.Retreat;}
-            }else if(unit.GetCurrentHealth() <= retreatHP){
+			}else if(unit.GetCurrentHealth() <= retreatHP && SceneData.stageNumber >= Setting.retreatOpenStage){
                 if(!unit.IsNamed){
                     unitDestroyedLog = new UnitDestroyedLog (new List<Unit>{ unit });
                     type = TrigActionType.Retreat;
