@@ -135,6 +135,7 @@ public class CoolDownLog : EffectLog {
 public class DestroyUnitLog : EffectLog {
     Unit target;
     TrigActionType actionType;
+    
     public DestroyUnitLog(Unit unit, TrigActionType actionType) {
         this.target = unit;
         this.actionType = actionType;

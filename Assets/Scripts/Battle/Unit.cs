@@ -181,8 +181,8 @@ public class Unit : MonoBehaviour{
 	public bool IsPC { get { return (!isAI) && (!myInfo.isObject); } }
 	public bool IsAllyNPC{ get { return GetSide() == Side.Ally && !IsAI; } }
 	public bool IsObject { get { return myInfo.isObject; } }
-	public bool IsNamed { get { return myInfo.isNamed; } }
 	public bool IsKillable { get { return myInfo.isKillable && !myInfo.isObject; } }
+	public bool CanRetreatBefore0HP { get { return SceneData.stageNumber >= Setting.retreatOpenStage && !myInfo.isNamed && !IsObject;} }
     public Vector2 GetPosition() {return position;}
     public void SetPosition(Vector2 position) { this.position = position; }
 	public Vector3 realPosition {
@@ -857,7 +857,7 @@ public class Unit : MonoBehaviour{
 		int damage = CalculateDamageByCasting(castingApply, true);	
 
 		int remainHP = GetCurrentHealth () + GetRemainShield();
-		if (SceneData.stageNumber >= Setting.retreatOpenStage && !IsObject && !IsNamed) {
+		if(CanRetreatBefore0HP){
 			int retreatHP = (int)(GetMaxHealth () * Setting.retreatHPFloat);
 			remainHP -= retreatHP;
 		}

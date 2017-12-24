@@ -518,7 +518,6 @@ public class BattleManager : MonoBehaviour{
 
 		if(Input.GetKeyDown(KeyCode.B))
 			SceneManager.LoadScene("BattleReady");
-
         if(Input.GetKeyDown(KeyCode.A))
             ChangeAspect(1);
         if(Input.GetKeyDown(KeyCode.D))

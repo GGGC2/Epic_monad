@@ -25,6 +25,8 @@ public class EventLog : Log {
             MoveLog log = (MoveLog)this;
             TM.CountTriggers(TrigActionType.Escape, actor, dest: TileManager.Instance.GetTile(log.afterPos));
             TM.CountTriggers(TrigActionType.StepOnTile, actor, TileManager.Instance.GetTile(log.afterPos).displayName, log: log);
+        }else if(this is UnitDestroyedLog){
+            
         }
         foreach (var effectLog in effectLogList) {
             if (!effectLog.executed) {
@@ -37,6 +39,23 @@ public class EventLog : Log {
                 else yield return effectLog.Execute();
             }
         }
+    }
+}
+
+public class UnitDestroyedLog : EventLog {
+    List<Unit> units;
+    TrigActionType actionType;
+    public UnitDestroyedLog(List<Unit> units) {
+        actor = BattleData.turnUnit;
+        this.units = units;
+    }
+    public override string GetText() {
+        string text = "";
+        for(int i = 0; i < units.Count; i++) {
+            text += units[i].GetNameKor();
+            if(i != units.Count - 1)    text += ", ";
+        }
+        return text + "파괴";
     }
 }
 
@@ -150,23 +169,6 @@ public class CollectStartLog : EventLog {
     }
     public override string GetText() {
         return collector.GetNameKor() + " : " + collectible.GetNameKor() + " 수집 시작";
-    }
-}
-
-public class UnitDestroyedLog : EventLog {
-    List<Unit> units;
-    TrigActionType actionType;
-    public UnitDestroyedLog(List<Unit> units) {
-        actor = BattleData.turnUnit;
-        this.units = units;
-    }
-    public override string GetText() {
-        string text = "";
-        for(int i = 0; i < units.Count; i++) {
-            text += units[i].GetNameKor();
-            if(i != units.Count - 1)    text += ", ";
-        }
-        return text + "파괴";
     }
 }
 
