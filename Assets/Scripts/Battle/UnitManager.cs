@@ -166,16 +166,7 @@ public class UnitManager : MonoBehaviour{
             allUnits_Clone.Add(unit);
 
         foreach(var unit in allUnits_Clone) {
-            TrigActionType? type = null;
-            int retreatHP = (int)(unit.GetMaxHealth () * Setting.retreatHPFloat);
-            if(unit.CheckEscape()){
-                type = TrigActionType.Escape;
-            }else if(unit.GetCurrentHealth() <= 0){
-                if(unit.IsKillable) {type = TrigActionType.Kill;}
-                else {type = TrigActionType.Retreat;}
-            }else if(unit.GetCurrentHealth() <= retreatHP && unit.CanRetreatBefore0HP){
-                type = TrigActionType.Retreat;
-            }
+            var type = unit.GetDestroyReason();
             
             if (type != null) {
                 EffectLog newLog = new UnitDestroyLog(unit, (TrigActionType)type);

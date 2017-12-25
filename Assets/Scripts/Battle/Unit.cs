@@ -1251,4 +1251,18 @@ public class Unit : MonoBehaviour{
 			trig => trig.action == TrigActionType.Escape && BattleTriggerManager.Instance.CheckUnitType(trig, this, true)
 		);
 	}
+
+	//자신이 파괴될 예정인지, 맞다면 이유가 무엇인지를 return
+	//checkingHP는 Preview상황이라서 체크 기준 체력이 실제 체력과 다를 경우에만 입력
+	public TrigActionType? GetDestroyReason(int checkingHP = -1){
+		if(checkingHP == -1) {checkingHP = GetCurrentHealth();}
+		int retreatHP = (int)(GetMaxHealth () * Setting.retreatHPFloat);
+		if(CheckEscape()) {return TrigActionType.Escape;}
+		else if(checkingHP <= 0){
+            if(IsKillable) {return TrigActionType.Kill;}
+            else {return TrigActionType.Retreat;}
+        }else if(checkingHP <= retreatHP && CanRetreatBefore0HP){
+            return TrigActionType.Retreat;
+        }else {return null;} //파괴되지 않음
+	}
 }

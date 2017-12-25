@@ -41,35 +41,14 @@ public class HealthViewer : MonoBehaviour {
             barsToBeHealthScale.Add(damageBar);
         }
         AdjustBarScales(health, shield, barsToBeHealthScale, barsToBeShieldScale);
+        
+        //이하는 처치/이탈 아이콘 표시
+        Debug.Log("Called");
+        var type = GetComponentInParent<Unit>().GetDestroyReason((int)health);
+        Debug.Log(type+"");
+        if(type == TrigActionType.Kill) {killIcon.SetActive(true);}
+        else if(type == TrigActionType.Retreat) {retreatIcon.SetActive(true);}
     }
-
-	/*public void PreviewDamageAmount(int damageAmount) {
-        int previewCurrentHealth = currentHealth + Math.Min(shieldAmount - damageAmount, 0);
-        previewCurrentHealth = Math.Max(previewCurrentHealth, 0);
-        int previewShieldAmount = Math.Max(shieldAmount - damageAmount, 0);
-        GameObject[] barsToBeHealthScale = { currentHealthBar, recoverBar };
-        GameObject[] barsToBeShieldScale = { shieldBar, shieldRecoverBar };
-        float previewHealthRatio = AdjustBarScales(previewCurrentHealth, previewShieldAmount, barsToBeHealthScale, barsToBeShieldScale);
-
-        if (previewHealthRatio <= 0)   killIcon.SetActive(true);
-		else if ((previewHealthRatio <= Setting.retreatHpFloat) && 
-                !(transform.parent.gameObject.GetComponent<Unit>().IsObject) && SceneData.stageNumber >= Setting.retreatOpenStage)
-                retreatIcon.SetActive(true); // 오브젝트는 이탈하지 않음 (=오브젝트가 아닐 경우에만 이탈).
-	}
-	
-	public void PreviewRecoverAmount(int recoverAmount) {
-		int previewCurrentHealth = Math.Min(currentHealth + recoverAmount, maxHealth);
-        GameObject[] barsToBeHealthScale = { recoverBar };
-        GameObject[] barsToBeShieldScale = { shieldBar , shieldRecoverBar};
-        AdjustBarScales(previewCurrentHealth, shieldAmount, barsToBeHealthScale, barsToBeShieldScale);
-	}
-
-    public void PreviewShieldAmount(int shieldAmount) {
-        int previewShieldAmount = shieldAmount + this.shieldAmount;
-        GameObject[] barsToBeHealthScale = { currentHealthBar, recoverBar, damageBar};
-        GameObject[] barsToBeShieldScale = { shieldRecoverBar };
-        AdjustBarScales(currentHealth, previewShieldAmount, barsToBeHealthScale, barsToBeShieldScale);
-    }*/
 
 	public void UpdateCurrentHealth(int currentHealth, int shieldAmount, int maxHealth) {
         this.currentHealth = currentHealth;
