@@ -16,7 +16,7 @@ namespace Battle.Turn {
             ActiveSkill selectedSkill = BattleData.selectedSkill;
 
 			Direction? beforeDirection = null;
-			Direction newDirection = selectedUnit.GetDirection ();
+			Direction newDirection = Utility.GetMouseDirectionByUnit (BattleData.turnUnit, selectedUnit.GetDirection());
 
 			unitPreviewDict = new Dictionary<Unit, PreviewState>();
 
@@ -43,9 +43,7 @@ namespace Battle.Turn {
 						DisplayPreviewDamage (casting);
 				}
 				yield return null;
-				if(BattleData.turnUnit != null){
-					newDirection = Utility.GetMouseDirectionByUnit (BattleData.turnUnit, selectedUnit.GetDirection());
-				}
+				newDirection = Utility.GetMouseDirectionByUnit (BattleData.turnUnit, selectedUnit.GetDirection());
             }
         }
 
