@@ -1,10 +1,10 @@
-Index	Name	NameInCode	Side	InitPosotionX	InitPositionY	InitDirection	BaseHealth	BasePower	BaseDefense	BaseResistance	BaseAgility	UnitClass	Element	Celestial	IsObject	
-6	18	LeftDown
-6	19	LeftDown
-6	20	LeftDown
-7	18	LeftDown
-7	19	LeftDown
-7	20	LeftDown
-8	18	LeftDown
-8	19	LeftDown
-8	20	LeftDown
+x	y	InitialDirection
+6	2	RightUp
+6	3	RightUp
+6	4	RightUp
+7	2	RightUp
+7	3	RightUp
+7	4	RightUp
+8	2	RightUp
+8	3	RightUp
+8	4	RightUp
