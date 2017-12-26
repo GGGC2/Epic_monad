@@ -50,8 +50,11 @@ public class BattleManager : MonoBehaviour{
 		ChainList.InitiateChainList ();
 
 		BattleData.unitManager.SetStandardActivityPoint();
+		
+		//모든 타일 위치의 평균값으로 카메라를 이동
+		List<Tile> Values = TileManager.Instance.GetAllTiles().Values.ToList();
+		FindObjectOfType<CameraMover>().MoveCameraToAveragePosition<Tile>(Values);
 
-		InitCameraPosition(); // temp init position;
 		yield return null;
 
 		// condition panel이 사라진 이후 유닛 배치 UI가 뜨고, 그 이후 유닛 배치를 해야 하므로 일시정지.
@@ -60,7 +63,7 @@ public class BattleManager : MonoBehaviour{
 			else yield return null;
 		}
 
-		yield return StartCoroutine (BattleData.unitManager.GenerateUnits ());
+		yield return StartCoroutine (BattleData.unitManager.GenerateUnits());
 	}
 
 	public void BattleModeInitialize(){
@@ -72,7 +75,7 @@ public class BattleManager : MonoBehaviour{
 	}
 
 	public void StartTurnManager(){
-		if(!TurnManagerStarted) {
+		if(!TurnManagerStarted){
             BattleData.logDisplayList = new List<LogDisplay>();
             LogManager.Instance.Record(new BattleStartLog());
             StartCoroutine (InstantiateTurnManager ());
@@ -86,15 +89,6 @@ public class BattleManager : MonoBehaviour{
 
 	public Unit GetSelectedUnit(){
 		return BattleData.turnUnit;
-	}
-
-	void InitCameraPosition(){
-		var averagePosition = new Vector3(0, 0, 0);
-		foreach(var item in TileManager.Instance.GetAllTiles()){
-			averagePosition += item.Value.transform.position;
-		}
-		averagePosition /= TileManager.Instance.GetAllTiles().Count;
-		Camera.main.transform.position = new Vector3(averagePosition.x, averagePosition.y, -10);
 	}
 
 	public IEnumerator InstantiateTurnManager() {

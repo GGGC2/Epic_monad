@@ -86,6 +86,17 @@ public class CameraMover : MonoBehaviour{
 		Camera.main.transform.position += direction * speed * Time.deltaTime;
 	}
 
+	public void MoveCameraToAveragePosition<T>(List<T> list){
+		List<MonoBehaviour> newList = list.ConvertAll(item => (MonoBehaviour)(object)item);
+		Vector2 averagePosition = new Vector2(0, 0);
+		newList.ForEach(item => {
+			averagePosition.x += item.transform.position.x;
+            averagePosition.y += item.transform.position.y;
+		});
+        
+        averagePosition /= list.Count;
+		MoveCameraToPosition(new Vector3(averagePosition.x, averagePosition.y, -10));
+	}
 	void MoveCameraToPosition(Vector3 position){
 		Camera.main.transform.position = position;
 	}

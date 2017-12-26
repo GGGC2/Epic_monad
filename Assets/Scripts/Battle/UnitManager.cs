@@ -271,9 +271,9 @@ public class UnitManager : MonoBehaviour{
 			BattleData.tileManager.PaintTiles(selectableTileList, TileColor.Blue);
 			BattleData.tileManager.PreselectTiles(selectableTileList);
             
-            Vector2 position = selectableTileList.Last().realPosition;
+            /*Vector2 position = selectableTileList.Last().realPosition;
             //event log가 나타나기 전이므로 로그를 남기지 않고 수동으로 조작
-            Camera.main.transform.position = new Vector3(position.x, position.y, -10);
+            Camera.main.transform.position = new Vector3(position.x, position.y, -10);*/
             //BattleManager.MoveCameraToTile(selectableTileList.Last());
 		}
 
@@ -294,14 +294,8 @@ public class UnitManager : MonoBehaviour{
 			}
 		});
         
-        var Allies = allUnits.FindAll(unit => unit.GetSide() == Side.Ally);
-        Vector2 averagePositionPC = new Vector2(0, 0);
-        Allies.ForEach(ally => {
-            averagePositionPC.x += ally.transform.position.x;
-            averagePositionPC.y += ally.transform.position.y;
-        });
-        averagePositionPC /= generatedPC;
-        Camera.main.transform.position = new Vector3(averagePositionPC.x, averagePositionPC.y, -10);
+        List<MonoBehaviour> Allies = allUnits.FindAll(unit => unit.GetSide() == Side.Ally).ConvertAll(unit => (MonoBehaviour)unit);
+        FindObjectOfType<CameraMover>().MoveCameraToAveragePosition(Allies);
 
 		if(RM != null) {Destroy(RM.gameObject);}
 		yield return null;
