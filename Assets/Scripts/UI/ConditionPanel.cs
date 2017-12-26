@@ -61,8 +61,7 @@ public class ConditionPanel : MonoBehaviour{
 
 		if (FindObjectOfType<ReadyManager>() == null) {
 			BattleData.battleManager.StartTurnManager();
-		}
-		else {
+		}else {
 			BattleData.uiManager.EnablePlacedUnitCheckUI();
 		}
 		//tutorial.gameObject.SetActive(true);

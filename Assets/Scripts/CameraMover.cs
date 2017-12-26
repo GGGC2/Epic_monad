@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using GameData;
 
-public class CameraMover : MonoBehaviour {
+public class CameraMover : MonoBehaviour{
 	public bool Movable;
     Dictionary<Direction, float> boundary = new Dictionary<Direction, float>();
     const float MARGIN = 1;
@@ -45,7 +46,7 @@ public class CameraMover : MonoBehaviour {
         boundary[Direction.Up] = tiles.Max(tile => tile.transform.position.y) + MARGIN;
         boundary[Direction.Down] = tiles.Min(tile => tile.transform.position.y) - MARGIN;
     }
-	void Update () {
+	void Update (){
 		// return to fixedPosition.
 		if (Input.GetKeyDown(KeyCode.Space)){
 			MoveCameraToPosition(fixedPosition);

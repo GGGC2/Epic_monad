@@ -354,7 +354,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 503.56, y: -50}
+  m_AnchoredPosition: {x: 503.56003, y: -50}
   m_SizeDelta: {x: 50, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5965261
@@ -758,7 +758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &49547222
 MonoBehaviour:
@@ -1599,7 +1599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 443.74, y: -50}
+  m_AnchoredPosition: {x: 443.74002, y: -50}
   m_SizeDelta: {x: 50, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &85856892
@@ -7903,7 +7903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &531130811
 MonoBehaviour:
@@ -8782,7 +8782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &573235405
 MonoBehaviour:
@@ -13940,7 +13940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &857896981
 MonoBehaviour:
@@ -18639,7 +18639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1149010428
 MonoBehaviour:
@@ -18901,7 +18901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1189787944
 MonoBehaviour:
@@ -22485,7 +22485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 0}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
   viewerNameText: {fileID: 549303555}
   costText: {fileID: 207644694}
@@ -24891,7 +24891,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1545442989
 MonoBehaviour:
@@ -26064,7 +26064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1621078475
 MonoBehaviour:
@@ -27060,7 +27060,7 @@ GameObject:
   - component: {fileID: 1686251439}
   - component: {fileID: 1686251438}
   m_Layer: 0
-  m_Name: SubPanel
+  m_Name: SkillViewerPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27079,7 +27079,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 0}
+  skillViewer: {fileID: 0}
   owner: {fileID: 0}
   viewerNameText: {fileID: 486153167}
   costText: {fileID: 2001662332}
@@ -28956,7 +28956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1774553905
 MonoBehaviour:
@@ -30776,7 +30776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &1884654970
 MonoBehaviour:
@@ -34071,7 +34071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconSlot: {fileID: 0}
-  viewer: {fileID: 1686251438}
+  skillViewer: {fileID: 1686251438}
   owner: {fileID: 0}
 --- !u!114 &2053963431
 MonoBehaviour:

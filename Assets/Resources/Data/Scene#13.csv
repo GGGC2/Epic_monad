@@ -1,4 +1,4 @@
-Script#13				
+﻿Script#13				
 *	BG	Forest		
 *	BGM	Script_Sad		
 blank	-	-	<color=yellow>제국력 518년 1월 24일, 콜로헤임 교외 숲지대</color>	
@@ -20,7 +20,7 @@ json	-	제이선	(이 나라와 황제야말로 남몰래 당당하지 못한 �
 kashasty	-	카샤스티	그만두셔요! 여러분은 무언가 잘못 알고 있사오니!	
 json	-	제이선	(……나는 왜 이 일을 하고 있지?)	
 *	SE	Slash		
-*	SE	Smite		
+*	SE	Smite(D)		
 blank	-	-	그 의문을 깨부수고 싶었다.^던진 칼날은 허공을 가르고 상대의 손에 정확히 꽂힐 뿐.	
 kashasty	-	카샤스티	윽……!	
 blank	-	-	상대는 들고 있던 무기를 떨어뜨리고 주저앉았다.	
